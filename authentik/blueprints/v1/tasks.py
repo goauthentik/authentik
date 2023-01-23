@@ -219,3 +219,13 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
     finally:
         if instance:
             instance.save()
+
+@CELERY_APP.task()
+def clear_failed_blueprints():
+    """Remove blueprints which couldn't be fetched"""
+    # Exclude OCI blueprints as those might be temporarily unavailable
+    for blueprint in BlueprintInstance.objects.exclude(path__startswith="oci://"):
+        try:
+            blueprint.retrieve()
+        except BlueprintRetrievalFailed:
+            blueprint.delete()
