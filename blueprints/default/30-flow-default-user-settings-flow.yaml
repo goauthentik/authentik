@@ -21,9 +21,10 @@ entries:
     placeholder_expression: true
     required: true
     type: text
-  identifiers:
     field_key: username
     label: Username
+  identifiers:
+    name: default-user-settings-field-username
   id: prompt-field-username
   model: authentik_stages_prompt.prompt
 - attrs:
@@ -36,9 +37,10 @@ entries:
     placeholder_expression: true
     required: true
     type: text
-  identifiers:
     field_key: name
     label: Name
+  identifiers:
+    name: default-user-settings-field-name
   id: prompt-field-name
   model: authentik_stages_prompt.prompt
 - attrs:
@@ -51,9 +53,10 @@ entries:
     placeholder_expression: true
     required: true
     type: email
-  identifiers:
     field_key: email
     label: Email
+  identifiers:
+    name: default-user-settings-field-email
   id: prompt-field-email
   model: authentik_stages_prompt.prompt
 - attrs:
@@ -66,9 +69,10 @@ entries:
     placeholder_expression: true
     required: true
     type: ak-locale
-  identifiers:
     field_key: attributes.settings.locale
     label: Locale
+  identifiers:
+    name: default-user-settings-field-locale
   id: prompt-field-locale
   model: authentik_stages_prompt.prompt
 - attrs:

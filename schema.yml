@@ -23008,6 +23008,10 @@ paths:
         name: label
         schema:
           type: string
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -34263,6 +34267,11 @@ components:
       type: object
       description: Prompt Serializer
       properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
         field_key:
           type: string
           minLength: 1
@@ -35278,6 +35287,10 @@ components:
           format: uuid
           readOnly: true
           title: Prompt uuid
+        name:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
         field_key:
           type: string
           description: Name of the form field, also used to store the value
@@ -35304,6 +35317,7 @@ components:
       required:
       - field_key
       - label
+      - name
       - pk
       - type
     PromptChallenge:
@@ -35345,6 +35359,11 @@ components:
       type: object
       description: Prompt Serializer
       properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
         field_key:
           type: string
           minLength: 1
@@ -35373,6 +35392,7 @@ components:
       required:
       - field_key
       - label
+      - name
       - type
     PromptStage:
       type: object

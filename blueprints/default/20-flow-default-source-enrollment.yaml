@@ -17,9 +17,10 @@ entries:
     placeholder_expression: false
     required: true
     type: text
-  identifiers:
     field_key: username
     label: Username
+  identifiers:
+    name: default-source-enrollment-field-username
   id: prompt-field-username
   model: authentik_stages_prompt.prompt
 - attrs:
