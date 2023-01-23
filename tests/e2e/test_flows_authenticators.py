@@ -26,8 +26,8 @@ class TestFlowsAuthenticator(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     def test_totp_validate(self):
         """test flow with otp stages"""
@@ -52,10 +52,10 @@ class TestFlowsAuthenticator(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
-    @apply_blueprint("default/20-flow-default-authenticator-totp-setup.yaml")
+    @apply_blueprint("default/flow-default-authenticator-totp-setup.yaml")
     def test_totp_setup(self):
         """test TOTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")
@@ -98,10 +98,10 @@ class TestFlowsAuthenticator(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
-    @apply_blueprint("default/20-flow-default-authenticator-static-setup.yaml")
+    @apply_blueprint("default/flow-default-authenticator-static-setup.yaml")
     def test_static_setup(self):
         """test Static OTP Setup stage"""
         flow: Flow = Flow.objects.get(slug="default-authentication-flow")

@@ -57,12 +57,12 @@ class TestProviderProxy(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-authorization-explicit-consent.yaml",
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -123,12 +123,12 @@ class TestProviderProxy(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-authorization-explicit-consent.yaml",
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -200,12 +200,12 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-authorization-explicit-consent.yaml",
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_proxy_connectivity(self):

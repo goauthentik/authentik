@@ -41,8 +41,8 @@ class TestFlowsEnroll(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
@@ -107,8 +107,8 @@ class TestFlowsEnroll(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     def test_enroll_email(self):
         """Test enroll with Email verification"""
