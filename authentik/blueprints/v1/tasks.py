@@ -220,6 +220,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         if instance:
             instance.save()
 
+
 @CELERY_APP.task()
 def clear_failed_blueprints():
     """Remove blueprints which couldn't be fetched"""
