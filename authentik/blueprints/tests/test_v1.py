@@ -265,6 +265,7 @@ class TestBlueprintsV1(TransactionTestCase):
                 field_key="username", label="Username", order=0, type=FieldTypes.TEXT
             )
             password = Prompt.objects.create(
+                name=generate_id(),
                 field_key="password",
                 label="Password",
                 order=1,

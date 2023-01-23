@@ -96,7 +96,7 @@ class Prompt(SerializerModel):
     """Single Prompt, part of a prompt stage."""
 
     prompt_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.TextField(unique=True)
+    name = models.TextField(unique=True, blank=False)
 
     field_key = models.TextField(
         help_text=_("Name of the form field, also used to store the value")

@@ -28,13 +28,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="prompt",
             name="name",
-            field=models.TextField(default="", unique=False, db_index=False),
+            field=models.TextField(default="", unique=False, db_index=False, blank=False),
             preserve_default=False,
         ),
         migrations.RunPython(code=set_generated_name),
         migrations.AlterField(
             model_name="prompt",
             name="name",
-            field=models.TextField(unique=True),
+            field=models.TextField(unique=True, blank=False, db_index=True),
         ),
     ]
