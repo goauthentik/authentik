@@ -60,3 +60,7 @@ Used by authentik's packaged blueprints to keep globals up-to-date. Should only 
 #### `blueprints.goauthentik.io/instantiate`:
 
 Configure if this blueprint should automatically be instantiated (defaults to `"true"`). When set to `"false"`, blueprints are listed and available to be instantiated via API/Browser.
+
+#### `blueprints.goauthentik.io/description`:
+
+Optionally set a description, which can be seen in the web interface.

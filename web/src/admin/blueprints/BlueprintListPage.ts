@@ -32,6 +32,7 @@ export function BlueprintStatus(blueprint?: BlueprintInstance): string {
     }
     return t`Unknown`;
 }
+
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
     searchEnabled(): boolean {
@@ -97,8 +98,14 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     }
 
     row(item: BlueprintInstance): TemplateResult[] {
+        let description = undefined;
+        const descKey = "blueprints.goauthentik.io/description";
+        if (Object.hasOwn(item.metadata.labels, descKey)) {
+            description = item.metadata.labels[descKey];
+        }
         return [
-            html`${item.name}`,
+            html`<div>${item.name}</div>
+                ${description ? html`<small>${description}</small>` : html``}`,
             html`${BlueprintStatus(item)}`,
             html`${item.lastApplied.toLocaleString()}`,
             html`<ak-label color=${item.enabled ? PFColor.Green : PFColor.Red}>
