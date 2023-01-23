@@ -3,7 +3,6 @@ from base64 import b64encode
 
 from django.conf import settings
 from django.test import TestCase
-from guardian.shortcuts import get_anonymous_user
 from rest_framework.exceptions import AuthenticationFailed
 
 from authentik.api.authentication import bearer_auth
