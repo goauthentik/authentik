@@ -32,6 +32,16 @@ def validate_auth(header: bytes) -> Optional[str]:
 
 def bearer_auth(raw_header: bytes) -> Optional[User]:
     """raw_header in the Format of `Bearer ....`"""
+    user = auth_user_lookup(raw_header)
+    if not user:
+        return None
+    if not user.is_active:
+        raise AuthenticationFailed("Token invalid/expired")
+    return user
+
+
+def auth_user_lookup(raw_header: bytes) -> Optional[User]:
+    """raw_header in the Format of `Bearer ....`"""
     from authentik.providers.oauth2.models import RefreshToken
 
     auth_credentials = validate_auth(raw_header)
