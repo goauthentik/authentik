@@ -61,7 +61,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal name="canCreateUsers">
+                    <ak-form-element-horizontal name="userCreationMode">
                         <ak-radio
                             .options=${[
                                 {

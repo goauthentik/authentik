@@ -11,9 +11,9 @@ def migrate_to_user_creation_mode(apps: Apps, schema_editor: BaseDatabaseSchemaE
 
     for stage in UserWriteStage.objects.using(schema_editor.connection.alias).all():
         if stage.can_create_users:
-            stage.user_creation_mode = UserCreationMode.NEVER_CREATE
-        else:
             stage.user_creation_mode = UserCreationMode.CREATE_WHEN_REQUIRED
+        else:
+            stage.user_creation_mode = UserCreationMode.NEVER_CREATE
         stage.save()
 
 
