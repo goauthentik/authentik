@@ -28,6 +28,16 @@ func (ls *LDAPServer) getCurrentProvider(pk int32) *ProviderInstance {
 	return nil
 }
 
+func (ls *LDAPServer) getInvalidationFlow() string {
+	req, _, err := ls.ac.Client.CoreApi.CoreTenantsCurrentRetrieve(context.Background()).Execute()
+	if err != nil {
+		ls.log.WithError(err).Warning("failed to fetch tenant config")
+		return ""
+	}
+	flow := req.GetFlowInvalidation()
+	return flow
+}
+
 func (ls *LDAPServer) Refresh() error {
 	outposts, _, err := ls.ac.Client.OutpostsApi.OutpostsLdapList(context.Background()).Execute()
 	if err != nil {
@@ -37,6 +47,7 @@ func (ls *LDAPServer) Refresh() error {
 		return errors.New("no ldap provider defined")
 	}
 	providers := make([]*ProviderInstance, len(outposts.Results))
+	invalidationFlow := ls.getInvalidationFlow()
 	for idx, provider := range outposts.Results {
 		userDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUUsers, *provider.BaseDn))
 		groupDN := strings.ToLower(fmt.Sprintf("ou=%s,%s", constants.OUGroups, *provider.BaseDn))
@@ -53,22 +64,23 @@ func (ls *LDAPServer) Refresh() error {
 		}
 
 		providers[idx] = &ProviderInstance{
-			BaseDN:              *provider.BaseDn,
-			VirtualGroupDN:      virtualGroupDN,
-			GroupDN:             groupDN,
-			UserDN:              userDN,
-			appSlug:             provider.ApplicationSlug,
-			flowSlug:            provider.BindFlowSlug,
-			searchAllowedGroups: []*strfmt.UUID{(*strfmt.UUID)(provider.SearchGroup.Get())},
-			boundUsersMutex:     sync.RWMutex{},
-			boundUsers:          users,
-			s:                   ls,
-			log:                 logger,
-			tlsServerName:       provider.TlsServerName,
-			uidStartNumber:      *provider.UidStartNumber,
-			gidStartNumber:      *provider.GidStartNumber,
-			outpostName:         ls.ac.Outpost.Name,
-			outpostPk:           provider.Pk,
+			BaseDN:                 *provider.BaseDn,
+			VirtualGroupDN:         virtualGroupDN,
+			GroupDN:                groupDN,
+			UserDN:                 userDN,
+			appSlug:                provider.ApplicationSlug,
+			authenticationFlowSlug: provider.BindFlowSlug,
+			invalidationFlowSlug:   invalidationFlow,
+			searchAllowedGroups:    []*strfmt.UUID{(*strfmt.UUID)(provider.SearchGroup.Get())},
+			boundUsersMutex:        sync.RWMutex{},
+			boundUsers:             users,
+			s:                      ls,
+			log:                    logger,
+			tlsServerName:          provider.TlsServerName,
+			uidStartNumber:         *provider.UidStartNumber,
+			gidStartNumber:         *provider.GidStartNumber,
+			outpostName:            ls.ac.Outpost.Name,
+			outpostPk:              provider.Pk,
 		}
 		if kp := provider.Certificate.Get(); kp != nil {
 			err := ls.cs.AddKeypair(*kp)
