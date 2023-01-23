@@ -4,6 +4,8 @@ from json import loads
 from typing import Any, Optional
 
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.sessions.backends.cache import KEY_PREFIX
+from django.core.cache import cache
 from django.db.models.functions import ExtractHour
 from django.db.models.query import QuerySet
 from django.db.transaction import atomic
@@ -57,6 +59,7 @@ from authentik.core.models import (
     USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_PATH_SERVICE_ACCOUNT,
+    AuthenticatedSession,
     Group,
     Token,
     TokenIntents,
@@ -561,3 +564,14 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 )
             }
         )
+
+    def partial_update(self, request: Request, *args, **kwargs) -> Response:
+        response = super().partial_update(request, *args, **kwargs)
+        instance: User = self.get_object()
+        if not instance.is_active:
+            sessions = AuthenticatedSession.objects.filter(user=instance)
+            session_ids = sessions.values_list("session_key", flat=True)
+            cache.delete_many(f"{KEY_PREFIX}{session}" for session in session_ids)
+            sessions.delete()
+            LOGGER.debug("Deleted user's sessions", user=instance.username)
+        return response
