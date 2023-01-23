@@ -34270,8 +34270,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 50
-          pattern: ^[-a-zA-Z0-9_]+$
         field_key:
           type: string
           minLength: 1
@@ -35289,8 +35287,6 @@ components:
           title: Prompt uuid
         name:
           type: string
-          maxLength: 50
-          pattern: ^[-a-zA-Z0-9_]+$
         field_key:
           type: string
           description: Name of the form field, also used to store the value
@@ -35362,8 +35358,6 @@ components:
         name:
           type: string
           minLength: 1
-          maxLength: 50
-          pattern: ^[-a-zA-Z0-9_]+$
         field_key:
           type: string
           minLength: 1

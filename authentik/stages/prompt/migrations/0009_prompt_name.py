@@ -11,9 +11,8 @@ def set_generated_name(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     for prompt in Prompt.objects.using(db_alias).all():
         name = prompt.field_key
-        stages = prompt.promptstage_set.all()
-        if len(stages) == 1:
-            stage = stages.first()
+        stage = prompt.promptstage_set.order_by("name").first()
+        if stage:
             name += "_" + stage.name
         prompt.name = name
         prompt.save()
@@ -28,13 +27,13 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="prompt",
             name="name",
-            field=models.SlugField(default="", unique=False, db_index=False),
+            field=models.TextField(default="", unique=False, db_index=False),
             preserve_default=False,
         ),
         migrations.RunPython(code=set_generated_name),
         migrations.AlterField(
             model_name="prompt",
             name="name",
-            field=models.SlugField(unique=True),
+            field=models.TextField(unique=True),
         ),
     ]
