@@ -13,8 +13,10 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 
 import { t } from "@lingui/macro";
 
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { BlueprintInstance, BlueprintInstanceStatusEnum, ManagedApi } from "@goauthentik/api";
 
@@ -48,10 +50,15 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         return "pf-icon pf-icon-blueprint";
     }
 
+    expandable = true;
     checkbox = true;
 
     @property()
     order = "name";
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFDescriptionList);
+    }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<BlueprintInstance>> {
         return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList({
@@ -95,6 +102,25 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                 ${t`Delete`}
             </button>
         </ak-forms-delete-bulk>`;
+    }
+
+    renderExpanded(item: BlueprintInstance): TemplateResult {
+        return html`<td role="cell" colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${t`Path`}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <pre>${item.path}</pre>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </td>`;
     }
 
     row(item: BlueprintInstance): TemplateResult[] {
