@@ -46,7 +46,7 @@ function BlogPostPageContent({ sidebar, children }) {
 }
 export default function BlogPostPage(props) {
     const BlogPostContent = props.content;
-    const title = props.content.frontMatter.title;
+    const title = props.content.frontMatter.title.substring(0, 200);
     const fmtId = title.replace(/^\//, "").replaceAll(/[\s\/]/gi, "-");
     const disqusId = fmtId == "" ? "main" : fmtId;
     return (
@@ -64,7 +64,7 @@ export default function BlogPostPage(props) {
                     <DiscussionEmbed
                         shortname="goauthentik-io"
                         config={{
-                            url: props.siteUrl + props.route.path,
+                            url: "https://goauthentik.io" + props.route.path,
                             identifier: disqusId,
                             title: title,
                         }}
