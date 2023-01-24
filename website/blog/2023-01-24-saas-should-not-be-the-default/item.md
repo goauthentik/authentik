@@ -59,7 +59,7 @@ At first glance, the reputation cost of a data breach might seem minimal. Even h
 
 You couldn’t infer, for example, when the infamous Experian data breach occurred looking at its stock price alone.
 
-![alt_text](./image1.png "image_tooltip")
+![alt_text](./image2.png "image_tooltip")
 
 (It happened in September of 2017 and a [class action lawsuit](https://www.ftc.gov/enforcement/refunds/equifax-data-breach-settlement) resulted in payments starting in December of 2022).
 
@@ -81,7 +81,7 @@ Parallel to the previously mentioned risk of more general reputation damage is t
 
 The risk here gets worse when you consider the implications of a data breach. Many people, perhaps not entirely fairly, might doubt whether a company runs a good operation if it suffers repeated data breaches. Consider a representative [Glassdoor review of Uber](http://www.glassdoor.com/Reviews/Employee-Review-Uber-RVW39883443.htm):
 
-![alt_text](./image2.png "image_tooltip")
+![alt_text](./image3.png "image_tooltip")
 
 Companies can also start negative feedback loops wherein repeated security issues give them a reputation as having a bad security team, meaning good security engineers might avoid working for the company to avoid association with that reputation.
 
@@ -130,7 +130,7 @@ Consider the recent decisions of three established companies: 37signals, Dropbox
 
 On Twitter, 37signals and Basecamp co-founder DHH [summarized the results](https://twitter.com/dhh/status/1613508201953038337?s=20&t=QFmwWhR0YSCygvItPwtC8w) of a recent accounting 37signals did across its properties. 37signals spent, in total, $3,201,564.24 on cloud in 2022 and in a [subsequent tweet](https://twitter.com/dhh/status/1613558939760689153?s=20&t=QFmwWhR0YSCygvItPwtC8w), DHH compared that cost to purchasing “insanely powerful iron” from Dell that included “288 vCPU, 15 TB NVM, 1.3TB RAM for $1,287/month over 3 years.”
 
-![alt_text](./image3.png "image_tooltip")
+![alt_text](./image1.png "image_tooltip")
 
 In a [full post](https://dev.37signals.com/our-cloud-spend-in-2022/) on the 37signals blog, senior site reliability engineer Fernando Álvarez provided more details, writing that “In 2023, we hope to dramatically cut that bill by moving a lot of services and dependencies out of the cloud and onto our own hardware.”
 
