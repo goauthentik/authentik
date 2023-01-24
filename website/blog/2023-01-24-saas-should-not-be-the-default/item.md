@@ -1,5 +1,5 @@
 ---
-title: "SaaS should not be the default: Why data breaches signal the return of self-hosted software"
+title: "SaaS should not be the default: Why data breaches signal return to self-hosting"
 description: More companies are realizing that SaaS isn’t, and shouldn’t be, the default.
 slug: 2023-01-24-saas-should-not-be-the-default
 authors:
