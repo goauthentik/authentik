@@ -9,4 +9,9 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=fqdn_rand("blueprints_v1_discover"), hour="*"),
         "options": {"queue": "authentik_scheduled"},
     },
+    "blueprints_v1_cleanup": {
+        "task": "authentik.blueprints.v1.tasks.clear_failed_blueprints",
+        "schedule": crontab(minute=fqdn_rand("blueprints_v1_cleanup"), hour="*"),
+        "options": {"queue": "authentik_scheduled"},
+    },
 }

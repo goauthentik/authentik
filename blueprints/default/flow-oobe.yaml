@@ -19,10 +19,11 @@ entries:
     required: true
     sub_text: ''
     type: static
-  id: prompt-field-header
-  identifiers:
     field_key: oobe-header-text
     label: oobe-header-text
+  id: prompt-field-header
+  identifiers:
+    name: initial-setup-field-header
   model: authentik_stages_prompt.prompt
 - attrs:
     order: 101
@@ -31,10 +32,11 @@ entries:
     required: true
     sub_text: ''
     type: email
+    field_key: email
+    label: Email
   id: prompt-field-email
   identifiers:
-    field_key: admin_email
-    label: Email
+    name: initial-setup-field-email
   model: authentik_stages_prompt.prompt
 - attrs:
     order: 300
@@ -43,10 +45,11 @@ entries:
     required: true
     sub_text: ''
     type: password
-  id: prompt-field-password
-  identifiers:
     field_key: password
     label: Password
+  id: prompt-field-password
+  identifiers:
+    name: initial-setup-field-password
   model: authentik_stages_prompt.prompt
 - attrs:
     order: 301
@@ -55,10 +58,11 @@ entries:
     required: true
     sub_text: ''
     type: password
-  id: prompt-field-password-repeat
-  identifiers:
     field_key: password_repeat
     label: Password (repeat)
+  id: prompt-field-password-repeat
+  identifiers:
+    name: initial-setup-field-password-repeat
   model: authentik_stages_prompt.prompt
 - attrs:
     expression: |
@@ -66,8 +70,6 @@ entries:
       # by injecting "pending_user"
       akadmin = ak_user_by(username="akadmin")
       context["flow_plan"].context["pending_user"] = akadmin
-      # Remap the email value
-      context["prompt_data"]["email"] = context["prompt_data"]["admin_email"]
       return True
   id: policy-default-oobe-prefill-user
   identifiers:

@@ -1,0 +1,70 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/description: Migrate to 2023.2, remove unused prompt fields
+  name: Migration - Remove old prompt fields
+entries:
+  - model: authentik_stages_prompt.prompt
+    identifiers:
+      name: admin_email_stage-default-oobe-password
+    attrs:
+      field_key: foo
+      label: foo
+      type: text
+    state: absent
+  - model: authentik_stages_prompt.prompt
+    identifiers:
+      name: attributes.settings.locale_default-user-settings
+    attrs:
+      field_key: foo
+      label: foo
+      type: text
+    state: absent
+  - model: authentik_stages_prompt.prompt
+    identifiers:
+      name: email_default-user-settings
+    attrs:
+      field_key: foo
+      label: foo
+      type: text
+    state: absent
+  - model: authentik_stages_prompt.prompt
+    identifiers:
+      name: name_default-user-settings
+    attrs:
+      field_key: foo
+      label: foo
+      type: text
+    state: absent
+  - model: authentik_stages_prompt.prompt
+    identifiers:
+      name: oobe-header-text_stage-default-oobe-password
+    attrs:
+      field_key: foo
+      label: foo
+      type: text
+    state: absent
+  - model: authentik_stages_prompt.prompt
+    identifiers:
+      name: password_default-password-change-prompt
+    attrs:
+      field_key: foo
+      label: foo
+      type: text
+    state: absent
+  - model: authentik_stages_prompt.prompt
+    identifiers:
+      name: password_repeat_default-password-change-prompt
+    attrs:
+      field_key: foo
+      label: foo
+      type: text
+    state: absent
+  - model: authentik_stages_prompt.prompt
+    identifiers:
+      name: username_default-source-enrollment-prompt
+    attrs:
+      field_key: foo
+      label: foo
+      type: text
+    state: absent

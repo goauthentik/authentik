@@ -34,6 +34,8 @@ Any additional `.yaml` file in `/blueprints` will be discovered and automaticall
 
 To disable existing blueprints, an empty file can be mounted over the existing blueprint.
 
+File-based blueprints are automatically removed once they become unavailable, however none of the objects created by those blueprints afre affected by this.
+
 ## Storage - OCI
 
 Blueprints can also be stored in remote [OCI](https://opencontainers.org/) compliant registries. This includes GitHub Container Registry, Docker hub and many other registries.

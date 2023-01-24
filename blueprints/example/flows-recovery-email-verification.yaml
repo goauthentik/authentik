@@ -14,22 +14,24 @@ entries:
       designation: recovery
       authentication: require_unauthenticated
   - identifiers:
-      field_key: password
-      label: Password
+      name: default-recovery-field-password
     id: prompt-field-password
     model: authentik_stages_prompt.prompt
     attrs:
+      field_key: password
+      label: Password
       type: password
       required: true
       placeholder: Password
       order: 0
       placeholder_expression: false
   - identifiers:
-      field_key: password_repeat
-      label: Password (repeat)
+      name: default-recovery-field-password-repeat
     id: prompt-field-password-repeat
     model: authentik_stages_prompt.prompt
     attrs:
+      field_key: password_repeat
+      label: Password (repeat)
       type: password
       required: true
       placeholder: Password (repeat)

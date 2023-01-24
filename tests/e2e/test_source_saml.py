@@ -96,13 +96,13 @@ class TestSourceSAML(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-source-authentication.yaml",
-        "default/20-flow-default-source-enrollment.yaml",
-        "default/20-flow-default-source-pre-authentication.yaml",
+        "default/flow-default-source-authentication.yaml",
+        "default/flow-default-source-enrollment.yaml",
+        "default/flow-default-source-pre-authentication.yaml",
     )
     def test_idp_redirect(self):
         """test SAML Source With redirect binding"""
@@ -166,13 +166,13 @@ class TestSourceSAML(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-source-authentication.yaml",
-        "default/20-flow-default-source-enrollment.yaml",
-        "default/20-flow-default-source-pre-authentication.yaml",
+        "default/flow-default-source-authentication.yaml",
+        "default/flow-default-source-enrollment.yaml",
+        "default/flow-default-source-pre-authentication.yaml",
     )
     def test_idp_post(self):
         """test SAML Source With post binding"""
@@ -249,13 +249,13 @@ class TestSourceSAML(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-source-authentication.yaml",
-        "default/20-flow-default-source-enrollment.yaml",
-        "default/20-flow-default-source-pre-authentication.yaml",
+        "default/flow-default-source-authentication.yaml",
+        "default/flow-default-source-enrollment.yaml",
+        "default/flow-default-source-pre-authentication.yaml",
     )
     def test_idp_post_auto(self):
         """test SAML Source With post binding (auto redirect)"""

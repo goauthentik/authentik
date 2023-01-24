@@ -262,15 +262,21 @@ class TestBlueprintsV1(TransactionTestCase):
         with transaction_rollback():
             # First stage fields
             username_prompt = Prompt.objects.create(
-                field_key="username", label="Username", order=0, type=FieldTypes.TEXT
+                name=generate_id(),
+                field_key="username",
+                label="Username",
+                order=0,
+                type=FieldTypes.TEXT,
             )
             password = Prompt.objects.create(
+                name=generate_id(),
                 field_key="password",
                 label="Password",
                 order=1,
                 type=FieldTypes.PASSWORD,
             )
             password_repeat = Prompt.objects.create(
+                name=generate_id(),
                 field_key="password_repeat",
                 label="Password (repeat)",
                 order=2,

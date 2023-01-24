@@ -132,6 +132,17 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name)}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Unique name of this field, used for selecting fields in prompt stages.`}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Field Key`} ?required=${true} name="fieldKey">
                 <input
                     type="text"

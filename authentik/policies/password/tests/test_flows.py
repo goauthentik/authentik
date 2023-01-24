@@ -4,6 +4,7 @@ from django.urls.base import reverse
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
+from authentik.lib.generators import generate_id
 from authentik.policies.password.models import PasswordPolicy
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 
@@ -16,6 +17,7 @@ class TestPasswordPolicyFlow(FlowTestCase):
         self.flow = create_test_flow(FlowDesignation.AUTHENTICATION)
 
         password_prompt = Prompt.objects.create(
+            name=generate_id(),
             field_key="password",
             label="PASSWORD_LABEL",
             type=FieldTypes.PASSWORD,

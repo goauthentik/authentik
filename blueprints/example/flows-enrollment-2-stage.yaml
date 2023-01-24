@@ -13,56 +13,61 @@ entries:
       title: Welcome to authentik!
       designation: enrollment
       authentication: require_unauthenticated
-  - identifiers:
+  - id: prompt-field-username
+    model: authentik_stages_prompt.prompt
+    identifiers:
+      name: default-enrollment-field-username
+    attrs:
       field_key: username
       label: Username
-    id: prompt-field-username
-    model: authentik_stages_prompt.prompt
-    attrs:
       type: username
       required: true
       placeholder: Username
       placeholder_expression: false
       order: 0
   - identifiers:
-      field_key: password
-      label: Password
+      name: default-enrollment-field-password
     id: prompt-field-password
     model: authentik_stages_prompt.prompt
     attrs:
+      field_key: password
+      label: Password
       type: password
       required: true
       placeholder: Password
       placeholder_expression: false
       order: 0
   - identifiers:
-      field_key: password_repeat
-      label: Password (repeat)
+      name: default-enrollment-field-password-repeat
     id: prompt-field-password-repeat
     model: authentik_stages_prompt.prompt
     attrs:
+      field_key: password_repeat
+      label: Password (repeat)
       type: password
       required: true
       placeholder: Password (repeat)
       placeholder_expression: false
       order: 1
   - identifiers:
-      field_key: name
-      label: Name
+      name: default-enrollment-field-name
     id: prompt-field-name
     model: authentik_stages_prompt.prompt
     attrs:
+      field_key: name
+      label: Name
       type: text
       required: true
       placeholder: Name
       placeholder_expression: false
       order: 0
   - identifiers:
-      field_key: email
-      label: Email
+      name: default-enrollment-field-email
     id: prompt-field-email
     model: authentik_stages_prompt.prompt
     attrs:
+      field_key: email
+      label: Email
       type: email
       required: true
       placeholder: Email

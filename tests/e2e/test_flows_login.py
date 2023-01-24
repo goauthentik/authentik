@@ -12,8 +12,8 @@ class TestFlowsLogin(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     def test_login(self):
         """test default login flow"""
