@@ -187,8 +187,8 @@ function Comparison() {
                                 <td className="result passed">
                                     <Check></Check>
                                 </td>
-                                <td className="result failed">
-                                    <X></X>
+                                <td className="result passwd">
+                                    <Check></Check>
                                 </td>
                             </tr>
                             <tr>
