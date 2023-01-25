@@ -108,7 +108,7 @@ That said, there are also compelling reasons to use self-hosted products. For ex
 -   Shift financing from opex to capex, which often results in net cost savings.
 -   Trust in shared alignment. If you own and self-host a product, you’re incentivized, in a way even the best SaaS vendor isn’t, to keep it secure.
 
-Authentication, what we specialize in here at Authentik, is a great example. The industry standard used to be a self-hosted products – most commonly Microsoft ADFS – but they were it was notoriously unwieldy, which gave companies like Auth0 and Okta a chance to take over the market.
+Authentication, what we specialize in here at Authentik, is a great example. The industry standard used to be a self-hosted products – most commonly Microsoft ADFS – but they were notoriously unwieldy, which gave companies like Auth0 and Okta a chance to take over the market.
 
 The technology industry is cyclical, however, and our bet is that by applying lessons learned from SaaS, vendors can offer self-hosted products that are as good or better than SaaS products. Customers can then have their cake and eat it too.
 
