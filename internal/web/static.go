@@ -61,7 +61,7 @@ func (ws *WebServer) configureStatic() {
 func (ws *WebServer) staticHeaderMiddleware(h http.Handler) http.Handler {
 	etagHandler := etag.Handler(h, false)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Cache-Control", "\"public, no-transform\"")
+		w.Header().Set("Cache-Control", "public, no-transform")
 		w.Header().Set("X-authentik-version", constants.VERSION)
 		w.Header().Set("Vary", "X-authentik-version, Etag")
 		etagHandler.ServeHTTP(w, r)
