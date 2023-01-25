@@ -537,7 +537,7 @@ export class FlowExecutor extends AKElement implements StageHost {
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@chrishenryphoto"
+                                                                  href="https://unsplash.com/@saishmenon"
                                                                   >${t`Background image`}</a
                                                               >
                                                           </li>
