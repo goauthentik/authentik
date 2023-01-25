@@ -27,7 +27,7 @@ import "@goauthentik/flow/stages/password/PasswordStage";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html, render } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
@@ -44,6 +44,7 @@ import {
     CapabilitiesEnum,
     ChallengeChoices,
     ChallengeTypes,
+    ContextualFlowInfo,
     CurrentTenant,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
@@ -95,8 +96,27 @@ export class FlowExecutor extends AKElement implements StageHost {
     @property({ attribute: false })
     tenant!: CurrentTenant;
 
-    @property({ attribute: false })
+    @state()
     inspectorOpen: boolean;
+
+    _flowInfo?: ContextualFlowInfo;
+
+    @state()
+    set flowInfo(value: ContextualFlowInfo | undefined) {
+        this._flowInfo = value;
+        if (!value) {
+            return;
+        }
+        this.shadowRoot
+            ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
+            .forEach((bg) => {
+                bg.style.setProperty("--ak-flow-background", `url('${value?.background}')`);
+            });
+    }
+
+    get flowInfo(): ContextualFlowInfo | undefined {
+        return this._flowInfo;
+    }
 
     ws: WebsocketClient;
 
@@ -168,14 +188,6 @@ export class FlowExecutor extends AKElement implements StageHost {
         tenant().then((tenant) => (this.tenant = tenant));
     }
 
-    setBackground(url: string): void {
-        this.shadowRoot
-            ?.querySelectorAll<HTMLDivElement>(".pf-c-background-image")
-            .forEach((bg) => {
-                bg.style.setProperty("--ak-flow-background", `url('${url}')`);
-            });
-    }
-
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
         if (!payload) return Promise.reject();
         if (!this.challenge) return Promise.reject();
@@ -198,6 +210,9 @@ export class FlowExecutor extends AKElement implements StageHost {
                     );
                 }
                 this.challenge = data;
+                if (this.challenge.flowInfo) {
+                    this.flowInfo = this.challenge.flowInfo;
+                }
                 if (this.challenge.responseErrors) {
                     return false;
                 }
@@ -231,9 +246,8 @@ export class FlowExecutor extends AKElement implements StageHost {
                     );
                 }
                 this.challenge = challenge;
-                // Only set background on first update, flow won't change throughout execution
-                if (this.challenge?.flowInfo?.background) {
-                    this.setBackground(this.challenge.flowInfo.background);
+                if (this.challenge.flowInfo) {
+                    this.flowInfo = this.challenge.flowInfo;
                 }
             })
             .catch((e: Error | ResponseError) => {
@@ -531,9 +545,7 @@ export class FlowExecutor extends AKElement implements StageHost {
                                                         >${t`Powered by authentik`}</a
                                                     >
                                                 </li>
-                                                ${this.challenge?.flowInfo?.background?.startsWith(
-                                                    "/static",
-                                                )
+                                                ${this.flowInfo?.background?.startsWith("/static")
                                                     ? html`
                                                           <li>
                                                               <a
