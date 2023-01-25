@@ -68,7 +68,7 @@
         "@goauthentik/api": "^2023.1.2-1674559422",
         "@hcaptcha/types": "^1.0.3",
         "@jackfranklin/rollup-plugin-markdown": "^0.4.0",
-        "@lingui/cli": "^3.16.0",
+        "@lingui/cli": "^3.16.1",
         "@lingui/core": "^3.16.0",
         "@lingui/detect-locale": "^3.16.0",
         "@lingui/macro": "^3.16.0",
