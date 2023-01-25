@@ -35,6 +35,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="prompt",
             name="name",
-            field=models.TextField(unique=True, blank=False, db_index=True),
+            field=models.TextField(unique=True),
         ),
     ]
