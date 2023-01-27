@@ -54,7 +54,5 @@ class PytestTestRunner:  # pragma: no cover
 
         import pytest
 
-        if any("tests/e2e" in label for label in test_labels):
-            self.args.append("-pno:randomly")
         self.args.extend(test_labels)
         return pytest.main(self.args)
