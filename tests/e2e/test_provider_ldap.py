@@ -166,6 +166,10 @@ class TestProviderLDAP(SeleniumTestCase):
     @reconcile_app("authentik_outposts")
     def test_ldap_bind_search(self):
         """Test simple bind + search"""
+        # Remove akadmin to ensure list is correct
+        # Remove user before starting container so it's not cached
+        User.objects.filter(username="akadmin").delete()
+
         outpost = self._prepare()
         server = Server("ldap://localhost:3389", get_info=ALL)
         _connection = Connection(
@@ -187,8 +191,6 @@ class TestProviderLDAP(SeleniumTestCase):
         )
 
         embedded_account = Outpost.objects.filter(managed=MANAGED_OUTPOST).first().user
-        # Remove akadmin to ensure list is correct
-        User.objects.filter(username="akadmin").delete()
 
         _connection.search(
             "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
