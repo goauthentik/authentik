@@ -2,6 +2,7 @@
 from typing import Any, Optional
 
 from django.db.models import Q
+from ldap3.core.exceptions import LDAPSessionTerminatedByServerError
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
@@ -37,7 +38,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
             },
         }
 
-    @retry()
+    @retry(exceptions=[LDAPSessionTerminatedByServerError])
     @apply_blueprint(
         "system/sources-ldap.yaml",
     )
@@ -68,7 +69,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         self.assertTrue(User.objects.filter(username="john").exists())
         self.assertTrue(User.objects.filter(username="harry").exists())
 
-    @retry()
+    @retry(exceptions=[LDAPSessionTerminatedByServerError])
     @apply_blueprint(
         "system/sources-ldap.yaml",
     )
@@ -111,7 +112,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         )
         self.assertEqual(list(User.objects.get(username="harry").ak_groups.all()), [])
 
-    @retry()
+    @retry(exceptions=[LDAPSessionTerminatedByServerError])
     @apply_blueprint(
         "system/sources-ldap.yaml",
     )
