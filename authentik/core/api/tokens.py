@@ -134,9 +134,10 @@ class TokenViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
     def set_key(self, request: Request, identifier: str) -> Response:
-        """Return token key and log access"""
+        """Set token key. Action is logged as event. `authentik_core.set_token_key` permission
+        is required."""
         token: Token = self.get_object()
-        key = request.POST.get("key")
+        key = request.data.get("key")
         if not key:
             return Response(status=400)
         token.key = key
