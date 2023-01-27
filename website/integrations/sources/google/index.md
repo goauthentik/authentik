@@ -81,3 +81,22 @@ Save, and you now have Google as a source.
 :::note
 For more details on how-to have the new source display on the Login Page see [here](../general#add-sources-to-default-login-page).
 :::
+
+## Username mapping
+
+Since google does not have the concept of a username, authentik will by default prompt the user for a username when they first enroll through a google source. To change this behaviour and automatically use the email address as username, create an expression policy to set the username to the email, and bind it to the enrollment flow.
+
+Create an expression policy with this expression:
+
+```python
+email = request.context["prompt_data"]["email"]
+# Direct set username to email
+request.context["prompt_data"]["username"] = email
+# Set username to email without domain
+# request.context["prompt_data"]["username"] = email.split("@")[0]
+return True
+```
+
+Afterwards, edit the source's enrollment flow (by default _default-source-enrollment_), expand the policies bound to the first stage (_default-source-enrollment-prompt_), and bind the policy created above. Afterwards, any new logins will automatically have their google email address used as their username.
+
+This can be combined with disallowing users from changing their usernames, see [Configuration](../../../docs/installation/configuration#authentik_default_user_change_username).
