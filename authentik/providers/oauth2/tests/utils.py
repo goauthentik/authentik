@@ -16,7 +16,6 @@ class OAuthTestCase(TestCase):
     required_jwt_keys = [
         "exp",
         "iat",
-        "auth_time",
         "acr",
         "sub",
         "iss",
@@ -48,6 +47,7 @@ class OAuthTestCase(TestCase):
         self.assert_non_none_or_unset(id_token, "nonce")
         self.assert_non_none_or_unset(id_token, "c_hash")
         self.assert_non_none_or_unset(id_token, "amr")
+        self.assert_non_none_or_unset(id_token, "auth_time")
         for key in self.required_jwt_keys:
             self.assertIsNotNone(jwt[key], f"Key {key} is missing in access_token")
             self.assertIsNotNone(id_token[key], f"Key {key} is missing in id_token")

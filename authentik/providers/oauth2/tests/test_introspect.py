@@ -59,7 +59,6 @@ class TesOAuth2Introspection(OAuthTestCase):
             res.content.decode(),
             {
                 "acr": ACR_AUTHENTIK_DEFAULT,
-                "auth_time": None,
                 "aud": None,
                 "sub": "bar",
                 "exp": None,

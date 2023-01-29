@@ -420,6 +420,8 @@ class IDToken:
             id_dict.pop("c_hash")
         if not self.amr:
             id_dict.pop("amr")
+        if not self.auth_time:
+            id_dict.pop("auth_time")
         id_dict.pop("claims")
         id_dict.update(self.claims)
         return id_dict
@@ -496,29 +498,10 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
                     f"selected: {self.provider.sub_mode}"
                 )
             )
-        amr = []
         # Convert datetimes into timestamps.
         now = datetime.now()
         iat_time = int(now.timestamp())
         exp_time = int(self.expires.timestamp())
-        # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
-        # Fallback in case we can't find any login events
-        auth_time = now
-        auth_event = get_login_event(request)
-        if auth_event:
-            auth_time = auth_event.created
-            # Also check which method was used for authentication
-            method = auth_event.context.get(PLAN_CONTEXT_METHOD, "")
-            method_args = auth_event.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
-            if method == "password":
-                amr.append(AMR_PASSWORD)
-            if method == "auth_webauthn_pwl":
-                amr.append(AMR_WEBAUTHN)
-            if "mfa_devices" in method_args:
-                if len(amr) > 0:
-                    amr.append(AMR_MFA)
-
-        auth_timestamp = int(auth_time.timestamp())
 
         token = IDToken(
             iss=self.provider.get_issuer(request),
@@ -526,9 +509,26 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
             aud=self.provider.client_id,
             exp=exp_time,
             iat=iat_time,
-            auth_time=auth_timestamp,
-            amr=amr if amr else None,
         )
+
+        # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
+        auth_event = get_login_event(request)
+        if auth_event:
+            auth_time = auth_event.created
+            token.auth_time = int(auth_time.timestamp())
+            # Also check which method was used for authentication
+            method = auth_event.context.get(PLAN_CONTEXT_METHOD, "")
+            method_args = auth_event.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
+            amr = []
+            if method == "password":
+                amr.append(AMR_PASSWORD)
+            if method == "auth_webauthn_pwl":
+                amr.append(AMR_WEBAUTHN)
+            if "mfa_devices" in method_args:
+                if len(amr) > 0:
+                    amr.append(AMR_MFA)
+            if amr:
+                token.amr = amr
 
         # Include (or not) user standard claims in the id_token.
         if self.provider.include_claims_in_id_token:
