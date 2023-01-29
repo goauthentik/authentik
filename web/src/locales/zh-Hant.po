@@ -806,20 +806,40 @@ msgid "Base DN"
 msgstr "Base DN"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the Hashed User ID"
-msgstr "基于经过哈希处理的用户 ID"
+#~ msgid "Based on the Hashed User ID"
+#~ msgstr "基于经过哈希处理的用户 ID"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr "基于用户的电子邮件。 建议在 UPN 方法上使用此方法。"
+msgid "Based on the User's Email"
+msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
-msgstr "根据用户的UPN，仅当用户设置了 “upn” 属性时才有效。仅当您有不同的 UPN 和 Mail 域时才使用此方法。"
+#~ msgid "Based on the User's Email. This is recommended over the UPN method."
+#~ msgstr "基于用户的电子邮件。 建议在 UPN 方法上使用此方法。"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the username"
-msgstr "基于用户名"
+msgid "Based on the User's ID"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's UPN"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
+#~ msgstr "根据用户的UPN，仅当用户设置了 “upn” 属性时才有效。仅当您有不同的 UPN 和 Mail 域时才使用此方法。"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's hashed ID"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's username"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Based on the username"
+#~ msgstr "基于用户名"
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
 msgid "Based on {0}"
@@ -3310,7 +3330,6 @@ msgid "LDAP details"
 msgstr "LDAP 详情"
 
 #: src/admin/stages/prompt/PromptForm.ts
-#: src/admin/stages/prompt/PromptListPage.ts
 msgid "Label"
 msgstr "标签"
 
@@ -3802,6 +3821,8 @@ msgstr "我的应用"
 #: src/admin/stages/invitation/InvitationListPage.ts
 #: src/admin/stages/invitation/InvitationStageForm.ts
 #: src/admin/stages/password/PasswordStageForm.ts
+#: src/admin/stages/prompt/PromptForm.ts
+#: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
 #: src/admin/stages/user_delete/UserDeleteStageForm.ts
 #: src/admin/stages/user_login/UserLoginStageForm.ts
@@ -4431,6 +4452,7 @@ msgid "Passwordless flow"
 msgstr "无密码流"
 
 #: src/admin/blueprints/BlueprintForm.ts
+#: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/users/UserForm.ts
 msgid "Path"
 msgstr ""
@@ -4976,6 +4998,10 @@ msgstr "必需。"
 #: src/pages/users/ServiceAccountForm.ts src/pages/users/UserForm.ts
 #~ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 #~ msgstr "必填。不超过 150 个字符。仅限字母、数字和 @/./+/-/_ 。"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains."
+msgstr ""
 
 #: src/admin/users/UserViewPage.ts
 msgid "Reset Password"
@@ -6371,6 +6397,10 @@ msgstr ""
 msgid "This flow is completed."
 msgstr "此流程已完成。"
 
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "This is recommended over the UPN mode."
+msgstr ""
+
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "This is the full endpoint to send POST requests to."
 msgstr "这是向其发送 POST 请求的完整终端节点。"
@@ -6691,6 +6721,10 @@ msgstr "不健康的 Outposts"
 #: src/admin/tokens/TokenForm.ts
 msgid "Unique identifier the token is referenced by."
 msgstr "引用令牌的唯一标识符。"
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Unique name of this field, used for selecting fields in prompt stages."
+msgstr ""
 
 #: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts

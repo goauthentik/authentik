@@ -316,32 +316,35 @@ ${this.instance?.redirectUris}</textarea
                         ?required=${true}
                         name="subMode"
                     >
-                        <select class="pf-c-form-control">
-                            <option
-                                value="${SubModeEnum.HashedUserId}"
-                                ?selected=${this.instance?.subMode === SubModeEnum.HashedUserId}
-                            >
-                                ${t`Based on the Hashed User ID`}
-                            </option>
-                            <option
-                                value="${SubModeEnum.UserUsername}"
-                                ?selected=${this.instance?.subMode === SubModeEnum.UserUsername}
-                            >
-                                ${t`Based on the username`}
-                            </option>
-                            <option
-                                value="${SubModeEnum.UserEmail}"
-                                ?selected=${this.instance?.subMode === SubModeEnum.UserEmail}
-                            >
-                                ${t`Based on the User's Email. This is recommended over the UPN method.`}
-                            </option>
-                            <option
-                                value="${SubModeEnum.UserUpn}"
-                                ?selected=${this.instance?.subMode === SubModeEnum.UserUpn}
-                            >
-                                ${t`Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.`}
-                            </option>
-                        </select>
+                        <ak-radio
+                            .options=${[
+                                {
+                                    label: t`Based on the User's hashed ID`,
+                                    value: SubModeEnum.HashedUserId,
+                                    default: true,
+                                },
+                                {
+                                    label: t`Based on the User's ID`,
+                                    value: SubModeEnum.UserId,
+                                },
+                                {
+                                    label: t`Based on the User's username`,
+                                    value: SubModeEnum.UserUsername,
+                                },
+                                {
+                                    label: t`Based on the User's Email`,
+                                    value: SubModeEnum.UserEmail,
+                                    description: html`${t`This is recommended over the UPN mode.`}`,
+                                },
+                                {
+                                    label: t`Based on the User's UPN`,
+                                    value: SubModeEnum.UserUpn,
+                                    description: html`${t`Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.`}`,
+                                },
+                            ]}
+                            .value=${this.instance?.subMode}
+                        >
+                        </ak-radio>
                         <p class="pf-c-form__helper-text">
                             ${t`Configure what data should be used as unique User Identifier. For most cases, the default should be fine.`}
                         </p>

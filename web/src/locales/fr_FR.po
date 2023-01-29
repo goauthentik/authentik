@@ -805,20 +805,40 @@ msgid "Base DN"
 msgstr "DN racine"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the Hashed User ID"
-msgstr "Basé sur le hash de l'ID utilisateur"
+#~ msgid "Based on the Hashed User ID"
+#~ msgstr "Basé sur le hash de l'ID utilisateur"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr "Basé sur l’adresse email de l’utilisateur. Ceci est recommandé par rapport à la méthode UPN."
+msgid "Based on the User's Email"
+msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
-msgstr "Basé sur l'UPN utilisateur, possible uniquement si l'utilisateur possède un attribut \"upn\" renseigné. Utiliser cette méthode seulement si les domaines UPN et courriel sont différents."
+#~ msgid "Based on the User's Email. This is recommended over the UPN method."
+#~ msgstr "Basé sur l’adresse email de l’utilisateur. Ceci est recommandé par rapport à la méthode UPN."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the username"
-msgstr "Basé sur le nom d'utilisateur"
+msgid "Based on the User's ID"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's UPN"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
+#~ msgstr "Basé sur l'UPN utilisateur, possible uniquement si l'utilisateur possède un attribut \"upn\" renseigné. Utiliser cette méthode seulement si les domaines UPN et courriel sont différents."
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's hashed ID"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's username"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Based on the username"
+#~ msgstr "Basé sur le nom d'utilisateur"
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
 msgid "Based on {0}"
@@ -3303,7 +3323,6 @@ msgid "LDAP details"
 msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
-#: src/admin/stages/prompt/PromptListPage.ts
 msgid "Label"
 msgstr "Libellé"
 
@@ -3795,6 +3814,8 @@ msgstr "Mes applications"
 #: src/admin/stages/invitation/InvitationListPage.ts
 #: src/admin/stages/invitation/InvitationStageForm.ts
 #: src/admin/stages/password/PasswordStageForm.ts
+#: src/admin/stages/prompt/PromptForm.ts
+#: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
 #: src/admin/stages/user_delete/UserDeleteStageForm.ts
 #: src/admin/stages/user_login/UserLoginStageForm.ts
@@ -4424,6 +4445,7 @@ msgid "Passwordless flow"
 msgstr "Flux sans mots de passe"
 
 #: src/admin/blueprints/BlueprintForm.ts
+#: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/users/UserForm.ts
 msgid "Path"
 msgstr ""
@@ -4969,6 +4991,10 @@ msgstr "Obligatoire."
 #: src/pages/users/ServiceAccountForm.ts src/pages/users/UserForm.ts
 #~ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 #~ msgstr "Obligatoire. 150 caractères ou moins. Lettres, chiffres et @/./+/-/_ uniquement."
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains."
+msgstr ""
 
 #: src/admin/users/UserViewPage.ts
 msgid "Reset Password"
@@ -6354,6 +6380,10 @@ msgstr ""
 msgid "This flow is completed."
 msgstr "Ce flux est terminé."
 
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "This is recommended over the UPN mode."
+msgstr ""
+
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "This is the full endpoint to send POST requests to."
 msgstr ""
@@ -6674,6 +6704,10 @@ msgstr "Avant-postes malades"
 #: src/admin/tokens/TokenForm.ts
 msgid "Unique identifier the token is referenced by."
 msgstr "Identifiant unique par lequel le jeton est référencé."
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Unique name of this field, used for selecting fields in prompt stages."
+msgstr ""
 
 #: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts

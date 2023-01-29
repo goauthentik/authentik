@@ -65,6 +65,7 @@ class SubModes(models.TextChoices):
     """Mode after which 'sub' attribute is generateed, for compatibility reasons"""
 
     HASHED_USER_ID = "hashed_user_id", _("Based on the Hashed User ID")
+    USER_ID = "user_id", _("Based on user ID")
     USER_USERNAME = "user_username", _("Based on the username")
     USER_EMAIL = (
         "user_email",
@@ -485,6 +486,8 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         sub = ""
         if self.provider.sub_mode == SubModes.HASHED_USER_ID:
             sub = user.uid
+        elif self.provider.sub_mode == SubModes.USER_ID:
+            sub = user.pk
         elif self.provider.sub_mode == SubModes.USER_EMAIL:
             sub = user.email
         elif self.provider.sub_mode == SubModes.USER_USERNAME:
