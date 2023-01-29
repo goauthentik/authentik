@@ -16,7 +16,7 @@ def set_generated_name(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         if stage:
             name += "_" + stage.name
         else:
-            name += "_" + uuid4()
+            name += "_" + str(uuid4())
         prompt.name = name
         prompt.save()
 
