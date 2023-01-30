@@ -94,9 +94,9 @@ email = request.context["prompt_data"]["email"]
 request.context["prompt_data"]["username"] = email
 # Set username to email without domain
 # request.context["prompt_data"]["username"] = email.split("@")[0]
-return True
+return False
 ```
 
-Afterwards, edit the source's enrollment flow (by default _default-source-enrollment_), expand the policies bound to the first stage (_default-source-enrollment-prompt_), and bind the policy created above. Afterwards, any new logins will automatically have their google email address used as their username.
+Afterwards, edit the source's enrollment flow (by default _default-source-enrollment_), expand the policies bound to the first stage (_default-source-enrollment-prompt_), and bind the policy created above. Make sure the newly created policy comes before _default-source-enrollment-if-username_. Afterwards, any new logins will automatically have their google email address used as their username.
 
 This can be combined with disallowing users from changing their usernames, see [Configuration](../../../docs/installation/configuration#authentik_default_user_change_username).
