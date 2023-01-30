@@ -487,7 +487,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
         if self.provider.sub_mode == SubModes.HASHED_USER_ID:
             sub = user.uid
         elif self.provider.sub_mode == SubModes.USER_ID:
-            sub = user.pk
+            sub = str(user.pk)
         elif self.provider.sub_mode == SubModes.USER_EMAIL:
             sub = user.email
         elif self.provider.sub_mode == SubModes.USER_USERNAME:
