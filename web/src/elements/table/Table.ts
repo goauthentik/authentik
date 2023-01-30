@@ -119,7 +119,7 @@ export abstract class Table<T> extends AKElement {
     data?: PaginatedResponse<T>;
 
     @property({ type: Number })
-    page = getURLParam("page", 1);
+    page = getURLParam("tablePage", 1);
 
     @property({ type: String })
     order?: string;
@@ -426,7 +426,7 @@ export abstract class Table<T> extends AKElement {
                           .pages=${this.data?.pagination}
                           .pageChangeHandler=${(page: number) => {
                               this.page = page;
-                              updateURLParams({ page: page });
+                              updateURLParams({ tablePage: page });
                               this.fetch();
                           }}
                       >
