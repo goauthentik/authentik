@@ -65,3 +65,7 @@
   to = "https://plausible.io/api/event"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/community/show_setup"
+  to = "https://docs.google.com/forms/d/1g5W3kz-7EJ3zay8S3C5aN2vIdZQuzT_MJljb6yv80_I"
