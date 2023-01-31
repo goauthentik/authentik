@@ -28,7 +28,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: ${{ github.event_name == 'release' }}
           secrets: |
@@ -76,7 +76,7 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Docker Image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
