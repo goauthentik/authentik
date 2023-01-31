@@ -83,7 +83,7 @@ jobs:
       - name: Generate API
         run: make gen-client-go
       - name: Build Docker Image
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
