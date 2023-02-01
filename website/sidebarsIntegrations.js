@@ -111,6 +111,7 @@ module.exports = {
                     items: [
                         "services/gitea/index",
                         "services/github-enterprise-cloud/index",
+                        "services/github-enterprise-server/index",
                         "services/github-organization/index",
                         "services/gitlab/index",
                     ],
