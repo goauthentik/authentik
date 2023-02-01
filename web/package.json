@@ -119,7 +119,7 @@
         "tslib": "^2.5.0",
         "turnstile-types": "^1.0.2",
         "typescript": "^4.9.5",
-        "webcomponent-qr-code": "^1.1.0",
+        "webcomponent-qr-code": "^1.1.1",
         "yaml": "^2.2.1"
     }
 }
