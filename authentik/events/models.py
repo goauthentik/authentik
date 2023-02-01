@@ -361,7 +361,9 @@ class NotificationTransport(SerializerModel):
             )
             response.raise_for_status()
         except RequestException as exc:
-            raise NotificationTransportError(exc.response.text) from exc
+            raise NotificationTransportError(
+                exc.response.text if exc.response else str(exc)
+            ) from exc
         return [
             response.status_code,
             response.text,
