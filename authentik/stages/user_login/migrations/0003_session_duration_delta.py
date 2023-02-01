@@ -19,7 +19,6 @@ def update_duration(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_user_login", "0002_userloginstage_session_duration"),
     ]
@@ -30,7 +29,10 @@ class Migration(migrations.Migration):
             name="session_duration",
             field=models.TextField(
                 default="seconds=0",
-                help_text="Determines how long a session lasts. Default of 0 means that the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)",
+                help_text=(
+                    "Determines how long a session lasts. Default of 0 means that the sessions"
+                    " lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)"
+                ),
                 validators=[authentik.lib.utils.time.timedelta_string_validator],
             ),
         ),

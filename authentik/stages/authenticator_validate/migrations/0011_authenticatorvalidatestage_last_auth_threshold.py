@@ -6,7 +6,6 @@ import authentik.lib.utils.time
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         (
             "authentik_stages_authenticator_validate",
@@ -20,7 +19,10 @@ class Migration(migrations.Migration):
             name="last_auth_threshold",
             field=models.TextField(
                 default="seconds=0",
-                help_text="If any of the user's device has been used within this threshold, this stage will be skipped",
+                help_text=(
+                    "If any of the user's device has been used within this threshold, this stage"
+                    " will be skipped"
+                ),
                 validators=[authentik.lib.utils.time.timedelta_string_validator],
             ),
         ),

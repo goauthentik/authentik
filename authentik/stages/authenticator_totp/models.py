@@ -50,6 +50,5 @@ class AuthenticatorTOTPStage(ConfigurableStage, Stage):
         return f"TOTP Authenticator Setup Stage {self.name}"
 
     class Meta:
-
         verbose_name = _("TOTP Authenticator Setup Stage")
         verbose_name_plural = _("TOTP Authenticator Setup Stages")

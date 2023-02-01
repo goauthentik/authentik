@@ -36,7 +36,6 @@ def migrate_mode(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_providers_proxy", "0001_initial"),
         ("authentik_providers_proxy", "0002_proxyprovider_cookie_secret"),
@@ -111,7 +110,10 @@ class Migration(migrations.Migration):
                     models.TextField(
                         blank=True,
                         default="",
-                        help_text="Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression.",
+                        help_text=(
+                            "Regular expressions for which authentication is not required. Each new"
+                            " line is interpreted as a new Regular Expression."
+                        ),
                     ),
                 ),
                 (
@@ -126,7 +128,10 @@ class Migration(migrations.Migration):
                     "basic_auth_enabled",
                     models.BooleanField(
                         default=False,
-                        help_text="Set a custom HTTP-Basic Authentication header based on values from authentik.",
+                        help_text=(
+                            "Set a custom HTTP-Basic Authentication header based on values from"
+                            " authentik."
+                        ),
                         verbose_name="Set HTTP-Basic Authentication",
                     ),
                 ),
@@ -134,7 +139,10 @@ class Migration(migrations.Migration):
                     "basic_auth_password_attribute",
                     models.TextField(
                         blank=True,
-                        help_text="User/Group Attribute used for the password part of the HTTP-Basic Header.",
+                        help_text=(
+                            "User/Group Attribute used for the password part of the HTTP-Basic"
+                            " Header."
+                        ),
                         verbose_name="HTTP-Basic Password Key",
                     ),
                 ),
@@ -142,7 +150,10 @@ class Migration(migrations.Migration):
                     "basic_auth_user_attribute",
                     models.TextField(
                         blank=True,
-                        help_text="User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
+                        help_text=(
+                            "User/Group Attribute used for the user part of the HTTP-Basic Header."
+                            " If not set, the user's Email address is used."
+                        ),
                         verbose_name="HTTP-Basic Username Key",
                     ),
                 ),
@@ -150,7 +161,10 @@ class Migration(migrations.Migration):
                     "forward_auth_mode",
                     models.BooleanField(
                         default=False,
-                        help_text="Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.",
+                        help_text=(
+                            "Enable support for forwardAuth in traefik and nginx auth_request."
+                            " Exclusive with internal_host."
+                        ),
                     ),
                 ),
                 ("cookie_domain", models.TextField(blank=True, default="")),
@@ -163,7 +177,10 @@ class Migration(migrations.Migration):
                             ("forward_domain", "Forward Domain"),
                         ],
                         default="proxy",
-                        help_text="Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.",
+                        help_text=(
+                            "Enable support for forwardAuth in traefik and nginx auth_request."
+                            " Exclusive with internal_host."
+                        ),
                     ),
                 ),
             ],

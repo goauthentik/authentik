@@ -190,11 +190,8 @@ class SourceFlowManager:
         # Default case, assume deny
         error = Exception(
             _(
-                (
-                    "Request to authenticate with %(source)s has been denied. Please authenticate "
-                    "with the source you've previously signed up with."
-                )
-                % {"source": self.source.name}
+                "Request to authenticate with %(source)s has been denied. Please authenticate "
+                "with the source you've previously signed up with." % {"source": self.source.name}
             ),
         )
         return self.error_handler(error)

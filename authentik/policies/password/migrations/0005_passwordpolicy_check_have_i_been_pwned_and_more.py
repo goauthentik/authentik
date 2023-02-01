@@ -3,7 +3,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_policies_password", "0004_passwordpolicy_authentik_p_policy__855e80_idx"),
     ]
@@ -37,7 +36,9 @@ class Migration(migrations.Migration):
             name="zxcvbn_score_threshold",
             field=models.PositiveIntegerField(
                 default=2,
-                help_text="If the zxcvbn score is equal or less than this value, the policy will fail.",
+                help_text=(
+                    "If the zxcvbn score is equal or less than this value, the policy will fail."
+                ),
             ),
         ),
         migrations.AlterField(

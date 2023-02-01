@@ -20,7 +20,8 @@ END TRANSACTION;"""
 class Migration(BaseMigration):
     def needs_migration(self) -> bool:
         self.cur.execute(
-            "select * from information_schema.tables where table_name = 'authentik_stages_otp_static_otpstaticstage';"
+            "select * from information_schema.tables where table_name ="
+            " 'authentik_stages_otp_static_otpstaticstage';"
         )
         return bool(self.cur.rowcount)
 

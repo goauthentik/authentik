@@ -262,11 +262,9 @@ class TestSourceOAuth1(SeleniumTestCase):
             "environment": {
                 "OAUTH1_CLIENT_ID": self.client_id,
                 "OAUTH1_CLIENT_SECRET": self.client_secret,
-                "OAUTH1_REDIRECT_URI": (
-                    self.url(
-                        "authentik_sources_oauth:oauth-client-callback",
-                        source_slug=self.source_slug,
-                    )
+                "OAUTH1_REDIRECT_URI": self.url(
+                    "authentik_sources_oauth:oauth-client-callback",
+                    source_slug=self.source_slug,
                 ),
             },
         }

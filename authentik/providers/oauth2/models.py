@@ -74,10 +74,8 @@ class SubModes(models.TextChoices):
     USER_UPN = (
         "user_upn",
         _(
-            (
-                "Based on the User's UPN, only works if user has a 'upn' attribute set. "
-                "Use this method only if you have different UPN and Mail domains."
-            )
+            "Based on the User's UPN, only works if user has a 'upn' attribute set. "
+            "Use this method only if you have different UPN and Mail domains."
         ),
     )
 
@@ -117,10 +115,8 @@ class ScopeMapping(PropertyMapping):
     description = models.TextField(
         blank=True,
         help_text=_(
-            (
-                "Description shown to the user when consenting. "
-                "If left empty, the user won't be informed."
-            )
+            "Description shown to the user when consenting. "
+            "If left empty, the user won't be informed."
         ),
     )
 
@@ -138,7 +134,6 @@ class ScopeMapping(PropertyMapping):
         return f"Scope Mapping {self.name} ({self.scope_name})"
 
     class Meta:
-
         verbose_name = _("Scope Mapping")
         verbose_name_plural = _("Scope Mappings")
 
@@ -179,10 +174,8 @@ class OAuth2Provider(Provider):
         default=True,
         verbose_name=_("Include claims in id_token"),
         help_text=_(
-            (
-                "Include User claims from scopes in the id_token, for applications "
-                "that don't access the userinfo endpoint."
-            )
+            "Include User claims from scopes in the id_token, for applications "
+            "that don't access the userinfo endpoint."
         ),
     )
 
@@ -190,20 +183,16 @@ class OAuth2Provider(Provider):
         default="minutes=1",
         validators=[timedelta_string_validator],
         help_text=_(
-            (
-                "Access codes not valid on or after current time + this value "
-                "(Format: hours=1;minutes=2;seconds=3)."
-            )
+            "Access codes not valid on or after current time + this value "
+            "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )
     token_validity = models.TextField(
         default="days=30",
         validators=[timedelta_string_validator],
         help_text=_(
-            (
-                "Tokens not valid on or after current time + this value "
-                "(Format: hours=1;minutes=2;seconds=3)."
-            )
+            "Tokens not valid on or after current time + this value "
+            "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )
 
@@ -211,16 +200,14 @@ class OAuth2Provider(Provider):
         choices=SubModes.choices,
         default=SubModes.HASHED_USER_ID,
         help_text=_(
-            (
-                "Configure what data should be used as unique User Identifier. For most cases, "
-                "the default should be fine."
-            )
+            "Configure what data should be used as unique User Identifier. For most cases, "
+            "the default should be fine."
         ),
     )
     issuer_mode = models.TextField(
         choices=IssuerMode.choices,
         default=IssuerMode.PER_PROVIDER,
-        help_text=_(("Configure how the issuer field of the ID Token should be filled.")),
+        help_text=_("Configure how the issuer field of the ID Token should be filled."),
     )
 
     signing_key = models.ForeignKey(
@@ -321,7 +308,6 @@ class OAuth2Provider(Provider):
         return encode(payload, key, algorithm=alg, headers=headers)
 
     class Meta:
-
         verbose_name = _("OAuth2/OpenID Provider")
         verbose_name_plural = _("OAuth2/OpenID Providers")
 
@@ -496,10 +482,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
             sub = user.attributes.get("upn", user.uid)
         else:
             raise ValueError(
-                (
-                    f"Provider {self.provider} has invalid sub_mode "
-                    f"selected: {self.provider.sub_mode}"
-                )
+                f"Provider {self.provider} has invalid sub_mode selected: {self.provider.sub_mode}"
             )
         # Convert datetimes into timestamps.
         now = datetime.now()

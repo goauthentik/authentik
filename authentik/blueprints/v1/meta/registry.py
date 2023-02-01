@@ -14,7 +14,6 @@ class BaseMetaModel(Model):
         raise NotImplementedError
 
     class Meta:
-
         abstract = True
 
 

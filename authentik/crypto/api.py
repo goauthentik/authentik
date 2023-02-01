@@ -143,7 +143,6 @@ class CertificateKeyPairSerializer(ModelSerializer):
         return value
 
     class Meta:
-
         model = CertificateKeyPair
         fields = [
             "pk",

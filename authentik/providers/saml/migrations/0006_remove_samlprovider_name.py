@@ -15,7 +15,6 @@ def update_name_temp(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_core", "0011_provider_name_temp"),
         ("authentik_providers_saml", "0005_remove_samlprovider_processor_path"),

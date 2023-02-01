@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_providers_saml", "0010_auto_20201230_2112"),
     ]
@@ -17,7 +16,10 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 blank=True,
                 default=None,
-                help_text="Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be considered",
+                help_text=(
+                    "Configure how the NameID value will be created. When left empty, the"
+                    " NameIDPolicy of the incoming request will be considered"
+                ),
                 null=True,
                 verbose_name="NameID Property Mapping",
                 on_delete=django.db.models.deletion.SET_DEFAULT,

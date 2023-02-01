@@ -7,7 +7,6 @@ import authentik.lib.generators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_sources_plex", "0001_initial"),
     ]
@@ -33,7 +32,10 @@ class Migration(migrations.Migration):
                 base_field=models.TextField(),
                 blank=True,
                 default=list,
-                help_text="Which servers a user has to be a member of to be granted access. Empty list allows every server.",
+                help_text=(
+                    "Which servers a user has to be a member of to be granted access. Empty list"
+                    " allows every server."
+                ),
                 size=None,
             ),
         ),

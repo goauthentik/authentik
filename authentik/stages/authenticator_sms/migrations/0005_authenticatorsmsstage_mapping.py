@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_events", "0002_alter_notificationtransport_mode"),
         ("authentik_stages_authenticator_sms", "0004_authenticatorsmsstage_verify_only_and_more"),

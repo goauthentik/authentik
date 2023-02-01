@@ -226,7 +226,7 @@ class TestSourceSAML(SeleniumTestCase):
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
-            ("[type=submit]"),
+            "[type=submit]",
         ).click()
 
         # Now we should be at the IDP, wait for the username field

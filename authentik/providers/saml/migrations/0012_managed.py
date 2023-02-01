@@ -3,25 +3,39 @@
 from django.db import migrations
 
 saml_name_map = {
-    "http://schemas.xmlsoap.org/claims/CommonName": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
-    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname": "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname",
+    "http://schemas.xmlsoap.org/claims/CommonName": (
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+    ),
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname": (
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname"
+    ),
     "member-of": "http://schemas.xmlsoap.org/claims/Group",
     "http://schemas.xmlsoap.org/claims/Group": "http://schemas.xmlsoap.org/claims/Group",
     "urn:oid:0.9.2342.19200300.100.1.1": "http://schemas.goauthentik.io/2021/02/saml/uid",
-    "urn:oid:0.9.2342.19200300.100.1.3": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+    "urn:oid:0.9.2342.19200300.100.1.3": (
+        "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+    ),
     "urn:oid:1.3.6.1.4.1.5923.1.1.1.6": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn",
     "urn:oid:2.16.840.1.113730.3.1.241": "http://schemas.goauthentik.io/2021/02/saml/username",
     "urn:oid:2.5.4.3": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
 }
 
 saml_name_uid_map = {
-    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn": "goauthentik.io/providers/saml/upn",
-    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": "goauthentik.io/providers/saml/name",
-    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress": "goauthentik.io/providers/saml/email",
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn": (
+        "goauthentik.io/providers/saml/upn"
+    ),
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name": (
+        "goauthentik.io/providers/saml/name"
+    ),
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress": (
+        "goauthentik.io/providers/saml/email"
+    ),
     "http://schemas.goauthentik.io/2021/02/saml/username": "goauthentik.io/providers/saml/username",
     "http://schemas.goauthentik.io/2021/02/saml/uid": "goauthentik.io/providers/saml/uid",
     "http://schemas.xmlsoap.org/claims/Group": "goauthentik.io/providers/saml/groups",
-    "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname": "goauthentik.io/providers/saml/ms-windowsaccountname",
+    "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname": (
+        "goauthentik.io/providers/saml/ms-windowsaccountname"
+    ),
 }
 
 
@@ -42,7 +56,6 @@ def add_managed_update(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_core", "0017_managed"),
         ("authentik_providers_saml", "0011_samlprovider_name_id_mapping"),

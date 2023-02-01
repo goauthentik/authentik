@@ -49,7 +49,6 @@ class PropertyMappingSerializer(ManagedSerializer, ModelSerializer, MetaNameSeri
         return expression
 
     class Meta:
-
         model = PropertyMapping
         fields = [
             "pk",

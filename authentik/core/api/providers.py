@@ -31,7 +31,6 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         return obj.component
 
     class Meta:
-
         model = Provider
         fields = [
             "pk",

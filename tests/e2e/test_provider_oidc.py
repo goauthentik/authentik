@@ -218,7 +218,7 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
-            ("[type=submit]"),
+            "[type=submit]",
         ).click()
 
         self.wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, "pre")))

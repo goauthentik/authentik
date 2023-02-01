@@ -63,7 +63,6 @@ class PolicyBindingSerializer(ModelSerializer):
     user_obj = UserSerializer(required=False, read_only=True, source="user")
 
     class Meta:
-
         model = PolicyBinding
         fields = [
             "pk",
@@ -109,7 +108,6 @@ class PolicyBindingFilter(FilterSet):
     policy__isnull = BooleanFilter("policy", "isnull")
 
     class Meta:
-
         model = PolicyBinding
         fields = ["policy", "policy__isnull", "target", "target_in", "enabled", "order", "timeout"]
 

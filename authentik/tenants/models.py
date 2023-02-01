@@ -20,8 +20,7 @@ class Tenant(SerializerModel):
     tenant_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
     domain = models.TextField(
         help_text=_(
-            "Domain that activates this tenant. "
-            "Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
+            "Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
         )
     )
     default = models.BooleanField(
@@ -56,10 +55,7 @@ class Tenant(SerializerModel):
         default="days=365",
         validators=[timedelta_string_validator],
         help_text=_(
-            (
-                "Events will be deleted after this duration."
-                "(Format: weeks=3;days=2;hours=3,seconds=2)."
-            )
+            "Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2)."
         ),
     )
 
@@ -68,7 +64,7 @@ class Tenant(SerializerModel):
         null=True,
         default=None,
         on_delete=models.SET_DEFAULT,
-        help_text=_(("Web Certificate used by the authentik Core webserver.")),
+        help_text=_("Web Certificate used by the authentik Core webserver."),
     )
     attributes = models.JSONField(default=dict, blank=True)
 
@@ -94,6 +90,5 @@ class Tenant(SerializerModel):
         return f"Tenant {self.domain}"
 
     class Meta:
-
         verbose_name = _("Tenant")
         verbose_name_plural = _("Tenants")

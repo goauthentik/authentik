@@ -34,6 +34,5 @@ class CaptchaStage(Stage):
         return "ak-stage-captcha-form"
 
     class Meta:
-
         verbose_name = _("Captcha Stage")
         verbose_name_plural = _("Captcha Stages")

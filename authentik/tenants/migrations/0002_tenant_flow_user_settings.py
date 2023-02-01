@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_prompt", "0007_prompt_placeholder_expression"),
         ("authentik_flows", "0021_auto_20211227_2103"),

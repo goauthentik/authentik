@@ -85,7 +85,7 @@ def send_mail(self: MonitoredTask, message: dict[Any, Any], email_stage_pk: Opti
         backend.send_messages([message_object])
         Event.new(
             EventAction.EMAIL_SENT,
-            message=(f"Email to {', '.join(message_object.to)} sent"),
+            message=f"Email to {', '.join(message_object.to)} sent",
             subject=message_object.subject,
             body=get_email_body(message_object),
             from_email=message_object.from_email,

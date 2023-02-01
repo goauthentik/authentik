@@ -41,6 +41,5 @@ class DummyPolicy(Policy):
         return PolicyResult(self.result, "dummy")
 
     class Meta(Policy.PolicyMeta):
-
         verbose_name = _("Dummy Policy")
         verbose_name_plural = _("Dummy Policies")

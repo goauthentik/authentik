@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_providers_oauth2", "0002_oauth2provider_sub_mode"),
     ]
@@ -16,7 +15,10 @@ class Migration(migrations.Migration):
             field=models.CharField(
                 choices=[("confidential", "Confidential"), ("public", "Public")],
                 default="confidential",
-                help_text="Confidential clients are capable of maintaining the confidentiality\n    of their credentials. Public clients are incapable.",
+                help_text=(
+                    "Confidential clients are capable of maintaining the confidentiality\n    of"
+                    " their credentials. Public clients are incapable."
+                ),
                 max_length=30,
                 verbose_name="Client Type",
             ),

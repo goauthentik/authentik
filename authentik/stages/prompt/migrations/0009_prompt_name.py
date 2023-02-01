@@ -22,7 +22,6 @@ def set_generated_name(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_prompt", "0008_alter_prompt_type"),
     ]

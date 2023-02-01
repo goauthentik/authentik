@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_policies", "0008_policybinding_authentik_p_policy__534e15_idx_and_more"),
     ]

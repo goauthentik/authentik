@@ -77,7 +77,6 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
         return f"Duo Authenticator Setup Stage {self.name}"
 
     class Meta:
-
         verbose_name = _("Duo Authenticator Setup Stage")
         verbose_name_plural = _("Duo Authenticator Setup Stages")
 
@@ -102,6 +101,5 @@ class DuoDevice(SerializerModel, Device):
         return str(self.name) or str(self.user)
 
     class Meta:
-
         verbose_name = _("Duo Device")
         verbose_name_plural = _("Duo Devices")

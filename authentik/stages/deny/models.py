@@ -27,6 +27,5 @@ class DenyStage(Stage):
         return "ak-stage-deny-form"
 
     class Meta:
-
         verbose_name = _("Deny Stage")
         verbose_name_plural = _("Deny Stages")

@@ -29,7 +29,6 @@ class GroupMemberSerializer(ModelSerializer):
     uid = CharField(read_only=True)
 
     class Meta:
-
         model = User
         fields = [
             "pk",
@@ -56,7 +55,6 @@ class GroupSerializer(ModelSerializer):
     num_pk = IntegerField(read_only=True)
 
     class Meta:
-
         model = Group
         fields = [
             "pk",
@@ -114,7 +112,6 @@ class GroupFilter(FilterSet):
             return queryset
 
     class Meta:
-
         model = Group
         fields = ["name", "is_superuser", "members_by_pk", "attributes", "members_by_username"]
 

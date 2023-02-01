@@ -55,7 +55,6 @@ class ReputationPolicy(Policy):
         return PolicyResult(bool(passing))
 
     class Meta(Policy.PolicyMeta):
-
         verbose_name = _("Reputation Policy")
         verbose_name_plural = _("Reputation Policies")
 
@@ -82,5 +81,4 @@ class Reputation(SerializerModel):
         return f"Reputation {self.identifier}/{self.ip} @ {self.score}"
 
     class Meta:
-
         unique_together = ("identifier", "ip")

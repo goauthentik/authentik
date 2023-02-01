@@ -31,6 +31,5 @@ class DummyStage(Stage):
         return "ak-stage-dummy-form"
 
     class Meta:
-
         verbose_name = _("Dummy Stage")
         verbose_name_plural = _("Dummy Stages")

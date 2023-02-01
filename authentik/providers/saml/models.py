@@ -40,10 +40,8 @@ class SAMLProvider(Provider):
         default="",
         blank=True,
         help_text=_(
-            (
-                "Value of the audience restriction field of the assertion. When left empty, "
-                "no audience restriction will be added."
-            )
+            "Value of the audience restriction field of the assertion. When left empty, "
+            "no audience restriction will be added."
         ),
     )
     issuer = models.TextField(help_text=_("Also known as EntityID"), default="authentik")
@@ -52,7 +50,7 @@ class SAMLProvider(Provider):
         default=SAMLBindings.REDIRECT,
         verbose_name=_("Service Provider Binding"),
         help_text=_(
-            ("This determines how authentik sends the response back to the Service Provider.")
+            "This determines how authentik sends the response back to the Service Provider."
         ),
     )
 
@@ -64,10 +62,8 @@ class SAMLProvider(Provider):
         on_delete=models.SET_DEFAULT,
         verbose_name=_("NameID Property Mapping"),
         help_text=_(
-            (
-                "Configure how the NameID value will be created. When left empty, "
-                "the NameIDPolicy of the incoming request will be considered"
-            )
+            "Configure how the NameID value will be created. When left empty, "
+            "the NameIDPolicy of the incoming request will be considered"
         ),
     )
 
@@ -75,20 +71,16 @@ class SAMLProvider(Provider):
         default="minutes=-5",
         validators=[timedelta_string_validator],
         help_text=_(
-            (
-                "Assertion valid not before current time + this value "
-                "(Format: hours=-1;minutes=-2;seconds=-3)."
-            )
+            "Assertion valid not before current time + this value "
+            "(Format: hours=-1;minutes=-2;seconds=-3)."
         ),
     )
     assertion_valid_not_on_or_after = models.TextField(
         default="minutes=5",
         validators=[timedelta_string_validator],
         help_text=_(
-            (
-                "Assertion not valid on or after current time + this value "
-                "(Format: hours=1;minutes=2;seconds=3)."
-            )
+            "Assertion not valid on or after current time + this value "
+            "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )
 
@@ -96,10 +88,8 @@ class SAMLProvider(Provider):
         default="minutes=86400",
         validators=[timedelta_string_validator],
         help_text=_(
-            (
-                "Session not valid on or after current time + this value "
-                "(Format: hours=1;minutes=2;seconds=3)."
-            )
+            "Session not valid on or after current time + this value "
+            "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )
 
@@ -131,10 +121,8 @@ class SAMLProvider(Provider):
         null=True,
         blank=True,
         help_text=_(
-            (
-                "When selected, incoming assertion's Signatures will be validated against this "
-                "certificate. To allow unsigned Requests, leave on default."
-            )
+            "When selected, incoming assertion's Signatures will be validated against this "
+            "certificate. To allow unsigned Requests, leave on default."
         ),
         on_delete=models.SET_NULL,
         verbose_name=_("Verification Certificate"),
@@ -176,7 +164,6 @@ class SAMLProvider(Provider):
         return f"SAML Provider {self.name}"
 
     class Meta:
-
         verbose_name = _("SAML Provider")
         verbose_name_plural = _("SAML Providers")
 
@@ -202,6 +189,5 @@ class SAMLPropertyMapping(PropertyMapping):
         return f"{self.name} ({name})"
 
     class Meta:
-
         verbose_name = _("SAML Property Mapping")
         verbose_name_plural = _("SAML Property Mappings")

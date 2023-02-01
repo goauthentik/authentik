@@ -10,7 +10,6 @@ class DummyStageSerializer(StageSerializer):
     """DummyStage Serializer"""
 
     class Meta:
-
         model = DummyStage
         fields = StageSerializer.Meta.fields + ["throw_error"]
 

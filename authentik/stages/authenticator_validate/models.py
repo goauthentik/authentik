@@ -46,10 +46,8 @@ class AuthenticatorValidateStage(Stage):
         default=None,
         related_name="+",
         help_text=_(
-            (
-                "Stages used to configure Authenticator when user doesn't have any compatible "
-                "devices. After this configuration Stage passes, the user is not prompted again."
-            )
+            "Stages used to configure Authenticator when user doesn't have any compatible "
+            "devices. After this configuration Stage passes, the user is not prompted again."
         ),
     )
 
@@ -63,10 +61,8 @@ class AuthenticatorValidateStage(Stage):
         default="seconds=0",
         validators=[timedelta_string_validator],
         help_text=_(
-            (
-                "If any of the user's device has been used within this threshold, this "
-                "stage will be skipped"
-            )
+            "If any of the user's device has been used within this threshold, this "
+            "stage will be skipped"
         ),
     )
 
@@ -93,6 +89,5 @@ class AuthenticatorValidateStage(Stage):
         return "ak-stage-authenticator-validate-form"
 
     class Meta:
-
         verbose_name = _("Authenticator Validation Stage")
         verbose_name_plural = _("Authenticator Validation Stages")

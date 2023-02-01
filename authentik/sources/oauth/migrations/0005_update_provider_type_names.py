@@ -23,7 +23,6 @@ def update_provider_types(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_sources_oauth", "0004_auto_20210417_1900"),
     ]

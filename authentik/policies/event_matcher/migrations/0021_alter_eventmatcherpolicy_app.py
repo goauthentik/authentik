@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         (
             "authentik_policies_event_matcher",
@@ -19,7 +18,10 @@ class Migration(migrations.Migration):
             field=models.TextField(
                 blank=True,
                 default="",
-                help_text="Match events created by selected application. When left empty, all applications are matched.",
+                help_text=(
+                    "Match events created by selected application. When left empty, all"
+                    " applications are matched."
+                ),
             ),
         ),
     ]

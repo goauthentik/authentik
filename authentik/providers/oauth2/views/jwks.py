@@ -34,6 +34,7 @@ min_length_map = {
     SECP521R1: 66,
 }
 
+
 # https://github.com/jpadilla/pyjwt/issues/709
 def bytes_from_int(val: int, min_length: int = 0) -> bytes:
     """Custom bytes_from_int that accepts a minimum length"""

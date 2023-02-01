@@ -45,17 +45,15 @@ class FieldTypes(models.TextChoices):
     # Same as text, but has autocomplete for password managers
     USERNAME = (
         "username",
-        _(("Username: Same as Text input, but checks for and prevents duplicate usernames.")),
+        _("Username: Same as Text input, but checks for and prevents duplicate usernames."),
     )
     EMAIL = "email", _("Email: Text field with Email type.")
     PASSWORD = (
         "password",  # noqa # nosec
         _(
-            (
-                "Password: Masked input, password is validated against sources. Policies still "
-                "have to be applied to this Stage. If two of these are used in the same stage, "
-                "they are ensured to be identical."
-            )
+            "Password: Masked input, password is validated against sources. Policies still "
+            "have to be applied to this Stage. If two of these are used in the same stage, "
+            "they are ensured to be identical."
         ),
     )
     NUMBER = "number"
@@ -194,7 +192,6 @@ class Prompt(SerializerModel):
         return f"Prompt field '{self.field_key}' type {self.type}"
 
     class Meta:
-
         verbose_name = _("Prompt")
         verbose_name_plural = _("Prompts")
 
@@ -223,6 +220,5 @@ class PromptStage(Stage):
         return "ak-stage-prompt-form"
 
     class Meta:
-
         verbose_name = _("Prompt Stage")
         verbose_name_plural = _("Prompt Stages")

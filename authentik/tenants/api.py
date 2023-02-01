@@ -39,7 +39,6 @@ class TenantSerializer(ModelSerializer):
         return super().validate(attrs)
 
     class Meta:
-
         model = Tenant
         fields = [
             "tenant_uuid",

@@ -33,7 +33,6 @@ def update_algorithms(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_sources_saml", "0001_initial"),
         ("authentik_sources_saml", "0002_auto_20200523_2329"),
@@ -100,7 +99,10 @@ class Migration(migrations.Migration):
                     models.ForeignKey(
                         blank=True,
                         default=None,
-                        help_text="Keypair which is used to sign outgoing requests. Leave empty to disable signing.",
+                        help_text=(
+                            "Keypair which is used to sign outgoing requests. Leave empty to"
+                            " disable signing."
+                        ),
                         null=True,
                         on_delete=django.db.models.deletion.SET_DEFAULT,
                         to="authentik_crypto.certificatekeypair",
@@ -123,7 +125,11 @@ class Migration(migrations.Migration):
                     "temporary_user_delete_after",
                     models.TextField(
                         default="days=1",
-                        help_text="Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3).",
+                        help_text=(
+                            "Time offset when temporary users should be deleted. This only applies"
+                            " if your IDP uses the NameID Format 'transient', and the user doesn't"
+                            " log out manually. (Format: hours=1;minutes=2;seconds=3)."
+                        ),
                         validators=[authentik.lib.utils.time.timedelta_string_validator],
                         verbose_name="Delete temporary users after",
                     ),
@@ -142,14 +148,20 @@ class Migration(migrations.Migration):
                             ("urn:oasis:names:tc:SAML:2.0:nameid-format:transient", "Transient"),
                         ],
                         default="urn:oasis:names:tc:SAML:2.0:nameid-format:transient",
-                        help_text="NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.",
+                        help_text=(
+                            "NameID Policy sent to the IdP. Can be unset, in which case no Policy"
+                            " is sent."
+                        ),
                     ),
                 ),
                 (
                     "allow_idp_initiated",
                     models.BooleanField(
                         default=False,
-                        help_text="Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.",
+                        help_text=(
+                            "Allows authentication flows initiated by the IdP. This can be a"
+                            " security risk, as no validation of the request ID is done."
+                        ),
                     ),
                 ),
                 (
@@ -204,7 +216,9 @@ class Migration(migrations.Migration):
                     ("urn:oasis:names:tc:SAML:2.0:nameid-format:transient", "Transient"),
                 ],
                 default="urn:oasis:names:tc:SAML:2.0:nameid-format:persistent",
-                help_text="NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.",
+                help_text=(
+                    "NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent."
+                ),
             ),
         ),
     ]

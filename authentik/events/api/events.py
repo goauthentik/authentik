@@ -25,7 +25,6 @@ class EventSerializer(ModelSerializer):
     """Event Serializer"""
 
     class Meta:
-
         model = Event
         fields = [
             "pk",

@@ -98,6 +98,5 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
         return f"Certificate-Key Pair {self.name}"
 
     class Meta:
-
         verbose_name = _("Certificate-Key Pair")
         verbose_name_plural = _("Certificate-Key Pairs")

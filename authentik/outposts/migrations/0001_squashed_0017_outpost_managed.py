@@ -80,7 +80,6 @@ def update_config_prefix(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_outposts", "0001_initial"),
         ("authentik_outposts", "0002_auto_20200826_1306"),
@@ -136,7 +135,10 @@ class Migration(migrations.Migration):
                             ("custom", "Custom"),
                         ],
                         default="custom",
-                        help_text="Select between authentik-managed deployment types or a custom deployment.",
+                        help_text=(
+                            "Select between authentik-managed deployment types or a custom"
+                            " deployment."
+                        ),
                     ),
                 ),
             ],
@@ -158,7 +160,10 @@ class Migration(migrations.Migration):
                     "local",
                     models.BooleanField(
                         default=False,
-                        help_text="If enabled, use the local connection. Required Docker socket/Kubernetes Integration",
+                        help_text=(
+                            "If enabled, use the local connection. Required Docker"
+                            " socket/Kubernetes Integration"
+                        ),
                         unique=True,
                     ),
                 ),
@@ -207,7 +212,10 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 blank=True,
                 default=None,
-                help_text="Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.",
+                help_text=(
+                    "Select Service-Connection authentik should use to manage this outpost. Leave"
+                    " empty if authentik should not handle the deployment."
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_DEFAULT,
                 to="authentik_outposts.outpostserviceconnection",
@@ -240,7 +248,10 @@ class Migration(migrations.Migration):
             field=authentik.lib.models.InheritanceForeignKey(
                 blank=True,
                 default=None,
-                help_text="Select Service-Connection authentik should use to manage this outpost. Leave empty if authentik should not handle the deployment.",
+                help_text=(
+                    "Select Service-Connection authentik should use to manage this outpost. Leave"
+                    " empty if authentik should not handle the deployment."
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_DEFAULT,
                 to="authentik_outposts.outpostserviceconnection",
@@ -258,7 +269,10 @@ class Migration(migrations.Migration):
             name="kubeconfig",
             field=models.JSONField(
                 default=None,
-                help_text="Paste your kubeconfig here. authentik will automatically use the currently selected context.",
+                help_text=(
+                    "Paste your kubeconfig here. authentik will automatically use the currently"
+                    " selected context."
+                ),
             ),
             preserve_default=False,
         ),
@@ -272,7 +286,10 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 blank=True,
                 default=None,
-                help_text="Certificate/Key used for authentication. Can be left empty for no authentication.",
+                help_text=(
+                    "Certificate/Key used for authentication. Can be left empty for no"
+                    " authentication."
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_DEFAULT,
                 related_name="+",
@@ -285,7 +302,10 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 blank=True,
                 default=None,
-                help_text="CA which the endpoint's Certificate is verified against. Can be left empty for no validation.",
+                help_text=(
+                    "CA which the endpoint's Certificate is verified against. Can be left empty for"
+                    " no validation."
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_DEFAULT,
                 related_name="+",
@@ -297,7 +317,10 @@ class Migration(migrations.Migration):
             name="local",
             field=models.BooleanField(
                 default=False,
-                help_text="If enabled, use the local connection. Required Docker socket/Kubernetes Integration",
+                help_text=(
+                    "If enabled, use the local connection. Required Docker socket/Kubernetes"
+                    " Integration"
+                ),
             ),
         ),
         migrations.RunPython(
@@ -310,7 +333,10 @@ class Migration(migrations.Migration):
             model_name="dockerserviceconnection",
             name="url",
             field=models.TextField(
-                help_text="Can be in the format of 'unix://<path>' when connecting to a local docker daemon, or 'https://<hostname>:2376' when connecting to a remote system."
+                help_text=(
+                    "Can be in the format of 'unix://<path>' when connecting to a local docker"
+                    " daemon, or 'https://<hostname>:2376' when connecting to a remote system."
+                )
             ),
         ),
         migrations.AlterField(
@@ -318,7 +344,10 @@ class Migration(migrations.Migration):
             name="kubeconfig",
             field=models.JSONField(
                 blank=True,
-                help_text="Paste your kubeconfig here. authentik will automatically use the currently selected context.",
+                help_text=(
+                    "Paste your kubeconfig here. authentik will automatically use the currently"
+                    " selected context."
+                ),
             ),
         ),
         migrations.AlterField(
@@ -331,7 +360,12 @@ class Migration(migrations.Migration):
             name="managed",
             field=models.TextField(
                 default=None,
-                help_text="Objects which are managed by authentik. These objects are created and updated automatically. This is flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.",
+                help_text=(
+                    "Objects which are managed by authentik. These objects are created and updated"
+                    " automatically. This is flag only indicates that an object can be overwritten"
+                    " by migrations. You can still modify the objects via the API, but expect"
+                    " changes to be overwritten in a later update."
+                ),
                 null=True,
                 unique=True,
                 verbose_name="Managed by authentik",

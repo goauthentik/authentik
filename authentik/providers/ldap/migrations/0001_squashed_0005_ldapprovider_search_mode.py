@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_providers_ldap", "0001_initial"),
         ("authentik_providers_ldap", "0002_ldapprovider_search_group"),
@@ -47,7 +46,10 @@ class Migration(migrations.Migration):
                     "search_group",
                     models.ForeignKey(
                         default=None,
-                        help_text="Users in this group can do search queries. If not set, every user can execute search queries.",
+                        help_text=(
+                            "Users in this group can do search queries. If not set, every user can"
+                            " execute search queries."
+                        ),
                         null=True,
                         on_delete=django.db.models.deletion.SET_DEFAULT,
                         to="authentik_core.group",
@@ -67,14 +69,23 @@ class Migration(migrations.Migration):
                     "gid_start_number",
                     models.IntegerField(
                         default=4000,
-                        help_text="The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber",
+                        help_text=(
+                            "The start for gidNumbers, this number is added to a number generated"
+                            " from the group.Pk to make sure that the numbers aren't too low for"
+                            " POSIX groups. Default is 4000 to ensure that we don't collide with"
+                            " local groups or users primary groups gidNumber"
+                        ),
                     ),
                 ),
                 (
                     "uid_start_number",
                     models.IntegerField(
                         default=2000,
-                        help_text="The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber",
+                        help_text=(
+                            "The start for uidNumbers, this number is added to the user.Pk to make"
+                            " sure that the numbers aren't too low for POSIX users. Default is 2000"
+                            " to ensure that we don't collide with local users uidNumber"
+                        ),
                     ),
                 ),
                 (

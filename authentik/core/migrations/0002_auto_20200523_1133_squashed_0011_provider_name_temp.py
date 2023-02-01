@@ -51,7 +51,6 @@ def create_default_admin_group(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_core", "0002_auto_20200523_1133"),
         ("authentik_core", "0003_default_user"),
@@ -172,7 +171,10 @@ class Migration(migrations.Migration):
             name="groups",
             field=models.ManyToManyField(
                 blank=True,
-                help_text="The groups this user belongs to. A user will get all permissions granted to each of their groups.",
+                help_text=(
+                    "The groups this user belongs to. A user will get all permissions granted to"
+                    " each of their groups."
+                ),
                 related_name="user_set",
                 related_query_name="user",
                 to="auth.Group",

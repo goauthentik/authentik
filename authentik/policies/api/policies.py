@@ -56,7 +56,6 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
         return dict(instance.serializer(instance=instance, resolve_inheritance=False).data)
 
     class Meta:
-
         model = Policy
         fields = [
             "pk",

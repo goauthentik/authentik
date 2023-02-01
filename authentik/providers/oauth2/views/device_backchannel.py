@@ -68,12 +68,14 @@ class DeviceView(View):
             {
                 "device_code": token.device_code,
                 "verification_uri": device_url,
-                "verification_uri_complete": device_url
-                + "?"
-                + urlencode(
-                    {
-                        QS_KEY_CODE: token.user_code,
-                    }
+                "verification_uri_complete": (
+                    device_url
+                    + "?"
+                    + urlencode(
+                        {
+                            QS_KEY_CODE: token.user_code,
+                        }
+                    )
                 ),
                 "user_code": token.user_code,
                 "expires_in": int(until.total_seconds()),

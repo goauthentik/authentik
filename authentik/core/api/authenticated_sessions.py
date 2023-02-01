@@ -74,7 +74,6 @@ class AuthenticatedSessionSerializer(ModelSerializer):
         return GEOIP_READER.city_dict(instance.last_ip)
 
     class Meta:
-
         model = AuthenticatedSession
         fields = [
             "uuid",

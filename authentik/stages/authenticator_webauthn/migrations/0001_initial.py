@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -65,7 +64,10 @@ class Migration(migrations.Migration):
                     "configure_flow",
                     models.ForeignKey(
                         blank=True,
-                        help_text="Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",
+                        help_text=(
+                            "Flow used by an authenticated user to configure this Stage. If empty,"
+                            " user will not be able to configure this stage."
+                        ),
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         to="authentik_flows.flow",

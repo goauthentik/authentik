@@ -10,7 +10,6 @@ class NotificationWebhookMappingSerializer(ModelSerializer):
     """NotificationWebhookMapping Serializer"""
 
     class Meta:
-
         model = NotificationWebhookMapping
         fields = [
             "pk",

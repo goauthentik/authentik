@@ -46,7 +46,6 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
         return obj.component
 
     class Meta:
-
         model = Source
         fields = [
             "pk",

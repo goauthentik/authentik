@@ -21,7 +21,6 @@ def replace_inbuilt(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_password", "0007_app_password"),
     ]
