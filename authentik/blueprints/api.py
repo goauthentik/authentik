@@ -58,7 +58,6 @@ class BlueprintInstanceSerializer(ModelSerializer):
         return super().validate(attrs)
 
     class Meta:
-
         model = BlueprintInstance
         fields = [
             "pk",

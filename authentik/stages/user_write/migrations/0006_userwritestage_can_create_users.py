@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_user_write", "0005_userwritestage_user_path_template"),
     ]
@@ -15,7 +14,10 @@ class Migration(migrations.Migration):
             name="can_create_users",
             field=models.BooleanField(
                 default=True,
-                help_text="When set, this stage can create users. If not enabled and no user is available, stage will fail.",
+                help_text=(
+                    "When set, this stage can create users. If not enabled and no user is"
+                    " available, stage will fail."
+                ),
             ),
         ),
     ]

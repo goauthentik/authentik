@@ -181,7 +181,7 @@ class TestProviderSAML(SeleniumTestCase):
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
-            ("[type=submit]"),
+            "[type=submit]",
         ).click()
 
         self.wait_for_url("http://localhost:9009/")
@@ -265,7 +265,7 @@ class TestProviderSAML(SeleniumTestCase):
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
-            ("[type=submit]"),
+            "[type=submit]",
         ).click()
 
         self.wait_for_url("http://localhost:9009/")

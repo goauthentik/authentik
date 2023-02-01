@@ -63,7 +63,6 @@ def create_default_user_token(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_core", "0018_auto_20210330_1345"),
         ("authentik_core", "0019_source_managed"),
@@ -96,7 +95,12 @@ class Migration(migrations.Migration):
             name="managed",
             field=models.TextField(
                 default=None,
-                help_text="Objects which are managed by authentik. These objects are created and updated automatically. This is flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.",
+                help_text=(
+                    "Objects which are managed by authentik. These objects are created and updated"
+                    " automatically. This is flag only indicates that an object can be overwritten"
+                    " by migrations. You can still modify the objects via the API, but expect"
+                    " changes to be overwritten in a later update."
+                ),
                 null=True,
                 unique=True,
                 verbose_name="Managed by authentik",
@@ -110,23 +114,38 @@ class Migration(migrations.Migration):
                     ("identifier", "Use the source-specific identifier"),
                     (
                         "email_link",
-                        "Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.",
+                        (
+                            "Link to a user with identical email address. Can have security"
+                            " implications when a source doesn't validate email addresses."
+                        ),
                     ),
                     (
                         "email_deny",
-                        "Use the user's email address, but deny enrollment when the email address already exists.",
+                        (
+                            "Use the user's email address, but deny enrollment when the email"
+                            " address already exists."
+                        ),
                     ),
                     (
                         "username_link",
-                        "Link to a user with identical username. Can have security implications when a username is used with another source.",
+                        (
+                            "Link to a user with identical username. Can have security implications"
+                            " when a username is used with another source."
+                        ),
                     ),
                     (
                         "username_deny",
-                        "Use the user's username, but deny enrollment when the username already exists.",
+                        (
+                            "Use the user's username, but deny enrollment when the username already"
+                            " exists."
+                        ),
                     ),
                 ],
                 default="identifier",
-                help_text="How the source determines if an existing user should be authenticated or a new user enrolled.",
+                help_text=(
+                    "How the source determines if an existing user should be authenticated or a new"
+                    " user enrolled."
+                ),
             ),
         ),
         migrations.AlterField(

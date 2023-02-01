@@ -7,7 +7,6 @@ import authentik.stages.authenticator_validate.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_authenticator_validate", "0006_auto_20210301_1757"),
     ]

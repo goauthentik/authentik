@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_flows", "0016_auto_20201202_1307"),
         ("authentik_stages_authenticator_validate", "0004_auto_20210301_0949"),
@@ -18,7 +17,11 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 blank=True,
                 default=None,
-                help_text="Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.",
+                help_text=(
+                    "Stage used to configure Authenticator when user doesn't have any compatible"
+                    " devices. After this configuration Stage passes, the user is not prompted"
+                    " again."
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_DEFAULT,
                 related_name="+",

@@ -25,7 +25,6 @@ class ScopeMappingSerializer(PropertyMappingSerializer):
     scope_name = CharField(help_text="Scope name requested by the client", validators=[no_space])
 
     class Meta:
-
         model = ScopeMapping
         fields = PropertyMappingSerializer.Meta.fields + [
             "scope_name",

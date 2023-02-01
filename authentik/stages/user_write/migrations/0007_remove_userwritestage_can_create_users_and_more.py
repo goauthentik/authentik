@@ -18,7 +18,6 @@ def migrate_to_user_creation_mode(apps: Apps, schema_editor: BaseDatabaseSchemaE
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_user_write", "0006_userwritestage_can_create_users"),
     ]

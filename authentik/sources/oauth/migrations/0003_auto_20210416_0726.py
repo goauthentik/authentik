@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_sources_oauth", "0002_auto_20200520_1108"),
     ]

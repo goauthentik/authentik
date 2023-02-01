@@ -109,7 +109,6 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
         return f"WebAuthn Authenticator Setup Stage {self.name}"
 
     class Meta:
-
         verbose_name = _("WebAuthn Authenticator Setup Stage")
         verbose_name_plural = _("WebAuthn Authenticator Setup Stages")
 
@@ -149,6 +148,5 @@ class WebAuthnDevice(SerializerModel, Device):
         return str(self.name) or str(self.user)
 
     class Meta:
-
         verbose_name = _("WebAuthn Device")
         verbose_name_plural = _("WebAuthn Devices")

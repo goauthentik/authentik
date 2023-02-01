@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_authenticator_sms", "0003_smsdevice_last_used_on"),
     ]
@@ -15,7 +14,11 @@ class Migration(migrations.Migration):
             name="verify_only",
             field=models.BooleanField(
                 default=False,
-                help_text="When enabled, the Phone number is only used during enrollment to verify the users authenticity. Only a hash of the phone number is saved to ensure it is not re-used in the future.",
+                help_text=(
+                    "When enabled, the Phone number is only used during enrollment to verify the"
+                    " users authenticity. Only a hash of the phone number is saved to ensure it is"
+                    " not re-used in the future."
+                ),
             ),
         ),
         migrations.AlterUniqueTogether(

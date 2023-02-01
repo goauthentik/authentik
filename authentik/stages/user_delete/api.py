@@ -10,7 +10,6 @@ class UserDeleteStageSerializer(StageSerializer):
     """UserDeleteStage Serializer"""
 
     class Meta:
-
         model = UserDeleteStage
         fields = StageSerializer.Meta.fields
 

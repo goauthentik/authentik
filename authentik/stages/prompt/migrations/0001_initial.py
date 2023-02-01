@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -42,7 +41,10 @@ class Migration(migrations.Migration):
                             ("text", "Text: Simple Text input"),
                             (
                                 "username",
-                                "Username: Same as Text input, but checks for and prevents duplicate usernames.",
+                                (
+                                    "Username: Same as Text input, but checks for and prevents"
+                                    " duplicate usernames."
+                                ),
                             ),
                             ("email", "Email: Text field with Email type."),
                             ("password", "Password"),

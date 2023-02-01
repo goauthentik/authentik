@@ -283,7 +283,6 @@ class Event(SerializerModel, ExpiringModel):
         return f"Event action={self.action} user={self.user} context={self.context}"
 
     class Meta:
-
         verbose_name = _("Event")
         verbose_name_plural = _("Events")
 
@@ -460,7 +459,6 @@ class NotificationTransport(SerializerModel):
         return f"Notification Transport {self.name}"
 
     class Meta:
-
         verbose_name = _("Notification Transport")
         verbose_name_plural = _("Notification Transports")
 
@@ -495,7 +493,6 @@ class Notification(SerializerModel):
         return f"Notification for user {self.user}: {body_trunc}"
 
     class Meta:
-
         verbose_name = _("Notification")
         verbose_name_plural = _("Notifications")
 
@@ -507,10 +504,8 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
     transports = models.ManyToManyField(
         NotificationTransport,
         help_text=_(
-            (
-                "Select which transports should be used to notify the user. If none are "
-                "selected, the notification will only be shown in the authentik UI."
-            )
+            "Select which transports should be used to notify the user. If none are "
+            "selected, the notification will only be shown in the authentik UI."
         ),
         blank=True,
     )
@@ -522,10 +517,8 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
     group = models.ForeignKey(
         Group,
         help_text=_(
-            (
-                "Define which group of users this notification should be sent and shown to. "
-                "If left empty, Notification won't ben sent."
-            )
+            "Define which group of users this notification should be sent and shown to. "
+            "If left empty, Notification won't ben sent."
         ),
         null=True,
         blank=True,
@@ -542,7 +535,6 @@ class NotificationRule(SerializerModel, PolicyBindingModel):
         return f"Notification Rule {self.name}"
 
     class Meta:
-
         verbose_name = _("Notification Rule")
         verbose_name_plural = _("Notification Rules")
 
@@ -564,6 +556,5 @@ class NotificationWebhookMapping(PropertyMapping):
         return f"Webhook Mapping {self.name}"
 
     class Meta:
-
         verbose_name = _("Webhook Mapping")
         verbose_name_plural = _("Webhook Mappings")

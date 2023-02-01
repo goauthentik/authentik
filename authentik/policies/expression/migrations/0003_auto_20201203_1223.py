@@ -18,7 +18,6 @@ def replace_pb_prefix(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_policies_expression", "0002_auto_20200926_1156"),
     ]

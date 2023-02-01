@@ -43,7 +43,6 @@ class NotificationTransportSerializer(ModelSerializer):
         return attrs
 
     class Meta:
-
         model = NotificationTransport
         fields = [
             "pk",

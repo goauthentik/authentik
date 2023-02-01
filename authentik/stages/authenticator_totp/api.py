@@ -17,7 +17,6 @@ class AuthenticatorTOTPStageSerializer(StageSerializer):
     """AuthenticatorTOTPStage Serializer"""
 
     class Meta:
-
         model = AuthenticatorTOTPStage
         fields = StageSerializer.Meta.fields + ["configure_flow", "digits"]
 
@@ -36,7 +35,6 @@ class TOTPDeviceSerializer(ModelSerializer):
     """Serializer for totp authenticator devices"""
 
     class Meta:
-
         model = TOTPDevice
         fields = [
             "name",

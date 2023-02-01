@@ -16,7 +16,6 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
     """AuthenticatorSMSStage Serializer"""
 
     class Meta:
-
         model = AuthenticatorSMSStage
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
@@ -45,7 +44,6 @@ class SMSDeviceSerializer(ModelSerializer):
     """Serializer for sms authenticator devices"""
 
     class Meta:
-
         model = SMSDevice
         fields = ["name", "pk", "phone_number"]
         depth = 2

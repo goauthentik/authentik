@@ -53,7 +53,6 @@ class FlowSerializer(ModelSerializer):
         return reverse("authentik_api:flow-export", kwargs={"slug": flow.slug})
 
     class Meta:
-
         model = Flow
         fields = [
             "pk",
@@ -82,7 +81,6 @@ class FlowSetSerializer(FlowSerializer):
     """Stripped down flow serializer"""
 
     class Meta:
-
         model = Flow
         fields = [
             "pk",

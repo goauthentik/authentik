@@ -6,7 +6,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = []
@@ -36,7 +35,10 @@ class Migration(migrations.Migration):
                     models.TextField(
                         blank=True,
                         default="",
-                        help_text="Optional Private Key. If this is set, you can use this keypair for encryption.",
+                        help_text=(
+                            "Optional Private Key. If this is set, you can use this keypair for"
+                            " encryption."
+                        ),
                     ),
                 ),
             ],

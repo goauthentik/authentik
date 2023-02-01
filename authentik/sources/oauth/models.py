@@ -105,7 +105,6 @@ class OAuthSource(Source):
         return f"OAuth Source {self.name}"
 
     class Meta:
-
         verbose_name = _("OAuth Source")
         verbose_name_plural = _("OAuth Sources")
 
@@ -114,7 +113,6 @@ class GitHubOAuthSource(OAuthSource):
     """Social Login using GitHub.com or a GitHub-Enterprise Instance."""
 
     class Meta:
-
         abstract = True
         verbose_name = _("GitHub OAuth Source")
         verbose_name_plural = _("GitHub OAuth Sources")
@@ -124,7 +122,6 @@ class TwitchOAuthSource(OAuthSource):
     """Social Login using Twitch."""
 
     class Meta:
-
         abstract = True
         verbose_name = _("Twitch OAuth Source")
         verbose_name_plural = _("Twitch OAuth Sources")
@@ -134,7 +131,6 @@ class MailcowOAuthSource(OAuthSource):
     """Social Login using Mailcow."""
 
     class Meta:
-
         abstract = True
         verbose_name = _("Mailcow OAuth Source")
         verbose_name_plural = _("Mailcow OAuth Sources")
@@ -144,7 +140,6 @@ class TwitterOAuthSource(OAuthSource):
     """Social Login using Twitter.com"""
 
     class Meta:
-
         abstract = True
         verbose_name = _("Twitter OAuth Source")
         verbose_name_plural = _("Twitter OAuth Sources")
@@ -154,7 +149,6 @@ class FacebookOAuthSource(OAuthSource):
     """Social Login using Facebook.com."""
 
     class Meta:
-
         abstract = True
         verbose_name = _("Facebook OAuth Source")
         verbose_name_plural = _("Facebook OAuth Sources")
@@ -164,7 +158,6 @@ class DiscordOAuthSource(OAuthSource):
     """Social Login using Discord."""
 
     class Meta:
-
         abstract = True
         verbose_name = _("Discord OAuth Source")
         verbose_name_plural = _("Discord OAuth Sources")
@@ -174,7 +167,6 @@ class GoogleOAuthSource(OAuthSource):
     """Social Login using Google or Google Workspace (GSuite)."""
 
     class Meta:
-
         abstract = True
         verbose_name = _("Google OAuth Source")
         verbose_name_plural = _("Google OAuth Sources")
@@ -184,7 +176,6 @@ class AzureADOAuthSource(OAuthSource):
     """Social Login using Azure AD."""
 
     class Meta:
-
         abstract = True
         verbose_name = _("Azure AD OAuth Source")
         verbose_name_plural = _("Azure AD OAuth Sources")
@@ -194,7 +185,6 @@ class OpenIDConnectOAuthSource(OAuthSource):
     """Login using a Generic OpenID-Connect compliant provider."""
 
     class Meta:
-
         abstract = True
         verbose_name = _("OpenID OAuth Source")
         verbose_name_plural = _("OpenID OAuth Sources")
@@ -204,7 +194,6 @@ class AppleOAuthSource(OAuthSource):
     """Social Login using Apple."""
 
     class Meta:
-
         abstract = True
         verbose_name = _("Apple OAuth Source")
         verbose_name_plural = _("Apple OAuth Sources")
@@ -214,7 +203,6 @@ class OktaOAuthSource(OAuthSource):
     """Social Login using Okta."""
 
     class Meta:
-
         abstract = True
         verbose_name = _("Okta OAuth Source")
         verbose_name_plural = _("Okta OAuth Sources")
@@ -239,6 +227,5 @@ class UserOAuthSourceConnection(UserSourceConnection):
         super().save(*args, **kwargs)
 
     class Meta:
-
         verbose_name = _("User OAuth Source Connection")
         verbose_name_plural = _("User OAuth Source Connections")

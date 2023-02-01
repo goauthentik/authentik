@@ -17,7 +17,6 @@ class InvitationStageSerializer(StageSerializer):
     """InvitationStage Serializer"""
 
     class Meta:
-
         model = InvitationStage
         fields = StageSerializer.Meta.fields + [
             "continue_flow_without_invitation",
@@ -30,7 +29,6 @@ class InvitationStageFilter(FilterSet):
     no_flows = BooleanFilter("flow", "isnull")
 
     class Meta:
-
         model = InvitationStage
         fields = ["name", "no_flows", "continue_flow_without_invitation", "stage_uuid"]
 
@@ -53,7 +51,6 @@ class InvitationSerializer(ModelSerializer):
     flow_obj = FlowSerializer(read_only=True, required=False, source="flow")
 
     class Meta:
-
         model = Invitation
         fields = [
             "pk",

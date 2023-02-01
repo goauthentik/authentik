@@ -7,7 +7,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_flows", "0001_initial"),
         ("authentik_flows", "0003_auto_20200523_1133"),
@@ -98,7 +97,10 @@ class Migration(migrations.Migration):
                     "re_evaluate_policies",
                     models.BooleanField(
                         default=False,
-                        help_text="When this option is enabled, the planner will re-evaluate policies bound to this.",
+                        help_text=(
+                            "When this option is enabled, the planner will re-evaluate policies"
+                            " bound to this."
+                        ),
                     ),
                 ),
                 ("order", models.IntegerField()),

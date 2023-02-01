@@ -27,6 +27,5 @@ class UserLogoutStage(Stage):
         return "ak-stage-user-logout-form"
 
     class Meta:
-
         verbose_name = _("User Logout Stage")
         verbose_name_plural = _("User Logout Stages")

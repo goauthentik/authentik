@@ -56,5 +56,4 @@ class MetaApplyBlueprint(BaseMetaModel):
         return ApplyBlueprintMetaSerializer
 
     class Meta:
-
         abstract = True

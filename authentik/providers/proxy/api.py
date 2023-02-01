@@ -75,7 +75,6 @@ class ProxyProviderSerializer(ProviderSerializer):
         return instance
 
     class Meta:
-
         model = ProxyProvider
         fields = ProviderSerializer.Meta.fields + [
             "client_id",
@@ -152,7 +151,6 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         return list(scope_names)
 
     class Meta:
-
         model = ProxyProvider
         fields = [
             "pk",

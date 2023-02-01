@@ -63,7 +63,6 @@ class ApplicationSerializer(ModelSerializer):
         return app.get_launch_url(user)
 
     class Meta:
-
         model = Application
         fields = [
             "pk",

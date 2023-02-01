@@ -80,7 +80,7 @@ class TestTokenAPI(APITestCase):
             identifier="test", expiring=False, user=self.user
         )
         Token.objects.create(identifier="test-2", expiring=False, user=get_anonymous_user())
-        response = self.client.get(reverse(("authentik_api:token-list")))
+        response = self.client.get(reverse("authentik_api:token-list"))
         body = loads(response.content)
         self.assertEqual(len(body["results"]), 1)
         self.assertEqual(body["results"][0]["identifier"], token_should.identifier)
@@ -94,7 +94,7 @@ class TestTokenAPI(APITestCase):
         token_should_not: Token = Token.objects.create(
             identifier="test-2", expiring=False, user=get_anonymous_user()
         )
-        response = self.client.get(reverse(("authentik_api:token-list")))
+        response = self.client.get(reverse("authentik_api:token-list"))
         body = loads(response.content)
         self.assertEqual(len(body["results"]), 2)
         self.assertEqual(body["results"][0]["identifier"], token_should.identifier)

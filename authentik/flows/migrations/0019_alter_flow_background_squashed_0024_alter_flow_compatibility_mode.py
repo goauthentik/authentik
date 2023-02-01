@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_flows", "0019_alter_flow_background"),
         ("authentik_flows", "0020_flow_compatibility_mode"),
@@ -39,7 +38,12 @@ class Migration(migrations.Migration):
                     ("restart_with_context", "Restart With Context"),
                 ],
                 default="retry",
-                help_text="Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.",
+                help_text=(
+                    "Configure how the flow executor should handle an invalid response to a"
+                    " challenge. RETRY returns the error message and a similar challenge to the"
+                    " executor. RESTART restarts the flow from the beginning, and"
+                    " RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
+                ),
             ),
         ),
         migrations.AlterField(
@@ -58,7 +62,10 @@ class Migration(migrations.Migration):
             name="compatibility_mode",
             field=models.BooleanField(
                 default=False,
-                help_text="Enable compatibility mode, increases compatibility with password managers on mobile devices.",
+                help_text=(
+                    "Enable compatibility mode, increases compatibility with password managers on"
+                    " mobile devices."
+                ),
             ),
         ),
     ]

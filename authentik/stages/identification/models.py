@@ -26,10 +26,7 @@ class IdentificationStage(Stage):
         models.CharField(max_length=100, choices=UserFields.choices),
         blank=True,
         help_text=_(
-            (
-                "Fields of the user object to match against. "
-                "(Hold shift to select multiple options)"
-            )
+            "Fields of the user object to match against. (Hold shift to select multiple options)"
         ),
     )
 
@@ -39,8 +36,10 @@ class IdentificationStage(Stage):
         default=None,
         on_delete=models.SET_NULL,
         help_text=_(
-            "When set, shows a password field, instead of showing the "
-            "password field as seaprate step.",
+            (
+                "When set, shows a password field, instead of showing the "
+                "password field as seaprate step."
+            ),
         ),
     )
     case_insensitive_matching = models.BooleanField(
@@ -50,11 +49,9 @@ class IdentificationStage(Stage):
     show_matched_user = models.BooleanField(
         default=True,
         help_text=_(
-            (
-                "When a valid username/email has been entered, and this option is enabled, "
-                "the user's username and avatar will be shown. Otherwise, the text that the user "
-                "entered will be shown"
-            )
+            "When a valid username/email has been entered, and this option is enabled, "
+            "the user's username and avatar will be shown. Otherwise, the text that the user "
+            "entered will be shown"
         ),
     )
 
@@ -108,6 +105,5 @@ class IdentificationStage(Stage):
         return "ak-stage-identification-form"
 
     class Meta:
-
         verbose_name = _("Identification Stage")
         verbose_name_plural = _("Identification Stages")

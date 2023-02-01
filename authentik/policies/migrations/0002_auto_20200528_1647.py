@@ -7,7 +7,6 @@ import authentik.lib.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_policies", "0001_initial"),
     ]

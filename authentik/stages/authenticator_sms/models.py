@@ -177,7 +177,6 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
         return f"SMS Authenticator Setup Stage {self.name}"
 
     class Meta:
-
         verbose_name = _("SMS Authenticator Setup Stage")
         verbose_name_plural = _("SMS Authenticator Setup Stages")
 

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_policies", "0003_auto_20200908_1542"),
     ]
@@ -15,7 +14,10 @@ class Migration(migrations.Migration):
             name="execution_logging",
             field=models.BooleanField(
                 default=False,
-                help_text="When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                help_text=(
+                    "When this option is enabled, all executions of this policy will be logged. By"
+                    " default, only execution errors are logged."
+                ),
             ),
         ),
     ]

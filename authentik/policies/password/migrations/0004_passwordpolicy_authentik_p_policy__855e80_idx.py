@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_policies_password", "0003_passwordpolicy_amount_digits"),
     ]

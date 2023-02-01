@@ -28,7 +28,6 @@ class EmailStageSerializer(StageSerializer):
         raise ValidationError(f"Invalid template '{value}' specified.")
 
     class Meta:
-
         model = EmailStage
         fields = StageSerializer.Meta.fields + [
             "use_global_settings",

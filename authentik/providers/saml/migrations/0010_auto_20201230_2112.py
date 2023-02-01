@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_providers_saml", "0009_auto_20201112_2016"),
     ]
@@ -16,7 +15,10 @@ class Migration(migrations.Migration):
             field=models.TextField(
                 blank=True,
                 default="",
-                help_text="Value of the audience restriction field of the assertion. When left empty, no audience restriction will be added.",
+                help_text=(
+                    "Value of the audience restriction field of the assertion. When left empty, no"
+                    " audience restriction will be added."
+                ),
             ),
         ),
     ]

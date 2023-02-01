@@ -50,16 +50,12 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_ID": self.client_id,
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET": self.client_secret,
                 "GF_AUTH_GENERIC_OAUTH_SCOPES": "openid email profile",
-                "GF_AUTH_GENERIC_OAUTH_AUTH_URL": (
-                    self.url("authentik_providers_oauth2:authorize")
-                ),
-                "GF_AUTH_GENERIC_OAUTH_TOKEN_URL": (self.url("authentik_providers_oauth2:token")),
-                "GF_AUTH_GENERIC_OAUTH_API_URL": (self.url("authentik_providers_oauth2:userinfo")),
-                "GF_AUTH_SIGNOUT_REDIRECT_URL": (
-                    self.url(
-                        "authentik_providers_oauth2:end-session",
-                        application_slug=self.app_slug,
-                    )
+                "GF_AUTH_GENERIC_OAUTH_AUTH_URL": self.url("authentik_providers_oauth2:authorize"),
+                "GF_AUTH_GENERIC_OAUTH_TOKEN_URL": self.url("authentik_providers_oauth2:token"),
+                "GF_AUTH_GENERIC_OAUTH_API_URL": self.url("authentik_providers_oauth2:userinfo"),
+                "GF_AUTH_SIGNOUT_REDIRECT_URL": self.url(
+                    "authentik_providers_oauth2:end-session",
+                    application_slug=self.app_slug,
                 ),
                 "GF_LOG_LEVEL": "debug",
             },
@@ -304,7 +300,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
-            ("[type=submit]"),
+            "[type=submit]",
         ).click()
 
         self.wait_for_url("http://localhost:3000/?orgId=1")

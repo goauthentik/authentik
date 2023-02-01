@@ -24,7 +24,6 @@ class ExpiringBaseGrantModelSerializer(ModelSerializer, MetaNameSerializer):
     scope = ListField(child=CharField())
 
     class Meta:
-
         model = AuthorizationCode
         fields = ["pk", "provider", "user", "is_expired", "expires", "scope"]
         depth = 2
@@ -40,7 +39,6 @@ class RefreshTokenModelSerializer(ExpiringBaseGrantModelSerializer):
         return dumps(instance.id_token.to_dict(), indent=4)
 
     class Meta:
-
         model = RefreshToken
         fields = [
             "pk",

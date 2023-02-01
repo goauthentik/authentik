@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_flows", "0016_auto_20201202_1307"),
         ("authentik_stages_authenticator_totp", "0004_default_setup_flow"),

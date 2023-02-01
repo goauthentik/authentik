@@ -55,8 +55,10 @@ class RedirectUriError(OAuth2Error):
 
     def to_event(self, **kwargs) -> Event:
         return super().to_event(
-            f"Invalid redirect URI was used. Client used '{self.provided_uri}'. "
-            f"Allowed redirect URIs are {','.join(self.allowed_uris)}",
+            (
+                f"Invalid redirect URI was used. Client used '{self.provided_uri}'. "
+                f"Allowed redirect URIs are {','.join(self.allowed_uris)}"
+            ),
             **kwargs,
         )
 
@@ -246,7 +248,7 @@ class DeviceCodeError(OAuth2Error):
             "The authorization request is still pending as the end user hasn't "
             "yet completed the user-interaction steps"
         ),
-        "access_denied": ("The authorization request was denied."),
+        "access_denied": "The authorization request was denied.",
         "expired_token": (
             'The "device_code" has expired, and the device authorization '
             "session has concluded.  The client MAY commence a new device "

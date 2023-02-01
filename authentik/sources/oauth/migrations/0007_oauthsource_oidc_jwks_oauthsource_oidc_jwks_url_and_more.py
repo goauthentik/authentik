@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_sources_oauth", "0006_oauthsource_additional_scopes"),
     ]

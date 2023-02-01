@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_flows", "0013_auto_20200924_1605"),
         ("authentik_stages_authenticator_totp", "0002_auto_20200701_1900"),
@@ -17,7 +16,10 @@ class Migration(migrations.Migration):
             name="configure_flow",
             field=models.ForeignKey(
                 blank=True,
-                help_text="Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",
+                help_text=(
+                    "Flow used by an authenticated user to configure this Stage. If empty, user"
+                    " will not be able to configure this stage."
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 to="authentik_flows.flow",

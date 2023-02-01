@@ -25,7 +25,6 @@ class NotificationSerializer(ModelSerializer):
     event = EventSerializer(required=False)
 
     class Meta:
-
         model = Notification
         fields = [
             "pk",

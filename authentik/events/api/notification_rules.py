@@ -13,7 +13,6 @@ class NotificationRuleSerializer(ModelSerializer):
     group_obj = GroupSerializer(read_only=True, source="group")
 
     class Meta:
-
         model = NotificationRule
         fields = [
             "pk",

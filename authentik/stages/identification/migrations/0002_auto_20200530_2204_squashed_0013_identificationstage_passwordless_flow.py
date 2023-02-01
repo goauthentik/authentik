@@ -20,7 +20,6 @@ def assign_sources(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_stages_identification", "0002_auto_20200530_2204"),
         ("authentik_stages_identification", "0003_auto_20200615_1641"),
@@ -87,7 +86,10 @@ class Migration(migrations.Migration):
                 base_field=models.CharField(
                     choices=[("email", "E Mail"), ("username", "Username")], max_length=100
                 ),
-                help_text="Fields of the user object to match against. (Hold shift to select multiple options)",
+                help_text=(
+                    "Fields of the user object to match against. (Hold shift to select multiple"
+                    " options)"
+                ),
                 size=None,
             ),
         ),
@@ -96,7 +98,11 @@ class Migration(migrations.Migration):
             name="show_matched_user",
             field=models.BooleanField(
                 default=True,
-                help_text="When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown",
+                help_text=(
+                    "When a valid username/email has been entered, and this option is enabled, the"
+                    " user's username and avatar will be shown. Otherwise, the text that the user"
+                    " entered will be shown"
+                ),
             ),
         ),
         migrations.RemoveField(
@@ -111,7 +117,10 @@ class Migration(migrations.Migration):
                     choices=[("email", "E Mail"), ("username", "Username")], max_length=100
                 ),
                 blank=True,
-                help_text="Fields of the user object to match against. (Hold shift to select multiple options)",
+                help_text=(
+                    "Fields of the user object to match against. (Hold shift to select multiple"
+                    " options)"
+                ),
                 size=None,
             ),
         ),
@@ -133,7 +142,10 @@ class Migration(migrations.Migration):
             name="password_stage",
             field=models.ForeignKey(
                 default=None,
-                help_text="When set, shows a password field, instead of showing the password field as seaprate step.",
+                help_text=(
+                    "When set, shows a password field, instead of showing the password field as"
+                    " seaprate step."
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 to="authentik_stages_password.passwordstage",
@@ -148,7 +160,10 @@ class Migration(migrations.Migration):
                     max_length=100,
                 ),
                 blank=True,
-                help_text="Fields of the user object to match against. (Hold shift to select multiple options)",
+                help_text=(
+                    "Fields of the user object to match against. (Hold shift to select multiple"
+                    " options)"
+                ),
                 size=None,
             ),
         ),

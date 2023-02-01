@@ -123,7 +123,6 @@ class OAuthSourceFilter(FilterSet):
         return queryset.exclude(oidc_jwks__iexact="{}")
 
     class Meta:
-
         model = OAuthSource
         fields = [
             "name",

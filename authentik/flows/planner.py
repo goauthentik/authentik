@@ -207,10 +207,13 @@ class FlowPlanner:
     ) -> FlowPlan:
         """Build flow plan by checking each stage in their respective
         order and checking the applied policies"""
-        with Hub.current.start_span(
-            op="authentik.flow.planner.build_plan",
-            description=self.flow.slug,
-        ) as span, HIST_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug).time():
+        with (
+            Hub.current.start_span(
+                op="authentik.flow.planner.build_plan",
+                description=self.flow.slug,
+            ) as span,
+            HIST_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug).time(),
+        ):
             span: Span
             span.set_data("flow", self.flow)
             span.set_data("user", user)

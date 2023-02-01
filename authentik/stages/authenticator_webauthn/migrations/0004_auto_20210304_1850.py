@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_authenticator_webauthn", "0003_webauthndevice_confirmed"),
     ]

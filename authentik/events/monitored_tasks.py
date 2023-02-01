@@ -178,7 +178,7 @@ class MonitoredTask(Task):
         ).save(self.result_timeout_hours)
         Event.new(
             EventAction.SYSTEM_TASK_EXCEPTION,
-            message=(f"Task {self.__name__} encountered an error: {exception_to_string(exc)}"),
+            message=f"Task {self.__name__} encountered an error: {exception_to_string(exc)}",
         ).save()
 
     def run(self, *args, **kwargs):

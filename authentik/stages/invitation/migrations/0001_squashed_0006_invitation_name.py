@@ -22,7 +22,6 @@ def migrate_add_name(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_stages_invitation", "0001_initial"),
         ("authentik_stages_invitation", "0002_auto_20201225_2143"),
@@ -58,7 +57,11 @@ class Migration(migrations.Migration):
                     "continue_flow_without_invitation",
                     models.BooleanField(
                         default=False,
-                        help_text="If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.",
+                        help_text=(
+                            "If this flag is set, this Stage will jump to the next Stage when no"
+                            " Invitation is given. By default this Stage will cancel the Flow when"
+                            " no invitation is given."
+                        ),
                     ),
                 ),
             ],

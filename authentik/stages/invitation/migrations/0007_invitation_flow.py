@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_flows", "0024_flow_authentication"),
         ("authentik_stages_invitation", "0001_squashed_0006_invitation_name"),

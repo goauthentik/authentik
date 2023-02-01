@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_password", "0002_passwordstage_change_flow"),
     ]
@@ -15,7 +14,10 @@ class Migration(migrations.Migration):
             name="failed_attempts_before_cancel",
             field=models.IntegerField(
                 default=5,
-                help_text="How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage.",
+                help_text=(
+                    "How many attempts a user has before the flow is canceled. To lock the user"
+                    " out, use a reputation policy and a user_write stage."
+                ),
             ),
         ),
     ]

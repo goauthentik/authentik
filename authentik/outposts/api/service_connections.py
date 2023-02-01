@@ -37,7 +37,6 @@ class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
         return obj.component
 
     class Meta:
-
         model = OutpostServiceConnection
         fields = [
             "pk",
@@ -101,7 +100,6 @@ class DockerServiceConnectionSerializer(ServiceConnectionSerializer):
     """DockerServiceConnection Serializer"""
 
     class Meta:
-
         model = DockerServiceConnection
         fields = ServiceConnectionSerializer.Meta.fields + [
             "url",
@@ -140,7 +138,6 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
         return kubeconfig
 
     class Meta:
-
         model = KubernetesServiceConnection
         fields = ServiceConnectionSerializer.Meta.fields + ["kubeconfig", "verify_ssl"]
 

@@ -86,7 +86,6 @@ class OutpostModel(Model):
         return [self]
 
     class Meta:
-
         abstract = True
 
 
@@ -119,10 +118,7 @@ class OutpostServiceConnection(models.Model):
     local = models.BooleanField(
         default=False,
         help_text=_(
-            (
-                "If enabled, use the local connection. Required Docker "
-                "socket/Kubernetes Integration"
-            )
+            "If enabled, use the local connection. Required Docker socket/Kubernetes Integration"
         ),
     )
 
@@ -152,7 +148,6 @@ class OutpostServiceConnection(models.Model):
         return ""
 
     class Meta:
-
         verbose_name = _("Outpost Service-Connection")
         verbose_name_plural = _("Outpost Service-Connections")
 
@@ -162,10 +157,8 @@ class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
 
     url = models.TextField(
         help_text=_(
-            (
-                "Can be in the format of 'unix://<path>' when connecting to a local docker daemon, "
-                "or 'https://<hostname>:2376' when connecting to a remote system."
-            )
+            "Can be in the format of 'unix://<path>' when connecting to a local docker daemon, "
+            "or 'https://<hostname>:2376' when connecting to a remote system."
         )
     )
     tls_verification = models.ForeignKey(
@@ -176,10 +169,8 @@ class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
         related_name="+",
         on_delete=models.SET_DEFAULT,
         help_text=_(
-            (
-                "CA which the endpoint's Certificate is verified against. "
-                "Can be left empty for no validation."
-            )
+            "CA which the endpoint's Certificate is verified against. "
+            "Can be left empty for no validation."
         ),
     )
     tls_authentication = models.ForeignKey(
@@ -208,7 +199,6 @@ class DockerServiceConnection(SerializerModel, OutpostServiceConnection):
         return f"Docker Service-Connection {self.name}"
 
     class Meta:
-
         verbose_name = _("Docker Service-Connection")
         verbose_name_plural = _("Docker Service-Connections")
 
@@ -218,10 +208,8 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
 
     kubeconfig = models.JSONField(
         help_text=_(
-            (
-                "Paste your kubeconfig here. authentik will automatically use "
-                "the currently selected context."
-            )
+            "Paste your kubeconfig here. authentik will automatically use "
+            "the currently selected context."
         ),
         blank=True,
     )
@@ -243,7 +231,6 @@ class KubernetesServiceConnection(SerializerModel, OutpostServiceConnection):
         return f"Kubernetes Service-Connection {self.name}"
 
     class Meta:
-
         verbose_name = _("Kubernetes Service-Connection")
         verbose_name_plural = _("Kubernetes Service-Connections")
 
@@ -261,10 +248,8 @@ class Outpost(SerializerModel, ManagedModel):
         null=True,
         blank=True,
         help_text=_(
-            (
-                "Select Service-Connection authentik should use to manage this outpost. "
-                "Leave empty if authentik should not handle the deployment."
-            )
+            "Select Service-Connection authentik should use to manage this outpost. "
+            "Leave empty if authentik should not handle the deployment."
         ),
         on_delete=models.SET_DEFAULT,
     )
@@ -315,7 +300,7 @@ class Outpost(SerializerModel, ManagedModel):
                 if isinstance(model_or_perm, models.Model):
                     model_or_perm: models.Model
                     code_name = (
-                        f"{model_or_perm._meta.app_label}." f"view_{model_or_perm._meta.model_name}"
+                        f"{model_or_perm._meta.app_label}.view_{model_or_perm._meta.model_name}"
                     )
                     try:
                         assign_perm(code_name, user, model_or_perm)

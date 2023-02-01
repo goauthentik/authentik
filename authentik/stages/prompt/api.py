@@ -14,7 +14,6 @@ class PromptStageSerializer(StageSerializer):
     name = CharField(validators=[UniqueValidator(queryset=PromptStage.objects.all())])
 
     class Meta:
-
         model = PromptStage
         fields = StageSerializer.Meta.fields + [
             "fields",
@@ -38,7 +37,6 @@ class PromptSerializer(ModelSerializer):
     promptstage_set = StageSerializer(many=True, required=False)
 
     class Meta:
-
         model = Prompt
         fields = [
             "pk",

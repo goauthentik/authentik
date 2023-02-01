@@ -23,7 +23,6 @@ def set_managed_flag(apps: Apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_providers_oauth2", "0007_auto_20201016_1107"),
         ("authentik_providers_oauth2", "0008_oauth2provider_issuer_mode"),
@@ -81,7 +80,10 @@ class Migration(migrations.Migration):
             name="access_code_validity",
             field=models.TextField(
                 default="minutes=1",
-                help_text="Access codes not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).",
+                help_text=(
+                    "Access codes not valid on or after current time + this value (Format:"
+                    " hours=1;minutes=2;seconds=3)."
+                ),
                 validators=[authentik.lib.utils.time.timedelta_string_validator],
             ),
         ),
@@ -94,7 +96,9 @@ class Migration(migrations.Migration):
             model_name="oauth2provider",
             name="rsa_key",
             field=models.ForeignKey(
-                help_text="Key used to sign the tokens. Only required when JWT Algorithm is set to RS256.",
+                help_text=(
+                    "Key used to sign the tokens. Only required when JWT Algorithm is set to RS256."
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 to="authentik_crypto.certificatekeypair",
@@ -121,7 +125,10 @@ class Migration(migrations.Migration):
             name="token_validity",
             field=models.TextField(
                 default="days=30",
-                help_text="Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).",
+                help_text=(
+                    "Tokens not valid on or after current time + this value (Format:"
+                    " hours=1;minutes=2;seconds=3)."
+                ),
                 validators=[authentik.lib.utils.time.timedelta_string_validator],
             ),
         ),

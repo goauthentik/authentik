@@ -14,7 +14,6 @@ class LDAPProviderSerializer(ProviderSerializer):
     outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
     class Meta:
-
         model = LDAPProvider
         fields = ProviderSerializer.Meta.fields + [
             "base_dn",
@@ -58,7 +57,6 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
     bind_flow_slug = CharField(source="authorization_flow.slug")
 
     class Meta:
-
         model = LDAPProvider
         fields = [
             "pk",

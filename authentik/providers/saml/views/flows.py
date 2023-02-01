@@ -82,11 +82,9 @@ class SAMLFlowFinalView(ChallengeStageView):
                 **{
                     "type": ChallengeTypes.NATIVE.value,
                     "component": "ak-stage-autosubmit",
-                    "title": (
-                        self.executor.plan.context.get(
-                            PLAN_CONTEXT_TITLE,
-                            _("Redirecting to %(app)s..." % {"app": application.name}),
-                        )
+                    "title": self.executor.plan.context.get(
+                        PLAN_CONTEXT_TITLE,
+                        _("Redirecting to %(app)s..." % {"app": application.name}),
                     ),
                     "url": provider.acs_url,
                     "attrs": form_attrs,

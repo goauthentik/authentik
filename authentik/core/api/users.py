@@ -84,7 +84,6 @@ class UserGroupSerializer(ModelSerializer):
     parent_name = CharField(source="parent.name", read_only=True)
 
     class Meta:
-
         model = Group
         fields = [
             "pk",
@@ -120,7 +119,6 @@ class UserSerializer(ModelSerializer):
         return path
 
     class Meta:
-
         model = User
         fields = [
             "pk",
@@ -172,7 +170,6 @@ class UserSelfSerializer(ModelSerializer):
         return user.group_attributes(self._context["request"]).get("settings", {})
 
     class Meta:
-
         model = User
         fields = [
             "pk",
@@ -402,7 +399,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 )
                 response["token"] = token.key
                 return Response(response)
-            except (IntegrityError) as exc:
+            except IntegrityError as exc:
                 return Response(data={"non_field_errors": [str(exc)]}, status=400)
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_flows", "0016_auto_20201202_1307"),
         ("authentik_sources_saml", "0010_samlsource_pre_authentication_flow"),

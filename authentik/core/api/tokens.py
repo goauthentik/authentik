@@ -39,7 +39,6 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
         return attrs
 
     class Meta:
-
         model = Token
         fields = [
             "pk",

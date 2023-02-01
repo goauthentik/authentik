@@ -18,11 +18,9 @@ class InvitationStage(Stage):
     continue_flow_without_invitation = models.BooleanField(
         default=False,
         help_text=_(
-            (
-                "If this flag is set, this Stage will jump to the next Stage when "
-                "no Invitation is given. By default this Stage will cancel the "
-                "Flow when no invitation is given."
-            )
+            "If this flag is set, this Stage will jump to the next Stage when "
+            "no Invitation is given. By default this Stage will cancel the "
+            "Flow when no invitation is given."
         ),
     )
 
@@ -43,7 +41,6 @@ class InvitationStage(Stage):
         return "ak-stage-invitation-form"
 
     class Meta:
-
         verbose_name = _("Invitation Stage")
         verbose_name_plural = _("Invitation Stages")
 
@@ -84,6 +81,5 @@ class Invitation(SerializerModel, ExpiringModel):
         return f"Invitation {self.invite_uuid.hex} created by {self.created_by}"
 
     class Meta:
-
         verbose_name = _("Invitation")
         verbose_name_plural = _("Invitations")

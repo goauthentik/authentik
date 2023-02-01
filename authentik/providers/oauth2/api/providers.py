@@ -20,7 +20,6 @@ class OAuth2ProviderSerializer(ProviderSerializer):
     """OAuth2Provider Serializer"""
 
     class Meta:
-
         model = OAuth2Provider
         fields = ProviderSerializer.Meta.fields + [
             "authorization_flow",

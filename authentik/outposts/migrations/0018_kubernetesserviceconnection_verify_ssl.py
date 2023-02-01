@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_outposts", "0001_squashed_0017_outpost_managed"),
     ]

@@ -4,7 +4,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_flows", "0017_auto_20210329_1334"),
     ]

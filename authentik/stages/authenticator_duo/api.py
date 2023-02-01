@@ -30,7 +30,6 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
     """AuthenticatorDuoStage Serializer"""
 
     class Meta:
-
         model = AuthenticatorDuoStage
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
@@ -155,10 +154,8 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
             return Response(
                 data={
                     "non_field_errors": [
-                        (
-                            "Stage does not have Admin API configured, "
-                            "which is required for automatic imports."
-                        )
+                        "Stage does not have Admin API configured, "
+                        "which is required for automatic imports."
                     ]
                 },
                 status=400,
@@ -171,7 +168,6 @@ class DuoDeviceSerializer(ModelSerializer):
     """Serializer for Duo authenticator devices"""
 
     class Meta:
-
         model = DuoDevice
         fields = ["pk", "name"]
         depth = 2
