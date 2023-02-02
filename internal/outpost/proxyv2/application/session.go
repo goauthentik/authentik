@@ -5,7 +5,9 @@ import (
 	"math"
 	"net/url"
 	"os"
+	"path"
 	"strconv"
+	"strings"
 
 	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/securecookie"
@@ -69,21 +71,27 @@ func (a *Application) Logout(sub string) error {
 		}
 		for _, file := range files {
 			s := sessions.Session{}
-			data, err := os.ReadFile(file.Name())
+			if !strings.HasPrefix(file.Name(), "session_") {
+				continue
+			}
+			fullPath := path.Join(os.TempDir(), file.Name())
+			data, err := os.ReadFile(fullPath)
 			if err != nil {
 				a.log.WithError(err).Warning("failed to read file")
 				continue
 			}
-			err = securecookie.DecodeMulti(constants.SessionName, string(data),
-				&s.Values, fs.Codecs...)
+			err = securecookie.DecodeMulti(
+				constants.SessionName, string(data),
+				&s.Values, fs.Codecs...,
+			)
 			if err != nil {
 				a.log.WithError(err).Warning("failed to decode session")
 				continue
 			}
 			claims := s.Values[constants.SessionClaims].(Claims)
 			if claims.Sub == sub {
-				a.log.WithField("path", file.Name()).Trace("deleting session")
-				err := os.Remove(file.Name())
+				a.log.WithField("path", fullPath).Trace("deleting session")
+				err := os.Remove(fullPath)
 				if err != nil {
 					a.log.WithError(err).Warning("failed to delete session")
 					continue
