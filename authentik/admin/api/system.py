@@ -14,6 +14,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentik.api.authentication import TokenAuthentication
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.reflection import get_env
 from authentik.outposts.apps import MANAGED_OUTPOST
@@ -100,5 +101,10 @@ class SystemView(APIView):
 
     @extend_schema(responses={200: SystemSerializer(many=False)})
     def get(self, request: Request) -> Response:
+        """Get system information."""
+        return Response(SystemSerializer(request).data)
+
+    @extend_schema(responses={200: SystemSerializer(many=False)})
+    def post(self, request: Request) -> Response:
         """Get system information."""
         return Response(SystemSerializer(request).data)
