@@ -115,7 +115,11 @@ func (a *Application) Logout(sub string) error {
 				continue
 			}
 			s := sessions.Session{}
-			ser.Deserialize(b, &s)
+			err = ser.Deserialize(b, &s)
+			if err != nil {
+				a.log.WithError(err).Warning("failed to deserialize")
+				continue
+			}
 			c := s.Values[constants.SessionClaims]
 			if c == nil {
 				continue
