@@ -85,7 +85,7 @@ func (a *Application) Logout(sub string) error {
 				&s.Values, fs.Codecs...,
 			)
 			if err != nil {
-				a.log.WithError(err).Warning("failed to decode session")
+				a.log.WithError(err).Trace("failed to decode session")
 				continue
 			}
 			claims := s.Values[constants.SessionClaims].(Claims)
