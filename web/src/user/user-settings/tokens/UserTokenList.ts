@@ -1,6 +1,7 @@
 import { IntentToLabel } from "@goauthentik/admin/tokens/TokenListPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { me } from "@goauthentik/common/users";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -39,6 +40,9 @@ export class UserTokenList extends Table<Token> {
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
             managed: "",
+            // The user might have access to other tokens that aren't for their user
+            // but only show tokens for their user here
+            userUsername: (await me()).user.username,
         });
     }
 
