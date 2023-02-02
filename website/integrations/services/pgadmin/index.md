@@ -33,6 +33,7 @@ In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these s
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
 -   Redirect URIs/Origins: `http://pgadmin.company/oauth2/authorize`
+-   Signing Key: Select any available key
 
 ### Step 2: Create authentik Application
 
