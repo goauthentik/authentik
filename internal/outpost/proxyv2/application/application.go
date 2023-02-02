@@ -237,21 +237,22 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.endpoint.EndSessionEndpoint
 	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
-		http.Redirect(rw, r, redirect, http.StatusFound)
+		a.redirectToStart(rw, r)
 		return
 	}
-	if c, exists := s.Values[constants.SessionClaims]; c == nil || !exists {
-		cc := c.(Claims)
-		uv := url.Values{
-			"id_token_hint": []string{cc.RawToken},
-		}
-		redirect += "?" + uv.Encode()
+	c, exists := s.Values[constants.SessionClaims]
+	if c == nil && !exists {
+		a.redirectToStart(rw, r)
+		return
 	}
-	s.Options.MaxAge = -1
-	err = s.Save(r, rw)
+	cc := c.(Claims)
+	uv := url.Values{
+		"id_token_hint": []string{cc.RawToken},
+	}
+	redirect += "?" + uv.Encode()
+	err = a.Logout(cc.Sub)
 	if err != nil {
-		http.Redirect(rw, r, redirect, http.StatusFound)
-		return
+		a.log.WithError(err).Warning("failed to logout of other sessions")
 	}
 	http.Redirect(rw, r, redirect, http.StatusFound)
 }
