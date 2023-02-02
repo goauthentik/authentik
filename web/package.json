@@ -69,7 +69,7 @@
         "@hcaptcha/types": "^1.0.3",
         "@jackfranklin/rollup-plugin-markdown": "^0.4.0",
         "@lingui/cli": "^3.16.1",
-        "@lingui/core": "^3.16.0",
+        "@lingui/core": "^3.17.0",
         "@lingui/detect-locale": "^3.16.1",
         "@lingui/macro": "^3.17.0",
         "@patternfly/patternfly": "^4.222.4",
