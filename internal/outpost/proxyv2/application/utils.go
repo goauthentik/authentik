@@ -74,14 +74,14 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 
 func (a *Application) redirect(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.proxyConfig.ExternalHost
-	rd, ok := a.checkRedirectParam(r)
-	if ok {
-		redirect = rd
-	}
 	s, _ := a.sessions.Get(r, constants.SessionName)
 	redirectR, ok := s.Values[constants.SessionRedirect]
 	if ok {
 		redirect = redirectR.(string)
+	}
+	rd, ok := a.checkRedirectParam(r)
+	if ok {
+		redirect = rd
 	}
 	a.log.WithField("redirect", redirect).Trace("final redirect")
 	http.Redirect(rw, r, redirect, http.StatusFound)
