@@ -45,8 +45,7 @@ class BaseOAuthClient:
         except RequestException as exc:
             self.logger.warning("Unable to fetch user profile", exc=exc, body=response.text)
             return None
-        else:
-            return response.json()
+        return response.json()
 
     def get_redirect_args(self) -> dict[str, str]:
         """Get request parameters for redirect url."""

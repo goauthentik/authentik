@@ -36,15 +36,14 @@ class OAuthRedirect(OAuthClientMixin, RedirectView):
             source: OAuthSource = OAuthSource.objects.get(slug=slug)
         except OAuthSource.DoesNotExist:
             raise Http404(f"Unknown OAuth source '{slug}'.")
-        else:
-            if not source.enabled:
-                raise Http404(f"source {slug} is not enabled.")
-            client = self.get_client(source, callback=self.get_callback_url(source))
-            params = self.get_additional_parameters(source)
-            params.setdefault("scope", [])
-            if source.additional_scopes != "":
-                if source.additional_scopes.startswith("*"):
-                    params["scope"] = source.additional_scopes[1:].split(" ")
-                else:
-                    params["scope"] += source.additional_scopes.split(" ")
-            return client.get_redirect_url(params)
+        if not source.enabled:
+            raise Http404(f"source {slug} is not enabled.")
+        client = self.get_client(source, callback=self.get_callback_url(source))
+        params = self.get_additional_parameters(source)
+        params.setdefault("scope", [])
+        if source.additional_scopes != "":
+            if source.additional_scopes.startswith("*"):
+                params["scope"] = source.additional_scopes[1:].split(" ")
+            else:
+                params["scope"] += source.additional_scopes.split(" ")
+        return client.get_redirect_url(params)

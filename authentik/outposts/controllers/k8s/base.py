@@ -73,8 +73,7 @@ class KubernetesObjectReconciler(Generic[T]):
                     raise NeedsRecreate from exc
                 self.logger.debug("Other unhandled error", exc=exc)
                 raise exc
-            else:
-                self.reconcile(current, reference)
+            self.reconcile(current, reference)
         except NeedsUpdate:
             try:
                 self.update(current, reference)

@@ -235,8 +235,7 @@ class Importer:
                     raise IntegrityError
         except IntegrityError:
             return False
-        else:
-            self.logger.debug("Committing changes")
+        self.logger.debug("Committing changes")
         return True
 
     def _apply_models(self) -> bool:

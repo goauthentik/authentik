@@ -27,10 +27,9 @@ def redirect_with_qs(
             return redirect(view)
         LOGGER.warning("redirect target is not a valid view", view=view)
         raise
-    else:
-        if get_query_set:
-            target += "?" + urlencode(get_query_set.items())
-        return redirect(target)
+    if get_query_set:
+        target += "?" + urlencode(get_query_set.items())
+    return redirect(target)
 
 
 def reverse_with_qs(view: str, query: Optional[QueryDict] = None, **kwargs) -> str:
