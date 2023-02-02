@@ -260,7 +260,7 @@ class OAuth2Provider(Provider):
             return private_key, JWTAlgorithms.RS256
         if isinstance(private_key, EllipticCurvePrivateKey):
             return private_key, JWTAlgorithms.ES256
-        raise Exception(f"Invalid private key type: {type(private_key)}")
+        raise ValueError(f"Invalid private key type: {type(private_key)}")
 
     def get_issuer(self, request: HttpRequest) -> Optional[str]:
         """Get issuer, based on request"""

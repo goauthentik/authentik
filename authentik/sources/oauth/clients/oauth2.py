@@ -86,8 +86,7 @@ class OAuth2Client(BaseOAuthClient):
         except RequestException as exc:
             LOGGER.warning("Unable to fetch access token", exc=exc)
             return None
-        else:
-            return response.json()
+        return response.json()
 
     def get_redirect_args(self) -> dict[str, str]:
         """Get request parameters for redirect url."""
@@ -111,8 +110,7 @@ class OAuth2Client(BaseOAuthClient):
             token_data = loads(raw_token)
         except ValueError:
             return dict(parse_qsl(raw_token))
-        else:
-            return token_data
+        return token_data
 
     def do_request(self, method: str, url: str, **kwargs) -> Response:
         """Build remote url request. Constructs necessary auth."""
@@ -151,5 +149,4 @@ class UserprofileHeaderAuthClient(OAuth2Client):
         except RequestException as exc:
             LOGGER.warning("Unable to fetch user profile", exc=exc, body=response.text)
             return None
-        else:
-            return response.json()
+        return response.json()

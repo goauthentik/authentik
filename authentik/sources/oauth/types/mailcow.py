@@ -38,8 +38,7 @@ class MailcowOAuth2Client(OAuth2Client):
         except RequestException as exc:
             LOGGER.warning("Unable to fetch user profile", exc=exc, body=response.text)
             return None
-        else:
-            return response.json()
+        return response.json()
 
 
 class MailcowOAuth2Callback(OAuthCallback):
