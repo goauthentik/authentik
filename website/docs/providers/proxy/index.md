@@ -73,6 +73,8 @@ When using domain-level mode, navigate to `auth.domain.tld/outpost.goauthentik.i
 
 To log out, navigate to `/outpost.goauthentik.io/sign_out`.
 
+Starting with authentik 2023.2, when logging out of a provider, all the users sessions within the respective outpost are invalidated.
+
 ## Allowing unauthenticated requests
 
 To allow un-authenticated requests to certain paths/URLs, you can use the _Unauthenticated URLs_ / _Unauthenticated Paths_ field.
