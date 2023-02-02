@@ -280,6 +280,7 @@ module.exports = {
                     },
                 },
                 "troubleshooting/access",
+                "troubleshooting/csrf",
                 "troubleshooting/emails",
                 "troubleshooting/login",
                 "troubleshooting/image_upload",
