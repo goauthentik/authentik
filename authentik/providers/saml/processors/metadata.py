@@ -172,4 +172,4 @@ class MetadataProcessor:
         if self.provider.signing_kp:
             self._sign(entity_descriptor)
 
-        return tostring(entity_descriptor, pretty_print=True).decode()
+        return tostring(entity_descriptor).decode()

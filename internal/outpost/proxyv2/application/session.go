@@ -110,7 +110,7 @@ func (a *Application) Logout(sub string) error {
 		if err != nil {
 			return err
 		}
-		ser := redistore.GobSerializer{}
+		serializer := redistore.GobSerializer{}
 		for _, key := range keys {
 			v, err := pool.Do("GET", key)
 			if err != nil {
@@ -123,7 +123,7 @@ func (a *Application) Logout(sub string) error {
 				continue
 			}
 			s := sessions.Session{}
-			err = ser.Deserialize(b, &s)
+			err = serializer.Deserialize(b, &s)
 			if err != nil {
 				a.log.WithError(err).Warning("failed to deserialize")
 				continue
