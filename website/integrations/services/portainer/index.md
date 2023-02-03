@@ -49,7 +49,7 @@ In Portainer, under _Settings_, _Authentication_, Select _OAuth_ and _Custom_
 -   Redirect URL: `https://portainer.company`
 -   Resource URL: `https://authentik.company/application/o/userinfo/`
 -   Logout URL: `https://authentik.company/application/o/portainer/end-session/`
--   User Identifier: `email`
+-   User Identifier: `preferred_username` (Or `email` if you want to use email addresses as identifiers)
 -   Scopes: `email openid profile`
 
 :::note
