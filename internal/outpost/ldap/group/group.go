@@ -26,7 +26,7 @@ func (lg *LDAPGroup) Entry() *ldap.Entry {
 	sanitizedAttrs := utils.AttributesToLDAP(lg.AKAttributes, true)
 	attrs = append(attrs, sanitizedAttrs...)
 
-	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCGroupOfNames, constants.OCAKGroup}
+	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCGroupOfNames, constants.OCAKGroup, constants.OCPosixGroup}
 	if lg.IsVirtualGroup {
 		objectClass = append(objectClass, constants.OCAKVirtualGroup)
 	}

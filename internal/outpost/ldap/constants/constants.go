@@ -12,6 +12,7 @@ const (
 	OCGroupOfNames       = "groupOfNames"
 	OCAKGroup            = "goauthentik.io/ldap/group"
 	OCAKVirtualGroup     = "goauthentik.io/ldap/virtual-group"
+	OCPosixGroup         = "posixGroup"
 )
 
 const (
@@ -19,6 +20,7 @@ const (
 	OCOrgPerson     = "organizationalPerson"
 	OCInetOrgPerson = "inetOrgPerson"
 	OCAKUser        = "goauthentik.io/ldap/user"
+	OCPosixAccount        = "posixAccount"
 )
 
 const (
@@ -47,6 +49,7 @@ func GetUserOCs() map[string]bool {
 		OCOrgPerson:     true,
 		OCInetOrgPerson: true,
 		OCAKUser:        true,
+		OCPosixAccount:  true,
 	}
 }
 
@@ -56,6 +59,7 @@ func GetGroupOCs() map[string]bool {
 		OCGroupOfUniqueNames: true,
 		OCGroupOfNames:       true,
 		OCAKGroup:            true,
+		OCPosixGroup:         true,
 	}
 }
 

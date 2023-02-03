@@ -49,5 +49,6 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 		"reason":       "no_provider",
 		"app":          "",
 	}).Inc()
-	return ldap.LDAPResultOperationsError, nil
+
+	return ldap.LDAPResultInsufficientAccessRights, nil
 }
