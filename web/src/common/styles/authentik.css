@@ -237,6 +237,9 @@ html > form > input {
     .pf-c-expandable-section__toggle-icon {
         color: var(--ak-dark-foreground);
     }
+    .pf-c-expandable-section.pf-m-display-lg {
+        background-color: var(--ak-dark-background-light-ish);
+    }
     /* header for form group */
     .pf-c-form__field-group-header-title-text {
         color: var(--ak-dark-foreground);
