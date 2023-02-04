@@ -165,7 +165,7 @@ export class AdminInterface extends AKElement {
 
     renderSidebarItems(): TemplateResult {
         return html`
-            ${this.version?.versionCurrent !== VERSION
+            ${this.version && this.version.versionCurrent !== VERSION
                 ? html`
                       <ak-sidebar-item ?highlight=${true}>
                           <span slot="label"

@@ -177,6 +177,8 @@ html > form > input {
         --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
         --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
         --pf-c-table--cell--Color: var(--ak-dark-foreground);
+        --pf-c-table--tr--m-hoverable--hover--BackgroundColor: var(--ak-dark-background-light-ish);
+        --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(--ak-dark-background-lighter);
     }
     .pf-c-table__text {
         color: var(--ak-dark-foreground);
