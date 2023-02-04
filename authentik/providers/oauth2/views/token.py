@@ -25,6 +25,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.events.models import Event, EventAction
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
 from authentik.providers.oauth2.constants import (
@@ -47,6 +48,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
 from authentik.sources.oauth.models import OAuthSource
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
 
@@ -281,11 +283,13 @@ class TokenParams:
 
         Event.new(
             action=EventAction.LOGIN,
-            PLAN_CONTEXT_METHOD="token",
-            PLAN_CONTEXT_METHOD_ARGS={
-                "identifier": token.identifier,
+            **{
+                PLAN_CONTEXT_METHOD: "token",
+                PLAN_CONTEXT_METHOD_ARGS: {
+                    "identifier": token.identifier,
+                },
+                PLAN_CONTEXT_APPLICATION: app,
             },
-            PLAN_CONTEXT_APPLICATION=app,
         ).from_http(request, user=user)
         return None
 
