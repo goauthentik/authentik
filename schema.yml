@@ -92,6 +92,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+    post:
+      operationId: admin_system_create
+      description: Get system information.
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/System'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /admin/system_tasks/:
     get:
       operationId: admin_system_tasks_list

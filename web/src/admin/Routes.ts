@@ -132,4 +132,8 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/blueprints/BlueprintListPage");
         return html`<ak-blueprint-list></ak-blueprint-list>`;
     }),
+    new Route(new RegExp("^/debug$"), async () => {
+        await import("@goauthentik/admin/DebugPage");
+        return html`<ak-admin-debug-page></ak-admin-debug-page>`;
+    }),
 ];
