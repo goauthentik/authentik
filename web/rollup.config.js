@@ -25,10 +25,6 @@ export const resources = [
         dest: "dist/",
     },
     {
-        src: "node_modules/@patternfly/patternfly/components/Dropdown/dropdown.css",
-        dest: "dist/",
-    },
-    {
         src: "node_modules/@patternfly/patternfly/components/Page/page.css",
         dest: "dist/",
     },

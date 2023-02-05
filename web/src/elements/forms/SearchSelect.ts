@@ -9,6 +9,7 @@ import { CSSResult, TemplateResult, html, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
@@ -73,6 +74,9 @@ export class SearchSelect<T> extends AKElement {
 
     constructor() {
         super();
+        if (!document.adoptedStyleSheets.includes(PFDropdown)) {
+            document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFDropdown];
+        }
         this.dropdownContainer = document.createElement("div");
         this.observer = new IntersectionObserver(() => {
             this.open = false;
