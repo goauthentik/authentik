@@ -3,6 +3,7 @@ package application
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/url"
 	"strings"
@@ -29,7 +30,11 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	res, err := a.httpClient.Do(req)
 	if err != nil || res.StatusCode > 200 {
-		a.log.WithError(err).Warning("failed to send token request")
+		b, err := io.ReadAll(res.Body)
+		if err != nil {
+			b = []byte(err.Error())
+		}
+		a.log.WithError(err).WithField("body", string(b)).Warning("failed to send token request")
 		return nil
 	}
 	var token TokenResponse
