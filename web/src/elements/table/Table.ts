@@ -294,17 +294,9 @@ export abstract class Table<T> extends AKElement {
         return items.map((item) => {
             const itemSelectHandler = (ev?: InputEvent | PointerEvent) => {
                 let checked = false;
-                if (ev) {
-                    // Only register click events on a table row
-                    if (ev instanceof PointerEvent) {
-                        if ((ev.target as HTMLInputElement).tagName.toLowerCase() != "tr") {
-                            return;
-                        }
-                    } else if (ev instanceof InputEvent) {
-                        checked = (ev.target as HTMLInputElement).checked;
-                    }
-                } else {
-                    // If we have no event, toggle the state
+                if (ev instanceof InputEvent) {
+                    checked = (ev.target as HTMLInputElement).checked;
+                } else if (ev instanceof PointerEvent) {
                     checked = this.selectedElements.indexOf(item) === -1;
                 }
                 if (checked) {
