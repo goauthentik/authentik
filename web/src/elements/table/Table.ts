@@ -292,10 +292,17 @@ export abstract class Table<T> extends AKElement {
 
     private renderRowGroup(items: T[]): TemplateResult[] {
         return items.map((item) => {
-            const itemSelectHandler = (ev?: InputEvent) => {
+            const itemSelectHandler = (ev?: InputEvent | PointerEvent) => {
                 let checked = false;
                 if (ev) {
-                    checked = (ev.target as HTMLInputElement).checked;
+                    // Only register click events on a table row
+                    if (ev instanceof PointerEvent) {
+                        if ((ev.target as HTMLInputElement).tagName.toLowerCase() != "tr") {
+                            return;
+                        }
+                    } else if (ev instanceof InputEvent) {
+                        checked = (ev.target as HTMLInputElement).checked;
+                    }
                 } else {
                     // If we have no event, toggle the state
                     checked = this.selectedElements.indexOf(item) === -1;
@@ -332,9 +339,7 @@ export abstract class Table<T> extends AKElement {
                 <tr
                     role="row"
                     class="${this.checkbox ? "pf-m-hoverable" : ""}"
-                    @click=${() => {
-                        itemSelectHandler();
-                    }}
+                    @click=${itemSelectHandler}
                 >
                     ${this.checkbox
                         ? html`<td class="pf-c-table__check" role="cell">
