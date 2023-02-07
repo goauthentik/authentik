@@ -71,7 +71,7 @@ module.exports = {
                         "services/truecommand/index",
                         "services/sssd/index",
                         "services/veeam-enterprise-manager/index",
-                        "services/skyhigh/index",
+                        "services/skyhigh/index",                      
                     ],
                 },
                 {
@@ -84,6 +84,7 @@ module.exports = {
                         "services/tautulli/index",
                         "services/jellyfin/index",
                         "services/weblate/index",
+                        "services/gravitee/index",
                     ],
                 },
                 {
