@@ -478,7 +478,6 @@ export class FlowExecutor extends AKElement implements StageHost {
             class="pf-c-background-image__filter"
             width="0"
             height="0"
-            style="display:none;"
         >
             <filter id="image_overlay">
                 <feColorMatrix
