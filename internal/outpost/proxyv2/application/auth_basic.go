@@ -14,7 +14,15 @@ type TokenResponse struct {
 	IDToken     string `json:"id_token"`
 }
 
+const JWTUsername = "goauthentik.io/token"
+
 func (a *Application) attemptBasicAuth(username, password string) *Claims {
+	if username == JWTUsername {
+		res := a.attemptBearerAuth(password)
+		if res != nil {
+			return &res.Claims
+		}
+	}
 	values := url.Values{
 		"grant_type": []string{"client_credentials"},
 		"client_id":  []string{a.oauthConfig.ClientID},

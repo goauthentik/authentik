@@ -28,7 +28,7 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 	bearer := a.checkAuthHeaderBearer(r)
 	if bearer != "" {
 		a.log.Trace("checking bearer token")
-		tc := a.attemptBearerAuth(r, bearer)
+		tc := a.attemptBearerAuth(bearer)
 		if tc != nil {
 			return a.saveAndCacheClaims(rw, r, tc.Claims)
 		}

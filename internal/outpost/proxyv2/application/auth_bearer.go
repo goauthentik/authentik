@@ -27,7 +27,7 @@ type TokenIntrospectionResponse struct {
 	ClientID string `json:"client_id"`
 }
 
-func (a *Application) attemptBearerAuth(r *http.Request, token string) *TokenIntrospectionResponse {
+func (a *Application) attemptBearerAuth(token string) *TokenIntrospectionResponse {
 	values := url.Values{
 		"client_id":     []string{a.oauthConfig.ClientID},
 		"client_secret": []string{a.oauthConfig.ClientSecret},

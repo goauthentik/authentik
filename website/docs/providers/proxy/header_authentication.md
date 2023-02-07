@@ -41,6 +41,8 @@ If the received credentials are invalid, a normal authentication flow is initiat
 It is **strongly** recommended that the client sending requests with HTTP-Basic authentication persists the cookies returned by the outpost. If this is not the case, every request must be authenticated independently, which will increase load on the authentik server and encounter a performance hit.
 :::
 
+Starting with authentik 2023.2, logging in with the reserved username `goauthentik.io/token` will behave as if a bearer token was used. All the same options as below apply. This is to allow token-based authentication for applications which might only support basic authentication.
+
 ### Receiving HTTP Bearer authentication
 
 :::info
