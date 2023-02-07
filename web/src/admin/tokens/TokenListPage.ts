@@ -77,6 +77,9 @@ export class TokenListPage extends TablePage<Token> {
         return html`<ak-forms-delete-bulk
             objectLabel=${t`Token(s)`}
             .objects=${this.selectedElements}
+            .metadata=${(item: Token) => {
+                return [{ key: t`Identifier`, value: item.identifier }];
+            }}
             .usedBy=${(item: Token) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTokensUsedByList({
                     identifier: item.identifier,

@@ -134,6 +134,9 @@ export class UserTokenList extends Table<Token> {
         return html`<ak-forms-delete-bulk
             objectLabel=${t`Token(s)`}
             .objects=${this.selectedElements}
+            .metadata=${(item: Token) => {
+                return [{ key: t`Identifier`, value: item.identifier }];
+            }}
             .delete=${(item: Token) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
                     identifier: item.identifier,
