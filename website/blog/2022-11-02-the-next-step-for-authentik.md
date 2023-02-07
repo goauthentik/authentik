@@ -7,7 +7,8 @@ authors:
       title: CTO at Authentik Security Inc
       url: https://github.com/BeryJu
       image_url: https://github.com/BeryJu.png
-tags: [announcement]
+tags:
+    - announcement
 hide_table_of_contents: false
 ---
 

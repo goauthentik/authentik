@@ -7,7 +7,10 @@ authors:
       title: Freelance writer
       url: https://nickmoore.me/
       image_url: https://nickmoore.me/assets/images/image01.jpg
-tags: [sso, self-hosting]
+tags:
+    - sso
+    - self-hosting
+    - saas
 hide_table_of_contents: false
 ---
 
