@@ -292,11 +292,15 @@ export abstract class Table<T> extends AKElement {
 
     private renderRowGroup(items: T[]): TemplateResult[] {
         return items.map((item) => {
-            const itemSelectHandler = (ev?: InputEvent | PointerEvent) => {
+            const itemSelectHandler = (ev: InputEvent | PointerEvent) => {
                 let checked = false;
-                if (ev instanceof InputEvent) {
-                    checked = (ev.target as HTMLInputElement).checked;
+                const target = ev.target as HTMLElement;
+                if (ev.type === "input") {
+                    checked = (target as HTMLInputElement).checked;
                 } else if (ev instanceof PointerEvent) {
+                    if (target.classList.contains("ignore-click")) {
+                        return;
+                    }
                     checked = this.selectedElements.indexOf(item) === -1;
                 }
                 if (checked) {
@@ -335,11 +339,15 @@ export abstract class Table<T> extends AKElement {
                 >
                     ${this.checkbox
                         ? html`<td class="pf-c-table__check" role="cell">
-                              <label
+                              <label class="ignore-click"
                                   ><input
                                       type="checkbox"
+                                      class="ignore-click"
                                       .checked=${this.selectedElements.indexOf(item) >= 0}
                                       @input=${itemSelectHandler}
+                                      @click=${(ev: Event) => {
+                                          ev.stopPropagation();
+                                      }}
                               /></label>
                           </td>`
                         : html``}
@@ -351,7 +359,8 @@ export abstract class Table<T> extends AKElement {
                                   ) > -1
                                       ? "pf-m-expanded"
                                       : ""}"
-                                  @click=${() => {
+                                  @click=${(ev: Event) => {
+                                      ev.stopPropagation();
                                       const idx = this.expandedElements.indexOf(item);
                                       if (idx <= -1) {
                                           // Element is not expanded, add it
