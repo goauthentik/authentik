@@ -9,7 +9,6 @@ title: Zammad
 From https://zammad.org/
 :::note
 Zammad is a web-based, open source user support/ticketing solution.
-
 Download and install it on your own servers. For free.
 :::
 
@@ -58,7 +57,7 @@ In authentik, create an application (under _Resources/Applications_) with these 
 
 ## zammad Setup
 
-Configure Snipe-IT LDAP settings by going to settings (he gear icon), and selecting `LDAP`
+Configure Zammad SAML settings by going to settings (he gear icon), and selecting `Security -> Third-party Applications` and activiate `Authentication via SAML`
 
 Change the following fields
 
