@@ -15,6 +15,7 @@ from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
 from dacite.core import from_dict
 from django.db import models
 from django.http import HttpRequest
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
@@ -26,7 +27,6 @@ from authentik.events.signals import get_login_event
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
 from authentik.providers.oauth2.constants import (
     ACR_AUTHENTIK_DEFAULT,
     AMR_MFA,
@@ -267,11 +267,15 @@ class OAuth2Provider(Provider):
         if self.issuer_mode == IssuerMode.GLOBAL:
             return request.build_absolute_uri("/")
         try:
-            mountpoint = AuthentikProviderOAuth2Config.mountpoints[
-                "authentik.providers.oauth2.urls"
-            ]
-            # pylint: disable=no-member
-            return request.build_absolute_uri(f"/{mountpoint}{self.application.slug}/")
+            url = reverse(
+                "authentik_providers_oauth2:provider-root",
+                kwargs={
+                    # pylint: disable=no-member
+                    "application_slug": self.application.slug,
+                },
+            )
+            return request.build_absolute_uri(url)
+        # pylint: disable=no-member
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
@@ -303,8 +307,6 @@ class OAuth2Provider(Provider):
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
         key, alg = self.jwt_key
-        # If the provider does not have an RSA Key assigned, it was switched to Symmetric
-        self.refresh_from_db()
         return encode(payload, key, algorithm=alg, headers=headers)
 
     class Meta:
