@@ -23,17 +23,21 @@ The following placeholders will be used:
 
 ### Step 1 - Property Mappings
 
-Create two Mappings:
+In authentik, create two Mappings (under _Customisation/Property Mappings_) with these settings :
 
-1.  Name: Zammad SAML Mapping: name
-    SAML Attribute Name: name
-    Friendly Name: none
-    Expression: `return request.user.name`
+#### name mapping
 
-2.  Name: Zammad SAML Mapping: email
-    SAML Attribute Name: email
-    Friendly Name: none
-    Expression: `return request.user.email`
+-   Name: Zammad SAML Mapping: name
+-   SAML Attribute Name: name
+-   Friendly Name: none
+-   Expression: `return request.user.name`
+
+#### email mapping
+
+-   Name: Zammad SAML Mapping: email
+-   SAML Attribute Name: email
+-   Friendly Name: none
+-   Expression: `return request.user.email`
 
 ### Step 2 - SAML Provider
 
