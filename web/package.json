@@ -72,7 +72,7 @@
         "@lingui/cli": "^3.17.0",
         "@lingui/core": "^3.16.0",
         "@lingui/detect-locale": "^3.17.0",
-        "@lingui/macro": "^3.17.0",
+        "@lingui/macro": "^3.17.1",
         "@patternfly/patternfly": "^4.224.2",
         "@polymer/iron-form": "^3.0.1",
         "@polymer/paper-input": "^3.2.1",
