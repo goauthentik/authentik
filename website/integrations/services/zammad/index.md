@@ -61,7 +61,7 @@ In authentik, create an application (under _Resources/Applications_) with these 
 
 ## zammad Setup
 
-Configure Zammad SAML settings by going to settings (he gear icon), and selecting `Security -> Third-party Applications` and activiate `Authentication via SAML`
+Configure Zammad SAML settings by going to settings (the gear icon), and selecting `Security -> Third-party Applications` and activiate `Authentication via SAML`
 
 Change the following fields
 
