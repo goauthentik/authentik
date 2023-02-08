@@ -7,6 +7,7 @@ from re import fullmatch
 from typing import Any, Optional
 
 from django.http import HttpRequest, HttpResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.timezone import datetime, now
 from django.views import View
@@ -39,7 +40,9 @@ from authentik.providers.oauth2.constants import (
     GRANT_TYPE_REFRESH_TOKEN,
 )
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
+from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
+    AccessToken,
     AuthorizationCode,
     ClientTypes,
     DeviceToken,
@@ -469,30 +472,47 @@ class TokenView(View):
 
     def create_code_response(self) -> dict[str, Any]:
         """See https://tools.ietf.org/html/rfc6749#section-4.1"""
-        refresh_token = self.provider.create_refresh_token(
+        now = timezone.now()
+        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken.objects.create(
+            provider=self.provider,
             user=self.params.authorization_code.user,
-            scope=self.params.authorization_code.scope,
-            request=self.request,
-            expiry=timedelta_from_string(self.provider.token_validity),
+            expires=access_token_expiry,
+            token=IDToken(
+                self.provider,
+                self.params.authorization_code.user,
+                self.request,
+                exp=int(access_token_expiry.timestamp()),
+            ).to_access_token(),
         )
 
-        id_token = refresh_token.create_id_token(
-            user=self.params.authorization_code.user,
-            request=self.request,
+        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+        id_token = IDToken(
+            self.provider,
+            self.params.authorization_code.user,
+            self.request,
+            exp=int(refresh_token_expiry.timestamp()),
         )
         id_token.nonce = self.params.authorization_code.nonce
-        id_token.at_hash = refresh_token.at_hash
-        refresh_token.id_token = id_token
-        refresh_token.save()
+        id_token.at_hash = access_token.at_hash
 
-        # Delete old token
+        refresh_token = RefreshToken.objects.create(
+            user=self.params.authorization_code.user,
+            scope=self.params.authorization_code.scope,
+            expires=refresh_token_expiry,
+            id_token=id_token,
+        )
+
+        # Delete old code
         self.params.authorization_code.delete()
         return {
-            "access_token": refresh_token.access_token,
-            "refresh_token": refresh_token.refresh_token,
+            "access_token": access_token.token,
+            "refresh_token": refresh_token.token,
             "token_type": "bearer",
-            "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
-            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
+            "expires_in": int(
+                timedelta_from_string(self.provider.access_token_validity).total_seconds()
+            ),
+            "id_token": self.provider.encode(id_token.to_dict()),
         }
 
     def create_refresh_response(self) -> dict[str, Any]:
@@ -530,6 +550,8 @@ class TokenView(View):
             "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
             "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
         }
+
+    # TODO
 
     def create_client_credentials_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""
