@@ -74,4 +74,4 @@ Change the following fields
 ## Additional Resources
 
 -   https://admin-docs.zammad.org/en/latest/settings/security/third-party/saml.html
--   https://community.zammad.org/t/saml-authentication-with-authentik-saml-login-url-and-auto-assign-permission/10876/3?u=tealk
+-   https://community.zammad.org/t/saml-authentication-with-authentik-saml-login-url-and-auto-assign-permission/10876/3
