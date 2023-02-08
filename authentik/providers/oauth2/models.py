@@ -529,7 +529,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
 
 class DeviceToken(ExpiringModel):
-    """Device token for OAuth device flow"""
+    """Temporary device token for OAuth device flow"""
 
     user = models.ForeignKey(
         "authentik_core.User", default=None, on_delete=models.CASCADE, null=True

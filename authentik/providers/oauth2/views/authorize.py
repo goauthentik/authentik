@@ -264,8 +264,6 @@ class OAuthAuthorizationParams:
         code.expires = timezone.now() + timedelta_from_string(self.provider.access_code_validity)
         code.scope = self.scope
         code.nonce = self.nonce
-        code.is_open_id = SCOPE_OPENID in self.scope
-
         return code
 
 

@@ -476,21 +476,17 @@ class TokenView(View):
             expiry=timedelta_from_string(self.provider.token_validity),
         )
 
-        if self.params.authorization_code.is_open_id:
-            id_token = refresh_token.create_id_token(
-                user=self.params.authorization_code.user,
-                request=self.request,
-            )
-            id_token.nonce = self.params.authorization_code.nonce
-            id_token.at_hash = refresh_token.at_hash
-            refresh_token.id_token = id_token
-
-        # Store the token.
+        id_token = refresh_token.create_id_token(
+            user=self.params.authorization_code.user,
+            request=self.request,
+        )
+        id_token.nonce = self.params.authorization_code.nonce
+        id_token.at_hash = refresh_token.at_hash
+        refresh_token.id_token = id_token
         refresh_token.save()
 
-        # We don't need to store the code anymore.
+        # Delete old token
         self.params.authorization_code.delete()
-
         return {
             "access_token": refresh_token.access_token,
             "refresh_token": refresh_token.refresh_token,

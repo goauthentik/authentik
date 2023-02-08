@@ -121,7 +121,7 @@ class TestToken(OAuthTestCase):
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
         code = AuthorizationCode.objects.create(
-            code="foobar", provider=provider, user=user, is_open_id=True
+            code="foobar", provider=provider, user=user
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
