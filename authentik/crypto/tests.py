@@ -11,9 +11,9 @@ from rest_framework.test import APITestCase
 
 from authentik.core.api.used_by import DeleteAction
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
-from authentik.crypto.api import CertificateKeyPairSerializer
+from authentik.crypto.api import ACMEHTTP01ChallengeSerializer, CertificateKeyPairSerializer
 from authentik.crypto.builder import CertificateBuilder
-from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.models import ACMEHTTP01Challenge, CertificateKeyPair
 from authentik.crypto.tasks import MANAGED_DISCOVERED, certificate_discovery
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id, generate_key
@@ -257,3 +257,66 @@ class TestCrypto(APITestCase):
         self.assertTrue(
             CertificateKeyPair.objects.filter(managed=MANAGED_DISCOVERED % "foo.bar").exists()
         )
+
+    def test_model_acmehttp01challenge(self):
+        """Test model ACMEHTTP01Challenge"""
+        challenge = ACMEHTTP01Challenge.objects.create(
+            host="authentik.mydomain.com",
+            challenge_id="cRwdSWr",
+            challenge_response="AzpUGtCMuZvRpntnXBAqRdUZDoQAVyzQ",
+        )
+        self.assertEqual(challenge.host, "authentik.mydomain.com")
+        self.assertEqual(challenge.challenge_id, "cRwdSWr")
+        self.assertEqual(challenge.challenge_response, "AzpUGtCMuZvRpntnXBAqRdUZDoQAVyzQ")
+
+    def test_acmehttp01challenge_serializer(self):
+        """Test ACMEHTTP01Challenge Serializer"""
+        self.assertTrue(
+            ACMEHTTP01ChallengeSerializer(
+                data={
+                    "host": "authentik.mydomain.com",
+                    "challenge_id": "cRwdSWr",
+                    "challenge_response": "AzpUGtCMuZvRpntnXBAqRdUZDoQAVyzQ",
+                }
+            ).is_valid()
+        )
+        self.assertFalse(
+            CertificateKeyPairSerializer(
+                data={
+                    "host": "authentik.mydomain.com",
+                    "challenge_id": None,
+                    "challenge_response": "AzpUGtCMuZvRpntnXBAqRdUZDoQAVyzQ",
+                }
+            ).is_valid()
+        )
+
+    def test_challenge_response(self):
+        """Test ACMEHTTP01Challenge challenge validation endpoint"""
+
+        challenge = ACMEHTTP01Challenge.objects.create(
+            host="authentik.mydomain.com",
+            challenge_id="cRwdSWr",
+            challenge_response="AzpUGtCMuZvRpntnXBAqRdUZDoQAVyzQ",
+        )
+
+        # Test response with valid values
+        response = self.client.get(
+            "/.well-known/acme-challenge/" + challenge.challenge_id,
+            HTTP_HOST=challenge.host,
+        )
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(challenge.challenge_response, response.content.decode("utf-8"))
+
+        # Test response with invalid challenge_id
+        response = self.client.get(
+            "/.well-known/acme-challenge/" + "non_existant_challenge_id",
+            HTTP_HOST=challenge.host,
+        )
+        self.assertEqual(404, response.status_code)
+
+        # Test response with invalid host
+        response = self.client.get(
+            "/.well-known/acme-challenge/" + challenge.challenge_id,
+            HTTP_HOST="wrong.hostname.xyz",
+        )
+        self.assertEqual(404, response.status_code)
