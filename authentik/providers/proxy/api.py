@@ -91,7 +91,8 @@ class ProxyProviderSerializer(ProviderSerializer):
             "redirect_uris",
             "cookie_domain",
             "jwks_sources",
-            "token_validity",
+            "access_token_validity",
+            "refresh_token_validity",
             "outpost_set",
         ]
 
@@ -130,7 +131,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
     assigned_application_name = ReadOnlyField(source="application.name")
 
     oidc_configuration = SerializerMethodField()
-    token_validity = SerializerMethodField()
+    access_token_validity = SerializerMethodField()
     scopes_to_request = SerializerMethodField()
 
     @extend_schema_field(OpenIDConnectConfigurationSerializer)
@@ -138,9 +139,9 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         """Embed OpenID Connect provider information"""
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
-    def get_token_validity(self, obj: ProxyProvider) -> Optional[float]:
+    def get_access_token_validity(self, obj: ProxyProvider) -> Optional[float]:
         """Get token validity as second count"""
-        return timedelta_from_string(obj.token_validity).total_seconds()
+        return timedelta_from_string(obj.access_token_validity).total_seconds()
 
     def get_scopes_to_request(self, obj: ProxyProvider) -> list[str]:
         """Get all the scope names the outpost should request,
@@ -169,7 +170,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "basic_auth_user_attribute",
             "mode",
             "cookie_domain",
-            "token_validity",
+            "access_token_validity",
             "intercept_header_auth",
             "scopes_to_request",
             "assigned_application_slug",

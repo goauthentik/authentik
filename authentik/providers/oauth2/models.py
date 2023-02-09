@@ -302,7 +302,6 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
 
     code = models.CharField(max_length=255, unique=True, verbose_name=_("Code"))
     nonce = models.TextField(null=True, default=None, verbose_name=_("Nonce"))
-    is_open_id = models.BooleanField(default=False, verbose_name=_("Is Authentication?"))
     code_challenge = models.CharField(max_length=255, null=True, verbose_name=_("Code Challenge"))
     code_challenge_method = models.CharField(
         max_length=255, null=True, verbose_name=_("Code Challenge Method")
@@ -336,18 +335,18 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 access token, non-opaque using a JWT as identifier"""
 
     token = models.TextField()
+    _id_token = models.TextField()
 
     @property
     def id_token(self) -> IDToken:
         """Load ID Token from json"""
-        if self.token:
-            raw_token = json.loads(self.token)
-            return from_dict(IDToken, raw_token)
-        return IDToken()
+        raw_token = json.loads(self._id_token)
+        return from_dict(IDToken, raw_token)
 
     @id_token.setter
     def id_token(self, value: IDToken):
         self.token = json.dumps(asdict(value))
+        self._id_token = value.to_access_token()
 
     @property
     def at_hash(self):
@@ -363,9 +362,9 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.providers.oauth2.api.tokens import ExpiringBaseGrantModelSerializer
+        from authentik.providers.oauth2.api.tokens import TokenModelSerializer
 
-        return ExpiringBaseGrantModelSerializer
+        return TokenModelSerializer
 
     class Meta:
         verbose_name = _("OAuth2 Access Token")
@@ -384,10 +383,8 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     @property
     def id_token(self) -> IDToken:
         """Load ID Token from json"""
-        if self._id_token:
-            raw_token = json.loads(self._id_token)
-            return from_dict(IDToken, raw_token)
-        return IDToken()
+        raw_token = json.loads(self.token)
+        return from_dict(IDToken, raw_token)
 
     @id_token.setter
     def id_token(self, value: IDToken):
@@ -395,9 +392,9 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.providers.oauth2.api.tokens import ExpiringBaseGrantModelSerializer
+        from authentik.providers.oauth2.api.tokens import TokenModelSerializer
 
-        return ExpiringBaseGrantModelSerializer
+        return TokenModelSerializer
 
     class Meta:
         verbose_name = _("OAuth2 Refresh Token")

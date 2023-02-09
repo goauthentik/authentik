@@ -469,34 +469,37 @@ class TokenView(View):
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
-        access_token = AccessToken.objects.create(
+        access_token = AccessToken(
             provider=self.provider,
-            user=self.params.authorization_code.user,
+            user=self.params.refresh_token.user,
             expires=access_token_expiry,
-            token=IDToken(
-                self.provider,
-                self.params.authorization_code.user,
-                self.request,
-                exp=int(access_token_expiry.timestamp()),
-            ).to_access_token(),
+            # Keep same scopes as previous token
+            scope=self.params.authorization_code.scope,
         )
+        access_token.id_token = IDToken(
+            self.provider,
+            access_token,
+            self.request,
+            exp=int(access_token_expiry.timestamp()),
+        )
+        access_token.save()
 
         refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+        refresh_token = RefreshToken(
+            user=self.params.authorization_code.user,
+            scope=self.params.authorization_code.scope,
+            expires=refresh_token_expiry,
+        )
         id_token = IDToken(
             self.provider,
-            self.params.authorization_code.user,
+            refresh_token,
             self.request,
             exp=int(refresh_token_expiry.timestamp()),
         )
         id_token.nonce = self.params.authorization_code.nonce
         id_token.at_hash = access_token.at_hash
-
-        refresh_token = RefreshToken.objects.create(
-            user=self.params.authorization_code.user,
-            scope=self.params.authorization_code.scope,
-            expires=refresh_token_expiry,
-            id_token=id_token,
-        )
+        refresh_token.id_token = id_token
+        refresh_token.save()
 
         # Delete old code
         self.params.authorization_code.delete()
@@ -518,33 +521,37 @@ class TokenView(View):
 
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
-        access_token = AccessToken.objects.create(
+        access_token = AccessToken(
             provider=self.provider,
             user=self.params.refresh_token.user,
             expires=access_token_expiry,
-            token=IDToken(
-                self.provider,
-                self.params.refresh_token.user,
-                self.request,
-                exp=int(access_token_expiry.timestamp()),
-            ).to_access_token(),
+            # Keep same scopes as previous token
+            scope=self.params.refresh_token.scope,
         )
+        access_token.id_token = IDToken(
+            self.provider,
+            access_token,
+            self.request,
+            exp=int(access_token_expiry.timestamp()),
+        )
+        access_token.save()
 
         refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
-        id_token = IDToken(
-            self.provider,
-            self.params.refresh_token.user,
-            self.request,
-            exp=int(refresh_token_expiry.timestamp()),
-        )
-        id_token.at_hash = access_token.at_hash
-
-        refresh_token = RefreshToken.objects.create(
+        refresh_token = RefreshToken(
             user=self.params.refresh_token.user,
             scope=self.params.refresh_token.scope,
             expires=refresh_token_expiry,
-            id_token=id_token,
         )
+        id_token = IDToken(
+            self.provider,
+            refresh_token,
+            self.request,
+            exp=int(refresh_token_expiry.timestamp()),
+        )
+        id_token.nonce = self.params.refresh_token.nonce
+        id_token.at_hash = access_token.at_hash
+        refresh_token.id_token = id_token
+        refresh_token.save()
 
         # Mark old token as revoked
         self.params.refresh_token.revoked = True
@@ -564,17 +571,19 @@ class TokenView(View):
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
-        access_token = AccessToken.objects.create(
+        access_token = AccessToken(
             provider=self.provider,
-            user=self.params.refresh_token.user,
+            user=self.params.user,
             expires=access_token_expiry,
-            token=IDToken(
-                self.provider,
-                self.params.refresh_token.user,
-                self.request,
-                exp=int(access_token_expiry.timestamp()),
-            ).to_access_token(),
+            scope=self.params.scope,
         )
+        access_token.id_token = IDToken(
+            self.provider,
+            access_token,
+            self.request,
+            exp=int(access_token_expiry.timestamp()),
+        )
+        access_token.save()
         return {
             "access_token": access_token.token,
             "token_type": "bearer",
@@ -590,33 +599,35 @@ class TokenView(View):
             raise DeviceCodeError("authorization_pending")
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
-        access_token = AccessToken.objects.create(
+        access_token = AccessToken(
             provider=self.provider,
             user=self.params.device_code.user,
             expires=access_token_expiry,
-            token=IDToken(
-                self.provider,
-                self.params.device_code.user,
-                self.request,
-                exp=int(access_token_expiry.timestamp()),
-            ).to_access_token(),
+            scope=self.params.device_code.scope,
         )
+        access_token.id_token = IDToken(
+            self.provider,
+            access_token,
+            self.request,
+            exp=int(access_token_expiry.timestamp()),
+        )
+        access_token.save()
 
         refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+        refresh_token = RefreshToken(
+            user=self.params.device_code.user,
+            scope=self.params.device_code.scope,
+            expires=refresh_token_expiry,
+        )
         id_token = IDToken(
             self.provider,
-            self.params.device_code.user,
+            refresh_token,
             self.request,
             exp=int(refresh_token_expiry.timestamp()),
         )
         id_token.at_hash = access_token.at_hash
-
-        refresh_token = RefreshToken.objects.create(
-            user=self.params.device_code.user,
-            scope=self.params.device_code.scope,
-            expires=refresh_token_expiry,
-            id_token=id_token,
-        )
+        refresh_token.id_token = id_token
+        refresh_token.save()
 
         # Delete device code
         self.params.device_code.delete()

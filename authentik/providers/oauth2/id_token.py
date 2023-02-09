@@ -7,7 +7,6 @@ from django.db import models
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
-from authentik.core.models import User
 from authentik.events.signals import get_login_event
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.constants import (
@@ -19,7 +18,7 @@ from authentik.providers.oauth2.constants import (
 from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 if TYPE_CHECKING:
-    from authentik.providers.oauth2.models import OAuth2Provider
+    from authentik.providers.oauth2.models import BaseGrantModel, OAuth2Provider
 
 
 class SubModes(models.TextChoices):
@@ -42,6 +41,7 @@ class SubModes(models.TextChoices):
 
 
 @dataclass
+# pylint: disable=too-many-instance-attributes
 class IDToken:
     """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be
     Authenticated is the ID Token data structure. The ID Token is a security token that contains
@@ -53,7 +53,7 @@ class IDToken:
 
     _provider: "OAuth2Provider"
     _request: HttpRequest
-    _user: User
+    _token: "BaseGrantModel"
 
     # Issuer, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1
     iss: Optional[str] = None
@@ -65,35 +65,40 @@ class IDToken:
     exp: Optional[int] = None
     # Issued at, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.6
     iat: Optional[int] = None
-    # Time when the authentication occurred, https://openid.net/specs/openid-connect-core-1_0.html#IDToken
+    # Time when the authentication occurred,
+    # https://openid.net/specs/openid-connect-core-1_0.html#IDToken
     auth_time: Optional[int] = None
-    # Authentication Context Class Reference, https://openid.net/specs/openid-connect-core-1_0.html#IDToken
+    # Authentication Context Class Reference,
+    # https://openid.net/specs/openid-connect-core-1_0.html#IDToken
     acr: Optional[str] = ACR_AUTHENTIK_DEFAULT
-    # Authentication Methods References, https://openid.net/specs/openid-connect-core-1_0.html#IDToken
+    # Authentication Methods References,
+    # https://openid.net/specs/openid-connect-core-1_0.html#IDToken
     amr: Optional[list[str]] = None
     # Code hash value, http://openid.net/specs/openid-connect-core-1_0.html
     c_hash: Optional[str] = None
-    # Value used to associate a Client session with an ID Token, http://openid.net/specs/openid-connect-core-1_0.html
+    # Value used to associate a Client session with an ID Token,
+    # http://openid.net/specs/openid-connect-core-1_0.html
     nonce: Optional[str] = None
     # Access Token hash value, http://openid.net/specs/openid-connect-core-1_0.html
     at_hash: Optional[str] = None
 
     claims: dict[str, Any] = field(default_factory=dict)
 
+    # pylint: disable=too-many-locals
     def __init__(
-        self, provider: "OAuth2Provider", user: User, request: HttpRequest, **kwargs
+        self, provider: "OAuth2Provider", token: "BaseGrantModel", request: HttpRequest, **kwargs
     ) -> None:
         sub = ""
         if provider.sub_mode == SubModes.HASHED_USER_ID:
-            sub = user.uid
+            sub = token.user.uid
         elif provider.sub_mode == SubModes.USER_ID:
-            sub = str(user.pk)
+            sub = str(token.user.pk)
         elif provider.sub_mode == SubModes.USER_EMAIL:
-            sub = user.email
+            sub = token.user.email
         elif provider.sub_mode == SubModes.USER_USERNAME:
-            sub = user.username
+            sub = token.user.username
         elif provider.sub_mode == SubModes.USER_UPN:
-            sub = user.attributes.get("upn", user.uid)
+            sub = token.user.attributes.get("upn", token.user.uid)
         else:
             raise ValueError(
                 f"Provider {provider} has invalid sub_mode selected: {provider.sub_mode}"
@@ -104,7 +109,7 @@ class IDToken:
 
         super().__init__(
             _provider=provider,
-            _user=user,
+            _token=token,
             _request=request,
             iss=provider.get_issuer(request),
             sub=sub,
@@ -138,7 +143,7 @@ class IDToken:
 
             user_info = UserInfoView()
             user_info.request = request
-            claims = user_info.get_claims(self)
+            claims = user_info.get_claims(self._provider, token)
             self.claims = claims
 
     def to_dict(self) -> dict[str, Any]:
