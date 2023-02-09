@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenIntrospectionError
-from authentik.providers.oauth2.models import IDToken, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, IDToken, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import TokenResponse, authenticate_provider
 
 LOGGER = get_logger()
@@ -18,7 +18,7 @@ LOGGER = get_logger()
 class TokenIntrospectionParams:
     """Parameters for Token Introspection"""
 
-    token: RefreshToken
+    token: RefreshToken | AccessToken
     provider: OAuth2Provider
 
     id_token: IDToken = field(init=False)
@@ -41,23 +41,18 @@ class TokenIntrospectionParams:
     def from_request(request: HttpRequest) -> "TokenIntrospectionParams":
         """Extract required Parameters from HTTP Request"""
         raw_token = request.POST.get("token")
-        token_type_hint = request.POST.get("token_type_hint", "access_token")
-        token_filter = {token_type_hint: raw_token}
-
-        if token_type_hint not in ["access_token", "refresh_token"]:
-            LOGGER.debug("token_type_hint has invalid value", value=token_type_hint)
-            raise TokenIntrospectionError()
-
         provider = authenticate_provider(request)
         if not provider:
             raise TokenIntrospectionError
 
-        token: RefreshToken = RefreshToken.objects.filter(provider=provider, **token_filter).first()
-        if not token:
-            LOGGER.debug("Token does not exist", token=raw_token)
-            raise TokenIntrospectionError()
-
-        return TokenIntrospectionParams(token=token, provider=provider)
+        access_token = AccessToken.objects.filter(token=raw_token).first()
+        if access_token:
+            return TokenIntrospectionParams(access_token, provider)
+        refresh_token = RefreshToken.objects.filter(token=raw_token).first()
+        if refresh_token:
+            return TokenIntrospectionParams(refresh_token, provider)
+        LOGGER.debug("Token does not exist", token=raw_token)
+        raise TokenIntrospectionError()
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -65,7 +60,7 @@ class TokenIntrospectionView(View):
     """Token Introspection
     https://tools.ietf.org/html/rfc7662"""
 
-    token: RefreshToken
+    token: RefreshToken | AccessToken
     params: TokenIntrospectionParams
     provider: OAuth2Provider
 
@@ -76,9 +71,9 @@ class TokenIntrospectionView(View):
             response = {}
             if self.params.id_token:
                 response.update(self.params.id_token.to_dict())
-            response["active"] = True
+            response["active"] = not self.params.token.is_expired and not self.params.token.revoked
             response["scope"] = " ".join(self.params.token.scope)
-            response["client_id"] = self.params.token.provider.client_id
+            response["client_id"] = self.params.provider.client_id
             return TokenResponse(response)
         except TokenIntrospectionError:
             return TokenResponse({"active": False})
