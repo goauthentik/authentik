@@ -19,6 +19,8 @@ SCOPE_OPENID = "openid"
 SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
 
+TOKEN_TYPE = "Bearer"  # nosec
+
 SCOPE_AUTHENTIK_API = "goauthentik.io/api"
 
 # Read/write full user (including email)

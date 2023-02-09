@@ -42,7 +42,7 @@ def bearer_auth(raw_header: bytes) -> Optional[User]:
 
 def auth_user_lookup(raw_header: bytes) -> Optional[User]:
     """raw_header in the Format of `Bearer ....`"""
-    from authentik.providers.oauth2.models import RefreshToken
+    from authentik.providers.oauth2.models import AccessToken
 
     auth_credentials = validate_auth(raw_header)
     if not auth_credentials:
@@ -55,8 +55,8 @@ def auth_user_lookup(raw_header: bytes) -> Optional[User]:
         CTX_AUTH_VIA.set("api_token")
         return key_token.user
     # then try to auth via JWT
-    jwt_token = RefreshToken.filter_not_expired(
-        refresh_token=auth_credentials, _scope__icontains=SCOPE_AUTHENTIK_API
+    jwt_token = AccessToken.filter_not_expired(
+        token=auth_credentials, _scope__icontains=SCOPE_AUTHENTIK_API
     ).first()
     if jwt_token:
         # Double-check scopes, since they are saved in a single string

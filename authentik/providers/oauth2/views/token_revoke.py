@@ -8,7 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
 from authentik.providers.oauth2.errors import TokenRevocationError
-from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.utils import TokenResponse, authenticate_provider
 
 LOGGER = get_logger()
@@ -18,31 +18,26 @@ LOGGER = get_logger()
 class TokenRevocationParams:
     """Parameters for Token Revocation"""
 
-    token: RefreshToken
+    token: RefreshToken | AccessToken
     provider: OAuth2Provider
 
     @staticmethod
     def from_request(request: HttpRequest) -> "TokenRevocationParams":
         """Extract required Parameters from HTTP Request"""
         raw_token = request.POST.get("token")
-        token_type_hint = request.POST.get("token_type_hint", "access_token")
-        token_filter = {token_type_hint: raw_token}
-
-        if token_type_hint not in ["access_token", "refresh_token"]:
-            LOGGER.debug("token_type_hint has invalid value", value=token_type_hint)
-            raise TokenRevocationError("unsupported_token_type")
 
         provider = authenticate_provider(request)
         if not provider:
             raise TokenRevocationError("invalid_client")
 
-        try:
-            token: RefreshToken = RefreshToken.objects.get(provider=provider, **token_filter)
-        except RefreshToken.DoesNotExist:
-            LOGGER.debug("Token does not exist", token=raw_token)
-            raise Http404
-
-        return TokenRevocationParams(token=token, provider=provider)
+        access_token = AccessToken.objects.filter(token=raw_token).first()
+        if access_token:
+            return TokenRevocationParams(access_token, provider)
+        refresh_token = RefreshToken.objects.filter(token=raw_token).first()
+        if refresh_token:
+            return TokenRevocationParams(refresh_token, provider)
+        LOGGER.debug("Token does not exist", token=raw_token)
+        raise Http404
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -65,5 +60,6 @@ class TokenRevokeView(View):
         except TokenRevocationError as exc:
             return TokenResponse(exc.create_dict(), status=401)
         except Http404:
-            # Token not found should return a HTTP 200 according to the specs
+            # Token not found should return a HTTP 200
+            # https://datatracker.ietf.org/doc/html/rfc7009#section-2.2
             return TokenResponse(data={}, status=200)

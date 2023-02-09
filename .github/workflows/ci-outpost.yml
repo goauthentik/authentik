@@ -49,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo mark
-  build:
+  build-container:
     timeout-minutes: 120
     needs:
       - ci-outpost-mark
@@ -94,7 +94,8 @@ jobs:
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: ${{ matrix.arch }}
-  build-outpost-binary:
+          context: .
+  build-binary:
     timeout-minutes: 120
     needs:
       - ci-outpost-mark

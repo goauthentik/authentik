@@ -345,7 +345,7 @@ export class UserViewPage extends AKElement {
             </section>
             <section
                 slot="page-oauth-refresh"
-                data-tab-title="${t`OAuth Refresh Codes`}"
+                data-tab-title="${t`OAuth Refresh Tokens`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">

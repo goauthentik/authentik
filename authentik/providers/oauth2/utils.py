@@ -13,7 +13,7 @@ from structlog.stdlib import get_logger
 from authentik.core.middleware import CTX_AUTH_VIA, KEY_USER
 from authentik.events.models import Event, EventAction
 from authentik.providers.oauth2.errors import BearerTokenError
-from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
 LOGGER = get_logger()
 
@@ -119,7 +119,7 @@ def protected_resource_view(scopes: list[str]):
     """View decorator. The client accesses protected resources by presenting the
     access token to the resource server.
 
-    https://tools.ietf.org/html/rfc6749#section-7
+    https://datatracker.ietf.org/doc/html/rfc6749#section-7
 
     This decorator also injects the token into `kwargs`"""
 
@@ -133,9 +133,8 @@ def protected_resource_view(scopes: list[str]):
                     LOGGER.debug("No token passed")
                     raise BearerTokenError("invalid_token")
 
-                try:
-                    token: RefreshToken = RefreshToken.objects.get(access_token=access_token)
-                except RefreshToken.DoesNotExist:
+                token = AccessToken.objects.filter(token=access_token).first()
+                if not token:
                     LOGGER.debug("Token does not exist", access_token=access_token)
                     raise BearerTokenError("invalid_token")
 

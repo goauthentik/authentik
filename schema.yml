@@ -8015,6 +8015,165 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /oauth2/access_tokens/:
+    get:
+      operationId: oauth2_access_tokens_list
+      description: AccessToken Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: provider
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTokenModelList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /oauth2/access_tokens/{id}/:
+    get:
+      operationId: oauth2_access_tokens_retrieve
+      description: AccessToken Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2 Access Token.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenModel'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: oauth2_access_tokens_destroy
+      description: AccessToken Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2 Access Token.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /oauth2/access_tokens/{id}/used_by/:
+    get:
+      operationId: oauth2_access_tokens_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this OAuth2 Access Token.
+        required: true
+      tags:
+      - oauth2
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /oauth2/authorization_codes/:
     get:
       operationId: oauth2_authorization_codes_list
@@ -8220,7 +8379,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedRefreshTokenModelList'
+                $ref: '#/components/schemas/PaginatedTokenModelList'
           description: ''
         '400':
           content:
@@ -8243,7 +8402,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this OAuth2 Token.
+        description: A unique integer value identifying this OAuth2 Refresh Token.
         required: true
       tags:
       - oauth2
@@ -8254,7 +8413,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RefreshTokenModel'
+                $ref: '#/components/schemas/TokenModel'
           description: ''
         '400':
           content:
@@ -8276,7 +8435,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this OAuth2 Token.
+        description: A unique integer value identifying this OAuth2 Refresh Token.
         required: true
       tags:
       - oauth2
@@ -8306,7 +8465,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this OAuth2 Token.
+        description: A unique integer value identifying this OAuth2 Refresh Token.
         required: true
       tags:
       - oauth2
@@ -14168,6 +14327,10 @@ paths:
         schema:
           type: string
       - in: query
+        name: access_token_validity
+        schema:
+          type: string
+      - in: query
         name: application
         schema:
           type: string
@@ -14237,6 +14400,10 @@ paths:
         name: redirect_uris
         schema:
           type: string
+      - in: query
+        name: refresh_token_validity
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -14260,10 +14427,6 @@ paths:
           - user_username
         description: Configure what data should be used as unique User Identifier.
           For most cases, the default should be fine.
-      - in: query
-        name: token_validity
-        schema:
-          type: string
       tags:
       - providers
       security:
@@ -29311,7 +29474,11 @@ components:
           type: string
           description: 'Access codes not valid on or after current time + this value
             (Format: hours=1;minutes=2;seconds=3).'
-        token_validity:
+        access_token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
           type: string
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
@@ -29388,7 +29555,12 @@ components:
           minLength: 1
           description: 'Access codes not valid on or after current time + this value
             (Format: hours=1;minutes=2;seconds=3).'
-        token_validity:
+        access_token_validity:
+          type: string
+          minLength: 1
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
           type: string
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
@@ -31765,41 +31937,6 @@ components:
       required:
       - pagination
       - results
-    PaginatedRefreshTokenModelList:
-      type: object
-      properties:
-        pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RefreshTokenModel'
-      required:
-      - pagination
-      - results
     PaginatedReputationList:
       type: object
       properties:
@@ -32287,6 +32424,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Token'
+      required:
+      - pagination
+      - results
+    PaginatedTokenModelList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenModel'
       required:
       - pagination
       - results
@@ -33948,7 +34120,12 @@ components:
           minLength: 1
           description: 'Access codes not valid on or after current time + this value
             (Format: hours=1;minutes=2;seconds=3).'
-        token_validity:
+        access_token_validity:
+          type: string
+          minLength: 1
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
           type: string
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
@@ -34413,7 +34590,12 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
-        token_validity:
+        access_token_validity:
+          type: string
+          minLength: 1
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
           type: string
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
@@ -35723,7 +35905,7 @@ components:
             Exclusive with internal_host.
         cookie_domain:
           type: string
-        token_validity:
+        access_token_validity:
           type: number
           format: double
           nullable: true
@@ -35746,6 +35928,7 @@ components:
           description: Application's display Name.
           readOnly: true
       required:
+      - access_token_validity
       - assigned_application_name
       - assigned_application_slug
       - external_host
@@ -35753,7 +35936,6 @@ components:
       - oidc_configuration
       - pk
       - scopes_to_request
-      - token_validity
     ProxyProvider:
       type: object
       description: ProxyProvider Serializer
@@ -35850,7 +36032,11 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
-        token_validity:
+        access_token_validity:
+          type: string
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
           type: string
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
@@ -35941,7 +36127,12 @@ components:
             title: Any JWT signed by the JWK of the selected source can be used to
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
-        token_validity:
+        access_token_validity:
+          type: string
+          minLength: 1
+          description: 'Tokens not valid on or after current time + this value (Format:
+            hours=1;minutes=2;seconds=3).'
+        refresh_token_validity:
           type: string
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
@@ -35972,40 +36163,6 @@ components:
       required:
       - to
       - type
-    RefreshTokenModel:
-      type: object
-      description: Serializer for BaseGrantModel and RefreshToken
-      properties:
-        pk:
-          type: integer
-          readOnly: true
-          title: ID
-        provider:
-          $ref: '#/components/schemas/OAuth2Provider'
-        user:
-          $ref: '#/components/schemas/User'
-        is_expired:
-          type: boolean
-          readOnly: true
-        expires:
-          type: string
-          format: date-time
-        scope:
-          type: array
-          items:
-            type: string
-        id_token:
-          type: string
-          readOnly: true
-        revoked:
-          type: boolean
-      required:
-      - id_token
-      - is_expired
-      - pk
-      - provider
-      - scope
-      - user
     Reputation:
       type: object
       description: Reputation Serializer
@@ -37428,6 +37585,40 @@ components:
       - identifier
       - pk
       - user_obj
+    TokenModel:
+      type: object
+      description: Serializer for BaseGrantModel and RefreshToken
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        provider:
+          $ref: '#/components/schemas/OAuth2Provider'
+        user:
+          $ref: '#/components/schemas/User'
+        is_expired:
+          type: boolean
+          readOnly: true
+        expires:
+          type: string
+          format: date-time
+        scope:
+          type: array
+          items:
+            type: string
+        id_token:
+          type: string
+          readOnly: true
+        revoked:
+          type: boolean
+      required:
+      - id_token
+      - is_expired
+      - pk
+      - provider
+      - scope
+      - user
     TokenRequest:
       type: object
       description: Token Serializer

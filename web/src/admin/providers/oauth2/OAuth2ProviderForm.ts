@@ -253,18 +253,34 @@ ${this.instance?.redirectUris}</textarea
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Token validity`}
+                        label=${t`Access Token validity`}
                         ?required=${true}
-                        name="tokenValidity"
+                        name="accessTokenValidity"
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.tokenValidity, "days=30")}"
+                            value="${first(this.instance?.accessTokenValidity, "minutes=5")}"
                             class="pf-c-form-control"
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Configure how long refresh tokens and their id_tokens are valid for.`}
+                            ${t`Configure how long access tokens are valid for.`}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Refresh Token validity`}
+                        ?required=${true}
+                        name="refreshTokenValidity"
+                    >
+                        <input
+                            type="text"
+                            value="${first(this.instance?.refreshTokenValidity, "days=30")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`Configure how long refresh tokens are valid for.`}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
