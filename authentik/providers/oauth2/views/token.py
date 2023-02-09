@@ -1,6 +1,7 @@
 """authentik OAuth2 Token views"""
 from base64 import urlsafe_b64encode
 from dataclasses import InitVar, dataclass
+from datetime import datetime
 from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
@@ -359,9 +360,9 @@ class TokenParams:
         LOGGER.info("successfully verified JWT with source", source=source.slug)
 
         if "exp" in token:
-            exp = timezone.fromtimestamp(token["exp"])
+            exp = datetime.fromtimestamp(token["exp"])
             # Non-timezone aware check since we assume `exp` is in UTC
-            if timezone.now() >= exp:
+            if datetime.now() >= exp:
                 LOGGER.info("JWT token expired")
                 raise TokenError("invalid_grant")
 
