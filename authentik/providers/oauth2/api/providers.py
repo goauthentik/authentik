@@ -151,6 +151,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
             provider,
             AccessToken(
                 user=request.user,
+                provider=provider,
                 _scope=" ".join(scope_names),
             ),
             request,

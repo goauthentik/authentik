@@ -9,7 +9,7 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
-from authentik.providers.oauth2.models import IDToken, OAuth2Provider, RefreshToken, ScopeMapping
+from authentik.providers.oauth2.models import AccessToken, IDToken, OAuth2Provider, ScopeMapping
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
@@ -33,11 +33,10 @@ class TestUserinfo(OAuthTestCase):
         self.app.provider = self.provider
         self.app.save()
         self.user = create_test_admin_user()
-        self.token: RefreshToken = RefreshToken.objects.create(
+        self.token: AccessToken = AccessToken.objects.create(
             provider=self.provider,
             user=self.user,
-            access_token=generate_id(),
-            refresh_token=generate_id(),
+            token=generate_id(),
             _scope="openid user profile",
             _id_token=json.dumps(
                 asdict(
@@ -50,7 +49,7 @@ class TestUserinfo(OAuthTestCase):
         """test user info with all normal scopes"""
         res = self.client.get(
             reverse("authentik_providers_oauth2:userinfo"),
-            HTTP_AUTHORIZATION=f"Bearer {self.token.access_token}",
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
         )
         self.assertJSONEqual(
             res.content.decode(),
@@ -73,7 +72,7 @@ class TestUserinfo(OAuthTestCase):
 
         res = self.client.get(
             reverse("authentik_providers_oauth2:userinfo"),
-            HTTP_AUTHORIZATION=f"Bearer {self.token.access_token}",
+            HTTP_AUTHORIZATION=f"Bearer {self.token.token}",
         )
         self.assertJSONEqual(
             res.content.decode(),
