@@ -94,6 +94,7 @@ jobs:
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: ${{ matrix.arch }}
+          context: .
   build-binary:
     timeout-minutes: 120
     needs:
