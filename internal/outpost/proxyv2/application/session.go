@@ -29,8 +29,8 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		}
 		rs.SetMaxLength(math.MaxInt)
 		rs.SetKeyPrefix(RedisKeyPrefix)
-		if p.TokenValidity.IsSet() {
-			t := p.TokenValidity.Get()
+		if p.AccessTokenValidity.IsSet() {
+			t := p.AccessTokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length
 			rs.SetMaxAge(int(*t) + 1)
 		} else {
@@ -49,8 +49,8 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 
 		// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
 		cs.MaxLength(math.MaxInt)
-		if p.TokenValidity.IsSet() {
-			t := p.TokenValidity.Get()
+		if p.AccessTokenValidity.IsSet() {
+			t := p.AccessTokenValidity.Get()
 			// Add one to the validity to ensure we don't have a session with indefinite length
 			cs.MaxAge(int(*t) + 1)
 		} else {
