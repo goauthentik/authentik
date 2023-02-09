@@ -545,7 +545,6 @@ class OAuthFulfillmentStage(StageView):
             ResponseTypes.CODE_TOKEN,
         ]:
             query_fragment["access_token"] = token.token
-            id_token.at_hash = token.at_hash
 
         # Check if response_type must include id_token in the response.
         if self.params.response_type in [
@@ -556,7 +555,6 @@ class OAuthFulfillmentStage(StageView):
         ]:
             query_fragment["id_token"] = self.provider.encode(id_token.to_dict())
 
-        # Store the token.
         token.save()
 
         # Code parameter must be present if it's Hybrid Flow.
