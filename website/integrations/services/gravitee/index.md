@@ -22,7 +22,6 @@ The following placeholders will be used:
 -   `authentik.company` is the FQDN of the authentik install.
 -   `applicationName` is the Application name you set.
 
-
 ### Step 1 - authentik
 
 In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
@@ -36,18 +35,18 @@ Only settings that have been modified from default have been listed.
 -   Name: applicationName
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
--   Redirect URIs/Origins:   
+-   Redirect URIs/Origins:
+
 ```
 https://gravitee.company/user/login
 https://gravitee.company/console/ # Make sure to add the trailing / at the end, at the time of writing it does not work without it
 ```
 
-
 Now, under _Applications_, create an application with the name `applicationName` and select the provider you've created above.
 
 ### Step 2 - Gravitee
 
-In the Gravitee Management Console, head to _Organizations_(gravitee.company/console/#!/organization/settings/identities) , under _Console_, _Authentication_, click  _Add an identity provider_, select  _OpenID Connect_, and fill in the following:
+In the Gravitee Management Console, head to _Organizations_(gravitee.company/console/#!/organization/settings/identities) , under _Console_, _Authentication_, click _Add an identity provider_, select _OpenID Connect_, and fill in the following:
 
 :::note
 Only settings that have been modified from default have been listed.
