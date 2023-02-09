@@ -152,7 +152,12 @@ class IDToken:
         return id_dict
 
     def to_access_token(self) -> str:
+        """Encode id_token for use as access token, adding fields"""
         final = self.to_dict()
         final["azp"] = self._provider.client_id
         final["uid"] = generate_id()
         return self._provider.encode(final)
+
+    def to_jwt(self) -> str:
+        """Shortcut to encode id_token to jwt, signed by self.provider"""
+        return self._provider.encode(self.to_dict())
