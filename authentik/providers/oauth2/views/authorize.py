@@ -529,9 +529,6 @@ class OAuthFulfillmentStage(StageView):
 
         id_token = IDToken.new(self.provider, token, self.request)
         id_token.nonce = self.params.nonce
-        # Include at_hash when access_token is being returned.
-        if "access_token" in query_fragment:
-            id_token.at_hash = token.at_hash
 
         if self.params.response_type in [
             ResponseTypes.CODE_ID_TOKEN,
@@ -548,6 +545,7 @@ class OAuthFulfillmentStage(StageView):
             ResponseTypes.CODE_TOKEN,
         ]:
             query_fragment["access_token"] = token.token
+            id_token.at_hash = token.at_hash
 
         # Check if response_type must include id_token in the response.
         if self.params.response_type in [
