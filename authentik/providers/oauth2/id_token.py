@@ -1,6 +1,6 @@
 """id_token utils"""
-from dataclasses import asdict, dataclass, field
 from datetime import datetime
+from dataclasses import asdict, dataclass, field
 from typing import TYPE_CHECKING, Any, Optional
 
 from django.db import models
@@ -51,10 +51,6 @@ class IDToken:
 
     https://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
 
-    _provider: "OAuth2Provider"
-    _request: HttpRequest
-    _token: "BaseGrantModel"
-
     # Issuer, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1
     iss: Optional[str] = None
     # Subject, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2
@@ -84,45 +80,41 @@ class IDToken:
 
     claims: dict[str, Any] = field(default_factory=dict)
 
+    @staticmethod
     # pylint: disable=too-many-locals
-    def __init__(
-        self, provider: "OAuth2Provider", token: "BaseGrantModel", request: HttpRequest, **kwargs
-    ) -> None:
-        sub = ""
+    def new(
+         provider: "OAuth2Provider", token: "BaseGrantModel", request: HttpRequest, **kwargs
+    ) -> "IDToken":
+        """Create ID Token"""
+        id_token = IDToken(provider, token, **kwargs)
+        id_token.iss = provider.get_issuer(request)
+        id_token.aud = provider.client_id
+        id_token.claims = {}
+
         if provider.sub_mode == SubModes.HASHED_USER_ID:
-            sub = token.user.uid
+            id_token.sub = token.user.uid
         elif provider.sub_mode == SubModes.USER_ID:
-            sub = str(token.user.pk)
+            id_token.sub = str(token.user.pk)
         elif provider.sub_mode == SubModes.USER_EMAIL:
-            sub = token.user.email
+            id_token.sub = token.user.email
         elif provider.sub_mode == SubModes.USER_USERNAME:
-            sub = token.user.username
+            id_token.sub = token.user.username
         elif provider.sub_mode == SubModes.USER_UPN:
-            sub = token.user.attributes.get("upn", token.user.uid)
+            id_token.sub = token.user.attributes.get("upn", token.user.uid)
         else:
             raise ValueError(
                 f"Provider {provider} has invalid sub_mode selected: {provider.sub_mode}"
             )
+
         # Convert datetimes into timestamps.
         now = datetime.now()
-        iat_time = int(now.timestamp())
-
-        super().__init__(
-            _provider=provider,
-            _token=token,
-            _request=request,
-            iss=provider.get_issuer(request),
-            sub=sub,
-            aud=provider.client_id,
-            iat=iat_time,
-            **kwargs,
-        )
+        id_token.iat = int(now.timestamp())
 
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
         auth_event = get_login_event(request)
         if auth_event:
             auth_time = auth_event.created
-            self.auth_time = int(auth_time.timestamp())
+            id_token.auth_time = int(auth_time.timestamp())
             # Also check which method was used for authentication
             method = auth_event.context.get(PLAN_CONTEXT_METHOD, "")
             method_args = auth_event.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
@@ -135,7 +127,7 @@ class IDToken:
                 if len(amr) > 0:
                     amr.append(AMR_MFA)
             if amr:
-                self.amr = amr
+                id_token.amr = amr
 
         # Include (or not) user standard claims in the id_token.
         if provider.include_claims_in_id_token:
@@ -143,26 +135,26 @@ class IDToken:
 
             user_info = UserInfoView()
             user_info.request = request
-            claims = user_info.get_claims(self._provider, token)
-            self.claims = claims
+            id_token.claims = user_info.get_claims(token.provider, token)
+        return id_token
 
     def to_dict(self) -> dict[str, Any]:
         """Convert dataclass to dict, and update with keys from `claims`"""
         id_dict = asdict(self)
-        for key, value in id_dict:
-            if value is None:
+        for key in list(id_dict.keys()):
+            if id_dict[key] is None:
                 id_dict.pop(key)
         id_dict.pop("claims")
         id_dict.update(self.claims)
         return id_dict
 
-    def to_access_token(self) -> str:
+    def to_access_token(self, provider: "OAuth2Provider") -> str:
         """Encode id_token for use as access token, adding fields"""
         final = self.to_dict()
-        final["azp"] = self._provider.client_id
+        final["azp"] = provider.client_id
         final["uid"] = generate_id()
-        return self._provider.encode(final)
+        return provider.encode(final)
 
-    def to_jwt(self) -> str:
+    def to_jwt(self, provider: "OAuth2Provider") -> str:
         """Shortcut to encode id_token to jwt, signed by self.provider"""
-        return self._provider.encode(self.to_dict())
+        return provider.encode(self.to_dict())

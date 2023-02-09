@@ -471,12 +471,12 @@ class TokenView(View):
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         access_token = AccessToken(
             provider=self.provider,
-            user=self.params.refresh_token.user,
+            user=self.params.authorization_code.user,
             expires=access_token_expiry,
             # Keep same scopes as previous token
             scope=self.params.authorization_code.scope,
         )
-        access_token.id_token = IDToken(
+        access_token.id_token = IDToken.new(
             self.provider,
             access_token,
             self.request,
@@ -489,8 +489,9 @@ class TokenView(View):
             user=self.params.authorization_code.user,
             scope=self.params.authorization_code.scope,
             expires=refresh_token_expiry,
+            provider=self.provider,
         )
-        id_token = IDToken(
+        id_token = IDToken.new(
             self.provider,
             refresh_token,
             self.request,
@@ -510,7 +511,7 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": id_token.to_jwt(),
+            "id_token": id_token.to_jwt(self.provider),
         }
 
     def create_refresh_response(self) -> dict[str, Any]:
@@ -528,7 +529,7 @@ class TokenView(View):
             # Keep same scopes as previous token
             scope=self.params.refresh_token.scope,
         )
-        access_token.id_token = IDToken(
+        access_token.id_token = IDToken.new(
             self.provider,
             access_token,
             self.request,
@@ -541,14 +542,15 @@ class TokenView(View):
             user=self.params.refresh_token.user,
             scope=self.params.refresh_token.scope,
             expires=refresh_token_expiry,
+            provider=self.provider,
         )
-        id_token = IDToken(
+        id_token = IDToken.new(
             self.provider,
             refresh_token,
             self.request,
             exp=int(refresh_token_expiry.timestamp()),
         )
-        id_token.nonce = self.params.refresh_token.nonce
+        id_token.nonce = self.params.refresh_token.id_token.nonce
         id_token.at_hash = access_token.at_hash
         refresh_token.id_token = id_token
         refresh_token.save()
@@ -564,7 +566,7 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": id_token.to_jwt(),
+            "id_token": id_token.to_jwt(self.provider),
         }
 
     def create_client_credentials_response(self) -> dict[str, Any]:
@@ -577,7 +579,7 @@ class TokenView(View):
             expires=access_token_expiry,
             scope=self.params.scope,
         )
-        access_token.id_token = IDToken(
+        access_token.id_token = IDToken.new(
             self.provider,
             access_token,
             self.request,
@@ -590,7 +592,7 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": access_token.id_token.to_jwt(),
+            "id_token": access_token.id_token.to_jwt(self.provider),
         }
 
     def create_device_code_response(self) -> dict[str, Any]:
@@ -605,7 +607,7 @@ class TokenView(View):
             expires=access_token_expiry,
             scope=self.params.device_code.scope,
         )
-        access_token.id_token = IDToken(
+        access_token.id_token = IDToken.new(
             self.provider,
             access_token,
             self.request,
@@ -618,8 +620,9 @@ class TokenView(View):
             user=self.params.device_code.user,
             scope=self.params.device_code.scope,
             expires=refresh_token_expiry,
+            provider=self.provider,
         )
-        id_token = IDToken(
+        id_token = IDToken.new(
             self.provider,
             refresh_token,
             self.request,
@@ -638,5 +641,5 @@ class TokenView(View):
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": id_token.to_jwt(),
+            "id_token": id_token.to_jwt(self.provider),
         }

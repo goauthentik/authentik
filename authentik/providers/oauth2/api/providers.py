@@ -147,11 +147,11 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         scope_names = ScopeMapping.objects.filter(provider=provider).values_list(
             "scope_name", flat=True
         )
-        temp_token = IDToken(
+        temp_token = IDToken.new(
             provider,
             AccessToken(
                 user=request.user,
-                _scopes=" ".join(scope_names),
+                _scope=" ".join(scope_names),
             ),
             request,
         )
