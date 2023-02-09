@@ -481,7 +481,6 @@ class TokenView(View):
             self.provider,
             access_token,
             self.request,
-            exp=int(access_token_expiry.timestamp()),
         )
         access_token.save()
 
@@ -496,7 +495,6 @@ class TokenView(View):
             self.provider,
             refresh_token,
             self.request,
-            exp=int(refresh_token_expiry.timestamp()),
         )
         id_token.nonce = self.params.authorization_code.nonce
         id_token.at_hash = access_token.at_hash
@@ -534,7 +532,6 @@ class TokenView(View):
             self.provider,
             access_token,
             self.request,
-            exp=int(access_token_expiry.timestamp()),
         )
         access_token.save()
 
@@ -549,7 +546,6 @@ class TokenView(View):
             self.provider,
             refresh_token,
             self.request,
-            exp=int(refresh_token_expiry.timestamp()),
         )
         id_token.nonce = self.params.refresh_token.id_token.nonce
         id_token.at_hash = access_token.at_hash
@@ -584,7 +580,6 @@ class TokenView(View):
             self.provider,
             access_token,
             self.request,
-            exp=int(access_token_expiry.timestamp()),
         )
         access_token.save()
         return {
@@ -612,7 +607,6 @@ class TokenView(View):
             self.provider,
             access_token,
             self.request,
-            exp=int(access_token_expiry.timestamp()),
         )
         access_token.save()
 
@@ -627,7 +621,6 @@ class TokenView(View):
             self.provider,
             refresh_token,
             self.request,
-            exp=int(refresh_token_expiry.timestamp()),
         )
         id_token.at_hash = access_token.at_hash
         refresh_token.id_token = id_token

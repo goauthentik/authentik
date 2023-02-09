@@ -1,6 +1,6 @@
 """id_token utils"""
 from dataclasses import asdict, dataclass, field
-from datetime import datetime
+from django.utils.timezone import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
 from django.db import models
@@ -87,6 +87,7 @@ class IDToken:
     ) -> "IDToken":
         """Create ID Token"""
         id_token = IDToken(provider, token, **kwargs)
+        id_token.exp = int(token.expires.timestamp())
         id_token.iss = provider.get_issuer(request)
         id_token.aud = provider.client_id
         id_token.claims = {}

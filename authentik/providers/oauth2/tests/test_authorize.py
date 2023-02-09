@@ -14,6 +14,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.constants import TOKEN_TYPE
 from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
 from authentik.providers.oauth2.models import (
+    AccessToken,
     AuthorizationCode,
     GrantTypes,
     OAuth2Provider,
@@ -30,6 +31,7 @@ class TestAuthorize(OAuthTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.factory = RequestFactory()
+        self.maxDiff = None
 
     def test_invalid_grant_type(self):
         """Test with invalid grant type"""
@@ -294,14 +296,14 @@ class TestAuthorize(OAuthTestCase):
     def test_full_implicit(self):
         """Test full authorization"""
         flow = create_test_flow()
-        provider = OAuth2Provider.objects.create(
+        provider: OAuth2Provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
             client_secret=generate_key(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
             signing_key=self.keypair,
-            access_code_validity="seconds=100",
+            access_token_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
@@ -331,16 +333,16 @@ class TestAuthorize(OAuthTestCase):
             response = self.client.get(
                 reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             )
-            token: RefreshToken = RefreshToken.objects.filter(user=user).first()
-            expires = timedelta_from_string(provider.access_code_validity).total_seconds()
+            token: AccessToken = AccessToken.objects.filter(user=user).first()
+            expires = timedelta_from_string(provider.access_token_validity).total_seconds()
             self.assertJSONEqual(
                 response.content.decode(),
                 {
                     "component": "xak-flow-redirect",
                     "type": ChallengeTypes.REDIRECT.value,
                     "to": (
-                        f"http://localhost#access_token={token.access_token}"
-                        f"&id_token={provider.encode(token.id_token.to_dict())}&token_type=bearer"
+                        f"http://localhost#access_token={token.token}"
+                        f"&id_token={provider.encode(token.id_token.to_dict())}&token_type={TOKEN_TYPE}"
                         f"&expires_in={int(expires)}&state={state}"
                     ),
                 },
@@ -383,7 +385,7 @@ class TestAuthorize(OAuthTestCase):
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
-        token: RefreshToken = RefreshToken.objects.filter(user=user).first()
+        token: AccessToken = AccessToken.objects.filter(user=user).first()
         self.assertJSONEqual(
             response.content.decode(),
             {
@@ -392,10 +394,10 @@ class TestAuthorize(OAuthTestCase):
                 "url": "http://localhost",
                 "title": f"Redirecting to {app.name}...",
                 "attrs": {
-                    "access_token": token.access_token,
+                    "access_token": token.token,
                     "id_token": provider.encode(token.id_token.to_dict()),
                     "token_type": TOKEN_TYPE,
-                    "expires_in": "60",
+                    "expires_in": "3600",
                     "state": state,
                 },
             },
