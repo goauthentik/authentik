@@ -5,6 +5,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.views import error
 from authentik.lib.utils.reflection import get_apps
+from authentik.root.letsencrypt import ACMEHTTP01ChallengeResponseView
 from authentik.root.monitoring import LiveView, MetricsView, ReadyView
 
 LOGGER = get_logger()
@@ -43,10 +44,16 @@ for _authentik_app in get_apps():
             namespace=namespace,
         )
 
+# Testing
+from django.contrib import admin
 urlpatterns += [
     path("-/metrics/", MetricsView.as_view(), name="metrics"),
     path("-/health/live/", LiveView.as_view(), name="health-live"),
     path("-/health/ready/", ReadyView.as_view(), name="health-ready"),
+    path(
+        ".well-known/acme-challenge/<str:token>",
+        ACMEHTTP01ChallengeResponseView.as_view(),
+    ),
 ]
 
 if settings.DEBUG:

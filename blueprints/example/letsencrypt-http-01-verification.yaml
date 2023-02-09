@@ -1,0 +1,13 @@
+metadata:
+  name: Example - Letsencrypt HTTP-01 Verification
+version: 1
+entries:
+- model: authentik_crypto.acmehttp01challenge
+  state: present
+  identifiers:
+    host: 'authentik.mydomain.com'
+    challenge_id: 'cRwdSWr'
+  id: letsencrypt-http-01
+  attrs:
+    challenge_response: 'AzpUGtCMuZvRpntnXBAqRdUZDoQAVyzQ'
+    required: false

@@ -28,7 +28,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.crypto.apps import MANAGED_KEY
 from authentik.crypto.builder import CertificateBuilder
-from authentik.crypto.models import CertificateKeyPair
+from authentik.crypto.models import ACMEHTTP01Challenge, CertificateKeyPair
 from authentik.events.models import Event, EventAction
 
 LOGGER = get_logger()
@@ -163,6 +163,19 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "key_data": {"write_only": True},
             "certificate_data": {"write_only": True},
         }
+
+
+class ACMEHTTP01ChallengeSerializer(ModelSerializer):
+    """ACMEHTTP01Challenge Serializer"""
+
+    class Meta:
+        model = ACMEHTTP01Challenge
+        fields = [
+            "pk",
+            "host",
+            "challenge_id",
+            "challenge_response",
+        ]
 
 
 class CertificateDataSerializer(PassiveSerializer):

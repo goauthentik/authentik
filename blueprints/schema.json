@@ -53,6 +53,7 @@
                             "authentik_core.group",
                             "authentik_core.token",
                             "authentik_core.user",
+                            "authentik_crypto.acmehttp01challenge",
                             "authentik_crypto.certificatekeypair",
                             "authentik_events.event",
                             "authentik_events.notification",

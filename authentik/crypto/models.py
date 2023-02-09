@@ -100,3 +100,42 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
     class Meta:
         verbose_name = _("Certificate-Key Pair")
         verbose_name_plural = _("Certificate-Key Pairs")
+
+
+class ACMEHTTP01Challenge(SerializerModel, CreatedUpdatedModel):
+    """ACMEHTTP01Challenge that can be used used for providing validation
+    to ACME HTTP-01 domain validation requests by Letsencrypt."""
+
+    host = models.CharField(
+        max_length=255,
+        unique=True,
+        verbose_name=_("Host"),
+        null=False,
+    )
+
+    challenge_id = models.CharField(
+        max_length=255,
+        unique=True,
+        verbose_name=_("Challenge ID"),
+        null=False,
+    )
+
+    challenge_response = models.CharField(
+        max_length=255,
+        unique=False,
+        verbose_name=_("Challenge Response"),
+        null=False,
+    )
+
+    def __str__(self) -> str:
+        return f"ACME HTTP-01 Challenge {self.host}: {self.challenge_id}"
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.crypto.api import ACMEHTTP01ChallengeSerializer
+
+        return ACMEHTTP01ChallengeSerializer
+
+    class Meta:
+        verbose_name = _("ACME HTTP-01 Challenge")
+        verbose_name_plural = _("ACME HTTP-01 Challenges")
