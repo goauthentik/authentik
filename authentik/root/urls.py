@@ -53,6 +53,7 @@ urlpatterns += [
     path(
         ".well-known/acme-challenge/<str:token>",
         ACMEHTTP01ChallengeResponseView.as_view(),
+        name="acme-challenge-response",
     ),
 ]
 
