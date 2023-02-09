@@ -18,7 +18,6 @@ from authentik.providers.oauth2.models import (
     AuthorizationCode,
     GrantTypes,
     OAuth2Provider,
-    RefreshToken,
 )
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.authorize import OAuthAuthorizationParams
@@ -31,7 +30,6 @@ class TestAuthorize(OAuthTestCase):
     def setUp(self) -> None:
         super().setUp()
         self.factory = RequestFactory()
-        self.maxDiff = None
 
     def test_invalid_grant_type(self):
         """Test with invalid grant type"""
@@ -342,7 +340,8 @@ class TestAuthorize(OAuthTestCase):
                     "type": ChallengeTypes.REDIRECT.value,
                     "to": (
                         f"http://localhost#access_token={token.token}"
-                        f"&id_token={provider.encode(token.id_token.to_dict())}&token_type={TOKEN_TYPE}"
+                        f"&id_token={provider.encode(token.id_token.to_dict())}"
+                        f"&token_type={TOKEN_TYPE}"
                         f"&expires_in={int(expires)}&state={state}"
                     ),
                 },

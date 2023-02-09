@@ -1,10 +1,10 @@
 """id_token utils"""
 from dataclasses import asdict, dataclass, field
-from django.utils.timezone import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
 from django.db import models
 from django.http import HttpRequest
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from authentik.events.signals import get_login_event
@@ -108,7 +108,7 @@ class IDToken:
             )
 
         # Convert datetimes into timestamps.
-        now = datetime.now()
+        now = timezone.now()
         id_token.iat = int(now.timestamp())
 
         # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time

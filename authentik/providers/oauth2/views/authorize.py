@@ -11,7 +11,6 @@ from django.http import HttpRequest, HttpResponse
 from django.http.response import Http404, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from django.utils.timezone import datetime
 from django.utils.translation import gettext as _
 from structlog.stdlib import get_logger
 
@@ -519,7 +518,7 @@ class OAuthFulfillmentStage(StageView):
         """Create implicit response's URL Fragment dictionary"""
         query_fragment = {}
 
-        now = datetime.now()
+        now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         token = AccessToken(
             user=self.request.user,

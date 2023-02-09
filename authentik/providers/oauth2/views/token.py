@@ -9,7 +9,6 @@ from typing import Any, Optional
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.timezone import datetime
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from guardian.shortcuts import get_anonymous_user
@@ -360,9 +359,9 @@ class TokenParams:
         LOGGER.info("successfully verified JWT with source", source=source.slug)
 
         if "exp" in token:
-            exp = datetime.fromtimestamp(token["exp"])
+            exp = timezone.fromtimestamp(token["exp"])
             # Non-timezone aware check since we assume `exp` is in UTC
-            if datetime.now() >= exp:
+            if timezone.now() >= exp:
                 LOGGER.info("JWT token expired")
                 raise TokenError("invalid_grant")
 
