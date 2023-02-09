@@ -37,6 +37,7 @@ from authentik.providers.oauth2.constants import (
     PROMPT_LOGIN,
     PROMPT_NONE,
     SCOPE_OPENID,
+    TOKEN_TYPE,
 )
 from authentik.providers.oauth2.errors import (
     AuthorizeError,
@@ -566,7 +567,7 @@ class OAuthFulfillmentStage(StageView):
         if self.params.grant_type == GrantTypes.HYBRID:
             query_fragment["code"] = code.code
 
-        query_fragment["token_type"] = "bearer"  # nosec
+        query_fragment["token_type"] = TOKEN_TYPE
         query_fragment["expires_in"] = int(
             timedelta_from_string(self.provider.access_code_validity).total_seconds()
         )

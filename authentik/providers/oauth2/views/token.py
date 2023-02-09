@@ -38,6 +38,7 @@ from authentik.providers.oauth2.constants import (
     GRANT_TYPE_DEVICE_CODE,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
+    TOKEN_TYPE,
 )
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
 from authentik.providers.oauth2.id_token import IDToken
@@ -507,7 +508,7 @@ class TokenView(View):
         return {
             "access_token": access_token.token,
             "refresh_token": refresh_token.token,
-            "token_type": "bearer",
+            "token_type": TOKEN_TYPE,
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -562,7 +563,7 @@ class TokenView(View):
         return {
             "access_token": access_token.token,
             "refresh_token": refresh_token.token,
-            "token_type": "bearer",
+            "token_type": TOKEN_TYPE,
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -588,7 +589,7 @@ class TokenView(View):
         access_token.save()
         return {
             "access_token": access_token.token,
-            "token_type": "bearer",
+            "token_type": TOKEN_TYPE,
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
@@ -637,7 +638,7 @@ class TokenView(View):
         return {
             "access_token": access_token.token,
             "refresh_token": refresh_token.token,
-            "token_type": "bearer",
+            "token_type": TOKEN_TYPE,
             "expires_in": int(
                 timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),

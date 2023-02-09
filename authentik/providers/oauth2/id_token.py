@@ -1,6 +1,6 @@
 """id_token utils"""
-from datetime import datetime
 from dataclasses import asdict, dataclass, field
+from datetime import datetime
 from typing import TYPE_CHECKING, Any, Optional
 
 from django.db import models
@@ -83,7 +83,7 @@ class IDToken:
     @staticmethod
     # pylint: disable=too-many-locals
     def new(
-         provider: "OAuth2Provider", token: "BaseGrantModel", request: HttpRequest, **kwargs
+        provider: "OAuth2Provider", token: "BaseGrantModel", request: HttpRequest, **kwargs
     ) -> "IDToken":
         """Create ID Token"""
         id_token = IDToken(provider, token, **kwargs)
@@ -141,6 +141,8 @@ class IDToken:
     def to_dict(self) -> dict[str, Any]:
         """Convert dataclass to dict, and update with keys from `claims`"""
         id_dict = asdict(self)
+        # All items without a value should be removed instead being set to None/null
+        # https://openid.net/specs/openid-connect-core-1_0.html#JSONSerialization
         for key in list(id_dict.keys()):
             if id_dict[key] is None:
                 id_dict.pop(key)

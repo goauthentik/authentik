@@ -11,6 +11,7 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import ChallengeTypes
 from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.providers.oauth2.constants import TOKEN_TYPE
 from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
 from authentik.providers.oauth2.models import (
     AuthorizationCode,
@@ -307,7 +308,7 @@ class TestAuthorize(OAuthTestCase):
         user = create_test_admin_user()
         self.client.force_login(user)
         with patch(
-            "authentik.providers.oauth2.models.get_login_event",
+            "authentik.providers.oauth2.id_token.get_login_event",
             MagicMock(
                 return_value=Event(
                     action=EventAction.LOGIN,
@@ -393,7 +394,7 @@ class TestAuthorize(OAuthTestCase):
                 "attrs": {
                     "access_token": token.access_token,
                     "id_token": provider.encode(token.id_token.to_dict()),
-                    "token_type": "bearer",
+                    "token_type": TOKEN_TYPE,
                     "expires_in": "60",
                     "state": state,
                 },

@@ -6,7 +6,7 @@ from jwt import decode
 
 from authentik.core.tests.utils import create_test_cert
 from authentik.crypto.models import CertificateKeyPair
-from authentik.providers.oauth2.models import JWTAlgorithms, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, JWTAlgorithms, OAuth2Provider
 
 
 class OAuthTestCase(TestCase):
@@ -31,13 +31,13 @@ class OAuthTestCase(TestCase):
         if key in container:
             self.assertIsNotNone(container[key])
 
-    def validate_jwt(self, token: RefreshToken, provider: OAuth2Provider) -> dict[str, Any]:
+    def validate_jwt(self, token: AccessToken, provider: OAuth2Provider) -> dict[str, Any]:
         """Validate that all required fields are set"""
         key, alg = provider.jwt_key
         if alg != JWTAlgorithms.HS256:
             key = provider.signing_key.public_key
         jwt = decode(
-            token.access_token,
+            token.token,
             key,
             algorithms=[alg],
             audience=provider.client_id,
