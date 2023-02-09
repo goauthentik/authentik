@@ -58,7 +58,7 @@ class TokenIntrospectionParams:
 @method_decorator(csrf_exempt, name="dispatch")
 class TokenIntrospectionView(View):
     """Token Introspection
-    https://tools.ietf.org/html/rfc7662"""
+    https://datatracker.ietf.org/doc/html/rfc7662"""
 
     token: RefreshToken | AccessToken
     params: TokenIntrospectionParams

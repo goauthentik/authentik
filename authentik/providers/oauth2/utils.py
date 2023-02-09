@@ -119,7 +119,7 @@ def protected_resource_view(scopes: list[str]):
     """View decorator. The client accesses protected resources by presenting the
     access token to the resource server.
 
-    https://tools.ietf.org/html/rfc6749#section-7
+    https://datatracker.ietf.org/doc/html/rfc6749#section-7
 
     This decorator also injects the token into `kwargs`"""
 

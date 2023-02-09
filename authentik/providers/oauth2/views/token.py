@@ -252,7 +252,7 @@ class TokenParams:
                 token=raw_token,
             )
             raise TokenError("invalid_grant")
-        # https://tools.ietf.org/html/rfc6749#section-6
+        # https://datatracker.ietf.org/doc/html/rfc6749#section-6
         # Fallback to original token's scopes when none are given
         if not self.scope:
             self.scope = self.refresh_token.scope
@@ -466,7 +466,7 @@ class TokenView(View):
             return TokenResponse(error.create_dict(), status=403)
 
     def create_code_response(self) -> dict[str, Any]:
-        """See https://tools.ietf.org/html/rfc6749#section-4.1"""
+        """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         access_token = AccessToken.objects.create(
@@ -510,93 +510,122 @@ class TokenView(View):
             "id_token": id_token.to_jwt(),
         }
 
-    # TODO
-
     def create_refresh_response(self) -> dict[str, Any]:
-        """See https://tools.ietf.org/html/rfc6749#section-6"""
+        """See https://datatracker.ietf.org/doc/html/rfc6749#section-6"""
         unauthorized_scopes = set(self.params.scope) - set(self.params.refresh_token.scope)
         if unauthorized_scopes:
             raise TokenError("invalid_scope")
 
-        refresh_token: RefreshToken = self.provider.create_refresh_token(
+        now = timezone.now()
+        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken.objects.create(
+            provider=self.provider,
             user=self.params.refresh_token.user,
-            scope=self.params.scope,
-            request=self.request,
-            expiry=timedelta_from_string(self.provider.token_validity),
+            expires=access_token_expiry,
+            token=IDToken(
+                self.provider,
+                self.params.refresh_token.user,
+                self.request,
+                exp=int(access_token_expiry.timestamp()),
+            ).to_access_token(),
         )
 
-        # If the Token has an id_token it's an Authentication request.
-        if self.params.refresh_token.id_token:
-            refresh_token.id_token = refresh_token.create_id_token(
-                user=self.params.refresh_token.user,
-                request=self.request,
-            )
-            refresh_token.id_token.at_hash = refresh_token.at_hash
+        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+        id_token = IDToken(
+            self.provider,
+            self.params.refresh_token.user,
+            self.request,
+            exp=int(refresh_token_expiry.timestamp()),
+        )
+        id_token.at_hash = access_token.at_hash
 
-            # Store the refresh_token.
-            refresh_token.save()
+        refresh_token = RefreshToken.objects.create(
+            user=self.params.refresh_token.user,
+            scope=self.params.refresh_token.scope,
+            expires=refresh_token_expiry,
+            id_token=id_token,
+        )
 
         # Mark old token as revoked
         self.params.refresh_token.revoked = True
         self.params.refresh_token.save()
 
         return {
-            "access_token": refresh_token.access_token,
-            "refresh_token": refresh_token.refresh_token,
+            "access_token": access_token.token,
+            "refresh_token": refresh_token.token,
             "token_type": "bearer",
-            "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
-            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
+            "expires_in": int(
+                timedelta_from_string(self.provider.access_token_validity).total_seconds()
+            ),
+            "id_token": id_token.to_jwt(),
         }
 
     def create_client_credentials_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""
-        refresh_token: RefreshToken = self.provider.create_refresh_token(
-            user=self.params.user,
-            scope=self.params.scope,
-            request=self.request,
-            expiry=timedelta_from_string(self.provider.token_validity),
+        now = timezone.now()
+        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken.objects.create(
+            provider=self.provider,
+            user=self.params.refresh_token.user,
+            expires=access_token_expiry,
+            token=IDToken(
+                self.provider,
+                self.params.refresh_token.user,
+                self.request,
+                exp=int(access_token_expiry.timestamp()),
+            ).to_access_token(),
         )
-        refresh_token.id_token = refresh_token.create_id_token(
-            user=self.params.user,
-            request=self.request,
-        )
-        refresh_token.id_token.at_hash = refresh_token.at_hash
-
-        # Store the refresh_token.
-        refresh_token.save()
-
         return {
-            "access_token": refresh_token.access_token,
+            "access_token": access_token.token,
             "token_type": "bearer",
-            "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
-            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
+            "expires_in": int(
+                timedelta_from_string(self.provider.access_token_validity).total_seconds()
+            ),
+            "id_token": access_token.id_token.to_jwt(),
         }
 
     def create_device_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc8628"""
         if not self.params.device_code.user:
             raise DeviceCodeError("authorization_pending")
+        now = timezone.now()
+        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken.objects.create(
+            provider=self.provider,
+            user=self.params.device_code.user,
+            expires=access_token_expiry,
+            token=IDToken(
+                self.provider,
+                self.params.device_code.user,
+                self.request,
+                exp=int(access_token_expiry.timestamp()),
+            ).to_access_token(),
+        )
 
-        refresh_token: RefreshToken = self.provider.create_refresh_token(
+        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+        id_token = IDToken(
+            self.provider,
+            self.params.device_code.user,
+            self.request,
+            exp=int(refresh_token_expiry.timestamp()),
+        )
+        id_token.at_hash = access_token.at_hash
+
+        refresh_token = RefreshToken.objects.create(
             user=self.params.device_code.user,
             scope=self.params.device_code.scope,
-            request=self.request,
-            expiry=timedelta_from_string(self.provider.token_validity),
+            expires=refresh_token_expiry,
+            id_token=id_token,
         )
-        refresh_token.id_token = refresh_token.create_id_token(
-            user=self.params.device_code.user,
-            request=self.request,
-        )
-        refresh_token.id_token.at_hash = refresh_token.at_hash
 
-        # Store the refresh_token.
-        refresh_token.save()
-
+        # Delete device code
+        self.params.device_code.delete()
         return {
-            "access_token": refresh_token.access_token,
+            "access_token": access_token.token,
+            "refresh_token": refresh_token.token,
             "token_type": "bearer",
             "expires_in": int(
-                timedelta_from_string(refresh_token.provider.token_validity).total_seconds()
+                timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
+            "id_token": id_token.to_jwt(),
         }
