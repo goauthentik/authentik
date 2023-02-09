@@ -14,7 +14,7 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
       - uses: actions/setup-node@v3.6.0
         with:
-          node-version: '16'
+          node-version: '18'
           registry-url: 'https://registry.npmjs.org'
       - name: Generate API Client
         run: make gen-client-ts

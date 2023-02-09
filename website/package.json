@@ -12,7 +12,8 @@
         "deploy": "docusaurus deploy",
         "serve": "docusaurus serve",
         "prettier-check": "prettier --check .",
-        "prettier": "prettier --write ."
+        "prettier": "prettier --write .",
+        "test": "node --test"
     },
     "dependencies": {
         "@docusaurus/plugin-client-redirects": "2.3.1",

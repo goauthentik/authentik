@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3.6.0
         with:
-          node-version: '16'
+          node-version: '18'
           cache: 'npm'
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
@@ -25,9 +25,24 @@ jobs:
       - name: prettier
         working-directory: website/
         run: npm run prettier-check
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3.6.0
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+      - working-directory: website/
+        run: npm ci
+      - name: test
+        working-directory: website/
+        run: npm test
   ci-website-mark:
     needs:
       - lint-prettier
+      - test
     runs-on: ubuntu-latest
     steps:
       - run: echo mark

@@ -108,7 +108,7 @@ jobs:
           go-version: "^1.17"
       - uses: actions/setup-node@v3.6.0
         with:
-          node-version: '16'
+          node-version: '18'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
       - name: Build web
