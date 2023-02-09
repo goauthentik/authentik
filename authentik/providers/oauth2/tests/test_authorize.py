@@ -301,7 +301,6 @@ class TestAuthorize(OAuthTestCase):
             authorization_flow=flow,
             redirect_uris="http://localhost",
             signing_key=self.keypair,
-            access_token_validity="seconds=100",
         )
         Application.objects.create(name="app", slug="app", provider=provider)
         state = generate_id()
