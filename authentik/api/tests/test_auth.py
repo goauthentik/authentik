@@ -1,4 +1,5 @@
 """Test API Authentication"""
+import json
 from base64 import b64encode
 
 from django.conf import settings
@@ -11,7 +12,7 @@ from authentik.core.models import USER_ATTRIBUTE_SA, Token, TokenIntents
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
-from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider
 
 
 class TestAPIAuth(TestCase):
@@ -63,24 +64,26 @@ class TestAPIAuth(TestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(), client_id=generate_id(), authorization_flow=create_test_flow()
         )
-        refresh = RefreshToken.objects.create(
+        refresh = AccessToken.objects.create(
             user=create_test_admin_user(),
             provider=provider,
-            refresh_token=generate_id(),
+            token=generate_id(),
             _scope=SCOPE_AUTHENTIK_API,
+            _id_token=json.dumps({}),
         )
-        self.assertEqual(bearer_auth(f"Bearer {refresh.refresh_token}".encode()), refresh.user)
+        self.assertEqual(bearer_auth(f"Bearer {refresh.token}".encode()), refresh.user)
 
     def test_jwt_missing_scope(self):
         """Test valid JWT"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(), client_id=generate_id(), authorization_flow=create_test_flow()
         )
-        refresh = RefreshToken.objects.create(
+        refresh = AccessToken.objects.create(
             user=create_test_admin_user(),
             provider=provider,
-            refresh_token=generate_id(),
+            token=generate_id(),
             _scope="",
+            _id_token=json.dumps({}),
         )
         with self.assertRaises(AuthenticationFailed):
-            self.assertEqual(bearer_auth(f"Bearer {refresh.refresh_token}".encode()), refresh.user)
+            self.assertEqual(bearer_auth(f"Bearer {refresh.token}".encode()), refresh.user)
