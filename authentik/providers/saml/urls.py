@@ -23,12 +23,12 @@ urlpatterns = [
     ),
     # SLO Bindings
     path(
-        "<slug:application_slug>/slo/redirect/",
+        "<slug:application_slug>/slo/binding/redirect/",
         slo.SAMLSLOBindingRedirectView.as_view(),
         name="slo-redirect",
     ),
     path(
-        "<slug:application_slug>/slo/post/",
+        "<slug:application_slug>/slo/binding/post/",
         slo.SAMLSLOBindingPOSTView.as_view(),
         name="slo-post",
     ),
