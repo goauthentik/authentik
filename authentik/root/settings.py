@@ -80,6 +80,7 @@ INSTALLED_APPS = [
     "authentik.providers.oauth2",
     "authentik.providers.proxy",
     "authentik.providers.saml",
+    "authentik.providers.scim",
     "authentik.recovery",
     "authentik.sources.ldap",
     "authentik.sources.oauth",

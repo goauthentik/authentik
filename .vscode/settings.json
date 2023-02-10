@@ -16,7 +16,8 @@
         "passwordless",
         "kubernetes",
         "sso",
-        "slo"
+        "slo",
+        "scim",
     ],
     "python.linting.pylintEnabled": true,
     "todo-tree.tree.showCountsInTree": true,
