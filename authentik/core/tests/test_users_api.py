@@ -238,6 +238,15 @@ class TestUsersAPI(APITestCase):
         body = loads(response.content.decode())
         self.assertIn("gravatar", body["user"]["avatar"])
 
+    @CONFIG.patch("avatars", "ui-avatars")
+    def test_avatars_uiavatar(self):
+        """Test avatars ui-avatars"""
+        self.client.force_login(self.admin)
+        response = self.client.get(reverse("authentik_api:user-me"))
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertIn("ui-avatars", body["user"]["avatar"])
+
     @CONFIG.patch("avatars", "foo-%(username)s")
     def test_avatars_custom(self):
         """Test avatars custom"""

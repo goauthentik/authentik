@@ -50,6 +50,7 @@ USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
 GRAVATAR_URL = "https://secure.gravatar.com"
+UIAVATARS_URL = "https://eu.ui-avatars.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 
 
@@ -239,6 +240,29 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             return DEFAULT_AVATAR
         if mode.startswith("attributes."):
             return get_path_from_dict(self.attributes, mode[11:], default=DEFAULT_AVATAR)
+        if mode == "ui-avatars":
+            name = self.name or "authenti k"  # To get a default "AK" abbreviation
+            color = int(md5(name.lower().encode("utf-8")).hexdigest(), 16) % 0xFFFFFF
+
+            # Get a reduced scope of colors (to avoid too dark or light background)
+            red = min(max((color) & 0xFF, 55), 200)
+            green = min(max((color >> 8) & 0xFF, 55), 200)
+            blue = min(max((color >> 16) & 0xFF, 55), 200)
+
+            # Only abbreviate first and last name
+            names = name.split(" ")
+            if len(names) > 2:
+                names = [names[0], names[-1]]
+
+            parameters = [
+                ("name", " ".join(names)),
+                ("length", str(len(names))),
+                ("background", f"{red:02x}{green:02x}{blue:02x}"),
+                # Contrasting text color (https://stackoverflow.com/a/3943023)
+                ("color", "000" if (red * 0.299 + green * 0.587 + blue * 0.114) > 186 else "fff"),
+            ]
+            ui_avatars_url = f"{UIAVATARS_URL}/api/?{urlencode(parameters, doseq=True)}"
+            return escape(ui_avatars_url)
         # gravatar uses md5 for their URLs, so md5 can't be avoided
         mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
