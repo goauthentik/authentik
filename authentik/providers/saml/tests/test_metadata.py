@@ -4,10 +4,12 @@ from pathlib import Path
 import xmlsec
 from defusedxml.lxml import fromstring
 from django.test import RequestFactory, TestCase
+from lxml import etree  # nosec
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id
+from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
@@ -42,6 +44,23 @@ class TestServiceProviderMetadataParser(TestCase):
         metadata_a = MetadataProcessor(provider, request).build_entity_descriptor()
         metadata_b = MetadataProcessor(provider, request).build_entity_descriptor()
         self.assertEqual(metadata_a, metadata_b)
+
+    def test_schema(self):
+        """Test that metadata generation is consistent"""
+        provider = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=self.flow,
+        )
+        Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider=provider,
+        )
+        request = self.factory.get("/")
+        metadata = lxml_from_string(MetadataProcessor(provider, request).build_entity_descriptor())
+
+        schema = etree.XMLSchema(etree.parse("xml/saml-schema-metadata-2.0.xsd"))  # nosec
+        self.assertTrue(schema.validate(metadata))
 
     def test_simple(self):
         """Test simple metadata without Signing"""
