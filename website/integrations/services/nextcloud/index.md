@@ -48,7 +48,7 @@ In Nextcloud, ensure that the `SSO & SAML Authentication` app is installed. Navi
 
 Set the following values:
 
--   Attribute to map the UID to.: `http://schemas.goauthentik.io/2021/02/saml/username`
+-   Attribute to map the UID to: `http://schemas.goauthentik.io/2021/02/saml/uid`
 -   Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 -   Identifier of the IdP entity (must be a URI): `https://authentik.company`
 -   URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
