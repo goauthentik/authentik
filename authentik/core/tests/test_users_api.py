@@ -13,6 +13,7 @@ from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant
 
 
+# pylint: disable=too-many-public-methods
 class TestUsersAPI(APITestCase):
     """Test Users API"""
 
