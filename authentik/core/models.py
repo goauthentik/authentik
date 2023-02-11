@@ -320,7 +320,9 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
                 # using authentik's red color
                 svg = _generate_avatar_from_name("a k", bg_hex="fd4b2d", text_hex="fff", length=2)
             else:
-                color = int(md5(self.name.lower().encode("utf-8")).hexdigest(), 16) % 0xFFFFFF
+                color = (
+                    int(md5(self.name.lower().encode("utf-8")).hexdigest(), 16) % 0xFFFFFF  # nosec
+                )
 
                 # Get a (somewhat arbitrarily) reduced scope of colors
                 # to avoid too dark or light backgrounds
