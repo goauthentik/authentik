@@ -57,7 +57,7 @@ DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + ("authentik_used_by_shadows",)
 
 
-def generate_avatar_from_name(  # pragma: no cover
+def _generate_avatar_from_name(  # pragma: no cover
     name: str,
     *,
     bg_hex: str = "ddd",
@@ -318,7 +318,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             if not self.name:
                 # Render a default avatar abbreviated "AK" and
                 # using authentik's red color
-                svg = generate_avatar_from_name("a k", bg_hex="fd4b2d", text_hex="fff", length=2)
+                svg = _generate_avatar_from_name("a k", bg_hex="fd4b2d", text_hex="fff", length=2)
             else:
                 color = int(md5(self.name.lower().encode("utf-8")).hexdigest(), 16) % 0xFFFFFF
 
@@ -334,7 +334,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
                 if len(names) > 2:
                     names = [names[0], names[-1]]
 
-                svg = generate_avatar_from_name(
+                svg = _generate_avatar_from_name(
                     " ".join(names),
                     bg_hex=f"{red:02x}{green:02x}{blue:02x}",
                     # Contrasting text color (https://stackoverflow.com/a/3943023)
