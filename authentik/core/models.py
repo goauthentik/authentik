@@ -1,4 +1,5 @@
 """authentik core models"""
+import base64
 from datetime import timedelta
 from hashlib import md5, sha256
 from typing import Any, Optional
@@ -50,11 +51,80 @@ USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
 GRAVATAR_URL = "https://secure.gravatar.com"
-UIAVATARS_URL = "https://eu.ui-avatars.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 
 
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + ("authentik_used_by_shadows",)
+
+
+def generate_avatar_from_name(
+    name: str,
+    *,
+    bg_hex: str = "ddd",
+    text_hex: str = "222",
+    length: int = 2,
+    size: int = 64,
+    rounded: bool = False,
+    font_size: float = 0.4375,
+    bold: bool = False,
+    uppercase: bool = True,
+) -> str:
+    """ "Generate an avatar with initials in SVG format.
+
+    Inspired from: https://github.com/LasseRafn/ui-avatars
+    """
+    name_parts = name.split()
+
+    if len(name_parts) == 1:
+        initials = name_parts[0][:length]
+    else:
+        initials = "".join([part[0] for part in name_parts[:-1]])
+        initials += name_parts[-1]
+
+    initials = initials[:length]
+
+    bg_hex = bg_hex.strip("#")
+    text_hex = text_hex.strip("#")
+
+    half_size = size // 2
+    shape = "circle" if rounded else "rect"
+    font_weight = "600" if bold else "400"
+
+    return (
+        '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="'
+        f"{size}"
+        'px" height="'
+        f"{size}"
+        'px" viewBox="0 0 '
+        f"{size}"
+        " "
+        f"{size}"
+        '" version="1.1"><'
+        f"{shape}"
+        ' fill="#'
+        f"{bg_hex}"
+        '" cx="'
+        f"{half_size}"
+        '" width="'
+        f"{size}"
+        '" height="'
+        f"{size}"
+        '" cy="'
+        f"{half_size}"
+        '" r="'
+        f"{half_size}"
+        '"/><text x="50%" y="50%" style="color: #'
+        f"{text_hex}"
+        "; line-height: 1;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;\" alignment-baseline=\"middle\" text-anchor=\"middle\" font-size=\""  # pylint: disable=line-too-long
+        f"{round(size * font_size)}"
+        '" font-weight="'
+        f"{font_weight}"
+        '" dy=".1em" dominant-baseline="middle" fill="#'
+        f"{text_hex}"
+        '">'
+        f"{initials if not uppercase else initials.upper()}"
+        "</text></svg>"
+    )
 
 
 def default_token_duration():
@@ -240,29 +310,39 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
             return DEFAULT_AVATAR
         if mode.startswith("attributes."):
             return get_path_from_dict(self.attributes, mode[11:], default=DEFAULT_AVATAR)
-        if mode == "ui-avatars":
-            name = self.name or "authenti k"  # To get a default "AK" abbreviation
-            color = int(md5(name.lower().encode("utf-8")).hexdigest(), 16) % 0xFFFFFF
+        if mode == "initials":
+            if not self.name:
+                # Render a default avatar abbreviated "AK" and
+                # using authentik's red color
+                name = "a k"
+                svg = generate_avatar_from_name(name, bg_hex="fd4b2d", text_hex="fff", length=2)
+            else:
+                color = int(md5(self.name.lower().encode("utf-8")).hexdigest(), 16) % 0xFFFFFF
 
-            # Get a reduced scope of colors (to avoid too dark or light background)
-            red = min(max((color) & 0xFF, 55), 200)
-            green = min(max((color >> 8) & 0xFF, 55), 200)
-            blue = min(max((color >> 16) & 0xFF, 55), 200)
+                # Get a (somewhat arbitrarily) reduced scope of colors
+                # to avoid too dark or light backgrounds
+                blue = min(max((color) & 0xFF, 55), 200)
+                green = min(max((color >> 8) & 0xFF, 55), 200)
+                red = min(max((color >> 16) & 0xFF, 55), 200)
 
-            # Only abbreviate first and last name
-            names = name.split(" ")
-            if len(names) > 2:
-                names = [names[0], names[-1]]
+                names = self.name.split()
 
-            parameters = [
-                ("name", " ".join(names)),
-                ("length", str(len(names))),
-                ("background", f"{red:02x}{green:02x}{blue:02x}"),
-                # Contrasting text color (https://stackoverflow.com/a/3943023)
-                ("color", "000" if (red * 0.299 + green * 0.587 + blue * 0.114) > 186 else "fff"),
-            ]
-            ui_avatars_url = f"{UIAVATARS_URL}/api/?{urlencode(parameters, doseq=True)}"
-            return escape(ui_avatars_url)
+                # Only abbreviate first and last name
+                if len(names) > 2:
+                    names = [names[0], names[-1]]
+
+                svg = generate_avatar_from_name(
+                    " ".join(names),
+                    bg_hex=f"{red:02x}{green:02x}{blue:02x}",
+                    # Contrasting text color (https://stackoverflow.com/a/3943023)
+                    text_hex="000" if (red * 0.299 + green * 0.587 + blue * 0.114) > 186 else "fff",
+                    length=len(names),
+                )
+
+            return (
+                "data:image/svg+xml;base64,"
+                f"{base64.b64encode(svg.encode('utf-8')).decode('utf-8')}"
+            )
         # gravatar uses md5 for their URLs, so md5 can't be avoided
         mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":

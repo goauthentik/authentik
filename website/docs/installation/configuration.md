@@ -190,8 +190,10 @@ Configure how authentik should show avatars for users. Following values can be s
 Starting with authentik 2022.8, you can also use an attribute path like `attributes.something.avatar`,
 which can be used in combination with the file field to allow users to upload custom avatars for themselves.
 
-Starting with authentik 2023.2, you can also use `ui-avatars`
-to generate avatars based on the `user.name` property (uses `https://eu.ui-avatars.com/`)
+:::info
+Starting with authentik 2023.2, you can also use `initials`
+to generate an avatar based on the user's initials (taken from the `user.name` property)
+:::
 
 ### `AUTHENTIK_DEFAULT_USER_CHANGE_NAME`
 
