@@ -97,6 +97,7 @@ class SystemView(APIView):
     permission_classes = [IsAdminUser]
     pagination_class = None
     filter_backends = []
+    serializer_class = SystemSerializer
 
     @extend_schema(responses={200: SystemSerializer(many=False)})
     def get(self, request: Request) -> Response:
