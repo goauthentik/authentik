@@ -70,7 +70,7 @@ ldap:
 cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false
-avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?gravatar
+avatars: env://AUTHENTIK_AUTHENTIK__AVATARS?initials
 geoip: "/geoip/GeoLite2-City.mmdb"
 
 footer_links: []
