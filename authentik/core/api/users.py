@@ -43,6 +43,7 @@ from rest_framework.serializers import (
     PrimaryKeyRelatedField,
     ValidationError,
 )
+from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
@@ -107,7 +108,7 @@ class UserSerializer(ModelSerializer):
     )
     groups_obj = ListSerializer(child=UserGroupSerializer(), read_only=True, source="ak_groups")
     uid = CharField(read_only=True)
-    username = CharField(max_length=150)
+    username = CharField(max_length=150, validators=[UniqueValidator(queryset=User.objects.all())])
 
     def validate_path(self, path: str) -> str:
         """Validate path"""
