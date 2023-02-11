@@ -6,7 +6,6 @@ from authentik.lib.generators import generate_id
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_crypto", "0001_initial"),
     ]

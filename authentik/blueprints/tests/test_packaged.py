@@ -13,7 +13,7 @@ from authentik.tenants.models import Tenant
 class TestPackaged(TransactionTestCase):
     """Empty class, test methods are added dynamically"""
 
-    @apply_blueprint("default/90-default-tenant.yaml")
+    @apply_blueprint("default/default-tenant.yaml")
     def test_decorator_static(self):
         """Test @apply_blueprint decorator"""
         self.assertTrue(Tenant.objects.filter(domain="authentik-default").exists())

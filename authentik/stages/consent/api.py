@@ -17,7 +17,6 @@ class ConsentStageSerializer(StageSerializer):
     """ConsentStage Serializer"""
 
     class Meta:
-
         model = ConsentStage
         fields = StageSerializer.Meta.fields + ["mode", "consent_expire_in"]
 
@@ -39,7 +38,6 @@ class UserConsentSerializer(StageSerializer):
     application = ApplicationSerializer()
 
     class Meta:
-
         model = UserConsent
         fields = ["pk", "expires", "user", "application", "permissions"]
 

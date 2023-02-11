@@ -102,3 +102,8 @@ class SystemView(APIView):
     def get(self, request: Request) -> Response:
         """Get system information."""
         return Response(SystemSerializer(request).data)
+
+    @extend_schema(responses={200: SystemSerializer(many=False)})
+    def post(self, request: Request) -> Response:
+        """Get system information."""
+        return Response(SystemSerializer(request).data)

@@ -16,7 +16,6 @@ def remove_pb_flow_plan(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_policies_expression", "0001_initial"),
     ]

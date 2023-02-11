@@ -258,14 +258,19 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                         ? this.renderProviderGeneric()
                         : this.renderProviderTwillio()}
                     <ak-form-element-horizontal name="verifyOnly">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.verifyOnly, false)}
                             />
-                            <label class="pf-c-check__label">${t`Hash phone number`}</label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Hash phone number`}</span>
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`If enabled, only a hash of the phone number will be saved. This can be done for data-protection reasons. Devices created from a stage with this enabled cannot be used with the authenticator validation stage.`}
                         </p>

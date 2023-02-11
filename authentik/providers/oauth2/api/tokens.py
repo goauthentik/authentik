@@ -13,7 +13,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.providers.oauth2.api.providers import OAuth2ProviderSerializer
-from authentik.providers.oauth2.models import AuthorizationCode, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 
 
 class ExpiringBaseGrantModelSerializer(ModelSerializer, MetaNameSerializer):
@@ -24,13 +24,12 @@ class ExpiringBaseGrantModelSerializer(ModelSerializer, MetaNameSerializer):
     scope = ListField(child=CharField())
 
     class Meta:
-
         model = AuthorizationCode
         fields = ["pk", "provider", "user", "is_expired", "expires", "scope"]
         depth = 2
 
 
-class RefreshTokenModelSerializer(ExpiringBaseGrantModelSerializer):
+class TokenModelSerializer(ExpiringBaseGrantModelSerializer):
     """Serializer for BaseGrantModel and RefreshToken"""
 
     id_token = SerializerMethodField()
@@ -40,7 +39,6 @@ class RefreshTokenModelSerializer(ExpiringBaseGrantModelSerializer):
         return dumps(instance.id_token.to_dict(), indent=4)
 
     class Meta:
-
         model = RefreshToken
         fields = [
             "pk",
@@ -91,7 +89,33 @@ class RefreshTokenViewSet(
     """RefreshToken Viewset"""
 
     queryset = RefreshToken.objects.all()
-    serializer_class = RefreshTokenModelSerializer
+    serializer_class = TokenModelSerializer
+    filterset_fields = ["user", "provider"]
+    ordering = ["provider", "expires"]
+    filter_backends = [
+        DjangoFilterBackend,
+        OrderingFilter,
+        SearchFilter,
+    ]
+
+    def get_queryset(self):
+        user = self.request.user if self.request else get_anonymous_user()
+        if user.is_superuser:
+            return super().get_queryset()
+        return super().get_queryset().filter(user=user.pk)
+
+
+class AccessTokenViewSet(
+    mixins.RetrieveModelMixin,
+    mixins.DestroyModelMixin,
+    UsedByMixin,
+    mixins.ListModelMixin,
+    GenericViewSet,
+):
+    """AccessToken Viewset"""
+
+    queryset = AccessToken.objects.all()
+    serializer_class = TokenModelSerializer
     filterset_fields = ["user", "provider"]
     ordering = ["provider", "expires"]
     filter_backends = [

@@ -31,6 +31,7 @@ import {
     ProvidersApi,
     ProxyMode,
     ProxyProvider,
+    SourcesApi,
 } from "@goauthentik/api";
 
 @customElement("ak-provider-proxy-form")
@@ -204,16 +205,21 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="internalHostSslValidation">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.internalHostSslValidation, true)}
                             />
-                            <label class="pf-c-check__label">
-                                ${t`Internal host SSL Validation`}
-                            </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${t`Internal host SSL Validation`}</span
+                            >
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`Validate SSL Certificates of upstream servers.`}
                         </p>
@@ -336,10 +342,10 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 </div>
                 <div class="pf-c-card__footer">${this.renderSettings()}</div>
             </div>
-            <ak-form-element-horizontal label=${t`Token validity`} name="tokenValidity">
+            <ak-form-element-horizontal label=${t`Token validity`} name="accessTokenValidity">
                 <input
                     type="text"
-                    value="${first(this.instance?.tokenValidity, "hours=24")}"
+                    value="${first(this.instance?.accessTokenValidity, "hours=24")}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">${t`Configure how long tokens are valid for.`}</p>
@@ -380,7 +386,10 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         >
                         </ak-search-select>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Scopes`} name="propertyMappings">
+                    <ak-form-element-horizontal
+                        label=${t`Additional scopes`}
+                        name="propertyMappings"
+                    >
                         <select class="pf-c-form-control" multiple>
                             ${until(
                                 new PropertymappingsApi(DEFAULT_CONFIG)
@@ -435,27 +444,89 @@ ${this.instance?.skipPathRegex}</textarea
                             ${t`When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions.`}
                         </p>
                     </ak-form-element-horizontal>
-
-                    <ak-form-element-horizontal name="basicAuthEnabled">
-                        <div class="pf-c-check">
+                </div>
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header">${t`Authentication settings`}</span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal name="interceptHeaderAuth">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
+                                ?checked=${first(this.instance?.interceptHeaderAuth, true)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${t`Intercept header authentication`}</span
+                            >
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${t`When enabled, authentik will intercept the Authorization header to authenticate the request.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="basicAuthEnabled">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
                                 ?checked=${first(this.instance?.basicAuthEnabled, false)}
                                 @change=${(ev: Event) => {
                                     const el = ev.target as HTMLInputElement;
                                     this.showHttpBasic = el.checked;
                                 }}
                             />
-                            <label class="pf-c-check__label">
-                                ${t`Set HTTP-Basic Authentication`}
-                            </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${t`Send HTTP-Basic Authentication`}</span
+                            >
+                        </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`Set a custom HTTP-Basic Authentication header based on values from authentik.`}
+                            ${t`Send a custom HTTP-Basic Authentication header based on values from authentik.`}
                         </p>
                     </ak-form-element-horizontal>
                     ${this.showHttpBasic ? this.renderHttpBasic() : html``}
+                    <ak-form-element-horizontal label=${t`Trusted OIDC Sources`} name="jwksSources">
+                        <select class="pf-c-form-control" multiple>
+                            ${until(
+                                new SourcesApi(DEFAULT_CONFIG)
+                                    .sourcesOauthList({
+                                        ordering: "name",
+                                        hasJwks: true,
+                                    })
+                                    .then((sources) => {
+                                        return sources.results.map((source) => {
+                                            const selected = (
+                                                this.instance?.jwksSources || []
+                                            ).some((su) => {
+                                                return su == source.pk;
+                                            });
+                                            return html`<option
+                                                value=${source.pk}
+                                                ?selected=${selected}
+                                            >
+                                                ${source.name} (${source.slug})
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Hold control/command to select multiple items.`}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         </form>`;

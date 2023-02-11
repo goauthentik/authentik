@@ -14,7 +14,6 @@ class SAMLPropertyMappingSerializer(PropertyMappingSerializer):
     """SAMLPropertyMapping Serializer"""
 
     class Meta:
-
         model = SAMLPropertyMapping
         fields = PropertyMappingSerializer.Meta.fields + [
             "saml_name",

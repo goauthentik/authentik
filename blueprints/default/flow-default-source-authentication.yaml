@@ -1,0 +1,36 @@
+version: 1
+metadata:
+  name: Default - Source authentication flow
+entries:
+- attrs:
+    designation: authentication
+    name: Welcome to authentik!
+    title: Welcome to authentik!
+    authentication: require_unauthenticated
+  identifiers:
+    slug: default-source-authentication
+  model: authentik_flows.flow
+  id: flow
+- attrs:
+    expression:  |
+      # This policy ensures that this flow can only be used when the user
+      # is in a SSO Flow (meaning they come from an external IdP)
+      return ak_is_sso_flow
+  identifiers:
+    name: default-source-authentication-if-sso
+  id: default-source-authentication-if-sso
+  model: authentik_policies_expression.expressionpolicy
+- identifiers:
+    name: default-source-authentication-login
+  id: default-source-authentication-login
+  model: authentik_stages_user_login.userloginstage
+- identifiers:
+    order: 0
+    stage: !KeyOf default-source-authentication-login
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- identifiers:
+    order: 0
+    policy: !KeyOf default-source-authentication-if-sso
+    target: !KeyOf flow
+  model: authentik_policies.policybinding

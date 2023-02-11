@@ -72,6 +72,7 @@ export class SystemStatusCard extends AdminStatusCard<System> {
                 message: html`${t`Server and client are further than 5 seconds apart.`}`,
             });
         }
+        this.header = t`OK`;
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
             message: html`${t`Everything is ok.`}`,

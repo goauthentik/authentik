@@ -71,7 +71,6 @@ def migration_blueprint_import(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [("authentik_flows", "0001_initial")]
@@ -86,7 +85,12 @@ class Migration(migrations.Migration):
                     "managed",
                     models.TextField(
                         default=None,
-                        help_text="Objects which are managed by authentik. These objects are created and updated automatically. This is flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.",
+                        help_text=(
+                            "Objects which are managed by authentik. These objects are created and"
+                            " updated automatically. This is flag only indicates that an object can"
+                            " be overwritten by migrations. You can still modify the objects via"
+                            " the API, but expect changes to be overwritten in a later update."
+                        ),
                         null=True,
                         unique=True,
                         verbose_name="Managed by authentik",

@@ -78,7 +78,7 @@ class TestIdentificationStage(FlowTestCase):
             password_fields=True,
             primary_action="Log in",
             response_errors={
-                "non_field_errors": [{"code": "invalid", "string": "Failed to " "authenticate."}]
+                "non_field_errors": [{"code": "invalid", "string": "Failed to authenticate."}]
             },
             sources=[
                 {
@@ -120,7 +120,7 @@ class TestIdentificationStage(FlowTestCase):
             password_fields=False,
             primary_action="Log in",
             response_errors={
-                "non_field_errors": [{"code": "invalid", "string": "Failed to " "authenticate."}]
+                "non_field_errors": [{"code": "invalid", "string": "Failed to authenticate."}]
             },
             show_source_labels=False,
             sources=[

@@ -3,7 +3,6 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_password", "0005_auto_20210402_2221"),
     ]

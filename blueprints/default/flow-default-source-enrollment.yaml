@@ -1,0 +1,88 @@
+version: 1
+metadata:
+  name: Default - Source enrollment flow
+entries:
+- attrs:
+    designation: enrollment
+    name: Welcome to authentik! Please select a username.
+    title: Welcome to authentik! Please select a username.
+    authentication: none
+  identifiers:
+    slug: default-source-enrollment
+  model: authentik_flows.flow
+  id: flow
+- attrs:
+    order: 100
+    placeholder: Username
+    placeholder_expression: false
+    required: true
+    type: text
+    field_key: username
+    label: Username
+  identifiers:
+    name: default-source-enrollment-field-username
+  id: prompt-field-username
+  model: authentik_stages_prompt.prompt
+- attrs:
+    expression: |
+      # Check if we''ve not been given a username by the external IdP
+      # and trigger the enrollment flow
+      return 'username' not in context.get('prompt_data', {})
+  identifiers:
+    name: default-source-enrollment-if-username
+  id: default-source-enrollment-if-username
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
+    expression: |
+      # This policy ensures that this flow can only be used when the user
+      # is in a SSO Flow (meaning they come from an external IdP)
+      return ak_is_sso_flow
+  identifiers:
+    name: default-source-enrollment-if-sso
+  id: default-source-enrollment-if-sso
+  model: authentik_policies_expression.expressionpolicy
+- identifiers:
+    name: default-source-enrollment-login
+  id: default-source-enrollment-login
+  model: authentik_stages_user_login.userloginstage
+- attrs:
+    fields:
+    - !KeyOf prompt-field-username
+  identifiers:
+    name: default-source-enrollment-prompt
+  id: default-source-enrollment-prompt
+  model: authentik_stages_prompt.promptstage
+- identifiers:
+    name: default-source-enrollment-write
+  id: default-source-enrollment-write
+  model: authentik_stages_user_write.userwritestage
+  attrs:
+    user_creation_mode: always_create
+- attrs:
+    re_evaluate_policies: true
+  identifiers:
+    order: 0
+    stage: !KeyOf default-source-enrollment-prompt
+    target: !KeyOf flow
+  id: prompt-binding
+  model: authentik_flows.flowstagebinding
+- identifiers:
+    order: 1
+    stage: !KeyOf default-source-enrollment-write
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- identifiers:
+    order: 2
+    stage: !KeyOf default-source-enrollment-login
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- identifiers:
+    order: 0
+    policy: !KeyOf default-source-enrollment-if-sso
+    target: !KeyOf flow
+  model: authentik_policies.policybinding
+- identifiers:
+    order: 0
+    policy: !KeyOf default-source-enrollment-if-username
+    target: !KeyOf prompt-binding
+  model: authentik_policies.policybinding

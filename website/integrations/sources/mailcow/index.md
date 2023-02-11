@@ -21,7 +21,7 @@ The following placeholders will be used:
 
 2. Click "Add OAuth2 Client"
 
-3. Insert the redirect URL: `https://authentik.company/source/oauth/callback/mailcow`
+3. Insert the redirect URL: `https://authentik.company/source/oauth/callback/mailcow/`
 
 ![Add OAuth2 CLient](mailcow2.png)
 

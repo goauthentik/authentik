@@ -42,7 +42,6 @@ def set_default_group_mappings(apps: Apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_sources_ldap", "0001_initial"),
         ("authentik_sources_ldap", "0002_ldapsource_sync_users"),
@@ -173,7 +172,10 @@ class Migration(migrations.Migration):
                     "sync_users_password",
                     models.BooleanField(
                         default=True,
-                        help_text="When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.",
+                        help_text=(
+                            "When a user changes their password, sync it back to LDAP. This can"
+                            " only be enabled on a single LDAP source."
+                        ),
                         unique=True,
                     ),
                 ),
@@ -242,7 +244,10 @@ class Migration(migrations.Migration):
             name="sync_users_password",
             field=models.BooleanField(
                 default=True,
-                help_text="When a user changes their password, sync it back to LDAP. This can only be enabled on a single LDAP source.",
+                help_text=(
+                    "When a user changes their password, sync it back to LDAP. This can only be"
+                    " enabled on a single LDAP source."
+                ),
             ),
         ),
     ]

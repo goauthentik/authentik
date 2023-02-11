@@ -88,24 +88,34 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                     <input type="text" value="" class="pf-c-form-control" />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal name="useTls">
-                    <div class="pf-c-check">
+                    <label class="pf-c-switch">
                         <input
+                            class="pf-c-switch__input"
                             type="checkbox"
-                            class="pf-c-check__input"
                             ?checked=${first(this.instance?.useTls, true)}
                         />
-                        <label class="pf-c-check__label"> ${t`Use TLS`} </label>
-                    </div>
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                            </span>
+                        </span>
+                        <span class="pf-c-switch__label">${t`Use TLS`}</span>
+                    </label>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal name="useSsl">
-                    <div class="pf-c-check">
+                    <label class="pf-c-switch">
                         <input
+                            class="pf-c-switch__input"
                             type="checkbox"
-                            class="pf-c-check__input"
                             ?checked=${first(this.instance?.useSsl, false)}
                         />
-                        <label class="pf-c-check__label"> ${t`Use SSL`} </label>
-                    </div>
+                        <span class="pf-c-switch__toggle">
+                            <span class="pf-c-switch__toggle-icon">
+                                <i class="fas fa-check" aria-hidden="true"></i>
+                            </span>
+                        </span>
+                        <span class="pf-c-switch__label">${t`Use SSL`}</span>
+                    </label>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal label=${t`Timeout`} ?required=${true} name="timeout">
                     <input
@@ -148,33 +158,43 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                 <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="activateUserOnSuccess">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.activateUserOnSuccess, true)}
                             />
-                            <label class="pf-c-check__label">
-                                ${t`Activate pending user on success`}
-                            </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${t`Activate pending user on success`}</span
+                            >
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`When a user returns from the email successfully, their account will be activated.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="useGlobalSettings">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.useGlobalSettings, true)}
                                 @change=${(ev: Event) => {
                                     const target = ev.target as HTMLInputElement;
                                     this.showConnectionSettings = !target.checked;
                                 }}
                             />
-                            <label class="pf-c-check__label"> ${t`Use global settings`} </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Use global settings`}</span>
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`When enabled, global Email connection settings will be used and connection settings below will be ignored.`}
                         </p>

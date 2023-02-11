@@ -25,9 +25,19 @@ func (ps *ProxyServer) Refresh() error {
 		rsp := sentry.StartSpan(context.Background(), "authentik.outposts.proxy.application_ss")
 		ua := fmt.Sprintf(" (provider=%s)", provider.Name)
 		hc := &http.Client{
-			Transport: web.NewUserAgentTransport(constants.OutpostUserAgent()+ua, web.NewTracingTransport(rsp.Context(), ak.GetTLSTransport())),
+			Transport: web.NewUserAgentTransport(
+				constants.OutpostUserAgent()+ua,
+				web.NewTracingTransport(
+					rsp.Context(),
+					ak.GetTLSTransport(),
+				),
+			),
 		}
 		a, err := application.NewApplication(provider, hc, ps.cryptoStore, ps.akAPI)
+		existing, ok := apps[a.Host]
+		if ok {
+			existing.Stop()
+		}
 		if err != nil {
 			ps.log.WithError(err).Warning("failed to setup application")
 		} else {

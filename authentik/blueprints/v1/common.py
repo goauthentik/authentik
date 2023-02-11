@@ -66,7 +66,6 @@ class BlueprintEntry:
     identifiers: dict[str, Any] = field(default_factory=dict)
     attrs: Optional[dict[str, Any]] = field(default_factory=dict)
 
-    # pylint: disable=invalid-name
     id: Optional[str] = None
 
     _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
@@ -95,7 +94,7 @@ class BlueprintEntry:
         depth: int = 0,
         context_tag_type: Optional[type["YAMLTagContext"] | tuple["YAMLTagContext", ...]] = None,
     ) -> "YAMLTagContext":
-        """Get a YAMLTagContex object located at a certain depth in the tag tree"""
+        """Get a YAMLTagContext object located at a certain depth in the tag tree"""
         if depth < 0:
             raise ValueError("depth must be a positive number or zero")
 
@@ -192,7 +191,6 @@ class KeyOf(YAMLTag):
 
     id_from: str
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
         super().__init__()
         self.id_from = node.value
@@ -219,7 +217,6 @@ class Env(YAMLTag):
     key: str
     default: Optional[Any]
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
         super().__init__()
         self.default = None
@@ -239,7 +236,6 @@ class Context(YAMLTag):
     key: str
     default: Optional[Any]
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
         super().__init__()
         self.default = None
@@ -262,7 +258,6 @@ class Format(YAMLTag):
     format_string: str
     args: list[Any]
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.format_string = node.value[0].value
@@ -287,15 +282,12 @@ class Format(YAMLTag):
 class Find(YAMLTag):
     """Find any object"""
 
-    model_name: str
+    model_name: str | YAMLTag
     conditions: list[list]
-
-    model_class: type[Model]
 
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
-        self.model_name = node.value[0].value
-        self.model_class = apps.get_model(*self.model_name.split("."))
+        self.model_name = loader.construct_object(node.value[0])
         self.conditions = []
         for raw_node in node.value[1:]:
             values = []
@@ -304,6 +296,13 @@ class Find(YAMLTag):
             self.conditions.append(values)
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
+        if isinstance(self.model_name, YAMLTag):
+            model_name = self.model_name.resolve(entry, blueprint)
+        else:
+            model_name = self.model_name
+
+        model_class = apps.get_model(*model_name.split("."))
+
         query = Q()
         for cond in self.conditions:
             if isinstance(cond[0], YAMLTag):
@@ -315,7 +314,7 @@ class Find(YAMLTag):
             else:
                 query_value = cond[1]
             query &= Q(**{query_key: query_value})
-        instance = self.model_class.objects.filter(query).first()
+        instance = model_class.objects.filter(query).first()
         if instance:
             return instance.pk
         return None
@@ -338,7 +337,6 @@ class Condition(YAMLTag):
         "XNOR": lambda args: not (reduce(ixor, args) if len(args) > 1 else args[0]),
     }
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.mode = node.value[0].value
@@ -371,7 +369,6 @@ class If(YAMLTag):
     when_true: Any
     when_false: Any
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.condition = loader.construct_object(node.value[0])
@@ -410,7 +407,6 @@ class Enumerate(YAMLTag, YAMLTagContext):
         ),
     }
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.iterable = loader.construct_object(node.value[0])
@@ -418,7 +414,6 @@ class Enumerate(YAMLTag, YAMLTagContext):
         self.item_body = loader.construct_object(node.value[2])
         self.__current_context: tuple[Any, Any] = tuple()
 
-    # pylint: disable=unused-argument
     def get_context(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         return self.__current_context
 
@@ -476,7 +471,6 @@ class EnumeratedItem(YAMLTag):
 
     _SUPPORTED_CONTEXT_TAGS = (Enumerate,)
 
-    # pylint: disable=unused-argument
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode) -> None:
         super().__init__()
         self.depth = int(node.value)

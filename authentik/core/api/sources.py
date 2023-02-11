@@ -46,7 +46,6 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
         return obj.component
 
     class Meta:
-
         model = Source
         fields = [
             "pk",
@@ -102,7 +101,6 @@ class SourceViewSet(
         methods=["POST"],
         parser_classes=(MultiPartParser,),
     )
-    # pylint: disable=unused-argument
     def set_icon(self, request: Request, slug: str):
         """Set source icon"""
         source: Source = self.get_object()
@@ -122,7 +120,6 @@ class SourceViewSet(
         filter_backends=[],
         methods=["POST"],
     )
-    # pylint: disable=unused-argument
     def set_icon_url(self, request: Request, slug: str):
         """Set source icon (as URL)"""
         source: Source = self.get_object()

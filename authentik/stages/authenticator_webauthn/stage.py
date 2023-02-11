@@ -26,7 +26,6 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     WithUserInfoChallenge,
 )
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
@@ -112,13 +111,6 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
                 "registration": loads(options_to_json(registration_options)),
             }
         )
-
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
-        if not user:
-            self.logger.debug("No pending user, continuing")
-            return self.executor.stage_ok()
-        return super().get(request, *args, **kwargs)
 
     def get_response_instance(self, data: QueryDict) -> AuthenticatorWebAuthnChallengeResponse:
         response: AuthenticatorWebAuthnChallengeResponse = super().get_response_instance(data)

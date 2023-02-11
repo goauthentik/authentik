@@ -1,5 +1,5 @@
 """Duo stage"""
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpResponse
 from django.utils.timezone import now
 from rest_framework.fields import CharField
 
@@ -10,7 +10,6 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     WithUserInfoChallenge,
 )
-from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import InvalidStageError
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
@@ -67,13 +66,6 @@ class AuthenticatorDuoStageView(ChallengeStageView):
                 "stage_uuid": str(stage.stage_uuid),
             }
         )
-
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        user = self.executor.plan.context.get(PLAN_CONTEXT_PENDING_USER)
-        if not user:
-            self.logger.debug("No pending user, continuing")
-            return self.executor.stage_ok()
-        return super().get(request, *args, **kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
         # Duo Challenge has already been validated

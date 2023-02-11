@@ -55,8 +55,10 @@ class RedirectUriError(OAuth2Error):
 
     def to_event(self, **kwargs) -> Event:
         return super().to_event(
-            f"Invalid redirect URI was used. Client used '{self.provided_uri}'. "
-            f"Allowed redirect URIs are {','.join(self.allowed_uris)}",
+            (
+                f"Invalid redirect URI was used. Client used '{self.provided_uri}'. "
+                f"Allowed redirect URIs are {','.join(self.allowed_uris)}"
+            ),
             **kwargs,
         )
 
@@ -91,7 +93,7 @@ class TokenIntrospectionError(OAuth2Error):
     """
     Specific to the introspection endpoint. This error will be converted
     to an "active: false" response, as per the spec.
-    See https://tools.ietf.org/html/rfc7662
+    See https://datatracker.ietf.org/doc/html/rfc7662
     """
 
 
@@ -100,7 +102,7 @@ class AuthorizeError(OAuth2Error):
 
     errors = {
         # OAuth2 errors.
-        # https://tools.ietf.org/html/rfc6749#section-4.1.2.1
+        # https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1
         "invalid_request": "The request is otherwise malformed",
         "unauthorized_client": (
             "The client is not authorized to request an authorization code using this method"
@@ -183,7 +185,7 @@ class AuthorizeError(OAuth2Error):
 class TokenError(OAuth2Error):
     """
     OAuth2 token endpoint errors.
-    https://tools.ietf.org/html/rfc6749#section-5.2
+    https://datatracker.ietf.org/doc/html/rfc6749#section-5.2
     """
 
     errors = {
@@ -218,7 +220,7 @@ class TokenError(OAuth2Error):
 class TokenRevocationError(OAuth2Error):
     """
     Specific to the revocation endpoint.
-    See https://tools.ietf.org/html/rfc7662
+    See https://datatracker.ietf.org/doc/html/rfc7662
     """
 
     errors = TokenError.errors | {
@@ -246,7 +248,7 @@ class DeviceCodeError(OAuth2Error):
             "The authorization request is still pending as the end user hasn't "
             "yet completed the user-interaction steps"
         ),
-        "access_denied": ("The authorization request was denied."),
+        "access_denied": "The authorization request was denied.",
         "expired_token": (
             'The "device_code" has expired, and the device authorization '
             "session has concluded.  The client MAY commence a new device "
@@ -264,7 +266,7 @@ class DeviceCodeError(OAuth2Error):
 class BearerTokenError(OAuth2Error):
     """
     OAuth2 errors.
-    https://tools.ietf.org/html/rfc6750#section-3.1
+    https://datatracker.ietf.org/doc/html/rfc6750#section-3.1
     """
 
     errors = {

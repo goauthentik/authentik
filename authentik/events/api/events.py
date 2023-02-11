@@ -1,9 +1,11 @@
 """Events API Views"""
+from datetime import timedelta
 from json import loads
 
 import django_filters
 from django.db.models.aggregates import Count
 from django.db.models.fields.json import KeyTextTransform
+from django.db.models.functions import ExtractDay
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
@@ -23,7 +25,6 @@ class EventSerializer(ModelSerializer):
     """Event Serializer"""
 
     class Meta:
-
         model = Event
         fields = [
             "pk",
@@ -81,7 +82,6 @@ class EventsFilter(django_filters.FilterSet):
         label="Tenant name",
     )
 
-    # pylint: disable=unused-argument
     def filter_context_model_pk(self, queryset, name, value):
         """Because we store the PK as UUID.hex,
         we need to remove the dashes that a client may send. We can't use a
@@ -178,7 +178,7 @@ class EventViewSet(ModelViewSet):
             get_objects_for_user(request.user, "authentik_events.view_event")
             .filter(action=filtered_action)
             .filter(**query)
-            .get_events_per_day()
+            .get_events_per(timedelta(weeks=4), ExtractDay, 30)
         )
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

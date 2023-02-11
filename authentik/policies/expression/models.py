@@ -37,6 +37,5 @@ class ExpressionPolicy(Policy):
         return super().save(*args, **kwargs)
 
     class Meta(Policy.PolicyMeta):
-
         verbose_name = _("Expression Policy")
         verbose_name_plural = _("Expression Policies")

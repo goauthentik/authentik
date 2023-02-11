@@ -73,6 +73,7 @@
                             "authentik_policies_reputation.reputation",
                             "authentik_policies_reputation.reputationpolicy",
                             "authentik_providers_ldap.ldapprovider",
+                            "authentik_providers_oauth2.accesstoken",
                             "authentik_providers_oauth2.authorizationcode",
                             "authentik_providers_oauth2.oauth2provider",
                             "authentik_providers_oauth2.refreshtoken",

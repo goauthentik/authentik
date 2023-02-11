@@ -28,6 +28,8 @@ jobs:
         run: make gen-client-go
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
+        with:
+          args: --timeout 5000s
   test-unittest:
     runs-on: ubuntu-latest
     steps:
@@ -47,7 +49,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo mark
-  build:
+  build-container:
     timeout-minutes: 120
     needs:
       - ci-outpost-mark
@@ -80,20 +82,20 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Generate API
         run: make gen-client-go
-      - name: Building Docker Image
-        uses: docker/build-push-action@v3
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4
         with:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
             ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}
-            ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}
             ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.sha }}
           file: ${{ matrix.type }}.Dockerfile
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: ${{ matrix.arch }}
-  build-outpost-binary:
+          context: .
+  build-binary:
     timeout-minutes: 120
     needs:
       - ci-outpost-mark
@@ -111,9 +113,9 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: "^1.17"
-      - uses: actions/setup-node@v3.5.1
+      - uses: actions/setup-node@v3.6.0
         with:
-          node-version: '16'
+          node-version: '18'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
       - name: Generate API

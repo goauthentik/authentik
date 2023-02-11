@@ -30,7 +30,6 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
     """AuthenticatorDuoStage Serializer"""
 
     class Meta:
-
         model = AuthenticatorDuoStage
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
@@ -78,7 +77,6 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(methods=["POST"], detail=True, permission_classes=[])
-    # pylint: disable=invalid-name,unused-argument
     def enrollment_status(self, request: Request, pk: str) -> Response:
         """Check enrollment status of user details in current session"""
         stage: AuthenticatorDuoStage = AuthenticatorDuoStage.objects.filter(pk=pk).first()
@@ -108,7 +106,6 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(methods=["POST"], detail=True)
-    # pylint: disable=invalid-name,unused-argument
     def import_device_manual(self, request: Request, pk: str) -> Response:
         """Import duo devices into authentik"""
         stage: AuthenticatorDuoStage = self.get_object()
@@ -150,7 +147,6 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(methods=["POST"], detail=True)
-    # pylint: disable=invalid-name,unused-argument
     def import_devices_automatic(self, request: Request, pk: str) -> Response:
         """Import duo devices into authentik"""
         stage: AuthenticatorDuoStage = self.get_object()
@@ -158,10 +154,8 @@ class AuthenticatorDuoStageViewSet(UsedByMixin, ModelViewSet):
             return Response(
                 data={
                     "non_field_errors": [
-                        (
-                            "Stage does not have Admin API configured, "
-                            "which is required for automatic imports."
-                        )
+                        "Stage does not have Admin API configured, "
+                        "which is required for automatic imports."
                     ]
                 },
                 status=400,
@@ -174,7 +168,6 @@ class DuoDeviceSerializer(ModelSerializer):
     """Serializer for Duo authenticator devices"""
 
     class Meta:
-
         model = DuoDevice
         fields = ["pk", "name"]
         depth = 2

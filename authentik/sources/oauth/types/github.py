@@ -33,8 +33,7 @@ class GitHubOAuth2Client(OAuth2Client):
         except RequestException as exc:
             self.logger.warning("Unable to fetch github emails", exc=exc)
             return []
-        else:
-            return response.json()
+        return response.json()
 
 
 class GitHubOAuth2Callback(OAuthCallback):

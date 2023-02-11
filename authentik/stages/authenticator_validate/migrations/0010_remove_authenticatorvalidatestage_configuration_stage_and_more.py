@@ -18,7 +18,6 @@ def migrate_configuration_stage(apps: Apps, schema_editor: BaseDatabaseSchemaEdi
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_flows", "0021_auto_20211227_2103"),
         ("authentik_stages_authenticator_validate", "0009_default_stage"),
@@ -31,7 +30,11 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(
                 blank=True,
                 default=None,
-                help_text="Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.",
+                help_text=(
+                    "Stages used to configure Authenticator when user doesn't have any compatible"
+                    " devices. After this configuration Stage passes, the user is not prompted"
+                    " again."
+                ),
                 related_name="+",
                 to="authentik_flows.Stage",
             ),

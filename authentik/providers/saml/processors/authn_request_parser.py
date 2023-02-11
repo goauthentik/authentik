@@ -35,7 +35,6 @@ ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 class AuthNRequest:
     """AuthNRequest Dataclass"""
 
-    # pylint: disable=invalid-name
     id: Optional[str] = None
 
     relay_state: Optional[str] = None

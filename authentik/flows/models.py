@@ -135,10 +135,8 @@ class Flow(SerializerModel, PolicyBindingModel):
         max_length=100,
         choices=FlowDesignation.choices,
         help_text=_(
-            (
-                "Decides what this Flow is used for. For example, the Authentication flow "
-                "is redirect to when an un-authenticated user visits authentik."
-            )
+            "Decides what this Flow is used for. For example, the Authentication flow "
+            "is redirect to when an un-authenticated user visits authentik."
         ),
     )
 
@@ -192,7 +190,6 @@ class Flow(SerializerModel, PolicyBindingModel):
         return f"Flow {self.name} ({self.slug})"
 
     class Meta:
-
         verbose_name = _("Flow")
         verbose_name_plural = _("Flows")
 
@@ -216,10 +213,8 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
     evaluate_on_plan = models.BooleanField(
         default=True,
         help_text=_(
-            (
-                "Evaluate policies during the Flow planning process. "
-                "Disable this for input-based policies."
-            )
+            "Evaluate policies during the Flow planning process. "
+            "Disable this for input-based policies."
         ),
     )
     re_evaluate_policies = models.BooleanField(
@@ -252,7 +247,6 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
         return f"Flow-stage binding #{self.order} to {self.target_id}"
 
     class Meta:
-
         ordering = ["target", "order"]
 
         verbose_name = _("Flow Stage Binding")
@@ -271,15 +265,12 @@ class ConfigurableStage(models.Model):
         null=True,
         blank=True,
         help_text=_(
-            (
-                "Flow used by an authenticated user to configure this Stage. "
-                "If empty, user will not be able to configure this stage."
-            )
+            "Flow used by an authenticated user to configure this Stage. "
+            "If empty, user will not be able to configure this stage."
         ),
     )
 
     class Meta:
-
         abstract = True
 
 
@@ -305,6 +296,5 @@ class FlowToken(Token):
         return f"Flow Token {super().__str__()}"
 
     class Meta:
-
         verbose_name = _("Flow Token")
         verbose_name_plural = _("Flow Tokens")

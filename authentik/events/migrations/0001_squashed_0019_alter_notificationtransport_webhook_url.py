@@ -100,7 +100,6 @@ def update_expires(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_events", "0001_initial"),
         ("authentik_events", "0002_auto_20200918_2116"),
@@ -245,14 +244,19 @@ class Migration(migrations.Migration):
                     models.TextField(
                         choices=[("notice", "Notice"), ("warning", "Warning"), ("alert", "Alert")],
                         default="notice",
-                        help_text="Controls which severity level the created notifications will have.",
+                        help_text=(
+                            "Controls which severity level the created notifications will have."
+                        ),
                     ),
                 ),
                 (
                     "group",
                     models.ForeignKey(
                         blank=True,
-                        help_text="Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent.",
+                        help_text=(
+                            "Define which group of users this notification should be sent and shown"
+                            " to. If left empty, Notification won't ben sent."
+                        ),
                         null=True,
                         on_delete=django.db.models.deletion.SET_NULL,
                         to="authentik_core.group",
@@ -261,7 +265,10 @@ class Migration(migrations.Migration):
                 (
                     "transports",
                     models.ManyToManyField(
-                        help_text="Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.",
+                        help_text=(
+                            "Select which transports should be used to notify the user. If none are"
+                            " selected, the notification will only be shown in the authentik UI."
+                        ),
                         to="authentik_events.NotificationTransport",
                         blank=True,
                     ),
@@ -317,7 +324,10 @@ class Migration(migrations.Migration):
             name="send_once",
             field=models.BooleanField(
                 default=False,
-                help_text="Only send notification once, for example when sending a webhook into a chat channel.",
+                help_text=(
+                    "Only send notification once, for example when sending a webhook into a chat"
+                    " channel."
+                ),
             ),
         ),
         migrations.RunPython(

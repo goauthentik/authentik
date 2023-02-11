@@ -168,7 +168,7 @@ export abstract class AKChart<T> extends AKElement {
         const valueStamp = ticks[index];
         const delta = Date.now() - valueStamp.value;
         const ago = Math.round(delta / 1000 / 3600);
-        return t`${ago} hours ago`;
+        return t`${ago} hour(s) ago`;
     }
 
     getOptions(): ChartOptions {

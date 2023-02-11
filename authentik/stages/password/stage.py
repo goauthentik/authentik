@@ -151,15 +151,14 @@ class PasswordStageView(ChallengeStageView):
             # (most likely LDAP)
             self.logger.debug("Validation error from signal", exc=exc, **auth_kwargs)
             return self.executor.stage_invalid()
-        else:
-            if not user:
-                # No user was found -> invalid credentials
-                self.logger.info("Invalid credentials")
-                # Manually inject error into form
-                response._errors.setdefault("password", [])
-                response._errors["password"].append(ErrorDetail(_("Invalid password"), "invalid"))
-                return self.challenge_invalid(response)
-            # User instance returned from authenticate() has .backend property set
-            self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
-            self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = user.backend
-            return self.executor.stage_ok()
+        if not user:
+            # No user was found -> invalid credentials
+            self.logger.info("Invalid credentials")
+            # Manually inject error into form
+            response._errors.setdefault("password", [])
+            response._errors["password"].append(ErrorDetail(_("Invalid password"), "invalid"))
+            return self.challenge_invalid(response)
+        # User instance returned from authenticate() has .backend property set
+        self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = user
+        self.executor.plan.context[PLAN_CONTEXT_AUTHENTICATION_BACKEND] = user.backend
+        return self.executor.stage_ok()

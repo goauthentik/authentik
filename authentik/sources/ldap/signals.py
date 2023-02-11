@@ -22,7 +22,6 @@ from authentik.stages.prompt.signals import password_validate
 
 
 @receiver(post_save, sender=LDAPSource)
-# pylint: disable=unused-argument
 def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
     """Ensure that source is synced on save (if enabled)"""
     if not instance.enabled:
@@ -42,7 +41,6 @@ def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
 
 
 @receiver(password_validate)
-# pylint: disable=unused-argument
 def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], **__):
     """if there's an LDAP Source with enabled password sync, check the password"""
     sources = LDAPSource.objects.filter(sync_users_password=True)
@@ -59,7 +57,6 @@ def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], 
 
 
 @receiver(password_changed)
-# pylint: disable=unused-argument
 def ldap_sync_password(sender, user: User, password: str, **_):
     """Connect to ldap and update password."""
     sources = LDAPSource.objects.filter(sync_users_password=True)

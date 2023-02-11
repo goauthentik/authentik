@@ -55,7 +55,13 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 	config.Host = akURL.Host
 	config.Scheme = akURL.Scheme
 	config.HTTPClient = &http.Client{
-		Transport: web.NewUserAgentTransport(constants.OutpostUserAgent(), web.NewTracingTransport(rsp.Context(), GetTLSTransport())),
+		Transport: web.NewUserAgentTransport(
+			constants.OutpostUserAgent(),
+			web.NewTracingTransport(
+				rsp.Context(),
+				GetTLSTransport(),
+			),
+		),
 	}
 	config.AddDefaultHeader("Authorization", fmt.Sprintf("Bearer %s", token))
 
@@ -72,6 +78,9 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		log.WithError(err).Error("Failed to fetch outpost configuration, retrying in 3 seconds")
 		time.Sleep(time.Second * 3)
 		return NewAPIController(akURL, token)
+	}
+	if len(outposts.Results) < 1 {
+		panic("No outposts found with given token, ensure the given token corresponds to an authenitk Outpost")
 	}
 	outpost := outposts.Results[0]
 

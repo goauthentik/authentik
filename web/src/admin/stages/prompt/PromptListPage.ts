@@ -1,7 +1,6 @@
 import "@goauthentik/admin/stages/prompt/PromptForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { truncate } from "@goauthentik/common/utils";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -35,7 +34,7 @@ export class PromptListPage extends TablePage<Prompt> {
     checkbox = true;
 
     @property()
-    order = "order";
+    order = "name";
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Prompt>> {
         return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList({
@@ -48,8 +47,8 @@ export class PromptListPage extends TablePage<Prompt> {
 
     columns(): TableColumn[] {
         return [
+            new TableColumn(t`Name`, "name"),
             new TableColumn(t`Field`, "field_key"),
-            new TableColumn(t`Label`, "label"),
             new TableColumn(t`Type`, "type"),
             new TableColumn(t`Order`, "order"),
             new TableColumn(t`Stages`),
@@ -81,8 +80,8 @@ export class PromptListPage extends TablePage<Prompt> {
 
     row(item: Prompt): TemplateResult[] {
         return [
-            html`${item.fieldKey}`,
-            html`${truncate(item.label, 20)}`,
+            html`${item.name}`,
+            html`<code>${item.fieldKey}</code>`,
             html`${item.type}`,
             html`${item.order}`,
             html`${item.promptstageSet?.map((stage) => {

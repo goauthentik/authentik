@@ -24,9 +24,12 @@ The proxy outpost sets the following user-specific headers:
 
     The hashed identifier of the currently logged in user.
 
-Additionally, you can set `additionalHeaders` on groups or users to set additional headers.
+Additionally, you can set `additionalHeaders` attribute on groups or users to set additional headers:
 
-If you enable _Set HTTP-Basic Authentication_ option, the HTTP Authorization header is being set.
+```yaml
+additionalHeaders:
+    X-test-header: test-value
+```
 
 Besides these user-specific headers, some application specific headers are also set:
 
@@ -69,6 +72,8 @@ When using single-application mode, navigate to `app.domain.tld/outpost.goauthen
 When using domain-level mode, navigate to `auth.domain.tld/outpost.goauthentik.io/sign_out`, where auth.domain.tld is the external host configured for the provider.
 
 To log out, navigate to `/outpost.goauthentik.io/sign_out`.
+
+Starting with authentik 2023.2, when logging out of a provider, all the users sessions within the respective outpost are invalidated.
 
 ## Allowing unauthenticated requests
 

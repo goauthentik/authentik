@@ -55,10 +55,8 @@ class EmailStage(Stage):
     use_global_settings = models.BooleanField(
         default=False,
         help_text=_(
-            (
-                "When enabled, global Email connection settings will be used and "
-                "connection settings below will be ignored."
-            )
+            "When enabled, global Email connection settings will be used and "
+            "connection settings below will be ignored."
         ),
     )
 
@@ -121,6 +119,5 @@ class EmailStage(Stage):
         return f"Email Stage {self.name}"
 
     class Meta:
-
         verbose_name = _("Email Stage")
         verbose_name_plural = _("Email Stages")

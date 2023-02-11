@@ -12,11 +12,11 @@ From https://en.wikipedia.org/wiki/Nextcloud
 Nextcloud is a suite of client-server software for creating and using file hosting services. Nextcloud is free and open-source, which means that anyone is allowed to install and operate it on their own private server devices.
 :::
 
-:::warning
+:::caution
 This setup only works, when Nextcloud is running with HTTPS enabled. See [here](https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/reverse_proxy_configuration.html?highlight=overwriteprotocol#overwrite-parameters) on how to configure this.
 :::
 
-:::warning
+:::info
 In case something goes wrong with the configuration, you can use the URL `http://nextcloud.company/login?direct=1` to log in using the built-in authentication.
 :::
 
@@ -48,7 +48,7 @@ In Nextcloud, ensure that the `SSO & SAML Authentication` app is installed. Navi
 
 Set the following values:
 
--   Attribute to map the UID to.: `http://schemas.goauthentik.io/2021/02/saml/username`
+-   Attribute to map the UID to: `http://schemas.goauthentik.io/2021/02/saml/uid`
 -   Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 -   Identifier of the IdP entity (must be a URI): `https://authentik.company`
 -   URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
@@ -74,14 +74,30 @@ See https://docs.nextcloud.com/server/latest/admin_manual/configuration_server/r
 Create a group for each different level of quota you want users to have. Set a custom attribute, for example called `nextcloud_quota`, to the quota you want, for example `15 GB`.
 
 Afterwards, create a custom SAML Property Mapping with the name `SAML Nextcloud Quota`.
-Set the _SAML Name_ to `nextcloud_quota`.
-Set the _Expression_ to `return user.group_attributes().get("nextcloud_quota", "1 GB")`, where `1 GB` is the default value for users that don't belong to another group (or have another value set).
+
+-   Set the _SAML Attribute Name_ to `nextcloud_quota`.
+-   Set the _Expression_ to:
+
+```python
+return user.group_attributes().get("nextcloud_quota", "1 GB")
+```
+
+where `1 GB` is the default value for users that don't belong to another group (or have another value set).
+
+Then, edit the Nextcloud SAML Provider, and add `nextcloud_quota` to Property mappings.
+
+In Nextcloud, go to `Settings`, then `SSO & SAML Authentication`Under `Attribute mapping`, set this value:
+
+-   Attribute to map the quota to.: `nextcloud_quota`
 
 ## Admin Group
 
 To give authentik users admin access to your Nextcloud instance, you need to create a custom Property Mapping that maps an authentik group to "admin". It has to be mapped to "admin" as this is static in Nextcloud and cannot be changed.
 
-Create a SAML Property mapping with the SAML Name "http://schemas.xmlsoap.org/claims/Group" and this expression:
+Create a custom SAML Property Mapping:
+
+-   Set the _SAML Attribute Name_ to `http://schemas.xmlsoap.org/claims/Group`.
+-   Set the _Expression_ to:
 
 ```python
 for group in user.ak_groups.all():

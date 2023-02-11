@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_crypto", "0002_create_self_signed_kp"),
         ("authentik_providers_saml", "0006_remove_samlprovider_name"),

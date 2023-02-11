@@ -11,12 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Delete 'dev' containers older than a week
-        uses: sondrelg/container-retention-policy@v1
+        uses: snok/container-retention-policy@v1
         with:
           image-names: dev-server,dev-ldap,dev-proxy
           cut-off: One week ago UTC
           account-type: org
           org-name: goauthentik
           untagged-only: false
-          token: ${{ secrets.GHCR_CLEANUP_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
           skip-tags: gh-next,gh-main

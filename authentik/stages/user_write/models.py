@@ -61,6 +61,5 @@ class UserWriteStage(Stage):
         return "ak-stage-user-write-form"
 
     class Meta:
-
         verbose_name = _("User Write Stage")
         verbose_name_plural = _("User Write Stages")

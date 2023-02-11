@@ -11,7 +11,7 @@ module.exports = {
     baseUrl: "/",
     onBrokenLinks: "throw",
     favicon: "img/icon.png",
-    organizationName: "BeryJu",
+    organizationName: "Authentik Security Inc.",
     projectName: "authentik",
     themeConfig: {
         navbar: {
@@ -52,10 +52,11 @@ module.exports = {
                     position: "right",
                     items: releases.map((release) => {
                         const subdomain = release
-                            .replace("releases/v", "")
+                            .replace(/releases\/\d+\/v/, "")
                             .replace(".", "-");
                         const label =
-                            "Version: " + release.replace("releases/", "");
+                            "Version: " +
+                            release.replace(/releases\/\d+\/v/, "");
                         return {
                             label: label,
                             href: `https://version-${subdomain}.goauthentik.io`,
@@ -136,6 +137,10 @@ module.exports = {
                 },
                 theme: {
                     customCss: require.resolve("./src/css/custom.css"),
+                },
+                gtag: {
+                    trackingID: "G-9MVR9WZFZH",
+                    anonymizeIP: true,
                 },
             },
         ],

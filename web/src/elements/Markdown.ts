@@ -1,5 +1,6 @@
 import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/Alert";
+import { Level } from "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { CSSResult, TemplateResult, html } from "lit";
@@ -40,9 +41,13 @@ export class Markdown extends AKElement {
     replaceAdmonitions(input: string): string {
         const admonitionStart = /:::(\w+)<br\s\/>/gm;
         const admonitionEnd = /:::/gm;
-        return input
-            .replaceAll(admonitionStart, "<ak-alert level='$1'>")
-            .replaceAll(admonitionEnd, "</ak-alert>");
+        return (
+            input
+                .replaceAll(admonitionStart, "<ak-alert level='pf-m-$1'>")
+                .replaceAll(admonitionEnd, "</ak-alert>")
+                // Workaround for admonitions using caution instead of warning
+                .replaceAll("pf-m-caution", Level.Warning)
+        );
     }
 
     replaceList(input: string): string {

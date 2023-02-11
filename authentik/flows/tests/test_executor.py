@@ -209,7 +209,6 @@ class TestFlowExecutor(FlowTestCase):
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
         with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
-
             exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
             # First request, run the planner
             response = self.client.get(exec_url)
@@ -259,7 +258,6 @@ class TestFlowExecutor(FlowTestCase):
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
         with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
-
             exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
             # First request, run the planner
             response = self.client.get(exec_url)
@@ -319,7 +317,6 @@ class TestFlowExecutor(FlowTestCase):
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
         with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
-
             exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
             # First request, run the planner
             response = self.client.get(exec_url)
@@ -396,7 +393,6 @@ class TestFlowExecutor(FlowTestCase):
 
         # Here we patch the dummy policy to evaluate to true so the stage is included
         with patch("authentik.policies.dummy.models.DummyPolicy.passes", POLICY_RETURN_TRUE):
-
             exec_url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
             # First request, run the planner
             response = self.client.get(exec_url)

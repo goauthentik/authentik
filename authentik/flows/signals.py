@@ -19,7 +19,6 @@ def delete_cache_prefix(prefix: str) -> int:
 
 
 @receiver(monitoring_set)
-# pylint: disable=unused-argument
 def monitoring_set_flows(sender, **kwargs):
     """set flow gauges"""
     GAUGE_FLOWS_CACHED.set(len(cache.keys(f"{CACHE_PREFIX}*") or []))
@@ -27,7 +26,6 @@ def monitoring_set_flows(sender, **kwargs):
 
 @receiver(post_save)
 @receiver(pre_delete)
-# pylint: disable=unused-argument
 def invalidate_flow_cache(sender, instance, **_):
     """Invalidate flow cache when flow is updated"""
     from authentik.flows.models import Flow, FlowStageBinding, Stage

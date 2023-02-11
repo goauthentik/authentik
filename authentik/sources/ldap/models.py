@@ -38,8 +38,7 @@ class LDAPSource(Source):
         default=None,
         null=True,
         help_text=_(
-            "Optionally verify the LDAP Server's Certificate "
-            "against the CA Chain in this keypair."
+            "Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair."
         ),
     )
 
@@ -85,10 +84,8 @@ class LDAPSource(Source):
     sync_users_password = models.BooleanField(
         default=True,
         help_text=_(
-            (
-                "When a user changes their password, sync it back to LDAP. "
-                "This can only be enabled on a single LDAP source."
-            )
+            "When a user changes their password, sync it back to LDAP. "
+            "This can only be enabled on a single LDAP source."
         ),
     )
     sync_groups = models.BooleanField(default=True)
@@ -145,7 +142,6 @@ class LDAPSource(Source):
         return connection
 
     class Meta:
-
         verbose_name = _("LDAP Source")
         verbose_name_plural = _("LDAP Sources")
 
@@ -169,6 +165,5 @@ class LDAPPropertyMapping(PropertyMapping):
         return str(self.name)
 
     class Meta:
-
         verbose_name = _("LDAP Property Mapping")
         verbose_name_plural = _("LDAP Property Mappings")

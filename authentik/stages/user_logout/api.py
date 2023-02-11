@@ -10,7 +10,6 @@ class UserLogoutStageSerializer(StageSerializer):
     """UserLogoutStage Serializer"""
 
     class Meta:
-
         model = UserLogoutStage
         fields = StageSerializer.Meta.fields
 

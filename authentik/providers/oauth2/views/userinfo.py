@@ -21,7 +21,12 @@ from authentik.providers.oauth2.constants import (
     SCOPE_GITHUB_USER_READ,
     SCOPE_OPENID,
 )
-from authentik.providers.oauth2.models import RefreshToken, ScopeMapping
+from authentik.providers.oauth2.models import (
+    BaseGrantModel,
+    OAuth2Provider,
+    RefreshToken,
+    ScopeMapping,
+)
 from authentik.providers.oauth2.utils import TokenResponse, cors_allow, protected_resource_view
 
 LOGGER = get_logger()
@@ -56,21 +61,22 @@ class UserInfoView(View):
                 )
         return scope_descriptions
 
-    def get_claims(self, token: RefreshToken) -> dict[str, Any]:
+    def get_claims(self, provider: OAuth2Provider, token: BaseGrantModel) -> dict[str, Any]:
         """Get a dictionary of claims from scopes that the token
         requires and are assigned to the provider."""
 
         scopes_from_client = token.scope
         final_claims = {}
         for scope in ScopeMapping.objects.filter(
-            provider=token.provider, scope_name__in=scopes_from_client
+            provider=provider, scope_name__in=scopes_from_client
         ).order_by("scope_name"):
+            scope: ScopeMapping
             value = None
             try:
                 value = scope.evaluate(
                     user=token.user,
                     request=self.request,
-                    provider=token.provider,
+                    provider=provider,
                     token=token,
                 )
             except PropertyMappingExpressionException as exc:
@@ -108,8 +114,10 @@ class UserInfoView(View):
         """Handle GET Requests for UserInfo"""
         if not self.token:
             return HttpResponseBadRequest()
-        claims = self.get_claims(self.token)
+        claims = self.get_claims(self.token.provider, self.token)
         claims["sub"] = self.token.id_token.sub
+        if self.token.id_token.nonce:
+            claims["nonce"] = self.token.id_token.nonce
         response = TokenResponse(claims)
         return response
 

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_prompt", "0006_alter_prompt_type"),
     ]
@@ -27,12 +26,19 @@ class Migration(migrations.Migration):
                     ),
                     (
                         "username",
-                        "Username: Same as Text input, but checks for and prevents duplicate usernames.",
+                        (
+                            "Username: Same as Text input, but checks for and prevents duplicate"
+                            " usernames."
+                        ),
                     ),
                     ("email", "Email: Text field with Email type."),
                     (
                         "password",
-                        "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.",
+                        (
+                            "Password: Masked input, password is validated against sources."
+                            " Policies still have to be applied to this Stage. If two of these are"
+                            " used in the same stage, they are ensured to be identical."
+                        ),
                     ),
                     ("number", "Number"),
                     ("checkbox", "Checkbox"),

@@ -1,7 +1,8 @@
 """TOTP Setup stage"""
+from urllib.parse import quote
+
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
-from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.fields import CharField, IntegerField
@@ -56,7 +57,7 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
             data={
                 "type": ChallengeTypes.NATIVE.value,
                 "config_url": device.config_url.replace(
-                    OTP_TOTP_ISSUER, slugify(self.request.tenant.branding_title)
+                    OTP_TOTP_ISSUER, quote(self.request.tenant.branding_title)
                 ),
             }
         )

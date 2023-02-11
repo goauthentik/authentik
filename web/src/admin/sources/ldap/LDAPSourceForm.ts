@@ -73,47 +73,67 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.enabled, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Enabled`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Enabled`}</span>
+                </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsers">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.syncUsers, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Sync users`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Sync users`}</span>
+                </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsersPassword">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.syncUsersPassword, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`User password writeback`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`User password writeback`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncGroups">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.syncGroups, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Sync groups`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Sync groups`}</span>
+                </label>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Connection settings`} </span>
@@ -135,14 +155,19 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="startTls">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.startTls, true)}
                             />
-                            <label class="pf-c-check__label"> ${t`Enable StartTLS`} </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Enable StartTLS`}</span>
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`To use SSL instead, use 'ldaps://' and disable this option.`}
                         </p>
@@ -157,7 +182,6 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             ): Promise<CertificateKeyPair[]> => {
                                 const args: CryptoCertificatekeypairsListRequest = {
                                     ordering: "name",
-                                    hasKey: true,
                                     includeDetails: false,
                                 };
                                 if (query !== undefined) {

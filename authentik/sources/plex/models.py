@@ -41,10 +41,8 @@ class PlexSource(Source):
         default=list,
         blank=True,
         help_text=_(
-            (
-                "Which servers a user has to be a member of to be granted access. "
-                "Empty list allows every server."
-            )
+            "Which servers a user has to be a member of to be granted access. "
+            "Empty list allows every server."
         ),
     )
     allow_friends = models.BooleanField(
@@ -94,7 +92,6 @@ class PlexSource(Source):
         )
 
     class Meta:
-
         verbose_name = _("Plex Source")
         verbose_name_plural = _("Plex Sources")
 
@@ -112,6 +109,5 @@ class PlexSourceConnection(UserSourceConnection):
         return PlexSourceConnectionSerializer
 
     class Meta:
-
         verbose_name = _("User Plex Source Connection")
         verbose_name_plural = _("User Plex Source Connections")

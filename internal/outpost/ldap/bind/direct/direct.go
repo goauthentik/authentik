@@ -5,16 +5,10 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/getsentry/sentry-go"
 	goldap "github.com/go-ldap/ldap/v3"
-	"github.com/nmcclain/ldap"
-	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/flow"
-	"goauthentik.io/internal/outpost/ldap/bind"
-	"goauthentik.io/internal/outpost/ldap/flags"
-	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
 )
@@ -53,90 +47,6 @@ func (db *DirectBinder) GetUsername(dn string) (string, error) {
 	return "", errors.New("failed to find cn")
 }
 
-func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResultCode, error) {
-	fe := flow.NewFlowExecutor(req.Context(), db.si.GetFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{
-		"bindDN":    req.BindDN,
-		"client":    req.RemoteAddr(),
-		"requestId": req.ID(),
-	})
-	fe.DelegateClientIP(req.RemoteAddr())
-	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
-
-	fe.Answers[flow.StageIdentification] = username
-	fe.Answers[flow.StagePassword] = req.BindPW
-
-	passed, err := fe.Execute()
-	flags := flags.UserFlags{
-		Session: fe.GetSession(),
-	}
-	db.si.SetFlags(req.BindDN, flags)
-	if err != nil {
-		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": db.si.GetOutpostName(),
-			"type":         "bind",
-			"reason":       "flow_error",
-			"app":          db.si.GetAppSlug(),
-		}).Inc()
-		req.Log().WithError(err).Warning("failed to execute flow")
-		return ldap.LDAPResultInvalidCredentials, nil
-	}
-	if !passed {
-		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": db.si.GetOutpostName(),
-			"type":         "bind",
-			"reason":       "invalid_credentials",
-			"app":          db.si.GetAppSlug(),
-		}).Inc()
-		req.Log().Info("Invalid credentials")
-		return ldap.LDAPResultInvalidCredentials, nil
-	}
-
-	access, err := fe.CheckApplicationAccess(db.si.GetAppSlug())
-	if !access {
-		req.Log().Info("Access denied for user")
-		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": db.si.GetOutpostName(),
-			"type":         "bind",
-			"reason":       "access_denied",
-			"app":          db.si.GetAppSlug(),
-		}).Inc()
-		return ldap.LDAPResultInsufficientAccessRights, nil
-	}
-	if err != nil {
-		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": db.si.GetOutpostName(),
-			"type":         "bind",
-			"reason":       "access_check_fail",
-			"app":          db.si.GetAppSlug(),
-		}).Inc()
-		req.Log().WithError(err).Warning("failed to check access")
-		return ldap.LDAPResultOperationsError, nil
-	}
-	req.Log().Info("User has access")
-	uisp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.bind.user_info")
-	// Get user info to store in context
-	userInfo, _, err := fe.ApiClient().CoreApi.CoreUsersMeRetrieve(context.Background()).Execute()
-	if err != nil {
-		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": db.si.GetOutpostName(),
-			"type":         "bind",
-			"reason":       "user_info_fail",
-			"app":          db.si.GetAppSlug(),
-		}).Inc()
-		req.Log().WithError(err).Warning("failed to get user info")
-		return ldap.LDAPResultOperationsError, nil
-	}
-	cs := db.SearchAccessCheck(userInfo.User)
-	flags.UserPk = userInfo.User.Pk
-	flags.CanSearch = cs != nil
-	db.si.SetFlags(req.BindDN, flags)
-	if flags.CanSearch {
-		req.Log().WithField("group", cs).Info("Allowed access to search")
-	}
-	uisp.Finish()
-	return ldap.LDAPResultSuccess, nil
-}
-
 // SearchAccessCheck Check if the current user is allowed to search
 func (db *DirectBinder) SearchAccessCheck(user api.UserSelf) *string {
 	for _, group := range user.Groups {
@@ -153,8 +63,8 @@ func (db *DirectBinder) SearchAccessCheck(user api.UserSelf) *string {
 	return nil
 }
 
-func (db *DirectBinder) TimerFlowCacheExpiry() {
-	fe := flow.NewFlowExecutor(context.Background(), db.si.GetFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{})
+func (db *DirectBinder) TimerFlowCacheExpiry(ctx context.Context) {
+	fe := flow.NewFlowExecutor(ctx, db.si.GetAuthenticationFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{})
 	fe.Params.Add("goauthentik.io/outpost/ldap", "true")
 	fe.Params.Add("goauthentik.io/outpost/ldap-warmup", "true")
 

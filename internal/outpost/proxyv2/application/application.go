@@ -18,6 +18,7 @@ import (
 	sentryhttp "github.com/getsentry/sentry-go/http"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
+	"github.com/jellydator/ttlcache/v3"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
@@ -48,7 +49,8 @@ type Application struct {
 	mux *mux.Router
 	ak  *ak.APIController
 
-	errorTemplates *template.Template
+	errorTemplates  *template.Template
+	authHeaderCache *ttlcache.Cache[string, Claims]
 }
 
 func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, ak *ak.APIController) (*Application, error) {
@@ -68,19 +70,28 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		ks = oidc.NewRemoteKeySet(ctx, p.OidcConfiguration.JwksUri)
 	}
 
-	var verifier = oidc.NewVerifier(p.OidcConfiguration.Issuer, ks, &oidc.Config{
-		ClientID:             *p.ClientId,
-		SupportedSigningAlgs: []string{"RS256", "HS256"},
-	})
-
 	redirectUri, _ := url.Parse(p.ExternalHost)
 	redirectUri.Path = path.Join(redirectUri.Path, "/outpost.goauthentik.io/callback")
 	redirectUri.RawQuery = url.Values{
 		CallbackSignature: []string{"true"},
 	}.Encode()
 
+	managed := false
+	if m := ak.Outpost.Managed.Get(); m != nil {
+		managed = *m == "goauthentik.io/outposts/embedded"
+	}
 	// Configure an OpenID Connect aware OAuth2 client.
-	endpoint := GetOIDCEndpoint(p, ak.Outpost.Config["authentik_host"].(string))
+	endpoint := GetOIDCEndpoint(
+		p,
+		ak.Outpost.Config["authentik_host"].(string),
+		managed,
+	)
+
+	verifier := oidc.NewVerifier(endpoint.Issuer, ks, &oidc.Config{
+		ClientID:             *p.ClientId,
+		SupportedSigningAlgs: []string{"RS256", "HS256"},
+	})
+
 	oauth2Config := oauth2.Config{
 		ClientID:     *p.ClientId,
 		ClientSecret: *p.ClientSecret,
@@ -90,37 +101,34 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	}
 	mux := mux.NewRouter()
 	a := &Application{
-		Host:           externalHost.Host,
-		log:            muxLogger,
-		outpostName:    ak.Outpost.Name,
-		endpoint:       endpoint,
-		oauthConfig:    oauth2Config,
-		tokenVerifier:  verifier,
-		proxyConfig:    p,
-		httpClient:     c,
-		mux:            mux,
-		errorTemplates: templates.GetTemplates(),
-		ak:             ak,
+		Host:            externalHost.Host,
+		log:             muxLogger,
+		outpostName:     ak.Outpost.Name,
+		endpoint:        endpoint,
+		oauthConfig:     oauth2Config,
+		tokenVerifier:   verifier,
+		proxyConfig:     p,
+		httpClient:      c,
+		mux:             mux,
+		errorTemplates:  templates.GetTemplates(),
+		ak:              ak,
+		authHeaderCache: ttlcache.New(ttlcache.WithDisableTouchOnHit[string, Claims]()),
 	}
+	go a.authHeaderCache.Start()
 	a.sessions = a.getStore(p, externalHost)
 	mux.Use(web.NewLoggingHandler(muxLogger, func(l *log.Entry, r *http.Request) *log.Entry {
-		s, err := a.sessions.Get(r, constants.SessionName)
-		if err != nil {
+		c := a.getClaimsFromSession(r)
+		if c == nil {
 			return l
 		}
-		claims, ok := s.Values[constants.SessionClaims]
-		if claims == nil || !ok {
-			return l
+		if c.PreferredUsername != "" {
+			return l.WithField("user", c.PreferredUsername)
 		}
-		c, ok := claims.(Claims)
-		if !ok {
-			return l
-		}
-		return l.WithField("request_username", c.PreferredUsername)
+		return l.WithField("user", c.Sub)
 	}))
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
-			c, _ := a.getClaims(r)
+			c := a.getClaimsFromSession(r)
 			user := ""
 			if c != nil {
 				user = c.PreferredUsername
@@ -221,25 +229,30 @@ func (a *Application) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	a.mux.ServeHTTP(rw, r)
 }
 
+func (a *Application) Stop() {
+	a.authHeaderCache.Stop()
+}
+
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.endpoint.EndSessionEndpoint
 	s, err := a.sessions.Get(r, constants.SessionName)
 	if err != nil {
-		http.Redirect(rw, r, redirect, http.StatusFound)
+		a.redirectToStart(rw, r)
 		return
 	}
-	if c, exists := s.Values[constants.SessionClaims]; c == nil || !exists {
-		cc := c.(Claims)
-		uv := url.Values{
-			"id_token_hint": []string{cc.RawToken},
-		}
-		redirect += "?" + uv.Encode()
+	c, exists := s.Values[constants.SessionClaims]
+	if c == nil && !exists {
+		a.redirectToStart(rw, r)
+		return
 	}
-	s.Options.MaxAge = -1
-	err = s.Save(r, rw)
+	cc := c.(Claims)
+	uv := url.Values{
+		"id_token_hint": []string{cc.RawToken},
+	}
+	redirect += "?" + uv.Encode()
+	err = a.Logout(cc.Sub)
 	if err != nil {
-		http.Redirect(rw, r, redirect, http.StatusFound)
-		return
+		a.log.WithError(err).Warning("failed to logout of other sessions")
 	}
 	http.Redirect(rw, r, redirect, http.StatusFound)
 }

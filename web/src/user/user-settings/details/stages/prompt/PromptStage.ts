@@ -14,7 +14,7 @@ import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
     static get styles(): CSSResult[] {
-        return super.styles.concat([PFCheck]);
+        return super.styles.concat(PFCheck);
     }
 
     renderPromptInner(prompt: StagePrompt, placeholderAsValue: boolean): string {

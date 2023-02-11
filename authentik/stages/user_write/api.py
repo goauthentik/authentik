@@ -10,7 +10,6 @@ class UserWriteStageSerializer(StageSerializer):
     """UserWriteStage Serializer"""
 
     class Meta:
-
         model = UserWriteStage
         fields = StageSerializer.Meta.fields + [
             "user_creation_mode",

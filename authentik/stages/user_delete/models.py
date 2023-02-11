@@ -28,6 +28,5 @@ class UserDeleteStage(Stage):
         return "ak-stage-user-delete-form"
 
     class Meta:
-
         verbose_name = _("User Delete Stage")
         verbose_name_plural = _("User Delete Stages")

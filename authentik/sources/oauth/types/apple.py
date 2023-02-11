@@ -48,10 +48,8 @@ class AppleOAuthClient(OAuth2Client):
         parts: list[str] = self.source.consumer_key.split(";")
         if len(parts) < 3:
             raise ValueError(
-                (
-                    "Apple Source client_id should be formatted like "
-                    "services_id_identifier;apple_team_id;key_id"
-                )
+                "Apple Source client_id should be formatted like "
+                "services_id_identifier;apple_team_id;key_id"
             )
         LOGGER.debug("got values from client_id", team=parts[1], kid=parts[2])
         payload = {

@@ -64,6 +64,7 @@ module.exports = {
                     },
                     items: [
                         "providers/proxy/custom_headers",
+                        "providers/proxy/header_authentication",
                         "providers/proxy/forward_auth",
                     ],
                 },
@@ -219,13 +220,14 @@ module.exports = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
+                "releases/2023/v2023.1",
                 "releases/2022/v2022.12",
                 "releases/2022/v2022.11",
-                "releases/2022/v2022.10",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2022/v2022.10",
                         "releases/2022/v2022.9",
                         "releases/2022/v2022.8",
                         "releases/2022/v2022.7",
@@ -278,11 +280,13 @@ module.exports = {
                     },
                 },
                 "troubleshooting/access",
+                "troubleshooting/csrf",
                 "troubleshooting/emails",
                 "troubleshooting/login",
                 "troubleshooting/image_upload",
                 "troubleshooting/missing_permission",
                 "troubleshooting/missing_admin_group",
+                "troubleshooting/ldap_source",
             ],
         },
         {

@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -30,13 +29,19 @@ class Migration(migrations.Migration):
                 (
                     "public_key",
                     models.TextField(
-                        help_text="Public key, acquired from https://www.google.com/recaptcha/intro/v3.html"
+                        help_text=(
+                            "Public key, acquired from"
+                            " https://www.google.com/recaptcha/intro/v3.html"
+                        )
                     ),
                 ),
                 (
                     "private_key",
                     models.TextField(
-                        help_text="Private key, acquired from https://www.google.com/recaptcha/intro/v3.html"
+                        help_text=(
+                            "Private key, acquired from"
+                            " https://www.google.com/recaptcha/intro/v3.html"
+                        )
                     ),
                 ),
             ],

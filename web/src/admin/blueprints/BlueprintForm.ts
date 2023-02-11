@@ -20,26 +20,27 @@ import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
 enum blueprintSource {
-    local,
+    file,
     oci,
+    internal,
 }
 
 @customElement("ak-blueprint-form")
 export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     @state()
-    source: blueprintSource = blueprintSource.local;
+    source: blueprintSource = blueprintSource.file;
 
-    loadInstance(pk: string): Promise<BlueprintInstance> {
-        return new ManagedApi(DEFAULT_CONFIG)
-            .managedBlueprintsRetrieve({
-                instanceUuid: pk,
-            })
-            .then((inst) => {
-                if (inst.path.startsWith("oci://")) {
-                    this.source = blueprintSource.oci;
-                }
-                return inst;
-            });
+    async loadInstance(pk: string): Promise<BlueprintInstance> {
+        const inst = await new ManagedApi(DEFAULT_CONFIG).managedBlueprintsRetrieve({
+            instanceUuid: pk,
+        });
+        if (inst.path?.startsWith("oci://")) {
+            this.source = blueprintSource.oci;
+        }
+        if (inst.content !== "") {
+            this.source = blueprintSource.internal;
+        }
+        return inst;
     }
 
     getSuccessMessage(): string {
@@ -86,14 +87,19 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="enabled">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.enabled, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Enabled`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Enabled`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">${t`Disabled blueprints are never applied.`}</p>
             </ak-form-element-horizontal>
             <div class="pf-c-card pf-m-selectable pf-m-selected">
@@ -102,12 +108,12 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                         <div class="pf-c-toggle-group__item">
                             <button
                                 class="pf-c-toggle-group__button ${this.source ===
-                                blueprintSource.local
+                                blueprintSource.file
                                     ? "pf-m-selected"
                                     : ""}"
                                 type="button"
                                 @click=${() => {
-                                    this.source = blueprintSource.local;
+                                    this.source = blueprintSource.file;
                                 }}
                             >
                                 <span class="pf-c-toggle-group__text">${t`Local path`}</span>
@@ -128,10 +134,25 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                 <span class="pf-c-toggle-group__text">${t`OCI Registry`}</span>
                             </button>
                         </div>
+                        <div class="pf-c-divider pf-m-vertical" role="separator"></div>
+                        <div class="pf-c-toggle-group__item">
+                            <button
+                                class="pf-c-toggle-group__button ${this.source ===
+                                blueprintSource.internal
+                                    ? "pf-m-selected"
+                                    : ""}"
+                                type="button"
+                                @click=${() => {
+                                    this.source = blueprintSource.internal;
+                                }}
+                            >
+                                <span class="pf-c-toggle-group__text">${t`Internal`}</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
                 <div class="pf-c-card__footer">
-                    ${this.source === blueprintSource.local
+                    ${this.source === blueprintSource.file
                         ? html`<ak-form-element-horizontal label=${t`Path`} name="path">
                               <ak-search-select
                                   .fetchObjects=${async (
@@ -185,6 +206,15 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                       >${t`Documentation`}</a
                                   >
                               </p>
+                          </ak-form-element-horizontal>`
+                        : html``}
+                    ${this.source === blueprintSource.internal
+                        ? html`<ak-form-element-horizontal label=${t`Blueprint`} name="content">
+                              <ak-codemirror
+                                  mode="yaml"
+                                  .parseValue=${false}
+                                  value="${ifDefined(this.instance?.content)}"
+                              ></ak-codemirror>
                           </ak-form-element-horizontal>`
                         : html``}
                 </div>

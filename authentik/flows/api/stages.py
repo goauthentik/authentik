@@ -33,7 +33,6 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
         return obj.component
 
     class Meta:
-
         model = Stage
         fields = [
             "pk",

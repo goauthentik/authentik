@@ -3,7 +3,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_events", "0001_squashed_0019_alter_notificationtransport_webhook_url"),
     ]

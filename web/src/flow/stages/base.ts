@@ -1,4 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
@@ -24,10 +25,6 @@ export function readFileAsync(file: Blob) {
         reader.readAsDataURL(file);
     });
 }
-
-export type KeyUnknown = {
-    [key: string]: unknown;
-};
 
 export class BaseStage<Tin, Tout> extends AKElement {
     host!: StageHost;

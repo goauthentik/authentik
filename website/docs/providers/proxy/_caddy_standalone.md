@@ -20,3 +20,11 @@ app.company {
     reverse_proxy localhost:1234
 }
 ```
+
+If you're trying to proxy to an upstream over HTTPS, you need to set the `Host` header to the value they expect for it to work correctly.
+
+```
+reverse_proxy /outpost.goauthentik.io/* https://outpost.company {
+	header_up Host {http.reverse_proxy.upstream.hostport}
+}
+```

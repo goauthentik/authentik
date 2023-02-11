@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_core", "0028_alter_token_intent"),
         ("authentik_stages_user_write", "0003_userwritestage_create_users_as_inactive"),

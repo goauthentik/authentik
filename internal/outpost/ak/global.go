@@ -3,13 +3,12 @@ package ak
 import (
 	"fmt"
 	"net/http"
-	"os"
-	"strings"
 
 	"github.com/getsentry/sentry-go"
 	httptransport "github.com/go-openapi/runtime/client"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	webutils "goauthentik.io/internal/utils/web"
@@ -75,12 +74,8 @@ func GetTLSTransport() http.RoundTripper {
 	if tlsTransport != nil {
 		return *tlsTransport
 	}
-	value, set := os.LookupEnv("AUTHENTIK_INSECURE")
-	if !set {
-		value = "false"
-	}
 	tmp, err := httptransport.TLSTransport(httptransport.TLSClientOptions{
-		InsecureSkipVerify: strings.ToLower(value) == "true",
+		InsecureSkipVerify: config.Get().AuthentikInsecure,
 	})
 	if err != nil {
 		panic(err)

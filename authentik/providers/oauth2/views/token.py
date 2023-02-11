@@ -1,17 +1,19 @@
 """authentik OAuth2 Token views"""
 from base64 import urlsafe_b64encode
 from dataclasses import InitVar, dataclass
+from datetime import datetime
 from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
 from typing import Any, Optional
 
 from django.http import HttpRequest, HttpResponse
+from django.utils import timezone
 from django.utils.decorators import method_decorator
-from django.utils.timezone import datetime, now
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from jwt import PyJWK, PyJWTError, decode
+from guardian.shortcuts import get_anonymous_user
+from jwt import PyJWK, PyJWT, PyJWTError, decode
 from sentry_sdk.hub import Hub
 from structlog.stdlib import get_logger
 
@@ -24,6 +26,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.events.models import Event, EventAction
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
 from authentik.providers.oauth2.constants import (
@@ -35,9 +38,12 @@ from authentik.providers.oauth2.constants import (
     GRANT_TYPE_DEVICE_CODE,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
+    TOKEN_TYPE,
 )
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
+from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
+    AccessToken,
     AuthorizationCode,
     ClientTypes,
     DeviceToken,
@@ -46,6 +52,7 @@ from authentik.providers.oauth2.models import (
 )
 from authentik.providers.oauth2.utils import TokenResponse, cors_allow, extract_client_auth
 from authentik.sources.oauth.models import OAuthSource
+from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 LOGGER = get_logger()
 
@@ -104,7 +111,11 @@ class TokenParams:
         with Hub.current.start_span(
             op="authentik.providers.oauth2.token.policy",
         ):
-            engine = PolicyEngine(app, self.user, request)
+            user = self.user if self.user else get_anonymous_user()
+            engine = PolicyEngine(app, user, request)
+            # Don't cache as for client_credentials flows the user will not be set
+            # so we'll get generic cache results
+            engine.use_cache = False
             engine.request.context["oauth_scopes"] = self.scope
             engine.request.context["oauth_grant_type"] = self.grant_type
             engine.request.context["oauth_code_verifier"] = self.code_verifier
@@ -112,7 +123,9 @@ class TokenParams:
             engine.build()
             result = engine.result
             if not result.passing:
-                LOGGER.info("User not authenticated for application", user=self.user, app=app)
+                LOGGER.info(
+                    "User not authenticated for application", user=self.user, app_slug=app.slug
+                )
                 raise TokenError("invalid_grant")
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
@@ -189,16 +202,16 @@ class TokenParams:
                 ).from_http(request)
                 raise TokenError("invalid_client")
 
-        try:
-            self.authorization_code = AuthorizationCode.objects.get(code=raw_code)
-            if self.authorization_code.is_expired:
-                LOGGER.warning(
-                    "Code is expired",
-                    token=raw_code,
-                )
-                raise TokenError("invalid_grant")
-        except AuthorizationCode.DoesNotExist:
+        self.authorization_code = AuthorizationCode.objects.filter(code=raw_code).first()
+        if not self.authorization_code:
             LOGGER.warning("Code does not exist", code=raw_code)
+            raise TokenError("invalid_grant")
+
+        if self.authorization_code.is_expired:
+            LOGGER.warning(
+                "Code is expired",
+                token=raw_code,
+            )
             raise TokenError("invalid_grant")
 
         if self.authorization_code.provider != self.provider or self.authorization_code.is_expired:
@@ -225,26 +238,25 @@ class TokenParams:
             LOGGER.warning("Missing refresh token")
             raise TokenError("invalid_grant")
 
-        try:
-            self.refresh_token = RefreshToken.objects.get(
-                refresh_token=raw_token, provider=self.provider
-            )
-            if self.refresh_token.is_expired:
-                LOGGER.warning(
-                    "Refresh token is expired",
-                    token=raw_token,
-                )
-                raise TokenError("invalid_grant")
-            # https://tools.ietf.org/html/rfc6749#section-6
-            # Fallback to original token's scopes when none are given
-            if not self.scope:
-                self.scope = self.refresh_token.scope
-        except RefreshToken.DoesNotExist:
+        self.refresh_token = RefreshToken.objects.filter(
+            token=raw_token, provider=self.provider
+        ).first()
+        if not self.refresh_token:
             LOGGER.warning(
                 "Refresh token does not exist",
                 token=raw_token,
             )
             raise TokenError("invalid_grant")
+        if self.refresh_token.is_expired:
+            LOGGER.warning(
+                "Refresh token is expired",
+                token=raw_token,
+            )
+            raise TokenError("invalid_grant")
+        # https://datatracker.ietf.org/doc/html/rfc6749#section-6
+        # Fallback to original token's scopes when none are given
+        if not self.scope:
+            self.scope = self.refresh_token.scope
         if self.refresh_token.revoked:
             LOGGER.warning("Refresh token is revoked", token=raw_token)
             Event.new(
@@ -277,11 +289,13 @@ class TokenParams:
 
         Event.new(
             action=EventAction.LOGIN,
-            PLAN_CONTEXT_METHOD="token",
-            PLAN_CONTEXT_METHOD_ARGS={
-                "identifier": token.identifier,
+            **{
+                PLAN_CONTEXT_METHOD: "token",
+                PLAN_CONTEXT_METHOD_ARGS: {
+                    "identifier": token.identifier,
+                },
+                PLAN_CONTEXT_APPLICATION: app,
             },
-            PLAN_CONTEXT_APPLICATION=app,
         ).from_http(request, user=user)
         return None
 
@@ -302,11 +316,28 @@ class TokenParams:
 
         source: Optional[OAuthSource] = None
         parsed_key: Optional[PyJWK] = None
-        for source in self.provider.jwks_sources.all():
-            LOGGER.debug("verifying jwt with source", source=source.name)
+
+        # Fully decode the JWT without verifying the signature, so we can get access to
+        # the header.
+        # Get the Key ID from the header, and use that to optimise our source query to only find
+        # sources that have a JWK for that Key ID
+        # The Key ID doesn't have a fixed format, but must match between an issued JWT
+        # and whatever is returned by the JWKS endpoint
+        try:
+            decode_unvalidated = PyJWT().decode_complete(
+                assertion, options={"verify_signature": False}
+            )
+        except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
+            LOGGER.warning("failed to parse JWT for kid lookup", exc=exc)
+            raise TokenError("invalid_grant")
+        expected_kid = decode_unvalidated["header"]["kid"]
+        for source in self.provider.jwks_sources.filter(
+            oidc_jwks__keys__contains=[{"kid": expected_kid}]
+        ):
+            LOGGER.debug("verifying JWT with source", source=source.slug)
             keys = source.oidc_jwks.get("keys", [])
             for key in keys:
-                LOGGER.debug("verifying jwt with key", source=source.name, key=key.get("kid"))
+                LOGGER.debug("verifying JWT with key", source=source.slug, key=key.get("kid"))
                 try:
                     parsed_key = PyJWK.from_dict(key)
                     token = decode(
@@ -320,11 +351,13 @@ class TokenParams:
                 # AttributeError is raised when the configured JWK is a private key
                 # and not a public key
                 except (PyJWTError, ValueError, TypeError, AttributeError) as exc:
-                    LOGGER.warning("failed to validate jwt", exc=exc)
+                    LOGGER.warning("failed to verify JWT", exc=exc, source=source.slug)
 
         if not token:
             LOGGER.warning("No token could be verified")
             raise TokenError("invalid_grant")
+
+        LOGGER.info("successfully verified JWT with source", source=source.slug)
 
         if "exp" in token:
             exp = datetime.fromtimestamp(token["exp"])
@@ -371,7 +404,7 @@ class TokenParams:
                 "attributes": {
                     USER_ATTRIBUTE_GENERATED: True,
                 },
-                "last_login": now(),
+                "last_login": timezone.now(),
                 "name": f"Autogenerated user from application {app.name} (client credentials JWT)",
                 "path": source.get_user_path(),
             },
@@ -406,14 +439,10 @@ class TokenView(View):
                 op="authentik.providers.oauth2.post.parse",
             ):
                 client_id, client_secret = extract_client_auth(request)
-                try:
-                    self.provider = OAuth2Provider.objects.get(client_id=client_id)
-                except OAuth2Provider.DoesNotExist:
+                self.provider = OAuth2Provider.objects.filter(client_id=client_id).first()
+                if not self.provider:
                     LOGGER.warning("OAuth2Provider does not exist", client_id=client_id)
                     raise TokenError("invalid_client")
-
-                if not self.provider:
-                    raise ValueError
                 self.params = TokenParams.parse(request, self.provider, client_id, client_secret)
 
             with Hub.current.start_span(
@@ -438,122 +467,173 @@ class TokenView(View):
             return TokenResponse(error.create_dict(), status=403)
 
     def create_code_response(self) -> dict[str, Any]:
-        """See https://tools.ietf.org/html/rfc6749#section-4.1"""
-        refresh_token = self.provider.create_refresh_token(
+        """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
+        now = timezone.now()
+        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken(
+            provider=self.provider,
+            user=self.params.authorization_code.user,
+            expires=access_token_expiry,
+            # Keep same scopes as previous token
+            scope=self.params.authorization_code.scope,
+        )
+        access_token.id_token = IDToken.new(
+            self.provider,
+            access_token,
+            self.request,
+        )
+        access_token.save()
+
+        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+        refresh_token = RefreshToken(
             user=self.params.authorization_code.user,
             scope=self.params.authorization_code.scope,
-            request=self.request,
-            expiry=timedelta_from_string(self.provider.token_validity),
+            expires=refresh_token_expiry,
+            provider=self.provider,
         )
-
-        if self.params.authorization_code.is_open_id:
-            id_token = refresh_token.create_id_token(
-                user=self.params.authorization_code.user,
-                request=self.request,
-            )
-            id_token.nonce = self.params.authorization_code.nonce
-            id_token.at_hash = refresh_token.at_hash
-            refresh_token.id_token = id_token
-
-        # Store the token.
+        id_token = IDToken.new(
+            self.provider,
+            refresh_token,
+            self.request,
+        )
+        id_token.nonce = self.params.authorization_code.nonce
+        id_token.at_hash = access_token.at_hash
+        refresh_token.id_token = id_token
         refresh_token.save()
 
-        # We don't need to store the code anymore.
+        # Delete old code
         self.params.authorization_code.delete()
-
         return {
-            "access_token": refresh_token.access_token,
-            "refresh_token": refresh_token.refresh_token,
-            "token_type": "bearer",
-            "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
-            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
+            "access_token": access_token.token,
+            "refresh_token": refresh_token.token,
+            "token_type": TOKEN_TYPE,
+            "expires_in": int(
+                timedelta_from_string(self.provider.access_token_validity).total_seconds()
+            ),
+            "id_token": id_token.to_jwt(self.provider),
         }
 
     def create_refresh_response(self) -> dict[str, Any]:
-        """See https://tools.ietf.org/html/rfc6749#section-6"""
+        """See https://datatracker.ietf.org/doc/html/rfc6749#section-6"""
         unauthorized_scopes = set(self.params.scope) - set(self.params.refresh_token.scope)
         if unauthorized_scopes:
             raise TokenError("invalid_scope")
 
-        refresh_token: RefreshToken = self.provider.create_refresh_token(
+        now = timezone.now()
+        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken(
+            provider=self.provider,
             user=self.params.refresh_token.user,
-            scope=self.params.scope,
-            request=self.request,
-            expiry=timedelta_from_string(self.provider.token_validity),
+            expires=access_token_expiry,
+            # Keep same scopes as previous token
+            scope=self.params.refresh_token.scope,
         )
+        access_token.id_token = IDToken.new(
+            self.provider,
+            access_token,
+            self.request,
+        )
+        access_token.save()
 
-        # If the Token has an id_token it's an Authentication request.
-        if self.params.refresh_token.id_token:
-            refresh_token.id_token = refresh_token.create_id_token(
-                user=self.params.refresh_token.user,
-                request=self.request,
-            )
-            refresh_token.id_token.at_hash = refresh_token.at_hash
-
-            # Store the refresh_token.
-            refresh_token.save()
+        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+        refresh_token = RefreshToken(
+            user=self.params.refresh_token.user,
+            scope=self.params.refresh_token.scope,
+            expires=refresh_token_expiry,
+            provider=self.provider,
+        )
+        id_token = IDToken.new(
+            self.provider,
+            refresh_token,
+            self.request,
+        )
+        id_token.nonce = self.params.refresh_token.id_token.nonce
+        id_token.at_hash = access_token.at_hash
+        refresh_token.id_token = id_token
+        refresh_token.save()
 
         # Mark old token as revoked
         self.params.refresh_token.revoked = True
         self.params.refresh_token.save()
 
         return {
-            "access_token": refresh_token.access_token,
-            "refresh_token": refresh_token.refresh_token,
-            "token_type": "bearer",
-            "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
-            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
+            "access_token": access_token.token,
+            "refresh_token": refresh_token.token,
+            "token_type": TOKEN_TYPE,
+            "expires_in": int(
+                timedelta_from_string(self.provider.access_token_validity).total_seconds()
+            ),
+            "id_token": id_token.to_jwt(self.provider),
         }
 
     def create_client_credentials_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""
-        refresh_token: RefreshToken = self.provider.create_refresh_token(
+        now = timezone.now()
+        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken(
+            provider=self.provider,
             user=self.params.user,
+            expires=access_token_expiry,
             scope=self.params.scope,
-            request=self.request,
-            expiry=timedelta_from_string(self.provider.token_validity),
         )
-        refresh_token.id_token = refresh_token.create_id_token(
-            user=self.params.user,
-            request=self.request,
+        access_token.id_token = IDToken.new(
+            self.provider,
+            access_token,
+            self.request,
         )
-        refresh_token.id_token.at_hash = refresh_token.at_hash
-
-        # Store the refresh_token.
-        refresh_token.save()
-
+        access_token.save()
         return {
-            "access_token": refresh_token.access_token,
-            "token_type": "bearer",
-            "expires_in": int(timedelta_from_string(self.provider.token_validity).total_seconds()),
-            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
+            "access_token": access_token.token,
+            "token_type": TOKEN_TYPE,
+            "expires_in": int(
+                timedelta_from_string(self.provider.access_token_validity).total_seconds()
+            ),
+            "id_token": access_token.id_token.to_jwt(self.provider),
         }
 
     def create_device_code_response(self) -> dict[str, Any]:
         """See https://datatracker.ietf.org/doc/html/rfc8628"""
         if not self.params.device_code.user:
             raise DeviceCodeError("authorization_pending")
+        now = timezone.now()
+        access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        access_token = AccessToken(
+            provider=self.provider,
+            user=self.params.device_code.user,
+            expires=access_token_expiry,
+            scope=self.params.device_code.scope,
+        )
+        access_token.id_token = IDToken.new(
+            self.provider,
+            access_token,
+            self.request,
+        )
+        access_token.save()
 
-        refresh_token: RefreshToken = self.provider.create_refresh_token(
+        refresh_token_expiry = now + timedelta_from_string(self.provider.refresh_token_validity)
+        refresh_token = RefreshToken(
             user=self.params.device_code.user,
             scope=self.params.device_code.scope,
-            request=self.request,
-            expiry=timedelta_from_string(self.provider.token_validity),
+            expires=refresh_token_expiry,
+            provider=self.provider,
         )
-        refresh_token.id_token = refresh_token.create_id_token(
-            user=self.params.device_code.user,
-            request=self.request,
+        id_token = IDToken.new(
+            self.provider,
+            refresh_token,
+            self.request,
         )
-        refresh_token.id_token.at_hash = refresh_token.at_hash
-
-        # Store the refresh_token.
+        id_token.at_hash = access_token.at_hash
+        refresh_token.id_token = id_token
         refresh_token.save()
 
+        # Delete device code
+        self.params.device_code.delete()
         return {
-            "access_token": refresh_token.access_token,
-            "token_type": "bearer",
+            "access_token": access_token.token,
+            "refresh_token": refresh_token.token,
+            "token_type": TOKEN_TYPE,
             "expires_in": int(
-                timedelta_from_string(refresh_token.provider.token_validity).total_seconds()
+                timedelta_from_string(self.provider.access_token_validity).total_seconds()
             ),
-            "id_token": self.provider.encode(refresh_token.id_token.to_dict()),
+            "id_token": id_token.to_jwt(self.provider),
         }

@@ -17,7 +17,6 @@ class AuthenticatorStaticStageSerializer(StageSerializer):
     """AuthenticatorStaticStage Serializer"""
 
     class Meta:
-
         model = AuthenticatorStaticStage
         fields = StageSerializer.Meta.fields + ["configure_flow", "token_count"]
 
@@ -36,7 +35,6 @@ class StaticDeviceTokenSerializer(ModelSerializer):
     """Serializer for static device's tokens"""
 
     class Meta:
-
         model = StaticToken
         fields = ["token"]
 
@@ -47,7 +45,6 @@ class StaticDeviceSerializer(ModelSerializer):
     token_set = StaticDeviceTokenSerializer(many=True, read_only=True)
 
     class Meta:
-
         model = StaticDevice
         fields = ["name", "token_set", "pk"]
 

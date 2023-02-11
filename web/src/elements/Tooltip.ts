@@ -26,6 +26,7 @@ export class Tooltip extends AKElement {
                 }
                 .pf-c-tooltip {
                     position: absolute;
+                    z-index: 999;
                 }
             `,
         ];

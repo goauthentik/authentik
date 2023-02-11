@@ -1,0 +1,146 @@
+metadata:
+  name: Default - Out-of-box-experience flow
+version: 1
+entries:
+- attrs:
+    denied_action: message_continue
+    designation: stage_configuration
+    name: default-oobe-setup
+    title: Welcome to authentik!
+  id: flow
+  identifiers:
+    slug: initial-setup
+  model: authentik_flows.flow
+- attrs:
+    order: 100
+    placeholder: Welcome to authentik! Please set a password for the default admin
+      user, akadmin.
+    placeholder_expression: false
+    required: true
+    sub_text: ''
+    type: static
+    field_key: oobe-header-text
+    label: oobe-header-text
+  id: prompt-field-header
+  identifiers:
+    name: initial-setup-field-header
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 101
+    placeholder: Admin email
+    placeholder_expression: false
+    required: true
+    sub_text: ''
+    type: email
+    field_key: email
+    label: Email
+  id: prompt-field-email
+  identifiers:
+    name: initial-setup-field-email
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 300
+    placeholder: Password
+    placeholder_expression: false
+    required: true
+    sub_text: ''
+    type: password
+    field_key: password
+    label: Password
+  id: prompt-field-password
+  identifiers:
+    name: initial-setup-field-password
+  model: authentik_stages_prompt.prompt
+- attrs:
+    order: 301
+    placeholder: Password (repeat)
+    placeholder_expression: false
+    required: true
+    sub_text: ''
+    type: password
+    field_key: password_repeat
+    label: Password (repeat)
+  id: prompt-field-password-repeat
+  identifiers:
+    name: initial-setup-field-password-repeat
+  model: authentik_stages_prompt.prompt
+- attrs:
+    expression: |
+      # This policy sets the user for the currently running flow
+      # by injecting "pending_user"
+      akadmin = ak_user_by(username="akadmin")
+      context["flow_plan"].context["pending_user"] = akadmin
+      return True
+  id: policy-default-oobe-prefill-user
+  identifiers:
+    name: default-oobe-prefill-user
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
+    expression: |
+      # This policy ensures that the setup flow can only be
+      # executed when the admin user doesn''t have a password set
+      akadmin = ak_user_by(username="akadmin")
+      return not akadmin.has_usable_password()
+  id: policy-default-oobe-password-usable
+  identifiers:
+    name: default-oobe-password-usable
+  model: authentik_policies_expression.expressionpolicy
+- attrs:
+    fields:
+    - !KeyOf prompt-field-header
+    - !KeyOf prompt-field-email
+    - !KeyOf prompt-field-password
+    - !KeyOf prompt-field-password-repeat
+    validation_policies: []
+  id: stage-default-oobe-password
+  identifiers:
+    name: stage-default-oobe-password
+  model: authentik_stages_prompt.promptstage
+- id: stage-default-authentication-login
+  identifiers:
+    name: default-authentication-login
+  model: authentik_stages_user_login.userloginstage
+- id: stage-default-password-change-write
+  identifiers:
+    name: default-password-change-write
+  model: authentik_stages_user_write.userwritestage
+  attrs:
+    user_creation_mode: never_create
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    re_evaluate_policies: false
+  identifiers:
+    order: 10
+    stage: !KeyOf stage-default-oobe-password
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- attrs:
+    evaluate_on_plan: false
+    invalid_response_action: retry
+    re_evaluate_policies: true
+  id: binding-password-write
+  identifiers:
+    order: 20
+    stage: !KeyOf stage-default-password-change-write
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- attrs:
+    evaluate_on_plan: true
+    invalid_response_action: retry
+    re_evaluate_policies: false
+  identifiers:
+    order: 100
+    stage: !KeyOf stage-default-authentication-login
+    target: !KeyOf flow
+  model: authentik_flows.flowstagebinding
+- identifiers:
+    order: 0
+    policy: !KeyOf policy-default-oobe-password-usable
+    target: !KeyOf flow
+  model: authentik_policies.policybinding
+- identifiers:
+    order: 0
+    policy: !KeyOf policy-default-oobe-prefill-user
+    target: !KeyOf binding-password-write
+  model: authentik_policies.policybinding

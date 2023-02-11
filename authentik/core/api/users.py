@@ -4,6 +4,9 @@ from json import loads
 from typing import Any, Optional
 
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.sessions.backends.cache import KEY_PREFIX
+from django.core.cache import cache
+from django.db.models.functions import ExtractHour
 from django.db.models.query import QuerySet
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
@@ -56,6 +59,7 @@ from authentik.core.models import (
     USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_PATH_SERVICE_ACCOUNT,
+    AuthenticatedSession,
     Group,
     Token,
     TokenIntents,
@@ -80,7 +84,6 @@ class UserGroupSerializer(ModelSerializer):
     parent_name = CharField(source="parent.name", read_only=True)
 
     class Meta:
-
         model = Group
         fields = [
             "pk",
@@ -116,7 +119,6 @@ class UserSerializer(ModelSerializer):
         return path
 
     class Meta:
-
         model = User
         fields = [
             "pk",
@@ -168,7 +170,6 @@ class UserSelfSerializer(ModelSerializer):
         return user.group_attributes(self._context["request"]).get("settings", {})
 
     class Meta:
-
         model = User
         fields = [
             "pk",
@@ -199,38 +200,44 @@ class SessionUserSerializer(PassiveSerializer):
 class UserMetricsSerializer(PassiveSerializer):
     """User Metrics"""
 
-    logins_per_1h = SerializerMethodField()
-    logins_failed_per_1h = SerializerMethodField()
-    authorizations_per_1h = SerializerMethodField()
+    logins = SerializerMethodField()
+    logins_failed = SerializerMethodField()
+    authorizations = SerializerMethodField()
 
     @extend_schema_field(CoordinateSerializer(many=True))
-    def get_logins_per_1h(self, _):
-        """Get successful logins per hour for the last 24 hours"""
+    def get_logins(self, _):
+        """Get successful logins per 8 hours for the last 7 days"""
         user = self.context["user"]
         return (
-            get_objects_for_user(user, "authentik_events.view_event")
-            .filter(action=EventAction.LOGIN, user__pk=user.pk)
-            .get_events_per_hour()
+            get_objects_for_user(user, "authentik_events.view_event").filter(
+                action=EventAction.LOGIN, user__pk=user.pk
+            )
+            # 3 data points per day, so 8 hour spans
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
     @extend_schema_field(CoordinateSerializer(many=True))
-    def get_logins_failed_per_1h(self, _):
-        """Get failed logins per hour for the last 24 hours"""
+    def get_logins_failed(self, _):
+        """Get failed logins per 8 hours for the last 7 days"""
         user = self.context["user"]
         return (
-            get_objects_for_user(user, "authentik_events.view_event")
-            .filter(action=EventAction.LOGIN_FAILED, context__username=user.username)
-            .get_events_per_hour()
+            get_objects_for_user(user, "authentik_events.view_event").filter(
+                action=EventAction.LOGIN_FAILED, context__username=user.username
+            )
+            # 3 data points per day, so 8 hour spans
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
     @extend_schema_field(CoordinateSerializer(many=True))
-    def get_authorizations_per_1h(self, _):
-        """Get failed logins per hour for the last 24 hours"""
+    def get_authorizations(self, _):
+        """Get failed logins per 8 hours for the last 7 days"""
         user = self.context["user"]
         return (
-            get_objects_for_user(user, "authentik_events.view_event")
-            .filter(action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk)
-            .get_events_per_hour()
+            get_objects_for_user(user, "authentik_events.view_event").filter(
+                action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk
+            )
+            # 3 data points per day, so 8 hour spans
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )
 
 
@@ -262,7 +269,6 @@ class UsersFilter(FilterSet):
         queryset=Group.objects.all(),
     )
 
-    # pylint: disable=unused-argument
     def filter_attributes(self, queryset, name, value):
         """Filter attributes by query args"""
         try:
@@ -393,13 +399,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 )
                 response["token"] = token.key
                 return Response(response)
-            except (IntegrityError) as exc:
+            except IntegrityError as exc:
                 return Response(data={"non_field_errors": [str(exc)]}, status=400)
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
-    @action(detail=False, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name
-    def me(self, request: Request) -> Response:
+    @action(url_path="me", url_name="me", detail=False, pagination_class=None, filter_backends=[])
+    def user_me(self, request: Request) -> Response:
         """Get information about current user"""
         context = {"request": request}
         serializer = SessionUserSerializer(
@@ -427,7 +432,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, methods=["POST"])
-    # pylint: disable=invalid-name, unused-argument
     def set_password(self, request: Request, pk: int) -> Response:
         """Set password for user"""
         user: User = self.get_object()
@@ -445,7 +449,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @extend_schema(responses={200: UserMetricsSerializer(many=False)})
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def metrics(self, request: Request, pk: int) -> Response:
         """User metrics per 1h"""
         user: User = self.get_object()
@@ -461,7 +464,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def recovery(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
         link, _ = self._create_recovery_link()
@@ -486,7 +488,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def recovery_email(self, request: Request, pk: int) -> Response:
         """Create a temporary link that a user can use to recover their accounts"""
         for_user: User = self.get_object()
@@ -560,3 +561,14 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 )
             }
         )
+
+    def partial_update(self, request: Request, *args, **kwargs) -> Response:
+        response = super().partial_update(request, *args, **kwargs)
+        instance: User = self.get_object()
+        if not instance.is_active:
+            sessions = AuthenticatedSession.objects.filter(user=instance)
+            session_ids = sessions.values_list("session_key", flat=True)
+            cache.delete_many(f"{KEY_PREFIX}{session}" for session in session_ids)
+            sessions.delete()
+            LOGGER.debug("Deleted user's sessions", user=instance.username)
+        return response

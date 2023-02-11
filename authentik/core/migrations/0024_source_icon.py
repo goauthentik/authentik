@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_core", "0023_source_authentik_c_slug_ccb2e5_idx_and_more"),
     ]

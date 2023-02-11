@@ -29,7 +29,6 @@ def update_empty_urls(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_sources_oauth", "0003_auto_20210416_0726"),
     ]
@@ -69,7 +68,9 @@ class Migration(migrations.Migration):
             model_name="oauthsource",
             name="request_token_url",
             field=models.CharField(
-                help_text="URL used to request the initial token. This URL is only required for OAuth 1.",
+                help_text=(
+                    "URL used to request the initial token. This URL is only required for OAuth 1."
+                ),
                 max_length=255,
                 null=True,
                 verbose_name="Request Token URL",

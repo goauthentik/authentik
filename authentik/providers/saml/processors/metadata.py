@@ -65,7 +65,7 @@ class MetadataProcessor:
             element.text = name_id_format
             yield element
 
-    def get_bindings(self) -> Iterator[Element]:
+    def get_sso_bindings(self) -> Iterator[Element]:
         """Get all Bindings supported"""
         binding_url_map = {
             (SAML_BINDING_REDIRECT, "SingleSignOnService"): self.http_request.build_absolute_uri(
@@ -80,6 +80,19 @@ class MetadataProcessor:
                     kwargs={"application_slug": self.provider.application.slug},
                 )
             ),
+        }
+        for binding_svc, url in binding_url_map.items():
+            binding, svc = binding_svc
+            if self.force_binding and self.force_binding != binding:
+                continue
+            element = Element(f"{{{NS_SAML_METADATA}}}{svc}")
+            element.attrib["Binding"] = binding
+            element.attrib["Location"] = url
+            yield element
+
+    def get_slo_bindings(self) -> Iterator[Element]:
+        """Get all Bindings supported"""
+        binding_url_map = {
             (SAML_BINDING_REDIRECT, "SingleLogoutService"): self.http_request.build_absolute_uri(
                 reverse(
                     "authentik_providers_saml:slo-redirect",
@@ -163,13 +176,16 @@ class MetadataProcessor:
         if signing_descriptor is not None:
             idp_sso_descriptor.append(signing_descriptor)
 
+        for binding in self.get_slo_bindings():
+            idp_sso_descriptor.append(binding)
+
         for name_id_format in self.get_name_id_formats():
             idp_sso_descriptor.append(name_id_format)
 
-        for binding in self.get_bindings():
+        for binding in self.get_sso_bindings():
             idp_sso_descriptor.append(binding)
 
         if self.provider.signing_kp:
             self._sign(entity_descriptor)
 
-        return tostring(entity_descriptor, pretty_print=True).decode()
+        return tostring(entity_descriptor).decode()

@@ -43,6 +43,5 @@ class AuthenticatorStaticStage(ConfigurableStage, Stage):
         return f"Static Authenticator Stage {self.name}"
 
     class Meta:
-
         verbose_name = _("Static Authenticator Stage")
         verbose_name_plural = _("Static Authenticator Stages")

@@ -55,14 +55,19 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="executionLogging">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.executionLogging, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Execution logging`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Execution logging`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
                 </p>
@@ -71,14 +76,19 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
                 <span slot="header"> ${t`Policy-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="result">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.result, false)}
                             />
-                            <label class="pf-c-check__label"> ${t`Pass policy?`} </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Pass policy?`}</span>
+                        </label>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Wait (min)`}

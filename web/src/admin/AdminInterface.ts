@@ -23,8 +23,7 @@ import "@goauthentik/elements/sidebar/SidebarItem";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -32,7 +31,7 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AdminApi, Version } from "@goauthentik/api";
+import { AdminApi, SessionUser, Version } from "@goauthentik/api";
 
 autoDetectLanguage();
 
@@ -49,7 +48,11 @@ export class AdminInterface extends AKElement {
 
     ws: WebsocketClient;
 
-    private version: Promise<Version>;
+    @state()
+    version?: Version;
+
+    @state()
+    user?: SessionUser;
 
     static get styles(): CSSResult[] {
         return [
@@ -103,12 +106,14 @@ export class AdminInterface extends AKElement {
                 apiDrawerOpen: this.apiDrawerOpen,
             });
         });
-        this.version = new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
-        me().then((u) => {
-            if (!u.user.isSuperuser && u.user.pk > 0) {
-                window.location.assign("/if/user");
-            }
-        });
+    }
+
+    async firstUpdated(): Promise<void> {
+        this.version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
+        this.user = await me();
+        if (!this.user.user.isSuperuser && this.user.user.pk > 0) {
+            window.location.assign("/if/user");
+        }
     }
 
     render(): TemplateResult {
@@ -160,36 +165,28 @@ export class AdminInterface extends AKElement {
 
     renderSidebarItems(): TemplateResult {
         return html`
-            ${until(
-                this.version.then((version) => {
-                    if (version.versionCurrent !== VERSION) {
-                        return html`<ak-sidebar-item ?highlight=${true}>
-                            <span slot="label"
-                                >${t`A newer version of the frontend is available.`}</span
-                            >
-                        </ak-sidebar-item>`;
-                    }
-                    return html``;
-                }),
-            )}
-            ${until(
-                me().then((u) => {
-                    if (u.original) {
-                        return html`<ak-sidebar-item
-                            ?highlight=${true}
-                            ?isAbsoluteLink=${true}
-                            path=${`/-/impersonation/end/?back=${encodeURIComponent(
-                                `${window.location.pathname}#${window.location.hash}`,
-                            )}`}
-                        >
-                            <span slot="label"
-                                >${t`You're currently impersonating ${u.user.username}. Click to stop.`}</span
-                            >
-                        </ak-sidebar-item>`;
-                    }
-                    return html``;
-                }),
-            )}
+            ${this.version && this.version.versionCurrent !== VERSION
+                ? html`
+                      <ak-sidebar-item ?highlight=${true}>
+                          <span slot="label"
+                              >${t`A newer version of the frontend is available.`}</span
+                          >
+                      </ak-sidebar-item>
+                  `
+                : html``}
+            ${this.user?.original
+                ? html`<ak-sidebar-item
+                      ?highlight=${true}
+                      ?isAbsoluteLink=${true}
+                      path=${`/-/impersonation/end/?back=${encodeURIComponent(
+                          `${window.location.pathname}#${window.location.hash}`,
+                      )}`}
+                  >
+                      <span slot="label"
+                          >${t`You're currently impersonating ${this.user.user.username}. Click to stop.`}</span
+                      >
+                  </ak-sidebar-item>`
+                : html``}
             <ak-sidebar-item path="/if/user/" ?isAbsoluteLink=${true} ?highlight=${true}>
                 <span slot="label">${t`User interface`}</span>
             </ak-sidebar-item>
@@ -243,14 +240,14 @@ export class AdminInterface extends AKElement {
                 <ak-sidebar-item path="/policy/policies">
                     <span slot="label">${t`Policies`}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/policy/reputation">
-                    <span slot="label">${t`Reputation scores`}</span>
-                </ak-sidebar-item>
                 <ak-sidebar-item path="/core/property-mappings">
                     <span slot="label">${t`Property Mappings`}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/blueprints/instances">
                     <span slot="label">${t`Blueprints`}</span>
+                </ak-sidebar-item>
+                <ak-sidebar-item path="/policy/reputation">
+                    <span slot="label">${t`Reputation scores`}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>

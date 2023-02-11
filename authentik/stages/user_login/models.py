@@ -39,6 +39,5 @@ class UserLoginStage(Stage):
         return "ak-stage-user-login-form"
 
     class Meta:
-
         verbose_name = _("User Login Stage")
         verbose_name_plural = _("User Login Stages")

@@ -85,13 +85,12 @@ class PlexAuth:
         except RequestException as exc:
             LOGGER.warning("Unable to fetch user resources", exc=exc)
             raise Http404
-        else:
-            for resource in resources:
-                if resource["provides"] != "server":
-                    continue
-                if resource["clientIdentifier"] in self._source.allowed_servers:
-                    LOGGER.info("Plex allowed access from server", name=resource["name"])
-                    return True
+        for resource in resources:
+            if resource["provides"] != "server":
+                continue
+            if resource["clientIdentifier"] in self._source.allowed_servers:
+                LOGGER.info("Plex allowed access from server", name=resource["name"])
+                return True
         return False
 
     def check_friends_overlap(self, user_ident: int) -> bool:

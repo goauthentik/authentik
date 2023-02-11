@@ -47,6 +47,6 @@ class Command(BaseCommand):
             identifier=slugify(f"ak-recovery-{user}-{_now}"),
         )
         self.stdout.write(
-            (f"Store this link safely, as it will allow" f" anyone to access authentik as {user}.")
+            f"Store this link safely, as it will allow anyone to access authentik as {user}."
         )
         self.stdout.write(self.get_url(token))

@@ -73,7 +73,6 @@ class GitHubUserView(View):
 class GitHubUserTeamsView(View):
     """Emulate GitHub's /user/teams API Endpoint"""
 
-    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, token: RefreshToken) -> HttpResponse:
         """Emulate GitHub's /user/teams API Endpoint"""
         user = token.user

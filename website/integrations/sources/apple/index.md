@@ -8,11 +8,11 @@ Allows users to authenticate using their Apple ID.
 
 ## Preparation
 
-:::warning
+:::caution
 An Apple developer account is required.
 :::
 
-:::warning
+:::caution
 Apple mandates the use of a [registered TLD](https://en.wikipedia.org/wiki/List_of_Internet_top-level_domains), as such this source will not work with .local and other non-public TLDs.
 :::
 

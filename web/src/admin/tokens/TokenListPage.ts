@@ -77,6 +77,9 @@ export class TokenListPage extends TablePage<Token> {
         return html`<ak-forms-delete-bulk
             objectLabel=${t`Token(s)`}
             .objects=${this.selectedElements}
+            .metadata=${(item: Token) => {
+                return [{ key: t`Identifier`, value: item.identifier }];
+            }}
             .usedBy=${(item: Token) => {
                 return new CoreApi(DEFAULT_CONFIG).coreTokensUsedByList({
                     identifier: item.identifier,
@@ -118,18 +121,16 @@ export class TokenListPage extends TablePage<Token> {
             html`${item.expiring ? item.expires?.toLocaleString() : t`-`}`,
             html`${IntentToLabel(item.intent || IntentEnum.Api)}`,
             html`
-                <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update Token`} </span>
-                    <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
-                    <button
-                        ?disabled=${item.managed !== null}
-                        slot="trigger"
-                        class="pf-c-button pf-m-plain"
-                    >
-                        <i class="fas fa-edit"></i>
-                    </button>
-                </ak-forms-modal>
+                ${!item.managed
+                    ? html`<ak-forms-modal>
+                          <span slot="submit"> ${t`Update`} </span>
+                          <span slot="header"> ${t`Update Token`} </span>
+                          <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
+                          <button slot="trigger" class="pf-c-button pf-m-plain">
+                              <i class="fas fa-edit"></i>
+                          </button>
+                      </ak-forms-modal>`
+                    : html``}
                 <ak-token-copy-button
                     class="pf-c-button pf-m-plain"
                     identifier="${item.identifier}"

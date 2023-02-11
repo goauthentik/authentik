@@ -1,3 +1,4 @@
+import "@goauthentik/admin/applications/ApplicationAuthorizeChart";
 import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
 import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
@@ -7,7 +8,6 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/charts/ApplicationAuthorizeChart";
 import "@goauthentik/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
@@ -225,7 +225,9 @@ export class ApplicationViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Logins over the last 24 hours`}</div>
+                        <div class="pf-c-card__title">
+                            ${t`Logins over the last week (per 8 hours)`}
+                        </div>
                         <div class="pf-c-card__body">
                             ${this.application &&
                             html` <ak-charts-application-authorize

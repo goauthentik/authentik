@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_core", "0016_auto_20201202_2234"),
     ]
@@ -15,7 +14,12 @@ class Migration(migrations.Migration):
             name="managed",
             field=models.TextField(
                 default=None,
-                help_text="Objects which are managed by authentik. These objects are created and updated automatically. This is flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.",
+                help_text=(
+                    "Objects which are managed by authentik. These objects are created and updated"
+                    " automatically. This is flag only indicates that an object can be overwritten"
+                    " by migrations. You can still modify the objects via the API, but expect"
+                    " changes to be overwritten in a later update."
+                ),
                 null=True,
                 verbose_name="Managed by authentik",
                 unique=True,
@@ -26,7 +30,12 @@ class Migration(migrations.Migration):
             name="managed",
             field=models.TextField(
                 default=None,
-                help_text="Objects which are managed by authentik. These objects are created and updated automatically. This is flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.",
+                help_text=(
+                    "Objects which are managed by authentik. These objects are created and updated"
+                    " automatically. This is flag only indicates that an object can be overwritten"
+                    " by migrations. You can still modify the objects via the API, but expect"
+                    " changes to be overwritten in a later update."
+                ),
                 null=True,
                 verbose_name="Managed by authentik",
                 unique=True,

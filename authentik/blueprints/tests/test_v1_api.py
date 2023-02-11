@@ -43,3 +43,28 @@ class TestBlueprintsV1API(APITestCase):
                     "6871c0003f5c07be5c3316d9d4a08444bd8fed1b3f03294e51e44522"
                 ),
             )
+
+    def test_api_blank(self):
+        """Test blank"""
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-list"),
+            data={
+                "name": "foo",
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(
+            res.content.decode(), {"non_field_errors": ["Either path or content must be set."]}
+        )
+
+    def test_api_content(self):
+        """Test blank"""
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-list"),
+            data={
+                "name": "foo",
+                "content": '{"version": 3}',
+            },
+        )
+        self.assertEqual(res.status_code, 400)
+        self.assertJSONEqual(res.content.decode(), {"content": ["Failed to validate blueprint"]})

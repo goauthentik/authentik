@@ -5,7 +5,9 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-expand")
 export class Expand extends AKElement {
@@ -19,11 +21,15 @@ export class Expand extends AKElement {
     textClosed = t`Show more`;
 
     static get styles(): CSSResult[] {
-        return [PFExpandableSection];
+        return [PFBase, PFExpandableSection, AKGlobal];
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-expandable-section ${this.expanded ? "pf-m-expanded" : ""}">
+        return html`<div
+            class="pf-c-expandable-section pf-m-display-lg pf-m-indented ${this.expanded
+                ? "pf-m-expanded"
+                : ""}"
+        >
             <button
                 type="button"
                 class="pf-c-expandable-section__toggle"
@@ -39,7 +45,9 @@ export class Expand extends AKElement {
                     >${this.expanded ? t`${this.textOpen}` : t`${this.textClosed}`}</span
                 >
             </button>
-            <slot ?hidden=${!this.expanded} class="pf-c-expandable-section__content"></slot>
+            <div class="pf-c-expandable-section__content" ?hidden=${!this.expanded}>
+                <slot></slot>
+            </div>
         </div>`;
     }
 }

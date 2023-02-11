@@ -64,6 +64,7 @@ outposts:
   disable_embedded_outpost: false
 
 ldap:
+  task_timeout_hours: 2
   tls:
     ciphers: null
 

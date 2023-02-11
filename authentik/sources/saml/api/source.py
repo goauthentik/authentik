@@ -17,7 +17,6 @@ class SAMLSourceSerializer(SourceSerializer):
     """SAMLSource Serializer"""
 
     class Meta:
-
         model = SAMLSource
         fields = SourceSerializer.Meta.fields + [
             "pre_authentication_flow",
@@ -66,7 +65,6 @@ class SAMLSourceViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(responses={200: SAMLMetadataSerializer(many=False)})
     @action(methods=["GET"], detail=True)
-    # pylint: disable=unused-argument
     def metadata(self, request: Request, slug: str) -> Response:
         """Return metadata as XML string"""
         source = self.get_object()

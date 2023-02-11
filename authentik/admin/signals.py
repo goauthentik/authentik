@@ -8,7 +8,6 @@ from authentik.root.monitoring import monitoring_set
 
 
 @receiver(monitoring_set)
-# pylint: disable=unused-argument
 def monitoring_set_workers(sender, **kwargs):
     """Set worker gauge"""
     count = len(CELERY_APP.control.ping(timeout=0.5))
@@ -16,7 +15,6 @@ def monitoring_set_workers(sender, **kwargs):
 
 
 @receiver(monitoring_set)
-# pylint: disable=unused-argument
 def monitoring_set_tasks(sender, **kwargs):
     """Set task gauges"""
     for task in TaskInfo.all().values():

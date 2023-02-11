@@ -60,7 +60,6 @@ export class AuthenticatorSMSStage extends BaseStage<
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["phone_number"]}
                     >
-                        <!-- @ts-ignore -->
                         <input
                             type="tel"
                             name="phoneNumber"

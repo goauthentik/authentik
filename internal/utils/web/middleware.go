@@ -14,10 +14,9 @@ import (
 // responseLogger is wrapper of http.ResponseWriter that keeps track of its HTTP status
 // code and body size
 type responseLogger struct {
-	w        http.ResponseWriter
-	status   int
-	size     int
-	upstream string
+	w      http.ResponseWriter
+	status int
+	size   int
 }
 
 // Header returns the ResponseWriter's Header
@@ -98,15 +97,18 @@ func (h loggingHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	responseLogger := &responseLogger{w: w}
 	h.handler.ServeHTTP(responseLogger, req)
 	duration := float64(time.Since(t)) / float64(time.Millisecond)
+	scheme := "http"
+	if req.TLS != nil {
+		scheme = "https"
+	}
 	h.afterHandler(h.logger.WithFields(log.Fields{
 		"remote":     req.RemoteAddr,
 		"host":       GetHost(req),
 		"runtime":    fmt.Sprintf("%0.3f", duration),
 		"method":     req.Method,
-		"scheme":     req.URL.Scheme,
+		"scheme":     scheme,
 		"size":       responseLogger.Size(),
 		"status":     responseLogger.Status(),
-		"upstream":   responseLogger.upstream,
 		"user_agent": req.UserAgent(),
 	}), req).Info(url.RequestURI())
 }

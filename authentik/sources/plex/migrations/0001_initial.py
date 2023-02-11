@@ -8,7 +8,6 @@ import authentik.lib.generators
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -42,7 +41,10 @@ class Migration(migrations.Migration):
                     django.contrib.postgres.fields.ArrayField(
                         base_field=models.TextField(),
                         default=list,
-                        help_text="Which servers a user has to be a member of to be granted access. Empty list allows every server.",
+                        help_text=(
+                            "Which servers a user has to be a member of to be granted access. Empty"
+                            " list allows every server."
+                        ),
                         size=None,
                     ),
                 ),

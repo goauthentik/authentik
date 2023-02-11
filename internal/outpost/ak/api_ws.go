@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/prometheus/client_golang/prometheus"
+	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 )
 
@@ -26,16 +26,11 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 		"User-Agent":    []string{constants.OutpostUserAgent()},
 	}
 
-	value, set := os.LookupEnv("AUTHENTIK_INSECURE")
-	if !set {
-		value = "false"
-	}
-
 	dialer := websocket.Dialer{
 		Proxy:            http.ProxyFromEnvironment,
 		HandshakeTimeout: 10 * time.Second,
 		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: strings.ToLower(value) == "true",
+			InsecureSkipVerify: config.Get().AuthentikInsecure,
 		},
 	}
 

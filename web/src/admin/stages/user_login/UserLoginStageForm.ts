@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/elements/Alert";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -70,6 +71,15 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                             ${t`Determines how long a session lasts. Default of 0 seconds means that the sessions lasts until the browser is closed.`}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                        <ak-alert ?inline=${true}>
+                            ${t`Different browsers handle session cookies differently, and might not remove them even when the browser is closed.`}
+                            <a
+                                href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#expiresdate"
+                                target="_blank"
+                            >
+                                ${t`See here.`}
+                            </a>
+                        </ak-alert>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

@@ -1,10 +1,12 @@
 """Test Users API"""
 from json import loads
 
+from django.contrib.sessions.backends.cache import KEY_PREFIX
+from django.core.cache import cache
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import User
+from authentik.core.models import AuthenticatedSession, User
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
 from authentik.lib.config import CONFIG
@@ -267,3 +269,26 @@ class TestUsersAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         self.assertEqual(body["user"]["avatar"], "bar")
+
+    def test_session_delete(self):
+        """Ensure sessions are deleted when a user is deactivated"""
+        user = create_test_admin_user()
+        session_id = generate_id()
+        AuthenticatedSession.objects.create(
+            user=user,
+            session_key=session_id,
+            last_ip="",
+        )
+        cache.set(KEY_PREFIX + session_id, "foo")
+
+        self.client.force_login(self.admin)
+        response = self.client.patch(
+            reverse("authentik_api:user-detail", kwargs={"pk": user.pk}),
+            data={
+                "is_active": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertIsNone(cache.get(KEY_PREFIX + session_id))
+        self.assertFalse(AuthenticatedSession.objects.filter(session_key=session_id).exists())

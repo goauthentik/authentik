@@ -40,10 +40,8 @@ class PasswordStage(ConfigurableStage, Stage):
     failed_attempts_before_cancel = models.IntegerField(
         default=5,
         help_text=_(
-            (
-                "How many attempts a user has before the flow is canceled. "
-                "To lock the user out, use a reputation policy and a user_write stage."
-            )
+            "How many attempts a user has before the flow is canceled. "
+            "To lock the user out, use a reputation policy and a user_write stage."
         ),
     )
 
@@ -74,6 +72,5 @@ class PasswordStage(ConfigurableStage, Stage):
         )
 
     class Meta:
-
         verbose_name = _("Password Stage")
         verbose_name_plural = _("Password Stages")

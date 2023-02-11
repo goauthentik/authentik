@@ -97,7 +97,7 @@ export class SidebarBrand extends AKElement {
                 <div class="pf-c-brand ak-brand">
                     <img
                         src="${first(this.tenant.brandingLogo, DefaultTenant.brandingLogo)}"
-                        alt="authentik icon"
+                        alt="authentik Logo"
                         loading="lazy"
                     />
                 </div>

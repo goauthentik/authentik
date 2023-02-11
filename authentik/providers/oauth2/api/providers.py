@@ -13,14 +13,14 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, PropertyMappingPreviewSerializer
 from authentik.core.models import Provider
-from authentik.providers.oauth2.models import OAuth2Provider, RefreshToken, ScopeMapping
+from authentik.providers.oauth2.id_token import IDToken
+from authentik.providers.oauth2.models import AccessToken, OAuth2Provider, ScopeMapping
 
 
 class OAuth2ProviderSerializer(ProviderSerializer):
     """OAuth2Provider Serializer"""
 
     class Meta:
-
         model = OAuth2Provider
         fields = ProviderSerializer.Meta.fields + [
             "authorization_flow",
@@ -28,7 +28,8 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "client_id",
             "client_secret",
             "access_code_validity",
-            "token_validity",
+            "access_token_validity",
+            "refresh_token_validity",
             "include_claims_in_id_token",
             "signing_key",
             "redirect_uris",
@@ -65,7 +66,8 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         "client_type",
         "client_id",
         "access_code_validity",
-        "token_validity",
+        "access_token_validity",
+        "refresh_token_validity",
         "include_claims_in_id_token",
         "signing_key",
         "redirect_uris",
@@ -83,7 +85,6 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         }
     )
     @action(methods=["GET"], detail=True)
-    # pylint: disable=invalid-name
     def setup_urls(self, request: Request, pk: int) -> str:
         """Get Providers setup URLs"""
         provider = get_object_or_404(OAuth2Provider, pk=pk)
@@ -140,17 +141,20 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
         },
     )
     @action(detail=True, methods=["GET"])
-    # pylint: disable=invalid-name, unused-argument
     def preview_user(self, request: Request, pk: int) -> Response:
         """Preview user data for provider"""
         provider: OAuth2Provider = self.get_object()
-        temp_token = RefreshToken()
-        temp_token.scope = ScopeMapping.objects.filter(provider=provider).values_list(
+        scope_names = ScopeMapping.objects.filter(provider=provider).values_list(
             "scope_name", flat=True
         )
-        temp_token.provider = provider
-        temp_token.user = request.user
-        serializer = PropertyMappingPreviewSerializer(
-            instance={"preview": temp_token.create_id_token(request.user, request).to_dict()}
+        temp_token = IDToken.new(
+            provider,
+            AccessToken(
+                user=request.user,
+                provider=provider,
+                _scope=" ".join(scope_names),
+            ),
+            request,
         )
+        serializer = PropertyMappingPreviewSerializer(instance={"preview": temp_token.to_dict()})
         return Response(serializer.data)

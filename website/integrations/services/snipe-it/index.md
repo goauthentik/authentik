@@ -11,11 +11,11 @@ From https://snipeitapp.com
 A free open source IT asset/license management system.
 :::
 
-:::warning
+:::caution
 This setup assumes you will be using HTTPS as Snipe-It dynamically generates the ACS and other settings based on the complete URL.
 :::
 
-:::warning
+:::caution
 In case something goes wrong with the configuration, you can use the URL `http://inventory.company/login?nosaml` to log in using the
 built-in authentication.
 :::

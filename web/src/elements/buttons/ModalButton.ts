@@ -107,7 +107,12 @@ export class ModalButton extends AKElement {
     }
 
     renderModal(): TemplateResult {
-        return html`<div class="pf-c-backdrop">
+        return html`<div
+            class="pf-c-backdrop"
+            @click=${(e: PointerEvent) => {
+                e.stopPropagation();
+            }}
+        >
             <div class="pf-l-bullseye">
                 <div
                     class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"

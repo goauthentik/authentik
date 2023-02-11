@@ -8,7 +8,7 @@ from django.urls import reverse
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id, generate_key
-from authentik.providers.oauth2.models import IDToken, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import AccessToken, IDToken, OAuth2Provider, RefreshToken
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 
 
@@ -30,11 +30,16 @@ class TesOAuth2Revoke(OAuthTestCase):
         )
         self.app.save()
         self.user = create_test_admin_user()
-        self.token: RefreshToken = RefreshToken.objects.create(
+        self.auth = b64encode(
+            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
+        ).decode()
+
+    def test_revoke_refresh(self):
+        """Test revoke"""
+        token: RefreshToken = RefreshToken.objects.create(
             provider=self.provider,
             user=self.user,
-            access_token=generate_id(),
-            refresh_token=generate_id(),
+            token=generate_id(),
             _scope="openid user profile",
             _id_token=json.dumps(
                 asdict(
@@ -42,16 +47,34 @@ class TesOAuth2Revoke(OAuthTestCase):
                 )
             ),
         )
-        self.auth = b64encode(
-            f"{self.provider.client_id}:{self.provider.client_secret}".encode()
-        ).decode()
-
-    def test_revoke(self):
-        """Test revoke"""
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-revoke"),
             HTTP_AUTHORIZATION=f"Basic {self.auth}",
-            data={"token": self.token.refresh_token, "token_type_hint": "refresh_token"},
+            data={
+                "token": token.token,
+            },
+        )
+        self.assertEqual(res.status_code, 200)
+
+    def test_revoke_access(self):
+        """Test revoke"""
+        token: AccessToken = AccessToken.objects.create(
+            provider=self.provider,
+            user=self.user,
+            token=generate_id(),
+            _scope="openid user profile",
+            _id_token=json.dumps(
+                asdict(
+                    IDToken("foo", "bar"),
+                )
+            ),
+        )
+        res = self.client.post(
+            reverse("authentik_providers_oauth2:token-revoke"),
+            HTTP_AUTHORIZATION=f"Basic {self.auth}",
+            data={
+                "token": token.token,
+            },
         )
         self.assertEqual(res.status_code, 200)
 
@@ -60,7 +83,9 @@ class TesOAuth2Revoke(OAuthTestCase):
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-revoke"),
             HTTP_AUTHORIZATION=f"Basic {self.auth}",
-            data={"token": self.token.refresh_token + "foo", "token_type_hint": "refresh_token"},
+            data={
+                "token": generate_id(),
+            },
         )
         self.assertEqual(res.status_code, 200)
 
@@ -69,6 +94,8 @@ class TesOAuth2Revoke(OAuthTestCase):
         res = self.client.post(
             reverse("authentik_providers_oauth2:token-revoke"),
             HTTP_AUTHORIZATION="Basic fqewr",
-            data={"token": self.token.refresh_token, "token_type_hint": "refresh_token"},
+            data={
+                "token": generate_id(),
+            },
         )
         self.assertEqual(res.status_code, 401)

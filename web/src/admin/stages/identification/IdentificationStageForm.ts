@@ -140,29 +140,37 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="caseInsensitiveMatching">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.caseInsensitiveMatching, true)}
                             />
-                            <label class="pf-c-check__label">
-                                ${t`Case insensitive matching`}
-                            </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Case insensitive matching`}</span>
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`When enabled, user fields are matched regardless of their casing.`}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showMatchedUser">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.showMatchedUser, true)}
                             />
-                            <label class="pf-c-check__label"> ${t`Show matched user`} </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Show matched user`}</span>
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`When a valid username/email has been entered, and this option is enabled, the user's username and avatar will be shown. Otherwise, the text that the user entered will be shown.`}
                         </p>
@@ -216,14 +224,19 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="showSourceLabels">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.showSourceLabels, false)}
                             />
-                            <label class="pf-c-check__label"> ${t`Show sources' labels`} </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Show sources' labels`}</span>
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`By default, only icons are shown for sources. Enable this to show their full names.`}
                         </p>

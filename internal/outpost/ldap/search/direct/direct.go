@@ -124,12 +124,12 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					return nil
 				}
 
-				u, _, e := searchReq.Execute()
+				u, _, err := searchReq.Execute()
 				uapisp.Finish()
 
 				if err != nil {
 					req.Log().WithError(err).Warning("failed to get users")
-					return e
+					return err
 				}
 
 				users = &u.Results
@@ -152,7 +152,6 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 				users = &u
 			}
-
 			return nil
 		})
 	}

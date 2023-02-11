@@ -1,5 +1,6 @@
 """Test token view"""
 from base64 import b64encode
+from json import dumps
 
 from django.test import RequestFactory
 from django.urls import reverse
@@ -11,9 +12,15 @@ from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.constants import (
     GRANT_TYPE_AUTHORIZATION_CODE,
     GRANT_TYPE_REFRESH_TOKEN,
+    TOKEN_TYPE,
 )
 from authentik.providers.oauth2.errors import TokenError
-from authentik.providers.oauth2.models import AuthorizationCode, OAuth2Provider, RefreshToken
+from authentik.providers.oauth2.models import (
+    AccessToken,
+    AuthorizationCode,
+    OAuth2Provider,
+    RefreshToken,
+)
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
 from authentik.providers.oauth2.views.token import TokenParams
 
@@ -91,13 +98,13 @@ class TestToken(OAuthTestCase):
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
-            refresh_token=generate_id(),
+            token=generate_id(),
         )
         request = self.factory.post(
             "/",
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
-                "refresh_token": token.refresh_token,
+                "refresh_token": token.token,
                 "redirect_uri": "http://local.invalid",
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
@@ -120,9 +127,7 @@ class TestToken(OAuthTestCase):
         self.app.save()
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
-        code = AuthorizationCode.objects.create(
-            code="foobar", provider=provider, user=user, is_open_id=True
-        )
+        code = AuthorizationCode.objects.create(code="foobar", provider=provider, user=user)
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
             data={
@@ -132,20 +137,21 @@ class TestToken(OAuthTestCase):
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
         )
-        new_token: RefreshToken = RefreshToken.objects.filter(user=user).first()
+        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        refresh: RefreshToken = RefreshToken.objects.filter(user=user, provider=provider).first()
         self.assertJSONEqual(
             response.content.decode(),
             {
-                "access_token": new_token.access_token,
-                "refresh_token": new_token.refresh_token,
-                "token_type": "bearer",
-                "expires_in": 2592000,
+                "access_token": access.token,
+                "refresh_token": refresh.token,
+                "token_type": TOKEN_TYPE,
+                "expires_in": 3600,
                 "id_token": provider.encode(
-                    new_token.id_token.to_dict(),
+                    refresh.id_token.to_dict(),
                 ),
             },
         )
-        self.validate_jwt(new_token, provider)
+        self.validate_jwt(access, provider)
 
     def test_refresh_token_view(self):
         """test request param"""
@@ -165,36 +171,38 @@ class TestToken(OAuthTestCase):
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
-            refresh_token=generate_id(),
+            token=generate_id(),
+            _id_token=dumps({}),
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
-                "refresh_token": token.refresh_token,
+                "refresh_token": token.token,
                 "redirect_uri": "http://local.invalid",
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
             HTTP_ORIGIN="http://local.invalid",
         )
-        new_token: RefreshToken = (
-            RefreshToken.objects.filter(user=user).exclude(pk=token.pk).first()
-        )
         self.assertEqual(response["Access-Control-Allow-Credentials"], "true")
         self.assertEqual(response["Access-Control-Allow-Origin"], "http://local.invalid")
+        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        refresh: RefreshToken = RefreshToken.objects.filter(
+            user=user, provider=provider, revoked=False
+        ).first()
         self.assertJSONEqual(
             response.content.decode(),
             {
-                "access_token": new_token.access_token,
-                "refresh_token": new_token.refresh_token,
-                "token_type": "bearer",
-                "expires_in": 2592000,
+                "access_token": access.token,
+                "refresh_token": refresh.token,
+                "token_type": TOKEN_TYPE,
+                "expires_in": 3600,
                 "id_token": provider.encode(
-                    new_token.id_token.to_dict(),
+                    refresh.id_token.to_dict(),
                 ),
             },
         )
-        self.validate_jwt(new_token, provider)
+        self.validate_jwt(access, provider)
 
     def test_refresh_token_view_invalid_origin(self):
         """test request param"""
@@ -211,32 +219,34 @@ class TestToken(OAuthTestCase):
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
-            refresh_token=generate_id(),
+            token=generate_id(),
+            _id_token=dumps({}),
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
-                "refresh_token": token.refresh_token,
+                "refresh_token": token.token,
                 "redirect_uri": "http://local.invalid",
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
             HTTP_ORIGIN="http://another.invalid",
         )
-        new_token: RefreshToken = (
-            RefreshToken.objects.filter(user=user).exclude(pk=token.pk).first()
-        )
+        access: AccessToken = AccessToken.objects.filter(user=user, provider=provider).first()
+        refresh: RefreshToken = RefreshToken.objects.filter(
+            user=user, provider=provider, revoked=False
+        ).first()
         self.assertNotIn("Access-Control-Allow-Credentials", response)
         self.assertNotIn("Access-Control-Allow-Origin", response)
         self.assertJSONEqual(
             response.content.decode(),
             {
-                "access_token": new_token.access_token,
-                "refresh_token": new_token.refresh_token,
-                "token_type": "bearer",
-                "expires_in": 2592000,
+                "access_token": access.token,
+                "refresh_token": refresh.token,
+                "token_type": TOKEN_TYPE,
+                "expires_in": 3600,
                 "id_token": provider.encode(
-                    new_token.id_token.to_dict(),
+                    refresh.id_token.to_dict(),
                 ),
             },
         )
@@ -259,14 +269,15 @@ class TestToken(OAuthTestCase):
         token: RefreshToken = RefreshToken.objects.create(
             provider=provider,
             user=user,
-            refresh_token=generate_id(),
+            token=generate_id(),
+            _id_token=dumps({}),
         )
         # Create initial refresh token
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
-                "refresh_token": token.refresh_token,
+                "refresh_token": token.token,
                 "redirect_uri": "http://testserver",
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
@@ -280,7 +291,7 @@ class TestToken(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
-                "refresh_token": new_token.refresh_token,
+                "refresh_token": new_token.token,
                 "redirect_uri": "http://local.invalid",
             },
             HTTP_AUTHORIZATION=f"Basic {header}",
@@ -291,7 +302,7 @@ class TestToken(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             data={
                 "grant_type": GRANT_TYPE_REFRESH_TOKEN,
-                "refresh_token": new_token.refresh_token,
+                "refresh_token": new_token.token,
                 "redirect_uri": "http://local.invalid",
             },
             HTTP_AUTHORIZATION=f"Basic {header}",

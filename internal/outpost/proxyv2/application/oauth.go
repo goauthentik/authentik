@@ -50,7 +50,7 @@ func (a *Application) handleAuthStart(rw http.ResponseWriter, r *http.Request) {
 	// and if we do we don't do anything here
 	currentState, ok := s.Values[constants.SessionOAuthState].(string)
 	if ok {
-		claims, err := a.getClaims(r)
+		claims, err := a.checkAuth(rw, r)
 		if err != nil && claims != nil {
 			a.log.Trace("auth start request with existing authenticated session")
 			a.redirect(rw, r)

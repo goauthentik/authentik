@@ -69,7 +69,6 @@ class OutpostConsumer(AuthJsonConsumer):
         self.outpost = outpost
         self.last_uid = self.channel_name
 
-    # pylint: disable=unused-argument
     def disconnect(self, code):
         if self.outpost and self.last_uid:
             state = OutpostState.for_instance_uid(self.outpost, self.last_uid)
@@ -127,7 +126,6 @@ class OutpostConsumer(AuthJsonConsumer):
         response = WebsocketMessage(instruction=WebsocketMessageInstruction.ACK)
         self.send_json(asdict(response))
 
-    # pylint: disable=unused-argument
     def event_update(self, event):  # pragma: no cover
         """Event handler which is called by post_save signals, Send update instruction"""
         self.send_json(

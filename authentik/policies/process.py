@@ -119,15 +119,20 @@ class PolicyProcess(PROCESS_CLASS):
 
     def profiling_wrapper(self):
         """Run with profiling enabled"""
-        with Hub.current.start_span(
-            op="authentik.policy.process.execute",
-        ) as span, HIST_POLICIES_EXECUTION_TIME.labels(
-            binding_order=self.binding.order,
-            binding_target_type=self.binding.target_type,
-            binding_target_name=self.binding.target_name,
-            object_pk=str(self.request.obj.pk),
-            object_type=f"{self.request.obj._meta.app_label}.{self.request.obj._meta.model_name}",
-        ).time():
+        with (
+            Hub.current.start_span(
+                op="authentik.policy.process.execute",
+            ) as span,
+            HIST_POLICIES_EXECUTION_TIME.labels(
+                binding_order=self.binding.order,
+                binding_target_type=self.binding.target_type,
+                binding_target_name=self.binding.target_name,
+                object_pk=str(self.request.obj.pk),
+                object_type=(
+                    f"{self.request.obj._meta.app_label}.{self.request.obj._meta.model_name}"
+                ),
+            ).time(),
+        ):
             span: Span
             span.set_data("policy", self.binding.policy)
             span.set_data("request", self.request)
@@ -138,5 +143,5 @@ class PolicyProcess(PROCESS_CLASS):
         try:
             self.connection.send(self.profiling_wrapper())
         except Exception as exc:  # pylint: disable=broad-except
-            LOGGER.warning("Policy failed to run", exc=exc)
+            LOGGER.warning("Policy failed to run", exc=exception_to_string(exc))
             self.connection.send(PolicyResult(False, str(exc)))

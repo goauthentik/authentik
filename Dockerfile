@@ -20,7 +20,7 @@ WORKDIR /work/web
 RUN npm ci && npm run build
 
 # Stage 3: Poetry to requirements.txt export
-FROM docker.io/python:3.11.1-slim-bullseye AS poetry-locker
+FROM docker.io/python:3.11.2-slim-bullseye AS poetry-locker
 
 WORKDIR /work
 COPY ./pyproject.toml /work
@@ -31,7 +31,7 @@ RUN pip install --no-cache-dir poetry && \
     poetry export -f requirements.txt --dev --output requirements-dev.txt
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.19.4-bullseye AS go-builder
+FROM docker.io/golang:1.20.0-bullseye AS go-builder
 
 WORKDIR /work
 
@@ -50,6 +50,7 @@ RUN go build -o /work/authentik ./cmd/server/
 FROM docker.io/maxmindinc/geoipupdate:v4.10 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City"
+ENV GEOIPUPDATE_VERBOSE="true"
 
 RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     --mount=type=secret,id=GEOIPUPDATE_LICENSE_KEY \
@@ -57,11 +58,11 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "\
         export GEOIPUPDATE_ACCOUNT_ID=$(cat /run/secrets/GEOIPUPDATE_ACCOUNT_ID); \
         export GEOIPUPDATE_LICENSE_KEY=$(cat /run/secrets/GEOIPUPDATE_LICENSE_KEY); \
-        /usr/bin/entry.sh || exit 0 \
+        /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0 \
     "
 
 # Stage 6: Run
-FROM docker.io/python:3.11.1-slim-bullseye AS final-image
+FROM docker.io/python:3.11.2-slim-bullseye AS final-image
 
 LABEL org.opencontainers.image.url https://goauthentik.io
 LABEL org.opencontainers.image.description goauthentik.io Main server image, see https://goauthentik.io for more info.

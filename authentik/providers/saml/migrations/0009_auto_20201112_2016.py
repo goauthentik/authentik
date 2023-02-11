@@ -31,7 +31,6 @@ def update_algorithms(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_providers_saml", "0008_auto_20201112_1036"),
     ]

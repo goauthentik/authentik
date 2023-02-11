@@ -15,7 +15,6 @@ def migrate_to_username(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_policies_reputation", "0001_initial"),
     ]

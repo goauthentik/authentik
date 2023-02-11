@@ -159,7 +159,6 @@ class BaseEvaluator:
                 raise exc
             return result
 
-    # pylint: disable=unused-argument
     def handle_error(self, exc: Exception, expression_source: str):  # pragma: no cover
         """Exception Handler"""
         LOGGER.warning("Expression error", exc=exc)

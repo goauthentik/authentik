@@ -25,15 +25,7 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
         if (value.buildHash) {
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-check-circle pf-m-success",
-                message: html`
-                    ${t`Build hash: `}
-                    <a
-                        href="https://github.com/goauthentik/authentik/commit/${value.buildHash}"
-                        target="_blank"
-                    >
-                        ${value.buildHash?.substring(0, 7)}
-                    </a>
-                `,
+                message: html`${t`Based on ${value.versionCurrent}`}`,
             });
         }
         if (value.outdated) {
@@ -49,6 +41,16 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
     }
 
     renderValue(): TemplateResult {
+        if (this.value?.buildHash) {
+            return html`
+                <a
+                    href="https://github.com/goauthentik/authentik/commit/${this.value.buildHash}"
+                    target="_blank"
+                >
+                    ${this.value.buildHash?.substring(0, 7)}
+                </a>
+            `;
+        }
         return html`${this.value?.versionCurrent}`;
     }
 }

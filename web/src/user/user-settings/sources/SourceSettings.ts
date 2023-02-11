@@ -128,7 +128,7 @@ export class UserSourceSettingsPage extends AKElement {
                             return html`<li class="pf-c-data-list__item">
                                 <div class="pf-c-data-list__item-content">
                                     <div class="pf-c-data-list__cell">
-                                        <img src="${ifDefined(stage.iconUrl)}" />
+                                        <img src="${ifDefined(stage.iconUrl)}" alt=${stage.title} />
                                         ${stage.title}
                                     </div>
                                     <div class="pf-c-data-list__cell">

@@ -102,7 +102,7 @@ class TaskInfo:
         key = CACHE_KEY_PREFIX + self.task_name
         if self.result.uid:
             key += f"/{self.result.uid}"
-            self.task_name += f"_{self.result.uid}"
+            self.task_name += f"/{self.result.uid}"
         self.set_prom_metrics()
         cache.set(key, self, timeout=timeout_hours * 60 * 60)
 
@@ -178,7 +178,7 @@ class MonitoredTask(Task):
         ).save(self.result_timeout_hours)
         Event.new(
             EventAction.SYSTEM_TASK_EXCEPTION,
-            message=(f"Task {self.__name__} encountered an error: {exception_to_string(exc)}"),
+            message=f"Task {self.__name__} encountered an error: {exception_to_string(exc)}",
         ).save()
 
     def run(self, *args, **kwargs):
