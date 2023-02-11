@@ -245,7 +245,7 @@ class TestUsersAPI(APITestCase):
         response = self.client.get(reverse("authentik_api:user-me"))
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
-        self.assertIn("initials", body["user"]["avatar"])
+        self.assertIn("data:image/svg+xml;base64,", body["user"]["avatar"])
 
     @CONFIG.patch("avatars", "foo-%(username)s")
     def test_avatars_custom(self):
