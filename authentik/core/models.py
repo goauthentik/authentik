@@ -200,7 +200,6 @@ class Group(SerializerModel):
         return f"Group {self.name}"
 
     class Meta:
-
         unique_together = (
             (
                 "name",
@@ -364,7 +363,6 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         }
 
     class Meta:
-
         permissions = (
             ("reset_user_password", "Reset Password"),
             ("impersonate", "Can impersonate other users"),
@@ -491,7 +489,6 @@ class Application(SerializerModel, PolicyBindingModel):
         return str(self.name)
 
     class Meta:
-
         verbose_name = _("Application")
         verbose_name_plural = _("Applications")
 
@@ -501,19 +498,15 @@ class SourceUserMatchingModes(models.TextChoices):
 
     IDENTIFIER = "identifier", _("Use the source-specific identifier")
     EMAIL_LINK = "email_link", _(
-        (
-            "Link to a user with identical email address. Can have security implications "
-            "when a source doesn't validate email addresses."
-        )
+        "Link to a user with identical email address. Can have security implications "
+        "when a source doesn't validate email addresses."
     )
     EMAIL_DENY = "email_deny", _(
         "Use the user's email address, but deny enrollment when the email address already exists."
     )
     USERNAME_LINK = "username_link", _(
-        (
-            "Link to a user with identical username. Can have security implications "
-            "when a username is used with another source."
-        )
+        "Link to a user with identical username. Can have security implications "
+        "when a username is used with another source."
     )
     USERNAME_DENY = "username_deny", _(
         "Use the user's username, but deny enrollment when the username already exists."
@@ -560,10 +553,8 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         choices=SourceUserMatchingModes.choices,
         default=SourceUserMatchingModes.IDENTIFIER,
         help_text=_(
-            (
-                "How the source determines if an existing user should be authenticated or "
-                "a new user enrolled."
-            )
+            "How the source determines if an existing user should be authenticated or "
+            "a new user enrolled."
         ),
     )
 
@@ -609,7 +600,6 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         return str(self.name)
 
     class Meta:
-
         indexes = [
             models.Index(
                 fields=[
@@ -638,7 +628,6 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         raise NotImplementedError
 
     class Meta:
-
         unique_together = (("user", "source"),)
 
 
@@ -671,7 +660,6 @@ class ExpiringModel(models.Model):
         return now() > self.expires
 
     class Meta:
-
         abstract = True
 
 
@@ -737,7 +725,6 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
         return description
 
     class Meta:
-
         verbose_name = _("Token")
         verbose_name_plural = _("Tokens")
         indexes = [
@@ -780,7 +767,6 @@ class PropertyMapping(SerializerModel, ManagedModel):
         return f"Property Mapping {self.name}"
 
     class Meta:
-
         verbose_name = _("Property Mapping")
         verbose_name_plural = _("Property Mappings")
 
@@ -817,6 +803,5 @@ class AuthenticatedSession(ExpiringModel):
         )
 
     class Meta:
-
         verbose_name = _("Authenticated Session")
         verbose_name_plural = _("Authenticated Sessions")

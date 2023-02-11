@@ -68,14 +68,19 @@ export class TenantForm extends ModelForm<Tenant, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="_default">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?._default, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Default`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Default`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`Use this tenant for each domain that doesn't have a dedicated tenant.`}
                 </p>

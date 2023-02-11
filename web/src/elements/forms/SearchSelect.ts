@@ -9,6 +9,7 @@ import { CSSResult, TemplateResult, html, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFSelect from "@patternfly/patternfly/components/Select/select.css";
@@ -73,6 +74,9 @@ export class SearchSelect<T> extends AKElement {
 
     constructor() {
         super();
+        if (!document.adoptedStyleSheets.includes(PFDropdown)) {
+            document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFDropdown];
+        }
         this.dropdownContainer = document.createElement("div");
         this.observer = new IntersectionObserver(() => {
             this.open = false;
@@ -160,8 +164,8 @@ export class SearchSelect<T> extends AKElement {
             shouldRenderGroups = false;
             groupedItems = [["", []]];
         }
-        const renderGroup = (items: T[]): TemplateResult => {
-            return html`${items.map((obj) => {
+        const renderGroup = (items: T[], tabIndexStart: number): TemplateResult => {
+            return html`${items.map((obj, index) => {
                 let desc = undefined;
                 if (this.renderDescription) {
                     desc = this.renderDescription(obj);
@@ -177,6 +181,7 @@ export class SearchSelect<T> extends AKElement {
                                 this.selectedObject = obj;
                                 this.open = false;
                             }}
+                            tabindex=${index + tabIndexStart}
                         >
                             ${desc === undefined
                                 ? this.renderElement(obj)
@@ -205,6 +210,7 @@ export class SearchSelect<T> extends AKElement {
                     role="listbox"
                     style="max-height:50vh;overflow-y:auto;"
                     id=${this.dropdownUID}
+                    tabindex="0"
                 >
                     ${this.blankable
                         ? html`
@@ -216,6 +222,7 @@ export class SearchSelect<T> extends AKElement {
                                           this.selectedObject = undefined;
                                           this.open = false;
                                       }}
+                                      tabindex="0"
                                   >
                                       ${this.emptyOption}
                                   </button>
@@ -223,17 +230,17 @@ export class SearchSelect<T> extends AKElement {
                           `
                         : html``}
                     ${shouldRenderGroups
-                        ? html`${groupedItems.map(([group, items]) => {
+                        ? html`${groupedItems.map(([group, items], idx) => {
                               return html`
                                   <section class="pf-c-dropdown__group">
                                       <h1 class="pf-c-dropdown__group-title">${group}</h1>
                                       <ul>
-                                          ${renderGroup(items)}
+                                          ${renderGroup(items, idx)}
                                       </ul>
                                   </section>
                               `;
                           })}`
-                        : html`${renderGroup(groupedItems[0][1])}`}
+                        : html`${renderGroup(groupedItems[0][1], 0)}`}
                 </ul>
             </div>`,
             this.dropdownContainer,
@@ -259,6 +266,11 @@ export class SearchSelect<T> extends AKElement {
                             this.renderMenu();
                         }}
                         @blur=${(ev: FocusEvent) => {
+                            // For Safari, we get the <ul> element itself here when clicking on one of
+                            // it's buttons, as the container has tabindex set
+                            if ((ev.relatedTarget as HTMLElement).id === this.dropdownUID) {
+                                return;
+                            }
                             // Check if we're losing focus to one of our dropdown items, and if such don't blur
                             if (ev.relatedTarget instanceof HTMLButtonElement) {
                                 const parentMenu = ev.relatedTarget.closest(

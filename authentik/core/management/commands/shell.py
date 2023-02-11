@@ -49,7 +49,6 @@ class Command(BaseCommand):
         return namespace
 
     @staticmethod
-    # pylint: disable=unused-argument
     def post_save_handler(sender, instance: Model, created: bool, **_):
         """Signal handler for all object's post_save"""
         if not should_log_model(instance):
@@ -65,7 +64,6 @@ class Command(BaseCommand):
         ).save()
 
     @staticmethod
-    # pylint: disable=unused-argument
     def pre_delete_handler(sender, instance: Model, **_):
         """Signal handler for all object's pre_delete"""
         if not should_log_model(instance):  # pragma: no cover

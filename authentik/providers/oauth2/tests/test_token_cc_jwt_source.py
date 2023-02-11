@@ -16,6 +16,7 @@ from authentik.providers.oauth2.constants import (
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
+    TOKEN_TYPE,
 )
 from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
@@ -209,7 +210,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
         )
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
-        self.assertEqual(body["token_type"], "bearer")
+        self.assertEqual(body["token_type"], TOKEN_TYPE)
         _, alg = self.provider.jwt_key
         jwt = decode(
             body["access_token"],

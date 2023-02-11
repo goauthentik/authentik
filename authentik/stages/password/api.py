@@ -10,7 +10,6 @@ class PasswordStageSerializer(StageSerializer):
     """PasswordStage Serializer"""
 
     class Meta:
-
         model = PasswordStage
         fields = StageSerializer.Meta.fields + [
             "backends",

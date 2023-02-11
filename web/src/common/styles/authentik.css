@@ -27,6 +27,9 @@
 ::-webkit-scrollbar-track {
     background-color: transparent;
 }
+::-webkit-scrollbar-corner {
+    background-color: transparent;
+}
 
 html {
     --pf-c-nav__link--PaddingTop: 0.5rem;
@@ -174,6 +177,8 @@ html > form > input {
         --pf-c-table--BackgroundColor: var(--ak-dark-background-light);
         --pf-c-table--BorderColor: var(--ak-dark-background-lighter);
         --pf-c-table--cell--Color: var(--ak-dark-foreground);
+        --pf-c-table--tr--m-hoverable--hover--BackgroundColor: var(--ak-dark-background-light-ish);
+        --pf-c-table--tr--m-hoverable--active--BackgroundColor: var(--ak-dark-background-lighter);
     }
     .pf-c-table__text {
         color: var(--ak-dark-foreground);
@@ -232,6 +237,9 @@ html > form > input {
     .pf-c-expandable-section__toggle-icon {
         color: var(--ak-dark-foreground);
     }
+    .pf-c-expandable-section.pf-m-display-lg {
+        background-color: var(--ak-dark-background-light-ish);
+    }
     /* header for form group */
     .pf-c-form__field-group-header-title-text {
         color: var(--ak-dark-foreground);
@@ -264,6 +272,9 @@ html > form > input {
     }
     .pf-c-form-control[readonly] {
         background-color: var(--ak-dark-background-light);
+    }
+    .pf-c-switch__input:checked ~ .pf-c-switch__label {
+        --pf-c-switch__input--checked__label--Color: var(--ak-dark-foreground);
     }
     /* select toggle */
     .pf-c-select__toggle::before {

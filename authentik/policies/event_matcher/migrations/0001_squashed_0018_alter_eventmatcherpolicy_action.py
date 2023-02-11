@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_policies_event_matcher", "0001_initial"),
         ("authentik_policies_event_matcher", "0002_auto_20201230_2046"),
@@ -81,14 +80,20 @@ class Migration(migrations.Migration):
                             ("update_available", "Update Available"),
                             ("custom_", "Custom Prefix"),
                         ],
-                        help_text="Match created events with this action type. When left empty, all action types will be matched.",
+                        help_text=(
+                            "Match created events with this action type. When left empty, all"
+                            " action types will be matched."
+                        ),
                     ),
                 ),
                 (
                     "client_ip",
                     models.TextField(
                         blank=True,
-                        help_text="Matches Event's Client IP (strict matching, for network matching use an Expression Policy)",
+                        help_text=(
+                            "Matches Event's Client IP (strict matching, for network matching use"
+                            " an Expression Policy)"
+                        ),
                     ),
                 ),
                 (
@@ -161,7 +166,10 @@ class Migration(migrations.Migration):
                             ("authentik.blueprints", "authentik Blueprints"),
                         ],
                         default="",
-                        help_text="Match events created by selected application. When left empty, all applications are matched.",
+                        help_text=(
+                            "Match events created by selected application. When left empty, all"
+                            " applications are matched."
+                        ),
                     ),
                 ),
             ],

@@ -3,7 +3,6 @@ package application
 import (
 	"net/http"
 
-	"github.com/quasoft/memstore"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ak"
 )
@@ -40,9 +39,6 @@ func newTestApplication() *Application {
 			},
 			ak.MockConfig(),
 		),
-	)
-	a.sessions = memstore.NewMemStore(
-		[]byte(ak.TestSecret()),
 	)
 	return a
 }

@@ -11,7 +11,8 @@ type LDAPServerInstance interface {
 	GetAPIClient() *api.APIClient
 	GetOutpostName() string
 
-	GetFlowSlug() string
+	GetAuthenticationFlowSlug() string
+	GetInvalidationFlowSlug() string
 	GetAppSlug() string
 	GetSearchAllowedGroups() []*strfmt.UUID
 
@@ -32,7 +33,7 @@ type LDAPServerInstance interface {
 	UsersForGroup(api.Group) []string
 
 	GetFlags(dn string) *flags.UserFlags
-	SetFlags(dn string, flags flags.UserFlags)
+	SetFlags(dn string, flags *flags.UserFlags)
 
 	GetBaseEntry() *ldap.Entry
 	GetNeededObjects(int, string, string) (bool, bool)

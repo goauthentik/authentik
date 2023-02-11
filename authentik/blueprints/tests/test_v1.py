@@ -24,18 +24,14 @@ class TestBlueprintsV1(TransactionTestCase):
         importer = Importer('{"version": 3}')
         self.assertFalse(importer.validate()[0])
         importer = Importer(
-            (
-                '{"version": 1,"entries":[{"identifiers":{},"attrs":{},'
-                '"model": "authentik_core.User"}]}'
-            )
+            '{"version": 1,"entries":[{"identifiers":{},"attrs":{},'
+            '"model": "authentik_core.User"}]}'
         )
         self.assertFalse(importer.validate()[0])
         importer = Importer(
-            (
-                '{"version": 1, "entries": [{"attrs": {"name": "test"}, '
-                '"identifiers": {}, '
-                '"model": "authentik_core.Group"}]}'
-            )
+            '{"version": 1, "entries": [{"attrs": {"name": "test"}, '
+            '"identifiers": {}, '
+            '"model": "authentik_core.Group"}]}'
         )
         self.assertFalse(importer.validate()[0])
 
@@ -59,11 +55,9 @@ class TestBlueprintsV1(TransactionTestCase):
         )
 
         importer = Importer(
-            (
-                '{"version": 1, "entries": [{"attrs": {"name": "test999", "attributes": '
-                '{"key": ["updated_value"]}}, "identifiers": {"attributes": {"other_key": '
-                '["other_value"]}}, "model": "authentik_core.Group"}]}'
-            )
+            '{"version": 1, "entries": [{"attrs": {"name": "test999", "attributes": '
+            '{"key": ["updated_value"]}}, "identifiers": {"attributes": {"other_key": '
+            '["other_value"]}}, "model": "authentik_core.Group"}]}'
         )
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
@@ -262,15 +256,21 @@ class TestBlueprintsV1(TransactionTestCase):
         with transaction_rollback():
             # First stage fields
             username_prompt = Prompt.objects.create(
-                field_key="username", label="Username", order=0, type=FieldTypes.TEXT
+                name=generate_id(),
+                field_key="username",
+                label="Username",
+                order=0,
+                type=FieldTypes.TEXT,
             )
             password = Prompt.objects.create(
+                name=generate_id(),
                 field_key="password",
                 label="Password",
                 order=1,
                 type=FieldTypes.PASSWORD,
             )
             password_repeat = Prompt.objects.create(
+                name=generate_id(),
                 field_key="password_repeat",
                 label="Password (repeat)",
                 order=2,

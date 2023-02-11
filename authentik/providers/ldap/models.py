@@ -94,6 +94,5 @@ class LDAPProvider(OutpostModel, Provider):
         return required_models
 
     class Meta:
-
         verbose_name = _("LDAP Provider")
         verbose_name_plural = _("LDAP Providers")

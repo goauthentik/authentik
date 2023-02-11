@@ -13,7 +13,6 @@ class FlowStageBindingSerializer(ModelSerializer):
     stage_obj = StageSerializer(read_only=True, source="stage")
 
     class Meta:
-
         model = FlowStageBinding
         fields = [
             "pk",

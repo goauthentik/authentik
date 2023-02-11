@@ -31,15 +31,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     @property({ type: Boolean })
     embedded = false;
 
-    loadInstance(pk: string): Promise<Outpost> {
-        return new OutpostsApi(DEFAULT_CONFIG)
-            .outpostsInstancesRetrieve({
-                uuid: pk,
-            })
-            .then((o) => {
-                this.type = o.type || OutpostTypeEnum.Proxy;
-                return o;
-            });
+    async loadInstance(pk: string): Promise<Outpost> {
+        const o = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesRetrieve({
+            uuid: pk,
+        });
+        this.type = o.type || OutpostTypeEnum.Proxy;
+        return o;
     }
 
     getSuccessMessage(): string {

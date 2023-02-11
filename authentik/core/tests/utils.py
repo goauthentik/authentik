@@ -47,11 +47,11 @@ def create_test_tenant() -> Tenant:
 def create_test_cert(use_ec_private_key=False) -> CertificateKeyPair:
     """Generate a certificate for testing"""
     builder = CertificateBuilder(
+        name=f"{generate_id()}.self-signed.goauthentik.io",
         use_ec_private_key=use_ec_private_key,
     )
-    builder.common_name = "goauthentik.io"
     builder.build(
-        subject_alt_names=["goauthentik.io"],
+        subject_alt_names=[f"{generate_id()}.self-signed.goauthentik.io"],
         validity_days=360,
     )
     builder.common_name = generate_id()

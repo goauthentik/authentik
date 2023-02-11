@@ -2,8 +2,6 @@
 import base64
 import binascii
 import json
-from dataclasses import asdict, dataclass, field
-from datetime import datetime, timedelta
 from functools import cached_property
 from hashlib import sha256
 from typing import Any, Optional
@@ -15,26 +13,18 @@ from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
 from dacite.core import from_dict
 from django.db import models
 from django.http import HttpRequest
-from django.utils import timezone
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
-from authentik.events.signals import get_login_event
 from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
-from authentik.providers.oauth2.apps import AuthentikProviderOAuth2Config
-from authentik.providers.oauth2.constants import (
-    ACR_AUTHENTIK_DEFAULT,
-    AMR_MFA,
-    AMR_PASSWORD,
-    AMR_WEBAUTHN,
-)
+from authentik.providers.oauth2.id_token import IDToken, SubModes
 from authentik.sources.oauth.models import OAuthSource
-from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_METHOD_ARGS
 
 
 class ClientTypes(models.TextChoices):
@@ -59,26 +49,6 @@ class ResponseMode(models.TextChoices):
     QUERY = "query"
     FRAGMENT = "fragment"
     FORM_POST = "form_post"
-
-
-class SubModes(models.TextChoices):
-    """Mode after which 'sub' attribute is generateed, for compatibility reasons"""
-
-    HASHED_USER_ID = "hashed_user_id", _("Based on the Hashed User ID")
-    USER_USERNAME = "user_username", _("Based on the username")
-    USER_EMAIL = (
-        "user_email",
-        _("Based on the User's Email. This is recommended over the UPN method."),
-    )
-    USER_UPN = (
-        "user_upn",
-        _(
-            (
-                "Based on the User's UPN, only works if user has a 'upn' attribute set. "
-                "Use this method only if you have different UPN and Mail domains."
-            )
-        ),
-    )
 
 
 class IssuerMode(models.TextChoices):
@@ -116,10 +86,8 @@ class ScopeMapping(PropertyMapping):
     description = models.TextField(
         blank=True,
         help_text=_(
-            (
-                "Description shown to the user when consenting. "
-                "If left empty, the user won't be informed."
-            )
+            "Description shown to the user when consenting. "
+            "If left empty, the user won't be informed."
         ),
     )
 
@@ -137,7 +105,6 @@ class ScopeMapping(PropertyMapping):
         return f"Scope Mapping {self.name} ({self.scope_name})"
 
     class Meta:
-
         verbose_name = _("Scope Mapping")
         verbose_name_plural = _("Scope Mappings")
 
@@ -178,10 +145,8 @@ class OAuth2Provider(Provider):
         default=True,
         verbose_name=_("Include claims in id_token"),
         help_text=_(
-            (
-                "Include User claims from scopes in the id_token, for applications "
-                "that don't access the userinfo endpoint."
-            )
+            "Include User claims from scopes in the id_token, for applications "
+            "that don't access the userinfo endpoint."
         ),
     )
 
@@ -189,20 +154,24 @@ class OAuth2Provider(Provider):
         default="minutes=1",
         validators=[timedelta_string_validator],
         help_text=_(
-            (
-                "Access codes not valid on or after current time + this value "
-                "(Format: hours=1;minutes=2;seconds=3)."
-            )
+            "Access codes not valid on or after current time + this value "
+            "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )
-    token_validity = models.TextField(
+    access_token_validity = models.TextField(
+        default="hours=1",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "Tokens not valid on or after current time + this value "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+    )
+    refresh_token_validity = models.TextField(
         default="days=30",
         validators=[timedelta_string_validator],
         help_text=_(
-            (
-                "Tokens not valid on or after current time + this value "
-                "(Format: hours=1;minutes=2;seconds=3)."
-            )
+            "Tokens not valid on or after current time + this value "
+            "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )
 
@@ -210,16 +179,14 @@ class OAuth2Provider(Provider):
         choices=SubModes.choices,
         default=SubModes.HASHED_USER_ID,
         help_text=_(
-            (
-                "Configure what data should be used as unique User Identifier. For most cases, "
-                "the default should be fine."
-            )
+            "Configure what data should be used as unique User Identifier. For most cases, "
+            "the default should be fine."
         ),
     )
     issuer_mode = models.TextField(
         choices=IssuerMode.choices,
         default=IssuerMode.PER_PROVIDER,
-        help_text=_(("Configure how the issuer field of the ID Token should be filled.")),
+        help_text=_("Configure how the issuer field of the ID Token should be filled."),
     )
 
     signing_key = models.ForeignKey(
@@ -242,24 +209,6 @@ class OAuth2Provider(Provider):
         blank=True,
     )
 
-    def create_refresh_token(
-        self,
-        user: User,
-        scope: list[str],
-        request: HttpRequest,
-        expiry: timedelta,
-    ) -> "RefreshToken":
-        """Create and populate a RefreshToken object."""
-        token = RefreshToken(
-            user=user,
-            provider=self,
-            refresh_token=base64.urlsafe_b64encode(generate_key().encode()).decode(),
-            expires=timezone.now() + expiry,
-            scope=scope,
-        )
-        token.access_token = token.create_access_token(user, request)
-        return token
-
     @cached_property
     def jwt_key(self) -> tuple[str | PRIVATE_KEY_TYPES, str]:
         """Get either the configured certificate or the client secret"""
@@ -272,18 +221,22 @@ class OAuth2Provider(Provider):
             return private_key, JWTAlgorithms.RS256
         if isinstance(private_key, EllipticCurvePrivateKey):
             return private_key, JWTAlgorithms.ES256
-        raise Exception(f"Invalid private key type: {type(private_key)}")
+        raise ValueError(f"Invalid private key type: {type(private_key)}")
 
     def get_issuer(self, request: HttpRequest) -> Optional[str]:
         """Get issuer, based on request"""
         if self.issuer_mode == IssuerMode.GLOBAL:
             return request.build_absolute_uri("/")
         try:
-            mountpoint = AuthentikProviderOAuth2Config.mountpoints[
-                "authentik.providers.oauth2.urls"
-            ]
-            # pylint: disable=no-member
-            return request.build_absolute_uri(f"/{mountpoint}{self.application.slug}/")
+            url = reverse(
+                "authentik_providers_oauth2:provider-root",
+                kwargs={
+                    # pylint: disable=no-member
+                    "application_slug": self.application.slug,
+                },
+            )
+            return request.build_absolute_uri(url)
+        # pylint: disable=no-member
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
@@ -315,12 +268,9 @@ class OAuth2Provider(Provider):
         if self.signing_key:
             headers["kid"] = self.signing_key.kid
         key, alg = self.jwt_key
-        # If the provider does not have an RSA Key assigned, it was switched to Symmetric
-        self.refresh_from_db()
         return encode(payload, key, algorithm=alg, headers=headers)
 
     class Meta:
-
         verbose_name = _("OAuth2/OpenID Provider")
         verbose_name_plural = _("OAuth2/OpenID Providers")
 
@@ -351,7 +301,6 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
 
     code = models.CharField(max_length=255, unique=True, verbose_name=_("Code"))
     nonce = models.TextField(null=True, default=None, verbose_name=_("Nonce"))
-    is_open_id = models.BooleanField(default=False, verbose_name=_("Is Authentication?"))
     code_challenge = models.CharField(max_length=255, null=True, verbose_name=_("Code Challenge"))
     code_challenge_method = models.CharField(
         max_length=255, null=True, verbose_name=_("Code Challenge Method")
@@ -381,86 +330,27 @@ class AuthorizationCode(SerializerModel, ExpiringModel, BaseGrantModel):
         return f"Authorization code for {self.provider} for user {self.user}"
 
 
-@dataclass
-class IDToken:
-    """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be
-    Authenticated is the ID Token data structure. The ID Token is a security token that contains
-    Claims about the Authentication of an End-User by an Authorization Server when using a Client,
-    and potentially other requested Claims. The ID Token is represented as a
-    JSON Web Token (JWT) [JWT].
+class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
+    """OAuth2 access token, non-opaque using a JWT as identifier"""
 
-    https://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
-
-    # All these fields need to optional so we can save an empty IDToken for non-OpenID flows.
-    iss: Optional[str] = None
-    sub: Optional[str] = None
-    aud: Optional[str] = None
-    exp: Optional[int] = None
-    iat: Optional[int] = None
-    auth_time: Optional[int] = None
-    acr: Optional[str] = ACR_AUTHENTIK_DEFAULT
-    amr: Optional[list[str]] = None
-
-    c_hash: Optional[str] = None
-    nonce: Optional[str] = None
-    at_hash: Optional[str] = None
-
-    claims: dict[str, Any] = field(default_factory=dict)
-
-    def to_dict(self) -> dict[str, Any]:
-        """Convert dataclass to dict, and update with keys from `claims`"""
-        id_dict = asdict(self)
-        # The following claims should be omitted if they aren't set instead of being
-        # set to null
-        if not self.at_hash:
-            id_dict.pop("at_hash")
-        if not self.nonce:
-            id_dict.pop("nonce")
-        if not self.c_hash:
-            id_dict.pop("c_hash")
-        if not self.amr:
-            id_dict.pop("amr")
-        id_dict.pop("claims")
-        id_dict.update(self.claims)
-        return id_dict
-
-
-class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
-    """OAuth2 Refresh Token"""
-
-    access_token = models.TextField(verbose_name=_("Access Token"))
-    refresh_token = models.CharField(max_length=255, unique=True, verbose_name=_("Refresh Token"))
-    _id_token = models.TextField(verbose_name=_("ID Token"))
-
-    @property
-    def serializer(self) -> Serializer:
-        from authentik.providers.oauth2.api.tokens import ExpiringBaseGrantModelSerializer
-
-        return ExpiringBaseGrantModelSerializer
-
-    class Meta:
-        verbose_name = _("OAuth2 Token")
-        verbose_name_plural = _("OAuth2 Tokens")
+    token = models.TextField()
+    _id_token = models.TextField()
 
     @property
     def id_token(self) -> IDToken:
         """Load ID Token from json"""
-        if self._id_token:
-            raw_token = json.loads(self._id_token)
-            return from_dict(IDToken, raw_token)
-        return IDToken()
+        raw_token = json.loads(self._id_token)
+        return from_dict(IDToken, raw_token)
 
     @id_token.setter
     def id_token(self, value: IDToken):
-        self._id_token = json.dumps(asdict(value))
-
-    def __str__(self):
-        return f"Refresh Token for {self.provider} for user {self.user}"
+        self.token = value.to_access_token(self.provider)
+        self._id_token = json.dumps(value.to_dict())
 
     @property
     def at_hash(self):
         """Get hashed access_token"""
-        hashed_access_token = sha256(self.access_token.encode("ascii")).hexdigest().encode("ascii")
+        hashed_access_token = sha256(self.token.encode("ascii")).hexdigest().encode("ascii")
         return (
             base64.urlsafe_b64encode(
                 binascii.unhexlify(hashed_access_token[: len(hashed_access_token) // 2])
@@ -469,81 +359,52 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
             .decode("ascii")
         )
 
-    def create_access_token(self, user: User, request: HttpRequest) -> str:
-        """Create access token with a similar format as Okta, Keycloak, ADFS"""
-        token = self.create_id_token(user, request).to_dict()
-        token["cid"] = self.provider.client_id
-        token["uid"] = generate_key()
-        return self.provider.encode(token)
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.providers.oauth2.api.tokens import TokenModelSerializer
 
-    # pylint: disable=too-many-locals
-    def create_id_token(self, user: User, request: HttpRequest) -> IDToken:
-        """Creates the id_token.
-        See: http://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
-        sub = ""
-        if self.provider.sub_mode == SubModes.HASHED_USER_ID:
-            sub = user.uid
-        elif self.provider.sub_mode == SubModes.USER_EMAIL:
-            sub = user.email
-        elif self.provider.sub_mode == SubModes.USER_USERNAME:
-            sub = user.username
-        elif self.provider.sub_mode == SubModes.USER_UPN:
-            sub = user.attributes.get("upn", user.uid)
-        else:
-            raise ValueError(
-                (
-                    f"Provider {self.provider} has invalid sub_mode "
-                    f"selected: {self.provider.sub_mode}"
-                )
-            )
-        amr = []
-        # Convert datetimes into timestamps.
-        now = datetime.now()
-        iat_time = int(now.timestamp())
-        exp_time = int(self.expires.timestamp())
-        # We use the timestamp of the user's last successful login (EventAction.LOGIN) for auth_time
-        # Fallback in case we can't find any login events
-        auth_time = now
-        auth_event = get_login_event(request)
-        if auth_event:
-            auth_time = auth_event.created
-            # Also check which method was used for authentication
-            method = auth_event.context.get(PLAN_CONTEXT_METHOD, "")
-            method_args = auth_event.context.get(PLAN_CONTEXT_METHOD_ARGS, {})
-            if method == "password":
-                amr.append(AMR_PASSWORD)
-            if method == "auth_webauthn_pwl":
-                amr.append(AMR_WEBAUTHN)
-            if "mfa_devices" in method_args:
-                if len(amr) > 0:
-                    amr.append(AMR_MFA)
+        return TokenModelSerializer
 
-        auth_timestamp = int(auth_time.timestamp())
+    class Meta:
+        verbose_name = _("OAuth2 Access Token")
+        verbose_name_plural = _("OAuth2 Access Tokens")
 
-        token = IDToken(
-            iss=self.provider.get_issuer(request),
-            sub=sub,
-            aud=self.provider.client_id,
-            exp=exp_time,
-            iat=iat_time,
-            auth_time=auth_timestamp,
-            amr=amr if amr else None,
-        )
+    def __str__(self):
+        return f"Access Token for {self.provider} for user {self.user}"
 
-        # Include (or not) user standard claims in the id_token.
-        if self.provider.include_claims_in_id_token:
-            from authentik.providers.oauth2.views.userinfo import UserInfoView
 
-            user_info = UserInfoView()
-            user_info.request = request
-            claims = user_info.get_claims(self)
-            token.claims = claims
+class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
+    """OAuth2 Refresh Token, opaque"""
 
-        return token
+    token = models.TextField(default=generate_key)
+    _id_token = models.TextField(verbose_name=_("ID Token"))
+
+    @property
+    def id_token(self) -> IDToken:
+        """Load ID Token from json"""
+        raw_token = json.loads(self._id_token)
+        return from_dict(IDToken, raw_token)
+
+    @id_token.setter
+    def id_token(self, value: IDToken):
+        self._id_token = json.dumps(value.to_dict())
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.providers.oauth2.api.tokens import TokenModelSerializer
+
+        return TokenModelSerializer
+
+    class Meta:
+        verbose_name = _("OAuth2 Refresh Token")
+        verbose_name_plural = _("OAuth2 Refresh Tokens")
+
+    def __str__(self):
+        return f"Refresh Token for {self.provider} for user {self.user}"
 
 
 class DeviceToken(ExpiringModel):
-    """Device token for OAuth device flow"""
+    """Temporary device token for OAuth device flow"""
 
     user = models.ForeignKey(
         "authentik_core.User", default=None, on_delete=models.CASCADE, null=True

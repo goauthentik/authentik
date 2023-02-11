@@ -125,7 +125,6 @@ def validate_challenge_code(code: str, stage_view: StageView, user: User) -> Dev
     return device
 
 
-# pylint: disable=unused-argument
 def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -> Device:
     """Validate WebAuthn Challenge"""
     request = stage_view.request

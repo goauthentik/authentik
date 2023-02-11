@@ -11,7 +11,7 @@ title: Generic Setup
 2. Create a new group for LDAP searches. In this example `ldapsearch`. Add the `ldapservice` user to this new group.
 
 :::info
-Note: The `default-authentication-flow` validates MFA by default, and currently only Duo-based MFA devices are supported by LDAP. If you plan to use only dedicated service accounts to bind to LDAP, then you can use the default flow and skip the extra steps below and continue at [Create LDAP Provider](#create-ldap-provider)
+Note: The `default-authentication-flow` validates MFA by default, and currently everything but SMS-based devices are supported by LDAP. If you plan to use only dedicated service accounts to bind to LDAP, or don't use SMS-based authenticators, then you can use the default flow and skip the extra steps below and continue at [Create LDAP Provider](#create-ldap-provider)
 :::
 
 ### LDAP Flow

@@ -56,10 +56,8 @@ class OutpostSerializer(ModelSerializer):
         for provider in providers:
             if not isinstance(provider, type_map[self.initial_data.get("type")]):
                 raise ValidationError(
-                    (
-                        f"Outpost type {self.initial_data['type']} can't be used with "
-                        f"{provider.__class__.__name__} providers."
-                    )
+                    f"Outpost type {self.initial_data['type']} can't be used with "
+                    f"{provider.__class__.__name__} providers."
                 )
         if self.instance and self.instance.managed == MANAGED_OUTPOST:
             return providers
@@ -76,7 +74,6 @@ class OutpostSerializer(ModelSerializer):
         return config
 
     class Meta:
-
         model = Outpost
         fields = [
             "pk",
@@ -124,7 +121,6 @@ class OutpostFilter(FilterSet):
     )
 
     class Meta:
-
         model = Outpost
         fields = {
             "providers": ["isnull"],
@@ -148,7 +144,6 @@ class OutpostViewSet(UsedByMixin, ModelViewSet):
 
     @extend_schema(responses={200: OutpostHealthSerializer(many=True)})
     @action(methods=["GET"], detail=True, pagination_class=None)
-    # pylint: disable=invalid-name, unused-argument
     def health(self, request: Request, pk: int) -> Response:
         """Get outposts current health"""
         outpost: Outpost = self.get_object()

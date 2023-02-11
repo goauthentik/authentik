@@ -15,7 +15,6 @@ def update_template_path(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_email", "0001_initial"),
     ]
@@ -26,7 +25,10 @@ class Migration(migrations.Migration):
             name="use_global_settings",
             field=models.BooleanField(
                 default=False,
-                help_text="When enabled, global Email connection settings will be used and connection settings below will be ignored.",
+                help_text=(
+                    "When enabled, global Email connection settings will be used and connection"
+                    " settings below will be ignored."
+                ),
             ),
         ),
         migrations.RunPython(update_template_path),

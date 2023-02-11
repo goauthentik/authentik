@@ -81,7 +81,7 @@ func (ps *ProxyServer) Type() string {
 	return "proxy"
 }
 
-func (ps *ProxyServer) TimerFlowCacheExpiry() {}
+func (ps *ProxyServer) TimerFlowCacheExpiry(context.Context) {}
 
 func (ps *ProxyServer) GetCertificate(serverName string) *tls.Certificate {
 	app, ok := ps.apps[serverName]
@@ -160,6 +160,10 @@ func (ps *ProxyServer) Start() error {
 		defer wg.Done()
 		metrics.RunServer()
 	}()
+	return nil
+}
+
+func (ps *ProxyServer) Stop() error {
 	return nil
 }
 

@@ -141,7 +141,6 @@ class PolicyBinding(SerializerModel):
         return ""
 
     class Meta:
-
         verbose_name = _("Policy Binding")
         verbose_name_plural = _("Policy Bindings")
         unique_together = ("policy", "target", "order")
@@ -164,10 +163,8 @@ class Policy(SerializerModel, CreatedUpdatedModel):
     execution_logging = models.BooleanField(
         default=False,
         help_text=_(
-            (
-                "When this option is enabled, all executions of this policy will be logged. "
-                "By default, only execution errors are logged."
-            )
+            "When this option is enabled, all executions of this policy will be logged. "
+            "By default, only execution errors are logged."
         ),
     )
 

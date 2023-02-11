@@ -207,7 +207,6 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             ): Promise<CertificateKeyPair[]> => {
                                 const args: CryptoCertificatekeypairsListRequest = {
                                     ordering: "name",
-                                    hasKey: true,
                                     includeDetails: false,
                                 };
                                 if (query !== undefined) {

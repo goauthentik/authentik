@@ -50,6 +50,9 @@ func (a *Application) redeemCallback(savedState string, u *url.URL, c context.Co
 	if err := idToken.Claims(&claims); err != nil {
 		return nil, err
 	}
+	if claims.Proxy == nil {
+		claims.Proxy = &ProxyClaims{}
+	}
 	claims.RawToken = rawIDToken
 	return claims, nil
 }

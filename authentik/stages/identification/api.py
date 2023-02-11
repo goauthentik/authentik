@@ -10,7 +10,6 @@ class IdentificationStageSerializer(StageSerializer):
     """IdentificationStage Serializer"""
 
     class Meta:
-
         model = IdentificationStage
         fields = StageSerializer.Meta.fields + [
             "user_fields",

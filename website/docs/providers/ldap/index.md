@@ -78,6 +78,10 @@ The following stages are supported:
 
     SMS-based authenticators are not supported as they require a code to be sent from authentik, which is not possible during the bind.
 
+-   [User Logout](../../flow/stages/user_logout.md)
+-   [User Login](../../flow/stages/user_login.md)
+-   [Deny](../../flow/stages/deny.md)
+
 #### Direct bind
 
 In this mode, the outpost will always execute the configured flow when a new bind request is received.

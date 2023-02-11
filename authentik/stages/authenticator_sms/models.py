@@ -76,13 +76,17 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
             return self.send_generic(token, device)
         raise ValueError(f"invalid provider {self.provider}")
 
+    def get_message(self, token: str) -> str:
+        """Get SMS message"""
+        return _("Use this code to authenticate in authentik: %(token)s" % {"token": token})
+
     def send_twilio(self, token: str, device: "SMSDevice"):
         """send sms via twilio provider"""
         client = Client(self.account_sid, self.auth)
 
         try:
             message = client.messages.create(
-                to=device.phone_number, from_=self.from_number, body=token
+                to=device.phone_number, from_=self.from_number, body=self.get_message(token)
             )
             LOGGER.debug("Sent SMS", to=device, message=message.sid)
         except TwilioRestException as exc:
@@ -95,6 +99,7 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
             "From": self.from_number,
             "To": device.phone_number,
             "Body": token,
+            "Message": self.get_message(token),
         }
 
         if self.mapping:
@@ -172,7 +177,6 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
         return f"SMS Authenticator Setup Stage {self.name}"
 
     class Meta:
-
         verbose_name = _("SMS Authenticator Setup Stage")
         verbose_name_plural = _("SMS Authenticator Setup Stages")
 

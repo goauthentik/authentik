@@ -18,7 +18,7 @@ var cfg *Config
 func Get() *Config {
 	if cfg == nil {
 		c := defaultConfig()
-		c.Setup()
+		c.Setup("./authentik/lib/default.yml", "./local.env.yml")
 		cfg = c
 	}
 	return cfg
@@ -135,7 +135,7 @@ func (c *Config) parseScheme(rawVal string) string {
 		if err != nil {
 			return u.RawQuery
 		}
-		return string(d)
+		return strings.TrimSpace(string(d))
 	}
 	return rawVal
 }

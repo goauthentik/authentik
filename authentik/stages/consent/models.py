@@ -27,7 +27,7 @@ class ConsentStage(Stage):
         validators=[timedelta_string_validator],
         default="weeks=4",
         verbose_name="Consent expires in",
-        help_text=_(("Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).")),
+        help_text=_("Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."),
     )
 
     @property
@@ -47,7 +47,6 @@ class ConsentStage(Stage):
         return "ak-stage-consent-form"
 
     class Meta:
-
         verbose_name = _("Consent Stage")
         verbose_name_plural = _("Consent Stages")
 
@@ -69,7 +68,6 @@ class UserConsent(SerializerModel, ExpiringModel):
         return f"User Consent {self.application} by {self.user}"
 
     class Meta:
-
         unique_together = (("user", "application", "permissions"),)
         verbose_name = _("User Consent")
         verbose_name_plural = _("User Consents")

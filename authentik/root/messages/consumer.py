@@ -18,7 +18,6 @@ class MessageConsumer(JsonWebsocketConsumer):
             return
         cache.set(f"{CACHE_PREFIX}{self.session_key}_messages_{self.channel_name}", True, None)
 
-    # pylint: disable=unused-argument
     def disconnect(self, code):
         cache.delete(f"{CACHE_PREFIX}{self.session_key}_messages_{self.channel_name}")
 

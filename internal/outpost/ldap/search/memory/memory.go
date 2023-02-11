@@ -31,7 +31,7 @@ func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 		si:  si,
 		log: log.WithField("logger", "authentik.outpost.ldap.searcher.memory"),
 	}
-	ms.log.Info("initialised memory searcher")
+	ms.log.Debug("initialised memory searcher")
 	ms.users = ms.FetchUsers()
 	ms.groups = ms.FetchGroups()
 	return ms

@@ -53,3 +53,32 @@ Requires authentik 2022.6
 :::
 
 To only verify the validity of a users' phone number, without saving it in an easily accessible way, you can enable this option. Phone numbers from devices enrolled through this stage will only have their hashed phone number saved. These devices can also not be used with the [Authenticator validation](../authenticator_validate/) stage.
+
+## Limiting phone numbers
+
+To limit phone numbers (for example to a specific region code), you can create an expression policy to validate the phone number, and use a prompt stage for input.
+
+### Expression policy
+
+Create an expression policy to check the phone number:
+
+```python
+# Trim all whitespace in and around the user input
+phone_number = regex_replace(request.context["prompt_data"]["phone"], r'\s+', '')
+
+# Only allow a specific region code
+if phone_number.startswith("+1234"):
+    return True
+ak_message("Invalid phone number or missing region code")
+return False
+```
+
+### Prompt stage
+
+Create a text prompt field with the _field key_ set to `phone`. Make sure it is selected as a required field.
+
+Create a prompt stage with the phone field you created above, and select the expression policy created above as validation policy.
+
+### Flow
+
+Create a new flow to enroll SMS devices. Bind the prompt stage created above as first stage, and create/bind a _SMS Authenticator Setup Stage_, and bind it to the flow as second stage. This stage will see the `phone` field in the flow's context's `prompt_data`, and not prompt the user for a phone number.

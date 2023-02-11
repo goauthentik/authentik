@@ -56,7 +56,6 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
         return dict(instance.serializer(instance=instance, resolve_inheritance=False).data)
 
     class Meta:
-
         model = Policy
         fields = [
             "pk",
@@ -144,7 +143,6 @@ class PolicyViewSet(
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[], methods=["POST"])
-    # pylint: disable=unused-argument, invalid-name
     def test(self, request: Request, pk: str) -> Response:
         """Test policy"""
         policy = self.get_object()

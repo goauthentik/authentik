@@ -130,12 +130,10 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             <div class="pf-c-toolbar__group pf-m-filter-group">
                 <div class="pf-c-toolbar__item pf-m-search-filter">
                     <div class="pf-c-input-group">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
-                                class="pf-c-check__input"
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                id="hide-managed"
-                                name="hide-managed"
                                 ?checked=${this.hideManaged}
                                 @change=${() => {
                                     this.hideManaged = !this.hideManaged;
@@ -146,10 +144,13 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
                                     });
                                 }}
                             />
-                            <label class="pf-c-check__label" for="hide-managed"
-                                >${t`Hide managed mappings`}</label
-                            >
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Hide managed mappings`}</span>
+                        </label>
                     </div>
                 </div>
             </div>`;

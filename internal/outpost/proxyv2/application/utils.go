@@ -1,7 +1,6 @@
 package application
 
 import (
-	"fmt"
 	"net/http"
 	"net/url"
 	"path"
@@ -35,6 +34,17 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		a.log.WithError(err).Warning("failed to decode session")
 	}
+	if r.Header.Get(constants.HeaderAuthorization) != "" && *a.proxyConfig.InterceptHeaderAuth {
+		rw.WriteHeader(401)
+		er := a.errorTemplates.Execute(rw, ErrorPageData{
+			Title:       "Unauthenticated",
+			Message:     "Due to 'Receive header authentication' being set, no redirect is performed.",
+			ProxyPrefix: "/outpost.goauthentik.io",
+		})
+		if er != nil {
+			http.Error(rw, "Internal Server Error", http.StatusInternalServerError)
+		}
+	}
 
 	redirectUrl := urlPathSet(a.proxyConfig.ExternalHost, r.URL.Path)
 
@@ -64,37 +74,17 @@ func (a *Application) redirectToStart(rw http.ResponseWriter, r *http.Request) {
 
 func (a *Application) redirect(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.proxyConfig.ExternalHost
-	rd, ok := a.checkRedirectParam(r)
-	if ok {
-		redirect = rd
-	}
 	s, _ := a.sessions.Get(r, constants.SessionName)
 	redirectR, ok := s.Values[constants.SessionRedirect]
 	if ok {
 		redirect = redirectR.(string)
 	}
+	rd, ok := a.checkRedirectParam(r)
+	if ok {
+		redirect = rd
+	}
 	a.log.WithField("redirect", redirect).Trace("final redirect")
 	http.Redirect(rw, r, redirect, http.StatusFound)
-}
-
-// getClaims Get claims which are currently in session
-// Returns an error if the session can't be loaded or the claims can't be parsed/type-cast
-func (a *Application) getClaims(r *http.Request) (*Claims, error) {
-	s, err := a.sessions.Get(r, constants.SessionName)
-	if err != nil {
-		// err == user has no session/session is not valid, reject
-		return nil, fmt.Errorf("invalid session")
-	}
-	claims, ok := s.Values[constants.SessionClaims]
-	if claims == nil || !ok {
-		// no claims saved, reject
-		return nil, fmt.Errorf("invalid session")
-	}
-	c, ok := claims.(Claims)
-	if !ok {
-		return nil, fmt.Errorf("invalid session")
-	}
-	return &c, nil
 }
 
 // toString Generic to string function, currently supports actual strings and integers

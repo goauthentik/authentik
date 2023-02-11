@@ -46,5 +46,6 @@
             "url": "https://github.com/goauthentik/authentik/issues/<num>",
             "ignoreCase": false
         }
-    ]
+    ],
+    "go.testFlags": ["-count=1"]
 }

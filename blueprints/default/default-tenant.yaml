@@ -1,0 +1,28 @@
+metadata:
+  name: Default - Tenant
+version: 1
+entries:
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Default - Authentication flow
+    required: false
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Default - Invalidation flow
+    required: false
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      name: Default - User settings flow
+    required: false
+- attrs:
+    flow_authentication: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
+    flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
+    flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
+  identifiers:
+    domain: authentik-default
+    default: True
+  state: created
+  model: authentik_tenants.tenant

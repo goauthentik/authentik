@@ -10,7 +10,6 @@ LOGGER = get_logger()
 
 
 @receiver(user_logged_out)
-# pylint: disable=unused-argument
 def on_user_logged_out(sender, request: HttpRequest, user: User, **_):
     """Delete temporary user if the `delete_on_logout` flag is enabled"""
     if not user:

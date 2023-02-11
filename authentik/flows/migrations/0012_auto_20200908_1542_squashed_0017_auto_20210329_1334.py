@@ -20,7 +20,6 @@ def update_flow_designation(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_flows", "0012_auto_20200908_1542"),
         ("authentik_flows", "0013_auto_20200924_1605"),
@@ -79,7 +78,10 @@ class Migration(migrations.Migration):
             name="re_evaluate_policies",
             field=models.BooleanField(
                 default=False,
-                help_text="When this option is enabled, the planner will re-evaluate policies bound to this binding.",
+                help_text=(
+                    "When this option is enabled, the planner will re-evaluate policies bound to"
+                    " this binding."
+                ),
             ),
         ),
         migrations.AlterField(
@@ -94,7 +96,10 @@ class Migration(migrations.Migration):
             name="evaluate_on_plan",
             field=models.BooleanField(
                 default=True,
-                help_text="Evaluate policies during the Flow planning process. Disable this for input-based policies.",
+                help_text=(
+                    "Evaluate policies during the Flow planning process. Disable this for"
+                    " input-based policies."
+                ),
             ),
         ),
         migrations.AddField(
@@ -120,7 +125,10 @@ class Migration(migrations.Migration):
                     ("recovery", "Recovery"),
                     ("stage_configuration", "Stage Configuration"),
                 ],
-                help_text="Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.",
+                help_text=(
+                    "Decides what this Flow is used for. For example, the Authentication flow is"
+                    " redirect to when an un-authenticated user visits authentik."
+                ),
                 max_length=100,
             ),
         ),

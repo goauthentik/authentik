@@ -26,29 +26,23 @@ class EventMatcherPolicy(Policy):
         choices=EventAction.choices,
         blank=True,
         help_text=_(
-            (
-                "Match created events with this action type. "
-                "When left empty, all action types will be matched."
-            )
+            "Match created events with this action type. "
+            "When left empty, all action types will be matched."
         ),
     )
     app = models.TextField(
         blank=True,
         default="",
         help_text=_(
-            (
-                "Match events created by selected application. "
-                "When left empty, all applications are matched."
-            )
+            "Match events created by selected application. "
+            "When left empty, all applications are matched."
         ),
     )
     client_ip = models.TextField(
         blank=True,
         help_text=_(
-            (
-                "Matches Event's Client IP (strict matching, "
-                "for network matching use an Expression Policy)"
-            )
+            "Matches Event's Client IP (strict matching, "
+            "for network matching use an Expression Policy)"
         ),
     )
 
@@ -75,6 +69,5 @@ class EventMatcherPolicy(Policy):
         return PolicyResult(False)
 
     class Meta(Policy.PolicyMeta):
-
         verbose_name = _("Event Matcher Policy")
         verbose_name_plural = _("Event Matcher Policies")

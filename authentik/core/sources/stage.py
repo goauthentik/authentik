@@ -13,7 +13,6 @@ class PostUserEnrollmentStage(StageView):
     """Dynamically injected stage which saves the Connection after
     the user has been enrolled."""
 
-    # pylint: disable=unused-argument
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Stage used after the user has been enrolled"""
         connection: UserSourceConnection = self.executor.plan.context[

@@ -17,7 +17,6 @@ def remove_unintended_attributes(apps: Apps, schema_editor: BaseDatabaseSchemaEd
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_user_write", "0001_initial"),
     ]

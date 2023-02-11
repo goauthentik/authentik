@@ -50,16 +50,12 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_ID": self.client_id,
                 "GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET": self.client_secret,
                 "GF_AUTH_GENERIC_OAUTH_SCOPES": "openid email profile",
-                "GF_AUTH_GENERIC_OAUTH_AUTH_URL": (
-                    self.url("authentik_providers_oauth2:authorize")
-                ),
-                "GF_AUTH_GENERIC_OAUTH_TOKEN_URL": (self.url("authentik_providers_oauth2:token")),
-                "GF_AUTH_GENERIC_OAUTH_API_URL": (self.url("authentik_providers_oauth2:userinfo")),
-                "GF_AUTH_SIGNOUT_REDIRECT_URL": (
-                    self.url(
-                        "authentik_providers_oauth2:end-session",
-                        application_slug=self.app_slug,
-                    )
+                "GF_AUTH_GENERIC_OAUTH_AUTH_URL": self.url("authentik_providers_oauth2:authorize"),
+                "GF_AUTH_GENERIC_OAUTH_TOKEN_URL": self.url("authentik_providers_oauth2:token"),
+                "GF_AUTH_GENERIC_OAUTH_API_URL": self.url("authentik_providers_oauth2:userinfo"),
+                "GF_AUTH_SIGNOUT_REDIRECT_URL": self.url(
+                    "authentik_providers_oauth2:end-session",
+                    application_slug=self.app_slug,
                 ),
                 "GF_LOG_LEVEL": "debug",
             },
@@ -67,12 +63,12 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-authorization-explicit-consent.yaml",
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -116,12 +112,12 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-authorization-explicit-consent.yaml",
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -178,12 +174,12 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-authorization-explicit-consent.yaml",
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -249,12 +245,12 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-authorization-explicit-consent.yaml",
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",
@@ -304,7 +300,7 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
         )
         consent_stage.find_element(
             By.CSS_SELECTOR,
-            ("[type=submit]"),
+            "[type=submit]",
         ).click()
 
         self.wait_for_url("http://localhost:3000/?orgId=1")
@@ -329,12 +325,12 @@ class TestProviderOAuth2OAuth(SeleniumTestCase):
 
     @retry()
     @apply_blueprint(
-        "default/10-flow-default-authentication-flow.yaml",
-        "default/10-flow-default-invalidation-flow.yaml",
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/20-flow-default-provider-authorization-explicit-consent.yaml",
-        "default/20-flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-authorization-explicit-consent.yaml",
+        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
         "system/providers-oauth2.yaml",

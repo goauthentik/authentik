@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_core", "0022_alter_group_parent"),
         ("authentik_sources_saml", "0011_auto_20210324_0736"),

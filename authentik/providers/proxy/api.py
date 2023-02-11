@@ -37,6 +37,7 @@ class OpenIDConnectConfigurationSerializer(PassiveSerializer):
 class ProxyProviderSerializer(ProviderSerializer):
     """ProxyProvider Serializer"""
 
+    client_id = CharField(read_only=True)
     redirect_uris = CharField(read_only=True)
     outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
 
@@ -74,9 +75,9 @@ class ProxyProviderSerializer(ProviderSerializer):
         return instance
 
     class Meta:
-
         model = ProxyProvider
         fields = ProviderSerializer.Meta.fields + [
+            "client_id",
             "internal_host",
             "external_host",
             "internal_host_ssl_validation",
@@ -86,9 +87,12 @@ class ProxyProviderSerializer(ProviderSerializer):
             "basic_auth_password_attribute",
             "basic_auth_user_attribute",
             "mode",
+            "intercept_header_auth",
             "redirect_uris",
             "cookie_domain",
-            "token_validity",
+            "jwks_sources",
+            "access_token_validity",
+            "refresh_token_validity",
             "outpost_set",
         ]
 
@@ -127,7 +131,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
     assigned_application_name = ReadOnlyField(source="application.name")
 
     oidc_configuration = SerializerMethodField()
-    token_validity = SerializerMethodField()
+    access_token_validity = SerializerMethodField()
     scopes_to_request = SerializerMethodField()
 
     @extend_schema_field(OpenIDConnectConfigurationSerializer)
@@ -135,9 +139,9 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         """Embed OpenID Connect provider information"""
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
-    def get_token_validity(self, obj: ProxyProvider) -> Optional[float]:
+    def get_access_token_validity(self, obj: ProxyProvider) -> Optional[float]:
         """Get token validity as second count"""
-        return timedelta_from_string(obj.token_validity).total_seconds()
+        return timedelta_from_string(obj.access_token_validity).total_seconds()
 
     def get_scopes_to_request(self, obj: ProxyProvider) -> list[str]:
         """Get all the scope names the outpost should request,
@@ -148,7 +152,6 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         return list(scope_names)
 
     class Meta:
-
         model = ProxyProvider
         fields = [
             "pk",
@@ -167,7 +170,8 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
             "basic_auth_user_attribute",
             "mode",
             "cookie_domain",
-            "token_validity",
+            "access_token_validity",
+            "intercept_header_auth",
             "scopes_to_request",
             "assigned_application_slug",
             "assigned_application_name",

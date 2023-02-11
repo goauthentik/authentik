@@ -86,7 +86,7 @@ export class AuthenticatorDuoStage extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    <img src=${this.challenge.activationBarcode} />
+                    <img src=${this.challenge.activationBarcode} alt=${t`Duo activation QR code`} />
                     <p>
                         ${t`Alternatively, if your current device has Duo installed, click on this link:`}
                     </p>

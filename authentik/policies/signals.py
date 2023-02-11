@@ -13,14 +13,12 @@ LOGGER = get_logger()
 
 
 @receiver(monitoring_set)
-# pylint: disable=unused-argument
 def monitoring_set_policies(sender, **kwargs):
     """set policy gauges"""
     GAUGE_POLICIES_CACHED.set(len(cache.keys(f"{CACHE_PREFIX}_*") or []))
 
 
 @receiver(post_save)
-# pylint: disable=unused-argument
 def invalidate_policy_cache(sender, instance, **_):
     """Invalidate Policy cache when policy is updated"""
     from authentik.policies.models import Policy, PolicyBinding

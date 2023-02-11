@@ -30,7 +30,7 @@ def cleanse_item(key: str, value: Any) -> Any:
     """Cleanse a single item"""
     if isinstance(value, dict):
         return cleanse_dict(value)
-    if isinstance(value, list):
+    if isinstance(value, (list, tuple, set)):
         for idx, item in enumerate(value):
             value[idx] = cleanse_item(key, item)
         return value
@@ -103,7 +103,7 @@ def sanitize_item(value: Any) -> Any:
         return sanitize_dict(value)
     if isinstance(value, GeneratorType):
         return sanitize_item(list(value))
-    if isinstance(value, list):
+    if isinstance(value, (list, tuple, set)):
         new_values = []
         for item in value:
             new_value = sanitize_item(item)

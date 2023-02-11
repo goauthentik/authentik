@@ -39,7 +39,6 @@ class TenantSerializer(ModelSerializer):
         return super().validate(attrs)
 
     class Meta:
-
         model = Tenant
         fields = [
             "tenant_uuid",
@@ -117,7 +116,6 @@ class TenantViewSet(UsedByMixin, ModelViewSet):
         responses=CurrentTenantSerializer(many=False),
     )
     @action(methods=["GET"], detail=False, permission_classes=[AllowAny])
-    # pylint: disable=invalid-name, unused-argument
     def current(self, request: Request) -> Response:
         """Get current tenant"""
         tenant: Tenant = request._request.tenant

@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_sources_oauth", "0001_initial"),
     ]
@@ -24,7 +23,9 @@ class Migration(migrations.Migration):
             name="request_token_url",
             field=models.CharField(
                 blank=True,
-                help_text="URL used to request the initial token. This URL is only required for OAuth 1.",
+                help_text=(
+                    "URL used to request the initial token. This URL is only required for OAuth 1."
+                ),
                 max_length=255,
                 verbose_name="Request Token URL",
             ),

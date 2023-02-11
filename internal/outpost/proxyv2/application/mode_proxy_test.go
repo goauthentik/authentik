@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/google/uuid"
 	"github.com/stretchr/testify/assert"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 )
@@ -70,6 +71,8 @@ func TestProxy_ModifyRequest_Claims(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	s, _ := a.sessions.Get(req, constants.SessionName)
+	s.ID = uuid.New().String()
+	s.Options.MaxAge = 86400
 	s.Values[constants.SessionClaims] = Claims{
 		Sub: "foo",
 		Proxy: &ProxyClaims{
@@ -98,6 +101,8 @@ func TestProxy_ModifyRequest_Claims_Invalid(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	s, _ := a.sessions.Get(req, constants.SessionName)
+	s.ID = uuid.New().String()
+	s.Options.MaxAge = 86400
 	s.Values[constants.SessionClaims] = Claims{
 		Sub: "foo",
 		Proxy: &ProxyClaims{

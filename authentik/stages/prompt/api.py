@@ -14,7 +14,6 @@ class PromptStageSerializer(StageSerializer):
     name = CharField(validators=[UniqueValidator(queryset=PromptStage.objects.all())])
 
     class Meta:
-
         model = PromptStage
         fields = StageSerializer.Meta.fields + [
             "fields",
@@ -38,10 +37,10 @@ class PromptSerializer(ModelSerializer):
     promptstage_set = StageSerializer(many=True, required=False)
 
     class Meta:
-
         model = Prompt
         fields = [
             "pk",
+            "name",
             "field_key",
             "label",
             "type",
@@ -59,5 +58,5 @@ class PromptViewSet(UsedByMixin, ModelViewSet):
 
     queryset = Prompt.objects.all().prefetch_related("promptstage_set")
     serializer_class = PromptSerializer
-    filterset_fields = ["field_key", "label", "type", "placeholder"]
-    search_fields = ["field_key", "label", "type", "placeholder"]
+    filterset_fields = ["field_key", "name", "label", "type", "placeholder"]
+    search_fields = ["field_key", "name", "label", "type", "placeholder"]

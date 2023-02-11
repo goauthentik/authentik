@@ -257,6 +257,16 @@ The setting can be used as follows:
 AUTHENTIK_FOOTER_LINKS='[{"name": "Link Name","href":"https://goauthentik.io"}]'
 ```
 
+### `AUTHENTIK_LDAP__TASK_TIMEOUT_HOURS`
+
+:::info
+Requires authentik 2023.1
+:::
+
+Timeout in hours for LDAP synchronization tasks.
+
+Defaults to `2`.
+
 ### `AUTHENTIK_LDAP__TLS__CIPHERS`
 
 :::info
@@ -292,6 +302,6 @@ Defaults to 4.
 
 To modify additional settings further than the options above allow, you can create a custom python file and mount it to `/data/user_settings.py`. This file will be loaded on startup by both the server and the worker. All default settings are [here](https://github.com/goauthentik/authentik/blob/main/authentik/root/settings.py)
 
-:::warning
+:::caution
 Using these custom settings is not supported and can prevent your authentik instance from starting. Use with caution.
 :::

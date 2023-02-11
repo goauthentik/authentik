@@ -7,6 +7,7 @@ from dacite.config import Config
 from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
+from django.core.exceptions import FieldError
 from django.db import transaction
 from django.db.models import Model
 from django.db.models.query_utils import Q
@@ -181,7 +182,10 @@ class Importer:
         if not query:
             raise EntryInvalidError("No or invalid identifiers")
 
-        existing_models = model.objects.filter(query)
+        try:
+            existing_models = model.objects.filter(query)
+        except FieldError as exc:
+            raise EntryInvalidError(f"Invalid identifier field: {exc}") from exc
 
         serializer_kwargs = {}
         model_instance = existing_models.first()
@@ -231,8 +235,7 @@ class Importer:
                     raise IntegrityError
         except IntegrityError:
             return False
-        else:
-            self.logger.debug("Committing changes")
+        self.logger.debug("Committing changes")
         return True
 
     def _apply_models(self) -> bool:

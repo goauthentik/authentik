@@ -3,10 +3,12 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.cache import cache
 from django.test import RequestFactory, TestCase
 from django.urls import resolve, reverse
+from django.views.debug import SafeExceptionReporterFilter
 from guardian.shortcuts import get_anonymous_user
 
 from authentik.core.models import Application, Group, User
 from authentik.events.models import Event, EventAction
+from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import Policy, PolicyBinding
@@ -136,6 +138,15 @@ class TestPolicyProcess(TestCase):
 
         request = PolicyRequest(self.user)
         request.set_http_request(http_request)
+        request.context = {
+            "complex": {
+                "dict": {"foo": "bar"},
+                "list": ["foo", "bar"],
+                "tuple": ("foo", "bar"),
+                "set": {"foo", "bar"},
+                "password": generate_id(),
+            }
+        }
         response = PolicyProcess(binding, request, None).execute()
         self.assertEqual(response.passing, False)
         self.assertEqual(response.messages, ("dummy",))
@@ -151,6 +162,24 @@ class TestPolicyProcess(TestCase):
         self.assertEqual(event.context["result"]["passing"], False)
         self.assertEqual(event.context["result"]["messages"], ["dummy"])
         self.assertEqual(event.client_ip, "127.0.0.1")
+        # Python sets don't preserve order when converted to list,
+        # so ensure we sort the converted set
+        event.context["request"]["context"]["complex"]["set"].sort()
+        self.assertEqual(
+            event.context["request"]["context"],
+            {
+                "complex": {
+                    "set": [
+                        "bar",
+                        "foo",
+                    ],
+                    "dict": {"foo": "bar"},
+                    "list": ["foo", "bar"],
+                    "tuple": ["foo", "bar"],
+                    "password": SafeExceptionReporterFilter.cleansed_substitute,
+                }
+            },
+        )
 
     def test_execution_logging_anonymous(self):
         """Test policy execution creates event with anonymous user"""

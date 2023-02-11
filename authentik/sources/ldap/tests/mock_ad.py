@@ -56,8 +56,9 @@ def mock_ad_connection(password: str) -> Connection:
             "objectSid": "user0",
             "objectClass": "person",
             "distinguishedName": "cn=user0,ou=users,dc=goauthentik,dc=io",
-            "userAccountControl": UserAccountControl.ACCOUNTDISABLE
-            + UserAccountControl.NORMAL_ACCOUNT,
+            "userAccountControl": (
+                UserAccountControl.ACCOUNTDISABLE + UserAccountControl.NORMAL_ACCOUNT
+            ),
         },
     )
     # User without SID

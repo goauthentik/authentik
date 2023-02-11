@@ -59,7 +59,7 @@ In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` t
 
 ## pfSense unsecure setup (without SSL)
 
-:::warning
+:::caution
 This setup should only be used for testing purpose, because passwords will be sent in clear text to authentik.
 :::
 
@@ -77,7 +77,7 @@ Change the following fields
 -   Bind credentials:
     -   User DN: `cn=pfsense-user,ou=users,dc=ldap,dc=goauthentik,dc=io`
     -   Password: `<pfsense-user password from step 2>`
--   Extended Query: &(objectClass=user)
+-   Group member attribute: `memberOf`
 -   Allow unauthenticated bind: **unticked**
 
 ## pfSense secure setup (with SSL)

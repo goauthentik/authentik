@@ -37,7 +37,6 @@ class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
         return obj.component
 
     class Meta:
-
         model = OutpostServiceConnection
         fields = [
             "pk",
@@ -91,7 +90,6 @@ class ServiceConnectionViewSet(
 
     @extend_schema(responses={200: ServiceConnectionStateSerializer(many=False)})
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=unused-argument, invalid-name
     def state(self, request: Request, pk: str) -> Response:
         """Get the service connection's state"""
         connection = self.get_object()
@@ -102,7 +100,6 @@ class DockerServiceConnectionSerializer(ServiceConnectionSerializer):
     """DockerServiceConnection Serializer"""
 
     class Meta:
-
         model = DockerServiceConnection
         fields = ServiceConnectionSerializer.Meta.fields + [
             "url",
@@ -141,7 +138,6 @@ class KubernetesServiceConnectionSerializer(ServiceConnectionSerializer):
         return kubeconfig
 
     class Meta:
-
         model = KubernetesServiceConnection
         fields = ServiceConnectionSerializer.Meta.fields + ["kubeconfig", "verify_ssl"]
 

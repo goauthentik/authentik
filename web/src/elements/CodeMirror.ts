@@ -11,6 +11,7 @@ import {
 } from "@codemirror/language";
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
+import { oneDark } from "@codemirror/theme-one-dark";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
@@ -27,6 +28,9 @@ export class CodeMirrorTextarea<T> extends AKElement {
 
     @property()
     name?: string;
+
+    @property({ type: Boolean })
+    parseValue = true;
 
     editor?: EditorView;
 
@@ -67,6 +71,9 @@ export class CodeMirrorTextarea<T> extends AKElement {
     }
 
     get value(): T | string {
+        if (!this.parseValue) {
+            return this.getInnerValue();
+        }
         try {
             switch (this.mode.toLowerCase()) {
                 case "yaml":
@@ -92,14 +99,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
             },
             { dark: false },
         );
-        this.themeDark = EditorView.theme(
-            {
-                "&": {
-                    backgroundColor: "var(--ak-dark-background-light)",
-                },
-            },
-            { dark: true },
-        );
+        this.themeDark = oneDark;
     }
 
     private getInnerValue(): string {

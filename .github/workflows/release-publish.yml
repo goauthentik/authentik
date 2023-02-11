@@ -27,11 +27,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Building Docker Image
-        uses: docker/build-push-action@v3
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4
         with:
           push: ${{ github.event_name == 'release' }}
-          secrets:
+          secrets: |
             GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
             GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
           tags: |
@@ -75,8 +75,8 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Building Docker Image
-        uses: docker/build-push-action@v3
+      - name: Build Docker Image
+        uses: docker/build-push-action@v4
         with:
           push: ${{ github.event_name == 'release' }}
           tags: |
@@ -88,9 +88,6 @@ jobs:
             ghcr.io/goauthentik/${{ matrix.type }}:latest
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
-          secrets: |
-            GEOIPUPDATE_ACCOUNT_ID=${{ secrets.GEOIPUPDATE_ACCOUNT_ID }}
-            GEOIPUPDATE_LICENSE_KEY=${{ secrets.GEOIPUPDATE_LICENSE_KEY }}
           build-args: |
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost-binary:
@@ -109,9 +106,9 @@ jobs:
       - uses: actions/setup-go@v3
         with:
           go-version: "^1.17"
-      - uses: actions/setup-node@v3.5.1
+      - uses: actions/setup-node@v3.6.0
         with:
-          node-version: '16'
+          node-version: '18'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
       - name: Build web

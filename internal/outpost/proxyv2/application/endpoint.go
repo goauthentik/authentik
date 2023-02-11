@@ -12,13 +12,26 @@ import (
 
 type OIDCEndpoint struct {
 	oauth2.Endpoint
+	TokenIntrospection string
 	EndSessionEndpoint string
 	JwksUri            string
+	Issuer             string
 }
 
-func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string) OIDCEndpoint {
+func updateURL(rawUrl string, scheme string, host string) string {
+	u, err := url.Parse(rawUrl)
+	if err != nil {
+		return rawUrl
+	}
+	u.Host = host
+	u.Scheme = scheme
+	return u.String()
+}
+
+func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bool) OIDCEndpoint {
 	authUrl := p.OidcConfiguration.AuthorizationEndpoint
 	endUrl := p.OidcConfiguration.EndSessionEndpoint
+	tokenUrl := p.OidcConfiguration.TokenEndpoint
 	jwksUrl := p.OidcConfiguration.JwksUri
 	if browserHost, found := os.LookupEnv("AUTHENTIK_HOST_BROWSER"); found && browserHost != "" {
 		host := os.Getenv("AUTHENTIK_HOST")
@@ -29,25 +42,15 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string) OIDCEndpoin
 	ep := OIDCEndpoint{
 		Endpoint: oauth2.Endpoint{
 			AuthURL:   authUrl,
-			TokenURL:  p.OidcConfiguration.TokenEndpoint,
+			TokenURL:  tokenUrl,
 			AuthStyle: oauth2.AuthStyleInParams,
 		},
 		EndSessionEndpoint: endUrl,
 		JwksUri:            jwksUrl,
+		TokenIntrospection: p.OidcConfiguration.IntrospectionEndpoint,
+		Issuer:             p.OidcConfiguration.Issuer,
 	}
-	authU, err := url.Parse(authUrl)
-	if err != nil {
-		return ep
-	}
-	endU, err := url.Parse(endUrl)
-	if err != nil {
-		return ep
-	}
-	jwksU, err := url.Parse(jwksUrl)
-	if err != nil {
-		return ep
-	}
-	if authU.Host != "localhost:8000" {
+	if !embedded {
 		return ep
 	}
 	if authentikHost == "" {
@@ -58,14 +61,10 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string) OIDCEndpoin
 	if err != nil {
 		return ep
 	}
-	authU.Host = aku.Host
-	authU.Scheme = aku.Scheme
-	endU.Host = aku.Host
-	endU.Scheme = aku.Scheme
-	jwksU.Host = aku.Host
-	jwksU.Scheme = aku.Scheme
-	ep.AuthURL = authU.String()
-	ep.EndSessionEndpoint = endU.String()
-	ep.JwksUri = jwksU.String()
+	ep.AuthURL = updateURL(authUrl, aku.Scheme, aku.Host)
+	ep.EndSessionEndpoint = updateURL(endUrl, aku.Scheme, aku.Host)
+	ep.JwksUri = updateURL(jwksUrl, aku.Scheme, aku.Host)
+	ep.TokenURL = updateURL(tokenUrl, aku.Scheme, aku.Host)
+	ep.Issuer = updateURL(ep.Issuer, aku.Scheme, aku.Host)
 	return ep
 }

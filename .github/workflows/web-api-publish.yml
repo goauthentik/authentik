@@ -10,9 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.5.1
         with:
-          node-version: '16'
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+      - uses: actions/setup-node@v3.6.0
+        with:
+          node-version: '18'
           registry-url: 'https://registry.npmjs.org'
       - name: Generate API Client
         run: make gen-client-ts
@@ -28,14 +30,20 @@ jobs:
         run: |
           export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
           npm i @goauthentik/api@$VERSION
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+      - uses: peter-evans/create-pull-request@v4
         id: cpr
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
           branch: update-web-api-client
           commit-message: "web: bump API Client version"
           title: "web: bump API Client version"
           body: "web: bump API Client version"
           delete-branch: true
           signoff: true
+          team-reviewers: "@goauthentik/core"
+          author: authentik bot <github-bot@goauthentik.io>
+      - uses: peter-evans/enable-pull-request-automerge@v2
+        with:
+          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash

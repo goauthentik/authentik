@@ -38,7 +38,7 @@ Create a new service account for all of your hosts to use to connect
 to LDAP and perform searches. Make sure this service account is added
 to `ldap.searchGroup`.
 
-:::warning
+:::caution
 It seems that QNAP LDAP client configuration has issues with too long password.
 Max password length <= 66 characters.
 :::
@@ -111,7 +111,7 @@ Attributes:
 Configure the following values and "Apply"
 ![qnap domain security](./qnap-ldap-configuration.png)
 
-:::warning
+:::caution
 With each save (Apply) in the UI the `/etc/config/nss_ldap.conf` will be overwritten with default values.
 :::
 

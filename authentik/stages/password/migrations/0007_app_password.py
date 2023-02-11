@@ -21,7 +21,6 @@ def update_default_backends(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_stages_password", "0006_passwordchange_rename"),
     ]

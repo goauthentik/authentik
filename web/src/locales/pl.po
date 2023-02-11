@@ -31,6 +31,8 @@ msgstr "(Format: hours=-1;minutes=-2;seconds=-3)."
 msgid "(Format: hours=1;minutes=2;seconds=3)."
 msgstr "(Format: hours=1;minutes=2;seconds=3)."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/events/EventListPage.ts
@@ -196,6 +198,7 @@ msgstr "URL tokena dostępu"
 msgid "Access token validity"
 msgstr "Ważność tokena dostępu"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/elements/events/ObjectChangelog.ts
@@ -231,8 +234,12 @@ msgid "Actions"
 msgstr "Działania"
 
 #: src/admin/users/UserViewPage.ts
-msgid "Actions over the last 24 hours"
-msgstr "Działania w ciągu ostatnich 24 godzin"
+#~ msgid "Actions over the last 24 hours"
+#~ msgstr "Działania w ciągu ostatnich 24 godzin"
+
+#: src/admin/users/UserViewPage.ts
+msgid "Actions over the last week (per 8 hours)"
+msgstr ""
 
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
@@ -327,6 +334,10 @@ msgstr "Dodatkowa DN grupy, poprzedzona podstawową DN."
 msgid "Additional scope mappings, which are passed to the proxy."
 msgstr "Dodatkowe mapowania zakresu, które są przekazywane do serwera proxy."
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Additional scopes"
+msgstr ""
+
 #: src/pages/sources/oauth/OAuthSourceForm.ts
 #~ msgid "Additional scopes to be passed to the OAuth Provider, separated by space."
 #~ msgstr "Dodatkowe zakresy do przekazania do dostawcy OAuth, oddzielone spacją."
@@ -367,9 +378,9 @@ msgstr "Zaawansowane ustawienia"
 msgid "Affected model:"
 msgstr "Model, którego dotyczy problem:"
 
-#: src/admin/events/RuleForm.ts
-#~ msgid "Alert"
-#~ msgstr "Alert"
+#: src/admin/events/RuleListPage.ts
+msgid "Alert"
+msgstr "Alert"
 
 #~ msgid "Algorithm used to sign the JWT Tokens."
 #~ msgstr "Algorytm używany do podpisywania tokenów JWT."
@@ -498,7 +509,7 @@ msgstr ""
 msgid "Application already has access to the following permissions:"
 msgstr ""
 
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Application authorizations"
 msgstr "Autoryzacje aplikacji"
 
@@ -662,6 +673,7 @@ msgstr "Uwierzytelnianie z Plex..."
 
 #: src/admin/flows/FlowForm.ts
 #: src/admin/flows/utils.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Authentication"
 msgstr "Uwierzytelnianie"
 
@@ -682,6 +694,10 @@ msgstr "Przepływ uwierzytelniania"
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Authentication method"
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Authentication settings"
 msgstr ""
 
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
@@ -720,7 +736,7 @@ msgid "Authorization flow"
 msgstr "Przepływ autoryzacji"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/ApplicationAuthorizeChart.ts
+#: src/admin/applications/ApplicationAuthorizeChart.ts
 msgid "Authorizations"
 msgstr "Autoryzacje"
 
@@ -788,20 +804,44 @@ msgid "Base DN"
 msgstr "Base DN"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the Hashed User ID"
-msgstr "Na podstawie zahaszowanego identyfikatora użytkownika"
+#~ msgid "Based on the Hashed User ID"
+#~ msgstr "Na podstawie zahaszowanego identyfikatora użytkownika"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the User's Email. This is recommended over the UPN method."
-msgstr "Na podstawie adresu e-mail użytkownika. Jest to zalecane zamiast metody UPN."
+msgid "Based on the User's Email"
+msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
-msgstr "Na podstawie UPN użytkownika działa tylko wtedy, gdy użytkownik ma ustawiony atrybut „upn”. Użyj tej metody tylko wtedy, gdy masz różne  UPN i Mail domeny."
+#~ msgid "Based on the User's Email. This is recommended over the UPN method."
+#~ msgstr "Na podstawie adresu e-mail użytkownika. Jest to zalecane zamiast metody UPN."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the username"
-msgstr "Na podstawie nazwy użytkownika"
+msgid "Based on the User's ID"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's UPN"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains."
+#~ msgstr "Na podstawie UPN użytkownika działa tylko wtedy, gdy użytkownik ma ustawiony atrybut „upn”. Użyj tej metody tylko wtedy, gdy masz różne  UPN i Mail domeny."
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's hashed ID"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's username"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Based on the username"
+#~ msgstr "Na podstawie nazwy użytkownika"
+
+#: src/admin/admin-overview/cards/VersionStatusCard.ts
+msgid "Based on {0}"
+msgstr ""
 
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Basic Auth"
@@ -861,6 +901,10 @@ msgstr "Wiązanie"
 msgid "Binding Type"
 msgstr "Typ wiązania"
 
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Blueprint"
+msgstr ""
+
 #: src/admin/blueprints/BlueprintListPage.ts
 msgid "Blueprint(s)"
 msgstr ""
@@ -883,8 +927,8 @@ msgid "Browser"
 msgstr "Przeglądarka"
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
-msgid "Build hash:"
-msgstr "Hash kompilacji:"
+#~ msgid "Build hash:"
+#~ msgstr "Hash kompilacji:"
 
 #~ msgid "Build hash: {0}"
 #~ msgstr "Hash kompilacji: {0}"
@@ -919,12 +963,12 @@ msgstr ""
 #~ msgstr "Powiązanie w pamięci podręcznej, przepływ jest wykonywany, a sesja jest buforowana w pamięci. Przepływ jest wykonywany po wygaśnięciu sesji."
 
 #: src/admin/admin-overview/charts/FlowStatusChart.ts
-msgid "Cached flows"
-msgstr "Przepływy w pamięci podręcznej"
+#~ msgid "Cached flows"
+#~ msgstr "Przepływy w pamięci podręcznej"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Cached policies"
-msgstr "Zasady w pamięci podręcznej"
+#~ msgid "Cached policies"
+#~ msgstr "Zasady w pamięci podręcznej"
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Cached querying"
@@ -1080,6 +1124,10 @@ msgstr ""
 msgid "Check outposts."
 msgstr "Sprawdź placówki."
 
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Check release notes"
+msgstr ""
+
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Check static rules"
 msgstr ""
@@ -1149,8 +1197,8 @@ msgid "Clear all"
 msgstr "Wyczyść wszystko"
 
 #: src/admin/flows/FlowForm.ts
-msgid "Clear background image"
-msgstr "Wyczyść obraz tła"
+#~ msgid "Clear background image"
+#~ msgstr "Wyczyść obraz tła"
 
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/flows/FlowListPage.ts
@@ -1160,6 +1208,7 @@ msgid "Clear cache"
 msgstr "Wyczyść pamięć podręczną"
 
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
@@ -1180,10 +1229,12 @@ msgstr "Kliknij, aby skopiować token"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 msgid "Client ID"
 msgstr "Client ID"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/elements/events/ObjectChangelog.ts
@@ -1645,7 +1696,6 @@ msgstr ""
 msgid "Create group"
 msgstr "Utwórz grupę"
 
-#: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
 #: src/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
 #: src/admin/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
@@ -1687,6 +1737,7 @@ msgstr "Utworzono przez"
 #~ msgid "Created {0}"
 #~ msgstr "Utworzono {0}"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -2057,6 +2108,10 @@ msgstr ""
 msgid "Duo activation"
 msgstr "Aktywacja Duo"
 
+#: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
+msgid "Duo activation QR code"
+msgstr ""
+
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Duo authenticator"
 msgstr "Uwierzytelniacz Duo"
@@ -2064,6 +2119,10 @@ msgstr "Uwierzytelniacz Duo"
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Duo push-notifications"
 msgstr "Powiadomienia push Duo"
+
+#: src/admin/system-tasks/SystemTaskListPage.ts
+msgid "Duration"
+msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 msgid "Duration after which events will be deleted from the database."
@@ -2309,6 +2368,7 @@ msgstr ""
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
+#: src/admin/events/EventInfo.ts
 msgid "Exception"
 msgstr "Wyjątek"
 
@@ -2353,14 +2413,15 @@ msgstr "Wygasa dnia"
 msgid "Expires?"
 msgstr "Wygasa?"
 
+#: src/admin/tokens/TokenForm.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Expiring"
 msgstr "Wygasa"
 
 #: src/admin/tokens/TokenForm.ts
-msgid "Expiring?"
-msgstr "Wygasa?"
+#~ msgid "Expiring?"
+#~ msgstr "Wygasa?"
 
 #: src/admin/crypto/CertificateKeyPairListPage.ts
 #: src/admin/stages/invitation/InvitationListPage.ts
@@ -2435,7 +2496,7 @@ msgid "External host"
 msgstr "Zewnętrzny host"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Failed Logins"
 msgstr "Nieudane logowania"
 
@@ -2619,7 +2680,6 @@ msgid "Flow(s)"
 msgstr "Przepływ(y)"
 
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/stages/StageListPage.ts
 msgid "Flows"
@@ -2794,7 +2854,6 @@ msgid "Group(s)"
 msgstr "Grupa(y)"
 
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/users/UserForm.ts
 #: src/admin/users/UserViewPage.ts
@@ -2866,6 +2925,7 @@ msgstr "Ukryj konta serwisowe"
 #: src/admin/outposts/OutpostForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -3114,6 +3174,14 @@ msgstr "Klucz integracji"
 msgid "Intent"
 msgstr "Przeznaczenie"
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Intercept header authentication"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "Internal"
+msgstr ""
+
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Internal Host"
 msgstr "Wewnętrzny host"
@@ -3217,6 +3285,7 @@ msgstr ""
 #~ msgstr "JWTs podpisane przez certyfikaty skonfigurowane tutaj mogą służyć do uwierzytelniania u dostawcy."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
 msgstr ""
 
@@ -3261,7 +3330,6 @@ msgid "LDAP details"
 msgstr "Szczegóły LDAP"
 
 #: src/admin/stages/prompt/PromptForm.ts
-#: src/admin/stages/prompt/PromptListPage.ts
 msgid "Label"
 msgstr "Etykieta"
 
@@ -3407,6 +3475,7 @@ msgstr ""
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -3469,12 +3538,20 @@ msgid "Logins"
 msgstr "Logowania"
 
 #: src/admin/admin-overview/AdminOverviewPage.ts
-msgid "Logins and authorizations over the last 24 hours"
+#~ msgid "Logins and authorizations over the last 24 hours"
+#~ msgstr ""
+
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Logins and authorizations over the last week (per 8 hours)"
 msgstr ""
 
 #: src/admin/applications/ApplicationViewPage.ts
-msgid "Logins over the last 24 hours"
-msgstr "Logowania w ciągu ostatnich 24 godzin"
+#~ msgid "Logins over the last 24 hours"
+#~ msgstr "Logowania w ciągu ostatnich 24 godzin"
+
+#: src/admin/applications/ApplicationViewPage.ts
+msgid "Logins over the last week (per 8 hours)"
+msgstr ""
 
 #: src/admin/admin-overview/DashboardUserPage.ts
 msgid "Logins per day in the last month"
@@ -3523,6 +3600,10 @@ msgstr "Ustawienia uwierzytelniania typu maszyna-maszyna"
 #: src/flow/stages/authenticator_static/AuthenticatorStaticStage.ts
 msgid "Make sure to keep these tokens in a safe place."
 msgstr "Upewnij się, że przechowujesz te tokeny w bezpiecznym miejscu."
+
+#: src/admin/admin-overview/AdminOverviewPage.ts
+msgid "Manage users"
+msgstr ""
 
 #: src/admin/crypto/CertificateKeyPairListPage.ts
 msgid "Managed by authentik"
@@ -3740,6 +3821,8 @@ msgstr "Moje aplikacje"
 #: src/admin/stages/invitation/InvitationListPage.ts
 #: src/admin/stages/invitation/InvitationStageForm.ts
 #: src/admin/stages/password/PasswordStageForm.ts
+#: src/admin/stages/prompt/PromptForm.ts
+#: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
 #: src/admin/stages/user_delete/UserDeleteStageForm.ts
 #: src/admin/stages/user_login/UserLoginStageForm.ts
@@ -3875,6 +3958,7 @@ msgstr "Nie"
 msgid "No Applications available."
 msgstr "Brak dostępnych aplikacji."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
 msgid "No Events found."
@@ -3913,6 +3997,7 @@ msgstr "Brak aktywnej integracji"
 msgid "No log messages."
 msgstr "Brak dziennika wiadomości"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
 msgid "No matching events could be found."
@@ -4003,6 +4088,7 @@ msgid "Not you?"
 msgstr "Nie ty?"
 
 #: src/admin/events/RuleForm.ts
+#: src/admin/events/RuleListPage.ts
 msgid "Notice"
 msgstr "Uwaga"
 
@@ -4090,9 +4176,9 @@ msgstr "OIDC Well-known URL"
 msgid "OIDC well-known configuration URL. Can be used to automatically configure the URLs above."
 msgstr "OIDC well-known configuration URL. Może służyć do automatycznej konfiguracji powyższych adresów URL."
 
-#: src/pages/admin-overview/cards/SystemStatusCard.ts
-#~ msgid "OK"
-#~ msgstr "OK"
+#: src/admin/admin-overview/cards/SystemStatusCard.ts
+msgid "OK"
+msgstr "OK"
 
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
@@ -4107,7 +4193,7 @@ msgstr "Pole obiektu"
 msgid "Object uniqueness field"
 msgstr "Pole unikatowości obiektu"
 
-#: src/elements/charts/AdminModelPerDay.ts
+#: src/admin/admin-overview/charts/AdminModelPerDay.ts
 msgid "Objects created"
 msgstr "Utworzone obiekty"
 
@@ -4118,6 +4204,7 @@ msgstr "Przesunięcie, po którym zgoda wygasa."
 #~ msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 #~ msgstr "Przesunięcie, po którym zgoda wygasa. (Format: hours=1;minutes=2;seconds=3)."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -4125,8 +4212,12 @@ msgid "On behalf of {0}"
 msgstr "W imieniu {0}"
 
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
-msgid "Only fail the policy, don't invalidate user's password."
-msgstr "Tylko nie spełniaj zasad, nie unieważniaj hasła użytkownika."
+msgid "Only fail the policy, don't invalidate user's password"
+msgstr ""
+
+#: src/admin/policies/expiry/ExpiryPolicyForm.ts
+#~ msgid "Only fail the policy, don't invalidate user's password."
+#~ msgstr "Tylko nie spełniaj zasad, nie unieważniaj hasła użytkownika."
 
 #: src/admin/events/TransportForm.ts
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
@@ -4361,6 +4452,7 @@ msgid "Passwordless flow"
 msgstr "Przepływ bezhasłowy"
 
 #: src/admin/blueprints/BlueprintForm.ts
+#: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/users/UserForm.ts
 msgid "Path"
 msgstr ""
@@ -4729,6 +4821,10 @@ msgstr "Ponowna ocena zasad"
 msgid "Receive a push notification on your device."
 msgstr "Otrzymuj powiadomienia push na swoje urządzenie."
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
+msgid "Recent events"
+msgstr ""
+
 #: src/admin/flows/utils.ts
 #: src/admin/tokens/TokenListPage.ts
 #: src/admin/users/RelatedUserList.ts
@@ -4904,6 +5000,10 @@ msgstr "Wymagany."
 #: src/pages/users/ServiceAccountForm.ts src/pages/users/UserForm.ts
 #~ msgid "Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only."
 #~ msgstr "Wymagane. 150 znaków lub mniej. Tylko litery, cyfry i @/./+/-/_."
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains."
+msgstr ""
 
 #: src/admin/users/UserViewPage.ts
 msgid "Reset Password"
@@ -5095,7 +5195,6 @@ msgid "Scope which the client can specify to access these properties."
 msgstr "Zakres, który klient może określić, aby uzyskać dostęp do tych właściwości."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/elements/oauth/UserRefreshList.ts
 msgid "Scopes"
@@ -5167,8 +5266,12 @@ msgid "See more here:"
 msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
-msgid "Select a provider that this application should use. Alternatively, create a new provider."
-msgstr "Wybierz dostawcę, z którego ma korzystać ta aplikacja. Alternatywnie utwórz nowego dostawcę."
+msgid "Select a provider that this application should use."
+msgstr ""
+
+#: src/admin/applications/ApplicationForm.ts
+#~ msgid "Select a provider that this application should use. Alternatively, create a new provider."
+#~ msgstr "Wybierz dostawcę, z którego ma korzystać ta aplikacja. Alternatywnie utwórz nowego dostawcę."
 
 #: src/elements/table/Table.ts
 msgid "Select all rows"
@@ -5244,6 +5347,14 @@ msgstr "Wybór backendów do testowania hasła."
 #: src/flow/stages/email/EmailStage.ts
 msgid "Send Email again."
 msgstr "Wyślij e-mail ponownie."
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Send HTTP-Basic Authentication"
+msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Send a custom HTTP-Basic Authentication header based on values from authentik."
+msgstr ""
 
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
@@ -5333,12 +5444,12 @@ msgid "Sessions"
 msgstr "Sesje"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "Set HTTP-Basic Authentication"
-msgstr "Ustaw HTTP-Basic Authentication"
+#~ msgid "Set HTTP-Basic Authentication"
+#~ msgstr "Ustaw HTTP-Basic Authentication"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
-msgstr "Ustaw niestandardowy nagłówek HTTP-Basic Authentication na podstawie wartości z authentik."
+#~ msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
+#~ msgstr "Ustaw niestandardowy nagłówek HTTP-Basic Authentication na podstawie wartości z authentik."
 
 #: src/admin/groups/GroupForm.ts
 #: src/admin/outposts/OutpostForm.ts
@@ -5671,7 +5782,7 @@ msgid "Successful"
 msgstr "Pomyślny"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-#: src/elements/charts/UserChart.ts
+#: src/admin/users/UserChart.ts
 msgid "Successful Logins"
 msgstr "Pomyślne logowania"
 
@@ -6016,12 +6127,12 @@ msgid "Superuser privileges?"
 msgstr "Uprawnienia superużytkownika?"
 
 #: src/admin/admin-overview/charts/GroupCountStatusChart.ts
-msgid "Superuser-groups"
-msgstr "Grupy superużytkowników"
+#~ msgid "Superuser-groups"
+#~ msgstr "Grupy superużytkowników"
 
 #: src/admin/admin-overview/charts/UserCountStatusChart.ts
-msgid "Superusers"
-msgstr "Superużytkownicy"
+#~ msgid "Superusers"
+#~ msgstr "Superużytkownicy"
 
 #: src/admin/events/utils.ts
 msgid "Suspicious request"
@@ -6120,6 +6231,7 @@ msgstr "Zadanie zakończone z ostrzeżeniami"
 msgid "Template"
 msgstr "Szablon"
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
 msgid "Tenant"
 msgstr "Najemca"
@@ -6287,6 +6399,10 @@ msgstr ""
 msgid "This flow is completed."
 msgstr "Ten przepływ jest zakończony."
 
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "This is recommended over the UPN mode."
+msgstr ""
+
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "This is the full endpoint to send POST requests to."
 msgstr "To jest pełny punkt końcowy, do którego wysyłane są żądania POST."
@@ -6430,20 +6546,20 @@ msgid "Tokens sent via SMS."
 msgstr "Tokeny wysyłane SMS-em."
 
 #: src/admin/admin-overview/charts/FlowStatusChart.ts
-msgid "Total flows"
-msgstr "Łącznie przepływy"
+#~ msgid "Total flows"
+#~ msgstr "Łącznie przepływy"
 
 #: src/admin/admin-overview/charts/GroupCountStatusChart.ts
-msgid "Total groups"
-msgstr "Łącznie grup"
+#~ msgid "Total groups"
+#~ msgstr "Łącznie grup"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Total policies"
-msgstr "Łącznie zasad"
+#~ msgid "Total policies"
+#~ msgstr "Łącznie zasad"
 
 #: src/admin/admin-overview/charts/UserCountStatusChart.ts
-msgid "Total users"
-msgstr "Łącznie użytkowników"
+#~ msgid "Total users"
+#~ msgstr "Łącznie użytkowników"
 
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Traditional authenticator"
@@ -6470,6 +6586,7 @@ msgid "Transports"
 msgstr "Transporty"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Trusted OIDC Sources"
 msgstr "Zaufane źródła OIDC"
 
@@ -6584,8 +6701,8 @@ msgid "Unauthenticated URLs"
 msgstr "Nieuwierzytelnione adresy URL"
 
 #: src/admin/admin-overview/charts/PolicyStatusChart.ts
-msgid "Unbound policies"
-msgstr "Zasady niezwiązane"
+#~ msgid "Unbound policies"
+#~ msgstr "Zasady niezwiązane"
 
 #: src/admin/flows/utils.ts
 msgid "Unenrollment"
@@ -6606,6 +6723,10 @@ msgstr "Niezdrowe placówki"
 #: src/admin/tokens/TokenForm.ts
 msgid "Unique identifier the token is referenced by."
 msgstr "Unikalny identyfikator, do którego odwołuje się token."
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Unique name of this field, used for selecting fields in prompt stages."
+msgstr ""
 
 #: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
@@ -6635,6 +6756,11 @@ msgstr ""
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Unknown proxy mode"
+msgstr ""
+
+#: src/admin/events/RuleListPage.ts
+#: src/admin/events/RuleListPage.ts
+msgid "Unknown severity"
 msgstr ""
 
 #: src/admin/outposts/OutpostListPage.ts
@@ -6913,6 +7039,7 @@ msgstr ""
 msgid "Used to login using a flow executor"
 msgstr ""
 
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventListPage.ts
@@ -7098,7 +7225,6 @@ msgstr "Nazwa użytkownika: to samo, co wprowadzanie tekstu, ale sprawdza i zapo
 
 #: src/admin/AdminInterface.ts
 #: src/admin/AdminInterface.ts
-#: src/admin/admin-overview/AdminOverviewPage.ts
 #: src/admin/groups/GroupViewPage.ts
 #: src/admin/users/UserListPage.ts
 msgid "Users"
@@ -7216,6 +7342,7 @@ msgstr ""
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/blueprints/BlueprintListPage.ts
 #: src/admin/events/RuleForm.ts
+#: src/admin/events/RuleListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr "Ostrzeżenie"
@@ -7317,6 +7444,10 @@ msgstr "Podczas łączenia się z serwerem LDAP za pomocą TLS, certyfikaty nie 
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "When connecting via SSH, this keypair is used for authentication."
 msgstr "Podczas łączenia przez SSH ta para kluczy jest używana do uwierzytelniania."
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "When enabled, authentik will intercept the Authorization header to authenticate the request."
+msgstr ""
 
 #: src/admin/stages/email/EmailStageForm.ts
 msgid "When enabled, global Email connection settings will be used and connection settings below will be ignored."
@@ -7555,6 +7686,10 @@ msgstr "{0} - {1} z {2}"
 msgid "{0} is available!"
 msgstr "{0} jest dostępny!"
 
+#: src/admin/system-tasks/SystemTaskListPage.ts
+msgid "{0} seconds"
+msgstr ""
+
 #: src/elements/notifications/NotificationDrawer.ts
 msgid "{0} unread"
 msgstr "{0} nieprzeczytane"
@@ -7567,10 +7702,20 @@ msgstr "{0}, powinno być {1}"
 msgid "{0}: {1}"
 msgstr "{0}: {1}"
 
-#: src/elements/charts/AdminModelPerDay.ts
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
+msgid "{ago} day(s) ago"
+msgstr ""
+
+#: src/admin/admin-overview/charts/AdminModelPerDay.ts
+#: src/admin/applications/ApplicationAuthorizeChart.ts
+#: src/admin/users/UserChart.ts
 msgid "{ago} days ago"
 msgstr "{ago} dni temu"
 
 #: src/elements/charts/Chart.ts
-msgid "{ago} hours ago"
-msgstr "{ago} godzin temu"
+msgid "{ago} hour(s) ago"
+msgstr ""
+
+#: src/elements/charts/Chart.ts
+#~ msgid "{ago} hours ago"
+#~ msgstr "{ago} godzin temu"

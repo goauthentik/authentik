@@ -1,8 +1,10 @@
 """Application API Views"""
+from datetime import timedelta
 from typing import Optional
 
 from django.core.cache import cache
 from django.db.models import QuerySet
+from django.db.models.functions import ExtractHour
 from django.http.response import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from drf_spectacular.types import OpenApiTypes
@@ -61,7 +63,6 @@ class ApplicationSerializer(ModelSerializer):
         return app.get_launch_url(user)
 
     class Meta:
-
         model = Application
         fields = [
             "pk",
@@ -225,7 +226,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         methods=["POST"],
         parser_classes=(MultiPartParser,),
     )
-    # pylint: disable=unused-argument
     def set_icon(self, request: Request, slug: str):
         """Set application icon"""
         app: Application = self.get_object()
@@ -245,7 +245,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         methods=["POST"],
     )
-    # pylint: disable=unused-argument
     def set_icon_url(self, request: Request, slug: str):
         """Set application icon (as URL)"""
         app: Application = self.get_object()
@@ -254,15 +253,14 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     @permission_required("authentik_core.view_application", ["authentik_events.view_event"])
     @extend_schema(responses={200: CoordinateSerializer(many=True)})
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=unused-argument
     def metrics(self, request: Request, slug: str):
         """Metrics for application logins"""
         app = self.get_object()
         return Response(
-            get_objects_for_user(request.user, "authentik_events.view_event")
-            .filter(
+            get_objects_for_user(request.user, "authentik_events.view_event").filter(
                 action=EventAction.AUTHORIZE_APPLICATION,
                 context__authorized_application__pk=app.pk.hex,
             )
-            .get_events_per_hour()
+            # 3 data points per day, so 8 hour spans
+            .get_events_per(timedelta(days=7), ExtractHour, 7 * 3)
         )

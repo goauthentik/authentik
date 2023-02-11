@@ -54,7 +54,6 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.maxDiff = None
         self.wait_timeout = 60
         self.driver = self._get_driver()
-        self.driver.maximize_window()
         self.driver.implicitly_wait(30)
         self.wait = WebDriverWait(self.driver, self.wait_timeout)
         self.logger = get_logger()
@@ -77,7 +76,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def _start_container(self, specs: dict[str, Any]) -> Container:
         client: DockerClient = from_env()
         container = client.containers.run(**specs)
-        if "healthcheck" not in specs:
+        container.reload()
+        state = container.attrs.get("State", {})
+        if "Health" not in state:
             return container
         while True:
             container.reload()
@@ -100,12 +101,18 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def _get_driver(self) -> WebDriver:
         count = 0
+        try:
+            return webdriver.Chrome()
+        except WebDriverException:
+            pass
         while count < RETRIES:
             try:
-                return webdriver.Remote(
+                driver = webdriver.Remote(
                     command_executor="http://localhost:4444/wd/hub",
                     options=webdriver.ChromeOptions(),
                 )
+                driver.maximize_window()
+                return driver
             except WebDriverException:
                 count += 1
         raise ValueError(f"Webdriver failed after {RETRIES}.")

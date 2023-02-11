@@ -17,7 +17,6 @@ def set_default_token_key(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_core", "0012_auto_20201003_1737"),
         ("authentik_core", "0013_auto_20201003_2132"),

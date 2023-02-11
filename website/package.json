@@ -12,15 +12,17 @@
         "deploy": "docusaurus deploy",
         "serve": "docusaurus serve",
         "prettier-check": "prettier --check .",
-        "prettier": "prettier --write ."
+        "prettier": "prettier --write .",
+        "test": "node --test"
     },
     "dependencies": {
-        "@docusaurus/plugin-client-redirects": "2.2.0",
-        "@docusaurus/preset-classic": "2.2.0",
+        "@docusaurus/plugin-client-redirects": "2.3.1",
+        "@docusaurus/preset-classic": "2.3.1",
         "@mdx-js/react": "^1.6.22",
         "clsx": "^1.2.1",
-        "postcss": "^8.4.20",
-        "rapidoc": "^9.3.3",
+        "disqus-react": "^1.1.5",
+        "postcss": "^8.4.21",
+        "rapidoc": "^9.3.4",
         "react": "^17.0.2",
         "react-before-after-slider-component": "^1.1.6",
         "react-dom": "^17.0.2",
@@ -40,6 +42,6 @@
         ]
     },
     "devDependencies": {
-        "prettier": "2.8.1"
+        "prettier": "2.8.4"
     }
 }

@@ -61,7 +61,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal name="canCreateUsers">
+                    <ak-form-element-horizontal name="userCreationMode">
                         <ak-radio
                             .options=${[
                                 {
@@ -86,16 +86,19 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="createUsersAsInactive">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.createUsersAsInactive, true)}
                             />
-                            <label class="pf-c-check__label">
-                                ${t`Create users as inactive`}
-                            </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Create users as inactive`}</span>
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`Mark newly created users as inactive.`}
                         </p>

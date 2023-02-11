@@ -2,7 +2,8 @@
 from django.test import TransactionTestCase
 from requests_mock import Mocker
 
-from authentik.blueprints.models import OCI_MEDIA_TYPE, BlueprintInstance, BlueprintRetrievalFailed
+from authentik.blueprints.models import BlueprintInstance, BlueprintRetrievalFailed
+from authentik.blueprints.v1.oci import OCI_MEDIA_TYPE
 
 
 class TestBlueprintOCI(TransactionTestCase):

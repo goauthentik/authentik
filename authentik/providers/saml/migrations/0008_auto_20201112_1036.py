@@ -5,7 +5,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_crypto", "0002_create_self_signed_kp"),
         ("authentik_providers_saml", "0007_samlprovider_verification_kp"),
@@ -48,7 +47,9 @@ class Migration(migrations.Migration):
             field=models.TextField(
                 choices=[("redirect", "Redirect"), ("post", "Post")],
                 default="redirect",
-                help_text="This determines how authentik sends the response back to the Service Provider.",
+                help_text=(
+                    "This determines how authentik sends the response back to the Service Provider."
+                ),
                 verbose_name="Service Provider Binding",
             ),
         ),
@@ -58,7 +59,10 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 blank=True,
                 default=None,
-                help_text="When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
+                help_text=(
+                    "When selected, incoming assertion's Signatures will be validated against this"
+                    " certificate. To allow unsigned Requests, leave on default."
+                ),
                 null=True,
                 on_delete=django.db.models.deletion.SET_NULL,
                 related_name="+",

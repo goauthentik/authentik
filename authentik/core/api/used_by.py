@@ -53,7 +53,7 @@ class UsedByMixin:
         responses={200: UsedBySerializer(many=True)},
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument, too-many-locals
+    # pylint: disable=too-many-locals
     def used_by(self, request: Request, *args, **kwargs) -> Response:
         """Get a list of all objects that use this object"""
         # pyright: reportGeneralTypeIssues=false

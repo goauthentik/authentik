@@ -115,11 +115,9 @@ class SAMLSource(Source):
         verbose_name=_("Delete temporary users after"),
         validators=[timedelta_string_validator],
         help_text=_(
-            (
-                "Time offset when temporary users should be deleted. This only applies if your IDP "
-                "uses the NameID Format 'transient', and the user doesn't log out manually. "
-                "(Format: hours=1;minutes=2;seconds=3)."
-            )
+            "Time offset when temporary users should be deleted. This only applies if your IDP "
+            "uses the NameID Format 'transient', and the user doesn't log out manually. "
+            "(Format: hours=1;minutes=2;seconds=3)."
         ),
     )
 
@@ -214,7 +212,6 @@ class SAMLSource(Source):
         return f"SAML Source {self.name}"
 
     class Meta:
-
         verbose_name = _("SAML Source")
         verbose_name_plural = _("SAML Sources")
 
@@ -231,6 +228,5 @@ class UserSAMLSourceConnection(UserSourceConnection):
         return UserSAMLSourceConnectionSerializer
 
     class Meta:
-
         verbose_name = _("User SAML Source Connection")
         verbose_name_plural = _("User SAML Source Connections")

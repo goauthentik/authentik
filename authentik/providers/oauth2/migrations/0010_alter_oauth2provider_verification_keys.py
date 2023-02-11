@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_crypto", "0003_certificatekeypair_managed"),
         ("authentik_providers_oauth2", "0009_oauth2provider_verification_keys_and_more"),
@@ -17,7 +16,10 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(
                 blank=True,
                 default=None,
-                help_text="JWTs created with the configured certificates can authenticate with this provider.",
+                help_text=(
+                    "JWTs created with the configured certificates can authenticate with this"
+                    " provider."
+                ),
                 related_name="+",
                 to="authentik_crypto.certificatekeypair",
                 verbose_name="Allowed certificates for JWT-based client_credentials",

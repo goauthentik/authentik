@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_providers_ldap", "0001_squashed_0005_ldapprovider_search_mode"),
     ]

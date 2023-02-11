@@ -1,5 +1,6 @@
 import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { PluralCategory } from "make-plural";
 
 import { Messages, i18n } from "@lingui/core";
 import { detect, fromNavigator, fromUrl } from "@lingui/detect-locale";
@@ -7,7 +8,7 @@ import { t } from "@lingui/macro";
 
 interface Locale {
     locale: Messages;
-    plurals: (n: string | number, ord?: boolean | undefined) => string;
+    plurals: (n: string | number, ord?: boolean | undefined) => PluralCategory;
 }
 
 export const LOCALES: {

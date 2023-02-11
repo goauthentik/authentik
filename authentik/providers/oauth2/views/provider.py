@@ -4,8 +4,10 @@ from typing import Any
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, reverse
 from django.views import View
+from guardian.shortcuts import get_anonymous_user
 from structlog.stdlib import get_logger
 
+from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Application
 from authentik.providers.oauth2.constants import (
     ACR_AUTHENTIK_DEFAULT,
@@ -108,21 +110,40 @@ class ProviderInfoView(View):
             "scopes_supported": scopes,
             # https://openid.net/specs/openid-connect-core-1_0.html#RequestObject
             "request_parameter_supported": False,
-            # Because claims are dynamic and per-application, the only claims listed here
-            # are ones that are always set by authentik itself on every token
-            "claims_supported": [
-                "sub",
-                "iss",
-                "aud",
-                "exp",
-                "iat",
-                "auth_time",
-                "acr",
-            ],
+            "claims_supported": self.get_claims(provider),
             "claims_parameter_supported": False,
         }
 
-    # pylint: disable=unused-argument
+    def get_claims(self, provider: OAuth2Provider) -> list[str]:
+        """Get a list of supported claims based on configured scope mappings"""
+        default_claims = [
+            "sub",
+            "iss",
+            "aud",
+            "exp",
+            "iat",
+            "auth_time",
+            "acr",
+            "amr",
+            "nonce",
+        ]
+        for scope in ScopeMapping.objects.filter(provider=provider).order_by("scope_name"):
+            value = None
+            try:
+                value = scope.evaluate(
+                    user=get_anonymous_user(),
+                    request=self.request,
+                    provider=provider,
+                )
+            except PropertyMappingExpressionException:
+                continue
+            if value is None:
+                continue
+            if not isinstance(value, dict):
+                continue
+            default_claims.extend(value.keys())
+        return default_claims
+
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """OpenID-compliant Provider Info"""
         return JsonResponse(self.get_info(self.provider), json_dumps_params={"indent": 2})

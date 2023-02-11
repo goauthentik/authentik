@@ -7,7 +7,6 @@ import authentik.lib.utils.time
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_providers_saml", "0001_initial"),
         ("authentik_providers_saml", "0002_default_saml_property_mappings"),
@@ -69,7 +68,10 @@ class Migration(migrations.Migration):
                     "assertion_valid_not_before",
                     models.TextField(
                         default="minutes=-5",
-                        help_text="Assertion valid not before current time + this value (Format: hours=-1;minutes=-2;seconds=-3).",
+                        help_text=(
+                            "Assertion valid not before current time + this value (Format:"
+                            " hours=-1;minutes=-2;seconds=-3)."
+                        ),
                         validators=[authentik.lib.utils.time.timedelta_string_validator],
                     ),
                 ),
@@ -77,7 +79,10 @@ class Migration(migrations.Migration):
                     "assertion_valid_not_on_or_after",
                     models.TextField(
                         default="minutes=5",
-                        help_text="Assertion not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).",
+                        help_text=(
+                            "Assertion not valid on or after current time + this value (Format:"
+                            " hours=1;minutes=2;seconds=3)."
+                        ),
                         validators=[authentik.lib.utils.time.timedelta_string_validator],
                     ),
                 ),
@@ -85,7 +90,10 @@ class Migration(migrations.Migration):
                     "session_valid_not_on_or_after",
                     models.TextField(
                         default="minutes=86400",
-                        help_text="Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).",
+                        help_text=(
+                            "Session not valid on or after current time + this value (Format:"
+                            " hours=1;minutes=2;seconds=3)."
+                        ),
                         validators=[authentik.lib.utils.time.timedelta_string_validator],
                     ),
                 ),
@@ -114,7 +122,10 @@ class Migration(migrations.Migration):
                     "require_signing",
                     models.BooleanField(
                         default=False,
-                        help_text="Require Requests to be signed by an X509 Certificate. Must match the Certificate selected in `Signing Keypair`.",
+                        help_text=(
+                            "Require Requests to be signed by an X509 Certificate. Must match the"
+                            " Certificate selected in `Signing Keypair`."
+                        ),
                     ),
                 ),
                 (

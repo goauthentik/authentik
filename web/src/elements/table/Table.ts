@@ -20,6 +20,7 @@ import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
+import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
@@ -118,7 +119,7 @@ export abstract class Table<T> extends AKElement {
     data?: PaginatedResponse<T>;
 
     @property({ type: Number })
-    page = 1;
+    page = getURLParam("tablePage", 1);
 
     @property({ type: String })
     order?: string;
@@ -128,6 +129,9 @@ export abstract class Table<T> extends AKElement {
 
     @property({ type: Boolean })
     checkbox = false;
+
+    @property({ type: Boolean })
+    radioSelect = false;
 
     @property({ type: Boolean })
     checkboxChip = false;
@@ -153,6 +157,7 @@ export abstract class Table<T> extends AKElement {
             PFTable,
             PFBullseye,
             PFButton,
+            PFSwitch,
             PFToolbar,
             PFDropdown,
             PFPagination,
@@ -287,40 +292,61 @@ export abstract class Table<T> extends AKElement {
 
     private renderRowGroup(items: T[]): TemplateResult[] {
         return items.map((item) => {
+            const itemSelectHandler = (ev: InputEvent | PointerEvent) => {
+                let checked = false;
+                const target = ev.target as HTMLElement;
+                if (ev.type === "input") {
+                    checked = (target as HTMLInputElement).checked;
+                } else if (ev instanceof PointerEvent) {
+                    if (target.classList.contains("ignore-click")) {
+                        return;
+                    }
+                    checked = this.selectedElements.indexOf(item) === -1;
+                }
+                if (checked) {
+                    // Prevent double-adding the element to selected items
+                    if (this.selectedElements.indexOf(item) !== -1) {
+                        return;
+                    }
+                    // Add item to selected
+                    this.selectedElements.push(item);
+                } else {
+                    // Get index of item and remove if selected
+                    const index = this.selectedElements.indexOf(item);
+                    if (index <= -1) return;
+                    this.selectedElements.splice(index, 1);
+                }
+                this.requestUpdate();
+                // Unset select-all if selectedElements is empty
+                const selectAllCheckbox =
+                    this.shadowRoot?.querySelector<HTMLInputElement>("[name=select-all]");
+                if (!selectAllCheckbox) {
+                    return;
+                }
+                if (this.selectedElements.length < 1) {
+                    selectAllCheckbox.checked = false;
+                    this.requestUpdate();
+                }
+            };
             return html`<tbody
                 role="rowgroup"
                 class="${this.expandedElements.indexOf(item) > -1 ? "pf-m-expanded" : ""}"
             >
-                <tr role="row">
+                <tr
+                    role="row"
+                    class="${this.checkbox ? "pf-m-hoverable" : ""}"
+                    @click=${itemSelectHandler}
+                >
                     ${this.checkbox
                         ? html`<td class="pf-c-table__check" role="cell">
-                              <label
+                              <label class="ignore-click"
                                   ><input
                                       type="checkbox"
+                                      class="ignore-click"
                                       .checked=${this.selectedElements.indexOf(item) >= 0}
-                                      @input=${(ev: InputEvent) => {
-                                          if ((ev.target as HTMLInputElement).checked) {
-                                              // Add item to selected
-                                              this.selectedElements.push(item);
-                                          } else {
-                                              // Get index of item and remove if selected
-                                              const index = this.selectedElements.indexOf(item);
-                                              if (index <= -1) return;
-                                              this.selectedElements.splice(index, 1);
-                                          }
-                                          this.requestUpdate();
-                                          // Unset select-all if selectedElements is empty
-                                          if (this.selectedElements.length < 1) {
-                                              const selectAllCheckbox =
-                                                  this.shadowRoot?.querySelector<HTMLInputElement>(
-                                                      "[name=select-all]",
-                                                  );
-                                              if (!selectAllCheckbox) {
-                                                  return;
-                                              }
-                                              selectAllCheckbox.checked = false;
-                                              this.requestUpdate();
-                                          }
+                                      @input=${itemSelectHandler}
+                                      @click=${(ev: Event) => {
+                                          ev.stopPropagation();
                                       }}
                               /></label>
                           </td>`
@@ -333,7 +359,8 @@ export abstract class Table<T> extends AKElement {
                                   ) > -1
                                       ? "pf-m-expanded"
                                       : ""}"
-                                  @click=${() => {
+                                  @click=${(ev: Event) => {
+                                      ev.stopPropagation();
                                       const idx = this.expandedElements.indexOf(item);
                                       if (idx <= -1) {
                                           // Element is not expanded, add it
@@ -424,6 +451,7 @@ export abstract class Table<T> extends AKElement {
                           .pages=${this.data?.pagination}
                           .pageChangeHandler=${(page: number) => {
                               this.page = page;
+                              updateURLParams({ tablePage: page });
                               this.fetch();
                           }}
                       >

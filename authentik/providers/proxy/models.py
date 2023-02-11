@@ -67,13 +67,18 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         default="",
         blank=True,
         help_text=_(
-            (
-                "Regular expressions for which authentication is not required. "
-                "Each new line is interpreted as a new Regular Expression."
-            )
+            "Regular expressions for which authentication is not required. "
+            "Each new line is interpreted as a new Regular Expression."
         ),
     )
 
+    intercept_header_auth = models.BooleanField(
+        default=True,
+        help_text=_(
+            "When enabled, this provider will intercept the authorization header and authenticate "
+            "requests based on its value."
+        ),
+    )
     basic_auth_enabled = models.BooleanField(
         default=False,
         verbose_name=_("Set HTTP-Basic Authentication"),
@@ -85,16 +90,14 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         blank=True,
         verbose_name=_("HTTP-Basic Username Key"),
         help_text=_(
-            (
-                "User/Group Attribute used for the user part of the HTTP-Basic Header. "
-                "If not set, the user's Email address is used."
-            )
+            "User/Group Attribute used for the user part of the HTTP-Basic Header. "
+            "If not set, the user's Email address is used."
         ),
     )
     basic_auth_password_attribute = models.TextField(
         blank=True,
         verbose_name=_("HTTP-Basic Password Key"),
-        help_text=_(("User/Group Attribute used for the password part of the HTTP-Basic Header.")),
+        help_text=_("User/Group Attribute used for the password part of the HTTP-Basic Header."),
     )
 
     certificate = models.ForeignKey(
@@ -126,6 +129,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         """Ensure all OAuth2-related settings are correct"""
         self.client_type = ClientTypes.CONFIDENTIAL
         self.signing_key = None
+        self.include_claims_in_id_token = True
         scopes = ScopeMapping.objects.filter(
             managed__in=[
                 "goauthentik.io/providers/oauth2/scope-openid",
@@ -147,7 +151,6 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         return required_models
 
     class Meta:
-
         verbose_name = _("Proxy Provider")
         verbose_name_plural = _("Proxy Providers")
         authentik_used_by_shadows = ["authentik_providers_oauth2.oauth2provider"]

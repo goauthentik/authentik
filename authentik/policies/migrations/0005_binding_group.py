@@ -30,7 +30,6 @@ def migrate_from_groupmembership(apps: Apps, schema_editor: BaseDatabaseSchemaEd
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_core", "0017_managed"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),

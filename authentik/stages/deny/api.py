@@ -10,7 +10,6 @@ class DenyStageSerializer(StageSerializer):
     """DenyStage Serializer"""
 
     class Meta:
-
         model = DenyStage
         fields = StageSerializer.Meta.fields
 

@@ -11,7 +11,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
-from authentik.providers.saml.tests.test_metadata import METADATA_SIMPLE
+from authentik.providers.saml.tests.test_metadata import load_fixture
 
 
 class TestSAMLProviderAPI(APITestCase):
@@ -82,7 +82,7 @@ class TestSAMLProviderAPI(APITestCase):
     def test_import_success(self):
         """Test metadata import (success case)"""
         with TemporaryFile() as metadata:
-            metadata.write(METADATA_SIMPLE.encode())
+            metadata.write(load_fixture("fixtures/simple.xml").encode())
             metadata.seek(0)
             response = self.client.post(
                 reverse("authentik_api:samlprovider-import-metadata"),

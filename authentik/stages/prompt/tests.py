@@ -30,6 +30,7 @@ class TestPromptStage(FlowTestCase):
         self.factory = RequestFactory()
         self.flow = create_test_flow()
         username_prompt = Prompt.objects.create(
+            name=generate_id(),
             field_key="username_prompt",
             label="USERNAME_LABEL",
             type=FieldTypes.USERNAME,
@@ -37,6 +38,7 @@ class TestPromptStage(FlowTestCase):
             placeholder="USERNAME_PLACEHOLDER",
         )
         text_prompt = Prompt.objects.create(
+            name=generate_id(),
             field_key="text_prompt",
             label="TEXT_LABEL",
             type=FieldTypes.TEXT,
@@ -44,6 +46,7 @@ class TestPromptStage(FlowTestCase):
             placeholder="TEXT_PLACEHOLDER",
         )
         email_prompt = Prompt.objects.create(
+            name=generate_id(),
             field_key="email_prompt",
             label="EMAIL_LABEL",
             type=FieldTypes.EMAIL,
@@ -51,6 +54,7 @@ class TestPromptStage(FlowTestCase):
             placeholder="EMAIL_PLACEHOLDER",
         )
         password_prompt = Prompt.objects.create(
+            name=generate_id(),
             field_key="password_prompt",
             label="PASSWORD_LABEL",
             type=FieldTypes.PASSWORD,
@@ -58,6 +62,7 @@ class TestPromptStage(FlowTestCase):
             placeholder="PASSWORD_PLACEHOLDER",
         )
         password2_prompt = Prompt.objects.create(
+            name=generate_id(),
             field_key="password2_prompt",
             label="PASSWORD_LABEL",
             type=FieldTypes.PASSWORD,
@@ -65,6 +70,7 @@ class TestPromptStage(FlowTestCase):
             placeholder="PASSWORD_PLACEHOLDER",
         )
         number_prompt = Prompt.objects.create(
+            name=generate_id(),
             field_key="number_prompt",
             label="NUMBER_LABEL",
             type=FieldTypes.NUMBER,
@@ -72,12 +78,14 @@ class TestPromptStage(FlowTestCase):
             placeholder="NUMBER_PLACEHOLDER",
         )
         hidden_prompt = Prompt.objects.create(
+            name=generate_id(),
             field_key="hidden_prompt",
             type=FieldTypes.HIDDEN,
             required=True,
             placeholder="HIDDEN_PLACEHOLDER",
         )
         static_prompt = Prompt.objects.create(
+            name=generate_id(),
             field_key="static_prompt",
             type=FieldTypes.STATIC,
             required=True,

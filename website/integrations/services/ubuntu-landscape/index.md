@@ -12,7 +12,7 @@ From https://en.wikipedia.org/wiki/Landscape_(software)
 Landscape is a systems management tool developed by Canonical. It can be run on-premises or in the cloud depending on the needs of the user. It is primarily designed for use with Ubuntu derivatives such as Desktop, Server, and Core.
 :::
 
-:::warning
+:::caution
 This requires authentik 0.10.3 or newer.
 :::
 

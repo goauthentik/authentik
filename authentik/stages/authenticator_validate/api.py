@@ -17,15 +17,12 @@ class AuthenticatorValidateStageSerializer(StageSerializer):
         if value == NotConfiguredAction.CONFIGURE:
             if not configuration_stages or len(configuration_stages) < 1:
                 raise ValidationError(
-                    (
-                        'When "Not configured action" is set to "Configure", '
-                        "you must set a configuration stage."
-                    )
+                    'When "Not configured action" is set to "Configure", '
+                    "you must set a configuration stage."
                 )
         return value
 
     class Meta:
-
         model = AuthenticatorValidateStage
         fields = StageSerializer.Meta.fields + [
             "not_configured_action",

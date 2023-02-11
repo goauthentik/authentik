@@ -50,7 +50,11 @@ from authentik.policies.reputation.api import ReputationPolicyViewSet, Reputatio
 from authentik.providers.ldap.api import LDAPOutpostConfigViewSet, LDAPProviderViewSet
 from authentik.providers.oauth2.api.providers import OAuth2ProviderViewSet
 from authentik.providers.oauth2.api.scopes import ScopeMappingViewSet
-from authentik.providers.oauth2.api.tokens import AuthorizationCodeViewSet, RefreshTokenViewSet
+from authentik.providers.oauth2.api.tokens import (
+    AccessTokenViewSet,
+    AuthorizationCodeViewSet,
+    RefreshTokenViewSet,
+)
 from authentik.providers.proxy.api import ProxyOutpostConfigViewSet, ProxyProviderViewSet
 from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingViewSet
 from authentik.providers.saml.api.providers import SAMLProviderViewSet
@@ -162,6 +166,7 @@ router.register("providers/saml", SAMLProviderViewSet)
 
 router.register("oauth2/authorization_codes", AuthorizationCodeViewSet)
 router.register("oauth2/refresh_tokens", RefreshTokenViewSet)
+router.register("oauth2/access_tokens", AccessTokenViewSet)
 
 router.register("propertymappings/all", PropertyMappingViewSet)
 router.register("propertymappings/ldap", LDAPPropertyMappingViewSet)

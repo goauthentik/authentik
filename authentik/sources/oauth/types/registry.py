@@ -41,7 +41,6 @@ class SourceType:
         """Get Icon URL for login"""
         return static(f"authentik/sources/{self.slug}.svg")
 
-    # pylint: disable=unused-argument
     def login_challenge(self, source: OAuthSource, request: HttpRequest) -> Challenge:
         """Allow types to return custom challenges"""
         return RedirectChallenge(

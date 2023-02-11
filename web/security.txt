@@ -1,4 +1,4 @@
 Contact: mailto:security@goauthentik.io
 Expires: Mon, 1 Jan 2024 00:00 +0200
 Preferred-Languages: en, de
-Policy: https://github.com/goauthentik/authentik/blob/main/SECURITY.md
+Policy: https://goauthentik.io/docs/security/policy

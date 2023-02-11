@@ -62,9 +62,7 @@ class TestEmailStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject, "authentik")
-        self.assertNotIn(
-            "You recently requested to change your password", mail.outbox[0].alternatives[0][0]
-        )
+        self.assertNotIn("Password Reset", mail.outbox[0].alternatives[0][0])
 
     def test_without_user(self):
         """Test without pending user"""

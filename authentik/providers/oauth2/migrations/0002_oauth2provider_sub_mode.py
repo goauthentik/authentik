@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_providers_oauth2", "0001_initial"),
     ]
@@ -23,11 +22,17 @@ class Migration(migrations.Migration):
                     ),
                     (
                         "user_upn",
-                        "Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.",
+                        (
+                            "Based on the User's UPN, only works if user has a 'upn' attribute set."
+                            " Use this method only if you have different UPN and Mail domains."
+                        ),
                     ),
                 ],
                 default="hashed_user_id",
-                help_text="Configure what data should be used as unique User Identifier. For most cases, the default should be fine.",
+                help_text=(
+                    "Configure what data should be used as unique User Identifier. For most cases,"
+                    " the default should be fine."
+                ),
             ),
         ),
     ]

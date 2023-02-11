@@ -27,10 +27,11 @@ type ProviderInstance struct {
 	searcher search.Searcher
 	binder   bind.Binder
 
-	appSlug  string
-	flowSlug string
-	s        *LDAPServer
-	log      *log.Entry
+	appSlug                string
+	authenticationFlowSlug string
+	invalidationFlowSlug   string
+	s                      *LDAPServer
+	log                    *log.Entry
 
 	tlsServerName       *string
 	cert                *tls.Certificate
@@ -79,9 +80,13 @@ func (pi *ProviderInstance) GetFlags(dn string) *flags.UserFlags {
 	return flags
 }
 
-func (pi *ProviderInstance) SetFlags(dn string, flag flags.UserFlags) {
+func (pi *ProviderInstance) SetFlags(dn string, flag *flags.UserFlags) {
 	pi.boundUsersMutex.Lock()
-	pi.boundUsers[dn] = &flag
+	if flag == nil {
+		delete(pi.boundUsers, dn)
+	} else {
+		pi.boundUsers[dn] = flag
+	}
 	pi.boundUsersMutex.Unlock()
 }
 
@@ -89,8 +94,12 @@ func (pi *ProviderInstance) GetAppSlug() string {
 	return pi.appSlug
 }
 
-func (pi *ProviderInstance) GetFlowSlug() string {
-	return pi.flowSlug
+func (pi *ProviderInstance) GetAuthenticationFlowSlug() string {
+	return pi.authenticationFlowSlug
+}
+
+func (pi *ProviderInstance) GetInvalidationFlowSlug() string {
+	return pi.invalidationFlowSlug
 }
 
 func (pi *ProviderInstance) GetSearchAllowedGroups() []*strfmt.UUID {

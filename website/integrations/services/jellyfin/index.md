@@ -20,7 +20,7 @@ Jellyfin does not have any native external authentication support as of the writ
 Currently there are two plugins for Jelyfin that provide external authenticaion, an OIDC plugin and an LDAP plugin. This guide focuses on the use of the LDAP plugin.
 :::
 
-:::warning
+:::caution
 An LDAP outpost must be deployed to use the Jellyfin LDAP plugin
 :::
 

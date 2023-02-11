@@ -1,5 +1,6 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
 import "@goauthentik/admin/users/UserActiveForm";
+import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
@@ -13,7 +14,6 @@ import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/charts/UserChart";
 import "@goauthentik/elements/events/ObjectChangelog";
 import "@goauthentik/elements/events/UserEvents";
 import "@goauthentik/elements/forms/ModalForm";
@@ -276,7 +276,9 @@ export class UserViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Actions over the last 24 hours`}</div>
+                        <div class="pf-c-card__title">
+                            ${t`Actions over the last week (per 8 hours)`}
+                        </div>
                         <div class="pf-c-card__body">
                             <ak-charts-user userId=${this.user.pk || 0}> </ak-charts-user>
                         </div>
@@ -343,7 +345,7 @@ export class UserViewPage extends AKElement {
             </section>
             <section
                 slot="page-oauth-refresh"
-                data-tab-title="${t`OAuth Refresh Codes`}"
+                data-tab-title="${t`OAuth Refresh Tokens`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">

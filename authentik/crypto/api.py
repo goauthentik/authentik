@@ -143,7 +143,6 @@ class CertificateKeyPairSerializer(ModelSerializer):
         return value
 
     class Meta:
-
         model = CertificateKeyPair
         fields = [
             "pk",
@@ -187,7 +186,6 @@ class CertificateKeyPairFilter(FilterSet):
         label="Only return certificate-key pairs with keys", method="filter_has_key"
     )
 
-    # pylint: disable=unused-argument
     def filter_has_key(self, queryset, name, value):  # pragma: no cover
         """Only return certificate-key pairs with keys"""
         return queryset.exclude(key_data__exact="")
@@ -236,10 +234,11 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         data = CertificateGenerationSerializer(data=request.data)
         if not data.is_valid():
             return Response(data.errors, status=400)
-        builder = CertificateBuilder()
-        builder.common_name = data.validated_data["common_name"]
+        raw_san = data.validated_data.get("subject_alt_name", "")
+        sans = raw_san.split(",") if raw_san != "" else []
+        builder = CertificateBuilder(data.validated_data["common_name"])
         builder.build(
-            subject_alt_names=data.validated_data.get("subject_alt_name", "").split(","),
+            subject_alt_names=sans,
             validity_days=int(data.validated_data["validity_days"]),
         )
         instance = builder.save()
@@ -257,7 +256,6 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         responses={200: CertificateDataSerializer(many=False)},
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def view_certificate(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs certificate and log access"""
         certificate: CertificateKeyPair = self.get_object()
@@ -288,7 +286,6 @@ class CertificateKeyPairViewSet(UsedByMixin, ModelViewSet):
         responses={200: CertificateDataSerializer(many=False)},
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
-    # pylint: disable=invalid-name, unused-argument
     def view_private_key(self, request: Request, pk: str) -> Response:
         """Return certificate-key pairs private key and log access"""
         certificate: CertificateKeyPair = self.get_object()

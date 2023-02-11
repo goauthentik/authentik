@@ -183,7 +183,7 @@ class DockerController(BaseController):
         try:
             self.client.images.pull(image)
         except DockerException:  # pragma: no cover
-            image = f"goauthentik.io/{self.outpost.type}:latest"
+            image = f"ghcr.io/goauthentik/{self.outpost.type}:latest"
             self.client.images.pull(image)
         return image
 

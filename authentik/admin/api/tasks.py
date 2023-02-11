@@ -7,7 +7,13 @@ from django.utils.translation import gettext_lazy as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ChoiceField, DateTimeField, ListField
+from rest_framework.fields import (
+    CharField,
+    ChoiceField,
+    DateTimeField,
+    ListField,
+    SerializerMethodField,
+)
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -26,6 +32,7 @@ class TaskSerializer(PassiveSerializer):
     task_name = CharField()
     task_description = CharField()
     task_finish_timestamp = DateTimeField(source="finish_time")
+    task_duration = SerializerMethodField()
 
     status = ChoiceField(
         source="result.status.name",
@@ -33,7 +40,11 @@ class TaskSerializer(PassiveSerializer):
     )
     messages = ListField(source="result.messages")
 
-    def to_representation(self, instance):
+    def get_task_duration(self, instance: TaskInfo) -> int:
+        """Get the duration a task took to run"""
+        return max(instance.finish_timestamp - instance.start_timestamp, 0)
+
+    def to_representation(self, instance: TaskInfo):
         """When a new version of authentik adds fields to TaskInfo,
         the API will fail with an AttributeError, as the classes
         are pickled in cache. In that case, just delete the info"""
@@ -68,7 +79,6 @@ class TaskViewSet(ViewSet):
             ),
         ],
     )
-    # pylint: disable=invalid-name
     def retrieve(self, request: Request, pk=None) -> Response:
         """Get a single system task"""
         task = TaskInfo.by_name(pk)
@@ -99,7 +109,6 @@ class TaskViewSet(ViewSet):
         ],
     )
     @action(detail=True, methods=["post"])
-    # pylint: disable=invalid-name
     def retry(self, request: Request, pk=None) -> Response:
         """Retry task"""
         task = TaskInfo.by_name(pk)

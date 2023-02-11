@@ -12,7 +12,6 @@ import authentik.lib.utils.time
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
@@ -47,7 +46,11 @@ class Migration(migrations.Migration):
                             ("public", "Public"),
                         ],
                         default="confidential",
-                        help_text="<b>Confidential</b> clients are capable of maintaining the confidentiality\n    of their credentials. <b>Public</b> clients are incapable.",
+                        help_text=(
+                            "<b>Confidential</b> clients are capable of maintaining the"
+                            " confidentiality\n    of their credentials. <b>Public</b> clients are"
+                            " incapable."
+                        ),
                         max_length=30,
                         verbose_name="Client Type",
                     ),
@@ -123,7 +126,10 @@ class Migration(migrations.Migration):
                     "include_claims_in_id_token",
                     models.BooleanField(
                         default=True,
-                        help_text="Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
+                        help_text=(
+                            "Include User claims from scopes in the id_token, for applications that"
+                            " don't access the userinfo endpoint."
+                        ),
                         verbose_name="Include claims in id_token",
                     ),
                 ),
@@ -131,14 +137,20 @@ class Migration(migrations.Migration):
                     "token_validity",
                     models.TextField(
                         default="minutes=10",
-                        help_text="Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3).",
+                        help_text=(
+                            "Tokens not valid on or after current time + this value (Format:"
+                            " hours=1;minutes=2;seconds=3)."
+                        ),
                         validators=[authentik.lib.utils.time.timedelta_string_validator],
                     ),
                 ),
                 (
                     "rsa_key",
                     models.ForeignKey(
-                        help_text="Key used to sign the tokens. Only required when JWT Algorithm is set to RS256.",
+                        help_text=(
+                            "Key used to sign the tokens. Only required when JWT Algorithm is set"
+                            " to RS256."
+                        ),
                         on_delete=django.db.models.deletion.CASCADE,
                         to="authentik_crypto.certificatekeypair",
                         verbose_name="RSA Key",
@@ -172,7 +184,10 @@ class Migration(migrations.Migration):
                     "description",
                     models.TextField(
                         blank=True,
-                        help_text="Description shown to the user when consenting. If left empty, the user won't be informed.",
+                        help_text=(
+                            "Description shown to the user when consenting. If left empty, the user"
+                            " won't be informed."
+                        ),
                     ),
                 ),
             ],

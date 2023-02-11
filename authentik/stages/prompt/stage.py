@@ -134,7 +134,6 @@ class PromptChallengeResponse(ChallengeResponse):
 def username_field_validator_factory() -> Callable[[PromptChallenge, str], Any]:
     """Return a `clean_` method for `field`. Clean method checks if username is taken already."""
 
-    # pylint: disable=unused-argument
     def username_field_validator(self: PromptChallenge, value: str) -> Any:
         """Check for duplicate usernames"""
         if User.objects.filter(username=value).exists():

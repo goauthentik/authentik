@@ -9,7 +9,6 @@ import authentik.lib.generators
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ("authentik_providers_oauth2", "0012_remove_oauth2provider_verification_keys"),

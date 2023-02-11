@@ -13,8 +13,10 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 
 import { t } from "@lingui/macro";
 
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { BlueprintInstance, BlueprintInstanceStatusEnum, ManagedApi } from "@goauthentik/api";
 
@@ -32,6 +34,7 @@ export function BlueprintStatus(blueprint?: BlueprintInstance): string {
     }
     return t`Unknown`;
 }
+
 @customElement("ak-blueprint-list")
 export class BlueprintListPage extends TablePage<BlueprintInstance> {
     searchEnabled(): boolean {
@@ -47,10 +50,15 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         return "pf-icon pf-icon-blueprint";
     }
 
+    expandable = true;
     checkbox = true;
 
     @property()
     order = "name";
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFDescriptionList);
+    }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<BlueprintInstance>> {
         return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsList({
@@ -96,9 +104,34 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
         </ak-forms-delete-bulk>`;
     }
 
+    renderExpanded(item: BlueprintInstance): TemplateResult {
+        return html`<td role="cell" colspan="4">
+            <div class="pf-c-table__expandable-row-content">
+                <dl class="pf-c-description-list pf-m-horizontal">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${t`Path`}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <pre>${item.path}</pre>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        </td>`;
+    }
+
     row(item: BlueprintInstance): TemplateResult[] {
+        let description = undefined;
+        const descKey = "blueprints.goauthentik.io/description";
+        if (Object.hasOwn(item.metadata.labels, descKey)) {
+            description = item.metadata.labels[descKey];
+        }
         return [
-            html`${item.name}`,
+            html`<div>${item.name}</div>
+                ${description ? html`<small>${description}</small>` : html``}`,
             html`${BlueprintStatus(item)}`,
             html`${item.lastApplied.toLocaleString()}`,
             html`<ak-label color=${item.enabled ? PFColor.Green : PFColor.Red}>

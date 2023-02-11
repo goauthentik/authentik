@@ -52,6 +52,8 @@ class PolicyEngine:
         self.empty_result = True
         if not isinstance(pbm, PolicyBindingModel):  # pragma: no cover
             raise ValueError(f"{pbm} is not instance of PolicyBindingModel")
+        if not user:
+            raise ValueError("User must be set")
         self.__pbm = pbm
         self.request = PolicyRequest(user)
         self.request.obj = pbm
@@ -78,13 +80,16 @@ class PolicyEngine:
 
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
-        with Hub.current.start_span(
-            op="authentik.policy.engine.build",
-            description=self.__pbm,
-        ) as span, HIST_POLICIES_BUILD_TIME.labels(
-            object_pk=str(self.__pbm.pk),
-            object_type=f"{self.__pbm._meta.app_label}.{self.__pbm._meta.model_name}",
-        ).time():
+        with (
+            Hub.current.start_span(
+                op="authentik.policy.engine.build",
+                description=self.__pbm,
+            ) as span,
+            HIST_POLICIES_BUILD_TIME.labels(
+                object_pk=str(self.__pbm.pk),
+                object_type=f"{self.__pbm._meta.app_label}.{self.__pbm._meta.model_name}",
+            ).time(),
+        ):
             span: Span
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)

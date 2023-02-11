@@ -47,7 +47,6 @@ class FlowInspectorPlanSerializer(PassiveSerializer):
         """Get the plan's context, sanitized"""
         return sanitize_dict(plan.context)
 
-    # pylint: disable=unused-argument
     def get_session_id(self, plan: FlowPlan) -> str:
         """Get a unique session ID"""
         request: Request = self.context["request"]

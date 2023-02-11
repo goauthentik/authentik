@@ -15,7 +15,6 @@ import (
 
 func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	// https://goauthentik.io/docs/providers/proxy/proxy
-
 	headers.Set("X-authentik-username", c.PreferredUsername)
 	headers.Set("X-authentik-groups", strings.Join(c.Groups, "|"))
 	headers.Set("X-authentik-email", c.Email)
@@ -30,6 +29,9 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	headers.Set("X-authentik-meta-app", a.proxyConfig.AssignedApplicationSlug)
 	headers.Set("X-authentik-meta-version", constants.OutpostUserAgent())
 
+	if c.Proxy == nil {
+		return
+	}
 	userAttributes := c.Proxy.UserAttributes
 	// Attempt to set basic auth based on user's attributes
 	if *a.proxyConfig.BasicAuthEnabled {

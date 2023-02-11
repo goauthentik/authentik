@@ -9,7 +9,6 @@ import authentik.lib.utils.time
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("authentik_core", "0006_auto_20200709_1608"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
@@ -22,7 +21,9 @@ class Migration(migrations.Migration):
             name="consent_expire_in",
             field=models.TextField(
                 default="weeks=4",
-                help_text="Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3).",
+                help_text=(
+                    "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
+                ),
                 validators=[authentik.lib.utils.time.timedelta_string_validator],
                 verbose_name="Consent expires in",
             ),

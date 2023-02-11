@@ -93,14 +93,19 @@ export class UserForm extends ModelForm<User, number> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="isActive">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.isActive, true)}
                     />
-                    <label class="pf-c-check__label"> ${t`Is active`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Is active`}</span>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`Designates whether this user should be treated as active. Unselect this instead of deleting accounts.`}
                 </p>

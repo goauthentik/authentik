@@ -25,7 +25,7 @@ entries:
                   [slug, default-source-authentication],
               ]
           enrollment_flow:
-              !Find [authentik_flows.Flow, [slug, default-source-enrollment]]
+              !Find [!Format  ["%s", authentik_flows.Flow], [slug, default-source-enrollment]]
     - attrs:
           expression: return True
       identifiers:

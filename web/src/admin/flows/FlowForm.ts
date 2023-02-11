@@ -205,14 +205,19 @@ export class FlowForm extends ModelForm<Flow, string> {
                 <span slot="header"> ${t`Behavior settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="compatibilityMode">
-                        <div class="pf-c-check">
+                        <label class="pf-c-switch">
                             <input
+                                class="pf-c-switch__input"
                                 type="checkbox"
-                                class="pf-c-check__input"
                                 ?checked=${first(this.instance?.compatibilityMode, false)}
                             />
-                            <label class="pf-c-check__label"> ${t`Compatibility mode`} </label>
-                        </div>
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Compatibility mode`}</span>
+                        </label>
                         <p class="pf-c-form__helper-text">
                             ${t`Increases compatibility with password managers and mobile devices.`}
                         </p>
@@ -333,20 +338,28 @@ export class FlowForm extends ModelForm<Flow, string> {
                                     ${this.instance?.background
                                         ? html`
                                               <ak-form-element-horizontal>
-                                                  <div class="pf-c-check">
+                                                  <label class="pf-c-switch">
                                                       <input
+                                                          class="pf-c-switch__input"
                                                           type="checkbox"
-                                                          class="pf-c-check__input"
                                                           @change=${(ev: Event) => {
                                                               const target =
                                                                   ev.target as HTMLInputElement;
                                                               this.clearBackground = target.checked;
                                                           }}
                                                       />
-                                                      <label class="pf-c-check__label">
-                                                          ${t`Clear background image`}
-                                                      </label>
-                                                  </div>
+                                                      <span class="pf-c-switch__toggle">
+                                                          <span class="pf-c-switch__toggle-icon">
+                                                              <i
+                                                                  class="fas fa-check"
+                                                                  aria-hidden="true"
+                                                              ></i>
+                                                          </span>
+                                                      </span>
+                                                      <span class="pf-c-switch__label">
+                                                          ${t`Clear icon`}
+                                                      </span>
+                                                  </label>
                                                   <p class="pf-c-form__helper-text">
                                                       ${t`Delete currently set background image.`}
                                                   </p>

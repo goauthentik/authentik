@@ -132,6 +132,17 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.name)}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Unique name of this field, used for selecting fields in prompt stages.`}
+                </p>
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Field Key`} ?required=${true} name="fieldKey">
                 <input
                     type="text"
@@ -161,26 +172,36 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="required">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.required, false)}
                     />
-                    <label class="pf-c-check__label"> ${t`Required`} </label>
-                </div>
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Required`}</span>
+                </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="placeholderExpression">
-                <div class="pf-c-check">
+                <label class="pf-c-switch">
                     <input
+                        class="pf-c-switch__input"
                         type="checkbox"
-                        class="pf-c-check__input"
                         ?checked=${first(this.instance?.placeholderExpression, false)}
                     />
-                    <label class="pf-c-check__label"
-                        >${t`Interpret placeholder as expression`}</label
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"
+                        >${t`Interpret placeholder as expression`}</span
                     >
-                </div>
+                </label>
                 <p class="pf-c-form__helper-text">
                     ${t`When checked, the placeholder will be evaluated in the same way environment as a property mapping.
                     If the evaluation failed, the placeholder itself is returned.`}

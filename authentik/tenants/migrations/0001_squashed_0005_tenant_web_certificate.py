@@ -11,7 +11,6 @@ import authentik.lib.utils.time
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_tenants", "0001_initial"),
         ("authentik_tenants", "0002_default"),
@@ -39,7 +38,10 @@ class Migration(migrations.Migration):
                 (
                     "domain",
                     models.TextField(
-                        help_text="Domain that activates this tenant. Can be a superset, i.e. `a.b` for `aa.b` and `ba.b`"
+                        help_text=(
+                            "Domain that activates this tenant. Can be a superset, i.e. `a.b` for"
+                            " `aa.b` and `ba.b`"
+                        )
                     ),
                 ),
                 ("default", models.BooleanField(default=False)),
@@ -100,7 +102,10 @@ class Migration(migrations.Migration):
             name="event_retention",
             field=models.TextField(
                 default="days=365",
-                help_text="Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).",
+                help_text=(
+                    "Events will be deleted after this duration.(Format:"
+                    " weeks=3;days=2;hours=3,seconds=2)."
+                ),
                 validators=[authentik.lib.utils.time.timedelta_string_validator],
             ),
         ),

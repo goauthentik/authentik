@@ -62,10 +62,19 @@ exclude_lines = [
 ]
 show_missing = true
 
+[tool.pylint.basic]
+good-names = [
+  "pk",
+  "id",
+  "i",
+  "j",
+  "k",
+  "_",
+]
+
 [tool.pylint.master]
 disable = [
   "arguments-differ",
-  "fixme",
   "locally-disabled",
   "too-many-ancestors",
   "too-few-public-methods",
@@ -74,6 +83,7 @@ disable = [
   "similarities",
   "cyclic-import",
   "protected-access",
+  "unused-argument",
   "raise-missing-from",
   # To preserve django's translation function we need to use %-formatting
   "consider-using-f-string",
@@ -97,10 +107,14 @@ DJANGO_SETTINGS_MODULE = "authentik.root.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 junit_family = "xunit2"
 addopts = "-p no:celery --junitxml=unittest.xml"
+filterwarnings = [
+  "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
+  "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
+]
 
 [tool.poetry]
 name = "authentik"
-version = "2022.12.2"
+version = "2023.1.2"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 

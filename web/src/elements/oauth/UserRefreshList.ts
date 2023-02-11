@@ -12,10 +12,10 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 
-import { ExpiringBaseGrantModel, Oauth2Api, RefreshTokenModel } from "@goauthentik/api";
+import { ExpiringBaseGrantModel, Oauth2Api, TokenModel } from "@goauthentik/api";
 
 @customElement("ak-user-oauth-refresh-list")
-export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
+export class UserOAuthRefreshList extends Table<TokenModel> {
     expandable = true;
 
     @property({ type: Number })
@@ -25,7 +25,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
         return super.styles.concat(PFFlex);
     }
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<RefreshTokenModel>> {
+    async apiEndpoint(page: number): Promise<PaginatedResponse<TokenModel>> {
         return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensList({
             user: this.userId,
             ordering: "expires",
@@ -46,7 +46,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
         ];
     }
 
-    renderExpanded(item: RefreshTokenModel): TemplateResult {
+    renderExpanded(item: TokenModel): TemplateResult {
         return html` <td role="cell" colspan="4">
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-l-flex">
@@ -64,7 +64,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Refresh Code(s)`}
+            objectLabel=${t`Refresh Tokens(s)`}
             .objects=${this.selectedElements}
             .usedBy=${(item: ExpiringBaseGrantModel) => {
                 return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
@@ -83,7 +83,7 @@ export class UserOAuthRefreshList extends Table<RefreshTokenModel> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: RefreshTokenModel): TemplateResult[] {
+    row(item: TokenModel): TemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
             html`<ak-label color=${item.revoked ? PFColor.Orange : PFColor.Green}>
