@@ -309,7 +309,11 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         if mode == "none":
             return DEFAULT_AVATAR
         if mode.startswith("attributes."):
-            return get_path_from_dict(self.attributes, mode[11:], default=DEFAULT_AVATAR)
+            avatar = get_path_from_dict(self.attributes, mode[11:], default=None)
+            if not avatar:
+                mode = "initials"
+            else:
+                return avatar
         if mode == "initials":
             if not self.name:
                 # Render a default avatar abbreviated "AK" and
