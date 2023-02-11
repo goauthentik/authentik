@@ -241,7 +241,7 @@ class TestUsersAPI(APITestCase):
 
     @CONFIG.patch("avatars", "initials")
     def test_avatars_uiavatar(self):
-        """Test avatars ui-avatars"""
+        """Test avatars initials"""
         self.client.force_login(self.admin)
         response = self.client.get(reverse("authentik_api:user-me"))
         self.assertEqual(response.status_code, 200)
