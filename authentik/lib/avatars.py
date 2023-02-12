@@ -1,10 +1,17 @@
 """Avatar utils"""
-
+from functools import cache
 from hashlib import md5
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
+from urllib.parse import urlencode
 
+from django.templatetags.static import static
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
+
+from authentik.lib.config import get_path_from_dict
+
+GRAVATAR_URL = "https://secure.gravatar.com"
+DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 
 if TYPE_CHECKING:
     from authentik.core.models import User
@@ -25,6 +32,28 @@ SVG_FONTS = [
 ]
 
 
+def avatar_mode_none(user: "User", mode: str) -> Optional[str]:
+    """No avatar"""
+    return DEFAULT_AVATAR
+
+
+def avatar_mode_attribute(user: "User", mode: str) -> Optional[str]:
+    avatar = get_path_from_dict(user.attributes, mode[11:], default=None)
+    return avatar
+
+
+def avatar_mode_gravatar(user: "User", mode: str) -> Optional[str]:
+    # gravatar uses md5 for their URLs, so md5 can't be avoided
+    mail_hash = md5(user.email.lower().encode("utf-8")).hexdigest()  # nosec
+    parameters = [
+        ("s", "158"),
+        ("r", "g"),
+    ]
+    gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
+    return gravatar_url
+
+
+@cache
 def generate_avatar_from_name(
     user: "User",
     length: int = 2,

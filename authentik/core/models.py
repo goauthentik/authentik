@@ -3,7 +3,6 @@ import base64
 from datetime import timedelta
 from hashlib import md5, sha256
 from typing import Any, Optional
-from urllib.parse import urlencode
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -14,9 +13,7 @@ from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
 from django.db.models import Q, QuerySet, options
 from django.http import HttpRequest
-from django.templatetags.static import static
 from django.utils.functional import SimpleLazyObject, cached_property
-from django.utils.html import escape
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from guardian.mixins import GuardianUserMixin
@@ -28,8 +25,13 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.lib.avatars import generate_avatar_from_name
-from authentik.lib.config import CONFIG, get_path_from_dict
+from authentik.lib.avatars import (
+    avatar_mode_attribute,
+    avatar_mode_gravatar,
+    avatar_mode_none,
+    generate_avatar_from_name,
+)
+from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
 from authentik.lib.utils.http import get_client_ip
@@ -50,9 +52,6 @@ USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
 
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
-
-GRAVATAR_URL = "https://secure.gravatar.com"
-DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
 
 
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + ("authentik_used_by_shadows",)
@@ -237,13 +236,9 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Get avatar, depending on authentik.avatar setting"""
         mode: str = CONFIG.y("avatars", "none")
         if mode == "none":
-            return DEFAULT_AVATAR
+            return avatar_mode_none(self, mode)
         if mode.startswith("attributes."):
-            avatar = get_path_from_dict(self.attributes, mode[11:], default=None)
-            if not avatar:
-                mode = "initials"
-            else:
-                return avatar
+            return avatar_mode_attribute(self, mode)
         if mode == "initials":
             if not self.name:
                 # Render a default avatar abbreviated "AK" and
@@ -251,20 +246,13 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
                 svg = generate_avatar_from_name(User(name="a k"))
             else:
                 svg = generate_avatar_from_name(self)
-            print(svg)
             return (
                 "data:image/svg+xml;base64,"
                 f"{base64.b64encode(svg.encode('utf-8')).decode('utf-8')}"
             )
-        # gravatar uses md5 for their URLs, so md5 can't be avoided
-        mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
         if mode == "gravatar":
-            parameters = [
-                ("s", "158"),
-                ("r", "g"),
-            ]
-            gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
-            return escape(gravatar_url)
+            return avatar_mode_gravatar(self, mode)
+        mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
         return mode % {
             "username": self.username,
             "mail_hash": mail_hash,
