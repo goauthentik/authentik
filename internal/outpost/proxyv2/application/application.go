@@ -169,7 +169,9 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 			}).Observe(float64(after))
 		})
 	})
-	mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	if server.API().GlobalConfig.ErrorReporting.Enabled {
+		mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	}
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.EqualFold(r.URL.Query().Get(CallbackSignature), "true") {
