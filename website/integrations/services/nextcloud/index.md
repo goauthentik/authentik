@@ -49,6 +49,9 @@ In Nextcloud, ensure that the `SSO & SAML Authentication` app is installed. Navi
 Set the following values:
 
 -   Attribute to map the UID to: `http://schemas.goauthentik.io/2021/02/saml/uid`
+    :::danger
+    Nextcloud uses the UID attribute as username. However, mapping it to authentik usernames is **not recommended** due to their mutable nature. This can lead to security issues such as user impersonation. If you still wish to map the UID to an username, [disable username changing](../../../docs/installation/configuration#authentik_default_user_change_username) in authentik and set the UID attribute to "http://schemas.goauthentik.io/2021/02/saml/username".
+    :::
 -   Optional display name of the identity provider (default: "SSO & SAML log in"): `authentik`
 -   Identifier of the IdP entity (must be a URI): `https://authentik.company`
 -   URL Target of the IdP where the SP will send the Authentication Request Message: `https://authentik.company/application/saml/<application-slug>/sso/binding/redirect/`
