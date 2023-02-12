@@ -1,7 +1,6 @@
 """authentik core models"""
-import base64
 from datetime import timedelta
-from hashlib import md5, sha256
+from hashlib import sha256
 from typing import Any, Optional
 from uuid import uuid4
 
@@ -25,12 +24,7 @@ from authentik.blueprints.models import ManagedModel
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
-from authentik.lib.avatars import (
-    avatar_mode_attribute,
-    avatar_mode_gravatar,
-    avatar_mode_none,
-    generate_avatar_from_name,
-)
+from authentik.lib.avatars import get_avatar
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
@@ -234,30 +228,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     @property
     def avatar(self) -> str:
         """Get avatar, depending on authentik.avatar setting"""
-        mode: str = CONFIG.y("avatars", "none")
-        if mode == "none":
-            return avatar_mode_none(self, mode)
-        if mode.startswith("attributes."):
-            return avatar_mode_attribute(self, mode)
-        if mode == "initials":
-            if not self.name:
-                # Render a default avatar abbreviated "AK" and
-                # using authentik's red color
-                svg = generate_avatar_from_name(User(name="a k"))
-            else:
-                svg = generate_avatar_from_name(self)
-            return (
-                "data:image/svg+xml;base64,"
-                f"{base64.b64encode(svg.encode('utf-8')).decode('utf-8')}"
-            )
-        if mode == "gravatar":
-            return avatar_mode_gravatar(self, mode)
-        mail_hash = md5(self.email.lower().encode("utf-8")).hexdigest()  # nosec
-        return mode % {
-            "username": self.username,
-            "mail_hash": mail_hash,
-            "upn": self.attributes.get("upn", ""),
-        }
+        return get_avatar(self)
 
     class Meta:
         permissions = (
