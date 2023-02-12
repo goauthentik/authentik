@@ -8,7 +8,8 @@ import (
 )
 
 type testServer struct {
-	api *ak.APIController
+	api  *ak.APIController
+	apps []*Application
 }
 
 func newTestServer() *testServer {
@@ -21,6 +22,7 @@ func newTestServer() *testServer {
 			},
 			ak.MockConfig(),
 		),
+		apps: make([]*Application, 0),
 	}
 }
 
@@ -33,10 +35,11 @@ func (ts *testServer) CryptoStore() *ak.CryptoStore {
 }
 
 func (ts *testServer) Apps() []*Application {
-	return make([]*Application, 0)
+	return ts.apps
 }
 
 func newTestApplication() *Application {
+	ts := newTestServer()
 	a, _ := NewApplication(
 		api.ProxyOutpostConfig{
 			Name:                       ak.TestSecret(),
@@ -59,7 +62,8 @@ func newTestApplication() *Application {
 			},
 		},
 		http.DefaultClient,
-		newTestServer(),
+		ts,
 	)
+	ts.apps = append(ts.apps, a)
 	return a
 }
