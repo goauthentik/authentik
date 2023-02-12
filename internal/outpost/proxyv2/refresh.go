@@ -10,6 +10,7 @@ import (
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/utils/web"
+	"golang.org/x/exp/maps"
 )
 
 func (ps *ProxyServer) Refresh() error {
@@ -33,7 +34,7 @@ func (ps *ProxyServer) Refresh() error {
 				),
 			),
 		}
-		a, err := application.NewApplication(provider, hc, ps.cryptoStore, ps.akAPI)
+		a, err := application.NewApplication(provider, hc, ps)
 		existing, ok := apps[a.Host]
 		if ok {
 			existing.Stop()
@@ -47,4 +48,16 @@ func (ps *ProxyServer) Refresh() error {
 	ps.apps = apps
 	ps.log.Debug("Swapped maps")
 	return nil
+}
+
+func (ps *ProxyServer) API() *ak.APIController {
+	return ps.akAPI
+}
+
+func (ps *ProxyServer) CryptoStore() *ak.CryptoStore {
+	return ps.cryptoStore
+}
+
+func (ps *ProxyServer) Apps() []*application.Application {
+	return maps.Values(ps.apps)
 }

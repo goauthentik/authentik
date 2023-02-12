@@ -14,6 +14,7 @@ import (
 	"github.com/gorilla/sessions"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/outpost/proxyv2/codecs"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
 	"gopkg.in/boj/redistore.v1"
 )
@@ -21,50 +22,55 @@ import (
 const RedisKeyPrefix = "authentik_proxy_session_"
 
 func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) sessions.Store {
-	var store sessions.Store
-	if config.Get().Redis.Host != "" {
-		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.DB), []byte(*p.CookieSecret))
+	maxAge := 0
+	if p.AccessTokenValidity.IsSet() {
+		t := p.AccessTokenValidity.Get()
+		// Add one to the validity to ensure we don't have a session with indefinite length
+		maxAge = int(*t) + 1
+	}
+	if config.Get().Redis.Host == "foo" {
+		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.DB))
 		if err != nil {
 			panic(err)
 		}
+		rs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
 		rs.SetMaxLength(math.MaxInt)
 		rs.SetKeyPrefix(RedisKeyPrefix)
-		if p.AccessTokenValidity.IsSet() {
-			t := p.AccessTokenValidity.Get()
-			// Add one to the validity to ensure we don't have a session with indefinite length
-			rs.SetMaxAge(int(*t) + 1)
-		} else {
-			rs.SetMaxAge(0)
-		}
+
 		rs.Options.Domain = *p.CookieDomain
 		a.log.Trace("using redis session backend")
-		store = rs
-	} else {
-		dir := os.TempDir()
-		cs := sessions.NewFilesystemStore(dir, []byte(*p.CookieSecret))
-		// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
-		// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
-		// securecookie: the value is too long
-		// when using OpenID Connect , since this can contain a large amount of extra information in the id_token
-
-		// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
-		cs.MaxLength(math.MaxInt)
-		if p.AccessTokenValidity.IsSet() {
-			t := p.AccessTokenValidity.Get()
-			// Add one to the validity to ensure we don't have a session with indefinite length
-			cs.MaxAge(int(*t) + 1)
-		} else {
-			cs.MaxAge(0)
-		}
-		cs.Options.Domain = *p.CookieDomain
-		a.log.WithField("dir", dir).Trace("using filesystem session backend")
-		store = cs
+		return rs
 	}
-	return store
+	dir := os.TempDir()
+	cs := sessions.NewFilesystemStore(dir)
+	cs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
+	// https://github.com/markbates/goth/commit/7276be0fdf719ddff753f3574ef0f967e4a5a5f7
+	// set the maxLength of the cookies stored on the disk to a larger number to prevent issues with:
+	// securecookie: the value is too long
+	// when using OpenID Connect , since this can contain a large amount of extra information in the id_token
+
+	// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
+	cs.MaxLength(math.MaxInt)
+	cs.Options.Domain = *p.CookieDomain
+	a.log.WithField("dir", dir).Trace("using filesystem session backend")
+	return cs
+}
+
+func (a *Application) SessionName() string {
+	return a.sessionName
+}
+
+func (a *Application) getAllCodecs() []securecookie.Codec {
+	apps := a.srv.Apps()
+	cs := []securecookie.Codec{}
+	for _, app := range apps {
+		cs = append(cs, codecs.CodecsFromPairs(0, []byte(*app.proxyConfig.CookieSecret))...)
+	}
+	return cs
 }
 
 func (a *Application) Logout(sub string) error {
-	if fs, ok := a.sessions.(*sessions.FilesystemStore); ok {
+	if _, ok := a.sessions.(*sessions.FilesystemStore); ok {
 		files, err := os.ReadDir(os.TempDir())
 		if err != nil {
 			return err
@@ -81,8 +87,8 @@ func (a *Application) Logout(sub string) error {
 				continue
 			}
 			err = securecookie.DecodeMulti(
-				constants.SessionName, string(data),
-				&s.Values, fs.Codecs...,
+				a.SessionName(), string(data),
+				&s.Values, a.getAllCodecs()...,
 			)
 			if err != nil {
 				a.log.WithError(err).Trace("failed to decode session")

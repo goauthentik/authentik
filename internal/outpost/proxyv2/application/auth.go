@@ -49,7 +49,7 @@ func (a *Application) checkAuth(rw http.ResponseWriter, r *http.Request) (*Claim
 }
 
 func (a *Application) getClaimsFromSession(r *http.Request) *Claims {
-	s, err := a.sessions.Get(r, constants.SessionName)
+	s, err := a.sessions.Get(r, a.SessionName())
 	if err != nil {
 		// err == user has no session/session is not valid, reject
 		return nil
@@ -77,7 +77,7 @@ func (a *Application) getClaimsFromCache(r *http.Request) *Claims {
 }
 
 func (a *Application) saveAndCacheClaims(rw http.ResponseWriter, r *http.Request, claims Claims) (*Claims, error) {
-	s, _ := a.sessions.Get(r, constants.SessionName)
+	s, _ := a.sessions.Get(r, a.SessionName())
 
 	s.Values[constants.SessionClaims] = claims
 	err := s.Save(r, rw)

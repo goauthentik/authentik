@@ -70,7 +70,7 @@ func TestProxy_ModifyRequest_Claims(t *testing.T) {
 	}
 	rr := httptest.NewRecorder()
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	s.ID = uuid.New().String()
 	s.Options.MaxAge = 86400
 	s.Values[constants.SessionClaims] = Claims{
@@ -100,7 +100,7 @@ func TestProxy_ModifyRequest_Claims_Invalid(t *testing.T) {
 	}
 	rr := httptest.NewRecorder()
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	s.ID = uuid.New().String()
 	s.Options.MaxAge = 86400
 	s.Values[constants.SessionClaims] = Claims{

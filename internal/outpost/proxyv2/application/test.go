@@ -7,6 +7,35 @@ import (
 	"goauthentik.io/internal/outpost/ak"
 )
 
+type testServer struct {
+	api *ak.APIController
+}
+
+func newTestServer() *testServer {
+	return &testServer{
+		api: ak.MockAK(
+			api.Outpost{
+				Config: map[string]interface{}{
+					"authentik_host": ak.TestSecret(),
+				},
+			},
+			ak.MockConfig(),
+		),
+	}
+}
+
+func (ts *testServer) API() *ak.APIController {
+	return ts.api
+}
+
+func (ts *testServer) CryptoStore() *ak.CryptoStore {
+	return nil
+}
+
+func (ts *testServer) Apps() []*Application {
+	return make([]*Application, 0)
+}
+
 func newTestApplication() *Application {
 	a, _ := NewApplication(
 		api.ProxyOutpostConfig{
@@ -30,15 +59,7 @@ func newTestApplication() *Application {
 			},
 		},
 		http.DefaultClient,
-		nil,
-		ak.MockAK(
-			api.Outpost{
-				Config: map[string]interface{}{
-					"authentik_host": ak.TestSecret(),
-				},
-			},
-			ak.MockConfig(),
-		),
+		newTestServer(),
 	)
 	return a
 }

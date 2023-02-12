@@ -48,7 +48,7 @@ func TestForwardHandleTraefik_Single_Headers(t *testing.T) {
 
 	assert.Equal(t, http.StatusFound, rr.Code)
 	loc, _ := rr.Result().Location()
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	shouldUrl := url.Values{
 		"client_id":     []string{*a.proxyConfig.ClientId},
 		"redirect_uri":  []string{"https://ext.t.goauthentik.io/outpost.goauthentik.io/callback?X-authentik-auth-callback=true"},
@@ -69,7 +69,7 @@ func TestForwardHandleTraefik_Single_Claims(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleTraefik(rr, req)
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	s.ID = uuid.New().String()
 	s.Options.MaxAge = 86400
 	s.Values[constants.SessionClaims] = Claims{
@@ -135,7 +135,7 @@ func TestForwardHandleTraefik_Domain_Header(t *testing.T) {
 
 	assert.Equal(t, http.StatusFound, rr.Code)
 	loc, _ := rr.Result().Location()
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	shouldUrl := url.Values{
 		"client_id":     []string{*a.proxyConfig.ClientId},
 		"redirect_uri":  []string{"https://ext.t.goauthentik.io/outpost.goauthentik.io/callback?X-authentik-auth-callback=true"},

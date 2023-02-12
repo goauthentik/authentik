@@ -20,7 +20,7 @@ func TestLogout(t *testing.T) {
 	rr := httptest.NewRecorder()
 
 	// Login once
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	s.ID = uuid.New().String()
 	s.Options.MaxAge = 86400
 	s.Values[constants.SessionClaims] = Claims{
@@ -36,7 +36,7 @@ func TestLogout(t *testing.T) {
 	assert.Equal(t, http.StatusBadGateway, rr.Code)
 
 	// Login twice
-	s2, _ := a.sessions.Get(req, constants.SessionName)
+	s2, _ := a.sessions.Get(req, a.SessionName())
 	s2.ID = uuid.New().String()
 	s2.Options.MaxAge = 86400
 	s2.Values[constants.SessionClaims] = Claims{
@@ -53,7 +53,7 @@ func TestLogout(t *testing.T) {
 
 	// Logout
 	req, _ = http.NewRequest("GET", "https://ext.t.goauthentik.io/outpost.goauthentik.io/sign_out", nil)
-	s3, _ := a.sessions.Get(req, constants.SessionName)
+	s3, _ := a.sessions.Get(req, a.SessionName())
 	s3.ID = uuid.New().String()
 	s3.Options.MaxAge = 86400
 	s3.Values[constants.SessionClaims] = Claims{
