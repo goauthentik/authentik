@@ -20,7 +20,7 @@ func (a *Application) ErrorPage(rw http.ResponseWriter, r *http.Request, err str
 		Message:     "Error proxying to upstream server",
 		ProxyPrefix: "/outpost.goauthentik.io",
 	}
-	if claims != nil && claims.Proxy.IsSuperuser {
+	if claims != nil && claims.Proxy != nil && claims.Proxy.IsSuperuser {
 		data.Message = err
 	} else {
 		data.Message = "Failed to connect to backend."

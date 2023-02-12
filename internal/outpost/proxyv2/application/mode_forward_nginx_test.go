@@ -42,7 +42,7 @@ func TestForwardHandleNginx_Single_Headers(t *testing.T) {
 
 	assert.Equal(t, http.StatusUnauthorized, rr.Code)
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
 }
 
@@ -56,7 +56,7 @@ func TestForwardHandleNginx_Single_URI(t *testing.T) {
 
 	assert.Equal(t, http.StatusUnauthorized, rr.Code)
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	assert.Equal(t, "/app", s.Values[constants.SessionRedirect])
 }
 
@@ -68,7 +68,7 @@ func TestForwardHandleNginx_Single_Claims(t *testing.T) {
 	rr := httptest.NewRecorder()
 	a.forwardHandleNginx(rr, req)
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	s.ID = uuid.New().String()
 	s.Options.MaxAge = 86400
 	s.Values[constants.SessionClaims] = Claims{
@@ -132,6 +132,6 @@ func TestForwardHandleNginx_Domain_Header(t *testing.T) {
 
 	assert.Equal(t, http.StatusUnauthorized, rr.Code)
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	assert.Equal(t, "http://test.goauthentik.io/app", s.Values[constants.SessionRedirect])
 }

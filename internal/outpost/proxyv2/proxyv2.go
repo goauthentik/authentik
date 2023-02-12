@@ -50,7 +50,9 @@ func NewProxyServer(ac *ak.APIController) *ProxyServer {
 
 	globalMux := rootMux.NewRoute().Subrouter()
 	globalMux.Use(web.NewLoggingHandler(l.WithField("logger", "authentik.outpost.proxyv2.http"), nil))
-	globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	if ac.GlobalConfig.ErrorReporting.Enabled {
+		globalMux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	}
 	s := &ProxyServer{
 		cryptoStore: ak.NewCryptoStore(ac.Client.CryptoApi),
 		apps:        make(map[string]*application.Application),

@@ -64,7 +64,7 @@ func (a *Application) forwardHandleTraefik(rw http.ResponseWriter, r *http.Reque
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s, _ := a.sessions.Get(r, constants.SessionName)
+	s, _ := a.sessions.Get(r, a.SessionName())
 	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
 		s.Values[constants.SessionRedirect] = fwd.String()
 		err = s.Save(r, rw)
@@ -115,7 +115,7 @@ func (a *Application) forwardHandleCaddy(rw http.ResponseWriter, r *http.Request
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s, _ := a.sessions.Get(r, constants.SessionName)
+	s, _ := a.sessions.Get(r, a.SessionName())
 	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
 		s.Values[constants.SessionRedirect] = fwd.String()
 		err = s.Save(r, rw)
@@ -151,7 +151,7 @@ func (a *Application) forwardHandleNginx(rw http.ResponseWriter, r *http.Request
 		return
 	}
 
-	s, _ := a.sessions.Get(r, constants.SessionName)
+	s, _ := a.sessions.Get(r, a.SessionName())
 	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
 		s.Values[constants.SessionRedirect] = fwd.String()
 		err = s.Save(r, rw)
@@ -190,7 +190,7 @@ func (a *Application) forwardHandleEnvoy(rw http.ResponseWriter, r *http.Request
 	// to a (possibly) different domain, but we want to be redirected back
 	// to the application
 	// X-Forwarded-Uri is only the path, so we need to build the entire URL
-	s, _ := a.sessions.Get(r, constants.SessionName)
+	s, _ := a.sessions.Get(r, a.SessionName())
 	if _, redirectSet := s.Values[constants.SessionRedirect]; !redirectSet {
 		s.Values[constants.SessionRedirect] = fwd.String()
 		err = s.Save(r, rw)

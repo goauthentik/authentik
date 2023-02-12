@@ -2,6 +2,7 @@ package application
 
 import (
 	"context"
+	"crypto/sha256"
 	"crypto/tls"
 	"encoding/gob"
 	"fmt"
@@ -40,6 +41,7 @@ type Application struct {
 	oauthConfig   oauth2.Config
 	tokenVerifier *oidc.IDTokenVerifier
 	outpostName   string
+	sessionName   string
 
 	sessions    sessions.Store
 	proxyConfig api.ProxyOutpostConfig
@@ -48,12 +50,19 @@ type Application struct {
 	log *log.Entry
 	mux *mux.Router
 	ak  *ak.APIController
+	srv Server
 
 	errorTemplates  *template.Template
 	authHeaderCache *ttlcache.Cache[string, Claims]
 }
 
-func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore, ak *ak.APIController) (*Application, error) {
+type Server interface {
+	API() *ak.APIController
+	Apps() []*Application
+	CryptoStore() *ak.CryptoStore
+}
+
+func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*Application, error) {
 	gob.Register(Claims{})
 	muxLogger := log.WithField("logger", "authentik.outpost.proxyv2.application").WithField("name", p.Name)
 
@@ -77,13 +86,13 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	}.Encode()
 
 	managed := false
-	if m := ak.Outpost.Managed.Get(); m != nil {
+	if m := server.API().Outpost.Managed.Get(); m != nil {
 		managed = *m == "goauthentik.io/outposts/embedded"
 	}
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
 		p,
-		ak.Outpost.Config["authentik_host"].(string),
+		server.API().Outpost.Config["authentik_host"].(string),
 		managed,
 	)
 
@@ -100,10 +109,16 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		Scopes:       p.ScopesToRequest,
 	}
 	mux := mux.NewRouter()
+
+	h := sha256.New()
+	bs := string(h.Sum([]byte(*p.ClientId)))
+	sessionName := fmt.Sprintf("authentik_proxy_%s", bs[:8])
+
 	a := &Application{
 		Host:            externalHost.Host,
 		log:             muxLogger,
-		outpostName:     ak.Outpost.Name,
+		outpostName:     server.API().Outpost.Name,
+		sessionName:     sessionName,
 		endpoint:        endpoint,
 		oauthConfig:     oauth2Config,
 		tokenVerifier:   verifier,
@@ -111,8 +126,9 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 		httpClient:      c,
 		mux:             mux,
 		errorTemplates:  templates.GetTemplates(),
-		ak:              ak,
+		ak:              server.API(),
 		authHeaderCache: ttlcache.New(ttlcache.WithDisableTouchOnHit[string, Claims]()),
+		srv:             server,
 	}
 	go a.authHeaderCache.Start()
 	a.sessions = a.getStore(p, externalHost)
@@ -153,7 +169,9 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 			}).Observe(float64(after))
 		})
 	})
-	mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	if server.API().GlobalConfig.ErrorReporting.Enabled {
+		mux.Use(sentryhttp.New(sentryhttp.Options{}).Handle)
+	}
 	mux.Use(func(inner http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			if strings.EqualFold(r.URL.Query().Get(CallbackSignature), "true") {
@@ -184,11 +202,11 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, cs *ak.CryptoStore
 	}
 
 	if kp := p.Certificate.Get(); kp != nil {
-		err := cs.AddKeypair(*kp)
+		err := server.CryptoStore().AddKeypair(*kp)
 		if err != nil {
 			return nil, fmt.Errorf("failed to initially fetch certificate: %w", err)
 		}
-		a.Cert = cs.Get(*kp)
+		a.Cert = server.CryptoStore().Get(*kp)
 	}
 
 	if *p.SkipPathRegex != "" {
@@ -235,7 +253,7 @@ func (a *Application) Stop() {
 
 func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 	redirect := a.endpoint.EndSessionEndpoint
-	s, err := a.sessions.Get(r, constants.SessionName)
+	s, err := a.sessions.Get(r, a.SessionName())
 	if err != nil {
 		a.redirectToStart(rw, r)
 		return

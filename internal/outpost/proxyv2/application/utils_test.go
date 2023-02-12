@@ -23,7 +23,7 @@ func TestRedirectToStart_Proxy(t *testing.T) {
 	loc, _ := rr.Result().Location()
 	assert.Equal(t, "https://test.goauthentik.io/outpost.goauthentik.io/start?rd=https%3A%2F%2Ftest.goauthentik.io%2Ffoo%2Fbar%2Fbaz", loc.String())
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	assert.Equal(t, "https://test.goauthentik.io/foo/bar/baz", s.Values[constants.SessionRedirect])
 }
 
@@ -40,7 +40,7 @@ func TestRedirectToStart_Forward(t *testing.T) {
 	loc, _ := rr.Result().Location()
 	assert.Equal(t, "https://test.goauthentik.io/outpost.goauthentik.io/start?rd=https%3A%2F%2Ftest.goauthentik.io%2Ffoo%2Fbar%2Fbaz", loc.String())
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	assert.Equal(t, "https://test.goauthentik.io/foo/bar/baz", s.Values[constants.SessionRedirect])
 }
 
@@ -58,7 +58,7 @@ func TestRedirectToStart_Forward_Domain_Invalid(t *testing.T) {
 	loc, _ := rr.Result().Location()
 	assert.Equal(t, "https://test.goauthentik.io/outpost.goauthentik.io/start?rd=https%3A%2F%2Ftest.goauthentik.io", loc.String())
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	assert.Equal(t, "https://test.goauthentik.io", s.Values[constants.SessionRedirect])
 }
 
@@ -76,6 +76,6 @@ func TestRedirectToStart_Forward_Domain(t *testing.T) {
 	loc, _ := rr.Result().Location()
 	assert.Equal(t, "https://test.goauthentik.io/outpost.goauthentik.io/start?rd=https%3A%2F%2Ftest.goauthentik.io", loc.String())
 
-	s, _ := a.sessions.Get(req, constants.SessionName)
+	s, _ := a.sessions.Get(req, a.SessionName())
 	assert.Equal(t, "https://test.goauthentik.io", s.Values[constants.SessionRedirect])
 }
