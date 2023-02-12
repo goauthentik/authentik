@@ -177,8 +177,11 @@ Disable the inbuilt update-checker. Defaults to `false`.
 
 Configure how authentik should show avatars for users. Following values can be set:
 
+Default: `gravatar,initials`
+
 -   `none`: Disables per-user avatars and just shows a 1x1 pixel transparent picture
--   `gravatar`: Uses gravatar with the user's email address (default)
+-   `gravatar`: Uses gravatar with the user's email address
+-   `initials`: Generated avatars based on the user's name
 -   Any URL: If you want to use images hosted on another server, you can set any URL.
 
     Additionally, these placeholders can be used:
@@ -187,8 +190,9 @@ Configure how authentik should show avatars for users. Following values can be s
     -   `%(mail_hash)s`: The email address, md5 hashed
     -   `%(upn)s`: The user's UPN, if set (otherwise an empty string)
 
-Starting with authentik 2022.8, you can also use an attribute path like `attributes.something.avatar`,
-which can be used in combination with the file field to allow users to upload custom avatars for themselves.
+Starting with authentik 2022.8, you can also use an attribute path like `attributes.something.avatar`, which can be used in combination with the file field to allow users to upload custom avatars for themselves.
+
+Starting with authentik 2023.2, multiple modes can be set, and authentik will fallback to the next mode when no avatar could be found. For example, setting this to `gravatar,initials` will attempt to get an avatar from Gravatar, and if the user has not configured on there, it will fallback to a generated avatar.
 
 ### `AUTHENTIK_DEFAULT_USER_CHANGE_NAME`
 

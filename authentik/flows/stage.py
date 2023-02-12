@@ -11,7 +11,7 @@ from rest_framework.request import Request
 from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.models import DEFAULT_AVATAR, User
+from authentik.core.models import User
 from authentik.flows.challenge import (
     AccessDeniedChallenge,
     Challenge,
@@ -24,6 +24,7 @@ from authentik.flows.challenge import (
 )
 from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
+from authentik.lib.avatars import DEFAULT_AVATAR
 from authentik.lib.utils.reflection import class_to_path
 
 if TYPE_CHECKING:
