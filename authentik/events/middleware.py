@@ -27,6 +27,7 @@ from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
+from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 
 IGNORED_MODELS = (
     Event,
@@ -44,6 +45,9 @@ IGNORED_MODELS = (
     OutpostServiceConnection,
     Policy,
     PolicyBindingModel,
+    AuthorizationCode,
+    AccessToken,
+    RefreshToken,
 )
 
 
