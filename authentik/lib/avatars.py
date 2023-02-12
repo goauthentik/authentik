@@ -90,8 +90,7 @@ def generate_avatar_from_name(
     else:
         initials = "".join([part[0] for part in name_parts[:-1]])
         initials += name_parts[-1]
-
-    initials = initials[:length]
+        initials = initials[:length]
 
     bg_hex = bg_hex.strip("#")
     text_hex = text_hex.strip("#")
