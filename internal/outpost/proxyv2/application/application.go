@@ -43,9 +43,10 @@ type Application struct {
 	outpostName   string
 	sessionName   string
 
-	sessions    sessions.Store
-	proxyConfig api.ProxyOutpostConfig
-	httpClient  *http.Client
+	sessions             sessions.Store
+	proxyConfig          api.ProxyOutpostConfig
+	httpClient           *http.Client
+	publicHostHTTPClient *http.Client
 
 	log *log.Entry
 	mux *mux.Router
@@ -110,25 +111,27 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 	}
 	mux := mux.NewRouter()
 
+	// Save cookie name, based on hashed client ID
 	h := sha256.New()
 	bs := string(h.Sum([]byte(*p.ClientId)))
 	sessionName := fmt.Sprintf("authentik_proxy_%s", bs[:8])
 
 	a := &Application{
-		Host:            externalHost.Host,
-		log:             muxLogger,
-		outpostName:     server.API().Outpost.Name,
-		sessionName:     sessionName,
-		endpoint:        endpoint,
-		oauthConfig:     oauth2Config,
-		tokenVerifier:   verifier,
-		proxyConfig:     p,
-		httpClient:      c,
-		mux:             mux,
-		errorTemplates:  templates.GetTemplates(),
-		ak:              server.API(),
-		authHeaderCache: ttlcache.New(ttlcache.WithDisableTouchOnHit[string, Claims]()),
-		srv:             server,
+		Host:                 externalHost.Host,
+		log:                  muxLogger,
+		outpostName:          server.API().Outpost.Name,
+		sessionName:          sessionName,
+		endpoint:             endpoint,
+		oauthConfig:          oauth2Config,
+		tokenVerifier:        verifier,
+		proxyConfig:          p,
+		httpClient:           c,
+		publicHostHTTPClient: web.NewHostInterceptor(c, server.API().Outpost.Config["authentik_host"].(string)),
+		mux:                  mux,
+		errorTemplates:       templates.GetTemplates(),
+		ak:                   server.API(),
+		authHeaderCache:      ttlcache.New(ttlcache.WithDisableTouchOnHit[string, Claims]()),
+		srv:                  server,
 	}
 	go a.authHeaderCache.Start()
 	a.sessions = a.getStore(p, externalHost)
