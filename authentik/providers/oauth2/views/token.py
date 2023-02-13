@@ -383,9 +383,11 @@ class TokenParams:
             method_args["jwk_id"] = parsed_key.key_id
         Event.new(
             action=EventAction.LOGIN,
-            PLAN_CONTEXT_METHOD="jwt",
-            PLAN_CONTEXT_METHOD_ARGS=method_args,
-            PLAN_CONTEXT_APPLICATION=app,
+            **{
+                PLAN_CONTEXT_METHOD: "jwt",
+                PLAN_CONTEXT_METHOD_ARGS: method_args,
+                PLAN_CONTEXT_APPLICATION: app,
+            },
         ).from_http(request, user=self.user)
 
     def __post_init_device_code(self, request: HttpRequest):
