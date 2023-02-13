@@ -43,6 +43,11 @@ export class FlowInspector extends AKElement {
                 code.break {
                     word-break: break-all;
                 }
+                pre {
+                    word-break: break-all;
+                    overflow-x: hidden;
+                    white-space: break-spaces;
+                }
             `,
         ];
     }
