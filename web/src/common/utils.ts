@@ -29,12 +29,8 @@ export function convertToTitle(text: string): string {
     });
 }
 
-export function truncate(input?: string, max = 10): string {
-    input = input || "";
-    const array = input.trim().split(" ");
-    const ellipsis = array.length > max ? "..." : "";
-
-    return array.slice(0, max).join(" ") + ellipsis;
+export function truncate(string: string, length = 10): string {
+    return string.length > length ? `${string.substring(0, length)}...` : string;
 }
 
 export function camelToSnake(key: string): string {

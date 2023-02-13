@@ -126,7 +126,9 @@ export class LibraryApplication extends AKElement {
                     <small>${this.application.metaPublisher}</small>
                 </div>
             </div>
-            <div class="pf-c-card__body">${truncate(this.application.metaDescription, 35)}</div>
+            <div class="pf-c-card__body">
+                ${truncate(this.application.metaDescription || "", 35)}
+            </div>
         </div>`;
     }
 }
