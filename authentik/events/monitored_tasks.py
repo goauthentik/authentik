@@ -63,11 +63,6 @@ class TaskInfo:
 
     task_description: Optional[str] = field(default=None)
 
-    @property
-    def html_name(self) -> list[str]:
-        """Get task_name, but split on underscores, so we can join in the html template."""
-        return self.task_name.split("_")
-
     @staticmethod
     def all() -> dict[str, "TaskInfo"]:
         """Get all TaskInfo objects"""
@@ -82,7 +77,7 @@ class TaskInfo:
         """Delete task info from cache"""
         return cache.delete(CACHE_KEY_PREFIX + self.task_name)
 
-    def set_prom_metrics(self):
+    def update_metrics(self):
         """Update prometheus metrics"""
         start = default_timer()
         if hasattr(self, "start_timestamp"):
@@ -101,9 +96,9 @@ class TaskInfo:
         """Save task into cache"""
         key = CACHE_KEY_PREFIX + self.task_name
         if self.result.uid:
-            key += f"/{self.result.uid}"
-            self.task_name += f"/{self.result.uid}"
-        self.set_prom_metrics()
+            key += f":{self.result.uid}"
+            self.task_name += f":{self.result.uid}"
+        self.update_metrics()
         cache.set(key, self, timeout=timeout_hours * 60 * 60)
 
 

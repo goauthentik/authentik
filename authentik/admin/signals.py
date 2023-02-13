@@ -18,4 +18,4 @@ def monitoring_set_workers(sender, **kwargs):
 def monitoring_set_tasks(sender, **kwargs):
     """Set task gauges"""
     for task in TaskInfo.all().values():
-        task.set_prom_metrics()
+        task.update_metrics()
