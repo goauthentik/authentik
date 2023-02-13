@@ -37,11 +37,10 @@ def event_notification_handler(event_uuid: str):
 @CELERY_APP.task()
 def event_trigger_handler(event_uuid: str, trigger_name: str):
     """Check if policies attached to NotificationRule match event"""
-    events = Event.objects.filter(event_uuid=event_uuid)
-    if not events.exists():
+    event: Event = Event.objects.filter(event_uuid=event_uuid).first()
+    if not event:
         LOGGER.warning("event doesn't exist yet or anymore", event_uuid=event_uuid)
         return
-    event: Event = events.first()
     trigger: Optional[NotificationRule] = NotificationRule.objects.filter(name=trigger_name).first()
     if not trigger:
         return

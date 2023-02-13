@@ -11,6 +11,7 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
 from authentik.policies.apps import HIST_POLICIES_BUILD_TIME
+from authentik.policies.exceptions import PolicyEngineException
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel, PolicyEngineMode
 from authentik.policies.process import PolicyProcess, cache_key
 from authentik.policies.types import PolicyRequest, PolicyResult
@@ -51,9 +52,9 @@ class PolicyEngine:
         # objects with no policies attached will pass.
         self.empty_result = True
         if not isinstance(pbm, PolicyBindingModel):  # pragma: no cover
-            raise ValueError(f"{pbm} is not instance of PolicyBindingModel")
+            raise PolicyEngineException(f"{pbm} is not instance of PolicyBindingModel")
         if not user:
-            raise ValueError("User must be set")
+            raise PolicyEngineException("User must be set")
         self.__pbm = pbm
         self.request = PolicyRequest(user)
         self.request.obj = pbm
@@ -76,7 +77,7 @@ class PolicyEngine:
         """Check policy type, make sure it's not the root class as that has no logic implemented"""
         # pyright: reportGeneralTypeIssues=false
         if binding.policy is not None and binding.policy.__class__ == Policy:
-            raise TypeError(f"Policy '{binding.policy}' is root type")
+            raise PolicyEngineException(f"Policy '{binding.policy}' is root type")
 
     def build(self) -> "PolicyEngine":
         """Build wrapper which monitors performance"""
