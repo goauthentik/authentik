@@ -94,7 +94,7 @@
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "base64-js": "^1.5.1",
-        "chart.js": "^4.2.0",
+        "chart.js": "^4.2.1",
         "chartjs-adapter-moment": "^1.0.1",
         "codemirror": "^6.0.1",
         "construct-style-sheets-polyfill": "^3.1.0",
