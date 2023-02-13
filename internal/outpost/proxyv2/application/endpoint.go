@@ -64,7 +64,6 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bo
 	ep.AuthURL = updateURL(authUrl, aku.Scheme, aku.Host)
 	ep.EndSessionEndpoint = updateURL(endUrl, aku.Scheme, aku.Host)
 	ep.JwksUri = updateURL(jwksUrl, aku.Scheme, aku.Host)
-	ep.TokenURL = updateURL(tokenUrl, aku.Scheme, aku.Host)
 	ep.Issuer = updateURL(ep.Issuer, aku.Scheme, aku.Host)
 	return ep
 }

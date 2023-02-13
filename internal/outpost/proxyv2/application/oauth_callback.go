@@ -24,7 +24,7 @@ func (a *Application) redeemCallback(savedState string, u *url.URL, c context.Co
 		return nil, fmt.Errorf("blank code")
 	}
 
-	ctx := context.WithValue(c, oauth2.HTTPClient, a.httpClient)
+	ctx := context.WithValue(c, oauth2.HTTPClient, a.publicHostHTTPClient)
 	// Verify state and errors.
 	oauth2Token, err := a.oauthConfig.Exchange(ctx, code)
 	if err != nil {
