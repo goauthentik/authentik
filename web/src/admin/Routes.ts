@@ -105,8 +105,8 @@ export const ROUTES: Route[] = [
         return html`<ak-event-list></ak-event-list>`;
     }),
     new Route(new RegExp(`^/events/log/(?<id>${UUID_REGEX})$`), async (args) => {
-        await import("@goauthentik/admin/events/EventInfoPage");
-        return html`<ak-event-info-page .eventID=${args.id}></ak-event-info-page>`;
+        await import("@goauthentik/admin/events/EventViewPage");
+        return html`<ak-event-view .eventID=${args.id}></ak-event-view>`;
     }),
     new Route(new RegExp("^/events/transports$"), async () => {
         await import("@goauthentik/admin/events/TransportListPage");

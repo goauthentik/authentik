@@ -1,10 +1,9 @@
 import "@goauthentik/admin/events/EventInfo";
-import { ActionToLabel } from "@goauthentik/admin/events/utils";
+import { ActionToLabel, EventGeo } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
-import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 
 import { t } from "@lingui/macro";
 
@@ -21,8 +20,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { EventsApi } from "@goauthentik/api";
 
-@customElement("ak-event-info-page")
-export class EventInfoPage extends AKElement {
+@customElement("ak-event-view")
+export class EventViewPage extends AKElement {
     @property()
     set eventID(value: string) {
         new EventsApi(DEFAULT_CONFIG)
@@ -45,10 +44,6 @@ export class EventInfoPage extends AKElement {
         if (!this.event) {
             return html`<ak-page-header icon="pf-icon pf-icon-catalog" header=${t`Loading`}>
             </ak-page-header> `;
-        }
-        let geo: KeyUnknown | undefined = undefined;
-        if (Object.hasOwn(this.event.context, "geo")) {
-            geo = this.event.context.geo as KeyUnknown;
         }
         return html`<ak-page-header
                 icon="pf-icon pf-icon-catalog"
@@ -132,11 +127,7 @@ export class EventInfoPage extends AKElement {
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
                                             <div>${this.event.clientIp || t`-`}</div>
-                                            ${geo
-                                                ? html`<small
-                                                      >${[geo.city, geo.country].join(", ")}</small
-                                                  >`
-                                                : html``}
+                                            <small>${EventGeo(this.event)}</small>
                                         </div>
                                     </dd>
                                 </div>
