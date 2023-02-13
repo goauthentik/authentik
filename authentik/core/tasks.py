@@ -43,7 +43,11 @@ def clean_expired_models(self: MonitoredTask):
     amount = 0
     for session in AuthenticatedSession.objects.all():
         cache_key = f"{KEY_PREFIX}{session.session_key}"
-        value = cache.get(cache_key)
+        try:
+            value = cache.get(cache_key)
+        # pylint: disable=broad-except
+        except Exception as exc:
+            LOGGER.debug("Failed to get session from cache", exc=exc)
         if not value:
             session.delete()
             amount += 1
