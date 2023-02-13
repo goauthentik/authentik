@@ -133,7 +133,9 @@ export class EventInfoPage extends AKElement {
                                         <div class="pf-c-description-list__text">
                                             <div>${this.event.clientIp || t`-`}</div>
                                             ${geo
-                                                ? html`<small>${geo.city}, ${geo.country}</small> `
+                                                ? html`<small
+                                                      >${[geo.city, geo.country].join(", ")}</small
+                                                  >`
                                                 : html``}
                                         </div>
                                     </dd>

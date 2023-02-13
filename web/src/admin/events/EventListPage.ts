@@ -77,7 +77,7 @@ export class EventListPage extends TablePage<Event> {
                 : html`-`,
             html`<span>${item.created?.toLocaleString()}</span>`,
             html`<div>${item.clientIp || t`-`}</div>
-                ${geo ? html`<small>${geo.city}, ${geo.country}</small> ` : html``}`,
+                ${geo ? html`<small>${[geo.city, geo.country].join(", ")}</small>` : html``}`,
             html`<span>${item.tenant?.name || t`-`}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <i class="fas fa-share-square"></i>
