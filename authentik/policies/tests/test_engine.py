@@ -5,6 +5,7 @@ from django.test import TestCase
 from authentik.core.models import User
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.engine import PolicyEngine
+from authentik.policies.exceptions import PolicyEngineException
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel, PolicyEngineMode
 from authentik.policies.tests.test_process import clear_policy_cache
@@ -93,7 +94,7 @@ class TestPolicyEngine(TestCase):
         """Test invalid policy type"""
         pbm = PolicyBindingModel.objects.create()
         PolicyBinding.objects.create(target=pbm, policy=self.policy_wrong_type, order=0)
-        with self.assertRaises(TypeError):
+        with self.assertRaises(PolicyEngineException):
             engine = PolicyEngine(pbm, self.user)
             engine.build()
 

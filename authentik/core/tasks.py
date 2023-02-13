@@ -43,6 +43,7 @@ def clean_expired_models(self: MonitoredTask):
     amount = 0
     for session in AuthenticatedSession.objects.all():
         cache_key = f"{KEY_PREFIX}{session.session_key}"
+        value = None
         try:
             value = cache.get(cache_key)
         # pylint: disable=broad-except
