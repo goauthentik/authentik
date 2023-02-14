@@ -36,7 +36,7 @@ func (a *Application) attemptBasicAuth(username, password string) *Claims {
 		return nil
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	res, err := a.httpClient.Do(req)
+	res, err := a.publicHostHTTPClient.Do(req)
 	if err != nil || res.StatusCode > 200 {
 		b, err := io.ReadAll(res.Body)
 		if err != nil {

@@ -39,7 +39,7 @@ func (a *Application) attemptBearerAuth(token string) *TokenIntrospectionRespons
 		return nil
 	}
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	res, err := a.httpClient.Do(req)
+	res, err := a.publicHostHTTPClient.Do(req)
 	if err != nil || res.StatusCode > 200 {
 		a.log.WithError(err).Warning("failed to send introspection request")
 		return nil
