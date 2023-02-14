@@ -11,9 +11,8 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
-import { CoreApi, Group, User } from "@goauthentik/api";
+import { CoreApi, User } from "@goauthentik/api";
 
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
@@ -44,9 +43,9 @@ export class UserForm extends ModelForm<User, number> {
 
     send = (data: User): Promise<User> => {
         if (this.instance?.pk) {
-            return new CoreApi(DEFAULT_CONFIG).coreUsersUpdate({
+            return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                 id: this.instance.pk,
-                userRequest: data,
+                patchedUserRequest: data,
             });
         } else {
             return new CoreApi(DEFAULT_CONFIG).coreUsersCreate({
@@ -109,63 +108,6 @@ export class UserForm extends ModelForm<User, number> {
                 <p class="pf-c-form__helper-text">
                     ${t`Designates whether this user should be treated as active. Unselect this instead of deleting accounts.`}
                 </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Groups`} name="groups">
-                <div class="pf-c-input-group">
-                    <ak-user-group-select-table
-                        .confirm=${(items: Group[]) => {
-                            // Because the model only has the IDs, map the group list to IDs
-                            const ids = items.map((g) => g.pk);
-                            if (!this.instance) this.instance = {} as User;
-                            this.instance.groups = Array.from(this.instance?.groups || []).concat(
-                                ids,
-                            );
-                            this.requestUpdate();
-                            return Promise.resolve();
-                        }}
-                    >
-                        <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                            <i class="fas fa-plus" aria-hidden="true"></i>
-                        </button>
-                    </ak-user-group-select-table>
-                    <div class="pf-c-form-control">
-                        <ak-chip-group>
-                            ${until(
-                                new CoreApi(DEFAULT_CONFIG)
-                                    .coreGroupsList({
-                                        ordering: "name",
-                                    })
-                                    .then((groups) => {
-                                        return groups.results.map((group) => {
-                                            const selected = Array.from(
-                                                this.instance?.groups || [],
-                                            ).some((sg) => {
-                                                return sg == group.pk;
-                                            });
-                                            if (!selected) return;
-                                            return html`<ak-chip
-                                                .removable=${true}
-                                                value=${ifDefined(group.pk)}
-                                                @remove=${() => {
-                                                    if (!this.instance) return;
-                                                    const groups = Array.from(
-                                                        this.instance?.groups || [],
-                                                    );
-                                                    const idx = groups.indexOf(group.pk);
-                                                    groups.splice(idx, 1);
-                                                    this.instance.groups = groups;
-                                                    this.requestUpdate();
-                                                }}
-                                            >
-                                                ${group.name}
-                                            </ak-chip>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </ak-chip-group>
-                    </div>
-                </div>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Attributes`} ?required=${true} name="attributes">
                 <ak-codemirror

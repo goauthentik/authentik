@@ -7,7 +7,6 @@ import "@goauthentik/elements/chips/ChipGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
-import { UserOption } from "@goauthentik/elements/user/utils";
 import YAML from "yaml";
 
 import { t } from "@lingui/macro";
@@ -15,9 +14,8 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
-import { CoreApi, CoreGroupsListRequest, Group, User } from "@goauthentik/api";
+import { CoreApi, CoreGroupsListRequest, Group } from "@goauthentik/api";
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
@@ -48,9 +46,9 @@ export class GroupForm extends ModelForm<Group, string> {
 
     send = (data: Group): Promise<Group> => {
         if (this.instance?.pk) {
-            return new CoreApi(DEFAULT_CONFIG).coreGroupsUpdate({
+            return new CoreApi(DEFAULT_CONFIG).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,
-                groupRequest: data,
+                patchedGroupRequest: data,
             });
         } else {
             data.users = Array.from(this.instance?.users || []);
@@ -112,63 +110,6 @@ export class GroupForm extends ModelForm<Group, string> {
                     ?blankable=${true}
                 >
                 </ak-search-select>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Members`} name="users">
-                <div class="pf-c-input-group">
-                    <ak-group-member-select-table
-                        .confirm=${(items: User[]) => {
-                            // Because the model only has the IDs, map the user list to IDs
-                            const ids = items.map((u) => u.pk || 0);
-                            if (!this.instance) this.instance = {} as Group;
-                            this.instance.users = Array.from(this.instance?.users || []).concat(
-                                ids,
-                            );
-                            this.requestUpdate();
-                            return Promise.resolve();
-                        }}
-                    >
-                        <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                            <i class="fas fa-plus" aria-hidden="true"></i>
-                        </button>
-                    </ak-group-member-select-table>
-                    <div class="pf-c-form-control">
-                        <ak-chip-group>
-                            ${until(
-                                new CoreApi(DEFAULT_CONFIG)
-                                    .coreUsersList({
-                                        ordering: "username",
-                                    })
-                                    .then((users) => {
-                                        return users.results.map((user) => {
-                                            const selected = Array.from(
-                                                this.instance?.users || [],
-                                            ).some((su) => {
-                                                return su == user.pk;
-                                            });
-                                            if (!selected) return;
-                                            return html`<ak-chip
-                                                .removable=${true}
-                                                value=${ifDefined(user.pk)}
-                                                @remove=${() => {
-                                                    if (!this.instance) return;
-                                                    const users = Array.from(
-                                                        this.instance?.users || [],
-                                                    );
-                                                    const idx = users.indexOf(user.pk || 0);
-                                                    users.splice(idx, 1);
-                                                    this.instance.users = users;
-                                                    this.requestUpdate();
-                                                }}
-                                            >
-                                                ${UserOption(user)}
-                                            </ak-chip>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
-                        </ak-chip-group>
-                    </div>
-                </div>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Attributes`} ?required=${true} name="attributes">
                 <ak-codemirror
