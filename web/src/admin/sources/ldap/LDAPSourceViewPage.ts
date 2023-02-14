@@ -170,7 +170,7 @@ export class LDAPSourceViewPage extends AKElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-action-button
-                                class="pf-m-primary"
+                                class="pf-m-secondary"
                                 .apiRequest=${() => {
                                     return new SourcesApi(DEFAULT_CONFIG)
                                         .sourcesLdapPartialUpdate({
