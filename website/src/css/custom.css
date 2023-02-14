@@ -24,6 +24,7 @@
 }
 
 .hero--primary {
+    padding-bottom: 5.3rem !important;
     -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
 }
