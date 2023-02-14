@@ -44,7 +44,7 @@ def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str):
         # to set the state with
         return
     sync = path_to_class(sync_class)
-    self.set_uid(f"{source.slug}_{sync.__name__.replace('LDAPSynchronizer', '').lower()}")
+    self.set_uid(f"{source.slug}:{sync.__name__.replace('LDAPSynchronizer', '').lower()}")
     try:
         sync_inst = sync(source)
         count = sync_inst.sync()

@@ -3,7 +3,7 @@ from enum import IntFlag
 from re import split
 from typing import Optional
 
-import ldap3
+from ldap3 import BASE
 from ldap3.core.exceptions import LDAPAttributeError
 from structlog.stdlib import get_logger
 
@@ -64,7 +64,7 @@ class LDAPPasswordChanger:
             root_attrs = self._source.connection.extend.standard.paged_search(
                 search_base=root_dn,
                 search_filter="(objectClass=*)",
-                search_scope=ldap3.BASE,
+                search_scope=BASE,
                 attributes=["pwdProperties"],
             )
             root_attrs = list(root_attrs)[0]
@@ -97,7 +97,7 @@ class LDAPPasswordChanger:
             self._source.connection.extend.standard.paged_search(
                 search_base=user_dn,
                 search_filter=self._source.user_object_filter,
-                search_scope=ldap3.BASE,
+                search_scope=BASE,
                 attributes=["displayName", "sAMAccountName"],
             )
         )

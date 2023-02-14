@@ -1,7 +1,7 @@
 """Active Directory specific"""
 from datetime import datetime
 from enum import IntFlag
-from typing import Any
+from typing import Any, Generator
 
 from pytz import UTC
 
@@ -41,6 +41,9 @@ class UserAccountControl(IntFlag):
 
 class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
     """Microsoft-specific LDAP"""
+
+    def get_objects(self, **kwargs) -> Generator:
+        yield None
 
     def sync(self, attributes: dict[str, Any], user: User, created: bool):
         self.ms_check_pwd_last_set(attributes, user, created)

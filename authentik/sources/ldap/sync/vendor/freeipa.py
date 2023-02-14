@@ -1,6 +1,6 @@
 """FreeIPA specific"""
 from datetime import datetime
-from typing import Any
+from typing import Any, Generator
 
 from pytz import UTC
 
@@ -10,6 +10,9 @@ from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 
 class FreeIPA(BaseLDAPSynchronizer):
     """FreeIPA-specific LDAP"""
+
+    def get_objects(self, **kwargs) -> Generator:
+        yield None
 
     def sync(self, attributes: dict[str, Any], user: User, created: bool):
         self.check_pwd_last_set(attributes, user, created)

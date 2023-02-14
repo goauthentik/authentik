@@ -1,9 +1,8 @@
 """Sync LDAP Users and groups into authentik"""
-from typing import Any, Optional
+from typing import Any, Generator, Optional
 
-import ldap3
-import ldap3.core.exceptions
 from django.db.models import Q
+from ldap3 import SUBTREE
 
 from authentik.core.models import Group, User
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
@@ -20,23 +19,28 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         super().__init__(source)
         self.group_cache: dict[str, Group] = {}
 
-    def sync(self) -> int:
-        """Iterate over all Users and assign Groups using memberOf Field"""
-        if not self._source.sync_groups:
-            self.message("Group syncing is disabled for this Source")
-            return -1
-        groups = self._source.connection.extend.standard.paged_search(
+    def get_objects(self, **kwargs) -> Generator:
+        return self._source.connection.extend.standard.paged_search(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
-            search_scope=ldap3.SUBTREE,
+            search_scope=SUBTREE,
             attributes=[
                 self._source.group_membership_field,
                 self._source.object_uniqueness_field,
                 LDAP_DISTINGUISHED_NAME,
             ],
+            **kwargs,
         )
+
+    def sync(self) -> int:
+        """Iterate over all Users and assign Groups using memberOf Field"""
+        if not self._source.sync_groups:
+            self.message("Group syncing is disabled for this Source")
+            return -1
         membership_count = 0
-        for group in groups:
+        for group in self.get_objects():
+            if "attributes" not in group:
+                continue
             members = group.get("attributes", {}).get(self._source.group_membership_field, [])
             ak_group = self.get_group(group)
             if not ak_group:

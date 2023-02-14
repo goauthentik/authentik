@@ -1,8 +1,9 @@
 """Sync LDAP Users into authentik"""
-import ldap3
-import ldap3.core.exceptions
+from typing import Generator
+
 from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
+from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
@@ -14,19 +15,24 @@ from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 class UserLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users into authentik"""
 
+    def get_objects(self, **kwargs) -> Generator:
+        return self._source.connection.extend.standard.paged_search(
+            search_base=self.base_dn_users,
+            search_filter=self._source.user_object_filter,
+            search_scope=SUBTREE,
+            attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
+            **kwargs,
+        )
+
     def sync(self) -> int:
         """Iterate over all LDAP Users and create authentik_core.User instances"""
         if not self._source.sync_users:
             self.message("User syncing is disabled for this Source")
             return -1
-        users = self._source.connection.extend.standard.paged_search(
-            search_base=self.base_dn_users,
-            search_filter=self._source.user_object_filter,
-            search_scope=ldap3.SUBTREE,
-            attributes=[ldap3.ALL_ATTRIBUTES, ldap3.ALL_OPERATIONAL_ATTRIBUTES],
-        )
         user_count = 0
-        for user in users:
+        for user in self.get_objects():
+            if "attributes" not in user:
+                continue
             attributes = user.get("attributes", {})
             user_dn = self._flatten(user.get("entryDN", user.get("dn")))
             if self._source.object_uniqueness_field not in attributes:

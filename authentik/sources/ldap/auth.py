@@ -1,8 +1,9 @@
 """authentik LDAP Authentication Backend"""
 from typing import Optional
 
-import ldap3
 from django.http import HttpRequest
+from ldap3 import Connection
+from ldap3.core.exceptions import LDAPException, LDAPInvalidCredentialsResult
 from structlog.stdlib import get_logger
 
 from authentik.core.auth import InbuiltBackend
@@ -57,7 +58,7 @@ class LDAPBackend(InbuiltBackend):
         # Try to bind as new user
         LOGGER.debug("Attempting Binding as user", user=user)
         try:
-            temp_connection = ldap3.Connection(
+            temp_connection = Connection(
                 source.server,
                 user=user.attributes.get(LDAP_DISTINGUISHED_NAME),
                 password=password,
@@ -66,8 +67,8 @@ class LDAPBackend(InbuiltBackend):
             )
             temp_connection.bind()
             return user
-        except ldap3.core.exceptions.LDAPInvalidCredentialsResult as exception:
+        except LDAPInvalidCredentialsResult as exception:
             LOGGER.debug("LDAPInvalidCredentialsResult", user=user, error=exception)
-        except ldap3.core.exceptions.LDAPException as exception:
+        except LDAPException as exception:
             LOGGER.warning(exception)
         return None

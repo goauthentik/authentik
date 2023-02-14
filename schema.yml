@@ -16287,6 +16287,40 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /sources/ldap/{slug}/debug/:
+    get:
+      operationId: sources_ldap_debug_retrieve
+      description: Get raw LDAP data to debug
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+          description: Internal source name, used in URLs.
+        required: true
+      tags:
+      - sources
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LDAPDebug'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /sources/ldap/{slug}/sync_status/:
     get:
       operationId: sources_ldap_sync_status_list
@@ -28618,6 +28652,31 @@ components:
       - direct
       - cached
       type: string
+    LDAPDebug:
+      type: object
+      properties:
+        user:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        group:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        membership:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+      required:
+      - group
+      - membership
+      - user
     LDAPOutpostConfig:
       type: object
       description: LDAPProvider Serializer

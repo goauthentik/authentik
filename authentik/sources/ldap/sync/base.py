@@ -1,5 +1,5 @@
 """Sync LDAP Users and groups into authentik"""
-from typing import Any
+from typing import Any, Generator
 
 from django.db.models.base import Model
 from django.db.models.query import QuerySet
@@ -47,8 +47,15 @@ class BaseLDAPSynchronizer:
 
     def message(self, *args, **kwargs):
         """Add message that is later added to the System Task and shown to the user"""
-        self._messages.append(" ".join(args))
+        formatted_message = " ".join(args)
+        if "dn" in kwargs:
+            formatted_message += f"; DN: {kwargs['dn']}"
+        self._messages.append(formatted_message)
         self._logger.warning(*args, **kwargs)
+
+    def get_objects(self, **kwargs) -> Generator:
+        """Get objects from LDAP, implemented in subclass"""
+        raise NotImplementedError()
 
     def sync(self) -> int:
         """Sync function, implemented in subclass"""
