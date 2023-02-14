@@ -1,4 +1,5 @@
 """prompt models"""
+import mimetypes
 from typing import Any, Optional, Type
 from urllib.parse import urlparse, urlunparse
 from uuid import uuid4
@@ -79,14 +80,47 @@ class FieldTypes(models.TextChoices):
 class InlineFileField(CharField):
     """Field for inline data-URI base64 encoded files"""
 
+    def __init__(self, **kwargs):
+        self.file_types = kwargs.pop("file_types", ())
+        # Do not pass max_length, we need to apply custom logic
+        # Alias max_length to max_file length
+        self.max_file_length = kwargs.pop("max_length", kwargs.pop("max_file_length", 0))
+        super().__init__(**kwargs)
+
     def to_internal_value(self, data: str):
         uri = urlparse(data)
         if uri.scheme != "data":
             raise ValidationError("Invalid scheme")
-        header, _encoded = uri.path.split(",", 1)
-        _mime, _, enc = header.partition(";")
+        try:
+            header, encoded = uri.path.split(",", 1)
+        except ValueError:
+            raise ValidationError("Invalid data format")
+
+        mime = mimetypes.guess_type("data:" + header + ",")[0] or "unknown"
+        enc = header.split(";")[-1]
+
         if enc != "base64":
             raise ValidationError("Invalid encoding")
+        if self.file_types and not any(
+            ext in self.file_types for ext in mimetypes.guess_all_extensions(mime)
+        ):
+            file_type = mimetypes.guess_extension(mime) or mime
+            raise ValidationError(
+                f"Invalid file type: '{file_type}'. Allowed types: "
+                + ", ".join(f"'{f_type}'" for f_type in self.file_types)
+            )
+        # Calculate the true file size (accounting for base64 encoding)
+        if self.max_file_length and (len(encoded.rstrip("=")) * 0.75) > self.max_file_length:
+            max_size = f"{self.max_file_length} B"
+            if self.max_file_length >= 1024:
+                max_size = f"{self.max_file_length / 1024:.2g} KiB"
+            elif self.max_file_length >= 1048576:
+                max_size = f"{self.max_file_length / 1048576:.2g} MiB"
+            elif self.max_file_length >= 1073741824:
+                max_size = f"{self.max_file_length / 1073741824:.2g} GiB"
+
+            raise ValidationError(f"File is too large. Max size: {max_size}")
+
         return super().to_internal_value(urlunparse(uri))
 
 

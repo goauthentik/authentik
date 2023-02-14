@@ -137,6 +137,14 @@ class TestPromptStage(FlowTestCase):
             InlineFileField().to_internal_value("data:mine/type;base64,Zm9vqwer"),
             "data:mine/type;base64,Zm9vqwer",
         )
+        with self.assertRaises(ValidationError):
+            InlineFileField(max_length=2).to_internal_value("data:mine/type;base64,Zm9vqwer")
+        with self.assertRaises(ValidationError):
+            InlineFileField(max_file_length=2).to_internal_value("data:mine/type;base64,Zm9vqwer")
+        with self.assertRaises(ValidationError):
+            InlineFileField(file_types=(".png", ".jpg")).to_internal_value(
+                "data:mine/type;base64,Zm9vqwer"
+            )
 
     def test_render(self):
         """Test render of form, check if all prompts are rendered correctly"""
