@@ -66,7 +66,7 @@
         "@codemirror/theme-one-dark": "^6.1.0",
         "@formatjs/intl-listformat": "^7.1.7",
         "@fortawesome/fontawesome-free": "^6.3.0",
-        "@goauthentik/api": "^2023.2.0-1676381184",
+        "@goauthentik/api": "^2023.2.0-1676387781",
         "@hcaptcha/types": "^1.0.3",
         "@jackfranklin/rollup-plugin-markdown": "^0.4.0",
         "@lingui/cli": "^3.17.1",
