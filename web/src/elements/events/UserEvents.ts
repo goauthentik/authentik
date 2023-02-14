@@ -32,7 +32,7 @@ export class UserEvents extends Table<Event> {
         return new EventsApi(DEFAULT_CONFIG).eventsEventsList({
             page: page,
             ordering: this.order,
-            pageSize: (await uiConfig()).pagination.perPage / 2,
+            pageSize: (await uiConfig()).pagination.perPage,
             username: this.targetUser,
         });
     }

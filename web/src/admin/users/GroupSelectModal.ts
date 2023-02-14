@@ -31,7 +31,7 @@ export class GroupSelectModal extends TableModal<Group> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
             ordering: this.order,
             page: page,
-            pageSize: (await uiConfig()).pagination.perPage / 2,
+            pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
     }
