@@ -25,6 +25,7 @@ func (fe *FlowExecutor) solveChallenge_Identification(challenge *api.ChallengeTy
 }
 
 func (fe *FlowExecutor) solveChallenge_Password(challenge *api.ChallengeTypes, req api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
+	fe.checkPasswordMFA()
 	r := api.NewPasswordChallengeResponseRequest(fe.getAnswer(StagePassword))
 	return api.PasswordChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
 }
