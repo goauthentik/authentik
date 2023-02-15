@@ -1,6 +1,6 @@
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
-import { truncate } from "@goauthentik/common/utils";
+import { truncateWords } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
@@ -127,7 +127,7 @@ export class LibraryApplication extends AKElement {
                 </div>
             </div>
             <div class="pf-c-card__body">
-                ${truncate(this.application.metaDescription || "", 35)}
+                ${truncateWords(this.application.metaDescription || "", 35)}
             </div>
         </div>`;
     }
