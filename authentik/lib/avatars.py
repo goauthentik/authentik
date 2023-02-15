@@ -86,7 +86,7 @@ def generate_colors(text: str) -> tuple[str, str]:
 @cache
 # pylint: disable=too-many-arguments,too-many-locals
 def generate_avatar_from_name(
-    user: "User",
+    name: str,
     length: int = 2,
     size: int = 64,
     rounded: bool = False,
@@ -98,8 +98,6 @@ def generate_avatar_from_name(
 
     Inspired from: https://github.com/LasseRafn/ui-avatars
     """
-    name = user.name if user.name != "" else "a k"
-
     name_parts = name.split()
     # Only abbreviate first and last name
     if len(name_parts) > 2:
@@ -152,7 +150,7 @@ def generate_avatar_from_name(
 
 def avatar_mode_generated(user: "User", mode: str) -> Optional[str]:
     """Wrapper that converts generated avatar to base64 svg"""
-    svg = generate_avatar_from_name(user)
+    svg = generate_avatar_from_name(user.name if user.name != "" else "a k")
     return f"data:image/svg+xml;base64,{b64encode(svg.encode('utf-8')).decode('utf-8')}"
 
 
