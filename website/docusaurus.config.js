@@ -169,6 +169,10 @@ module.exports = {
             },
         ],
     ],
+    markdown: {
+        mermaid: true,
+    },
+    themes: ["@docusaurus/theme-mermaid"],
     scripts: [
         {
             src: "https://goauthentik.io/js/script.js",

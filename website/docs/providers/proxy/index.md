@@ -1,28 +1,94 @@
 ---
-title: Overview
+title: Proxy Provider
 ---
+
+```mermaid
+sequenceDiagram
+    participant u as User accesses service
+    participant rp as Reverse proxy
+    participant ak as authentik
+    participant s as Service
+
+    u->>rp: Initial request
+    rp->>ak: Checks authentication
+    alt User is authenticated
+        ak ->> rp: Successful response
+        rp ->> s: Initial request is forwarded
+    else User needs to be authenticated
+        ak ->> rp: Redirect to the login page
+        rp ->> u: Redirect is passed to enduser
+    end
+```
+
+## Headers
 
 The proxy outpost sets the following user-specific headers:
 
--   X-authentik-username: `akadmin`
+### `X-authentik-username`
 
-    The username of the currently logged in user
+Example value: `akadmin`
 
--   X-authentik-groups: `foo|bar|baz`
+The username of the currently logged in user
 
-    The groups the user is member of, separated by a pipe
+### `X-authentik-groups`
 
--   X-authentik-email: `root@localhost`
+Example value: `foo|bar|baz`
 
-    The email address of the currently logged in user
+The groups the user is member of, separated by a pipe
 
--   X-authentik-name: `authentik Default Admin`
+### `X-authentik-email`
 
-    Full name of the current user
+Example value: `root@localhost`
 
--   X-authentik-uid: `900347b8a29876b45ca6f75722635ecfedf0e931c6022e3a29a8aa13fb5516fb`
+The email address of the currently logged in user
 
-    The hashed identifier of the currently logged in user.
+### `X-authentik-name`
+
+Example value: `authentik Default Admin`
+
+Full name of the current user
+
+### `X-authentik-uid`
+
+Example value: `900347b8a29876b45ca6f75722635ecfedf0e931c6022e3a29a8aa13fb5516fb`
+
+The hashed identifier of the currently logged in user.
+
+Besides these user-specific headers, some application specific headers are also set:
+
+### `X-authentik-meta-outpost`
+
+Example value: `authentik Embedded Outpost`
+
+The authentik outpost's name.
+
+### `X-authentik-meta-provider`
+
+Example value: `test`
+
+The authentik provider's name.
+
+### `X-authentik-meta-app`
+
+Example value: `test`
+
+The authentik application's slug.
+
+### `X-authentik-meta-version`
+
+Example value: `goauthentik.io/outpost/1.2.3`
+
+The authentik outpost's version.
+
+### `X-Forwarded-Host`
+
+:::info
+Only set in proxy mode
+:::
+
+The original Host header sent by the client. This is set as the `Host` header is set to the host of the configured backend.
+
+### Additional headers
 
 Additionally, you can set `additionalHeaders` attribute on groups or users to set additional headers:
 
@@ -30,30 +96,6 @@ Additionally, you can set `additionalHeaders` attribute on groups or users to se
 additionalHeaders:
     X-test-header: test-value
 ```
-
-Besides these user-specific headers, some application specific headers are also set:
-
--   X-authentik-meta-outpost: `authentik Embedded Outpost`
-
-    The authentik outpost's name.
-
--   X-authentik-meta-provider: `test`
-
-    The authentik provider's name.
-
--   X-authentik-meta-app: `test`
-
-    The authentik application's slug.
-
--   X-authentik-meta-version: `goauthentik.io/outpost/1.2.3`
-
-    The authentik outpost's version.
-
-### Only in proxy mode
-
--   X-Forwarded-Host:
-
-    The original Host header sent by the client. This is set as the `Host` header is set to the host of the configured backend.
 
 ## HTTPS
 
