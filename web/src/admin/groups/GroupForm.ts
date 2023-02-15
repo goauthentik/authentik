@@ -51,7 +51,7 @@ export class GroupForm extends ModelForm<Group, string> {
                 patchedGroupRequest: data,
             });
         } else {
-            data.users = Array.from(this.instance?.users || []);
+            data.users = [];
             return new CoreApi(DEFAULT_CONFIG).coreGroupsCreate({
                 groupRequest: data,
             });

@@ -48,6 +48,7 @@ export class UserForm extends ModelForm<User, number> {
                 patchedUserRequest: data,
             });
         } else {
+            data.groups = [];
             return new CoreApi(DEFAULT_CONFIG).coreUsersCreate({
                 userRequest: data,
             });
