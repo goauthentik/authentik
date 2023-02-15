@@ -7,7 +7,6 @@ from urllib.parse import urlparse
 
 import yaml
 from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 from django.core.cache import cache
 from django.db import DatabaseError, InternalError, ProgrammingError
 from django.db.models.base import Model
@@ -43,6 +42,7 @@ from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesContro
 from authentik.providers.proxy.controllers.docker import ProxyDockerController
 from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
 from authentik.root.celery import CELERY_APP
+from authentik.root.messages.storage import closing_send
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "outpost_teardown_%s"
@@ -217,26 +217,23 @@ def outpost_post_save(model_class: str, model_pk: Any):
 def outpost_send_update(model_instace: Model):
     """Send outpost update to all registered outposts, regardless to which authentik
     instance they are connected"""
-    channel_layer = get_channel_layer()
     if isinstance(model_instace, OutpostModel):
         for outpost in model_instace.outpost_set.all():
-            _outpost_single_update(outpost, channel_layer)
+            _outpost_single_update(outpost)
     elif isinstance(model_instace, Outpost):
-        _outpost_single_update(model_instace, channel_layer)
+        _outpost_single_update(model_instace)
 
 
-def _outpost_single_update(outpost: Outpost, layer=None):
+def _outpost_single_update(outpost: Outpost):
     """Update outpost instances connected to a single outpost"""
     # Ensure token again, because this function is called when anything related to an
     # OutpostModel is saved, so we can be sure permissions are right
     _ = outpost.token
     outpost.build_user_permissions(outpost.user)
-    if not layer:  # pragma: no cover
-        layer = get_channel_layer()
     for state in OutpostState.for_outpost(outpost):
         for channel in state.channel_ids:
             LOGGER.debug("sending update", channel=channel, instance=state.uid, outpost=outpost)
-            async_to_sync(layer.send)(channel, {"type": "event.update"})
+            async_to_sync(closing_send)(channel, {"type": "event.update"})
 
 
 @CELERY_APP.task()

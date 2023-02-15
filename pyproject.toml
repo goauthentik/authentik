@@ -1,8 +1,5 @@
 [tool.pyright]
-ignore = [
-  "**/migrations/**",
-  "**/node_modules/**"
-]
+ignore = ["**/migrations/**", "**/node_modules/**"]
 reportMissingTypeStubs = false
 strictParameterNoneValue = true
 strictDictionaryInference = true
@@ -63,14 +60,7 @@ exclude_lines = [
 show_missing = true
 
 [tool.pylint.basic]
-good-names = [
-  "pk",
-  "id",
-  "i",
-  "j",
-  "k",
-  "_",
-]
+good-names = ["pk", "id", "i", "j", "k", "_"]
 
 [tool.pylint.master]
 disable = [
@@ -85,6 +75,7 @@ disable = [
   "protected-access",
   "unused-argument",
   "raise-missing-from",
+  "fixme",
   # To preserve django's translation function we need to use %-formatting
   "consider-using-f-string",
 ]
@@ -120,7 +111,7 @@ authors = ["authentik Team <hello@goauthentik.io>"]
 
 [tool.poetry.dependencies]
 celery = "*"
-channels = {version = "*", extras = ["daphne"]}
+channels = { version = "*", extras = ["daphne"] }
 channels-redis = "*"
 codespell = "*"
 colorama = "*"
@@ -147,7 +138,7 @@ gunicorn = "*"
 kubernetes = "*"
 ldap3 = "*"
 lxml = "*"
-opencontainers = {extras = ["reggie"],version = "*"}
+opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
 paramiko = "*"
 psycopg2-binary = "*"
@@ -163,8 +154,8 @@ swagger-spec-validator = "*"
 twilio = "*"
 twisted = "*"
 ua-parser = "*"
-urllib3 = {extras = ["secure"],version = "*"}
-uvicorn = {extras = ["standard"],version = "*"}
+urllib3 = { extras = ["secure"], version = "*" }
+uvicorn = { extras = ["standard"], version = "*" }
 webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
@@ -176,7 +167,7 @@ bandit = "*"
 black = "*"
 bump2version = "*"
 colorama = "*"
-coverage = {extras = ["toml"],version = "*"}
+coverage = { extras = ["toml"], version = "*" }
 importlib-metadata = "*"
 pylint = "*"
 pylint-django = "*"
