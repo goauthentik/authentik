@@ -8,7 +8,7 @@ from rest_framework.serializers import CharField
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
-from authentik.flows.models import Flow, FlowStageBinding
+from authentik.flows.models import Flow, FlowAuthenticationRequirement, FlowStageBinding
 
 
 @dataclass
@@ -160,11 +160,36 @@ class FlowDiagram:
             )
         return stages + elements
 
+    def get_flow_auth_requirement(self) -> list[DiagramElement]:
+        """Get flow authentication requirement"""
+        end_el = DiagramElement(
+            "done",
+            _("End of the flow"),
+            _("Requirement not fulfilled"),
+            style=["[[", "]]"],
+        )
+        elements = []
+        if self.flow.authentication == FlowAuthenticationRequirement.NONE:
+            return []
+        auth = DiagramElement(
+            "flow_auth_requirement",
+            _("Flow authentication requirement") + "\n" + self.flow.authentication,
+        )
+        elements.append(auth)
+        end_el.source = [auth]
+        elements.append(end_el)
+        elements.append(
+            DiagramElement("flow_start", "placeholder", _("Requirement fulfilled"), source=[auth])
+        )
+        return elements
+
     def build(self) -> str:
         """Build flowchart"""
         all_elements = [
             "graph TD",
         ]
+
+        all_elements.extend(self.get_flow_auth_requirement())
 
         pre_flow_policies_element = DiagramElement(
             "flow_pre", _("Pre-flow policies"), style=["[[", "]]"]
@@ -179,6 +204,7 @@ class FlowDiagram:
                     _("End of the flow"),
                     _("Policy denied"),
                     flow_policies,
+                    style=["[[", "]]"],
                 )
             )
 
