@@ -1,6 +1,8 @@
 package codecs
 
 import (
+	"math"
+
 	"github.com/gorilla/securecookie"
 	log "github.com/sirupsen/logrus"
 )
@@ -12,6 +14,7 @@ type Codec struct {
 func New(maxAge int, hashKey, blockKey []byte) *Codec {
 	cookie := securecookie.New(hashKey, blockKey)
 	cookie.MaxAge(maxAge)
+	cookie.MaxLength(math.MaxInt)
 	return &Codec{
 		SecureCookie: cookie,
 	}
