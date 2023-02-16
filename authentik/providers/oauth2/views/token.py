@@ -262,8 +262,9 @@ class TokenParams:
             Event.new(
                 action=EventAction.SUSPICIOUS_REQUEST,
                 message="Revoked refresh token was used",
-                token=raw_token,
-            ).from_http(request)
+                token=self.refresh_token,
+                provider=self.refresh_token.provider,
+            ).from_http(request, user=self.refresh_token.user)
             raise TokenError("invalid_grant")
 
     def __post_init_client_credentials(self, request: HttpRequest):

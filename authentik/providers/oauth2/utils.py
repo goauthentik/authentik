@@ -146,9 +146,10 @@ def protected_resource_view(scopes: list[str]):
                     LOGGER.warning("Revoked token was used", access_token=access_token)
                     Event.new(
                         action=EventAction.SUSPICIOUS_REQUEST,
-                        message="Revoked refresh token was used",
-                        token=access_token,
-                    ).from_http(request)
+                        message="Revoked access token was used",
+                        token=token,
+                        provider=token.provider,
+                    ).from_http(request, user=token.user)
                     raise BearerTokenError("invalid_token")
 
                 if not set(scopes).issubset(set(token.scope)):
