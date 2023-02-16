@@ -6,13 +6,17 @@ from django.contrib.auth.decorators import login_required
 from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import RedirectView
-
+from django.http import HttpRequest, HttpResponse
 from authentik.core.views import apps, impersonate
 from authentik.core.views.debug import AccessDeniedView
-from authentik.core.views.interface import FlowInterfaceView, InterfaceView
 from authentik.core.views.session import EndSessionView
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.messages.consumer import MessageConsumer
+
+
+def placeholder_view(request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    return HttpResponse(status_code=200)
+
 
 urlpatterns = [
     path(
@@ -41,30 +45,15 @@ urlpatterns = [
     ),
     # Interfaces
     path(
-        "if/admin/",
-        ensure_csrf_cookie(InterfaceView.as_view(template_name="if/admin.html")),
-        name="if-admin",
-    ),
-    path(
-        "if/user/",
-        ensure_csrf_cookie(InterfaceView.as_view(template_name="if/user.html")),
-        name="if-user",
-    ),
-    path(
-        "if/flow/<slug:flow_slug>/",
-        ensure_csrf_cookie(FlowInterfaceView.as_view()),
-        name="if-flow",
-    ),
-    path(
         "if/session-end/<slug:application_slug>/",
         ensure_csrf_cookie(EndSessionView.as_view()),
         name="if-session-end",
     ),
     # Fallback for WS
-    path("ws/outpost/<uuid:pk>/", InterfaceView.as_view(template_name="if/admin.html")),
+    path("ws/outpost/<uuid:pk>/", placeholder_view),
     path(
         "ws/client/",
-        InterfaceView.as_view(template_name="if/admin.html"),
+        placeholder_view,
     ),
 ]
 

@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     "authentik.admin",
     "authentik.api",
     "authentik.crypto",
+    "authentik.interfaces",
     "authentik.events",
     "authentik.flows",
     "authentik.lib",
