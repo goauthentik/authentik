@@ -1712,14 +1712,14 @@ zookeeper = ["kazoo (>=1.3.1)"]
 
 [[package]]
 name = "kubernetes"
-version = "25.3.0"
+version = "26.1.0"
 description = "Kubernetes python client"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "kubernetes-25.3.0-py2.py3-none-any.whl", hash = "sha256:eb42333dad0bb5caf4e66460c6a4a1a36f0f057a040f35018f6c05a699baed86"},
-    {file = "kubernetes-25.3.0.tar.gz", hash = "sha256:213befbb4e5aed95f94950c7eed0c2322fc5a2f8f40932e58d28fdd42d90836c"},
+    {file = "kubernetes-26.1.0-py2.py3-none-any.whl", hash = "sha256:e3db6800abf7e36c38d2629b5cb6b74d10988ee0cba6fba45595a7cbe60c0042"},
+    {file = "kubernetes-26.1.0.tar.gz", hash = "sha256:5854b0c508e8d217ca205591384ab58389abdae608576f9c9afc35a3c76a366c"},
 ]
 
 [package.dependencies]
