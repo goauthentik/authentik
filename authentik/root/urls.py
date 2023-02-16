@@ -44,8 +44,6 @@ for _authentik_app in get_apps():
             namespace=namespace,
         )
 
-# Testing
-from django.contrib import admin
 urlpatterns += [
     path("-/metrics/", MetricsView.as_view(), name="metrics"),
     path("-/health/live/", LiveView.as_view(), name="health-live"),
