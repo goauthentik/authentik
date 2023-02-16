@@ -48,14 +48,15 @@ module.exports = {
                 },
                 {
                     type: "dropdown",
-                    label: `Version: latest`,
+                    label: `Version: ${releases[0].replace(
+                        /releases\/\d+\/v/,
+                        ""
+                    )}`,
                     position: "right",
                     items: releases.map((release) => {
-                        const subdomain = release
-                            .replace("releases/v", "")
-                            .replace(".", "-");
-                        const label =
-                            "Version: " + release.replace("releases/", "");
+                        const version = release.replace(/releases\/\d+\/v/, "");
+                        const subdomain = version.replace(".", "-");
+                        const label = `Version: ${version}`;
                         return {
                             label: label,
                             href: `https://version-${subdomain}.goauthentik.io`,
