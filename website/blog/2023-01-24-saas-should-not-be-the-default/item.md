@@ -1,16 +1,18 @@
 ---
-title: "SaaS should not be the default: Why data breaches signal return to self-hosting"
+title: "SaaS apps conceal being hacked, so self host"
 description: More companies are realizing that SaaS isn’t, and shouldn’t be, the default.
 slug: 2023-01-24-saas-should-not-be-the-default
 authors:
-    - name: Nick Moore
-      title: Freelance writer
-      url: https://nickmoore.me/
-      image_url: https://nickmoore.me/assets/images/image01.jpg
+    - name: Jens Langhammer
+      title: CTO at Authentik Security Inc
+      url: https://github.com/BeryJu
+      image_url: https://github.com/BeryJu.png
 tags:
+    - blog
     - sso
     - self-hosting
     - saas
+    - hack
 hide_table_of_contents: false
 ---
 
