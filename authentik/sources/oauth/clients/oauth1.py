@@ -41,7 +41,11 @@ class OAuthClient(BaseOAuthClient):
                 )
                 response.raise_for_status()
             except RequestException as exc:
-                LOGGER.warning("Unable to fetch access token", exc=exc)
+                LOGGER.warning(
+                    "Unable to fetch access token",
+                    exc=exc,
+                    response=exc.response.text if exc.response else str(exc),
+                )
                 return None
             return self.parse_raw_token(response.text)
         return None
@@ -61,7 +65,9 @@ class OAuthClient(BaseOAuthClient):
             )
             response.raise_for_status()
         except RequestException as exc:
-            raise OAuthSourceException from exc
+            raise OAuthSourceException(
+                response=exc.response.text if exc.response else str(exc),
+            ) from exc
         return response.text
 
     def get_redirect_args(self) -> dict[str, Any]:

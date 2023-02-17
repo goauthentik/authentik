@@ -84,7 +84,11 @@ class OAuth2Client(BaseOAuthClient):
             )
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning("Unable to fetch access token", exc=exc)
+            LOGGER.warning(
+                "Unable to fetch access token",
+                exc=exc,
+                response=exc.response.text if exc.response else str(exc),
+            )
             return None
         return response.json()
 
@@ -147,6 +151,10 @@ class UserprofileHeaderAuthClient(OAuth2Client):
         try:
             response.raise_for_status()
         except RequestException as exc:
-            LOGGER.warning("Unable to fetch user profile", exc=exc, body=response.text)
+            LOGGER.warning(
+                "Unable to fetch user profile",
+                exc=exc,
+                response=exc.response.text if exc.response else str(exc),
+            )
             return None
         return response.json()
