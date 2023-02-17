@@ -425,6 +425,7 @@ _LOGGING_HANDLER_MAP = {
     "": LOG_LEVEL,
     "authentik": LOG_LEVEL,
     "django": "WARNING",
+    "django.request": "ERROR",
     "celery": "WARNING",
     "selenium": "WARNING",
     "docker": "WARNING",
@@ -438,7 +439,7 @@ _LOGGING_HANDLER_MAP = {
     "fsevents": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
-    # pyright: reportGeneralTypeIssues=false
+
     LOGGING["loggers"][handler_name] = {
         "handlers": ["console"],
         "level": level,
