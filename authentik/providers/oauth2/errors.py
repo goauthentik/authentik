@@ -147,10 +147,14 @@ class AuthorizeError(OAuth2Error):
         error: str,
         grant_type: str,
         state: str,
+        description: Optional[str] = None,
     ):
         super().__init__()
         self.error = error
-        self.description = self.errors[error]
+        if description:
+            self.description = description
+        else:
+            self.description = self.errors[error]
         self.redirect_uri = redirect_uri
         self.grant_type = grant_type
         self.state = state

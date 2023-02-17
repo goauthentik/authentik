@@ -50,6 +50,7 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
+    ClientTypes,
     GrantTypes,
     OAuth2Provider,
     ResponseMode,
@@ -158,13 +159,14 @@ class OAuthAuthorizationParams:
             request=query_dict.get("request", None),
             max_age=int(max_age) if max_age else None,
             code_challenge=query_dict.get("code_challenge"),
-            code_challenge_method=query_dict.get("code_challenge_method"),
+            code_challenge_method=query_dict.get("code_challenge_method", "plain"),
         )
 
     def __post_init__(self):
-        try:
-            self.provider: OAuth2Provider = OAuth2Provider.objects.get(client_id=self.client_id)
-        except OAuth2Provider.DoesNotExist:
+        self.provider: OAuth2Provider = OAuth2Provider.objects.filter(
+            client_id=self.client_id
+        ).first()
+        if not self.provider:
             LOGGER.warning("Invalid client identifier", client_id=self.client_id)
             raise ClientIdError(client_id=self.client_id)
         self.check_redirect_uri()
@@ -251,6 +253,15 @@ class OAuthAuthorizationParams:
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""
         if self.code_challenge and self.code_challenge_method not in ["plain", "S256"]:
+            raise AuthorizeError(
+                self.redirect_uri,
+                "invalid_request",
+                self.grant_type,
+                self.state,
+                f"Unsupported challenge method {self.code_challenge_method}",
+            )
+        if self.provider.client_type == ClientTypes.PUBLIC and not self.code_challenge:
+            LOGGER.warning("Public clients require PKCE", client_id=self.provider.client_id)
             raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
