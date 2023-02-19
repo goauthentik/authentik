@@ -10,7 +10,6 @@ from sentry_sdk.tracing import Span
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import User
-from authentik.policies.apps import HIST_POLICIES_BUILD_TIME
 from authentik.policies.exceptions import PolicyEngineException
 from authentik.policies.models import Policy, PolicyBinding, PolicyBindingModel, PolicyEngineMode
 from authentik.policies.process import PolicyProcess, cache_key
@@ -86,10 +85,6 @@ class PolicyEngine:
                 op="authentik.policy.engine.build",
                 description=self.__pbm,
             ) as span,
-            HIST_POLICIES_BUILD_TIME.labels(
-                object_pk=str(self.__pbm.pk),
-                object_type=f"{self.__pbm._meta.app_label}.{self.__pbm._meta.model_name}",
-            ).time(),
         ):
             span: Span
             span.set_data("pbm", self.__pbm)

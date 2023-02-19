@@ -7,6 +7,7 @@ from django.http.request import QueryDict
 from django.http.response import HttpResponse
 from django.urls import reverse
 from django.views.generic.base import View
+from prometheus_client import Histogram
 from rest_framework.request import Request
 from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
@@ -31,6 +32,11 @@ if TYPE_CHECKING:
     from authentik.flows.views.executor import FlowExecutorView
 
 PLAN_CONTEXT_PENDING_USER_IDENTIFIER = "pending_user_identifier"
+HIST_FLOWS_STAGE_TIME = Histogram(
+    "authentik_flows_stage_time",
+    "Duration taken by different parts of stages",
+    ["stage_type", "method"],
+)
 
 
 class StageView(View):
@@ -109,14 +115,24 @@ class ChallengeStageView(StageView):
                     keep_context=keep_context,
                 )
                 return self.executor.restart_flow(keep_context)
-            with Hub.current.start_span(
-                op="authentik.flow.stage.challenge_invalid",
-                description=self.__class__.__name__,
+            with (
+                Hub.current.start_span(
+                    op="authentik.flow.stage.challenge_invalid",
+                    description=self.__class__.__name__,
+                ),
+                HIST_FLOWS_STAGE_TIME.labels(
+                    stage_type=self.__class__.__name__, method="challenge_invalid"
+                ).time(),
             ):
                 return self.challenge_invalid(challenge)
-        with Hub.current.start_span(
-            op="authentik.flow.stage.challenge_valid",
-            description=self.__class__.__name__,
+        with (
+            Hub.current.start_span(
+                op="authentik.flow.stage.challenge_valid",
+                description=self.__class__.__name__,
+            ),
+            HIST_FLOWS_STAGE_TIME.labels(
+                stage_type=self.__class__.__name__, method="challenge_valid"
+            ).time(),
         ):
             return self.challenge_valid(challenge)
 
@@ -135,9 +151,14 @@ class ChallengeStageView(StageView):
             return self.executor.flow.title
 
     def _get_challenge(self, *args, **kwargs) -> Challenge:
-        with Hub.current.start_span(
-            op="authentik.flow.stage.get_challenge",
-            description=self.__class__.__name__,
+        with (
+            Hub.current.start_span(
+                op="authentik.flow.stage.get_challenge",
+                description=self.__class__.__name__,
+            ),
+            HIST_FLOWS_STAGE_TIME.labels(
+                stage_type=self.__class__.__name__, method="get_challenge"
+            ).time(),
         ):
             challenge = self.get_challenge(*args, **kwargs)
         with Hub.current.start_span(

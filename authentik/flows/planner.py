@@ -261,7 +261,6 @@ class FlowPlanner:
                     marker = ReevaluateMarker(binding=binding)
                 if stage:
                     plan.append(binding, marker)
-            HIST_FLOWS_PLAN_TIME.labels(flow_slug=self.flow.slug)
         self._logger.debug(
             "f(plan): finished building",
         )

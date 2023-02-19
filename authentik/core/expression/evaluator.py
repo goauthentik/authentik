@@ -1,14 +1,21 @@
 """Property Mapping Evaluator"""
-from typing import Optional
+from typing import Any, Optional
 
 from django.db.models import Model
 from django.http import HttpRequest
+from prometheus_client import Histogram
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.types import PolicyRequest
+
+PROPERTY_MAPPING_TIME = Histogram(
+    "authentik_property_mapping_execution_time",
+    "Evaluation time of property mappings",
+    ["mapping_name"],
+)
 
 
 class PropertyMappingEvaluator(BaseEvaluator):
@@ -49,3 +56,7 @@ class PropertyMappingEvaluator(BaseEvaluator):
             event.from_http(req.http_request, req.user)
             return
         event.save()
+
+    def evaluate(self, *args, **kwargs) -> Any:
+        with PROPERTY_MAPPING_TIME.labels(mapping_name=self._filename).time():
+            return super().evaluate(*args, **kwargs)
