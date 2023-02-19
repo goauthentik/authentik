@@ -53,6 +53,7 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
             "intent",
             "user",
             "user_obj",
+            "key",
             "description",
             "expires",
             "expiring",
@@ -65,7 +66,7 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
 class TokenViewSerializer(PassiveSerializer):
     """Show token's current key"""
 
-    key = CharField(read_only=True)
+    key = CharField(read_only=False)
 
 
 class TokenViewSet(UsedByMixin, ModelViewSet):
