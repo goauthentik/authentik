@@ -1,5 +1,6 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/EmptyState";
 import {
     Chart,
     ChartConfiguration,
@@ -20,7 +21,7 @@ import "chartjs-adapter-moment";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, state } from "lit/decorators.js";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -55,6 +56,7 @@ export abstract class AKChart<T> extends AKElement {
     abstract apiRequest(): Promise<T>;
     abstract getChartData(data: T): ChartData;
 
+    @state()
     chart?: Chart;
 
     @property()
@@ -67,10 +69,18 @@ export abstract class AKChart<T> extends AKElement {
             css`
                 .container {
                     height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+                .container > span {
+                    position: absolute;
+                    font-size: 2.5rem;
                 }
                 canvas {
                     width: 100px;
                     height: 100px;
+                    z-index: 1;
                 }
             `,
         ];
@@ -139,29 +149,7 @@ export abstract class AKChart<T> extends AKElement {
     }
 
     getPlugins(): Plugin[] {
-        return [
-            {
-                id: "center-text",
-                beforeDraw: (chart) => {
-                    if (!chart.ctx) return;
-                    if (!this.centerText) return;
-                    const width = chart.width || 0;
-                    const height = chart.height || 0;
-
-                    const fontSize = (height / 114).toFixed(2);
-                    chart.ctx.font = `${fontSize}em Overpass, Arial, sans-serif`;
-                    chart.ctx.textBaseline = "middle";
-                    chart.ctx.fillStyle = this.fontColour;
-
-                    const textX = Math.round(
-                        (width - chart.ctx.measureText(this.centerText).width) / 2,
-                    );
-                    const textY = height / 2;
-
-                    chart.ctx.fillText(this.centerText, textX, textY);
-                },
-            },
-        ];
+        return [];
     }
 
     timeTickCallback(tickValue: string | number, index: number, ticks: Tick[]): string {
@@ -216,7 +204,9 @@ export abstract class AKChart<T> extends AKElement {
     render(): TemplateResult {
         return html`
             <div class="container">
-                <canvas></canvas>
+                ${this.chart ? html`` : html`<ak-empty-state ?loading="${true}"></ak-empty-state>`}
+                ${this.centerText ? html` <span>${this.centerText}</span> ` : html``}
+                <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
             </div>
         `;
     }
