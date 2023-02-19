@@ -1,3 +1,4 @@
+import { renderSourceIcon } from "@goauthentik/admin/sources/SourceViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -10,7 +11,6 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -124,15 +124,15 @@ export class UserSourceSettingsPage extends AKElement {
                                 header=${t`No services available.`}
                             ></ak-empty-state>`;
                         }
-                        return source.map((stage) => {
+                        return source.map((source) => {
                             return html`<li class="pf-c-data-list__item">
                                 <div class="pf-c-data-list__item-content">
                                     <div class="pf-c-data-list__cell">
-                                        <img src="${ifDefined(stage.iconUrl)}" alt=${stage.title} />
-                                        ${stage.title}
+                                        ${renderSourceIcon(source.title, source.iconUrl)}
+                                        ${source.title}
                                     </div>
                                     <div class="pf-c-data-list__cell">
-                                        ${this.renderSourceSettings(stage)}
+                                        ${this.renderSourceSettings(source)}
                                     </div>
                                 </div>
                             </li>`;

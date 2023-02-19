@@ -1,3 +1,4 @@
+import { renderSourceIcon } from "@goauthentik/admin/sources/SourceViewPage";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
@@ -156,15 +157,7 @@ export class IdentificationStage extends BaseStage<
     }
 
     renderSource(source: LoginSource): TemplateResult {
-        let icon = html`<i class="fas fa-share-square" title="${source.name}"></i>`;
-        if (source.iconUrl) {
-            if (source.iconUrl.startsWith("fa://")) {
-                const url = source.iconUrl.replaceAll("fa://", "");
-                icon = html`<i class="fas ${url}" title="${source.name}"></i>`;
-            } else {
-                icon = html`<img src="${source.iconUrl}" alt="${source.name}" />`;
-            }
-        }
+        const icon = renderSourceIcon(source.name, source.iconUrl);
         return html`<li class="pf-c-login__main-footer-links-item">
             <button
                 type="button"
