@@ -2,11 +2,11 @@ package application
 
 import (
 	"net/url"
-	"os"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
+	"goauthentik.io/internal/config"
 	"golang.org/x/oauth2"
 )
 
@@ -33,11 +33,12 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bo
 	endUrl := p.OidcConfiguration.EndSessionEndpoint
 	tokenUrl := p.OidcConfiguration.TokenEndpoint
 	jwksUrl := p.OidcConfiguration.JwksUri
-	if browserHost, found := os.LookupEnv("AUTHENTIK_HOST_BROWSER"); found && browserHost != "" {
-		host := os.Getenv("AUTHENTIK_HOST")
-		authUrl = strings.ReplaceAll(authUrl, host, browserHost)
-		endUrl = strings.ReplaceAll(endUrl, host, browserHost)
-		jwksUrl = strings.ReplaceAll(jwksUrl, host, browserHost)
+	issuer := p.OidcConfiguration.Issuer
+	if config.Get().AuthentikHostBrowser != "" {
+		authUrl = strings.ReplaceAll(authUrl, authentikHost, config.Get().AuthentikHostBrowser)
+		endUrl = strings.ReplaceAll(endUrl, authentikHost, config.Get().AuthentikHostBrowser)
+		jwksUrl = strings.ReplaceAll(jwksUrl, authentikHost, config.Get().AuthentikHostBrowser)
+		issuer = strings.ReplaceAll(issuer, authentikHost, config.Get().AuthentikHostBrowser)
 	}
 	ep := OIDCEndpoint{
 		Endpoint: oauth2.Endpoint{
@@ -48,7 +49,7 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bo
 		EndSessionEndpoint: endUrl,
 		JwksUri:            jwksUrl,
 		TokenIntrospection: p.OidcConfiguration.IntrospectionEndpoint,
-		Issuer:             p.OidcConfiguration.Issuer,
+		Issuer:             issuer,
 	}
 	if !embedded {
 		return ep
