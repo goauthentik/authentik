@@ -7,13 +7,14 @@ from django.conf import settings
 from django.contrib.sessions.models import Session
 from django.core.exceptions import SuspiciousOperation
 from django.db.models import Model
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
 from django_otp.plugins.otp_static.models import StaticToken
 from guardian.models import UserObjectPermission
 
 from authentik.core.models import (
     AuthenticatedSession,
+    Group,
     PropertyMapping,
     Provider,
     Source,
@@ -58,6 +59,13 @@ def should_log_model(model: Model) -> bool:
     return model.__class__ not in IGNORED_MODELS
 
 
+def should_log_m2m(model: Model) -> bool:
+    """Return true if m2m operation should be logged"""
+    if model.__class__ in [User, Group]:
+        return True
+    return False
+
+
 class EventNewThread(Thread):
     """Create Event in background thread"""
 
@@ -96,6 +104,7 @@ class AuditMiddleware:
             return
         post_save_handler = partial(self.post_save_handler, user=request.user, request=request)
         pre_delete_handler = partial(self.pre_delete_handler, user=request.user, request=request)
+        m2m_changed_handler = partial(self.m2m_changed_handler, user=request.user, request=request)
         post_save.connect(
             post_save_handler,
             dispatch_uid=request.request_id,
@@ -106,6 +115,11 @@ class AuditMiddleware:
             dispatch_uid=request.request_id,
             weak=False,
         )
+        m2m_changed.connect(
+            m2m_changed_handler,
+            dispatch_uid=request.request_id,
+            weak=False,
+        )
 
     def disconnect(self, request: HttpRequest):
         """Disconnect signals"""
@@ -113,6 +127,7 @@ class AuditMiddleware:
             return
         post_save.disconnect(dispatch_uid=request.request_id)
         pre_delete.disconnect(dispatch_uid=request.request_id)
+        m2m_changed.disconnect(dispatch_uid=request.request_id)
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         self.connect(request)
@@ -163,6 +178,23 @@ class AuditMiddleware:
 
         EventNewThread(
             EventAction.MODEL_DELETED,
+            request,
+            user=user,
+            model=model_to_dict(instance),
+        ).run()
+
+    @staticmethod
+    def m2m_changed_handler(
+        user: User, request: HttpRequest, sender, instance: Model, action: str, **_
+    ):
+        """Signal handler for all object's m2m_changed"""
+        if action not in ["pre_add", "pre_remove"]:
+            return
+        if not should_log_m2m(instance):
+            return
+
+        EventNewThread(
+            EventAction.MODEL_UPDATED,
             request,
             user=user,
             model=model_to_dict(instance),

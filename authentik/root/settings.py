@@ -439,7 +439,6 @@ _LOGGING_HANDLER_MAP = {
     "fsevents": "WARNING",
 }
 for handler_name, level in _LOGGING_HANDLER_MAP.items():
-
     LOGGING["loggers"][handler_name] = {
         "handlers": ["console"],
         "level": level,
