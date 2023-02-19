@@ -5,6 +5,7 @@ from django.urls.base import reverse
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.test import APITestCase
 
+from authentik.core.api.tokens import TokenSerializer
 from authentik.core.models import USER_ATTRIBUTE_TOKEN_EXPIRING, Token, TokenIntents, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.generators import generate_id
@@ -99,3 +100,16 @@ class TestTokenAPI(APITestCase):
         self.assertEqual(len(body["results"]), 2)
         self.assertEqual(body["results"][0]["identifier"], token_should.identifier)
         self.assertEqual(body["results"][1]["identifier"], token_should_not.identifier)
+
+    def test_serializer_no_request(self):
+        """Test serializer without request"""
+        self.assertTrue(
+            TokenSerializer(
+                data={
+                    "identifier": generate_id(),
+                    "intent": TokenIntents.INTENT_APP_PASSWORD,
+                    "key": generate_id(),
+                    "user": self.user.pk,
+                }
+            ).is_valid(raise_exception=True)
+        )
