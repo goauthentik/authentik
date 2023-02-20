@@ -83,7 +83,7 @@ auth:
 ```
 
 :::note
-You need to restart all Vikunja components (API and frontend) after applying the OpenID configuration to Vikunja.
+You need to restart the Vikunja API after applying the OpenID configuration to Vikunja.
 :::
 
 :::note
