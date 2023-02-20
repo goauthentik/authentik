@@ -1,10 +1,11 @@
 """Avatar utils"""
 from base64 import b64encode
-from functools import cache
+from functools import cache as funccache
 from hashlib import md5
 from typing import TYPE_CHECKING, Optional
 from urllib.parse import urlencode
 
+from django.core.cache import cache
 from django.templatetags.static import static
 from lxml import etree  # nosec
 from lxml.etree import Element, SubElement  # nosec
@@ -15,6 +16,7 @@ from authentik.lib.utils.http import get_http_session
 
 GRAVATAR_URL = "https://secure.gravatar.com"
 DEFAULT_AVATAR = static("dist/assets/images/user_default.png")
+CACHE_KEY_GRAVATAR = "goauthentik.io/lib/avatars/"
 
 if TYPE_CHECKING:
     from authentik.core.models import User
@@ -50,22 +52,24 @@ def avatar_mode_gravatar(user: "User", mode: str) -> Optional[str]:
     parameters = [("size", "158"), ("rating", "g"), ("default", "404")]
     gravatar_url = f"{GRAVATAR_URL}/avatar/{mail_hash}?{urlencode(parameters, doseq=True)}"
 
-    @cache
-    def check_non_default(url: str):
-        """Cache HEAD check, based on URL"""
-        try:
-            # Since we specify a default of 404, do a HEAD request
-            # (HEAD since we don't need the body)
-            # so if that returns a 404, move onto the next mode
-            res = get_http_session().head(url, timeout=5)
-            if res.status_code == 404:
-                return None
-            res.raise_for_status()
-        except RequestException:
-            return url
-        return url
+    full_key = CACHE_KEY_GRAVATAR + mail_hash
+    if cache.has_key(full_key):
+        cache.touch(full_key)
+        return cache.get(full_key)
 
-    return check_non_default(gravatar_url)
+    try:
+        # Since we specify a default of 404, do a HEAD request
+        # (HEAD since we don't need the body)
+        # so if that returns a 404, move onto the next mode
+        res = get_http_session().head(gravatar_url, timeout=5)
+        if res.status_code == 404:
+            cache.set(full_key, None)
+            return None
+        res.raise_for_status()
+    except RequestException:
+        return gravatar_url
+    cache.set(full_key, gravatar_url)
+    return gravatar_url
 
 
 def generate_colors(text: str) -> tuple[str, str]:
@@ -83,7 +87,7 @@ def generate_colors(text: str) -> tuple[str, str]:
     return bg_hex, text_hex
 
 
-@cache
+@funccache
 # pylint: disable=too-many-arguments,too-many-locals
 def generate_avatar_from_name(
     name: str,
