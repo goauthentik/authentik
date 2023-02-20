@@ -24,7 +24,6 @@ from authentik.core.models import Group, User
 class GroupMemberSerializer(ModelSerializer):
     """Stripped down user serializer to show relevant users for groups"""
 
-    avatar = CharField(read_only=True)
     attributes = JSONField(validators=[is_dict], required=False)
     uid = CharField(read_only=True)
 
@@ -37,7 +36,6 @@ class GroupMemberSerializer(ModelSerializer):
             "is_active",
             "last_login",
             "email",
-            "avatar",
             "attributes",
             "uid",
         ]

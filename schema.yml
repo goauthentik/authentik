@@ -28169,9 +28169,6 @@ components:
           format: email
           title: Email address
           maxLength: 254
-        avatar:
-          type: string
-          readOnly: true
         attributes:
           type: object
           additionalProperties: {}
@@ -28179,7 +28176,6 @@ components:
           type: string
           readOnly: true
       required:
-      - avatar
       - name
       - pk
       - uid
