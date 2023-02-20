@@ -36,18 +36,6 @@ from authentik.lib.utils.reflection import class_to_path, get_env
 LOGGER = get_logger()
 
 
-class SentryWSMiddleware(BaseMiddleware):
-    """Sentry Websocket middleweare to set the transaction name based on
-    consumer class path"""
-
-    async def __call__(self, scope, receive, send):
-        transaction: Optional[Transaction] = Hub.current.scope.transaction
-        class_path = class_to_path(self.inner.consumer_class)
-        if transaction:
-            transaction.name = class_path
-        return await self.inner(scope, receive, send)
-
-
 class SentryIgnoredException(Exception):
     """Base Class for all errors that are suppressed, and not sent to sentry."""
 
@@ -94,8 +82,11 @@ def sentry_init(**sentry_init_kwargs):
 def traces_sampler(sampling_context: dict) -> float:
     """Custom sampler to ignore certain routes"""
     path = sampling_context.get("asgi_scope", {}).get("path", "")
+    _type = sampling_context.get("asgi_scope", {}).get("type", "")
     # Ignore all healthcheck routes
     if path.startswith("/-/health") or path.startswith("/-/metrics"):
+        return 0
+    if _type == "websocket":
         return 0
     return float(CONFIG.y("error_reporting.sample_rate", 0.1))
 
