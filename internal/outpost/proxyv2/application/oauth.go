@@ -30,8 +30,13 @@ func (a *Application) checkRedirectParam(r *http.Request) (string, bool) {
 	}
 	// Check to make sure we only redirect to allowed places
 	if a.Mode() == api.PROXYMODE_PROXY || a.Mode() == api.PROXYMODE_FORWARD_SINGLE {
-		if !strings.Contains(u.String(), a.proxyConfig.ExternalHost) {
-			a.log.WithField("url", u.String()).WithField("ext", a.proxyConfig.ExternalHost).Warning("redirect URI did not contain external host")
+		ext, err := url.Parse(a.proxyConfig.ExternalHost)
+		if err != nil {
+			return "", false
+		}
+		ext.Scheme = ""
+		if !strings.Contains(u.String(), ext.String()) {
+			a.log.WithField("url", u.String()).WithField("ext", ext.String()).Warning("redirect URI did not contain external host")
 			return "", false
 		}
 	} else {
