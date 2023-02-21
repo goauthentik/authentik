@@ -4,7 +4,6 @@ from typing import Any, Optional
 
 from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
 from celery.exceptions import CeleryError
-from channels.middleware import BaseMiddleware
 from channels_redis.core import ChannelFull
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, SuspiciousOperation, ValidationError
@@ -17,21 +16,20 @@ from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
 from rest_framework.exceptions import APIException
-from sentry_sdk import HttpTransport, Hub
+from sentry_sdk import HttpTransport
 from sentry_sdk import init as sentry_sdk_init
 from sentry_sdk.api import set_tag
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
 from sentry_sdk.integrations.threading import ThreadingIntegration
-from sentry_sdk.tracing import Transaction
 from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
 
 from authentik import __version__, get_build_hash
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import authentik_user_agent
-from authentik.lib.utils.reflection import class_to_path, get_env
+from authentik.lib.utils.reflection import get_env
 
 LOGGER = get_logger()
 
