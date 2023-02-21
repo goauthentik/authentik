@@ -1,8 +1,8 @@
 """interfaces API"""
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
-from authentik.core.api.used_by import UsedByMixin
 
+from authentik.core.api.used_by import UsedByMixin
 from authentik.interfaces.models import Interface
 
 

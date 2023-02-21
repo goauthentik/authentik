@@ -39,8 +39,9 @@ class TesOAuth2DeviceInit(OAuthTestCase):
         self.assertEqual(
             res.url,
             reverse(
-                "authentik_core:if-flow",
+                "authentik_interfaces:if",
                 kwargs={
+                    "if_name": "flow",
                     "flow_slug": self.device_flow.slug,
                 },
             ),
@@ -68,8 +69,9 @@ class TesOAuth2DeviceInit(OAuthTestCase):
         self.assertEqual(
             res.url,
             reverse(
-                "authentik_core:if-flow",
+                "authentik_interfaces:if",
                 kwargs={
+                    "if_name": "flow",
                     "flow_slug": self.provider.authorization_flow.slug,
                 },
             )
