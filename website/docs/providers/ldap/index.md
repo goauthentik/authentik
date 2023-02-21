@@ -29,8 +29,8 @@ The following fields are currently sent for users:
     -   "organizationalPerson"
     -   "goauthentik.io/ldap/user"
 -   `memberOf`: A list of all DNs that the user is a member of
--   `goauthentik.io/ldap/active`: "true" if the account is active, otherwise "false"
--   `goauthentik.io/ldap/superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
+-   `goauthentik-io-ldap-active`: "true" if the account is active, otherwise "false"
+-   `goauthentik-io-ldap-superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
 
 The following fields are current set for groups:
 
