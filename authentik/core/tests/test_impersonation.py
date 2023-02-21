@@ -60,5 +60,5 @@ class TestImpersonation(TestCase):
 
         response = self.client.get(reverse("authentik_core:impersonate-end"))
         self.assertRedirects(
-            response, reverse("authentik_interfaces:if", kwargs={"if_name", "user"})
+            response, reverse("authentik_interfaces:if", kwargs={"if_name": "user"})
         )

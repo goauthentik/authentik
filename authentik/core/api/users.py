@@ -10,7 +10,6 @@ from django.db.models.functions import ExtractHour
 from django.db.models.query import QuerySet
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
-from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -72,6 +71,8 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import reverse_interface
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -350,8 +351,12 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         )
         querystring = urlencode({QS_KEY_TOKEN: token.key})
         link = self.request.build_absolute_uri(
-            reverse_lazy("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
-            + f"?{querystring}"
+            reverse_interface(
+                self.request,
+                InterfaceType.FLOW,
+                flow_slug=flow.slug,
+            ),
+            +f"?{querystring}",
         )
         return link, token
 

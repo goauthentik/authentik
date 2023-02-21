@@ -5,7 +5,6 @@ from django.contrib.auth import _clean_credentials
 from django.contrib.auth.backends import BaseBackend
 from django.core.exceptions import PermissionDenied
 from django.http import HttpRequest, HttpResponse
-from django.urls import reverse
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ErrorDetail, ValidationError
 from rest_framework.fields import CharField
@@ -23,6 +22,8 @@ from authentik.flows.challenge import (
 from authentik.flows.models import Flow, FlowDesignation, Stage
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import reverse_interface
 from authentik.lib.utils.reflection import path_to_class
 from authentik.stages.password.models import PasswordStage
 
@@ -95,11 +96,12 @@ class PasswordStageView(ChallengeStageView):
                 "type": ChallengeTypes.NATIVE.value,
             }
         )
-        recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY)
-        if recovery_flow.exists():
-            recover_url = reverse(
-                "authentik_core:if-flow",
-                kwargs={"flow_slug": recovery_flow.first().slug},
+        recovery_flow = Flow.objects.filter(designation=FlowDesignation.RECOVERY).first()
+        if recovery_flow:
+            recover_url = reverse_interface(
+                self.request,
+                InterfaceType.FLOW,
+                flow_slug=recovery_flow.slug,
             )
             challenge.initial_data["recovery_url"] = self.request.build_absolute_uri(recover_url)
         return challenge

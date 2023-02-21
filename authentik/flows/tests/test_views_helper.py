@@ -7,6 +7,8 @@ from authentik.core.tests.utils import create_test_flow
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_PLAN
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.tests import reverse_interface
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.models import OAuth2Provider
 
@@ -21,7 +23,10 @@ class TestHelperView(TestCase):
         response = self.client.get(
             reverse("authentik_flows:default-invalidation"),
         )
-        expected_url = reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+        expected_url = reverse_interface(
+            InterfaceType.FLOW,
+            flow_slug=flow.slug,
+        )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, expected_url)
 
@@ -72,6 +77,9 @@ class TestHelperView(TestCase):
         response = self.client.get(
             reverse("authentik_flows:default-invalidation"),
         )
-        expected_url = reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+        expected_url = reverse_interface(
+            InterfaceType.FLOW,
+            flow_slug=flow.slug,
+        )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, expected_url)

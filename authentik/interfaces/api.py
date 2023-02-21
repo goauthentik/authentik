@@ -25,3 +25,4 @@ class InterfaceViewSet(UsedByMixin, ModelViewSet):
     queryset = Interface.objects.all()
     serializer_class = InterfaceSerializer
     filterset_fields = ["url_name", "type", "template"]
+    search_fields = ["url_name", "type", "template"]

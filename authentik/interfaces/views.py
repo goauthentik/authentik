@@ -1,11 +1,13 @@
 """Interface views"""
 from json import dumps
 from typing import Any, Optional
+from urllib.parse import urlencode
 
 from django.http import Http404, HttpRequest, HttpResponse
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.template import Template, TemplateSyntaxError, engines
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.cache import cache_page
@@ -40,30 +42,37 @@ def redirect_to_default_interface(request: HttpRequest, interface_type: Interfac
     return RedirectToInterface.as_view(type=interface_type)(request, **kwargs)
 
 
+def reverse_interface(request: HttpRequest, interface_type: InterfaceType, **kwargs):
+    """Reverse URL to configured default interface"""
+    tenant: Tenant = request.tenant
+    interface: Interface = None
+
+    if interface_type == InterfaceType.USER:
+        interface = tenant.interface_user
+    if interface_type == InterfaceType.ADMIN:
+        interface = tenant.interface_admin
+    if interface_type == InterfaceType.FLOW:
+        interface = tenant.interface_flow
+
+    if not interface:
+        raise Http404()
+    kwargs["if_name"] = interface.url_name
+    return reverse(
+        "authentik_interfaces:if",
+        kwargs=kwargs,
+    )
+
+
 class RedirectToInterface(View):
     """Redirect to tenant's configured view for specified type"""
 
     type: Optional[InterfaceType] = None
 
     def dispatch(self, request: HttpRequest, **kwargs: Any) -> HttpResponse:
-        tenant: Tenant = request.tenant
-        interface: Interface = None
-
-        if self.type == InterfaceType.USER:
-            interface = tenant.interface_user
-        if self.type == InterfaceType.ADMIN:
-            interface = tenant.interface_admin
-        if self.type == InterfaceType.FLOW:
-            interface = tenant.interface_flow
-
-        if not interface:
-            raise Http404()
-        return redirect_with_qs(
-            "authentik_interfaces:if",
-            self.request.GET,
-            if_name=interface.url_name,
-            **kwargs,
-        )
+        target = reverse_interface(request, self.type, **kwargs)
+        if self.request.GET:
+            target += "?" + urlencode(self.request.GET.items())
+        return redirect(target)
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")

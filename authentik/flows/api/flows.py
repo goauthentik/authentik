@@ -25,6 +25,8 @@ from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import Flow
 from authentik.flows.planner import CACHE_PREFIX, PLAN_CONTEXT_PENDING_USER, FlowPlanner, cache_key
 from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import reverse_interface
 from authentik.lib.utils.file import (
     FilePathSerializer,
     FileUploadSerializer,
@@ -294,7 +296,10 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         return Response(
             {
                 "link": request._request.build_absolute_uri(
-                    reverse("authentik_core:if-flow", kwargs={"flow_slug": flow.slug})
+                    reverse_interface(
+                        InterfaceType.FLOW,
+                        flow_slug=flow.slug,
+                    ),
                 )
             }
         )
