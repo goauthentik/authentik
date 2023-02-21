@@ -225,6 +225,10 @@ class TestProviderLDAP(SeleniumTestCase):
                         "uidNumber": [str(2000 + o_user.pk)],
                         "gidNumber": [str(2000 + o_user.pk)],
                         "memberOf": [],
+                        # Old fields for backwards compatibility
+                        "goauthentik.io/ldap/active": ["true"],
+                        "goauthentik.io/ldap/superuser": ["false"],
+                        # End old fields
                         "goauthentik-io-ldap-active": ["true"],
                         "goauthentik-io-ldap-superuser": ["false"],
                         "goauthentik.io/user/override-ips": ["true"],
