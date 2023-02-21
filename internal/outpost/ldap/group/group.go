@@ -30,8 +30,11 @@ func (lg *LDAPGroup) Entry() *ldap.Entry {
 	}
 
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
-		"objectClass":                   objectClass,
-		"member":                        lg.Member,
+		"objectClass": objectClass,
+		"member":      lg.Member,
+		// Old fields for backwards compatibility
+		"goauthentik.io/ldap/superuser": {strconv.FormatBool(lg.IsSuperuser)},
+		// End old fields
 		"goauthentik-io-ldap-superuser": {strconv.FormatBool(lg.IsSuperuser)},
 		"cn":                            {lg.CN},
 		"uid":                           {lg.Uid},
