@@ -1,0 +1,70 @@
+---
+title: Mobilizon
+---
+
+<span class="badge badge--secondary">Support level: Community</span>
+
+## What is Service Name
+
+From https://joinmobilizon.org/
+:::note
+Gather, organize and mobilize yourselves with a convivial, ethical, and emancipating tool. https://joinmobilizon.org
+:::
+
+## Preparation
+
+The following placeholders will be used:
+
+-   `inventory.company` is the FQDN of the mobilizon install.
+-   `authentik.company` is the FQDN of the authentik install.
+
+## authentik Configuration
+
+### Step 1 - OAuth2/OpenID Provider
+
+In authentik, create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings :
+
+-   Name : mobilizon
+-   Redirect URI: `https://mobilizon.company/auth/keycloak/callback`
+
+### Step 3 - Application
+
+In authentik, create an application (under _Resources/Applications_) with these settings :
+
+-   Name: Mobilizon
+-   Slug: mobilizon
+-   Provider: mobilizon
+
+## Mobilizon Setup
+
+Configure Mobilizon settings by editing the `config.exs`
+
+Add the following
+
+```
+config :ueberauth,
+       Ueberauth,
+       providers: [
+         keycloak: {Ueberauth.Strategy.Keycloak, [default_scope: "openid profile email"]}
+       ]
+
+config :mobilizon, :auth,
+  oauth_consumer_strategies: [
+    {:keycloak, "authentik"}
+  ]
+
+config :ueberauth, Ueberauth.Strategy.Keycloak.OAuth,
+  client_id: "<Client ID>",
+  client_secret: "<Client Secret>",
+  site: "https://inventory.company",
+  authorize_url: "https://inventory.company/application/o/authorize/",
+  token_url: "https://inventory.company/application/o/token/",
+  userinfo_url: "https://inventory.company/application/o/userinfo/",
+  token_method: :post
+```
+
+Restart mobilizon.service
+
+## Additional Resources
+
+-   https://docs.joinmobilizon.org/administration/configure/auth/

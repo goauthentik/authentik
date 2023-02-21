@@ -16,6 +16,7 @@ module.exports = {
                         "services/hedgedoc/index",
                         "services/kimai/index",
                         "services/matrix-synapse/index",
+                        "services/mobilizon/index",
                         "services/nextcloud/index",
                         "services/onlyoffice/index",
                         "services/paperless-ng/index",
