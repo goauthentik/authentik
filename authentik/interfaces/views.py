@@ -1,23 +1,25 @@
 """Interface views"""
 from json import dumps
-from typing import Any
+from typing import Any, Optional
 
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.template import Template, TemplateSyntaxError, engines
 from django.template.response import TemplateResponse
-from django.views import View
-from rest_framework.request import Request
-from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import ensure_csrf_cookie
+from rest_framework.request import Request
 
 from authentik import get_build_hash
 from authentik.admin.tasks import LOCAL_VERSION
 from authentik.api.v3.config import ConfigView
 from authentik.flows.models import Flow
 from authentik.interfaces.models import Interface, InterfaceType
+from authentik.lib.utils.urls import redirect_with_qs
 from authentik.tenants.api import CurrentTenantSerializer
+from authentik.tenants.models import Tenant
 
 
 def template_from_string(template_string: str) -> Template:
@@ -30,6 +32,38 @@ def template_from_string(template_string: str) -> Template:
         except TemplateSyntaxError as exc:
             chain.append(exc)
     raise TemplateSyntaxError(template_string, chain=chain)
+
+
+def redirect_to_default_interface(request: HttpRequest, interface_type: InterfaceType, **kwargs):
+    """Shortcut to inline redirect to default interface,
+    keeping GET parameters of the passed request"""
+    return RedirectToInterface.as_view(type=interface_type)(request, **kwargs)
+
+
+class RedirectToInterface(View):
+    """Redirect to tenant's configured view for specified type"""
+
+    type: Optional[InterfaceType] = None
+
+    def dispatch(self, request: HttpRequest, **kwargs: Any) -> HttpResponse:
+        tenant: Tenant = request.tenant
+        interface: Interface = None
+
+        if self.type == InterfaceType.USER:
+            interface = tenant.interface_user
+        if self.type == InterfaceType.ADMIN:
+            interface = tenant.interface_admin
+        if self.type == InterfaceType.FLOW:
+            interface = tenant.interface_flow
+
+        if not interface:
+            raise Http404()
+        return redirect_with_qs(
+            "authentik_interfaces:if",
+            self.request.GET,
+            if_name=interface.url_name,
+            **kwargs,
+        )
 
 
 @method_decorator(ensure_csrf_cookie, name="dispatch")

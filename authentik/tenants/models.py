@@ -8,6 +8,7 @@ from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
 from authentik.flows.models import Flow
+from authentik.interfaces.models import Interface
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
@@ -49,6 +50,25 @@ class Tenant(SerializerModel):
     )
     flow_device_code = models.ForeignKey(
         Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_device_code"
+    )
+
+    interface_flow = models.ForeignKey(
+        Interface,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="tenant_flow",
+    )
+    interface_user = models.ForeignKey(
+        Interface,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="tenant_user",
+    )
+    interface_admin = models.ForeignKey(
+        Interface,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="tenant_admin",
     )
 
     event_retention = models.TextField(

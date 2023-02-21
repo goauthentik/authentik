@@ -10,7 +10,5 @@ urlpatterns = [
         kwargs={"flow_slug": None},
         name="if",
     ),
-    path(
-        "<slug:if_name>/<slug:flow_slug>/", InterfaceView.as_view(), name="if"
-    ),
+    path("<slug:if_name>/<slug:flow_slug>/", InterfaceView.as_view(), name="if"),
 ]

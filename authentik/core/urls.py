@@ -3,27 +3,30 @@ from channels.auth import AuthMiddleware
 from channels.sessions import CookieMiddleware
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.http import HttpRequest, HttpResponse
 from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.views.generic import RedirectView
-from django.http import HttpRequest, HttpResponse
+
 from authentik.core.views import apps, impersonate
 from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.session import EndSessionView
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import RedirectToInterface
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.messages.consumer import MessageConsumer
 
 
 def placeholder_view(request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    """Empty view used as placeholder
+
+    (Mounted to websocket endpoints and used by e2e tests)"""
     return HttpResponse(status_code=200)
 
 
 urlpatterns = [
     path(
         "",
-        login_required(
-            RedirectView.as_view(pattern_name="authentik_core:if-user", query_string=True)
-        ),
+        login_required(RedirectToInterface.as_view(type=InterfaceType.USER)),
         name="root-redirect",
     ),
     path(

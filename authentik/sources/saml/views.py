@@ -72,7 +72,7 @@ class InitiateView(View):
         # Ensure redirect is carried through when user was trying to
         # authorize application
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-user"
+            NEXT_ARG_NAME, "authentik_core:root-redirect"
         )
         kwargs.update(
             {

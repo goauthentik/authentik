@@ -5,6 +5,11 @@ entries:
 - model: authentik_blueprints.metaapplyblueprint
   attrs:
     identifiers:
+      name: System - Interfaces
+    required: false
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
       name: Default - Authentication flow
     required: false
 - model: authentik_blueprints.metaapplyblueprint
@@ -21,6 +26,9 @@ entries:
     flow_authentication: !Find [authentik_flows.flow, [slug, default-authentication-flow]]
     flow_invalidation: !Find [authentik_flows.flow, [slug, default-invalidation-flow]]
     flow_user_settings: !Find [authentik_flows.flow, [slug, default-user-settings-flow]]
+    interface_admin: !Find [authentik_interfaces.Interface, [type, admin]]
+    interface_user: !Find [authentik_interfaces.Interface, [type, user]]
+    interface_flow: !Find [authentik_interfaces.Interface, [type, flow]]
   identifiers:
     domain: authentik-default
     default: True

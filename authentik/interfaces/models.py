@@ -21,7 +21,7 @@ class Interface(SerializerModel):
 
     interface_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    url_name = models.SlugField()
+    url_name = models.SlugField(unique=True)
 
     type = models.TextField(choices=InterfaceType.choices)
     template = models.TextField()

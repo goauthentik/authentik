@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                         default=uuid.uuid4, editable=False, primary_key=True, serialize=False
                     ),
                 ),
-                ("url_name", models.SlugField()),
+                ("url_name", models.SlugField(unique=True)),
                 (
                     "type",
                     models.TextField(

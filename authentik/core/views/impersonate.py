@@ -35,7 +35,7 @@ class ImpersonateInitView(View):
 
         Event.new(EventAction.IMPERSONATION_STARTED).from_http(request, user_to_be)
 
-        return redirect("authentik_core:if-user")
+        return redirect("authentik_core:root-redirect")
 
 
 class ImpersonateEndView(View):
@@ -48,7 +48,7 @@ class ImpersonateEndView(View):
             or SESSION_KEY_IMPERSONATE_ORIGINAL_USER not in request.session
         ):
             LOGGER.debug("Can't end impersonation", user=request.user)
-            return redirect("authentik_core:if-user")
+            return redirect("authentik_core:root-redirect")
 
         original_user = request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
 
