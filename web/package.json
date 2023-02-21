@@ -7,7 +7,7 @@
         "extract": "lingui extract",
         "build": "lingui compile && rollup -c ./rollup.config.js",
         "build-proxy": "lingui compile && rollup -c ./rollup.proxy.js",
-        "watch": "lingui compile && rollup -c -w",
+        "watch": "lingui compile && node --max-old-space-size=8192 node_modules/.bin/rollup -c -w",
         "lint": "eslint . --max-warnings 0 --fix",
         "lit-analyse": "lit-analyzer src",
         "prettier-check": "prettier --check .",

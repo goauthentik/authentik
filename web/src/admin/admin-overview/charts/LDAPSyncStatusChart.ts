@@ -67,7 +67,7 @@ export class LDAPSyncStatusChart extends AKChart<LDAPSyncStats> {
         );
         this.centerText = sources.pagination.count.toString();
         return {
-            healthy: sources.pagination.count === 0 ? -1 : metrics.healthy,
+            healthy: sources.pagination.count === 0 ? 0 : metrics.healthy,
             failed: metrics.failed,
             unsynced: metrics.unsynced,
         };

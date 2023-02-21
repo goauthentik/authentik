@@ -1,5 +1,5 @@
 import "@goauthentik/admin/events/EventInfo";
-import { ActionToLabel } from "@goauthentik/admin/events/utils";
+import { ActionToLabel, EventGeo } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
 import { truncate } from "@goauthentik/common/utils";
@@ -7,7 +7,6 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
@@ -69,10 +68,6 @@ export class RecentEventsCard extends Table<Event> {
     }
 
     row(item: EventWithContext): TemplateResult[] {
-        let geo: KeyUnknown | undefined = undefined;
-        if (Object.hasOwn(item.context, "geo")) {
-            geo = item.context.geo as KeyUnknown;
-        }
         return [
             html`<div><a href="${`#/events/log/${item.pk}`}">${ActionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
@@ -92,7 +87,7 @@ export class RecentEventsCard extends Table<Event> {
                 : html`-`,
             html`<span>${item.created?.toLocaleString()}</span>`,
             html` <div>${item.clientIp || t`-`}</div>
-                ${geo ? html`<small>${geo.city}, ${geo.country}</small> ` : html``}`,
+                <small>${EventGeo(item)}</small>`,
             html`<span>${item.tenant?.name || t`-`}</span>`,
         ];
     }

@@ -134,7 +134,7 @@ export class AdminOverviewPage extends AKElement {
                         >
                             <ak-aggregate-card
                                 icon="pf-icon pf-icon-zone"
-                                header=${t`Outpost status`}
+                                header=${t`Outpost instance status`}
                                 headerLink="#/outpost/outposts"
                             >
                                 <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
