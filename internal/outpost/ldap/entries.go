@@ -20,7 +20,11 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		u.Email = api.PtrString("")
 	}
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
-		"memberOf":                      pi.GroupsForUser(u),
+		"memberOf": pi.GroupsForUser(u),
+		// Old fields for backwards compatibility
+		"goauthentik.io/ldap/active":    {strconv.FormatBool(*u.IsActive)},
+		"goauthentik.io/ldap/superuser": {strconv.FormatBool(u.IsSuperuser)},
+		// End old fields
 		"goauthentik-io-ldap-active":    {strconv.FormatBool(*u.IsActive)},
 		"goauthentik-io-ldap-superuser": {strconv.FormatBool(u.IsSuperuser)},
 		"cn":                            {u.Username},
