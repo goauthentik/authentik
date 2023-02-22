@@ -4,7 +4,7 @@ title: Zammad
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Service Name
+## What is Zammad
 
 From https://zammad.org/
 :::note
