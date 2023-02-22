@@ -1,11 +1,19 @@
 """Test Users API"""
 
+from datetime import datetime
+
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
 from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
-from authentik.core.models import AuthenticatedSession, User
+from authentik.core.models import (
+    USER_ATTRIBUTE_SA,
+    USER_ATTRIBUTE_TOKEN_EXPIRING,
+    AuthenticatedSession,
+    Token,
+    User,
+)
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
@@ -130,7 +138,71 @@ class TestUsersAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(User.objects.filter(username="test-sa").exists())
+
+        user_filter = User.objects.filter(
+            username="test-sa",
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True, USER_ATTRIBUTE_SA: True},
+        )
+        self.assertTrue(user_filter.exists())
+        user: User = user_filter.first()
+        self.assertFalse(user.has_usable_password())
+
+        token_filter = Token.objects.filter(user=user)
+        self.assertTrue(token_filter.exists())
+        self.assertTrue(token_filter.first().expiring)
+
+    def test_service_account_no_expire(self):
+        """Service account creation without token expiration"""
+        self.client.force_login(self.admin)
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "create_group": True,
+                "expiring": False,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        user_filter = User.objects.filter(
+            username="test-sa",
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: False, USER_ATTRIBUTE_SA: True},
+        )
+        self.assertTrue(user_filter.exists())
+        user: User = user_filter.first()
+        self.assertFalse(user.has_usable_password())
+
+        token_filter = Token.objects.filter(user=user)
+        self.assertTrue(token_filter.exists())
+        self.assertFalse(token_filter.first().expiring)
+
+    def test_service_account_with_custom_expire(self):
+        """Service account creation with custom token expiration date"""
+        self.client.force_login(self.admin)
+        expire_on = datetime(2050, 11, 11, 11, 11, 11).astimezone()
+        response = self.client.post(
+            reverse("authentik_api:user-service-account"),
+            data={
+                "name": "test-sa",
+                "create_group": True,
+                "expires": expire_on.isoformat(),
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+        user_filter = User.objects.filter(
+            username="test-sa",
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True, USER_ATTRIBUTE_SA: True},
+        )
+        self.assertTrue(user_filter.exists())
+        user: User = user_filter.first()
+        self.assertFalse(user.has_usable_password())
+
+        token_filter = Token.objects.filter(user=user)
+        self.assertTrue(token_filter.exists())
+        token = token_filter.first()
+        self.assertTrue(token.expiring)
+        self.assertEqual(token.expires, expire_on)
 
     def test_service_account_invalid(self):
         """Service account creation (twice with same name, expect error)"""
@@ -143,7 +215,19 @@ class TestUsersAPI(APITestCase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(User.objects.filter(username="test-sa").exists())
+
+        user_filter = User.objects.filter(
+            username="test-sa",
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True, USER_ATTRIBUTE_SA: True},
+        )
+        self.assertTrue(user_filter.exists())
+        user: User = user_filter.first()
+        self.assertFalse(user.has_usable_password())
+
+        token_filter = Token.objects.filter(user=user)
+        self.assertTrue(token_filter.exists())
+        self.assertTrue(token_filter.first().expiring)
+
         response = self.client.post(
             reverse("authentik_api:user-service-account"),
             data={
