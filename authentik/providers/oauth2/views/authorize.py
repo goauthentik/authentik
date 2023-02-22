@@ -235,19 +235,22 @@ class OAuthAuthorizationParams:
 
     def check_nonce(self):
         """Nonce parameter validation."""
-        # https://openid.net/specs/openid-connect-core-1_0.html#ImplicitIDTValidation
-        # Nonce is only required for Implicit flows
-        if self.grant_type != GrantTypes.IMPLICIT:
+        # nonce is required for all flows that return an id_token from the authorization endpoint,
+        # see https://openid.net/specs/openid-connect-core-1_0.html#ImplicitAuthRequest or
+        # https://openid.net/specs/openid-connect-core-1_0.html#HybridIDToken and
+        # https://bitbucket.org/openid/connect/issues/972/nonce-requirement-in-hybrid-auth-request
+        if self.response_type not in [
+            ResponseTypes.ID_TOKEN,
+            ResponseTypes.ID_TOKEN_TOKEN,
+            ResponseTypes.CODE_ID_TOKEN,
+            ResponseTypes.CODE_ID_TOKEN_TOKEN,
+        ]:
+            return
+        if SCOPE_OPENID not in self.scope:
             return
         if not self.nonce:
-            self.nonce = self.state
-            LOGGER.warning("Using state as nonce for OpenID Request")
-        if not self.nonce:
-            if SCOPE_OPENID in self.scope:
-                LOGGER.warning("Missing nonce for OpenID Request")
-                raise AuthorizeError(
-                    self.redirect_uri, "invalid_request", self.grant_type, self.state
-                )
+            LOGGER.warning("Missing nonce for OpenID Request")
+            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""
