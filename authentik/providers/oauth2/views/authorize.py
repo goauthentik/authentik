@@ -556,6 +556,8 @@ class OAuthFulfillmentStage(StageView):
             ResponseTypes.CODE_TOKEN,
         ]:
             query_fragment["access_token"] = token.token
+            # Get at_hash of the current token and update the id_token
+            id_token.at_hash = token.at_hash
 
         # Check if response_type must include id_token in the response.
         if self.params.response_type in [
@@ -564,8 +566,6 @@ class OAuthFulfillmentStage(StageView):
             ResponseTypes.CODE_ID_TOKEN,
             ResponseTypes.CODE_ID_TOKEN_TOKEN,
         ]:
-            # Get at_hash of the current token and update the id_token
-            id_token.at_hash = token.at_hash
             query_fragment["id_token"] = self.provider.encode(id_token.to_dict())
             token._id_token = dumps(id_token.to_dict())
 
