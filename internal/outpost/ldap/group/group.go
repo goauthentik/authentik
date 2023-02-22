@@ -2,6 +2,7 @@ package group
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/api/v3"
@@ -18,13 +19,21 @@ type LDAPGroup struct {
 	Member         []string
 	IsSuperuser    bool
 	IsVirtualGroup bool
-	AKAttributes   map[string]interface{}
+	Attributes     map[string]interface{}
 }
 
 func (lg *LDAPGroup) Entry() *ldap.Entry {
-	attrs := utils.AttributesToLDAP(lg.AKAttributes, false)
-	sanitizedAttrs := utils.AttributesToLDAP(lg.AKAttributes, true)
-	attrs = append(attrs, sanitizedAttrs...)
+	attrs := utils.AttributesToLDAP(lg.Attributes, true)
+	rawAttrs := utils.AttributesToLDAP(lg.Attributes, false)
+	// Only append attributes that don't already exist
+	// TODO: Remove in 2023.3
+	for _, rawAttr := range rawAttrs {
+		for _, attr := range attrs {
+			if !strings.EqualFold(attr.Name, rawAttr.Name) {
+				attrs = append(attrs, rawAttr)
+			}
+		}
+	}
 
 	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCGroupOfNames, constants.OCAKGroup, constants.OCPosixGroup}
 	if lg.IsVirtualGroup {
@@ -55,7 +64,7 @@ func FromAPIGroup(g api.Group, si server.LDAPServerInstance) *LDAPGroup {
 		Member:         si.UsersForGroup(g),
 		IsVirtualGroup: false,
 		IsSuperuser:    *g.IsSuperuser,
-		AKAttributes:   g.Attributes,
+		Attributes:     g.Attributes,
 	}
 }
 
@@ -68,6 +77,6 @@ func FromAPIUser(u api.User, si server.LDAPServerInstance) *LDAPGroup {
 		Member:         []string{si.GetUserDN(u.Username)},
 		IsVirtualGroup: true,
 		IsSuperuser:    false,
-		AKAttributes:   nil,
+		Attributes:     nil,
 	}
 }

@@ -3,6 +3,7 @@ package ldap
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/api/v3"
@@ -12,9 +13,17 @@ import (
 
 func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	dn := pi.GetUserDN(u.Username)
-	attrs := utils.AttributesToLDAP(u.Attributes, false)
-	sanitizedAttrs := utils.AttributesToLDAP(u.Attributes, true)
-	attrs = append(attrs, sanitizedAttrs...)
+	attrs := utils.AttributesToLDAP(u.Attributes, true)
+	rawAttrs := utils.AttributesToLDAP(u.Attributes, false)
+	// Only append attributes that don't already exist
+	// TODO: Remove in 2023.3
+	for _, rawAttr := range rawAttrs {
+		for _, attr := range attrs {
+			if !strings.EqualFold(attr.Name, rawAttr.Name) {
+				attrs = append(attrs, rawAttr)
+			}
+		}
+	}
 
 	if u.IsActive == nil {
 		u.IsActive = api.PtrBool(false)
