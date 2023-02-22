@@ -228,11 +228,13 @@ class TestProviderLDAP(SeleniumTestCase):
                         # Old fields for backwards compatibility
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["false"],
+                        "goauthentik.io/user/override-ips": ["true"],
+                        "goauthentik.io/user/service-account": ["true"],
                         # End old fields
                         "ak-active": ["true"],
                         "ak-superuser": ["false"],
-                        "goauthentik.io/user/override-ips": ["true"],
-                        "goauthentik.io/user/service-account": ["true"],
+                        "goauthentikio-user-override-ips": ["true"],
+                        "goauthentikio-user-service-account": ["true"],
                     },
                     "type": "searchResEntry",
                 },
@@ -257,11 +259,13 @@ class TestProviderLDAP(SeleniumTestCase):
                         # Old fields for backwards compatibility
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["false"],
+                        "goauthentik.io/user/override-ips": ["true"],
+                        "goauthentik.io/user/service-account": ["true"],
                         # End old fields
                         "ak-active": ["true"],
                         "ak-superuser": ["false"],
-                        "goauthentik.io/user/override-ips": ["true"],
-                        "goauthentik.io/user/service-account": ["true"],
+                        "goauthentikio-user-override-ips": ["true"],
+                        "goauthentikio-user-service-account": ["true"],
                     },
                     "type": "searchResEntry",
                 },
