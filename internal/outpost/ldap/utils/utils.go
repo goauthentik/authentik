@@ -44,33 +44,35 @@ func stringify(in interface{}) *string {
 	}
 }
 
-func AttributesToLDAP(attrs map[string]interface{}, sanitize bool) []*ldap.EntryAttribute {
+func AttributesToLDAP(
+	attrs map[string]interface{},
+	keyFormatter func(key string) string,
+	valueFormatter func(value []string) []string,
+) []*ldap.EntryAttribute {
 	attrList := []*ldap.EntryAttribute{}
 	if attrs == nil {
 		return attrList
 	}
 	for attrKey, attrValue := range attrs {
-		entry := &ldap.EntryAttribute{Name: attrKey}
-		if sanitize {
-			entry.Name = AttributeKeySanitize(attrKey)
-		}
+		entry := &ldap.EntryAttribute{Name: keyFormatter(attrKey)}
 		switch t := attrValue.(type) {
 		case []string:
-			entry.Values = t
+			entry.Values = valueFormatter(t)
 		case *[]string:
-			entry.Values = *t
+			entry.Values = valueFormatter(*t)
 		case []interface{}:
-			entry.Values = make([]string, len(t))
-			for idx, v := range t {
+			vv := make([]string, 0)
+			for _, v := range t {
 				v := stringify(v)
 				if v != nil {
-					entry.Values[idx] = *v
+					vv = append(vv, *v)
 				}
 			}
+			entry.Values = valueFormatter(vv)
 		default:
 			v := stringify(t)
 			if v != nil {
-				entry.Values = []string{*v}
+				entry.Values = valueFormatter([]string{*v})
 			}
 		}
 		attrList = append(attrList, entry)
@@ -88,7 +90,7 @@ func EnsureAttributes(attrs []*ldap.EntryAttribute, shouldHave map[string][]stri
 func MustHaveAttribute(attrs []*ldap.EntryAttribute, name string, value []string) []*ldap.EntryAttribute {
 	shouldSet := true
 	for _, attr := range attrs {
-		if attr.Name == name {
+		if strings.EqualFold(attr.Name, name) {
 			shouldSet = false
 		}
 	}
