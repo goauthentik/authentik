@@ -37,6 +37,7 @@ Only settings that have been modified from default have been listed.
 -   Name: Vikunja
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
+-   Signing Key: Select one of the available signing keys (Without this, Vikunja will not recognize Authentik's signing key method as a valid one and the login will not work)
 -   Redirect URIs/Origins:
 
 ```
@@ -82,7 +83,11 @@ auth:
 ```
 
 :::note
-Vikunja Reference link: https://vikunja.io/docs/config-options/#auth
+You need to restart the Vikunja API after applying the OpenID configuration to Vikunja.
+:::
+
+:::note
+Vikunja Configuration Reference: https://vikunja.io/docs/config-options/#auth
 :::
 
 ### Step 3
@@ -93,9 +98,3 @@ In authentik, create an application which uses this provider. Optionally apply a
 -   Slug: vikunja
 -   Provider: vikunja
 -   Launch URL: https://vik.company
-
-## Notes
-
-:::note
-It is recommended to restart all Vikunja components (API and frontend) after applying the OpenID configuration to Vikunja.
-:::
