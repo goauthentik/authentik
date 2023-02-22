@@ -38310,6 +38310,13 @@ components:
         create_group:
           type: boolean
           default: false
+        expiring:
+          type: boolean
+          default: true
+        expires:
+          type: string
+          format: date-time
+          description: If not provided, valid for 360 days
       required:
       - name
     UserServiceAccountResponse:
