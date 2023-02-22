@@ -4,7 +4,7 @@ title: Mobilizon
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Service Name
+## What is Mobilizon
 
 From https://joinmobilizon.org/
 :::note
