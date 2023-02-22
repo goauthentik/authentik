@@ -4,7 +4,7 @@ title: Mastodon
 
 <span class="badge badge--secondary">Support level: Community</span>
 
-## What is Service Name
+## What is Mastodon
 
 From https://joinmastodon.org/
 :::note
