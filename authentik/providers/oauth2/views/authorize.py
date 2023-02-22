@@ -50,7 +50,6 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    ClientTypes,
     GrantTypes,
     OAuth2Provider,
     ResponseMode,
