@@ -9,6 +9,14 @@ import (
 	ldapConstants "goauthentik.io/internal/outpost/ldap/constants"
 )
 
+func AttributeKeySanitize(key string) string {
+	return strings.ReplaceAll(
+		strings.ReplaceAll(key, "/", "-"),
+		".",
+		"",
+	)
+}
+
 func stringify(in interface{}) *string {
 	switch t := in.(type) {
 	case string:
@@ -36,13 +44,13 @@ func stringify(in interface{}) *string {
 	}
 }
 
-func AKAttrsToLDAP(attrs map[string]interface{}) []*ldap.EntryAttribute {
+func AttributesToLDAP(attrs map[string]interface{}) []*ldap.EntryAttribute {
 	attrList := []*ldap.EntryAttribute{}
 	if attrs == nil {
 		return attrList
 	}
 	for attrKey, attrValue := range attrs {
-		entry := &ldap.EntryAttribute{Name: attrKey}
+		entry := &ldap.EntryAttribute{Name: AttributeKeySanitize(attrKey)}
 		switch t := attrValue.(type) {
 		case []string:
 			entry.Values = t

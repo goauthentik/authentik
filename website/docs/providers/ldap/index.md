@@ -56,6 +56,10 @@ The virtual groups gidNumber is equal to the uidNumber of the user.
 Starting with 2021.9.1, custom attributes will override the inbuilt attributes.
 :::
 
+:::info
+Starting with 2023.3, periods and slashes in custom attributes will be sanitized.
+:::
+
 ## SSL
 
 You can also configure SSL for your LDAP Providers by selecting a certificate and a server name in the provider settings.

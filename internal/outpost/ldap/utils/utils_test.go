@@ -19,16 +19,16 @@ func TestAKAttrsToLDAP_String(t *testing.T) {
 	u.Attributes = map[string]interface{}{
 		"foo": "bar",
 	}
-	assert.Equal(t, 1, len(AKAttrsToLDAP(u.Attributes)))
-	assert.Equal(t, "foo", AKAttrsToLDAP(u.Attributes)[0].Name)
-	assert.Equal(t, []string{"bar"}, AKAttrsToLDAP(u.Attributes)[0].Values)
+	assert.Equal(t, 1, len(AttributesToLDAP(u.Attributes)))
+	assert.Equal(t, "foo", AttributesToLDAP(u.Attributes)[0].Name)
+	assert.Equal(t, []string{"bar"}, AttributesToLDAP(u.Attributes)[0].Values)
 	// pointer string
 	u.Attributes = map[string]interface{}{
 		"foo": api.PtrString("bar"),
 	}
-	assert.Equal(t, 1, len(AKAttrsToLDAP(u.Attributes)))
-	assert.Equal(t, "foo", AKAttrsToLDAP(u.Attributes)[0].Name)
-	assert.Equal(t, []string{"bar"}, AKAttrsToLDAP(u.Attributes)[0].Values)
+	assert.Equal(t, 1, len(AttributesToLDAP(u.Attributes)))
+	assert.Equal(t, "foo", AttributesToLDAP(u.Attributes)[0].Name)
+	assert.Equal(t, []string{"bar"}, AttributesToLDAP(u.Attributes)[0].Values)
 }
 
 func TestAKAttrsToLDAP_String_List(t *testing.T) {
@@ -37,16 +37,16 @@ func TestAKAttrsToLDAP_String_List(t *testing.T) {
 	u.Attributes = map[string]interface{}{
 		"foo": []string{"bar"},
 	}
-	assert.Equal(t, 1, len(AKAttrsToLDAP(u.Attributes)))
-	assert.Equal(t, "foo", AKAttrsToLDAP(u.Attributes)[0].Name)
-	assert.Equal(t, []string{"bar"}, AKAttrsToLDAP(u.Attributes)[0].Values)
+	assert.Equal(t, 1, len(AttributesToLDAP(u.Attributes)))
+	assert.Equal(t, "foo", AttributesToLDAP(u.Attributes)[0].Name)
+	assert.Equal(t, []string{"bar"}, AttributesToLDAP(u.Attributes)[0].Values)
 	// pointer string list
 	u.Attributes = map[string]interface{}{
 		"foo": &[]string{"bar"},
 	}
-	assert.Equal(t, 1, len(AKAttrsToLDAP(u.Attributes)))
-	assert.Equal(t, "foo", AKAttrsToLDAP(u.Attributes)[0].Name)
-	assert.Equal(t, []string{"bar"}, AKAttrsToLDAP(u.Attributes)[0].Values)
+	assert.Equal(t, 1, len(AttributesToLDAP(u.Attributes)))
+	assert.Equal(t, "foo", AttributesToLDAP(u.Attributes)[0].Name)
+	assert.Equal(t, []string{"bar"}, AttributesToLDAP(u.Attributes)[0].Values)
 }
 
 func TestAKAttrsToLDAP_Dict(t *testing.T) {
@@ -56,9 +56,9 @@ func TestAKAttrsToLDAP_Dict(t *testing.T) {
 			"foo": "bar",
 		},
 	}
-	assert.Equal(t, 1, len(AKAttrsToLDAP(d)))
-	assert.Equal(t, "foo", AKAttrsToLDAP(d)[0].Name)
-	assert.Equal(t, []string{"map[foo:bar]"}, AKAttrsToLDAP(d)[0].Values)
+	assert.Equal(t, 1, len(AttributesToLDAP(d)))
+	assert.Equal(t, "foo", AttributesToLDAP(d)[0].Name)
+	assert.Equal(t, []string{"map[foo:bar]"}, AttributesToLDAP(d)[0].Values)
 }
 
 func TestAKAttrsToLDAP_Mixed(t *testing.T) {
@@ -69,7 +69,7 @@ func TestAKAttrsToLDAP_Mixed(t *testing.T) {
 			6,
 		},
 	}
-	assert.Equal(t, 1, len(AKAttrsToLDAP(d)))
-	assert.Equal(t, "foo", AKAttrsToLDAP(d)[0].Name)
-	assert.Equal(t, []string{"foo", "6"}, AKAttrsToLDAP(d)[0].Values)
+	assert.Equal(t, 1, len(AttributesToLDAP(d)))
+	assert.Equal(t, "foo", AttributesToLDAP(d)[0].Name)
+	assert.Equal(t, []string{"foo", "6"}, AttributesToLDAP(d)[0].Values)
 }
