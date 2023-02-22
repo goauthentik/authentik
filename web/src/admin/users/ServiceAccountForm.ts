@@ -53,6 +53,9 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                     </span>
                     <span class="pf-c-switch__label">${t`Create group`}</span>
                 </label>
+                <p class="pf-c-form__helper-text">
+                    ${t`Enabling this toggle will create a group named after the user, with the user as member.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="expiring">
                 <label class="pf-c-switch">
