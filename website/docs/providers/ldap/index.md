@@ -29,6 +29,7 @@ The following fields are currently sent for users:
     -   "organizationalPerson"
     -   "goauthentik.io/ldap/user"
 -   `memberOf`: A list of all DNs that the user is a member of
+-   `homeDirectory`: A default home directory path for the user, by default `/home/$username`. Can be overwritten by setting `homeDirectory` as an attribute on users or groups.
 -   `ak-active`: "true" if the account is active, otherwise "false"
 -   `ak-superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
 
