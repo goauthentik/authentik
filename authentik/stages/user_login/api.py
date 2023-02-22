@@ -13,6 +13,7 @@ class UserLoginStageSerializer(StageSerializer):
         model = UserLoginStage
         fields = StageSerializer.Meta.fields + [
             "session_duration",
+            "terminate_other_sessions",
         ]
 
 

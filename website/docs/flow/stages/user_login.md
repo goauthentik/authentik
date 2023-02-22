@@ -25,3 +25,7 @@ You can set the session to expire after any duration using the syntax of `hours=
 -   Weeks
 
 All values accept floating-point values.
+
+## Terminate other sessions
+
+When enabled, previous sessions of the user logging in will be revoked. This has no affect on OAuth refresh tokens.

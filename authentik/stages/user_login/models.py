@@ -21,6 +21,9 @@ class UserLoginStage(Stage):
             "(Format: hours=-1;minutes=-2;seconds=-3)"
         ),
     )
+    terminate_other_sessions = models.BooleanField(
+        default=False, help_text=_("Terminate all other sessions of the user logging in.")
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:
