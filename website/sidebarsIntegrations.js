@@ -15,6 +15,7 @@ module.exports = {
                         "services/bookstack/index",
                         "services/hedgedoc/index",
                         "services/kimai/index",
+                        "services/mastodon/index",
                         "services/matrix-synapse/index",
                         "services/mobilizon/index",
                         "services/nextcloud/index",
