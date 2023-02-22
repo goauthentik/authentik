@@ -35,11 +35,11 @@ func (lg *LDAPGroup) Entry() *ldap.Entry {
 		// Old fields for backwards compatibility
 		"goauthentik.io/ldap/superuser": {strconv.FormatBool(lg.IsSuperuser)},
 		// End old fields
-		"goauthentik-io-ldap-superuser": {strconv.FormatBool(lg.IsSuperuser)},
-		"cn":                            {lg.CN},
-		"uid":                           {lg.Uid},
-		"sAMAccountName":                {lg.CN},
-		"gidNumber":                     {lg.GidNumber},
+		"ak-superuser":   {strconv.FormatBool(lg.IsSuperuser)},
+		"cn":             {lg.CN},
+		"uid":            {lg.Uid},
+		"sAMAccountName": {lg.CN},
+		"gidNumber":      {lg.GidNumber},
 	})
 	return &ldap.Entry{DN: lg.DN, Attributes: attrs}
 }

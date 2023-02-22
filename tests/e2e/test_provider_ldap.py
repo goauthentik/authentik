@@ -229,8 +229,8 @@ class TestProviderLDAP(SeleniumTestCase):
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["false"],
                         # End old fields
-                        "goauthentik-io-ldap-active": ["true"],
-                        "goauthentik-io-ldap-superuser": ["false"],
+                        "ak-active": ["true"],
+                        "ak-superuser": ["false"],
                         "goauthentik.io/user/override-ips": ["true"],
                         "goauthentik.io/user/service-account": ["true"],
                     },
@@ -258,8 +258,8 @@ class TestProviderLDAP(SeleniumTestCase):
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["false"],
                         # End old fields
-                        "goauthentik-io-ldap-active": ["true"],
-                        "goauthentik-io-ldap-superuser": ["false"],
+                        "ak-active": ["true"],
+                        "ak-superuser": ["false"],
                         "goauthentik.io/user/override-ips": ["true"],
                         "goauthentik.io/user/service-account": ["true"],
                     },
@@ -290,8 +290,8 @@ class TestProviderLDAP(SeleniumTestCase):
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["true"],
                         # End old fields
-                        "goauthentik-io-ldap-active": ["true"],
-                        "goauthentik-io-ldap-superuser": ["true"],
+                        "ak-active": ["true"],
+                        "ak-superuser": ["true"],
                         "extraAttribute": ["bar"],
                     },
                     "type": "searchResEntry",

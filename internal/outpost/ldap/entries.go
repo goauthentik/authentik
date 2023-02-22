@@ -20,22 +20,22 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		u.Email = api.PtrString("")
 	}
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
-		"memberOf": pi.GroupsForUser(u),
 		// Old fields for backwards compatibility
 		"goauthentik.io/ldap/active":    {strconv.FormatBool(*u.IsActive)},
 		"goauthentik.io/ldap/superuser": {strconv.FormatBool(u.IsSuperuser)},
 		// End old fields
-		"goauthentik-io-ldap-active":    {strconv.FormatBool(*u.IsActive)},
-		"goauthentik-io-ldap-superuser": {strconv.FormatBool(u.IsSuperuser)},
-		"cn":                            {u.Username},
-		"sAMAccountName":                {u.Username},
-		"uid":                           {u.Uid},
-		"name":                          {u.Name},
-		"displayName":                   {u.Name},
-		"mail":                          {*u.Email},
-		"objectClass":                   {constants.OCUser, constants.OCOrgPerson, constants.OCInetOrgPerson, constants.OCAKUser},
-		"uidNumber":                     {pi.GetUidNumber(u)},
-		"gidNumber":                     {pi.GetUidNumber(u)},
+		"ak-active":      {strconv.FormatBool(*u.IsActive)},
+		"ak-superuser":   {strconv.FormatBool(u.IsSuperuser)},
+		"memberOf":       pi.GroupsForUser(u),
+		"cn":             {u.Username},
+		"sAMAccountName": {u.Username},
+		"uid":            {u.Uid},
+		"name":           {u.Name},
+		"displayName":    {u.Name},
+		"mail":           {*u.Email},
+		"objectClass":    {constants.OCUser, constants.OCOrgPerson, constants.OCInetOrgPerson, constants.OCAKUser},
+		"uidNumber":      {pi.GetUidNumber(u)},
+		"gidNumber":      {pi.GetUidNumber(u)},
 	})
 	return &ldap.Entry{DN: dn, Attributes: attrs}
 }
