@@ -16,7 +16,7 @@ Download and install it on your own servers. For free.
 
 The following placeholders will be used:
 
--   `inventory.company` is the FQDN of the zammad install.
+-   `zammad.company` is the FQDN of the zammad install.
 -   `authentik.company` is the FQDN of the authentik install.
 
 ## authentik Configuration
@@ -44,10 +44,10 @@ In authentik, create two Mappings (under _Customisation/Property Mappings_) with
 In authentik, create a SAML Provider (under _Applications/Providers_) with these settings :
 
 -   Name : zammad
--   ACS URL: `https://authentik.company/auth/saml/callback`
--   Issuer: `https://authentik.company/auth/saml/metadata`
+-   ACS URL: `https://zammad.company/auth/saml/callback`
+-   Issuer: `https://zammad.company/auth/saml/metadata`
 -   Service Provider Binding: Post
--   Audience: https://authentik.company/auth/saml/metadata
+-   Audience: https://zammad.company/auth/saml/metadata
 -   Property mappings: Zammad SAML Mapping: name & Zammad SAML Mapping: email
 -   NameID Property Mapping: Zammad SAML Mapping: name
 
