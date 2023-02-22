@@ -215,6 +215,7 @@ class TestProviderLDAP(SeleniumTestCase):
                         "uid": [o_user.uid],
                         "name": [o_user.name],
                         "displayName": [o_user.name],
+                        "sn": [o_user.name],
                         "mail": [""],
                         "objectClass": [
                             "user",
@@ -225,6 +226,9 @@ class TestProviderLDAP(SeleniumTestCase):
                         "uidNumber": [str(2000 + o_user.pk)],
                         "gidNumber": [str(2000 + o_user.pk)],
                         "memberOf": [],
+                        "homeDirectory": [
+                            f"/home/{o_user.username}",
+                        ],
                         # Old fields for backwards compatibility
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["false"],
@@ -246,6 +250,7 @@ class TestProviderLDAP(SeleniumTestCase):
                         "uid": [embedded_account.uid],
                         "name": [embedded_account.name],
                         "displayName": [embedded_account.name],
+                        "sn": [embedded_account.name],
                         "mail": [""],
                         "objectClass": [
                             "user",
@@ -256,6 +261,9 @@ class TestProviderLDAP(SeleniumTestCase):
                         "uidNumber": [str(2000 + embedded_account.pk)],
                         "gidNumber": [str(2000 + embedded_account.pk)],
                         "memberOf": [],
+                        "homeDirectory": [
+                            f"/home/{embedded_account.username}",
+                        ],
                         # Old fields for backwards compatibility
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["false"],
@@ -277,6 +285,7 @@ class TestProviderLDAP(SeleniumTestCase):
                         "uid": [self.user.uid],
                         "name": [self.user.name],
                         "displayName": [self.user.name],
+                        "sn": [self.user.name],
                         "mail": [self.user.email],
                         "objectClass": [
                             "user",
@@ -289,6 +298,9 @@ class TestProviderLDAP(SeleniumTestCase):
                         "memberOf": [
                             f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
                             for group in self.user.ak_groups.all()
+                        ],
+                        "homeDirectory": [
+                            f"/home/{self.user.username}",
                         ],
                         # Old fields for backwards compatibility
                         "goauthentik.io/ldap/active": ["true"],
