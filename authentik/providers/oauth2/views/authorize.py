@@ -17,7 +17,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
-from authentik.events.utils import get_user
+from authentik.events.signals import SESSION_LOGIN_EVENT
 from authentik.flows.challenge import (
     PLAN_CONTEXT_TITLE,
     AutosubmitChallenge,
@@ -312,7 +312,6 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.params.grant_type,
                 self.params.state,
             )
-            error.to_event(redirect_uri=error.redirect_uri).from_http(self.request)
             raise RequestValidationError(error.get_response(self.request))
 
     def resolve_provider_application(self):
@@ -335,12 +334,13 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # After we've checked permissions, and the user has access, check if we need
         # to re-authenticate the user
         if self.params.max_age:
-            current_age: timedelta = (
-                timezone.now()
-                - Event.objects.filter(action=EventAction.LOGIN, user=get_user(self.request.user))
-                .latest("created")
-                .created
-            )
+            # Attempt to check via the session's login event if set, otherwise we can't
+            # check, default to now, and potentially have the user login again.
+            login_event: Event = self.request.session.get(SESSION_LOGIN_EVENT, None)
+            login_time = timezone.now()
+            if login_event:
+                login_time = login_event.created
+            current_age: timedelta = timezone.now() - login_time
             if current_age.total_seconds() > self.params.max_age:
                 return self.handle_no_permission()
         # If prompt=login, we need to re-authenticate the user regardless
