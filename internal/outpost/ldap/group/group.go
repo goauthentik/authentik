@@ -22,7 +22,9 @@ type LDAPGroup struct {
 }
 
 func (lg *LDAPGroup) Entry() *ldap.Entry {
-	attrs := utils.AttributesToLDAP(lg.AKAttributes)
+	attrs := utils.AttributesToLDAP(lg.AKAttributes, false)
+	sanitizedAttrs := utils.AttributesToLDAP(lg.AKAttributes, true)
+	attrs = append(attrs, sanitizedAttrs...)
 
 	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCGroupOfNames, constants.OCAKGroup}
 	if lg.IsVirtualGroup {
@@ -30,12 +32,12 @@ func (lg *LDAPGroup) Entry() *ldap.Entry {
 	}
 
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
-		"objectClass": objectClass,
-		"member":      lg.Member,
 		// Old fields for backwards compatibility
 		"goauthentik.io/ldap/superuser": {strconv.FormatBool(lg.IsSuperuser)},
 		// End old fields
 		"ak-superuser":   {strconv.FormatBool(lg.IsSuperuser)},
+		"objectClass":    objectClass,
+		"member":         lg.Member,
 		"cn":             {lg.CN},
 		"uid":            {lg.Uid},
 		"sAMAccountName": {lg.CN},

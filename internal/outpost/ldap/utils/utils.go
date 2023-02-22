@@ -44,13 +44,16 @@ func stringify(in interface{}) *string {
 	}
 }
 
-func AttributesToLDAP(attrs map[string]interface{}) []*ldap.EntryAttribute {
+func AttributesToLDAP(attrs map[string]interface{}, sanitize bool) []*ldap.EntryAttribute {
 	attrList := []*ldap.EntryAttribute{}
 	if attrs == nil {
 		return attrList
 	}
 	for attrKey, attrValue := range attrs {
-		entry := &ldap.EntryAttribute{Name: AttributeKeySanitize(attrKey)}
+		entry := &ldap.EntryAttribute{Name: attrKey}
+		if sanitize {
+			entry.Name = AttributeKeySanitize(attrKey)
+		}
 		switch t := attrValue.(type) {
 		case []string:
 			entry.Values = t
