@@ -24129,6 +24129,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: terminate_other_sessions
+        schema:
+          type: boolean
       tags:
       - stages
       security:
@@ -35024,6 +35028,9 @@ components:
           minLength: 1
           description: 'Determines how long a session lasts. Default of 0 means that
             the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        terminate_other_sessions:
+          type: boolean
+          description: Terminate all other sessions of the user logging in.
     PatchedUserLogoutStageRequest:
       type: object
       description: UserLogoutStage Serializer
@@ -38000,6 +38007,9 @@ components:
           type: string
           description: 'Determines how long a session lasts. Default of 0 means that
             the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        terminate_other_sessions:
+          type: boolean
+          description: Terminate all other sessions of the user logging in.
       required:
       - component
       - meta_model_name
@@ -38023,6 +38033,9 @@ components:
           minLength: 1
           description: 'Determines how long a session lasts. Default of 0 means that
             the sessions lasts until the browser is closed. (Format: hours=-1;minutes=-2;seconds=-3)'
+        terminate_other_sessions:
+          type: boolean
+          description: Terminate all other sessions of the user logging in.
       required:
       - name
     UserLogoutStage:

@@ -29,12 +29,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     order = "-expires";
 
     columns(): TableColumn[] {
-        return [
-            new TableColumn(t`Last IP`, "last_ip"),
-            new TableColumn(t`Browser`, "user_agent"),
-            new TableColumn(t`Device`, "user_agent"),
-            new TableColumn(t`Expires`, "expires"),
-        ];
+        return [new TableColumn(t`Last IP`, "last_ip"), new TableColumn(t`Expires`, "expires")];
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -67,9 +62,10 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
 
     row(item: AuthenticatedSession): TemplateResult[] {
         return [
-            html`${item.lastIp}`,
-            html`${item.userAgent.userAgent?.family}`,
-            html`${item.userAgent.os?.family}`,
+            html`<div>
+                    ${item.current ? html`${t`(Current session)`}&nbsp;` : html``}${item.lastIp}
+                </div>
+                <small>${item.userAgent.userAgent?.family}, ${item.userAgent.os?.family}</small>`,
             html`${item.expires?.toLocaleString()}`,
         ];
     }

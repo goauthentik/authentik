@@ -4,7 +4,7 @@ from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
 
-from authentik.core.models import User
+from authentik.core.models import AuthenticatedSession, User
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
 from authentik.flows.stage import StageView
 from authentik.lib.utils.time import timedelta_from_string
@@ -56,4 +56,8 @@ class UserLoginStageView(StageView):
         # as sources show their own success messages
         if not self.executor.plan.context.get(PLAN_CONTEXT_SOURCE, None):
             messages.success(self.request, _("Successfully logged in!"))
+        if self.executor.current_stage.terminate_other_sessions:
+            AuthenticatedSession.objects.filter(
+                user=user,
+            ).exclude(session_key=self.request.session.session_key).delete()
         return self.executor.stage_ok()

@@ -22,7 +22,6 @@ from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import ManagedModel
 from authentik.core.exceptions import PropertyMappingExpressionException
-from authentik.core.signals import password_changed
 from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.config import CONFIG
@@ -189,6 +188,8 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
 
     def set_password(self, raw_password, signal=True):
         if self.pk and signal:
+            from authentik.core.signals import password_changed
+
             password_changed.send(sender=self, user=self, password=raw_password)
         self.password_change_date = now()
         return super().set_password(raw_password)

@@ -81,6 +81,24 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                             </a>
                         </ak-alert>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="terminateOtherSessions">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.terminateOtherSessions, false)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Terminate other sessions`}</span>
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${t`When enabled, all previous sessions of the user will be terminated.`}
+                        </p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         </form>`;
