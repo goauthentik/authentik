@@ -11,7 +11,7 @@ entries:
     designation: authentication
     name: Welcome to authentik!
     title: Welcome to authentik!
-    authentication: require_unauthenticated
+    authentication: none
   identifiers:
     slug: default-authentication-flow
   model: authentik_flows.flow
