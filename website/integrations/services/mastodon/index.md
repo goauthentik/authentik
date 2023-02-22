@@ -15,7 +15,7 @@ Mastodon is free and open-source software for running self-hosted social network
 
 The following placeholders will be used:
 
--   `inventory.company` is the FQDN of the mastodon install.
+-   `mastodon.company` is the FQDN of the mastodon install.
 -   `authentik.company` is the FQDN of the authentik install.
 
 ## authentik Configuration
@@ -25,7 +25,7 @@ The following placeholders will be used:
 In authentik, create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings :
 
 -   Name : mastodon
--   Redirect URI: `https://inventory.company/auth/auth/openid_connect/callback`
+-   Redirect URI: `https://mastodon.company/auth/auth/openid_connect/callback`
 
 ### Step 3 - Application
 
@@ -51,7 +51,7 @@ OIDC_SCOPE=openid,profile,email
 OIDC_UID_FIELD=preferred_username
 OIDC_CLIENT_ID=<Client ID>
 OIDC_CLIENT_SECRET=<Client Secret>
-OIDC_REDIRECT_URI=https://inventory.company/auth/auth/openid_connect/callback
+OIDC_REDIRECT_URI=https://mastodon.company/auth/auth/openid_connect/callback
 OIDC_SECURITY_ASSUME_EMAIL_IS_VERIFIED=true
 ```
 
