@@ -38,6 +38,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import (
     BooleanField,
+    DateTimeField,
     ListSerializer,
     ModelSerializer,
     PrimaryKeyRelatedField,
@@ -353,6 +354,11 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             {
                 "name": CharField(required=True),
                 "create_group": BooleanField(default=False),
+                "expiring": BooleanField(default=True),
+                "expires": DateTimeField(
+                    required=False,
+                    help_text="If not provided, valid for 360 days",
+                ),
             },
         ),
         responses={
@@ -373,14 +379,20 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         """Create a new user account that is marked as a service account"""
         username = request.data.get("name")
         create_group = request.data.get("create_group", False)
+        expiring = request.data.get("expiring", True)
+        expires = request.data.get("expires", now() + timedelta(days=360))
+
         with atomic():
             try:
-                user = User.objects.create(
+                user: User = User.objects.create(
                     username=username,
                     name=username,
-                    attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: False},
+                    attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: expiring},
                     path=USER_PATH_SERVICE_ACCOUNT,
                 )
+                user.set_unusable_password()
+                user.save()
+
                 response = {
                     "username": user.username,
                     "user_uid": user.uid,
@@ -396,7 +408,8 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     identifier=slugify(f"service-account-{username}-password"),
                     intent=TokenIntents.INTENT_APP_PASSWORD,
                     user=user,
-                    expires=now() + timedelta(days=360),
+                    expires=expires,
+                    expiring=expiring,
                 )
                 response["token"] = token.key
                 return Response(response)

@@ -1,4 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { dateTimeLocal } from "@goauthentik/common/utils";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModalForm } from "@goauthentik/elements/forms/ModalForm";
@@ -55,6 +56,28 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                 <p class="pf-c-form__helper-text">
                     ${t`Enabling this toggle will create a group named after the user, with the user as member.`}
                 </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="expiring">
+                <label class="pf-c-switch">
+                    <input class="pf-c-switch__input" type="checkbox" ?checked=${true} />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label">${t`Expiring`}</span>
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${t`If this is selected, the token will expire. Upon expiration, the token will be rotated.`}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Expires on`} name="expires">
+                <input
+                    type="datetime-local"
+                    data-type="datetime-local"
+                    value="${dateTimeLocal(new Date(Date.now() + 1000 * 60 ** 2 * 24 * 360))}"
+                    class="pf-c-form-control"
+                />
             </ak-form-element-horizontal>
         </form>`;
     }
