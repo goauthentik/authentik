@@ -384,12 +384,13 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
         with atomic():
             try:
-                user = User.objects.create(
+                user: User = User.objects.create(
                     username=username,
                     name=username,
                     attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: expiring},
                     path=USER_PATH_SERVICE_ACCOUNT,
                 )
+                user.set_unusable_password()
 
                 response = {
                     "username": user.username,
