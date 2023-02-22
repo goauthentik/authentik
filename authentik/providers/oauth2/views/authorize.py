@@ -50,7 +50,6 @@ from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
     AccessToken,
     AuthorizationCode,
-    ClientTypes,
     GrantTypes,
     OAuth2Provider,
     ResponseMode,
@@ -260,9 +259,6 @@ class OAuthAuthorizationParams:
                 self.state,
                 f"Unsupported challenge method {self.code_challenge_method}",
             )
-        if self.provider.client_type == ClientTypes.PUBLIC and not self.code_challenge:
-            LOGGER.warning("Public clients require PKCE", client_id=self.provider.client_id)
-            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""
