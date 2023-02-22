@@ -391,6 +391,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                     path=USER_PATH_SERVICE_ACCOUNT,
                 )
                 user.set_unusable_password()
+                user.save()
 
                 response = {
                     "username": user.username,
