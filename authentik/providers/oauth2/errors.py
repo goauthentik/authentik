@@ -174,10 +174,12 @@ class AuthorizeError(OAuth2Error):
 
         # See:
         # http://openid.net/specs/openid-connect-core-1_0.html#ImplicitAuthError
-        hash_or_question = "#" if self.grant_type == GrantTypes.IMPLICIT else "?"
+        fragment_or_query = (
+            "#" if self.grant_type in [GrantTypes.IMPLICIT, GrantTypes.HYBRID] else "?"
+        )
 
         uri = (
-            f"{self.redirect_uri}{hash_or_question}error="
+            f"{self.redirect_uri}{fragment_or_query}error="
             f"{self.error}&error_description={description}"
         )
 
