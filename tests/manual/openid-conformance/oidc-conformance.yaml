@@ -1,0 +1,81 @@
+version: 1
+metadata:
+  name: OIDC conformance testing
+entries:
+  - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-address
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "authentik default OAuth Mapping: OpenID 'address'"
+      scope_name: address
+      description: "General Address Information"
+      expression: |
+        return {
+            "address": {
+                "formatted": "foo",
+            }
+        }
+  - identifiers:
+      managed: goauthentik.io/providers/oauth2/scope-phone
+    model: authentik_providers_oauth2.scopemapping
+    attrs:
+      name: "authentik default OAuth Mapping: OpenID 'phone'"
+      scope_name: phone
+      description: "General phone Information"
+      expression: |
+        return {
+            "phone_number": "+1234",
+            "phone_number_verified": True,
+        }
+
+  - model: authentik_providers_oauth2.oauth2provider
+    id: provider
+    identifiers:
+      name: provider
+    attrs:
+      authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+      issuer_mode: global
+      client_id: 4054d882aff59755f2f279968b97ce8806a926e1
+      client_secret: 4c7e4933009437fb486b5389d15b173109a0555dc47e0cc0949104f1925bcc6565351cb1dffd7e6818cf074f5bd50c210b565121a7328ee8bd40107fc4bbd867
+      redirect_uris: |
+        https://localhost:8443/test/a/authentik/callback
+        https://localhost.emobix.co.uk:8443/test/a/authentik/callback
+      property_mappings:
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-address]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-phone]]
+      signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+  - model: authentik_core.application
+    identifiers:
+      slug: conformance
+    attrs:
+      provider: !KeyOf provider
+      name: Conformance
+
+  - model: authentik_providers_oauth2.oauth2provider
+    id: oidc-conformance-2
+    identifiers:
+      name: oidc-conformance-2
+    attrs:
+      authorization_flow: !Find [authentik_flows.flow, [slug, default-provider-authorization-implicit-consent]]
+      issuer_mode: global
+      client_id: ad64aeaf1efe388ecf4d28fcc537e8de08bcae26
+      client_secret: ff2e34a5b04c99acaf7241e25a950e7f6134c86936923d8c698d8f38bd57647750d661069612c0ee55045e29fe06aa101804bdae38e8360647d595e771fea789
+      redirect_uris: |
+        https://localhost:8443/test/a/authentik/callback
+        https://localhost.emobix.co.uk:8443/test/a/authentik/callback
+      property_mappings:
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-openid]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-email]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-profile]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-address]]
+        - !Find [authentik_providers_oauth2.scopemapping, [managed, goauthentik.io/providers/oauth2/scope-phone]]
+      signing_key: !Find [authentik_crypto.certificatekeypair, [name, authentik Self-signed Certificate]]
+  - model: authentik_core.application
+    identifiers:
+      slug: oidc-conformance-2
+    attrs:
+      provider: !KeyOf oidc-conformance-2
+      name: OIDC Conformance
