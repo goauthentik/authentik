@@ -204,6 +204,7 @@ class TestAuthorize(OAuthTestCase):
                 "redirect_uri": "http://local.invalid/Foo",
                 "scope": "openid",
                 "state": "foo",
+                "nonce": generate_id(),
             },
         )
         self.assertEqual(
@@ -325,6 +326,7 @@ class TestAuthorize(OAuthTestCase):
                     "state": state,
                     "scope": "openid",
                     "redirect_uri": "http://localhost",
+                    "nonce": generate_id(),
                 },
             )
             response = self.client.get(
@@ -378,6 +380,7 @@ class TestAuthorize(OAuthTestCase):
                 "state": state,
                 "scope": "openid",
                 "redirect_uri": "http://localhost",
+                "nonce": generate_id(),
             },
         )
         response = self.client.get(

@@ -274,7 +274,7 @@ class OAuthAuthorizationParams:
             provider=self.provider,
             auth_time=auth_event.created if auth_event else now,
             code=uuid4().hex,
-            expires=timezone.now() + timedelta_from_string(self.provider.access_code_validity),
+            expires=now + timedelta_from_string(self.provider.access_code_validity),
             scope=self.scope,
             nonce=self.nonce,
         )

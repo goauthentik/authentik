@@ -4,6 +4,7 @@ from json import dumps
 
 from django.test import RequestFactory
 from django.urls import reverse
+from django.utils import timezone
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -45,7 +46,9 @@ class TestToken(OAuthTestCase):
         )
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
-        code = AuthorizationCode.objects.create(code="foobar", provider=provider, user=user)
+        code = AuthorizationCode.objects.create(
+            code="foobar", provider=provider, user=user, auth_time=timezone.now()
+        )
         request = self.factory.post(
             "/",
             data={
@@ -99,6 +102,7 @@ class TestToken(OAuthTestCase):
             provider=provider,
             user=user,
             token=generate_id(),
+            auth_time=timezone.now(),
         )
         request = self.factory.post(
             "/",
@@ -127,7 +131,9 @@ class TestToken(OAuthTestCase):
         self.app.save()
         header = b64encode(f"{provider.client_id}:{provider.client_secret}".encode()).decode()
         user = create_test_admin_user()
-        code = AuthorizationCode.objects.create(code="foobar", provider=provider, user=user)
+        code = AuthorizationCode.objects.create(
+            code="foobar", provider=provider, user=user, auth_time=timezone.now()
+        )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
             data={
@@ -173,6 +179,7 @@ class TestToken(OAuthTestCase):
             user=user,
             token=generate_id(),
             _id_token=dumps({}),
+            auth_time=timezone.now(),
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -221,6 +228,7 @@ class TestToken(OAuthTestCase):
             user=user,
             token=generate_id(),
             _id_token=dumps({}),
+            auth_time=timezone.now(),
         )
         response = self.client.post(
             reverse("authentik_providers_oauth2:token"),
@@ -271,6 +279,7 @@ class TestToken(OAuthTestCase):
             user=user,
             token=generate_id(),
             _id_token=dumps({}),
+            auth_time=timezone.now(),
         )
         # Create initial refresh token
         response = self.client.post(
