@@ -6,6 +6,7 @@ import mermaid from "mermaid";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
+import { until } from "lit/directives/until.js";
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
@@ -74,6 +75,11 @@ export class Diagram extends AKElement {
         if (!this.diagram) {
             return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
         }
-        return html`${unsafeHTML(mermaid.render("graph", this.diagram))}`;
+        return html`${until(
+            mermaid.render("graph", this.diagram).then((r) => {
+                r.bindFunctions?.(this.shadowRoot as unknown as Element);
+                return unsafeHTML(r.svg);
+            }),
+        )}`;
     }
 }
