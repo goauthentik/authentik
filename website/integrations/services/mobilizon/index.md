@@ -22,14 +22,14 @@ The following placeholders will be used:
 
 ### Step 1 - OAuth2/OpenID Provider
 
-In authentik, create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings :
+Create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings:
 
 -   Name : mobilizon
 -   Redirect URI: `https://mobilizon.company/auth/keycloak/callback`
 
 ### Step 3 - Application
 
-In authentik, create an application (under _Resources/Applications_) with these settings :
+Create an application (under _Resources/Applications_) with these settings:
 
 -   Name: Mobilizon
 -   Slug: mobilizon
@@ -37,9 +37,7 @@ In authentik, create an application (under _Resources/Applications_) with these 
 
 ## Mobilizon Setup
 
-Configure Mobilizon settings by editing the `config.exs`
-
-Add the following
+Configure Mobilizon settings by editing the `config.exs` and add the following:
 
 ```
 config :ueberauth,
