@@ -226,7 +226,7 @@ class OAuth2Provider(Provider):
     def get_issuer(self, request: HttpRequest) -> Optional[str]:
         """Get issuer, based on request"""
         if self.issuer_mode == IssuerMode.GLOBAL:
-            return request.build_absolute_uri("/")
+            return request.build_absolute_uri(reverse("authentik_core:root-redirect"))
         try:
             url = reverse(
                 "authentik_providers_oauth2:provider-root",
