@@ -17,7 +17,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
-from authentik.events.signals import SESSION_LOGIN_EVENT
+from authentik.events.signals import get_login_event
 from authentik.flows.challenge import (
     PLAN_CONTEXT_TITLE,
     AutosubmitChallenge,
@@ -336,7 +336,7 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if self.params.max_age:
             # Attempt to check via the session's login event if set, otherwise we can't
             # check, default to now, and potentially have the user login again.
-            login_event: Event = self.request.session.get(SESSION_LOGIN_EVENT, None)
+            login_event = get_login_event(request)
             login_time = timezone.now()
             if login_event:
                 login_time = login_event.created
