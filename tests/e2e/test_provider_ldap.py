@@ -225,10 +225,16 @@ class TestProviderLDAP(SeleniumTestCase):
                         "uidNumber": [str(2000 + o_user.pk)],
                         "gidNumber": [str(2000 + o_user.pk)],
                         "memberOf": [],
+                        # Old fields for backwards compatibility
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["false"],
                         "goauthentik.io/user/override-ips": ["true"],
                         "goauthentik.io/user/service-account": ["true"],
+                        # End old fields
+                        "ak-active": ["true"],
+                        "ak-superuser": ["false"],
+                        "goauthentikio-user-override-ips": ["true"],
+                        "goauthentikio-user-service-account": ["true"],
                     },
                     "type": "searchResEntry",
                 },
@@ -250,10 +256,16 @@ class TestProviderLDAP(SeleniumTestCase):
                         "uidNumber": [str(2000 + embedded_account.pk)],
                         "gidNumber": [str(2000 + embedded_account.pk)],
                         "memberOf": [],
+                        # Old fields for backwards compatibility
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["false"],
                         "goauthentik.io/user/override-ips": ["true"],
                         "goauthentik.io/user/service-account": ["true"],
+                        # End old fields
+                        "ak-active": ["true"],
+                        "ak-superuser": ["false"],
+                        "goauthentikio-user-override-ips": ["true"],
+                        "goauthentikio-user-service-account": ["true"],
                     },
                     "type": "searchResEntry",
                 },
@@ -278,8 +290,12 @@ class TestProviderLDAP(SeleniumTestCase):
                             f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
                             for group in self.user.ak_groups.all()
                         ],
+                        # Old fields for backwards compatibility
                         "goauthentik.io/ldap/active": ["true"],
                         "goauthentik.io/ldap/superuser": ["true"],
+                        # End old fields
+                        "ak-active": ["true"],
+                        "ak-superuser": ["true"],
                         "extraAttribute": ["bar"],
                     },
                     "type": "searchResEntry",

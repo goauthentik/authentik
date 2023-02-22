@@ -29,8 +29,13 @@ The following fields are currently sent for users:
     -   "organizationalPerson"
     -   "goauthentik.io/ldap/user"
 -   `memberOf`: A list of all DNs that the user is a member of
--   `goauthentik.io/ldap/active`: "true" if the account is active, otherwise "false"
--   `goauthentik.io/ldap/superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
+-   `ak-active`: "true" if the account is active, otherwise "false"
+-   `ak-superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
+
+:::warning
+The use of the `goauthentik.io/ldap/active` and `goauthentik.io/ldap/superuser` attributes is deprecated as of authentik 2023.3. They will be removed completely in a future release.
+Use the replacements fields above instead.
+:::
 
 The following fields are current set for groups:
 
@@ -49,6 +54,10 @@ The virtual groups gidNumber is equal to the uidNumber of the user.
 
 :::info
 Starting with 2021.9.1, custom attributes will override the inbuilt attributes.
+:::
+
+:::info
+Starting with 2023.3, periods and slashes in custom attributes will be sanitized.
 :::
 
 ## SSL
