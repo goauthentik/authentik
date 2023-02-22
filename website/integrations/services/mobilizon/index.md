@@ -15,7 +15,7 @@ Gather, organize and mobilize yourselves with a convivial, ethical, and emancipa
 
 The following placeholders will be used:
 
--   `inventory.company` is the FQDN of the mobilizon install.
+-   `mobilizon.company` is the FQDN of the mobilizon install.
 -   `authentik.company` is the FQDN of the authentik install.
 
 ## authentik Configuration
@@ -56,10 +56,10 @@ config :mobilizon, :auth,
 config :ueberauth, Ueberauth.Strategy.Keycloak.OAuth,
   client_id: "<Client ID>",
   client_secret: "<Client Secret>",
-  site: "https://inventory.company",
-  authorize_url: "https://inventory.company/application/o/authorize/",
-  token_url: "https://inventory.company/application/o/token/",
-  userinfo_url: "https://inventory.company/application/o/userinfo/",
+  site: "https://mobilizon.company",
+  authorize_url: "https://mobilizon.company/application/o/authorize/",
+  token_url: "https://mobilizon.company/application/o/token/",
+  userinfo_url: "https://mobilizon.company/application/o/userinfo/",
   token_method: :post
 ```
 
