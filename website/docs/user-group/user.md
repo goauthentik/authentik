@@ -16,6 +16,8 @@ Paths can be used to organize users into folders depending on which source creat
 
 Optional flag, when set to false, Tokens created by the user will not expire.
 
+Only applies when the token creation is triggered by the user with this attribute set. Additionally, the flag does not apply to superusers.
+
 ### `goauthentik.io/user/debug`:
 
 See [Troubleshooting access problems](../troubleshooting/access.md), when set, the user gets a more detailed explanation of access decisions.
