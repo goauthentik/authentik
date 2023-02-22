@@ -23,8 +23,16 @@ type LDAPGroup struct {
 }
 
 func (lg *LDAPGroup) Entry() *ldap.Entry {
-	attrs := utils.AttributesToLDAP(lg.Attributes, true)
-	rawAttrs := utils.AttributesToLDAP(lg.Attributes, false)
+	attrs := utils.AttributesToLDAP(lg.Attributes, func(key string) string {
+		return utils.AttributeKeySanitize(key)
+	}, func(value []string) []string {
+		return value
+	})
+	rawAttrs := utils.AttributesToLDAP(lg.Attributes, func(key string) string {
+		return key
+	}, func(value []string) []string {
+		return value
+	})
 	// Only append attributes that don't already exist
 	// TODO: Remove in 2023.3
 	for _, rawAttr := range rawAttrs {

@@ -13,8 +13,20 @@ import (
 
 func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	dn := pi.GetUserDN(u.Username)
-	attrs := utils.AttributesToLDAP(u.Attributes, true)
-	rawAttrs := utils.AttributesToLDAP(u.Attributes, false)
+	userValueMap := func(value []string) []string {
+		for i, v := range value {
+			if strings.Contains(v, "%s") {
+				value[i] = fmt.Sprintf(v, u.Username)
+			}
+		}
+		return value
+	}
+	attrs := utils.AttributesToLDAP(u.Attributes, func(key string) string {
+		return utils.AttributeKeySanitize(key)
+	}, userValueMap)
+	rawAttrs := utils.AttributesToLDAP(u.Attributes, func(key string) string {
+		return key
+	}, userValueMap)
 	// Only append attributes that don't already exist
 	// TODO: Remove in 2023.3
 	for _, rawAttr := range rawAttrs {
