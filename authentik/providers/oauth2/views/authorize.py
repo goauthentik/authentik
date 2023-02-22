@@ -265,19 +265,24 @@ class OAuthAuthorizationParams:
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""
-        code = AuthorizationCode()
-        code.user = request.user
-        code.provider = self.provider
+        auth_event = get_login_event(request)
 
-        code.code = uuid4().hex
+        now = timezone.now()
+
+        code = AuthorizationCode(
+            user=request.user,
+            provider=self.provider,
+            auth_time=auth_event.created if auth_event else now,
+            code=uuid4().hex,
+            expires=timezone.now() + timedelta_from_string(self.provider.access_code_validity),
+            scope=self.scope,
+            nonce=self.nonce,
+        )
 
         if self.code_challenge and self.code_challenge_method:
             code.code_challenge = self.code_challenge
             code.code_challenge_method = self.code_challenge_method
 
-        code.expires = timezone.now() + timedelta_from_string(self.provider.access_code_validity)
-        code.scope = self.scope
-        code.nonce = self.nonce
         return code
 
 
@@ -528,6 +533,7 @@ class OAuthFulfillmentStage(StageView):
     def create_implicit_response(self, code: Optional[AuthorizationCode]) -> dict:
         """Create implicit response's URL Fragment dictionary"""
         query_fragment = {}
+        auth_event = get_login_event(self.request)
 
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
@@ -536,6 +542,7 @@ class OAuthFulfillmentStage(StageView):
             scope=self.params.scope,
             expires=access_token_expiry,
             provider=self.provider,
+            auth_time=auth_event.created if auth_event else now,
         )
 
         id_token = IDToken.new(self.provider, token, self.request)

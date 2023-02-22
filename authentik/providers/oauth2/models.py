@@ -282,6 +282,7 @@ class BaseGrantModel(models.Model):
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     revoked = models.BooleanField(default=False)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    auth_time = models.DateTimeField(verbose_name="Authentication time")
 
     @property
     def scope(self) -> list[str]:
