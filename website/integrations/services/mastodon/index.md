@@ -22,14 +22,14 @@ The following placeholders will be used:
 
 ### Step 1 - OAuth2/OpenID Provider
 
-In authentik, create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings :
+Create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings:
 
 -   Name : mastodon
 -   Redirect URI: `https://mastodon.company/auth/auth/openid_connect/callback`
 
 ### Step 3 - Application
 
-In authentik, create an application (under _Resources/Applications_) with these settings :
+Create an application (under _Resources/Applications_) with these settings:
 
 -   Name: Mastodon
 -   Slug: mastodon
@@ -37,9 +37,7 @@ In authentik, create an application (under _Resources/Applications_) with these 
 
 ## Mastodon Setup
 
-Configure Mastodon `OIDC_` settings by editing the `.env.production`
-
-Add the following
+Configure Mastodon `OIDC_` settings by editing the `.env.production` and add the following:
 
 ```
 OIDC_ENABLED=true
