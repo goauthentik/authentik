@@ -39,7 +39,7 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		"objectClass":    {constants.OCUser, constants.OCOrgPerson, constants.OCInetOrgPerson, constants.OCAKUser},
 		"uidNumber":      {pi.GetUidNumber(u)},
 		"gidNumber":      {pi.GetUidNumber(u)},
-		"homedirectory":  {fmt.Sprintf("/home/users/%s", u.Username)},
+		"homeDirectory":  {fmt.Sprintf("/home/%s", u.Username)},
 		"sn":             {u.Name},
 	})
 	return &ldap.Entry{DN: dn, Attributes: attrs}

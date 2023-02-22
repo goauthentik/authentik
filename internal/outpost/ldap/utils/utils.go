@@ -88,7 +88,7 @@ func EnsureAttributes(attrs []*ldap.EntryAttribute, shouldHave map[string][]stri
 func MustHaveAttribute(attrs []*ldap.EntryAttribute, name string, value []string) []*ldap.EntryAttribute {
 	shouldSet := true
 	for _, attr := range attrs {
-		if attr.Name == name {
+		if strings.EqualFold(attr.Name, name) {
 			shouldSet = false
 		}
 	}
