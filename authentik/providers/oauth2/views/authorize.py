@@ -68,7 +68,7 @@ from authentik.stages.consent.stage import (
 LOGGER = get_logger()
 
 PLAN_CONTEXT_PARAMS = "params"
-SESSION_KEY_NEEDS_LOGIN = "authentik/providers/oauth2/needs_login"
+SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
 
@@ -337,10 +337,10 @@ class AuthorizationFlowInitView(PolicyAccessView):
         """Start FlowPLanner, return to flow executor shell"""
         # After we've checked permissions, and the user has access, check if we need
         # to re-authenticate the user
+        login_event = get_login_event(request)
         if self.params.max_age:
             # Attempt to check via the session's login event if set, otherwise we can't
             # check, default to now, and potentially have the user login again.
-            login_event = get_login_event(request)
             login_time = timezone.now()
             if login_event:
                 login_time = login_event.created
@@ -348,12 +348,19 @@ class AuthorizationFlowInitView(PolicyAccessView):
             if current_age.total_seconds() > self.params.max_age:
                 return self.handle_no_permission()
         # If prompt=login, we need to re-authenticate the user regardless
-        if (
-            PROMPT_LOGIN in self.params.prompt
-            and SESSION_KEY_NEEDS_LOGIN not in self.request.session
-        ):
-            self.request.session[SESSION_KEY_NEEDS_LOGIN] = True
-            return self.handle_no_permission()
+        # Check if we're not already doing the re-authentication
+        if PROMPT_LOGIN in self.params.prompt:
+            if not login_event:
+                return self.handle_no_permission()
+            login_uid = str(login_event.pk)
+            # No previous login UID saved, so save the current uid and trigger
+            # re-login, or previous login UID matches current one, so no re-login happened yet
+            if (
+                SESSION_KEY_LAST_LOGIN_UID not in self.request.session
+                or login_uid == self.request.session[SESSION_KEY_LAST_LOGIN_UID]
+            ):
+                self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
+                return self.handle_no_permission()
         scope_descriptions = UserInfoView().get_scope_descriptions(self.params.scope)
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
