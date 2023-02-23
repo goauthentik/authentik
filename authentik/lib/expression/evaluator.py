@@ -1,8 +1,9 @@
 """authentik expression policy evaluator"""
 import re
+import socket
 from ipaddress import ip_address, ip_network
 from textwrap import indent
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable, List, Optional
 
 from django.core.exceptions import FieldError
 from django_otp import devices_for_user
@@ -46,8 +47,36 @@ class BaseEvaluator:
             "requests": get_http_session(),
             "ip_address": ip_address,
             "ip_network": ip_network,
+            "resolve_dns": BaseEvaluator.resolve_dns,
         }
         self._context = {}
+
+    @staticmethod
+    def resolve_dns(host: str, ip_version: Optional[int] = None) -> List[str]:
+        """Resolve host to a list of IPv4 and/or IPv6 addresses."""
+
+        # Although it seems to be fine (raising OSError), docs warn
+        # against passing `None` for both the host and the port
+        # https://docs.python.org/3/library/socket.html#socket.getaddrinfo
+        host = host or ""
+
+        ip_list = []
+
+        if ip_version == 4 or not ip_version:
+            try:
+                for ip in socket.getaddrinfo(host, None, family=socket.AF_INET):
+                    ip_list.append(str(ip[4][0]))
+            except OSError:
+                pass
+
+        if ip_version == 6 or not ip_version:
+            try:
+                for ip in socket.getaddrinfo(host, None, family=socket.AF_INET6):
+                    ip_list.append(str(ip[4][0]))
+            except OSError:
+                pass
+
+        return ip_list
 
     @staticmethod
     def expr_flatten(value: list[Any] | Any) -> Optional[Any]:

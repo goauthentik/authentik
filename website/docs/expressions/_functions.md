@@ -100,3 +100,17 @@ You can also check if an IP Address is within a subnet by writing the following:
 ip_address('192.0.2.1') in ip_network('192.0.2.0/24')
 # evaluates to True
 ```
+
+## Resolving hostnames to IP Addresses
+
+:::note
+Requires authentik 2023.3 or higher
+:::
+
+To resolve a hostname to a list of IP addresses, use the functions `resolve_dns(hostname)` and `resolve_dns(hostname, ip_version)`.
+
+```python
+resolve_dns("google.com")  # return all IPv4 and IPv6 addresses
+resolve_dns("google.com", 4)  # return only IP4 addresses
+resolve_dns("google.com", 6)  # return only IP6 addresses
+```
