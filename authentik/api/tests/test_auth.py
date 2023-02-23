@@ -4,6 +4,7 @@ from base64 import b64encode
 
 from django.conf import settings
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework.exceptions import AuthenticationFailed
 
 from authentik.api.authentication import bearer_auth
@@ -68,6 +69,7 @@ class TestAPIAuth(TestCase):
             user=create_test_admin_user(),
             provider=provider,
             token=generate_id(),
+            auth_time=timezone.now(),
             _scope=SCOPE_AUTHENTIK_API,
             _id_token=json.dumps({}),
         )
@@ -82,6 +84,7 @@ class TestAPIAuth(TestCase):
             user=create_test_admin_user(),
             provider=provider,
             token=generate_id(),
+            auth_time=timezone.now(),
             _scope="",
             _id_token=json.dumps({}),
         )

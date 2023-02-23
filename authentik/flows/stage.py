@@ -231,7 +231,7 @@ class AccessDeniedChallengeView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         return AccessDeniedChallenge(
             data={
-                "error_message": self.error_message or "Unknown error",
+                "error_message": str(self.error_message or "Unknown error"),
                 "type": ChallengeTypes.NATIVE.value,
                 "component": "ak-stage-access-denied",
             }

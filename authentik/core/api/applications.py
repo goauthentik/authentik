@@ -37,7 +37,6 @@ from authentik.lib.utils.file import (
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
-from authentik.stages.user_login.stage import USER_LOGIN_AUTHENTICATED
 
 LOGGER = get_logger()
 
@@ -186,10 +185,6 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
         if superuser_full_list and request.user.is_superuser:
             return super().list(request)
 
-        # To prevent the user from having to double login when prompt is set to login
-        # and the user has just signed it. This session variable is set in the UserLoginStage
-        # and is (quite hackily) removed from the session in applications's API's List method
-        self.request.session.pop(USER_LOGIN_AUTHENTICATED, None)
         queryset = self._filter_queryset_for_list(self.get_queryset())
         self.paginate_queryset(queryset)
 

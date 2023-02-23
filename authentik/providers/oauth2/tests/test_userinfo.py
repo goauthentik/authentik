@@ -3,6 +3,7 @@ import json
 from dataclasses import asdict
 
 from django.urls import reverse
+from django.utils import timezone
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
@@ -37,6 +38,7 @@ class TestUserinfo(OAuthTestCase):
             provider=self.provider,
             user=self.user,
             token=generate_id(),
+            auth_time=timezone.now(),
             _scope="openid user profile",
             _id_token=json.dumps(
                 asdict(
@@ -56,7 +58,6 @@ class TestUserinfo(OAuthTestCase):
             {
                 "name": self.user.name,
                 "given_name": self.user.name,
-                "family_name": "",
                 "preferred_username": self.user.name,
                 "nickname": self.user.name,
                 "groups": [group.name for group in self.user.ak_groups.all()],
@@ -79,7 +80,6 @@ class TestUserinfo(OAuthTestCase):
             {
                 "name": self.user.name,
                 "given_name": self.user.name,
-                "family_name": "",
                 "preferred_username": self.user.name,
                 "nickname": self.user.name,
                 "groups": [group.name for group in self.user.ak_groups.all()],

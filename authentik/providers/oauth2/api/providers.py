@@ -1,5 +1,6 @@
 """OAuth2Provider API Views"""
 from django.urls import reverse
+from django.utils import timezone
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField
@@ -153,6 +154,7 @@ class OAuth2ProviderViewSet(UsedByMixin, ModelViewSet):
                 user=request.user,
                 provider=provider,
                 _scope=" ".join(scope_names),
+                auth_time=timezone.now(),
             ),
             request,
         )

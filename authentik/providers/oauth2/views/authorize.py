@@ -17,7 +17,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
-from authentik.events.utils import get_user
+from authentik.events.signals import get_login_event
 from authentik.flows.challenge import (
     PLAN_CONTEXT_TITLE,
     AutosubmitChallenge,
@@ -64,12 +64,11 @@ from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
     ConsentStageView,
 )
-from authentik.stages.user_login.stage import USER_LOGIN_AUTHENTICATED
 
 LOGGER = get_logger()
 
 PLAN_CONTEXT_PARAMS = "params"
-SESSION_KEY_NEEDS_LOGIN = "authentik/providers/oauth2/needs_login"
+SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
 
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
 
@@ -235,19 +234,22 @@ class OAuthAuthorizationParams:
 
     def check_nonce(self):
         """Nonce parameter validation."""
-        # https://openid.net/specs/openid-connect-core-1_0.html#ImplicitIDTValidation
-        # Nonce is only required for Implicit flows
-        if self.grant_type != GrantTypes.IMPLICIT:
+        # nonce is required for all flows that return an id_token from the authorization endpoint,
+        # see https://openid.net/specs/openid-connect-core-1_0.html#ImplicitAuthRequest or
+        # https://openid.net/specs/openid-connect-core-1_0.html#HybridIDToken and
+        # https://bitbucket.org/openid/connect/issues/972/nonce-requirement-in-hybrid-auth-request
+        if self.response_type not in [
+            ResponseTypes.ID_TOKEN,
+            ResponseTypes.ID_TOKEN_TOKEN,
+            ResponseTypes.CODE_ID_TOKEN,
+            ResponseTypes.CODE_ID_TOKEN_TOKEN,
+        ]:
+            return
+        if SCOPE_OPENID not in self.scope:
             return
         if not self.nonce:
-            self.nonce = self.state
-            LOGGER.warning("Using state as nonce for OpenID Request")
-        if not self.nonce:
-            if SCOPE_OPENID in self.scope:
-                LOGGER.warning("Missing nonce for OpenID Request")
-                raise AuthorizeError(
-                    self.redirect_uri, "invalid_request", self.grant_type, self.state
-                )
+            LOGGER.warning("Missing nonce for OpenID Request")
+            raise AuthorizeError(self.redirect_uri, "invalid_request", self.grant_type, self.state)
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""
@@ -262,19 +264,24 @@ class OAuthAuthorizationParams:
 
     def create_code(self, request: HttpRequest) -> AuthorizationCode:
         """Create an AuthorizationCode object for the request"""
-        code = AuthorizationCode()
-        code.user = request.user
-        code.provider = self.provider
+        auth_event = get_login_event(request)
 
-        code.code = uuid4().hex
+        now = timezone.now()
+
+        code = AuthorizationCode(
+            user=request.user,
+            provider=self.provider,
+            auth_time=auth_event.created if auth_event else now,
+            code=uuid4().hex,
+            expires=now + timedelta_from_string(self.provider.access_code_validity),
+            scope=self.scope,
+            nonce=self.nonce,
+        )
 
         if self.code_challenge and self.code_challenge_method:
             code.code_challenge = self.code_challenge
             code.code_challenge_method = self.code_challenge_method
 
-        code.expires = timezone.now() + timedelta_from_string(self.provider.access_code_validity)
-        code.scope = self.scope
-        code.nonce = self.nonce
         return code
 
 
@@ -309,7 +316,6 @@ class AuthorizationFlowInitView(PolicyAccessView):
                 self.params.grant_type,
                 self.params.state,
             )
-            error.to_event(redirect_uri=error.redirect_uri).from_http(self.request)
             raise RequestValidationError(error.get_response(self.request))
 
     def resolve_provider_application(self):
@@ -329,28 +335,40 @@ class AuthorizationFlowInitView(PolicyAccessView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Start FlowPLanner, return to flow executor shell"""
+        # Require a login event to be set, otherwise make the user re-login
+        login_event = get_login_event(request)
+        if not login_event:
+            LOGGER.warning("request with no login event")
+            return self.handle_no_permission()
+        login_uid = str(login_event.pk)
         # After we've checked permissions, and the user has access, check if we need
         # to re-authenticate the user
         if self.params.max_age:
-            current_age: timedelta = (
-                timezone.now()
-                - Event.objects.filter(action=EventAction.LOGIN, user=get_user(self.request.user))
-                .latest("created")
-                .created
-            )
+            # Attempt to check via the session's login event if set, otherwise we can't
+            # check
+            login_time = login_event.created
+            current_age: timedelta = timezone.now() - login_time
             if current_age.total_seconds() > self.params.max_age:
+                LOGGER.debug(
+                    "Triggering authentication as max_age requirement",
+                    max_age=self.params.max_age,
+                    ago=int(current_age.total_seconds()),
+                )
+                # Since we already need to re-authenticate the user, set the old login UID
+                # in case this request has both max_age and prompt=login
+                self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
                 return self.handle_no_permission()
         # If prompt=login, we need to re-authenticate the user regardless
-        if (
-            PROMPT_LOGIN in self.params.prompt
-            and SESSION_KEY_NEEDS_LOGIN not in self.request.session
-            # To prevent the user from having to double login when prompt is set to login
-            # and the user has just signed it. This session variable is set in the UserLoginStage
-            # and is (quite hackily) removed from the session in applications's API's List method
-            and USER_LOGIN_AUTHENTICATED not in self.request.session
-        ):
-            self.request.session[SESSION_KEY_NEEDS_LOGIN] = True
-            return self.handle_no_permission()
+        # Check if we're not already doing the re-authentication
+        if PROMPT_LOGIN in self.params.prompt:
+            # No previous login UID saved, so save the current uid and trigger
+            # re-login, or previous login UID matches current one, so no re-login happened yet
+            if (
+                SESSION_KEY_LAST_LOGIN_UID not in self.request.session
+                or login_uid == self.request.session[SESSION_KEY_LAST_LOGIN_UID]
+            ):
+                self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
+                return self.handle_no_permission()
         scope_descriptions = UserInfoView().get_scope_descriptions(self.params.scope)
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
@@ -525,6 +543,7 @@ class OAuthFulfillmentStage(StageView):
     def create_implicit_response(self, code: Optional[AuthorizationCode]) -> dict:
         """Create implicit response's URL Fragment dictionary"""
         query_fragment = {}
+        auth_event = get_login_event(self.request)
 
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
@@ -533,6 +552,7 @@ class OAuthFulfillmentStage(StageView):
             scope=self.params.scope,
             expires=access_token_expiry,
             provider=self.provider,
+            auth_time=auth_event.created if auth_event else now,
         )
 
         id_token = IDToken.new(self.provider, token, self.request)
@@ -553,6 +573,8 @@ class OAuthFulfillmentStage(StageView):
             ResponseTypes.CODE_TOKEN,
         ]:
             query_fragment["access_token"] = token.token
+            # Get at_hash of the current token and update the id_token
+            id_token.at_hash = token.at_hash
 
         # Check if response_type must include id_token in the response.
         if self.params.response_type in [
@@ -561,8 +583,6 @@ class OAuthFulfillmentStage(StageView):
             ResponseTypes.CODE_ID_TOKEN,
             ResponseTypes.CODE_ID_TOKEN_TOKEN,
         ]:
-            # Get at_hash of the current token and update the id_token
-            id_token.at_hash = token.at_hash
             query_fragment["id_token"] = self.provider.encode(id_token.to_dict())
             token._id_token = dumps(id_token.to_dict())
 

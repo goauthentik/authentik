@@ -226,7 +226,7 @@ class OAuth2Provider(Provider):
     def get_issuer(self, request: HttpRequest) -> Optional[str]:
         """Get issuer, based on request"""
         if self.issuer_mode == IssuerMode.GLOBAL:
-            return request.build_absolute_uri("/")
+            return request.build_absolute_uri(reverse("authentik_core:root-redirect"))
         try:
             url = reverse(
                 "authentik_providers_oauth2:provider-root",
@@ -282,6 +282,7 @@ class BaseGrantModel(models.Model):
     user = models.ForeignKey(User, verbose_name=_("User"), on_delete=models.CASCADE)
     revoked = models.BooleanField(default=False)
     _scope = models.TextField(default="", verbose_name=_("Scopes"))
+    auth_time = models.DateTimeField(verbose_name="Authentication time")
 
     @property
     def scope(self) -> list[str]:

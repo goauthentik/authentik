@@ -1,0 +1,20 @@
+{
+    "alias": "authentik",
+    "description": "authentik",
+    "server": {
+        "discoveryUrl": "http://host.docker.internal:9000/application/o/conformance/.well-known/openid-configuration"
+    },
+    "client": {
+        "client_id": "4054d882aff59755f2f279968b97ce8806a926e1",
+        "client_secret": "4c7e4933009437fb486b5389d15b173109a0555dc47e0cc0949104f1925bcc6565351cb1dffd7e6818cf074f5bd50c210b565121a7328ee8bd40107fc4bbd867"
+    },
+    "client_secret_post": {
+        "client_id": "4054d882aff59755f2f279968b97ce8806a926e1",
+        "client_secret": "4c7e4933009437fb486b5389d15b173109a0555dc47e0cc0949104f1925bcc6565351cb1dffd7e6818cf074f5bd50c210b565121a7328ee8bd40107fc4bbd867"
+    },
+    "client2": {
+        "client_id": "ad64aeaf1efe388ecf4d28fcc537e8de08bcae26",
+        "client_secret": "ff2e34a5b04c99acaf7241e25a950e7f6134c86936923d8c698d8f38bd57647750d661069612c0ee55045e29fe06aa101804bdae38e8360647d595e771fea789"
+    },
+    "consent": {}
+}

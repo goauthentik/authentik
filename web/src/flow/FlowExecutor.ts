@@ -41,7 +41,6 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    CapabilitiesEnum,
     ChallengeChoices,
     ChallengeTypes,
     ContextualFlowInfo,
@@ -97,7 +96,7 @@ export class FlowExecutor extends AKElement implements StageHost {
     tenant!: CurrentTenant;
 
     @state()
-    inspectorOpen: boolean;
+    inspectorOpen = false;
 
     _flowInfo?: ContextualFlowInfo;
 
@@ -177,8 +176,6 @@ export class FlowExecutor extends AKElement implements StageHost {
         super();
         this.ws = new WebsocketClient();
         this.flowSlug = window.location.pathname.split("/")[3];
-        this.inspectorOpen =
-            globalAK()?.config.capabilities.includes(CapabilitiesEnum.Debug) || false;
         if (window.location.search.includes("inspector")) {
             this.inspectorOpen = !this.inspectorOpen;
         }

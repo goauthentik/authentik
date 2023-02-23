@@ -26,6 +26,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.events.models import Event, EventAction
+from authentik.events.signals import get_login_event
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.engine import PolicyEngine
@@ -479,6 +480,7 @@ class TokenView(View):
             expires=access_token_expiry,
             # Keep same scopes as previous token
             scope=self.params.authorization_code.scope,
+            auth_time=self.params.authorization_code.auth_time,
         )
         access_token.id_token = IDToken.new(
             self.provider,
@@ -493,6 +495,7 @@ class TokenView(View):
             scope=self.params.authorization_code.scope,
             expires=refresh_token_expiry,
             provider=self.provider,
+            auth_time=self.params.authorization_code.auth_time,
         )
         id_token = IDToken.new(
             self.provider,
@@ -521,7 +524,6 @@ class TokenView(View):
         unauthorized_scopes = set(self.params.scope) - set(self.params.refresh_token.scope)
         if unauthorized_scopes:
             raise TokenError("invalid_scope")
-
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         access_token = AccessToken(
@@ -530,6 +532,7 @@ class TokenView(View):
             expires=access_token_expiry,
             # Keep same scopes as previous token
             scope=self.params.refresh_token.scope,
+            auth_time=self.params.refresh_token.auth_time,
         )
         access_token.id_token = IDToken.new(
             self.provider,
@@ -544,6 +547,7 @@ class TokenView(View):
             scope=self.params.refresh_token.scope,
             expires=refresh_token_expiry,
             provider=self.provider,
+            auth_time=self.params.refresh_token.auth_time,
         )
         id_token = IDToken.new(
             self.provider,
@@ -578,6 +582,7 @@ class TokenView(View):
             user=self.params.user,
             expires=access_token_expiry,
             scope=self.params.scope,
+            auth_time=now,
         )
         access_token.id_token = IDToken.new(
             self.provider,
@@ -600,11 +605,13 @@ class TokenView(View):
             raise DeviceCodeError("authorization_pending")
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
+        auth_event = get_login_event(self.request)
         access_token = AccessToken(
             provider=self.provider,
             user=self.params.device_code.user,
             expires=access_token_expiry,
             scope=self.params.device_code.scope,
+            auth_time=auth_event.created if auth_event else now,
         )
         access_token.id_token = IDToken.new(
             self.provider,
@@ -619,6 +626,7 @@ class TokenView(View):
             scope=self.params.device_code.scope,
             expires=refresh_token_expiry,
             provider=self.provider,
+            auth_time=auth_event.created if auth_event else now,
         )
         id_token = IDToken.new(
             self.provider,

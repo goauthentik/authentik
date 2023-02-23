@@ -4,6 +4,7 @@ from base64 import b64encode
 from dataclasses import asdict
 
 from django.urls import reverse
+from django.utils import timezone
 
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
@@ -41,6 +42,7 @@ class TesOAuth2Introspection(OAuthTestCase):
             provider=self.provider,
             user=self.user,
             token=generate_id(),
+            auth_time=timezone.now(),
             _scope="openid user profile",
             _id_token=json.dumps(
                 asdict(
@@ -72,6 +74,7 @@ class TesOAuth2Introspection(OAuthTestCase):
             provider=self.provider,
             user=self.user,
             token=generate_id(),
+            auth_time=timezone.now(),
             _scope="openid user profile",
             _id_token=json.dumps(
                 asdict(

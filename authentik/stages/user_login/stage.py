@@ -11,8 +11,6 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 
-USER_LOGIN_AUTHENTICATED = "user_login_authenticated"
-
 
 class UserLoginStageView(StageView):
     """Finalise Authentication flow by logging the user in"""
@@ -51,7 +49,6 @@ class UserLoginStageView(StageView):
             flow_slug=self.executor.flow.slug,
             session_duration=self.executor.current_stage.session_duration,
         )
-        self.request.session[USER_LOGIN_AUTHENTICATED] = True
         # Only show success message if we don't have a source in the flow
         # as sources show their own success messages
         if not self.executor.plan.context.get(PLAN_CONTEXT_SOURCE, None):
