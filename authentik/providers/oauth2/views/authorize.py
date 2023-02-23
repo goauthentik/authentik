@@ -335,24 +335,32 @@ class AuthorizationFlowInitView(PolicyAccessView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Start FlowPLanner, return to flow executor shell"""
+        # Require a login event to be set, otherwise make the user re-login
+        login_event = get_login_event(request)
+        if not login_event:
+            LOGGER.warning("request with no login event")
+            return self.handle_no_permission()
+        login_uid = str(login_event.pk)
         # After we've checked permissions, and the user has access, check if we need
         # to re-authenticate the user
-        login_event = get_login_event(request)
         if self.params.max_age:
             # Attempt to check via the session's login event if set, otherwise we can't
-            # check, default to now, and potentially have the user login again.
-            login_time = timezone.now()
-            if login_event:
-                login_time = login_event.created
+            # check
+            login_time = login_event.created
             current_age: timedelta = timezone.now() - login_time
             if current_age.total_seconds() > self.params.max_age:
+                LOGGER.debug(
+                    "Triggering authentication as max_age requirement",
+                    max_age=self.params.max_age,
+                    ago=int(current_age.total_seconds()),
+                )
+                # Since we already need to re-authenticate the user, set the old login UID
+                # in case this request has both max_age and prompt=login
+                self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
                 return self.handle_no_permission()
         # If prompt=login, we need to re-authenticate the user regardless
         # Check if we're not already doing the re-authentication
         if PROMPT_LOGIN in self.params.prompt:
-            if not login_event:
-                return self.handle_no_permission()
-            login_uid = str(login_event.pk)
             # No previous login UID saved, so save the current uid and trigger
             # re-login, or previous login UID matches current one, so no re-login happened yet
             if (
