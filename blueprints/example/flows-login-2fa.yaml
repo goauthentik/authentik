@@ -19,7 +19,7 @@ entries:
     model: authentik_policies_expression.expressionpolicy
     attrs:
       expression: |
-        return context["auth_method"] != "app_password"
+        return context.get("auth_method") != "app_password"
   - identifiers:
       name: default-authentication-login
     id: default-authentication-login
