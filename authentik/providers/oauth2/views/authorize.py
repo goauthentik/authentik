@@ -64,7 +64,6 @@ from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
     ConsentStageView,
 )
-from authentik.stages.user_login.stage import USER_LOGIN_AUTHENTICATED
 
 LOGGER = get_logger()
 
@@ -352,10 +351,6 @@ class AuthorizationFlowInitView(PolicyAccessView):
         if (
             PROMPT_LOGIN in self.params.prompt
             and SESSION_KEY_NEEDS_LOGIN not in self.request.session
-            # To prevent the user from having to double login when prompt is set to login
-            # and the user has just signed it. This session variable is set in the UserLoginStage
-            # and is (quite hackily) removed from the session in applications's API's List method
-            and USER_LOGIN_AUTHENTICATED not in self.request.session
         ):
             self.request.session[SESSION_KEY_NEEDS_LOGIN] = True
             return self.handle_no_permission()
