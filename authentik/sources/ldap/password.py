@@ -71,10 +71,13 @@ class LDAPPasswordChanger:
         except (LDAPAttributeError, KeyError, IndexError):
             return False
         raw_pwd_properties = root_attrs.get("attributes", {}).get("pwdProperties", None)
-        if raw_pwd_properties is None:
+        if not raw_pwd_properties:
             return False
 
-        pwd_properties = PwdProperties(raw_pwd_properties)
+        try:
+            pwd_properties = PwdProperties(raw_pwd_properties)
+        except ValueError:
+            return False
         if PwdProperties.DOMAIN_PASSWORD_COMPLEX in pwd_properties:
             return True
 
