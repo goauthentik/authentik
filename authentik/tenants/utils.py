@@ -1,4 +1,5 @@
 """Tenant utilities"""
+from functools import cache
 from typing import Any
 
 from django.db.models import F, Q
@@ -11,7 +12,12 @@ from authentik.lib.config import CONFIG
 from authentik.tenants.models import Tenant
 
 _q_default = Q(default=True)
-DEFAULT_TENANT = Tenant(domain="fallback")
+
+
+@cache
+def get_fallback_tenant():
+    """Get fallback tenant"""
+    return Tenant(domain="fallback")
 
 
 def get_tenant_for_request(request: HttpRequest) -> Tenant:
@@ -40,3 +46,6 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
         "sentry_trace": trace,
         "version": get_full_version(),
     }
+
+
+DEFAULT_TENANT = get_fallback_tenant()
