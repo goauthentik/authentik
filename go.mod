@@ -25,7 +25,7 @@ require (
 	github.com/prometheus/client_golang v1.14.0
 	github.com/sirupsen/logrus v1.9.0
 	github.com/stretchr/testify v1.8.1
-	goauthentik.io/api/v3 v3.2023022.4
+	goauthentik.io/api/v3 v3.2023022.5
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.5.0
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
