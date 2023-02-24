@@ -1,11 +1,11 @@
 """authentik expression policy evaluator"""
 import re
 import socket
-from functools import lru_cache
 from ipaddress import ip_address, ip_network
 from textwrap import indent
 from typing import Any, Iterable, Optional
 
+from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
 from django_otp import devices_for_user
 from rest_framework.serializers import ValidationError
@@ -53,7 +53,7 @@ class BaseEvaluator:
         }
         self._context = {}
 
-    @lru_cache(maxsize=32)
+    @cached(cache=TLRUCache(maxsize=32, ttu=lambda key, value, now: now + 180))
     @staticmethod
     def expr_resolve_dns(host: str, ip_version: Optional[int] = None) -> list[str]:
         """Resolve host to a list of IPv4 and/or IPv6 addresses."""
@@ -77,7 +77,7 @@ class BaseEvaluator:
             pass
         return list(set(ip_list))
 
-    @lru_cache(maxsize=32)
+    @cached(cache=TLRUCache(maxsize=32, ttu=lambda key, value, now: now + 180))
     @staticmethod
     def expr_reverse_dns(ip_addr: str) -> str:
         """Perform a reverse DNS lookup."""

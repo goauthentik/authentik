@@ -125,5 +125,5 @@ See: https://stackoverflow.com/a/19867936
 To perform a reverse DNS lookup use `reverse_dns("192.0.2.0")`. If no DNS records are found the original IP address is returned.
 
 :::info
-DNS resolving results are cached, in memory, the last 32 unique queries are cached.
+DNS resolving results are cached in memory. The last 32 unique queries are cached for up to 3 minutes.
 :::
