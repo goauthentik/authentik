@@ -65,27 +65,27 @@ class BaseEvaluator:
 
         if ip_version == 4 or not ip_version:
             try:
-                for ip in socket.getaddrinfo(host, None, family=socket.AF_INET):
-                    ip_list.append(str(ip[4][0]))
+                for ip_addr in socket.getaddrinfo(host, None, family=socket.AF_INET):
+                    ip_list.append(str(ip_addr[4][0]))
             except OSError:
                 pass
 
         if ip_version == 6 or not ip_version:
             try:
-                for ip in socket.getaddrinfo(host, None, family=socket.AF_INET6):
-                    ip_list.append(str(ip[4][0]))
+                for ip_addr in socket.getaddrinfo(host, None, family=socket.AF_INET6):
+                    ip_list.append(str(ip_addr[4][0]))
             except OSError:
                 pass
 
         return list(set(ip_list))
 
     @staticmethod
-    def reverse_dns(ip_address: str) -> str:
+    def reverse_dns(ip_addr: str) -> str:
         """Perform a reverse DNS lookup."""
         try:
-            return socket.getfqdn(ip_address)
+            return socket.getfqdn(ip_addr)
         except OSError:
-            return ip_address
+            return ip_addr
 
     @staticmethod
     def expr_flatten(value: list[Any] | Any) -> Optional[Any]:
