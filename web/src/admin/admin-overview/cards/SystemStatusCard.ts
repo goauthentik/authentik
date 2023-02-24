@@ -15,7 +15,6 @@ import { AdminApi, OutpostsApi, System } from "@goauthentik/api";
 export class SystemStatusCard extends AdminStatusCard<System> {
     now?: Date;
 
-    header = t`System status`;
     icon = "pf-icon pf-icon-server";
 
     @state()
@@ -80,6 +79,10 @@ export class SystemStatusCard extends AdminStatusCard<System> {
             icon: "fa fa-check-circle pf-m-success",
             message: html`${t`Everything is ok.`}`,
         });
+    }
+
+    renderHeader(): TemplateResult {
+        return html`${t`System status`}`;
     }
 
     renderValue(): TemplateResult {

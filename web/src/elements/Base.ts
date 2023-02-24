@@ -50,10 +50,14 @@ export class AKElement extends LitElement {
     get activeTheme(): UiThemeEnum | undefined {
         return this._activeTheme;
     }
+    private _handleLocaleChange: () => void;
 
     constructor() {
         super();
-        this.addEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
+        this._handleLocaleChange = (() => {
+            this.requestUpdate();
+        }).bind(this);
+        window.addEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
     }
 
     protected createRenderRoot(): ShadowRoot | Element {
@@ -147,11 +151,7 @@ export class AKElement extends LitElement {
 
     disconnectedCallback() {
         super.disconnectedCallback();
-        this.removeEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
-    }
-
-    private _handleLocaleChange() {
-        this.requestUpdate();
+        window.removeEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
     }
 }
 
