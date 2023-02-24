@@ -3430,40 +3430,40 @@ files = [
 
 [[package]]
 name = "watchdog"
-version = "2.2.1"
+version = "2.3.0"
 description = "Filesystem events monitoring"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "watchdog-2.2.1-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:a09483249d25cbdb4c268e020cb861c51baab2d1affd9a6affc68ffe6a231260"},
-    {file = "watchdog-2.2.1-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:5100eae58133355d3ca6c1083a33b81355c4f452afa474c2633bd2fbbba398b3"},
-    {file = "watchdog-2.2.1-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:e618a4863726bc7a3c64f95c218437f3349fb9d909eb9ea3a1ed3b567417c661"},
-    {file = "watchdog-2.2.1-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:102a60093090fc3ff76c983367b19849b7cc24ec414a43c0333680106e62aae1"},
-    {file = "watchdog-2.2.1-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:748ca797ff59962e83cc8e4b233f87113f3cf247c23e6be58b8a2885c7337aa3"},
-    {file = "watchdog-2.2.1-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:6ccd8d84b9490a82b51b230740468116b8205822ea5fdc700a553d92661253a3"},
-    {file = "watchdog-2.2.1-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:6e01d699cd260d59b84da6bda019dce0a3353e3fcc774408ae767fe88ee096b7"},
-    {file = "watchdog-2.2.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:8586d98c494690482c963ffb24c49bf9c8c2fe0589cec4dc2f753b78d1ec301d"},
-    {file = "watchdog-2.2.1-cp38-cp38-macosx_10_9_universal2.whl", hash = "sha256:adaf2ece15f3afa33a6b45f76b333a7da9256e1360003032524d61bdb4c422ae"},
-    {file = "watchdog-2.2.1-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:83a7cead445008e880dbde833cb9e5cc7b9a0958edb697a96b936621975f15b9"},
-    {file = "watchdog-2.2.1-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:f8ac23ff2c2df4471a61af6490f847633024e5aa120567e08d07af5718c9d092"},
-    {file = "watchdog-2.2.1-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:d0f29fd9f3f149a5277929de33b4f121a04cf84bb494634707cfa8ea8ae106a8"},
-    {file = "watchdog-2.2.1-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:967636031fa4c4955f0f3f22da3c5c418aa65d50908d31b73b3b3ffd66d60640"},
-    {file = "watchdog-2.2.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:96cbeb494e6cbe3ae6aacc430e678ce4b4dd3ae5125035f72b6eb4e5e9eb4f4e"},
-    {file = "watchdog-2.2.1-pp37-pypy37_pp73-macosx_10_9_x86_64.whl", hash = "sha256:61fdb8e9c57baf625e27e1420e7ca17f7d2023929cd0065eb79c83da1dfbeacd"},
-    {file = "watchdog-2.2.1-pp38-pypy38_pp73-macosx_10_9_x86_64.whl", hash = "sha256:4cb5ecc332112017fbdb19ede78d92e29a8165c46b68a0b8ccbd0a154f196d5e"},
-    {file = "watchdog-2.2.1-pp39-pypy39_pp73-macosx_10_9_x86_64.whl", hash = "sha256:a480d122740debf0afac4ddd583c6c0bb519c24f817b42ed6f850e2f6f9d64a8"},
-    {file = "watchdog-2.2.1-py3-none-manylinux2014_aarch64.whl", hash = "sha256:978a1aed55de0b807913b7482d09943b23a2d634040b112bdf31811a422f6344"},
-    {file = "watchdog-2.2.1-py3-none-manylinux2014_armv7l.whl", hash = "sha256:8c28c23972ec9c524967895ccb1954bc6f6d4a557d36e681a36e84368660c4ce"},
-    {file = "watchdog-2.2.1-py3-none-manylinux2014_i686.whl", hash = "sha256:c27d8c1535fd4474e40a4b5e01f4ba6720bac58e6751c667895cbc5c8a7af33c"},
-    {file = "watchdog-2.2.1-py3-none-manylinux2014_ppc64.whl", hash = "sha256:d6b87477752bd86ac5392ecb9eeed92b416898c30bd40c7e2dd03c3146105646"},
-    {file = "watchdog-2.2.1-py3-none-manylinux2014_ppc64le.whl", hash = "sha256:cece1aa596027ff56369f0b50a9de209920e1df9ac6d02c7f9e5d8162eb4f02b"},
-    {file = "watchdog-2.2.1-py3-none-manylinux2014_s390x.whl", hash = "sha256:8b5cde14e5c72b2df5d074774bdff69e9b55da77e102a91f36ef26ca35f9819c"},
-    {file = "watchdog-2.2.1-py3-none-manylinux2014_x86_64.whl", hash = "sha256:e038be858425c4f621900b8ff1a3a1330d9edcfeaa1c0468aeb7e330fb87693e"},
-    {file = "watchdog-2.2.1-py3-none-win32.whl", hash = "sha256:bc43c1b24d2f86b6e1cc15f68635a959388219426109233e606517ff7d0a5a73"},
-    {file = "watchdog-2.2.1-py3-none-win_amd64.whl", hash = "sha256:17f1708f7410af92ddf591e94ae71a27a13974559e72f7e9fde3ec174b26ba2e"},
-    {file = "watchdog-2.2.1-py3-none-win_ia64.whl", hash = "sha256:195ab1d9d611a4c1e5311cbf42273bc541e18ea8c32712f2fb703cfc6ff006f9"},
-    {file = "watchdog-2.2.1.tar.gz", hash = "sha256:cdcc23c9528601a8a293eb4369cbd14f6b4f34f07ae8769421252e9c22718b6f"},
+    {file = "watchdog-2.3.0-cp310-cp310-macosx_10_9_universal2.whl", hash = "sha256:c1b3962e5463a848ba2a342cb66c80251dca27a102933b8f38d231d2a9e5a543"},
+    {file = "watchdog-2.3.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:9e651b4874477c1bf239417d43818bbfd047aaf641b029fa60d6f5109ede0db0"},
+    {file = "watchdog-2.3.0-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:d04662017efd00a014cff9068708e085d67f2fac43f48bbbb95a7f97490487f3"},
+    {file = "watchdog-2.3.0-cp311-cp311-macosx_10_9_universal2.whl", hash = "sha256:0f7d759299ce21a3d2a77e18d430c24811369c3432453701790acc6ff45a7101"},
+    {file = "watchdog-2.3.0-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:a4b9bece40d46bf6fb8621817ea7d903eae2b9b3ebac55a51ed50354a79061a8"},
+    {file = "watchdog-2.3.0-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:242e57253e84a736e6777ba756c48cf6a68d3d90cb9e01bd6bfd371a949ace3a"},
+    {file = "watchdog-2.3.0-cp36-cp36m-macosx_10_9_x86_64.whl", hash = "sha256:3fa74b0ef4825f9112932675a002296cb2d3d3e400d7a44c32fafd1ecc83ada0"},
+    {file = "watchdog-2.3.0-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:15bf5b165d7a6b48265411dad74fb0d33053f8270eb6575faad0e016035cf9f7"},
+    {file = "watchdog-2.3.0-cp38-cp38-macosx_10_9_universal2.whl", hash = "sha256:139262f678b4e6a7013261c772059bca358441de04fb0e0087489a34db9e3db0"},
+    {file = "watchdog-2.3.0-cp38-cp38-macosx_10_9_x86_64.whl", hash = "sha256:8a214955769d2ef0f7aaa82f31863e3bdf6b083ce1b5f1c2e85cab0f66fba024"},
+    {file = "watchdog-2.3.0-cp38-cp38-macosx_11_0_arm64.whl", hash = "sha256:4e648df44a4c6ea6da4d9eb6722745c986b9d70268f25ae60f140082d7c8908e"},
+    {file = "watchdog-2.3.0-cp39-cp39-macosx_10_9_universal2.whl", hash = "sha256:473164a2de473f708ca194a992466eeefff73b58273bbb88e089c5a5a98fcda1"},
+    {file = "watchdog-2.3.0-cp39-cp39-macosx_10_9_x86_64.whl", hash = "sha256:ebe756f788cb130fdc5c150ea8a4fda39cb4ee3a5873a345607c8b84fecf018b"},
+    {file = "watchdog-2.3.0-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:a623de186477e9e05f8461087f856412eae5cd005cc4bcb232ed5c6f9a8709f5"},
+    {file = "watchdog-2.3.0-pp37-pypy37_pp73-macosx_10_9_x86_64.whl", hash = "sha256:43d76d7888b26850b908208bb82383a193e8b0f25d0abaa84452f191b4acdea4"},
+    {file = "watchdog-2.3.0-pp38-pypy38_pp73-macosx_10_9_x86_64.whl", hash = "sha256:5ddbbe87f9ed726940d174076da030cd01ec45433ef2b1b2e6094c84f2af17f1"},
+    {file = "watchdog-2.3.0-pp39-pypy39_pp73-macosx_10_9_x86_64.whl", hash = "sha256:3fa1572f5a2f6d17d4d860edbc04488fef31b007c25c2f3b11203fb8179b7c67"},
+    {file = "watchdog-2.3.0-py3-none-manylinux2014_aarch64.whl", hash = "sha256:1d9c656495172873bf1ddc7e39e80055fcdd21c4608cf68f23a28116dcba0b43"},
+    {file = "watchdog-2.3.0-py3-none-manylinux2014_armv7l.whl", hash = "sha256:00f93782c67042d9525ec51628330b5faf5fb84bcb7ebaac05ea8528cfb20bba"},
+    {file = "watchdog-2.3.0-py3-none-manylinux2014_i686.whl", hash = "sha256:f1a655f4a49f9232311b9967f42cc2eaf43fd4903f3bed850dd4570fda5d5eff"},
+    {file = "watchdog-2.3.0-py3-none-manylinux2014_ppc64.whl", hash = "sha256:aa4773160b9cb21ba369cb42d59a947087330b3a02480173033a6a6cc137a510"},
+    {file = "watchdog-2.3.0-py3-none-manylinux2014_ppc64le.whl", hash = "sha256:982f5416a2817003172994d865285dd6a2b3836f033cd3fa87d1a62096a162cc"},
+    {file = "watchdog-2.3.0-py3-none-manylinux2014_s390x.whl", hash = "sha256:45c13e7e6eea1013da419bf9aa9a8f5df7bbf3e5edce40bc6df84130febf39d5"},
+    {file = "watchdog-2.3.0-py3-none-manylinux2014_x86_64.whl", hash = "sha256:7767a3da3307d9cf597832f692702441a97c259e5d0d560f2e57c43ad0d191d2"},
+    {file = "watchdog-2.3.0-py3-none-win32.whl", hash = "sha256:8863913ea2c3f256d18c33d84546518636e391cd8f50d209b9a31221e0f7d3fd"},
+    {file = "watchdog-2.3.0-py3-none-win_amd64.whl", hash = "sha256:6d79b5954db8f41d6a7f5763042b988f7a4afd40b7d141456061fa7c5b7f2159"},
+    {file = "watchdog-2.3.0-py3-none-win_ia64.whl", hash = "sha256:a3559ee82a10976de1ec544b6ebe3b4aa398d491860a283d80ec0f550076d068"},
+    {file = "watchdog-2.3.0.tar.gz", hash = "sha256:9d39effe6909be898ba3e7286a9e9b17a6a9f734fb1ef9dde3e9bb68715fca39"},
 ]
 
 [package.extras]
