@@ -1,6 +1,7 @@
 import { renderSourceIcon } from "@goauthentik/admin/sources/SourceViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/user/user-settings/sources/SourceSettingsOAuth";
@@ -58,10 +59,11 @@ export class UserSourceSettingsPage extends AKElement {
         });
     }
 
-    firstUpdated(): void {
+    async firstUpdated(): Promise<void> {
+        const user = await me();
         this.sourceSettings = new SourcesApi(DEFAULT_CONFIG).sourcesAllUserSettingsList();
-        new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsAllList().then((connections) => {
-            this.connections = connections;
+        this.connections = await new SourcesApi(DEFAULT_CONFIG).sourcesUserConnectionsAllList({
+            user: user.user.pk,
         });
     }
 
