@@ -29,7 +29,6 @@ from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_
 from authentik.interfaces.models import InterfaceType
 from authentik.interfaces.views import reverse_interface
 from authentik.lib.utils.http import get_client_ip
-from authentik.lib.utils.urls import reverse_with_qs
 from authentik.sources.oauth.types.apple import AppleLoginChallenge
 from authentik.sources.plex.models import PlexAuthenticationChallenge
 from authentik.stages.identification.models import IdentificationStage

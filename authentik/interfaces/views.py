@@ -7,12 +7,12 @@ from django.http import Http404, HttpRequest, HttpResponse, QueryDict
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Template, TemplateSyntaxError, engines
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework.request import Request
+from structlog.stdlib import get_logger
 
 from authentik import get_build_hash
 from authentik.admin.tasks import LOCAL_VERSION
@@ -22,6 +22,8 @@ from authentik.interfaces.models import Interface, InterfaceType
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.tenants.api import CurrentTenantSerializer
 from authentik.tenants.models import Tenant
+
+LOGGER = get_logger()
 
 
 def template_from_string(template_string: str) -> Template:
@@ -57,6 +59,7 @@ def reverse_interface(
         interface = tenant.interface_flow
 
     if not interface:
+        LOGGER.warning("No interface found", type=interface_type, tenant=tenant)
         raise Http404()
     kwargs["if_name"] = interface.url_name
     return reverse_with_qs(

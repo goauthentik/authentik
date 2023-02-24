@@ -297,6 +297,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
             {
                 "link": request._request.build_absolute_uri(
                     reverse_interface(
+                        request,
                         InterfaceType.FLOW,
                         flow_slug=flow.slug,
                     ),

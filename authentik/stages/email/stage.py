@@ -3,7 +3,6 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
-from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
