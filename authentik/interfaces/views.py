@@ -3,7 +3,7 @@ from json import dumps
 from typing import Any, Optional
 from urllib.parse import urlencode
 
-from django.http import Http404, HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse, QueryDict
 from django.shortcuts import get_object_or_404, redirect
 from django.template import Template, TemplateSyntaxError, engines
 from django.template.response import TemplateResponse
@@ -19,7 +19,7 @@ from authentik.admin.tasks import LOCAL_VERSION
 from authentik.api.v3.config import ConfigView
 from authentik.flows.models import Flow
 from authentik.interfaces.models import Interface, InterfaceType
-from authentik.lib.utils.urls import redirect_with_qs
+from authentik.lib.utils.urls import reverse_with_qs
 from authentik.tenants.api import CurrentTenantSerializer
 from authentik.tenants.models import Tenant
 
@@ -42,7 +42,9 @@ def redirect_to_default_interface(request: HttpRequest, interface_type: Interfac
     return RedirectToInterface.as_view(type=interface_type)(request, **kwargs)
 
 
-def reverse_interface(request: HttpRequest, interface_type: InterfaceType, **kwargs):
+def reverse_interface(
+    request: HttpRequest, interface_type: InterfaceType, query: Optional[QueryDict] = None, **kwargs
+):
     """Reverse URL to configured default interface"""
     tenant: Tenant = request.tenant
     interface: Interface = None
@@ -57,8 +59,9 @@ def reverse_interface(request: HttpRequest, interface_type: InterfaceType, **kwa
     if not interface:
         raise Http404()
     kwargs["if_name"] = interface.url_name
-    return reverse(
+    return reverse_with_qs(
         "authentik_interfaces:if",
+        query=query or request.GET,
         kwargs=kwargs,
     )
 
