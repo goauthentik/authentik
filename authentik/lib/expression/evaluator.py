@@ -48,6 +48,7 @@ class BaseEvaluator:
             "ip_address": ip_address,
             "ip_network": ip_network,
             "resolve_dns": BaseEvaluator.resolve_dns,
+            "reverse_dns": BaseEvaluator.reverse_dns,
         }
         self._context = {}
 
@@ -76,7 +77,15 @@ class BaseEvaluator:
             except OSError:
                 pass
 
-        return ip_list
+        return list(set(ip_list))
+
+    @staticmethod
+    def reverse_dns(ip_address: str) -> str:
+        """Perform a reverse DNS lookup."""
+        try:
+            return socket.getfqdn(ip_address)
+        except OSError:
+            return ip_address
 
     @staticmethod
     def expr_flatten(value: list[Any] | Any) -> Optional[Any]:
