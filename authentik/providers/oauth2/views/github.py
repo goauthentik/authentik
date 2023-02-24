@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 from authentik.providers.oauth2.constants import SCOPE_GITHUB_ORG_READ, SCOPE_GITHUB_USER_EMAIL
 from authentik.providers.oauth2.models import RefreshToken
 from authentik.providers.oauth2.utils import protected_resource_view
+from authentik.tenants.utils import get_tenant
 
 
 @method_decorator(csrf_exempt, name="dispatch")
@@ -76,6 +77,7 @@ class GitHubUserTeamsView(View):
     def get(self, request: HttpRequest, token: RefreshToken) -> HttpResponse:
         """Emulate GitHub's /user/teams API Endpoint"""
         user = token.user
+        tenant = get_tenant(request)
 
         orgs_response = []
         for org in user.ak_groups.all():
@@ -97,7 +99,7 @@ class GitHubUserTeamsView(View):
                 "created_at": "",
                 "updated_at": "",
                 "organization": {
-                    "login": slugify(request.tenant.branding_title),
+                    "login": slugify(tenant.branding_title),
                     "id": 1,
                     "node_id": "",
                     "url": "",
@@ -109,7 +111,7 @@ class GitHubUserTeamsView(View):
                     "public_members_url": "",
                     "avatar_url": "",
                     "description": "",
-                    "name": request.tenant.branding_title,
+                    "name": tenant.branding_title,
                     "company": "",
                     "blog": "",
                     "location": "",

@@ -18,6 +18,7 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.reflection import get_env
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
+from authentik.tenants.utils import get_tenant
 
 
 class RuntimeDict(TypedDict):
@@ -77,7 +78,7 @@ class SystemSerializer(PassiveSerializer):
 
     def get_tenant(self, request: Request) -> str:
         """Currently active tenant"""
-        return str(request._request.tenant)
+        return str(get_tenant(request))
 
     def get_server_time(self, request: Request) -> datetime:
         """Current server time"""

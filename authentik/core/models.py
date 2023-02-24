@@ -33,6 +33,7 @@ from authentik.lib.models import (
 )
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
+from authentik.tenants.utils import get_tenant
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -168,7 +169,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         including the users attributes"""
         final_attributes = {}
         if request and hasattr(request, "tenant"):
-            always_merger.merge(final_attributes, request.tenant.attributes)
+            always_merger.merge(final_attributes, get_tenant(request).attributes)
         for group in self.ak_groups.all().order_by("name"):
             always_merger.merge(final_attributes, group.attributes)
         always_merger.merge(final_attributes, self.attributes)
@@ -227,7 +228,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         except Exception as exc:
             LOGGER.warning("Failed to get default locale", exc=exc)
         if request:
-            return request.tenant.locale
+            return get_tenant(request).locale
         return ""
 
     @property

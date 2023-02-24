@@ -21,7 +21,7 @@ from authentik.flows.models import Flow
 from authentik.interfaces.models import Interface, InterfaceType
 from authentik.lib.utils.urls import reverse_with_qs
 from authentik.tenants.api import CurrentTenantSerializer
-from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_tenant
 
 LOGGER = get_logger()
 
@@ -48,7 +48,7 @@ def reverse_interface(
     request: HttpRequest, interface_type: InterfaceType, query: Optional[QueryDict] = None, **kwargs
 ):
     """Reverse URL to configured default interface"""
-    tenant: Tenant = request.tenant
+    tenant = get_tenant(request)
     interface: Interface = None
 
     if interface_type == InterfaceType.USER:
@@ -90,7 +90,7 @@ class InterfaceView(View):
         """Get template context"""
         return {
             "config_json": dumps(ConfigView(request=Request(self.request)).get_config().data),
-            "tenant_json": dumps(CurrentTenantSerializer(self.request.tenant).data),
+            "tenant_json": dumps(CurrentTenantSerializer(get_tenant(self.request)).data),
             "version_family": f"{LOCAL_VERSION.major}.{LOCAL_VERSION.minor}",
             "version_subdomain": f"version-{LOCAL_VERSION.major}-{LOCAL_VERSION.minor}",
             "build": get_build_hash(),

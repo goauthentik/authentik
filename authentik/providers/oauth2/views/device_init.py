@@ -27,7 +27,7 @@ from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
 )
-from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_tenant
 
 LOGGER = get_logger()
 QS_KEY_CODE = "code"  # nosec
@@ -89,7 +89,7 @@ class DeviceEntryView(View):
     """View used to initiate the device-code flow, url entered by endusers"""
 
     def dispatch(self, request: HttpRequest) -> HttpResponse:
-        tenant: Tenant = request.tenant
+        tenant = get_tenant(request)
         device_flow = tenant.flow_device_code
         if not device_flow:
             LOGGER.info("Tenant has no device code flow configured", tenant=tenant)

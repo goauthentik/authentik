@@ -76,7 +76,7 @@ from authentik.interfaces.views import reverse_interface
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
-from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_tenant
 
 LOGGER = get_logger()
 
@@ -322,7 +322,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     def _create_recovery_link(self) -> tuple[Optional[str], Optional[Token]]:
         """Create a recovery link (when the current tenant has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
-        tenant: Tenant = self.request._request.tenant
+        tenant = get_tenant(self.request)
         # Check that there is a recovery flow, if not return an error
         flow = tenant.flow_recovery
         if not flow:

@@ -3676,6 +3676,24 @@ paths:
         description: flow_user_settings
         schema:
           type: string
+      - name: interface_admin
+        required: false
+        in: query
+        description: interface_admin
+        schema:
+          type: string
+      - name: interface_flow
+        required: false
+        in: query
+        description: interface_flow
+        schema:
+          type: string
+      - name: interface_user
+        required: false
+        in: query
+        description: interface_user
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -7724,6 +7742,295 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FlowImportResult'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /interfaces/:
+    get:
+      operationId: interfaces_list
+      description: Interface serializer
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: template
+        schema:
+          type: string
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - admin
+          - flow
+          - user
+        description: |-
+          * `user` - User
+          * `admin` - Admin
+          * `flow` - Flow
+
+          * `user` - User
+          * `admin` - Admin
+          * `flow` - Flow
+      - in: query
+        name: url_name
+        schema:
+          type: string
+      tags:
+      - interfaces
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInterfaceList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: interfaces_create
+      description: Interface serializer
+      tags:
+      - interfaces
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterfaceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interface'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /interfaces/{interface_uuid}/:
+    get:
+      operationId: interfaces_retrieve
+      description: Interface serializer
+      parameters:
+      - in: path
+        name: interface_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this interface.
+        required: true
+      tags:
+      - interfaces
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interface'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: interfaces_update
+      description: Interface serializer
+      parameters:
+      - in: path
+        name: interface_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this interface.
+        required: true
+      tags:
+      - interfaces
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterfaceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interface'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: interfaces_partial_update
+      description: Interface serializer
+      parameters:
+      - in: path
+        name: interface_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this interface.
+        required: true
+      tags:
+      - interfaces
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedInterfaceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interface'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: interfaces_destroy
+      description: Interface serializer
+      parameters:
+      - in: path
+        name: interface_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this interface.
+        required: true
+      tags:
+      - interfaces
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /interfaces/{interface_uuid}/used_by/:
+    get:
+      operationId: interfaces_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: interface_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this interface.
+        required: true
+      tags:
+      - interfaces
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
           description: ''
         '403':
           content:
@@ -26307,6 +26614,7 @@ components:
       - authentik.admin
       - authentik.api
       - authentik.crypto
+      - authentik.interfaces
       - authentik.events
       - authentik.flows
       - authentik.lib
@@ -26357,6 +26665,7 @@ components:
         * `authentik.admin` - authentik Admin
         * `authentik.api` - authentik API
         * `authentik.crypto` - authentik Crypto
+        * `authentik.interfaces` - authentik Interfaces
         * `authentik.events` - authentik Events
         * `authentik.flows` - authentik Flows
         * `authentik.lib` - authentik lib
@@ -29074,6 +29383,7 @@ components:
             * `authentik.admin` - authentik Admin
             * `authentik.api` - authentik API
             * `authentik.crypto` - authentik Crypto
+            * `authentik.interfaces` - authentik Interfaces
             * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
             * `authentik.lib` - authentik lib
@@ -29184,6 +29494,7 @@ components:
             * `authentik.admin` - authentik Admin
             * `authentik.api` - authentik API
             * `authentik.crypto` - authentik Crypto
+            * `authentik.interfaces` - authentik Interfaces
             * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
             * `authentik.lib` - authentik lib
@@ -30297,6 +30608,55 @@ components:
         * `api` - Intent Api
         * `recovery` - Intent Recovery
         * `app_password` - Intent App Password
+    Interface:
+      type: object
+      description: Interface serializer
+      properties:
+        interface_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        url_name:
+          type: string
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        type:
+          $ref: '#/components/schemas/InterfaceTypeEnum'
+        template:
+          type: string
+      required:
+      - interface_uuid
+      - template
+      - type
+      - url_name
+    InterfaceRequest:
+      type: object
+      description: Interface serializer
+      properties:
+        url_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        type:
+          $ref: '#/components/schemas/InterfaceTypeEnum'
+        template:
+          type: string
+          minLength: 1
+      required:
+      - template
+      - type
+      - url_name
+    InterfaceTypeEnum:
+      enum:
+      - user
+      - admin
+      - flow
+      type: string
+      description: |-
+        * `user` - User
+        * `admin` - Admin
+        * `flow` - Flow
     InvalidResponseActionEnum:
       enum:
       - retry
@@ -33048,6 +33408,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IdentificationStage'
+      required:
+      - pagination
+      - results
+    PaginatedInterfaceList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Interface'
       required:
       - pagination
       - results
@@ -35870,6 +36265,7 @@ components:
             * `authentik.admin` - authentik Admin
             * `authentik.api` - authentik API
             * `authentik.crypto` - authentik Crypto
+            * `authentik.interfaces` - authentik Interfaces
             * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
             * `authentik.lib` - authentik lib
@@ -36121,6 +36517,20 @@ components:
           description: Specify which sources should be shown.
         show_source_labels:
           type: boolean
+    PatchedInterfaceRequest:
+      type: object
+      description: Interface serializer
+      properties:
+        url_name:
+          type: string
+          minLength: 1
+          maxLength: 50
+          pattern: ^[-a-zA-Z0-9_]+$
+        type:
+          $ref: '#/components/schemas/InterfaceTypeEnum'
+        template:
+          type: string
+          minLength: 1
     PatchedInvitationRequest:
       type: object
       description: Invitation Serializer
@@ -37402,6 +37812,18 @@ components:
           format: uuid
           nullable: true
         flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
+        interface_admin:
+          type: string
+          format: uuid
+          nullable: true
+        interface_user:
+          type: string
+          format: uuid
+          nullable: true
+        interface_flow:
           type: string
           format: uuid
           nullable: true
@@ -40576,6 +40998,18 @@ components:
           type: string
           format: uuid
           nullable: true
+        interface_admin:
+          type: string
+          format: uuid
+          nullable: true
+        interface_user:
+          type: string
+          format: uuid
+          nullable: true
+        interface_flow:
+          type: string
+          format: uuid
+          nullable: true
         event_retention:
           type: string
           description: 'Events will be deleted after this duration.(Format: weeks=3;days=2;hours=3,seconds=2).'
@@ -40631,6 +41065,18 @@ components:
           format: uuid
           nullable: true
         flow_device_code:
+          type: string
+          format: uuid
+          nullable: true
+        interface_admin:
+          type: string
+          format: uuid
+          nullable: true
+        interface_user:
+          type: string
+          format: uuid
+          nullable: true
+        interface_flow:
           type: string
           format: uuid
           nullable: true

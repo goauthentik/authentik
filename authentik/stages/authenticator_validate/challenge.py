@@ -33,6 +33,7 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.tenants.utils import get_tenant
 
 LOGGER = get_logger()
 
@@ -187,7 +188,7 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
             type=__(
                 "%(brand_name)s Login request"
                 % {
-                    "brand_name": stage_view.request.tenant.branding_title,
+                    "brand_name": get_tenant(stage_view.request).branding_title,
                 }
             ),
             display_username=user.username,

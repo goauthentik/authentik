@@ -13,7 +13,7 @@ def migrate_set_default(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     from authentik.blueprints.models import BlueprintInstance
     from authentik.blueprints.v1.importer import Importer
-    from authentik.blueprints.v1.tasks import blueprints_discover
+    from authentik.blueprints.v1.tasks import blueprints_discovery
     from authentik.interfaces.models import InterfaceType
 
     # If we don't have any tenants yet, we don't need wait for the default interface blueprint
@@ -22,7 +22,7 @@ def migrate_set_default(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
     interface_blueprint = BlueprintInstance.objects.filter(path="system/interfaces.yaml").first()
     if not interface_blueprint:
-        blueprints_discover.delay().get()
+        blueprints_discovery.delay().get()
         interface_blueprint = BlueprintInstance.objects.filter(
             path="system/interfaces.yaml"
         ).first()
