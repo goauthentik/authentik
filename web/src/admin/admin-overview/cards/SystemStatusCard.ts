@@ -7,7 +7,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import { AdminApi, OutpostsApi, System } from "@goauthentik/api";
 
@@ -17,6 +17,9 @@ export class SystemStatusCard extends AdminStatusCard<System> {
 
     header = t`System status`;
     icon = "pf-icon pf-icon-server";
+
+    @state()
+    statusSummary?: string;
 
     async getPrimaryValue(): Promise<System> {
         this.now = new Date();
@@ -50,7 +53,7 @@ export class SystemStatusCard extends AdminStatusCard<System> {
 
     getStatus(value: System): Promise<AdminStatus> {
         if (value.embeddedOutpostHost === "") {
-            this.header = t`Warning`;
+            this.statusSummary = t`Warning`;
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${t`Embedded outpost is not configured correctly.`}
@@ -58,7 +61,7 @@ export class SystemStatusCard extends AdminStatusCard<System> {
             });
         }
         if (!value.httpIsSecure && document.location.protocol === "https:") {
-            this.header = t`Warning`;
+            this.statusSummary = t`Warning`;
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${t`HTTPS is not detected correctly`}`,
@@ -66,13 +69,13 @@ export class SystemStatusCard extends AdminStatusCard<System> {
         }
         const timeDiff = value.serverTime.getTime() - (this.now || new Date()).getTime();
         if (timeDiff > 5000 || timeDiff < -5000) {
-            this.header = t`Warning`;
+            this.statusSummary = t`Warning`;
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
                 message: html`${t`Server and client are further than 5 seconds apart.`}`,
             });
         }
-        this.header = t`OK`;
+        this.statusSummary = t`OK`;
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
             message: html`${t`Everything is ok.`}`,
@@ -80,6 +83,6 @@ export class SystemStatusCard extends AdminStatusCard<System> {
     }
 
     renderValue(): TemplateResult {
-        return html`${this.header}`;
+        return html`${this.statusSummary}`;
     }
 }
