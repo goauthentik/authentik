@@ -28021,8 +28021,7 @@ components:
           readOnly: true
         evaluate_on_plan:
           type: boolean
-          description: Evaluate policies during the Flow planning process. Disable
-            this for input-based policies.
+          description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
           description: Evaluate policies when the Stage is present to the user.
@@ -28058,8 +28057,7 @@ components:
           format: uuid
         evaluate_on_plan:
           type: boolean
-          description: Evaluate policies during the Flow planning process. Disable
-            this for input-based policies.
+          description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
           description: Evaluate policies when the Stage is present to the user.
@@ -33754,8 +33752,7 @@ components:
           format: uuid
         evaluate_on_plan:
           type: boolean
-          description: Evaluate policies during the Flow planning process. Disable
-            this for input-based policies.
+          description: Evaluate policies during the Flow planning process.
         re_evaluate_policies:
           type: boolean
           description: Evaluate policies when the Stage is present to the user.

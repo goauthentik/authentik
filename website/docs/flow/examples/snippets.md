@@ -9,7 +9,9 @@ Requires authentik 2022.7
 :::
 
 ```python
-plan = request.context["flow_plan"]
+plan = request.context.get("flow_plan")
+if not plan:
+    return False
 plan.redirect("https://foo.bar")
 return False
 ```

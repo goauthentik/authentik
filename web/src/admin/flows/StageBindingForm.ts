@@ -148,17 +148,17 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.evaluateOnPlan, true)}
+                        ?checked=${first(this.instance?.evaluateOnPlan, false)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Evaluate on plan`}</span>
+                    <span class="pf-c-switch__label">${t`Evaluate when flow is planned`}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated.`}
+                    ${t`Evaluate policies during the Flow planning process.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="reEvaluatePolicies">
@@ -166,14 +166,14 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     <input
                         class="pf-c-switch__input"
                         type="checkbox"
-                        ?checked=${first(this.instance?.reEvaluatePolicies, false)}
+                        ?checked=${first(this.instance?.reEvaluatePolicies, true)}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Re-evaluate policies`}</span>
+                    <span class="pf-c-switch__label">${t`Evaluate when stage is run`}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
                     ${t`Evaluate policies before the Stage is present to the user.`}
