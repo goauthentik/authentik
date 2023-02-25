@@ -23,5 +23,3 @@ entries:
       stage: !KeyOf default-unenrollment-user-delete
       order: 10
     model: authentik_flows.flowstagebinding
-    attrs:
-      re_evaluate_policies: false

@@ -123,33 +123,23 @@ entries:
       stage: !KeyOf default-enrollment-prompt-first
       order: 10
     model: authentik_flows.flowstagebinding
-    attrs:
-      re_evaluate_policies: false
   - identifiers:
       target: !KeyOf flow
       stage: !KeyOf default-enrollment-prompt-second
       order: 11
     model: authentik_flows.flowstagebinding
-    attrs:
-      re_evaluate_policies: false
   - identifiers:
       target: !KeyOf flow
       stage: !KeyOf default-enrollment-user-write
       order: 20
     model: authentik_flows.flowstagebinding
-    attrs:
-      re_evaluate_policies: false
   - identifiers:
       target: !KeyOf flow
       stage: !KeyOf default-enrollment-email-verification
       order: 30
     model: authentik_flows.flowstagebinding
-    attrs:
-      re_evaluate_policies: false
   - identifiers:
       target: !KeyOf flow
       stage: !KeyOf default-enrollment-user-login
       order: 40
     model: authentik_flows.flowstagebinding
-    attrs:
-      re_evaluate_policies: false
