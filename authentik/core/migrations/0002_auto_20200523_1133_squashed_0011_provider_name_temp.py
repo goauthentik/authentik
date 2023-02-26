@@ -25,8 +25,6 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     password = None
     if "TF_BUILD" in environ or settings.TEST:
         password = "akadmin"  # noqa # nosec
-    if "AK_ADMIN_PASS" in environ:
-        password = environ["AK_ADMIN_PASS"]
     if "AUTHENTIK_BOOTSTRAP_PASSWORD" in environ:
         password = environ["AUTHENTIK_BOOTSTRAP_PASSWORD"]
     if password:

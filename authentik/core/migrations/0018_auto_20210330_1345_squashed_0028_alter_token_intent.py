@@ -46,13 +46,9 @@ def create_default_user_token(apps: Apps, schema_editor: BaseDatabaseSchemaEdito
     akadmin = User.objects.using(db_alias).filter(username="akadmin")
     if not akadmin.exists():
         return
-    key = None
-    if "AK_ADMIN_TOKEN" in environ:
-        key = environ["AK_ADMIN_TOKEN"]
-    if "AUTHENTIK_BOOTSTRAP_TOKEN" in environ:
-        key = environ["AUTHENTIK_BOOTSTRAP_TOKEN"]
-    if not key:
+    if "AUTHENTIK_BOOTSTRAP_TOKEN" not in environ:
         return
+    key = environ["AUTHENTIK_BOOTSTRAP_TOKEN"]
     Token.objects.using(db_alias).create(
         identifier="authentik-bootstrap-token",
         user=akadmin.first(),
