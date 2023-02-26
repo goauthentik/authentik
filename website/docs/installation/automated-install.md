@@ -15,7 +15,7 @@ For versions before 2022.6, this variable was called `AK_ADMIN_PASS`. This will 
 ### `AUTHENTIK_BOOTSTRAP_TOKEN` or `AK_ADMIN_TOKEN`
 
 :::note
-This option has been added in 2021.8
+Requires authentik 2021.8
 :::
 
 Create a token for the default `akadmin` user. Only read on the first startup. The string you specify for this variable is the token key you can use to authenticate yourself to the API.
@@ -23,3 +23,11 @@ Create a token for the default `akadmin` user. Only read on the first startup. T
 :::info
 For versions before 2022.6, this variable was called `AK_ADMIN_TOKEN`. This will be removed in 2022.7
 :::
+
+### `AUTHENTIK_BOOTSTRAP_EMAIL`
+
+:::note
+Requires authentik 2023.3
+:::
+
+Set the email address for the default `akadmin` user.
