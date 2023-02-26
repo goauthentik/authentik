@@ -11,6 +11,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     BooleanField,
     CharField,
+    ChoiceField,
     DateField,
     DateTimeField,
     EmailField,
@@ -75,6 +76,9 @@ class FieldTypes(models.TextChoices):
     STATIC = "static", _("Static: Static value, displayed as-is.")
 
     AK_LOCALE = "ak-locale", _("authentik: Selection of locales authentik supports")
+
+
+BOOLEAN_FIELDSET_FIELD_TYPES = (FieldTypes.RADIO_BUTTON,)
 
 
 class InlineFileField(CharField):
@@ -155,6 +159,18 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.CHECKBOX:
             field_class = BooleanField
             kwargs["required"] = False
+        if self.type in BOOLEAN_FIELDSET_FIELD_TYPES:
+            # Only allow UUIDs of other fields with the same field_key and type to be set.
+            # Used to validate the boolean fieldsets.
+            field_class = ChoiceField
+            kwargs["choices"] = [
+                str(prompt.prompt_uuid)
+                for prompt in Prompt.objects.filter(
+                    type=self.type,
+                    field_key=self.field_key,
+                )
+            ]
+            kwargs["required"] = True
         if self.type == FieldTypes.DATE:
             field_class = DateField
         if self.type == FieldTypes.DATE_TIME:

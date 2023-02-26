@@ -170,6 +170,20 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }
+        if (prompt.type === PromptTypeEnum.RadioButton) {
+            return html` <div class="pf-c-check">
+                <input
+                    type="radio"
+                    class="pf-c-check__input"
+                    name="${prompt.fieldKey}"
+                    ?checked=${false}
+                    ?required=${true}
+                    value="${prompt.placeholder}"
+                />
+                <label class="pf-c-check__label">${prompt.label}</label>
+                <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
+            </div>`;
+        }
         if (this.shouldRenderInWrapper(prompt)) {
             return html`<ak-form-element
                 label="${prompt.label}"

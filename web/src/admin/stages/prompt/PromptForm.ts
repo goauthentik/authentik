@@ -86,6 +86,12 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ${t`Checkbox`}
             </option>
             <option
+                value=${PromptTypeEnum.RadioButton}
+                ?selected=${this.instance?.type === PromptTypeEnum.RadioButton}
+            >
+                ${t`Radio Button`}
+            </option>
+            <option
                 value=${PromptTypeEnum.Date}
                 ?selected=${this.instance?.type === PromptTypeEnum.Date}
             >

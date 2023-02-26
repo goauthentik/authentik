@@ -17,7 +17,12 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyBindingModel, PolicyEngineMode
-from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
+from authentik.stages.prompt.models import (
+    BOOLEAN_FIELDSET_FIELD_TYPES,
+    FieldTypes,
+    Prompt,
+    PromptStage,
+)
 from authentik.stages.prompt.signals import password_validate
 
 PLAN_CONTEXT_PROMPT = "prompt_data"
@@ -54,7 +59,7 @@ class PromptChallengeResponse(ChallengeResponse):
         stage: PromptStage = kwargs.pop("stage_instance", None)
         plan: FlowPlan = kwargs.pop("plan", None)
         request: HttpRequest = kwargs.pop("request", None)
-        user: User = kwargs.pop("user", None)
+        self.user: User = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
         self.stage_instance = stage
         self.plan = plan
@@ -65,9 +70,13 @@ class PromptChallengeResponse(ChallengeResponse):
         fields = list(self.stage_instance.fields.all())
         for field in fields:
             field: Prompt
-            current = field.get_placeholder(
-                plan.context.get(PLAN_CONTEXT_PROMPT, {}), user, self.request
-            )
+            # Fieldsets placeholders are handled in validate()
+            if field.type in BOOLEAN_FIELDSET_FIELD_TYPES:
+                current = None
+            else:
+                current = field.get_placeholder(
+                    plan.context.get(PLAN_CONTEXT_PROMPT, {}), self.user, self.request
+                )
             self.fields[field.field_key] = field.field(current)
             # Special handling for fields with username type
             # these check for existing users with the same username
@@ -108,6 +117,17 @@ class PromptChallengeResponse(ChallengeResponse):
             if default == empty:
                 default = ""
             attrs[static_hidden.field_key] = default
+
+        # Get the selected value of each boolean fieldset
+        fieldsets: QuerySet[Prompt] = self.stage_instance.fields.filter(
+            type__in=BOOLEAN_FIELDSET_FIELD_TYPES
+        )
+        fieldset_groups = fieldsets.values_list("field_key", flat=True).distinct()
+        for group in fieldset_groups:
+            field: Prompt = fieldsets.get(field_key=group, prompt_uuid=attrs[group])
+            attrs[group] = field.get_placeholder(
+                self.plan.context.get(PLAN_CONTEXT_PROMPT, {}), self.user, self.request
+            )
 
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
@@ -180,9 +200,16 @@ class PromptStageView(ChallengeStageView):
         context_prompt = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
         for field in fields:
             data = StagePromptSerializer(field).data
-            data["placeholder"] = field.get_placeholder(
-                context_prompt, self.get_pending_user(), self.request
-            )
+            if field.type in BOOLEAN_FIELDSET_FIELD_TYPES:
+                # Placeholder (from the client perspective) is meaningless in
+                # the context of boolean fieldsets as they share the same
+                # field_key and only accept the UUID of one of the fields in
+                # the group as a valid value.
+                data["placeholder"] = str(field.prompt_uuid)
+            else:
+                data["placeholder"] = field.get_placeholder(
+                    context_prompt, self.get_pending_user(), self.request
+                )
             serializers.append(data)
         challenge = PromptChallenge(
             data={
