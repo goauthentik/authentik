@@ -58,6 +58,7 @@ class FieldTypes(models.TextChoices):
     )
     NUMBER = "number"
     CHECKBOX = "checkbox"
+    RADIO_BUTTON = "radio-button"
     DATE = "date"
     DATE_TIME = "date-time"
 

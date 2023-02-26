@@ -23284,6 +23284,7 @@ paths:
           - hidden
           - number
           - password
+          - radio-button
           - separator
           - static
           - text
@@ -35743,6 +35744,7 @@ components:
       - password
       - number
       - checkbox
+      - radio-button
       - date
       - date-time
       - file
