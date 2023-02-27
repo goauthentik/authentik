@@ -6,7 +6,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { t } from "@lingui/macro";
 
-import { TemplateResult, html } from "lit";
+import { html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -86,10 +86,16 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ${t`Checkbox`}
             </option>
             <option
-                value=${PromptTypeEnum.RadioButton}
-                ?selected=${this.instance?.type === PromptTypeEnum.RadioButton}
+                value=${PromptTypeEnum.RadioButtonGroup}
+                ?selected=${this.instance?.type === PromptTypeEnum.RadioButtonGroup}
             >
-                ${t`Radio Button`}
+                ${t`Radio Button Group (fixed choice)`}
+            </option>
+            <option
+                value=${PromptTypeEnum.Dropdown}
+                ?selected=${this.instance?.type === PromptTypeEnum.Dropdown}
+            >
+                ${t`Dropdown (fixed choice)`}
             </option>
             <option
                 value=${PromptTypeEnum.Date}
@@ -216,7 +222,11 @@ export class PromptForm extends ModelForm<Prompt, string> {
             <ak-form-element-horizontal label=${t`Placeholder`} name="placeholder">
                 <ak-codemirror mode="python" value="${ifDefined(this.instance?.placeholder)}">
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">${t`Optionally pre-fill the input value`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`Optionally pre-fill the input value.
+                    When creating a "Radio Button Group" or "Dropdown", enable interpreting as
+                    expression and return a list to return multiple choices.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Help text`} name="subText">
                 <ak-codemirror mode="htmlmixed" value="${ifDefined(this.instance?.subText)}">

@@ -59,7 +59,8 @@ class FieldTypes(models.TextChoices):
     )
     NUMBER = "number"
     CHECKBOX = "checkbox"
-    RADIO_BUTTON = "radio-button"
+    RADIO_BUTTON_GROUP = "radio-button-group"
+    DROPDOWN = "dropdown"
     DATE = "date"
     DATE_TIME = "date-time"
 
@@ -78,7 +79,7 @@ class FieldTypes(models.TextChoices):
     AK_LOCALE = "ak-locale", _("authentik: Selection of locales authentik supports")
 
 
-BOOLEAN_FIELDSET_FIELD_TYPES = (FieldTypes.RADIO_BUTTON,)
+CHOICE_FIELDS = (FieldTypes.RADIO_BUTTON_GROUP, FieldTypes.DROPDOWN)
 
 
 class InlineFileField(CharField):
@@ -107,7 +108,13 @@ class Prompt(SerializerModel):
     label = models.TextField()
     type = models.CharField(max_length=100, choices=FieldTypes.choices)
     required = models.BooleanField(default=True)
-    placeholder = models.TextField(blank=True)
+    placeholder = models.TextField(
+        blank=True,
+        help_text=_(
+            "When creating a Radio Button Group or Dropdown, enable interpreting as "
+            "expression and return a list to return multiple choices."
+        ),
+    )
     sub_text = models.TextField(blank=True, default="")
 
     order = models.IntegerField(default=0)
@@ -120,8 +127,46 @@ class Prompt(SerializerModel):
 
         return PromptSerializer
 
+    def get_choices(
+        self, prompt_context: dict, user: User, request: HttpRequest
+    ) -> Optional[tuple[dict[str, Any]]]:
+        """Get fully interpolated list of choices"""
+        if self.type not in CHOICE_FIELDS:
+            return None
+
+        raw_choices = self.placeholder
+
+        if self.field_key in prompt_context:
+            raw_choices = prompt_context[self.field_key]
+        elif self.placeholder_expression:
+            evaluator = PropertyMappingEvaluator(self, user, request, prompt_context=prompt_context)
+            try:
+                raw_choices = evaluator.evaluate(self.placeholder)
+            except Exception as exc:  # pylint:disable=broad-except
+                LOGGER.warning(
+                    "failed to evaluate prompt choices",
+                    exc=PropertyMappingExpressionException(str(exc)),
+                )
+
+        if isinstance(raw_choices, (list, tuple)):
+            choices = raw_choices
+        else:
+            choices = [raw_choices]
+
+        if not len(choices):
+            LOGGER.warning("failed to get prompt choices", choices=choices, input=raw_choices)
+
+        return tuple(choices)
+
     def get_placeholder(self, prompt_context: dict, user: User, request: HttpRequest) -> str:
         """Get fully interpolated placeholder"""
+        if self.type in CHOICE_FIELDS:
+            # Make sure to return a valid choice as placeholder
+            choices = self.get_choices(prompt_context, user, request)
+            if choices:
+                return choices[0]
+            return ""
+
         if self.field_key in prompt_context:
             # We don't want to parse this as an expression since a user will
             # be able to control the input
@@ -138,8 +183,8 @@ class Prompt(SerializerModel):
                 )
         return self.placeholder
 
-    def field(self, default: Optional[Any]) -> CharField:
-        """Get field type for Challenge and response"""
+    def field(self, default: Optional[Any], choices: Optional[list[Any]] = None) -> CharField:
+        """Get field type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""
         field_class = CharField
         kwargs = {
             "required": self.required,
@@ -159,18 +204,9 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.CHECKBOX:
             field_class = BooleanField
             kwargs["required"] = False
-        if self.type in BOOLEAN_FIELDSET_FIELD_TYPES:
-            # Only allow UUIDs of other fields with the same field_key and type to be set.
-            # Used to validate the boolean fieldsets.
+        if self.type in CHOICE_FIELDS:
             field_class = ChoiceField
-            kwargs["choices"] = [
-                str(prompt.prompt_uuid)
-                for prompt in Prompt.objects.filter(
-                    type=self.type,
-                    field_key=self.field_key,
-                )
-            ]
-            kwargs["required"] = True
+            kwargs["choices"] = choices or []
         if self.type == FieldTypes.DATE:
             field_class = DateField
         if self.type == FieldTypes.DATE_TIME:

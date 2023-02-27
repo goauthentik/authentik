@@ -6,7 +6,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html, TemplateResult } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -23,7 +23,7 @@ import {
     PromptChallenge,
     PromptChallengeResponseRequest,
     PromptTypeEnum,
-    StagePrompt,
+    StagePrompt
 } from "@goauthentik/api";
 
 @customElement("ak-stage-prompt")
@@ -114,6 +114,38 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     ?required=${prompt.required}>`;
             case PromptTypeEnum.Static:
                 return `<p>${prompt.placeholder}</p>`;
+            case PromptTypeEnum.Dropdown:
+                return `<select class="pf-c-form-control" name="${prompt.fieldKey}">
+                    ${prompt.choices
+                        ?.map((choice) => {
+                            return `<option
+                            value=${choice}
+                            ${prompt.placeholder === choice ? "selected" : ""}
+                        >
+                            ${choice}
+                        </option>`;
+                        })
+                        .join("")}
+                </select>`;
+            case PromptTypeEnum.RadioButtonGroup:
+                return (
+                    prompt.choices
+                        ?.map((choice) => {
+                            return ` <div class="pf-c-check">
+                                    <input
+                                        type="radio"
+                                        class="pf-c-check__input"
+                                        name="${prompt.fieldKey}"
+                                        checked="${prompt.placeholder === choice}"
+                                        required="${prompt.required}"
+                                        value="${choice}"
+                                    />
+                                    <label class="pf-c-check__label">${choice}</label>
+                                </div>
+                            `;
+                        })
+                        .join("") || ``
+                );
             case PromptTypeEnum.AkLocale:
                 return `<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     <option value="" ${prompt.placeholder === "" ? "selected" : ""}>
@@ -167,20 +199,6 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 ${prompt.required
                     ? html`<p class="pf-c-form__helper-text">${t`Required.`}</p>`
                     : html``}
-                <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
-            </div>`;
-        }
-        if (prompt.type === PromptTypeEnum.RadioButton) {
-            return html` <div class="pf-c-check">
-                <input
-                    type="radio"
-                    class="pf-c-check__input"
-                    name="${prompt.fieldKey}"
-                    ?checked=${false}
-                    ?required=${true}
-                    value="${prompt.placeholder}"
-                />
-                <label class="pf-c-check__label">${prompt.label}</label>
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }

@@ -7,7 +7,14 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField, empty
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    IntegerField,
+    ListField,
+    empty,
+)
 from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import PassiveSerializer
@@ -17,12 +24,7 @@ from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyBindingModel, PolicyEngineMode
-from authentik.stages.prompt.models import (
-    BOOLEAN_FIELDSET_FIELD_TYPES,
-    FieldTypes,
-    Prompt,
-    PromptStage,
-)
+from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.prompt.signals import password_validate
 
 PLAN_CONTEXT_PROMPT = "prompt_data"
@@ -38,6 +40,7 @@ class StagePromptSerializer(PassiveSerializer):
     placeholder = CharField(allow_blank=True)
     order = IntegerField()
     sub_text = CharField(allow_blank=True)
+    choices = ListField(child=CharField(allow_blank=True), allow_empty=True, allow_null=True)
 
 
 class PromptChallenge(Challenge):
@@ -70,14 +73,13 @@ class PromptChallengeResponse(ChallengeResponse):
         fields = list(self.stage_instance.fields.all())
         for field in fields:
             field: Prompt
-            # Fieldsets placeholders are handled in validate()
-            if field.type in BOOLEAN_FIELDSET_FIELD_TYPES:
-                current = None
-            else:
-                current = field.get_placeholder(
-                    plan.context.get(PLAN_CONTEXT_PROMPT, {}), self.user, self.request
-                )
-            self.fields[field.field_key] = field.field(current)
+            choices = field.get_choices(
+                plan.context.get(PLAN_CONTEXT_PROMPT, {}), self.user, self.request
+            )
+            current = field.get_placeholder(
+                plan.context.get(PLAN_CONTEXT_PROMPT, {}), self.user, self.request
+            )
+            self.fields[field.field_key] = field.field(current, choices)
             # Special handling for fields with username type
             # these check for existing users with the same username
             if field.type == FieldTypes.USERNAME:
@@ -117,17 +119,6 @@ class PromptChallengeResponse(ChallengeResponse):
             if default == empty:
                 default = ""
             attrs[static_hidden.field_key] = default
-
-        # Get the selected value of each boolean fieldset
-        fieldsets: QuerySet[Prompt] = self.stage_instance.fields.filter(
-            type__in=BOOLEAN_FIELDSET_FIELD_TYPES
-        )
-        fieldset_groups = fieldsets.values_list("field_key", flat=True).distinct()
-        for group in fieldset_groups:
-            field: Prompt = fieldsets.get(field_key=group, prompt_uuid=attrs[group])
-            attrs[group] = field.get_placeholder(
-                self.plan.context.get(PLAN_CONTEXT_PROMPT, {}), self.user, self.request
-            )
 
         # Check if we have two password fields, and make sure they are the same
         password_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
@@ -200,16 +191,12 @@ class PromptStageView(ChallengeStageView):
         context_prompt = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
         for field in fields:
             data = StagePromptSerializer(field).data
-            if field.type in BOOLEAN_FIELDSET_FIELD_TYPES:
-                # Placeholder (from the client perspective) is meaningless in
-                # the context of boolean fieldsets as they share the same
-                # field_key and only accept the UUID of one of the fields in
-                # the group as a valid value.
-                data["placeholder"] = str(field.prompt_uuid)
-            else:
-                data["placeholder"] = field.get_placeholder(
-                    context_prompt, self.get_pending_user(), self.request
-                )
+            data["choices"] = field.get_choices(
+                context_prompt, self.get_pending_user(), self.request
+            )
+            data["placeholder"] = field.get_placeholder(
+                context_prompt, self.get_pending_user(), self.request
+            )
             serializers.append(data)
         challenge = PromptChallenge(
             data={

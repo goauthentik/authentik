@@ -23279,12 +23279,13 @@ paths:
           - checkbox
           - date
           - date-time
+          - dropdown
           - email
           - file
           - hidden
           - number
           - password
-          - radio-button
+          - radio-button-group
           - separator
           - static
           - text
@@ -34553,6 +34554,8 @@ components:
           type: boolean
         placeholder:
           type: string
+          description: When creating a Radio Button Group or Dropdown, enable interpreting
+            as expression and return a list to return multiple choices.
         order:
           type: integer
           maximum: 2147483647
@@ -35576,6 +35579,8 @@ components:
           type: boolean
         placeholder:
           type: string
+          description: When creating a Radio Button Group or Dropdown, enable interpreting
+            as expression and return a list to return multiple choices.
         order:
           type: integer
           maximum: 2147483647
@@ -35649,6 +35654,8 @@ components:
           type: boolean
         placeholder:
           type: string
+          description: When creating a Radio Button Group or Dropdown, enable interpreting
+            as expression and return a list to return multiple choices.
         order:
           type: integer
           maximum: 2147483647
@@ -35744,7 +35751,8 @@ components:
       - password
       - number
       - checkbox
-      - radio-button
+      - radio-button-group
+      - dropdown
       - date
       - date-time
       - file
@@ -37295,7 +37303,13 @@ components:
           type: integer
         sub_text:
           type: string
+        choices:
+          type: array
+          items:
+            type: string
+          nullable: true
       required:
+      - choices
       - field_key
       - label
       - order
