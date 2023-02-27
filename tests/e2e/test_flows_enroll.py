@@ -45,8 +45,10 @@ class TestFlowsEnroll(SeleniumTestCase):
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
         # Attach enrollment flow to identification stage
-        ident_stage: IdentificationStage = IdentificationStage.objects.first()
-        ident_stage.enrollment_flow = Flow.objects.filter(slug="default-enrollment-flow").first()
+        ident_stage: IdentificationStage = IdentificationStage.objects.get(
+            name="default-authentication-identification"
+        )
+        ident_stage.enrollment_flow = Flow.objects.get(slug="default-enrollment-flow")
         ident_stage.save()
 
         self.driver.get(self.live_server_url)
@@ -76,8 +78,10 @@ class TestFlowsEnroll(SeleniumTestCase):
     def test_enroll_email(self):
         """Test enroll with Email verification"""
         # Attach enrollment flow to identification stage
-        ident_stage: IdentificationStage = IdentificationStage.objects.first()
-        ident_stage.enrollment_flow = Flow.objects.filter(slug="default-enrollment-flow").first()
+        ident_stage: IdentificationStage = IdentificationStage.objects.get(
+            name="default-authentication-identification"
+        )
+        ident_stage.enrollment_flow = Flow.objects.get(slug="default-enrollment-flow")
         ident_stage.save()
 
         self.driver.get(self.live_server_url)
