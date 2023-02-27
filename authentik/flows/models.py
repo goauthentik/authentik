@@ -211,14 +211,11 @@ class FlowStageBinding(SerializerModel, PolicyBindingModel):
     stage = InheritanceForeignKey(Stage, on_delete=models.CASCADE)
 
     evaluate_on_plan = models.BooleanField(
-        default=True,
-        help_text=_(
-            "Evaluate policies during the Flow planning process. "
-            "Disable this for input-based policies."
-        ),
+        default=False,
+        help_text=_("Evaluate policies during the Flow planning process."),
     )
     re_evaluate_policies = models.BooleanField(
-        default=False,
+        default=True,
         help_text=_("Evaluate policies when the Stage is present to the user."),
     )
 
