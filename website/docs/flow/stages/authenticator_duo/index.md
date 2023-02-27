@@ -17,7 +17,7 @@ Due to the way the Duo API works, authentik can only automatically import existi
 :::
 
 :::info
-This requires authentk 2022.9
+This requires authentik 2022.9
 :::
 
 To import a device, open the Stages list in the authentik Admin interface. On the right next to the import button you'll see an import button, with which you can import Duo devices to authentik users.
