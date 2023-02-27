@@ -84,7 +84,7 @@
         "@sentry/browser": "^7.38.0",
         "@sentry/tracing": "^7.38.0",
         "@squoosh/cli": "^0.7.3",
-        "@trivago/prettier-plugin-sort-imports": "^4.1.0",
+        "@trivago/prettier-plugin-sort-imports": "^4.1.1",
         "@types/chart.js": "^2.9.37",
         "@types/codemirror": "5.60.7",
         "@types/grecaptcha": "^3.0.4",
