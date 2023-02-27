@@ -4,6 +4,7 @@ from time import sleep
 from typing import Any, Optional
 from unittest.case import skipUnless
 
+from django.test import override_settings
 from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
@@ -11,14 +12,6 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
-from authentik.core.tests.utils import create_test_flow
-from authentik.flows.models import FlowDesignation, FlowStageBinding
-from authentik.lib.generators import generate_id
-from authentik.stages.email.models import EmailStage, EmailTemplates
-from authentik.stages.identification.models import IdentificationStage
-from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
-from authentik.stages.user_login.models import UserLoginStage
-from authentik.stages.user_write.models import UserWriteStage
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -44,61 +37,11 @@ class TestFlowsEnroll(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
+    @apply_blueprint(
+        "example/flows-enrollment-2-stage.yaml",
+    )
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
-        # First stage fields
-        username_prompt = Prompt.objects.create(
-            name=generate_id(),
-            field_key="username",
-            label="Username",
-            order=0,
-            type=FieldTypes.TEXT,
-        )
-        password = Prompt.objects.create(
-            name=generate_id(),
-            field_key="password",
-            label="Password",
-            order=1,
-            type=FieldTypes.PASSWORD,
-        )
-        password_repeat = Prompt.objects.create(
-            name=generate_id(),
-            field_key="password_repeat",
-            label="Password (repeat)",
-            order=2,
-            type=FieldTypes.PASSWORD,
-        )
-
-        # Second stage fields
-        name_field = Prompt.objects.create(
-            name=generate_id(), field_key="name", label="Name", order=0, type=FieldTypes.TEXT
-        )
-        email = Prompt.objects.create(
-            name=generate_id(), field_key="email", label="E-Mail", order=1, type=FieldTypes.EMAIL
-        )
-
-        # Stages
-        first_stage = PromptStage.objects.create(name=generate_id())
-        first_stage.fields.set([username_prompt, password, password_repeat])
-        first_stage.save()
-        second_stage = PromptStage.objects.create(name=generate_id())
-        second_stage.fields.set([name_field, email])
-        second_stage.save()
-        user_write = UserWriteStage.objects.create(name=generate_id())
-        user_login = UserLoginStage.objects.create(name=generate_id())
-
-        flow = create_test_flow(FlowDesignation.ENROLLMENT)
-
-        # Attach enrollment flow to identification stage
-        ident_stage: IdentificationStage = IdentificationStage.objects.first()
-        ident_stage.enrollment_flow = flow
-        ident_stage.save()
-
-        FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)
-        FlowStageBinding.objects.create(target=flow, stage=second_stage, order=1)
-        FlowStageBinding.objects.create(target=flow, stage=user_write, order=2)
-        FlowStageBinding.objects.create(target=flow, stage=user_login, order=3)
-
         self.driver.get(self.live_server_url)
 
         self.initial_stages()
@@ -119,68 +62,12 @@ class TestFlowsEnroll(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
+    @apply_blueprint(
+        "example/flows-enrollment-email-verification.yaml",
+    )
+    @override_settings(EMAIL_PORT=1025)
     def test_enroll_email(self):
         """Test enroll with Email verification"""
-        # First stage fields
-        username_prompt = Prompt.objects.create(
-            name=generate_id(),
-            field_key="username",
-            label="Username",
-            order=0,
-            type=FieldTypes.TEXT,
-        )
-        password = Prompt.objects.create(
-            name=generate_id(),
-            field_key="password",
-            label="Password",
-            order=1,
-            type=FieldTypes.PASSWORD,
-        )
-        password_repeat = Prompt.objects.create(
-            name=generate_id(),
-            field_key="password_repeat",
-            label="Password (repeat)",
-            order=2,
-            type=FieldTypes.PASSWORD,
-        )
-
-        # Second stage fields
-        name_field = Prompt.objects.create(
-            name=generate_id(), field_key="name", label="Name", order=0, type=FieldTypes.TEXT
-        )
-        email = Prompt.objects.create(
-            name=generate_id(), field_key="email", label="E-Mail", order=1, type=FieldTypes.EMAIL
-        )
-
-        # Stages
-        first_stage = PromptStage.objects.create(name=generate_id())
-        first_stage.fields.set([username_prompt, password, password_repeat])
-        first_stage.save()
-        second_stage = PromptStage.objects.create(name=generate_id())
-        second_stage.fields.set([name_field, email])
-        second_stage.save()
-        email_stage = EmailStage.objects.create(
-            name=generate_id(),
-            host="localhost",
-            port=1025,
-            template=EmailTemplates.ACCOUNT_CONFIRM,
-        )
-        user_write = UserWriteStage.objects.create(name=generate_id())
-        user_login = UserLoginStage.objects.create(name=generate_id())
-
-        flow = create_test_flow(FlowDesignation.ENROLLMENT)
-
-        # Attach enrollment flow to identification stage
-        ident_stage: IdentificationStage = IdentificationStage.objects.first()
-        ident_stage.enrollment_flow = flow
-        ident_stage.save()
-
-        FlowStageBinding.objects.create(target=flow, stage=first_stage, order=0)
-        FlowStageBinding.objects.create(target=flow, stage=second_stage, order=1)
-        FlowStageBinding.objects.create(target=flow, stage=user_write, order=2)
-        FlowStageBinding.objects.create(target=flow, stage=email_stage, order=3)
-        FlowStageBinding.objects.create(target=flow, stage=user_login, order=4)
-
         self.driver.get(self.live_server_url)
         self.initial_stages()
 

@@ -43,7 +43,7 @@ entries:
     model: authentik_policies_expression.expressionpolicy
     attrs:
       expression: |
-        return request.context.get('is_restored', False)
+        return bool(request.context.get('is_restored', True))
   - identifiers:
       name: default-recovery-email
     id: default-recovery-email
