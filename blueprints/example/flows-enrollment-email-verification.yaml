@@ -79,15 +79,6 @@ entries:
     model: authentik_stages_email.emailstage
     attrs:
       use_global_settings: true
-      host: localhost
-      port: 25
-      username: ""
-      use_tls: false
-      use_ssl: false
-      timeout: 10
-      from_address: system@authentik.local
-      token_expiry: 30
-      subject: authentik
       template: email/account_confirmation.html
       activate_user_on_success: true
   - identifiers:
