@@ -12,6 +12,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
+from authentik.flows.models import Flow
+from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
@@ -42,6 +44,11 @@ class TestFlowsEnroll(SeleniumTestCase):
     )
     def test_enroll_2_step(self):
         """Test 2-step enroll flow"""
+        # Attach enrollment flow to identification stage
+        ident_stage: IdentificationStage = IdentificationStage.objects.first()
+        ident_stage.enrollment_flow = Flow.objects.filter(slug="default-enrollment-flow").first()
+        ident_stage.save()
+
         self.driver.get(self.live_server_url)
 
         self.initial_stages()
@@ -68,6 +75,11 @@ class TestFlowsEnroll(SeleniumTestCase):
     @override_settings(EMAIL_PORT=1025)
     def test_enroll_email(self):
         """Test enroll with Email verification"""
+        # Attach enrollment flow to identification stage
+        ident_stage: IdentificationStage = IdentificationStage.objects.first()
+        ident_stage.enrollment_flow = Flow.objects.filter(slug="default-enrollment-flow").first()
+        ident_stage.save()
+
         self.driver.get(self.live_server_url)
         self.initial_stages()
 
