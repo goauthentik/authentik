@@ -1,11 +1,7 @@
 """Test recovery flow"""
-from sys import platform
 from time import sleep
-from typing import Any, Optional
-from unittest.case import skipUnless
 
 from django.test import override_settings
-from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -19,22 +15,8 @@ from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestFlowsRecovery(SeleniumTestCase):
     """Test Recovery flow"""
-
-    def get_container_specs(self) -> Optional[dict[str, Any]]:
-        return {
-            "image": "mailhog/mailhog:v1.0.1",
-            "detach": True,
-            "network_mode": "host",
-            "auto_remove": True,
-            "healthcheck": Healthcheck(
-                test=["CMD", "wget", "--spider", "http://localhost:8025"],
-                interval=5 * 100 * 1000000,
-                start_period=1 * 100 * 1000000,
-            ),
-        }
 
     def initial_stages(self, user: User):
         """Fill out initial stages"""
