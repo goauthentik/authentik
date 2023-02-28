@@ -2,8 +2,17 @@ version: '3.7'
 
 services:
   chrome:
-    image: selenium/standalone-chrome:103.0-chromedriver-103.0
+    image: selenium/standalone-chrome:110.0
     volumes:
       - /dev/shm:/dev/shm
     network_mode: host
     restart: always
+  mailhog:
+    image: mailhog/mailhog:v1.0.1
+    ports:
+      - 1025:1025
+      - 8025:8025
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8025"]
+      interval: 5s
+      start_period: 1s

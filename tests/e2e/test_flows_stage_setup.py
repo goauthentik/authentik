@@ -1,7 +1,4 @@
 """test stage setup flows (password change)"""
-from sys import platform
-from unittest.case import skipUnless
-
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
@@ -13,7 +10,6 @@ from authentik.stages.password.models import PasswordStage
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestFlowsStageSetup(SeleniumTestCase):
     """test stage setup flows"""
 
