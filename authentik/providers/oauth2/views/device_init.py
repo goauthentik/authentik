@@ -10,6 +10,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import ChallengeStageView
@@ -57,19 +58,23 @@ def validate_code(code: int, request: HttpRequest) -> Optional[HttpResponse]:
     scope_descriptions = UserInfoView().get_scope_descriptions(token.scope)
     planner = FlowPlanner(token.provider.authorization_flow)
     planner.allow_empty_flows = True
-    plan = planner.plan(
-        request,
-        {
-            PLAN_CONTEXT_SSO: True,
-            PLAN_CONTEXT_APPLICATION: app,
-            # OAuth2 related params
-            PLAN_CONTEXT_DEVICE: token,
-            # Consent related params
-            PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
-            % {"application": app.name},
-            PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
-        },
-    )
+    try:
+        plan = planner.plan(
+            request,
+            {
+                PLAN_CONTEXT_SSO: True,
+                PLAN_CONTEXT_APPLICATION: app,
+                # OAuth2 related params
+                PLAN_CONTEXT_DEVICE: token,
+                # Consent related params
+                PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
+                % {"application": app.name},
+                PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
+            },
+        )
+    except FlowNonApplicableException:
+        LOGGER.warning("Flow not applicable to user")
+        return None
     plan.insert_stage(in_memory_stage(OAuthDeviceCodeFinishStage))
     request.session[SESSION_KEY_PLAN] = plan
     return redirect_with_qs(
@@ -97,7 +102,11 @@ class DeviceEntryView(View):
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(device_flow)
         planner.allow_empty_flows = True
-        plan = planner.plan(self.request)
+        try:
+            plan = planner.plan(self.request)
+        except FlowNonApplicableException:
+            LOGGER.warning("Flow not applicable to user")
+            return HttpResponse(status=404)
         plan.append_stage(in_memory_stage(OAuthDeviceCodeStage))
 
         self.request.session[SESSION_KEY_PLAN] = plan

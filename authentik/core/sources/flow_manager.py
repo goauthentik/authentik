@@ -246,7 +246,10 @@ class SourceFlowManager:
             )
         # We run the Flow planner here so we can pass the Pending user in the context
         planner = FlowPlanner(flow)
-        plan = planner.plan(self.request, kwargs)
+        try:
+            plan = planner.plan(self.request, kwargs)
+        except FlowNonApplicableException:
+            return bad_request_message(self.request, _("Flow not applicable to user."))
         for stage in self.get_stages_to_append(flow):
             plan.append_stage(stage)
         if stages:

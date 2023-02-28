@@ -13,9 +13,9 @@ from authentik.flows.markers import StageMarker
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN
 from authentik.stages.email.models import EmailStage
-from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE, QS_KEY_TOKEN
+from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE
 
 
 class TestEmailStage(FlowTestCase):

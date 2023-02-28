@@ -561,9 +561,13 @@ class ConfigureFlowInitView(LoginRequiredMixin, View):
             LOGGER.debug("Stage has no configure_flow set", stage=stage)
             raise Http404
 
-        plan = FlowPlanner(stage.configure_flow).plan(
-            request, {PLAN_CONTEXT_PENDING_USER: request.user}
-        )
+        try:
+            plan = FlowPlanner(stage.configure_flow).plan(
+                request, {PLAN_CONTEXT_PENDING_USER: request.user}
+            )
+        except FlowNonApplicableException:
+            LOGGER.warning("Flow not applicable to user")
+            raise Http404
         request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
             "authentik_core:if-flow",

@@ -11,6 +11,7 @@ from authentik.flows.challenge import (
     HttpChallengeResponse,
     RedirectChallenge,
 )
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import ChallengeStageView
@@ -41,15 +42,18 @@ class RedirectToAppLaunch(View):
         flow = tenant.flow_authentication
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
-        plan = planner.plan(
-            request,
-            {
-                PLAN_CONTEXT_APPLICATION: app,
-                PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
-                % {"application": app.name},
-                PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
-            },
-        )
+        try:
+            plan = planner.plan(
+                request,
+                {
+                    PLAN_CONTEXT_APPLICATION: app,
+                    PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
+                    % {"application": app.name},
+                    PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
+                },
+            )
+        except FlowNonApplicableException:
+            raise Http404
         plan.insert_stage(in_memory_stage(RedirectToAppStage))
         request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)

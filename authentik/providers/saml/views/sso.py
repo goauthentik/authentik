@@ -1,7 +1,7 @@
 """authentik SAML IDP Views"""
 from typing import Optional
 
-from django.http import HttpRequest, HttpResponse
+from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
@@ -11,6 +11,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.views.executor import SESSION_KEY_PLAN, SESSION_KEY_POST
@@ -60,16 +61,19 @@ class SAMLSSOView(PolicyAccessView):
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
-        plan = planner.plan(
-            request,
-            {
-                PLAN_CONTEXT_SSO: True,
-                PLAN_CONTEXT_APPLICATION: self.application,
-                PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
-                % {"application": self.application.name},
-                PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
-            },
-        )
+        try:
+            plan = planner.plan(
+                request,
+                {
+                    PLAN_CONTEXT_SSO: True,
+                    PLAN_CONTEXT_APPLICATION: self.application,
+                    PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
+                    % {"application": self.application.name},
+                    PLAN_CONTEXT_CONSENT_PERMISSIONS: [],
+                },
+            )
+        except FlowNonApplicableException:
+            raise Http404
         plan.append_stage(in_memory_stage(SAMLFlowFinalView))
         request.session[SESSION_KEY_PLAN] = plan
         return redirect_with_qs(
