@@ -91,6 +91,19 @@ class TestPromptStage(FlowTestCase):
             required=True,
             placeholder="static",
         )
+        radio_button_group = Prompt.objects.create(
+            name=generate_id(),
+            field_key="radio_button_group",
+            type=FieldTypes.RADIO_BUTTON_GROUP,
+            required=True,
+            placeholder="test",
+        )
+        dropdown = Prompt.objects.create(
+            name=generate_id(),
+            field_key="dropdown",
+            type=FieldTypes.DROPDOWN,
+            required=True,
+        )
         self.stage = PromptStage.objects.create(name="prompt-stage")
         self.stage.fields.set(
             [
@@ -102,6 +115,8 @@ class TestPromptStage(FlowTestCase):
                 number_prompt,
                 hidden_prompt,
                 static_prompt,
+                radio_button_group,
+                dropdown,
             ]
         )
 
@@ -114,6 +129,8 @@ class TestPromptStage(FlowTestCase):
             number_prompt.field_key: 3,
             hidden_prompt.field_key: hidden_prompt.placeholder,
             static_prompt.field_key: static_prompt.placeholder,
+            radio_button_group.field_key: radio_button_group.placeholder,
+            dropdown.field_key: "",
         }
 
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
@@ -251,6 +268,34 @@ class TestPromptStage(FlowTestCase):
             {"username_prompt": [ErrorDetail(string="Username is already taken.", code="invalid")]},
         )
 
+    def test_invalid_choice_field(self):
+        """Test invalid choice field value"""
+        user = create_test_admin_user()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        self.prompt_data["radio_button_group"] = "some invalid choice"
+        self.prompt_data["dropdown"] = "another invalid choice"
+        challenge_response = PromptChallengeResponse(
+            None, stage_instance=self.stage, plan=plan, data=self.prompt_data, stage=self.stage_view
+        )
+        self.assertEqual(challenge_response.is_valid(), False)
+        self.assertEqual(
+            challenge_response.errors,
+            {
+                "radio_button_group": [
+                    ErrorDetail(
+                        string=f"\"{self.prompt_data['radio_button_group']}\" is not a valid choice.",
+                        code="invalid_choice",
+                    )
+                ],
+                "dropdown": [
+                    ErrorDetail(
+                        string=f"\"{self.prompt_data['dropdown']}\" is not a valid choice.",
+                        code="invalid_choice",
+                    )
+                ],
+            },
+        )
+
     def test_static_hidden_overwrite(self):
         """Test that static and hidden fields ignore any value sent to them"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -287,6 +332,87 @@ class TestPromptStage(FlowTestCase):
         )
         self.assertNotEqual(
             prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+
+    def test_choice_prompts_placeholders(self):
+        """Test placeholders and expression of choice fields"""
+        context = {"foo": generate_id()}
+
+        prompt: Prompt = Prompt(
+            field_key="fixed_choice_prompt_expression",
+            label="LABEL",
+            type=FieldTypes.RADIO_BUTTON_GROUP,
+            placeholder="return prompt_context['foo']",
+            placeholder_expression=True,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+        self.assertEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")), (context["foo"],)
+        )
+        context["fixed_choice_prompt_expression"] = generate_id()
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")),
+            context["fixed_choice_prompt_expression"],
+        )
+        self.assertEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")),
+            (context["fixed_choice_prompt_expression"],),
+        )
+        self.assertNotEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+        self.assertNotEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")), (context["foo"],)
+        )
+
+        del context["fixed_choice_prompt_expression"]
+
+        # Multi-choice
+        prompt: Prompt = Prompt(
+            field_key="fixed_choice_prompt_expression",
+            label="LABEL",
+            type=FieldTypes.DROPDOWN,
+            placeholder="return [prompt_context['foo'], True, 'text']",
+            placeholder_expression=True,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+        self.assertEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")),
+            (context["foo"], True, "text"),
+        )
+        context["fixed_choice_prompt_expression"] = tuple(["text", generate_id(), 2])
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")),
+            "text",
+        )
+        self.assertEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")),
+            context["fixed_choice_prompt_expression"],
+        )
+        self.assertNotEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), context["foo"]
+        )
+        self.assertNotEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")),
+            (context["foo"], True, "text"),
+        )
+
+    def test_choices_are_none_for_non_choice_fields(self):
+        """Test choices are None for non choice fields"""
+        context = {}
+        prompt: Prompt = Prompt(
+            field_key="text_prompt_expression",
+            label="TEXT_LABEL",
+            type=FieldTypes.TEXT,
+            placeholder="choice",
+        )
+        self.assertEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")),
+            None,
         )
 
     def test_prompt_placeholder_error(self):
