@@ -147,7 +147,6 @@ class FlowPlanner:
     ) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
-        self._check_authentication(request)
         with Hub.current.start_span(
             op="authentik.flow.planner.plan", description=self.flow.slug
         ) as span:
@@ -165,6 +164,12 @@ class FlowPlanner:
                 user = default_context[PLAN_CONTEXT_PENDING_USER]
             else:
                 user = request.user
+                # We only need to check the flow authentication if it's planned without a user
+                # in the context, as a user in the context can only be set via the explicit code API
+                # or if a flow is restarted due to `invalid_response_action` being set to
+                # `restart_with_context`, which can only happen if the user was already authorized
+                # to use the flow
+                self._check_authentication(request)
             # First off, check the flow's direct policy bindings
             # to make sure the user even has access to the flow
             engine = PolicyEngine(self.flow, user, request)
