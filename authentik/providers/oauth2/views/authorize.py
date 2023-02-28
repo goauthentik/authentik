@@ -24,6 +24,7 @@ from authentik.flows.challenge import (
     ChallengeTypes,
     HttpChallengeResponse,
 )
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import StageView
@@ -373,19 +374,22 @@ class AuthorizationFlowInitView(PolicyAccessView):
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True
-        plan = planner.plan(
-            self.request,
-            {
-                PLAN_CONTEXT_SSO: True,
-                PLAN_CONTEXT_APPLICATION: self.application,
-                # OAuth2 related params
-                PLAN_CONTEXT_PARAMS: self.params,
-                # Consent related params
-                PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
-                % {"application": self.application.name},
-                PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
-            },
-        )
+        try:
+            plan = planner.plan(
+                self.request,
+                {
+                    PLAN_CONTEXT_SSO: True,
+                    PLAN_CONTEXT_APPLICATION: self.application,
+                    # OAuth2 related params
+                    PLAN_CONTEXT_PARAMS: self.params,
+                    # Consent related params
+                    PLAN_CONTEXT_CONSENT_HEADER: _("You're about to sign into %(application)s.")
+                    % {"application": self.application.name},
+                    PLAN_CONTEXT_CONSENT_PERMISSIONS: scope_descriptions,
+                },
+            )
+        except FlowNonApplicableException:
+            return self.handle_no_permission_authenticated()
         # OpenID clients can specify a `prompt` parameter, and if its set to consent we
         # need to inject a consent stage
         if PROMPT_CONSENT in self.params.prompt:

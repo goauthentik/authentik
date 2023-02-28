@@ -18,13 +18,13 @@ def create_default_user(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
     db_alias = schema_editor.connection.alias
 
     akadmin, _ = User.objects.using(db_alias).get_or_create(
-        username="akadmin", email="root@localhost", name="authentik Default Admin"
+        username="akadmin",
+        email=environ.get("AUTHENTIK_BOOTSTRAP_EMAIL", "root@localhost"),
+        name="authentik Default Admin",
     )
     password = None
     if "TF_BUILD" in environ or settings.TEST:
         password = "akadmin"  # noqa # nosec
-    if "AK_ADMIN_PASS" in environ:
-        password = environ["AK_ADMIN_PASS"]
     if "AUTHENTIK_BOOTSTRAP_PASSWORD" in environ:
         password = environ["AUTHENTIK_BOOTSTRAP_PASSWORD"]
     if password:

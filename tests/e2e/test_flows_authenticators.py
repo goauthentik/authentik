@@ -1,8 +1,6 @@
 """test flow with otp stages"""
 from base64 import b32decode
-from sys import platform
 from time import sleep
-from unittest.case import skipUnless
 from urllib.parse import parse_qs, urlparse
 
 from django_otp.oath import TOTP
@@ -20,7 +18,6 @@ from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from tests.e2e.utils import SeleniumTestCase, retry
 
 
-@skipUnless(platform.startswith("linux"), "requires local docker")
 class TestFlowsAuthenticator(SeleniumTestCase):
     """test flow with otp stages"""
 

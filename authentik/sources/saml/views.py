@@ -22,6 +22,7 @@ from authentik.flows.challenge import (
     ChallengeResponse,
     ChallengeTypes,
 )
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import (
     PLAN_CONTEXT_REDIRECT,
@@ -87,7 +88,10 @@ class InitiateView(View):
         # We run the Flow planner here so we can pass the Pending user in the context
         planner = FlowPlanner(source.pre_authentication_flow)
         planner.allow_empty_flows = True
-        plan = planner.plan(self.request, kwargs)
+        try:
+            plan = planner.plan(self.request, kwargs)
+        except FlowNonApplicableException:
+            raise Http404
         for stage in stages_to_append:
             plan.append_stage(stage)
         self.request.session[SESSION_KEY_PLAN] = plan

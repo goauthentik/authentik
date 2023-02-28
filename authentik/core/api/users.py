@@ -68,6 +68,7 @@ from authentik.core.models import (
     User,
 )
 from authentik.events.models import EventAction
+from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
@@ -326,12 +327,16 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         user: User = self.get_object()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
-        plan = planner.plan(
-            self.request._request,
-            {
-                PLAN_CONTEXT_PENDING_USER: user,
-            },
-        )
+        try:
+            plan = planner.plan(
+                self.request._request,
+                {
+                    PLAN_CONTEXT_PENDING_USER: user,
+                },
+            )
+        except FlowNonApplicableException:
+            LOGGER.warning("Recovery flow not applicable to user")
+            return None, None
         token, __ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={

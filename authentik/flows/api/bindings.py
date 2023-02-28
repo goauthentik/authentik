@@ -1,4 +1,7 @@
 """Flow Binding API Views"""
+from typing import Any
+
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
@@ -11,6 +14,13 @@ class FlowStageBindingSerializer(ModelSerializer):
     """FlowStageBinding Serializer"""
 
     stage_obj = StageSerializer(read_only=True, source="stage")
+
+    def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
+        evaluate_on_plan = attrs.get("evaluate_on_plan", False)
+        re_evaluate_policies = attrs.get("re_evaluate_policies", True)
+        if not evaluate_on_plan and not re_evaluate_policies:
+            raise ValidationError("Either evaluation on plan or evaluation on run must be enabled")
+        return super().validate(attrs)
 
     class Meta:
         model = FlowStageBinding
