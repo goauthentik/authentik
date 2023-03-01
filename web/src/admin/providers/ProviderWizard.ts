@@ -36,6 +36,17 @@ export class InitialProviderWizardPage extends WizardPage {
     }
     sidebarLabel = () => t`Select type`;
 
+    activeCallback: () => Promise<void> = async () => {
+        this.host.isValid = false;
+        this.shadowRoot
+            ?.querySelectorAll<HTMLInputElement>("input[type=radio]")
+            .forEach((radio) => {
+                if (radio.checked) {
+                    this.host.isValid = true;
+                }
+            });
+    };
+
     renderHint(): TemplateResult {
         return html`<div class="pf-c-hint">
                 <div class="pf-c-hint__title">${t`Try the new application wizard`}</div>
@@ -56,7 +67,7 @@ export class InitialProviderWizardPage extends WizardPage {
     }
 
     render(): TemplateResult {
-        return html` <form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-c-form pf-m-horizontal">
             ${this.providerTypes.map((type) => {
                 return html`<div class="pf-c-radio">
                     <input

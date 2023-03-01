@@ -33,6 +33,17 @@ export class InitialSourceWizardPage extends WizardPage {
     }
     sidebarLabel = () => t`Select type`;
 
+    activeCallback: () => Promise<void> = async () => {
+        this.host.isValid = false;
+        this.shadowRoot
+            ?.querySelectorAll<HTMLInputElement>("input[type=radio]")
+            .forEach((radio) => {
+                if (radio.checked) {
+                    this.host.isValid = true;
+                }
+            });
+    };
+
     render(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             ${this.sourceTypes.map((type) => {
