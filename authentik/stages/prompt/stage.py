@@ -191,11 +191,15 @@ class PromptStageView(ChallengeStageView):
         context_prompt = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
         for field in fields:
             data = StagePromptSerializer(field).data
-            data["choices"] = field.get_choices(
-                context_prompt, self.get_pending_user(), self.request
-            )
-            data["placeholder"] = field.get_placeholder(
-                context_prompt, self.get_pending_user(), self.request
+            # Ensure all choices and placeholders are str, as otherwise further in
+            # we can fail serializer validation if we return some types such as bool
+            choices = field.get_choices(context_prompt, self.get_pending_user(), self.request)
+            if choices:
+                data["choices"] = [str(choice) for choice in choices]
+            else:
+                data["choices"] = None
+            data["placeholder"] = str(
+                field.get_placeholder(context_prompt, self.get_pending_user(), self.request)
             )
             serializers.append(data)
         challenge = PromptChallenge(

@@ -270,7 +270,6 @@ class TestPromptStage(FlowTestCase):
 
     def test_invalid_choice_field(self):
         """Test invalid choice field value"""
-        user = create_test_admin_user()
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
         self.prompt_data["radio_button_group"] = "some invalid choice"
         self.prompt_data["dropdown"] = "another invalid choice"
@@ -338,6 +337,40 @@ class TestPromptStage(FlowTestCase):
         """Test placeholders and expression of choice fields"""
         context = {"foo": generate_id()}
 
+        # No choices - unusable (in the sense it creates an unsubmittable form)
+        # but valid behaviour
+        prompt: Prompt = Prompt(
+            field_key="fixed_choice_prompt_expression",
+            label="LABEL",
+            type=FieldTypes.RADIO_BUTTON_GROUP,
+            placeholder="return []",
+            placeholder_expression=True,
+        )
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), ""
+        )
+        self.assertEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")), tuple()
+        )
+        context["fixed_choice_prompt_expression"] = generate_id()
+        self.assertEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")),
+            context["fixed_choice_prompt_expression"],
+        )
+        self.assertEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")),
+            (context["fixed_choice_prompt_expression"],),
+        )
+        self.assertNotEqual(
+            prompt.get_placeholder(context, self.user, self.factory.get("/")), ""
+        )
+        self.assertNotEqual(
+            prompt.get_choices(context, self.user, self.factory.get("/")), tuple()
+        )
+
+        del context["fixed_choice_prompt_expression"]
+
+        # Single choice
         prompt: Prompt = Prompt(
             field_key="fixed_choice_prompt_expression",
             label="LABEL",
@@ -369,7 +402,7 @@ class TestPromptStage(FlowTestCase):
 
         del context["fixed_choice_prompt_expression"]
 
-        # Multi-choice
+        # Multi choice
         prompt: Prompt = Prompt(
             field_key="fixed_choice_prompt_expression",
             label="LABEL",
