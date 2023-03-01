@@ -7,10 +7,9 @@ from django.core.mail.backends.smtp import EmailBackend as SMTPEmailBackend
 from django.urls import reverse
 from django.utils.http import urlencode
 
-from authentik.core.models import Token
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.markers import StageMarker
-from authentik.flows.models import FlowDesignation, FlowStageBinding
+from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN
@@ -134,7 +133,7 @@ class TestEmailStage(FlowTestCase):
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session.save()
-        token: Token = Token.objects.get(user=self.user)
+        token: FlowToken = FlowToken.objects.get(user=self.user)
 
         with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
             # Call the executor shell to preseed the session
@@ -165,3 +164,43 @@ class TestEmailStage(FlowTestCase):
             plan: FlowPlan = session[SESSION_KEY_PLAN]
             self.assertEqual(plan.context[PLAN_CONTEXT_PENDING_USER], self.user)
             self.assertTrue(plan.context[PLAN_CONTEXT_PENDING_USER].is_active)
+
+    def test_token_invalid_user(self):
+        """Test with token with invalid user"""
+        # Make sure token exists
+        self.test_pending_user()
+        self.user.is_active = False
+        self.user.save()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+        # Set flow token user to a different user
+        token: FlowToken = FlowToken.objects.get(user=self.user)
+        token.user = create_test_admin_user()
+        token.save()
+
+        with patch("authentik.flows.views.executor.FlowExecutorView.cancel", MagicMock()):
+            # Call the executor shell to preseed the session
+            url = reverse(
+                "authentik_api:flow-executor",
+                kwargs={"flow_slug": self.flow.slug},
+            )
+            url_query = urlencode(
+                {
+                    QS_KEY_TOKEN: token.key,
+                }
+            )
+            url += f"?query={url_query}"
+            self.client.get(url)
+
+            # Call the actual executor to get the JSON Response
+            response = self.client.get(
+                reverse(
+                    "authentik_api:flow-executor",
+                    kwargs={"flow_slug": self.flow.slug},
+                )
+            )
+
+            self.assertEqual(response.status_code, 200)
+            self.assertStageResponse(response, component="ak-stage-access-denied")
