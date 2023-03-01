@@ -2,7 +2,6 @@ import React from "react";
 import Layout from "@theme/Layout";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import { useColorMode } from "@docusaurus/theme-common";
-import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 import { useEffect } from "react";
 
 function JobBoardWrapper() {

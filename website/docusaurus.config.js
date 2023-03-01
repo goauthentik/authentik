@@ -24,25 +24,26 @@ module.exports = {
                 { to: "blog", label: "Blog", position: "left" },
                 {
                     to: "docs/",
-                    activeBasePath: "docs",
-                    label: "Documentation",
+                    label: "Docs",
                     position: "left",
                 },
                 {
                     to: "integrations/",
-                    activeBasePath: "integrations",
                     label: "Integrations",
                     position: "left",
                 },
                 {
                     to: "developer-docs/",
-                    activeBasePath: "developer-docs",
                     label: "Developer",
                     position: "left",
                 },
                 {
+                    to: "pricing/",
+                    label: "Pricing",
+                    position: "left",
+                },
+                {
                     to: "jobs/",
-                    activeBasePath: "jobs",
                     label: "Jobs",
                     position: "left",
                 },

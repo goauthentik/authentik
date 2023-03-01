@@ -74,3 +74,8 @@
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
+
+[dev]
+  command = "npm run watch"
+  targetPort = 3000
+  publish = "build"
