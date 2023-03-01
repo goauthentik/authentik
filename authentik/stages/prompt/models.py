@@ -59,8 +59,12 @@ class FieldTypes(models.TextChoices):
     )
     NUMBER = "number"
     CHECKBOX = "checkbox"
-    RADIO_BUTTON_GROUP = "radio-button-group"
-    DROPDOWN = "dropdown"
+    RADIO_BUTTON_GROUP = "radio-button-group", _(
+        "Fixed choice field rendered as a group of radio buttons."
+    )
+    DROPDOWN = "dropdown", _(
+        "Fixed choice field rendered as a dropdown."
+    )
     DATE = "date"
     DATE_TIME = "date-time"
 
