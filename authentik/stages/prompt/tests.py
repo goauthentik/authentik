@@ -282,7 +282,8 @@ class TestPromptStage(FlowTestCase):
             {
                 "radio_button_group": [
                     ErrorDetail(
-                        string=f"\"{self.prompt_data['radio_button_group']}\" is not a valid choice.",
+                        string=f"\"{self.prompt_data['radio_button_group']}\" "
+                        "is not a valid choice.",
                         code="invalid_choice",
                     )
                 ],
@@ -346,12 +347,8 @@ class TestPromptStage(FlowTestCase):
             placeholder="return []",
             placeholder_expression=True,
         )
-        self.assertEqual(
-            prompt.get_placeholder(context, self.user, self.factory.get("/")), ""
-        )
-        self.assertEqual(
-            prompt.get_choices(context, self.user, self.factory.get("/")), tuple()
-        )
+        self.assertEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
+        self.assertEqual(prompt.get_choices(context, self.user, self.factory.get("/")), tuple())
         context["fixed_choice_prompt_expression"] = generate_id()
         self.assertEqual(
             prompt.get_placeholder(context, self.user, self.factory.get("/")),
@@ -361,12 +358,8 @@ class TestPromptStage(FlowTestCase):
             prompt.get_choices(context, self.user, self.factory.get("/")),
             (context["fixed_choice_prompt_expression"],),
         )
-        self.assertNotEqual(
-            prompt.get_placeholder(context, self.user, self.factory.get("/")), ""
-        )
-        self.assertNotEqual(
-            prompt.get_choices(context, self.user, self.factory.get("/")), tuple()
-        )
+        self.assertNotEqual(prompt.get_placeholder(context, self.user, self.factory.get("/")), "")
+        self.assertNotEqual(prompt.get_choices(context, self.user, self.factory.get("/")), tuple())
 
         del context["fixed_choice_prompt_expression"]
 

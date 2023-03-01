@@ -6,7 +6,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { t } from "@lingui/macro";
 
-import { html, TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 

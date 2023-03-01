@@ -9,7 +9,7 @@ This stage is used to show the user arbitrary prompts.
 The prompt can be any of the following types:
 
 | Type               | Description                                                                                |
-| -----------------  | ------------------------------------------------------------------------------------------ |
+| ------------------ | ------------------------------------------------------------------------------------------ |
 | Text               | Arbitrary text. No client-side validation is done.                                         |
 | Text (Read only)   | Same as above, but cannot be edited.                                                       |
 | Username           | Same as text, except the username is validated to be unique.                               |

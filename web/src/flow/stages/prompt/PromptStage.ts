@@ -6,7 +6,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, html, TemplateResult } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -23,7 +23,7 @@ import {
     PromptChallenge,
     PromptChallengeResponseRequest,
     PromptTypeEnum,
-    StagePrompt
+    StagePrompt,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-prompt")
@@ -144,7 +144,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                                 </div>
                             `;
                         })
-                        .join("") || ``
+                        .join("") || ""
                 );
             case PromptTypeEnum.AkLocale:
                 return `<select class="pf-c-form-control" name="${prompt.fieldKey}">

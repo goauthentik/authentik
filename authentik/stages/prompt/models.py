@@ -157,7 +157,7 @@ class Prompt(SerializerModel):
         else:
             choices = [raw_choices]
 
-        if not len(choices):
+        if len(choices) == 0:
             LOGGER.warning("failed to get prompt choices", choices=choices, input=raw_choices)
 
         return tuple(choices)
