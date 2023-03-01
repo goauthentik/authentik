@@ -370,6 +370,37 @@ export class TenantForm extends ModelForm<Tenant, string> {
             <ak-form-group>
                 <span slot="header"> ${t`Other global settings`} </span>
                 <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${t`Web Certificate`} name="webCertificate">
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<CertificateKeyPair[]> => {
+                                const args: CryptoCertificatekeypairsListRequest = {
+                                    ordering: "name",
+                                    hasKey: true,
+                                    includeDetails: false,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const certificates = await new CryptoApi(
+                                    DEFAULT_CONFIG,
+                                ).cryptoCertificatekeypairsList(args);
+                                return certificates.results;
+                            }}
+                            .renderElement=${(item: CertificateKeyPair): string => {
+                                return item.name;
+                            }}
+                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: CertificateKeyPair): boolean => {
+                                return item.pk === this.instance?.webCertificate;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Event retention`}
                         ?required=${true}
@@ -403,37 +434,6 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <p class="pf-c-form__helper-text">
                             ${t`Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant.`}
                         </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Web Certificate`} name="webCertificate">
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.webCertificate;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

@@ -268,7 +268,10 @@ export class SearchSelect<T> extends AKElement {
                         @blur=${(ev: FocusEvent) => {
                             // For Safari, we get the <ul> element itself here when clicking on one of
                             // it's buttons, as the container has tabindex set
-                            if ((ev.relatedTarget as HTMLElement).id === this.dropdownUID) {
+                            if (
+                                ev.relatedTarget &&
+                                (ev.relatedTarget as HTMLElement).id === this.dropdownUID
+                            ) {
                                 return;
                             }
                             // Check if we're losing focus to one of our dropdown items, and if such don't blur
