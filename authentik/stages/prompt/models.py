@@ -62,9 +62,7 @@ class FieldTypes(models.TextChoices):
     RADIO_BUTTON_GROUP = "radio-button-group", _(
         "Fixed choice field rendered as a group of radio buttons."
     )
-    DROPDOWN = "dropdown", _(
-        "Fixed choice field rendered as a dropdown."
-    )
+    DROPDOWN = "dropdown", _("Fixed choice field rendered as a dropdown.")
     DATE = "date"
     DATE_TIME = "date-time"
 
@@ -217,7 +215,6 @@ class Prompt(SerializerModel):
             field_class = DateTimeField
         if self.type == FieldTypes.FILE:
             field_class = InlineFileField
-
         if self.type == FieldTypes.SEPARATOR:
             kwargs["required"] = False
             kwargs["label"] = ""
