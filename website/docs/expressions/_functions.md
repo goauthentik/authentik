@@ -100,3 +100,30 @@ You can also check if an IP Address is within a subnet by writing the following:
 ip_address('192.0.2.1') in ip_network('192.0.2.0/24')
 # evaluates to True
 ```
+
+## DNS resolution and reverse DNS lookups
+
+:::note
+Requires authentik 2023.3 or higher
+:::
+
+To resolve a hostname to a list of IP addresses, use the functions `resolve_dns(hostname)` and `resolve_dns(hostname, ip_version)`.
+
+```python
+resolve_dns("google.com")  # return a list of all IPv4 and IPv6 addresses
+resolve_dns("google.com", 4)  # return a list of only IP4 addresses
+resolve_dns("google.com", 6)  # return a list of only IP6 addresses
+```
+
+You can also do reverse DNS lookups.
+
+:::note
+Reverse DNS lookups may not return the expected host if the IP address is part of a shared hosting environment.
+See: https://stackoverflow.com/a/19867936
+:::
+
+To perform a reverse DNS lookup use `reverse_dns("192.0.2.0")`. If no DNS records are found the original IP address is returned.
+
+:::info
+DNS resolving results are cached in memory. The last 32 unique queries are cached for up to 3 minutes.
+:::
