@@ -54,6 +54,7 @@ class TestPasswordPolicyFlow(FlowTestCase):
             component="ak-stage-prompt",
             fields=[
                 {
+                    "choices": None,
                     "field_key": "password",
                     "label": "PASSWORD_LABEL",
                     "order": 0,
