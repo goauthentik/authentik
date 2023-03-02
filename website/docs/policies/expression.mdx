@@ -92,7 +92,7 @@ This includes the following:
 -   `context['application']`: The application the user is in the process of authorizing. (Optional)
 -   `context['source']`: The source the user is authenticating/enrolling with. (Optional)
 -   `context['pending_user']`: The currently pending user, see [User](../user-group/user.md#object-attributes)
--   `context['is_restored']`: Set to `True` when the flow plan has been restored from a flow token, for example the user clicked a link to a flow which was sent by an email stage. (Optional)
+-   `context['is_restored']`: Contains the flow token when the flow plan was restored from a link, for example the user clicked a link to a flow which was sent by an email stage. (Optional)
 -   `context['auth_method']`: Authentication method (this value is set by password stages) (Optional)
 
     Depending on method, `context['auth_method_args']` is also set.

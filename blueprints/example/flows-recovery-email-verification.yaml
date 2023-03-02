@@ -154,6 +154,7 @@ entries:
       policy: !KeyOf default-recovery-skip-if-restored
       target: !KeyOf flow-binding-email
       order: 0
+    state: absent
     model: authentik_policies.policybinding
     attrs:
       negate: false
