@@ -15504,6 +15504,283 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/scim/:
+    get:
+      operationId: providers_scim_list
+      description: SCIMProvider Viewset
+      parameters:
+      - in: query
+        name: authorization_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: token
+        schema:
+          type: string
+      - in: query
+        name: url
+        schema:
+          type: string
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSCIMProviderList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_scim_create
+      description: SCIMProvider Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim/{id}/:
+    get:
+      operationId: providers_scim_retrieve
+      description: SCIMProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: providers_scim_update
+      description: SCIMProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: providers_scim_partial_update
+      description: SCIMProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSCIMProviderRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_scim_destroy
+      description: SCIMProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim/{id}/used_by/:
+    get:
+      operationId: providers_scim_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /root/config/:
     get:
       operationId: root_config_retrieve
@@ -25002,6 +25279,7 @@ components:
       - authentik.providers.oauth2
       - authentik.providers.proxy
       - authentik.providers.saml
+      - authentik.providers.scim
       - authentik.recovery
       - authentik.sources.ldap
       - authentik.sources.oauth
@@ -32173,6 +32451,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedSCIMProviderList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMProvider'
+      required:
+      - pagination
+      - results
     PaginatedSMSDeviceList:
       type: object
       properties:
@@ -34863,6 +35176,30 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
+    PatchedSCIMProviderRequest:
+      type: object
+      description: SCIMProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        url:
+          type: string
+          minLength: 1
+          description: Base URL to SCIM requests, usually ends in /v2
+        token:
+          type: string
+          minLength: 1
+          description: Authentication token
     PatchedSMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -36851,6 +37188,92 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
+    SCIMProvider:
+      type: object
+      description: SCIMProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
+        url:
+          type: string
+          description: Base URL to SCIM requests, usually ends in /v2
+        token:
+          type: string
+          description: Authentication token
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - authorization_flow
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - token
+      - url
+      - verbose_name
+      - verbose_name_plural
+    SCIMProviderRequest:
+      type: object
+      description: SCIMProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        url:
+          type: string
+          minLength: 1
+          description: Base URL to SCIM requests, usually ends in /v2
+        token:
+          type: string
+          minLength: 1
+          description: Authentication token
+      required:
+      - authorization_flow
+      - name
+      - token
+      - url
     SMSDevice:
       type: object
       description: Serializer for sms authenticator devices

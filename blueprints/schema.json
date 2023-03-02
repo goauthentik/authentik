@@ -81,6 +81,8 @@
                             "authentik_providers_proxy.proxyprovider",
                             "authentik_providers_saml.samlpropertymapping",
                             "authentik_providers_saml.samlprovider",
+                            "authentik_providers_scim.scimmapping",
+                            "authentik_providers_scim.scimprovider",
                             "authentik_sources_ldap.ldappropertymapping",
                             "authentik_sources_ldap.ldapsource",
                             "authentik_sources_oauth.oauthsource",
