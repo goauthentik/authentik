@@ -19,7 +19,7 @@ def post_save_provider(sender: type[Model], instance, created: bool, **_):
 
 @receiver(post_save, sender=User)
 @receiver(post_save, sender=Group)
-def post_save_scim(sender: type[Model], instance, created: bool, **_):
+def post_save_scim(sender: type[Model], instance: User | Group, created: bool, **_):
     """Post save handler"""
     # TODO: Run in task
     for provider in SCIMProvider.objects.all():
@@ -34,7 +34,7 @@ def post_save_scim(sender: type[Model], instance, created: bool, **_):
 
 @receiver(pre_delete, sender=User)
 @receiver(pre_delete, sender=Group)
-def pre_delete_scim(sender: type[Model], instance, created: bool, **_):
+def pre_delete_scim(sender: type[Model], instance: User | Group, **_):
     """Pre-delete handler"""
     # TODO: Run in task
     for provider in SCIMProvider.objects.all():
