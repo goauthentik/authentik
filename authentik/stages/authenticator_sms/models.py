@@ -86,7 +86,7 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
         try:
             message = client.messages.create(
-                to=device.phone_number, from_=self.from_number, body=self.get_message(token)
+                to=device.phone_number, from_=self.from_number, body=str(self.get_message(token))
             )
             LOGGER.debug("Sent SMS", to=device, message=message.sid)
         except TwilioRestException as exc:
@@ -115,13 +115,13 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
 
         if self.auth_type == SMSAuthTypes.BEARER:
             response = get_http_session().post(
-                f"{self.account_sid}",
+                self.account_sid,
                 json=payload,
                 headers={"Authorization": f"Bearer {self.auth}"},
             )
         elif self.auth_type == SMSAuthTypes.BASIC:
             response = get_http_session().post(
-                f"{self.account_sid}",
+                self.account_sid,
                 json=payload,
                 auth=(self.auth, self.auth_password),
             )
