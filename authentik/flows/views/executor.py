@@ -162,7 +162,7 @@ class FlowExecutorView(APIView):
             token.delete()
         if not isinstance(plan, FlowPlan):
             return None
-        plan.context[PLAN_CONTEXT_IS_RESTORED] = True
+        plan.context[PLAN_CONTEXT_IS_RESTORED] = token
         self._logger.debug("f(exec): restored flow plan from token", plan=plan)
         return plan
 

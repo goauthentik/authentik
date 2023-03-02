@@ -15,7 +15,7 @@ from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTyp
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_GET
+from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -103,12 +103,14 @@ class EmailStageView(ChallengeStageView):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         # Check if the user came back from the email link to verify
-        if QS_KEY_TOKEN in request.session.get(
-            SESSION_KEY_GET, {}
-        ) and self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED, False):
+        restore_token: FlowToken = self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED, None)
+        user = self.get_pending_user()
+        if restore_token:
+            if restore_token.user != user:
+                self.logger.warning("Flow token for non-matching user, denying request")
+                return self.executor.stage_invalid()
             messages.success(request, _("Successfully verified Email."))
             if self.executor.current_stage.activate_user_on_success:
-                user = self.get_pending_user()
                 user.is_active = True
                 user.save()
             return self.executor.stage_ok()
