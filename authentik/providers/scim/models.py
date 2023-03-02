@@ -1,14 +1,9 @@
 """SCIM Provider models"""
-from typing import TYPE_CHECKING
-
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import PropertyMapping, Provider, User
-
-if TYPE_CHECKING:
-    from authentik.providers.scim.clients.base import SCIMClient
+from authentik.core.models import Group, PropertyMapping, Provider, User
 
 
 class SCIMProvider(Provider):
@@ -61,3 +56,14 @@ class SCIMUser(models.Model):
 
     class Meta:
         unique_together = (("id", "user", "provider"),)
+
+
+class SCIMGroup(models.Model):
+    """Mapping of a group and provider to a SCIM user ID"""
+
+    id = models.TextField(primary_key=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    provider = models.ForeignKey(SCIMProvider, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("id", "group", "provider"),)

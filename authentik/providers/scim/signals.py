@@ -5,6 +5,7 @@ from django.dispatch import receiver
 
 from authentik.core.models import Group, User
 from authentik.providers.scim.clients.base import SCIMClient
+from authentik.providers.scim.clients.group import SCIMGroupClient
 from authentik.providers.scim.clients.user import SCIMUserClient
 from authentik.providers.scim.models import SCIMProvider
 
@@ -18,7 +19,10 @@ def post_save_scim(sender: type[Model], instance, created: bool, **_):
         client = SCIMClient(provider)
         if sender == User:
             user_client = SCIMUserClient(client)
-            user_client.write_user(instance)
+            user_client.write(instance)
+        if sender == Group:
+            group_client = SCIMGroupClient(client)
+            group_client.write(instance)
 
 
 @receiver(pre_delete, sender=User)
@@ -30,4 +34,7 @@ def pre_delete_scim(sender: type[Model], instance, created: bool, **_):
         client = SCIMClient(provider)
         if sender == User:
             user_client = SCIMUserClient(client)
-            user_client.delete_user(instance)
+            user_client.delete(instance)
+        if sender == Group:
+            group_client = SCIMGroupClient(client)
+            group_client.delete(instance)
