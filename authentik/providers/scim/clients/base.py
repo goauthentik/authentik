@@ -16,7 +16,7 @@ class SCIMClient:
     provider: SCIMProvider
 
     _session: Session
-    _config: ServiceProviderConfiguration
+    # _config: ServiceProviderConfiguration
 
     def __init__(self, provider: SCIMProvider):
         self._session = get_http_session()
@@ -28,7 +28,7 @@ class SCIMClient:
         self.base_url = base_url
         self.token = provider.token
         self.logger = get_logger().bind(provider=provider.name)
-        self._config = self.get_service_provider_config()
+        # self._config = self.get_service_provider_config()
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
         """Wrapper to send a request to the full URL"""
