@@ -1,6 +1,7 @@
 import "@goauthentik/admin/providers/ldap/LDAPProviderViewPage";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
 import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
+import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
 import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -56,6 +57,10 @@ export class ProviderViewPage extends AKElement {
                 return html`<ak-provider-ldap-view
                     providerID=${ifDefined(this.provider.pk)}
                 ></ak-provider-ldap-view>`;
+            case "ak-provider-scim-form":
+                return html`<ak-provider-scim-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-scim-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }

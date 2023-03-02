@@ -11,7 +11,16 @@ class SCIMProviderSerializer(ProviderSerializer):
 
     class Meta:
         model = SCIMProvider
-        fields = ProviderSerializer.Meta.fields + [
+        fields = [
+            "pk",
+            "name",
+            "property_mappings",
+            "component",
+            "assigned_application_slug",
+            "assigned_application_name",
+            "verbose_name",
+            "verbose_name_plural",
+            "meta_model_name",
             "url",
             "token",
         ]

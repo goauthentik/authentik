@@ -18,7 +18,9 @@ class SCIMProvider(Provider):
 
     @property
     def serializer(self) -> type[Serializer]:
-        return super().serializer
+        from authentik.providers.scim.api.providers import SCIMProviderSerializer
+
+        return SCIMProviderSerializer
 
     def __str__(self):
         return f"SCIM Provider {self.name}"
