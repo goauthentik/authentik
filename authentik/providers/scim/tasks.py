@@ -1,4 +1,6 @@
 """SCIM Provider tasks"""
+from typing import Any
+
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
 from django.db.models import Model
@@ -9,6 +11,7 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Group, User
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
+from authentik.lib.utils.reflection import path_to_class
 from authentik.providers.scim.clients import PAGE_SIZE
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import SCIMRequestException, StopSync
@@ -122,3 +125,33 @@ def scim_sync_group(page: int, provider_pk: int, **kwargs):
                 )
             )
     return messages
+
+
+@CELERY_APP.task()
+def scim_signal_post_save(model: str, pk: Any):
+    """Handler for post_save signal"""
+    model_class: type[Model] = path_to_class(model)
+    instance = model_class.objects.filter(pk=pk).first()
+    if not instance:
+        return
+    for provider in SCIMProvider.objects.all():
+        client = client_for_model(provider, instance)
+        try:
+            client.write(instance)
+        except StopSync as exc:
+            LOGGER.warning(exc)
+
+
+@CELERY_APP.task()
+def scim_signal_pre_delete(model: str, pk: Any):
+    """Handler for post_save signal"""
+    model_class: type[Model] = path_to_class(model)
+    instance = model_class.objects.filter(pk=pk).first()
+    if not instance:
+        return
+    for provider in SCIMProvider.objects.all():
+        client = client_for_model(provider, instance)
+        try:
+            client.delete(instance)
+        except StopSync as exc:
+            LOGGER.warning(exc)

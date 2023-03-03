@@ -17,16 +17,16 @@ from authentik.providers.scim.models import SCIMGroup, SCIMMapping, SCIMUser
 class SCIMGroupClient(SCIMClient[Group]):
     """SCIM client for groups"""
 
-    def write(self, group: Group):
+    def write(self, obj: Group):
         """Write a group"""
-        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=group).first()
+        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
         if not scim_group:
-            return self._create(group)
+            return self._create(obj)
         return None
 
-    def delete(self, group: Group):
+    def delete(self, obj: Group):
         """Delete group"""
-        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=group).first()
+        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
         if not scim_group:
             self.logger.debug("Group does not exist in SCIM, skipping")
             return None
@@ -99,6 +99,9 @@ class SCIMGroupClient(SCIMClient[Group]):
         req = PatchRequest(Operations=ops)
         self._request("PATCH", f"/Groups/{group_id}", data=req.json(exclude_unset=True))
 
+    def update_group(self):
+        pass
+
     def post_add(self, group: Group, users_set: set[int]):
         """Add users in users_set to group"""
         if len(users_set) < 1:
@@ -144,22 +147,5 @@ class SCIMGroupClient(SCIMClient[Group]):
                 op=PatchOp.remove,
                 path="members",
                 value=[{"value": x} for x in user_ids],
-            ),
-        )
-
-    def post_clear(self, user: User):
-        """Remove user from all groups"""
-        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=group).first()
-        if not scim_group:
-            self.logger.warning(
-                "could not sync group membership, group does not exist", group=group
-            )
-            return
-        self._patch(
-            scim_group.id,
-            PatchOperation(
-                op=PatchOp.replace,
-                path="members",
-                value=[],
             ),
         )

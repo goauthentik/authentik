@@ -1,6 +1,7 @@
 """SCIM Client"""
 from typing import Generic, TypeVar
 
+from pydantic import ValidationError
 from pydanticscim.service_provider import ServiceProviderConfiguration
 from requests import Session
 from structlog.stdlib import get_logger
@@ -20,7 +21,7 @@ class SCIMClient(Generic[T]):
     provider: SCIMProvider
 
     _session: Session
-    # _config: ServiceProviderConfiguration
+    _config: ServiceProviderConfiguration
 
     def __init__(self, provider: SCIMProvider):
         self._session = get_http_session()
@@ -32,7 +33,7 @@ class SCIMClient(Generic[T]):
         self.base_url = base_url
         self.token = provider.token
         self.logger = get_logger().bind(provider=provider.name)
-        # self._config = self.get_service_provider_config()
+        self._config = self.get_service_provider_config()
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
         """Wrapper to send a request to the full URL"""
@@ -54,7 +55,14 @@ class SCIMClient(Generic[T]):
 
     def get_service_provider_config(self):
         """Get Service provider config"""
-        return ServiceProviderConfiguration(**self._request("GET", "/ServiceProviderConfig"))
+        default_config = ServiceProviderConfiguration()
+        try:
+            return ServiceProviderConfiguration.parse_obj(
+                self._request("GET", "/ServiceProviderConfig")
+            )
+        except ValidationError as exc:
+            self.logger.warning("ServiceProviderConfig invalid", exc=exc)
+            return default_config
 
     def write(self, obj: T):
         """Write object to SCIM"""

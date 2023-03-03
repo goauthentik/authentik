@@ -14,16 +14,16 @@ from authentik.providers.scim.models import SCIMMapping, SCIMUser
 class SCIMUserClient(SCIMClient[User]):
     """SCIM client for users"""
 
-    def write(self, user: User):
+    def write(self, obj: User):
         """Write a user"""
-        scim_user = SCIMUser.objects.filter(provider=self.provider, user=user).first()
+        scim_user = SCIMUser.objects.filter(provider=self.provider, user=obj).first()
         if not scim_user:
-            return self._create(user)
-        return self._update(user, scim_user)
+            return self._create(obj)
+        return self._update(obj, scim_user)
 
-    def delete(self, user: User):
+    def delete(self, obj: User):
         """Delete user"""
-        scim_user = SCIMUser.objects.filter(provider=self.provider, user=user).first()
+        scim_user = SCIMUser.objects.filter(provider=self.provider, user=obj).first()
         if not scim_user:
             self.logger.debug("User does not exist in SCIM, skipping")
             return None
