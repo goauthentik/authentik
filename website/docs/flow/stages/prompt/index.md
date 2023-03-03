@@ -8,24 +8,26 @@ This stage is used to show the user arbitrary prompts.
 
 The prompt can be any of the following types:
 
-| Type               | Description                                                                                |
-| ------------------ | ------------------------------------------------------------------------------------------ |
-| Text               | Arbitrary text. No client-side validation is done.                                         |
-| Text (Read only)   | Same as above, but cannot be edited.                                                       |
-| Username           | Same as text, except the username is validated to be unique.                               |
-| Email              | Text input, ensures the value is an email address (validation is only done client-side).   |
-| Password           | Same as text, shown as a password field client-side, and custom validation (see below).    |
-| Number             | Numerical textbox.                                                                         |
-| Checkbox           | Simple checkbox.                                                                           |
-| Radio Button Group | Similar to checkboxes, but allows selecting a value from a set of predefined values.       |
-| Dropdwon           | A simple dropdown menu filled with predefined values.                                      |
-| Date               | Same as text, except the client renders a date-picker                                      |
-| Date-time          | Same as text, except the client renders a date-time-picker                                 |
-| File               | Allow users to upload a file, which will be available as base64-encoded data in the flow . |
-| Separator          | Passive element to group surrounding elements                                              |
-| Hidden             | Hidden input field. Allows for the pre-setting of default values.                          |
-| Static             | Display arbitrary value as is                                                              |
-| authentik: Locale  | Display a list of all locales authentik supports.                                          |
+| Type                  | Description                                                                                |
+| --------------------- | ------------------------------------------------------------------------------------------ |
+| Text                  | Arbitrary text. No client-side validation is done.                                         |
+| Text (Read only)      | Same as above, but cannot be edited.                                                       |
+| Text Area             | Arbitrary multiline text. No client-side validation is done.                               |
+| Text Area (Read only) | Same as above, but cannot be edited.                                                       |
+| Username              | Same as text, except the username is validated to be unique.                               |
+| Email                 | Text input, ensures the value is an email address (validation is only done client-side).   |
+| Password              | Same as text, shown as a password field client-side, and custom validation (see below).    |
+| Number                | Numerical textbox.                                                                         |
+| Checkbox              | Simple checkbox.                                                                           |
+| Radio Button Group    | Similar to checkboxes, but allows selecting a value from a set of predefined values.       |
+| Dropdwon              | A simple dropdown menu filled with predefined values.                                      |
+| Date                  | Same as text, except the client renders a date-picker                                      |
+| Date-time             | Same as text, except the client renders a date-time-picker                                 |
+| File                  | Allow users to upload a file, which will be available as base64-encoded data in the flow . |
+| Separator             | Passive element to group surrounding elements                                              |
+| Hidden                | Hidden input field. Allows for the pre-setting of default values.                          |
+| Static                | Display arbitrary value as is                                                              |
+| authentik: Locale     | Display a list of all locales authentik supports.                                          |
 
 :::note
 `Radio Button Group` and `Dropdown` options require authentik 2023.3+

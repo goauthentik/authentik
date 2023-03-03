@@ -110,7 +110,12 @@ class PromptChallengeResponse(ChallengeResponse):
         # Check if we have any static or hidden fields, and ensure they
         # still have the same value
         static_hidden_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
-            type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC, FieldTypes.TEXT_READ_ONLY]
+            type__in=[
+                FieldTypes.HIDDEN,
+                FieldTypes.STATIC,
+                FieldTypes.TEXT_READ_ONLY,
+                FieldTypes.TEXT_AREA_READ_ONLY,
+            ]
         )
         for static_hidden in static_hidden_fields:
             field = self.fields[static_hidden.field_key]

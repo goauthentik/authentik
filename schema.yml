@@ -23289,6 +23289,8 @@ paths:
           - separator
           - static
           - text
+          - text_area
+          - text_area_read_only
           - text_read_only
           - username
       tags:
@@ -35742,7 +35744,9 @@ components:
     PromptTypeEnum:
       enum:
       - text
+      - text_area
       - text_read_only
+      - text_area_read_only
       - username
       - email
       - password

@@ -39,10 +39,17 @@ class FieldTypes(models.TextChoices):
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
+    # Long text field
+    TEXT_AREA = "text_area", _("Text area: Multiline Text Input.")
     # Simple text field
     TEXT_READ_ONLY = "text_read_only", _(
         "Text (read-only): Simple Text input, but cannot be edited."
     )
+    # Long text field
+    TEXT_AREA_READ_ONLY = "text_area_read_only", _(
+        "Text area (read-only): Multiline Text input, but cannot be edited."
+    )
+
     # Same as text, but has autocomplete for password managers
     USERNAME = (
         "username",
@@ -191,10 +198,10 @@ class Prompt(SerializerModel):
         kwargs = {
             "required": self.required,
         }
-        if self.type == FieldTypes.TEXT:
+        if self.type in (FieldTypes.TEXT, FieldTypes.TEXT_AREA):
             kwargs["trim_whitespace"] = False
             kwargs["allow_blank"] = not self.required
-        if self.type == FieldTypes.TEXT_READ_ONLY:
+        if self.type in (FieldTypes.TEXT_READ_ONLY, FieldTypes.TEXT_AREA_READ_ONLY):
             field_class = ReadOnlyField
             # required can't be set for ReadOnlyField
             kwargs["required"] = False

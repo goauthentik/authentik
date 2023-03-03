@@ -45,6 +45,14 @@ class TestPromptStage(FlowTestCase):
             required=True,
             placeholder="TEXT_PLACEHOLDER",
         )
+        text_area_prompt = Prompt.objects.create(
+            name=generate_id(),
+            field_key="text_area_prompt",
+            label="TEXT_AREA_LABEL",
+            type=FieldTypes.TEXT_AREA,
+            required=True,
+            placeholder="TEXT_AREA_PLACEHOLDER",
+        )
         email_prompt = Prompt.objects.create(
             name=generate_id(),
             field_key="email_prompt",
@@ -123,6 +131,7 @@ class TestPromptStage(FlowTestCase):
         self.prompt_data = {
             username_prompt.field_key: "test-username",
             text_prompt.field_key: "test-input",
+            text_area_prompt.field_key: "test-area-input",
             email_prompt.field_key: "test@test.test",
             password_prompt.field_key: "test",
             password2_prompt.field_key: "test",

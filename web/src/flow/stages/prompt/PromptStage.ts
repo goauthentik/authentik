@@ -43,11 +43,29 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                     value="${placeholderAsValue ? prompt.placeholder : ""}">`;
+            case PromptTypeEnum.TextArea:
+                return `<textarea
+                    type="text"
+                    name="${prompt.fieldKey}"
+                    placeholder="${prompt.placeholder}"
+                    autocomplete="off"
+                    class="pf-c-form-control"
+                    style="min-height: 4em; max-height: 15em; resize: vertical;"
+                    ?required=${prompt.required}
+                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
             case PromptTypeEnum.TextReadOnly:
                 return `<input
                     type="text"
                     name="${prompt.fieldKey}"
                     class="pf-c-form-control"
+                    readonly
+                    value="${prompt.placeholder}">`;
+            case PromptTypeEnum.TextAreaReadOnly:
+                return `<textarea
+                    type="text"
+                    name="${prompt.fieldKey}"
+                    class="pf-c-form-control"
+                    style="min-height: 4em; max-height: 15em; resize: vertical;"
                     readonly
                     value="${prompt.placeholder}">`;
             case PromptTypeEnum.Username:
