@@ -28,6 +28,14 @@ entries:
         locale = request.user.locale()
         if locale == "":
             locale = None
+
+        emails = []
+        if request.user.email != "":
+            emails.append({
+                "value": request.user.email,
+                "type": "other",
+                "primary": True,
+            })
         return {
             "userName": request.user.username,
             "name": {
@@ -37,13 +45,7 @@ entries:
             },
             "photos": photos,
             "locale": locale,
-            "emails": [
-                {
-                    "value": request.user.email,
-                    "type": "other",
-                    "primary": True,
-                }
-            ]
+            "emails": emails,
         }
   - identifiers:
       managed: goauthentik.io/providers/scim/group

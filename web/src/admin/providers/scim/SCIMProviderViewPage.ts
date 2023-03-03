@@ -5,7 +5,7 @@ import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/events/ObjectChangelog";
 
 import { t } from "@lingui/macro";
@@ -154,9 +154,8 @@ export class SCIMProviderViewPage extends AKElement {
                                 id: this.provider.pk,
                             })
                             .then((task) => {
-                                return html` <p>${task.taskName}</p>
+                                return html`
                                     <ul class="pf-c-list">
-                                        <li>${task.taskName}</li>
                                         ${task.messages.map((m) => {
                                             return html`<li>${m}</li>`;
                                         })}
@@ -168,6 +167,29 @@ export class SCIMProviderViewPage extends AKElement {
                         "loading",
                     )}
                 </div>
+
+                        <div class="pf-c-card__footer">
+                            <ak-action-button
+                                class="pf-m-secondary"
+                                .apiRequest=${() => {
+                                    return new ProvidersApi(DEFAULT_CONFIG)
+                                        .providersScimPartialUpdate({
+                                            id: this.provider?.pk || 0,
+                                            patchedSCIMProviderRequest: this.provider,
+                                        })
+                                        .then(() => {
+                                            this.dispatchEvent(
+                                                new CustomEvent(EVENT_REFRESH, {
+                                                    bubbles: true,
+                                                    composed: true,
+                                                }),
+                                            );
+                                        });
+                                }}
+                            >
+                                ${t`Run sync again`}
+                            </ak-action-button>
+                        </div>
             </div>
         </div>`;
     }

@@ -11,8 +11,9 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
+import { until } from "lit/directives/until.js";
 
-import { ProvidersApi, SCIMProvider } from "@goauthentik/api";
+import { PropertymappingsApi, ProvidersApi, SCIMProvider } from "@goauthentik/api";
 
 @customElement("ak-provider-scim-form")
 export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
@@ -76,6 +77,98 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${t`Token to authenticate with. Currently only bearer authentication is supported.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group ?expanded=${true}>
+                <span slot="header"> ${t`Attribute mapping`} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${t`User Property Mappings`}
+                        ?required=${true}
+                        name="propertyMappings"
+                    >
+                        <select class="pf-c-form-control" multiple>
+                            ${until(
+                                new PropertymappingsApi(DEFAULT_CONFIG)
+                                    .propertymappingsScimList({
+                                        ordering: "managed",
+                                    })
+                                    .then((mappings) => {
+                                        return mappings.results.map((mapping) => {
+                                            let selected = false;
+                                            if (!this.instance?.propertyMappings) {
+                                                selected =
+                                                    mapping.managed ===
+                                                        "goauthentik.io/providers/scim/user" ||
+                                                    false;
+                                            } else {
+                                                selected = Array.from(
+                                                    this.instance?.propertyMappings,
+                                                ).some((su) => {
+                                                    return su == mapping.pk;
+                                                });
+                                            }
+                                            return html`<option
+                                                value=${ifDefined(mapping.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${mapping.name}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Property mappings used to user mapping.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Hold control/command to select multiple items.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Group Property Mappings`}
+                        ?required=${true}
+                        name="propertyMappingsGroup"
+                    >
+                        <select class="pf-c-form-control" multiple>
+                            ${until(
+                                new PropertymappingsApi(DEFAULT_CONFIG)
+                                    .propertymappingsScimList({
+                                        ordering: "managed",
+                                    })
+                                    .then((mappings) => {
+                                        return mappings.results.map((mapping) => {
+                                            let selected = false;
+                                            if (!this.instance?.propertyMappingsGroup) {
+                                                selected =
+                                                    mapping.managed ===
+                                                    "goauthentik.io/providers/scim/group";
+                                            } else {
+                                                selected = Array.from(
+                                                    this.instance?.propertyMappingsGroup,
+                                                ).some((su) => {
+                                                    return su == mapping.pk;
+                                                });
+                                            }
+                                            return html`<option
+                                                value=${ifDefined(mapping.pk)}
+                                                ?selected=${selected}
+                                            >
+                                                ${mapping.name}
+                                            </option>`;
+                                        });
+                                    }),
+                                html`<option>${t`Loading...`}</option>`,
+                            )}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Property mappings used to group creation.`}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Hold control/command to select multiple items.`}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

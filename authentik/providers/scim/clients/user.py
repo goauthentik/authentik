@@ -48,6 +48,7 @@ class SCIMUserClient:
                 mapping: SCIMMapping
                 value = mapping.evaluate(
                     user=user,
+                    request=None,
                     provider=self._client.provider,
                 )
                 if value is None:
@@ -60,11 +61,11 @@ class SCIMUserClient:
                     message=f"Failed to evaluate property-mapping: {str(exc)}",
                     mapping=mapping,
                 ).save()
-                raise StopSync(exc) from exc
+                raise StopSync(exc, user, mapping) from exc
         try:
             scim_user = SCIMUserSchema.parse_obj(raw_scim_user)
         except ValidationError as exc:
-            raise StopSync(exc) from exc
+            raise StopSync(exc, user) from exc
         return scim_user
 
     def _create(self, user: User):

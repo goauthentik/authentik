@@ -49,6 +49,8 @@ class SCIMGroupClient:
             try:
                 mapping: SCIMMapping
                 value = mapping.evaluate(
+                    user=None,
+                    request=None,
                     group=group,
                     provider=self._client.provider,
                 )
@@ -62,11 +64,11 @@ class SCIMGroupClient:
                     message=f"Failed to evaluate property-mapping: {str(exc)}",
                     mapping=mapping,
                 ).save()
-                raise StopSync(exc) from exc
+                raise StopSync(exc, group, mapping) from exc
         try:
             scim_group = SCIMGroupSchema.parse_obj(raw_scim_group)
         except ValidationError as exc:
-            raise StopSync(exc) from exc
+            raise StopSync(exc, group) from exc
         scim_group.externalId = str(group.pk)
 
         users = list(group.users.order_by("id").values_list("id", flat=True))

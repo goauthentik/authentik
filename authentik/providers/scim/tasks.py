@@ -78,7 +78,7 @@ def scim_sync_users(page: int, provider_pk: int, **kwargs):
             LOGGER.warning("failed to sync user", exc=exc, user=user)
             messages.append(
                 _(
-                    "Failed to sync user %(name)s: %(error)s"
+                    "Failed to sync user due to remote error %(name)s: %(error)s"
                     % {
                         "name": user.username,
                         "error": str(exc),
@@ -106,7 +106,7 @@ def scim_sync_group(page: int, provider_pk: int, **kwargs):
             LOGGER.warning("failed to sync group", exc=exc, group=group)
             messages.append(
                 _(
-                    "Failed to sync group %(name)s: %(error)s"
+                    "Failed to sync group due to remote error %(name)s: %(error)s"
                     % {
                         "name": group.name,
                         "error": str(exc),

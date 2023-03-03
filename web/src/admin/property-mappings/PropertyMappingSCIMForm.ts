@@ -10,12 +10,12 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { PropertymappingsApi, SAMLPropertyMapping } from "@goauthentik/api";
+import { PropertymappingsApi, SCIMMapping } from "@goauthentik/api";
 
-@customElement("ak-property-mapping-saml-form")
-export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, string> {
-    loadInstance(pk: string): Promise<SAMLPropertyMapping> {
-        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlRetrieve({
+@customElement("ak-property-mapping-scim-form")
+export class PropertyMappingSCIMForm extends ModelForm<SCIMMapping, string> {
+    loadInstance(pk: string): Promise<SCIMMapping> {
+        return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScimRetrieve({
             pmUuid: pk,
         });
     }
@@ -28,15 +28,15 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
         }
     }
 
-    send = (data: SAMLPropertyMapping): Promise<SAMLPropertyMapping> => {
+    send = (data: SCIMMapping): Promise<SCIMMapping> => {
         if (this.instance) {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlUpdate({
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScimUpdate({
                 pmUuid: this.instance.pk || "",
-                sAMLPropertyMappingRequest: data,
+                sCIMMappingRequest: data,
             });
         } else {
-            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlCreate({
-                sAMLPropertyMappingRequest: data,
+            return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScimCreate({
+                sCIMMappingRequest: data,
             });
         }
     };
@@ -50,31 +50,6 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
                     class="pf-c-form-control"
                     required
                 />
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`SAML Attribute Name`}
-                ?required=${true}
-                name="samlName"
-            >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.samlName)}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${t`Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded.`}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Friendly Name`} name="friendlyName">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.friendlyName || "")}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${t`Optionally set the 'FriendlyName' value of the Assertion attribute.`}
-                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Expression`} ?required=${true} name="expression">
                 <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
