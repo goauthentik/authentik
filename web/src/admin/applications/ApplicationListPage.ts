@@ -97,7 +97,6 @@ export class ApplicationListPage extends TablePage<Application> {
             ></ak-application-wizard>
             <div class="pf-c-sidebar__panel pf-m-width-25">
                 <div class="pf-c-card">
-                    <div class="pf-c-card__title">${t`About applications`}</div>
                     <div class="pf-c-card__body">
                         <ak-markdown .md=${MDApplication}></ak-markdown>
                     </div>

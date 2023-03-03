@@ -20,8 +20,8 @@ The token given by the application will be sent with all outgoing SCIM requests 
 
 Data is synchronized in multiple ways:
 
-- When a user/group is created/modified/deleted, that action is sent to all SCIM providers
-- Periodically, all SCIM providers are fully synchronized
+-   When a user/group is created/modified/deleted, that action is sent to all SCIM providers
+-   Periodically (once an hour), all SCIM providers are fully synchronized
 
 The actual synchronization process is run in the authentik worker. To allow this process to better to scale, a task is started for each 100 users and groups, so when multiple workers are available the workload will be distributed.
 
@@ -29,10 +29,12 @@ The actual synchronization process is run in the authentik worker. To allow this
 
 SCIM defines multiple optional features, some of which are supported by the SCIM provider.
 
-- Bulk updates
-- Password changes
-- Etag
+-   Bulk updates
+-   Password changes
+-   Etag
 
-### Data mapping
+### Attribute mapping
 
-# TODO
+Attribute mapping from authentik to SCIM users is done via property mappings as with other providers. The default mappings for users and groups make some assumptions that should work for most setups, but it is also possible to define custom mappings to add fields.
+
+All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
