@@ -36163,7 +36163,6 @@ components:
         authorization_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -36193,6 +36192,7 @@ components:
       required:
       - assigned_application_name
       - assigned_application_slug
+      - authorization_flow
       - component
       - meta_model_name
       - name
@@ -36214,7 +36214,6 @@ components:
         authorization_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -36222,6 +36221,7 @@ components:
             type: string
             format: uuid
       required:
+      - authorization_flow
       - name
     ProviderTypeEnum:
       enum:

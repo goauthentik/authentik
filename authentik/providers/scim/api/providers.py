@@ -24,6 +24,7 @@ class SCIMProviderSerializer(ProviderSerializer):
             "url",
             "token",
         ]
+        extra_kwargs = {}
 
 
 class SCIMProviderViewSet(UsedByMixin, ModelViewSet):
