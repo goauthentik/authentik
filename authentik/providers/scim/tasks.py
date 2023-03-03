@@ -58,7 +58,7 @@ def scim_sync_users(page: int, provider_pk: int, **kwargs):
     """Sync single or multiple users to SCIM"""
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
     if not provider:
-        return
+        return []
     client = SCIMClient(provider)
     user_client = SCIMUserClient(client)
     paginator = Paginator(
@@ -89,7 +89,7 @@ def scim_sync_group(page: int, provider_pk: int, **kwargs):
     """Sync single or multiple groups to SCIM"""
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
     if not provider:
-        return
+        return []
     client = SCIMClient(provider)
     group_client = SCIMGroupClient(client)
     paginator = Paginator(Group.objects.all().filter(**kwargs).order_by("pk"), PAGE_SIZE)
