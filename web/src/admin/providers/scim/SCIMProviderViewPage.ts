@@ -1,10 +1,8 @@
-import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -14,6 +12,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { until } from "lit/directives/until.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
@@ -110,60 +109,64 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`
-            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${t`Name`}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.name}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${t`Assigned to application`}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ak-provider-related-application
-                                            .provider=${this.provider}
-                                        ></ak-provider-related-application>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${t`URL`}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.url}
-                                    </div>
-                                </dd>
-                            </div>
-                        </dl>
-                    </div>
-                    <div class="pf-c-card__footer">
-                        <ak-forms-modal>
-                            <span slot="submit"> ${t`Update`} </span>
-                            <span slot="header"> ${t`Update LDAP Provider`} </span>
-                            <ak-provider-ldap-form slot="form" .instancePk=${this.provider.pk}>
-                            </ak-provider-ldap-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${t`Edit`}
-                            </button>
-                        </ak-forms-modal>
-                    </div>
+        return html` <div
+            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+        >
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                <div class="pf-c-card__body">
+                    <dl class="pf-c-description-list pf-m-3-col-on-lg">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`Name`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">${this.provider.name}</div>
+                            </dd>
+                        </div>
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text">${t`URL`}</span>
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">${this.provider.url}</div>
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+                <div class="pf-c-card__footer">
+                    <ak-forms-modal>
+                        <span slot="submit"> ${t`Update`} </span>
+                        <span slot="header"> ${t`Update LDAP Provider`} </span>
+                        <ak-provider-ldap-form slot="form" .instancePk=${this.provider.pk}>
+                        </ak-provider-ldap-form>
+                        <button slot="trigger" class="pf-c-button pf-m-primary">${t`Edit`}</button>
+                    </ak-forms-modal>
+                </div>
+            </div>
+            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                <div class="pf-c-card__title">
+                    <p>${t`Sync status`}</p>
+                </div>
+                <div class="pf-c-card__body">
+                    ${until(
+                        new ProvidersApi(DEFAULT_CONFIG)
+                            .providersScimSyncStatusRetrieve({
+                                id: this.provider.pk,
+                            })
+                            .then((task) => {
+                                return html` <p>${task.taskName}</p>
+                                    <ul class="pf-c-list">
+                                        <li>${task.taskName}</li>
+                                        ${task.messages.map((m) => {
+                                            return html`<li>${m}</li>`;
+                                        })}
+                                    </ul>`;
+                            })
+                            .catch(() => {
+                                return html`${t`Sync not run yet.`}`;
+                            }),
+                        "loading",
+                    )}
                 </div>
             </div>
         </div>`;

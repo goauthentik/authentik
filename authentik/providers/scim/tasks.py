@@ -20,7 +20,7 @@ LOGGER = get_logger(__name__)
 
 
 @CELERY_APP.task(bind=True, base=MonitoredTask)
-def scim_sync_full(self: MonitoredTask, provider_pk: int) -> None:
+def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
     """Run SCIM full sync for provider"""
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
     if not provider:

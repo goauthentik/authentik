@@ -8,13 +8,13 @@ from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.group import SCIMGroupClient
 from authentik.providers.scim.clients.user import SCIMUserClient
 from authentik.providers.scim.models import SCIMProvider
-from authentik.providers.scim.tasks import scim_sync_full
+from authentik.providers.scim.tasks import scim_sync
 
 
 @receiver(post_save, sender=SCIMProvider)
 def post_save_provider(sender: type[Model], instance, created: bool, **_):
     """Trigger sync when SCIM provider is saved"""
-    scim_sync_full.delay(instance.pk)
+    scim_sync.delay(instance.pk)
 
 
 @receiver(post_save, sender=User)
