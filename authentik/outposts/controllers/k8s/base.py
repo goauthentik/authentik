@@ -16,7 +16,6 @@ from authentik.outposts.controllers.k8s.triggers import NeedsRecreate, NeedsUpda
 if TYPE_CHECKING:
     from authentik.outposts.controllers.kubernetes import KubernetesController
 
-# pylint: disable=invalid-name
 T = TypeVar("T", V1Pod, V1Deployment)
 
 

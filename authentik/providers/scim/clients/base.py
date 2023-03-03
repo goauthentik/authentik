@@ -18,9 +18,10 @@ from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.models import SCIMProvider
 
 T = TypeVar("T")
+SchemaType = TypeVar("SchemaType")
 
 
-class SCIMClient(Generic[T]):
+class SCIMClient(Generic[T, SchemaType]):
     """SCIM Client"""
 
     base_url: str
@@ -84,4 +85,8 @@ class SCIMClient(Generic[T]):
 
     def delete(self, obj: T):
         """Delete object from SCIM"""
+        raise NotImplementedError()
+
+    def to_scim(self, obj: T) -> SchemaType:
+        """Convert object to scim"""
         raise NotImplementedError()

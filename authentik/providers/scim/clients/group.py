@@ -7,6 +7,7 @@ from pydanticscim.responses import PatchOp, PatchOperation, PatchRequest
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
+from authentik.policies.utils import delete_none_keys
 from authentik.providers.scim.clients import PAGE_SIZE
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import StopSync
@@ -14,7 +15,7 @@ from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
 from authentik.providers.scim.models import SCIMGroup, SCIMMapping, SCIMUser
 
 
-class SCIMGroupClient(SCIMClient[Group]):
+class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
     """SCIM client for groups"""
 
     def write(self, obj: Group):
@@ -34,7 +35,7 @@ class SCIMGroupClient(SCIMClient[Group]):
         scim_group.delete()
         return response
 
-    def to_scim(self, group: Group) -> SCIMGroupSchema:
+    def to_scim(self, obj: Group) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
         raw_scim_group = {}
         for mapping in (
@@ -47,7 +48,7 @@ class SCIMGroupClient(SCIMClient[Group]):
                 value = mapping.evaluate(
                     user=None,
                     request=None,
-                    group=group,
+                    group=obj,
                     provider=self.provider,
                 )
                 if value is None:
@@ -60,14 +61,14 @@ class SCIMGroupClient(SCIMClient[Group]):
                     message=f"Failed to evaluate property-mapping: {str(exc)}",
                     mapping=mapping,
                 ).save()
-                raise StopSync(exc, group, mapping) from exc
+                raise StopSync(exc, obj, mapping) from exc
         try:
-            scim_group = SCIMGroupSchema.parse_obj(raw_scim_group)
+            scim_group = SCIMGroupSchema.parse_obj(delete_none_keys(raw_scim_group))
         except ValidationError as exc:
-            raise StopSync(exc, group) from exc
-        scim_group.externalId = str(group.pk)
+            raise StopSync(exc, obj) from exc
+        scim_group.externalId = str(obj.pk)
 
-        users = list(group.users.order_by("id").values_list("id", flat=True))
+        users = list(obj.users.order_by("id").values_list("id", flat=True))
         connections = SCIMUser.objects.filter(provider=self.provider, user__pk__in=users)[
             :PAGE_SIZE
         ]
@@ -100,14 +101,15 @@ class SCIMGroupClient(SCIMClient[Group]):
         self._request("PATCH", f"/Groups/{group_id}", data=req.json(exclude_unset=True))
 
     def update_group(self, group: Group, action: PatchOp, users_set: set[int]):
+        """Update a group, either using PUT to replace it or PATCH if supported"""
         if not self._config.patch.supported:
             # Do patch
             if action == PatchOp.add:
                 return self._patch_add_users(group, users_set)
             if action == PatchOp.remove:
                 return self._patch_remove_users(group, users_set)
-        # Replace
-        pass
+        # TODO: replace group
+        return None
 
     def _patch_add_users(self, group: Group, users_set: set[int]):
         """Add users in users_set to group"""

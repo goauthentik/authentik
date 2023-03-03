@@ -5,13 +5,14 @@ from pydantic import ValidationError
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
+from authentik.policies.utils import delete_none_keys
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import StopSync
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
 from authentik.providers.scim.models import SCIMMapping, SCIMUser
 
 
-class SCIMUserClient(SCIMClient[User]):
+class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
     """SCIM client for users"""
 
     def write(self, obj: User):
@@ -31,7 +32,7 @@ class SCIMUserClient(SCIMClient[User]):
         scim_user.delete()
         return response
 
-    def to_scim(self, user: User) -> SCIMUserSchema:
+    def to_scim(self, obj: User) -> SCIMUserSchema:
         """Convert authentik user into SCIM"""
         raw_scim_user = {}
         for mapping in self.provider.property_mappings.all().order_by("name").select_subclasses():
@@ -40,7 +41,7 @@ class SCIMUserClient(SCIMClient[User]):
             try:
                 mapping: SCIMMapping
                 value = mapping.evaluate(
-                    user=user,
+                    user=obj,
                     request=None,
                     provider=self.provider,
                 )
@@ -54,11 +55,11 @@ class SCIMUserClient(SCIMClient[User]):
                     message=f"Failed to evaluate property-mapping: {str(exc)}",
                     mapping=mapping,
                 ).save()
-                raise StopSync(exc, user, mapping) from exc
+                raise StopSync(exc, obj, mapping) from exc
         try:
-            scim_user = SCIMUserSchema.parse_obj(raw_scim_user)
+            scim_user = SCIMUserSchema.parse_obj(delete_none_keys(raw_scim_user))
         except ValidationError as exc:
-            raise StopSync(exc, user) from exc
+            raise StopSync(exc, obj) from exc
         return scim_user
 
     def _create(self, user: User):

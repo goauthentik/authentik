@@ -129,20 +129,21 @@ def scim_sync_group(page: int, provider_pk: int, **kwargs):
 
 
 @CELERY_APP.task()
-def scim_signal_direct(model: str, pk: Any, op: PatchOp):
+def scim_signal_direct(model: str, pk: Any, raw_op: str):
     """Handler for post_save and pre_delete signal"""
     model_class: type[Model] = path_to_class(model)
     instance = model_class.objects.filter(pk=pk).first()
     if not instance:
         return
+    operation = PatchOp(raw_op)
     for provider in SCIMProvider.objects.all():
         client = client_for_model(provider, instance)
         try:
-            if op == PatchOp.add:
+            if operation == PatchOp.add:
                 client.write(instance)
-            if op == PatchOp.remove:
+            if operation == PatchOp.remove:
                 client.delete(instance)
-        except StopSync as exc:
+        except (StopSync, SCIMRequestException) as exc:
             LOGGER.warning(exc)
 
 
@@ -155,11 +156,11 @@ def scim_signal_m2m(group_pk: str, action: str, pk_set: set[int]):
     for provider in SCIMProvider.objects.all():
         client = SCIMGroupClient(provider)
         try:
-            op = None
+            operation = None
             if action == "post_add":
-                op = PatchOp.add
+                operation = PatchOp.add
             if action == "post_remove":
-                op = PatchOp.remove
-            client.update_group(group, op, pk_set)
+                operation = PatchOp.remove
+            client.update_group(group, operation, pk_set)
         except (StopSync, SCIMRequestException) as exc:
             LOGGER.warning(exc)
