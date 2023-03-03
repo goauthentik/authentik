@@ -58,6 +58,7 @@ from authentik.providers.oauth2.api.tokens import (
 from authentik.providers.proxy.api import ProxyOutpostConfigViewSet, ProxyProviderViewSet
 from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingViewSet
 from authentik.providers.saml.api.providers import SAMLProviderViewSet
+from authentik.providers.scim.api.property_mapping import SCIMMappingViewSet
 from authentik.providers.scim.api.providers import SCIMProviderViewSet
 from authentik.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from authentik.sources.oauth.api.source import OAuthSourceViewSet
@@ -175,6 +176,7 @@ router.register("propertymappings/ldap", LDAPPropertyMappingViewSet)
 router.register("propertymappings/saml", SAMLPropertyMappingViewSet)
 router.register("propertymappings/scope", ScopeMappingViewSet)
 router.register("propertymappings/notification", NotificationWebhookMappingViewSet)
+router.register("propertymappings/scim", SCIMMappingViewSet)
 
 router.register("authenticators/all", DeviceViewSet, basename="device")
 router.register("authenticators/duo", DuoDeviceViewSet)

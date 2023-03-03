@@ -1,11 +1,16 @@
 """Group client"""
+from deepmerge import always_merger
+from pydantic import ValidationError
 from pydanticscim.group import GroupMember
 
+from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group
+from authentik.events.models import Event, EventAction
 from authentik.providers.scim.clients import PAGE_SIZE
 from authentik.providers.scim.clients.base import SCIMClient
+from authentik.providers.scim.clients.exceptions import StopSync
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
-from authentik.providers.scim.models import SCIMGroup, SCIMUser
+from authentik.providers.scim.models import SCIMGroup, SCIMMapping, SCIMUser
 
 
 class SCIMGroupClient:
@@ -35,8 +40,35 @@ class SCIMGroupClient:
 
     def to_scim(self, group: Group) -> SCIMGroupSchema:
         """Convert authentik user into SCIM"""
-        # TODO: property mappings
-        scim_group = SCIMGroupSchema(displayName=group.name, externalId=str(group.pk), members=[])
+        raw_scim_group = {}
+        for mapping in (
+            self._client.provider.property_mappings_group.all().order_by("name").select_subclasses()
+        ):
+            if not isinstance(mapping, SCIMMapping):
+                continue
+            try:
+                mapping: SCIMMapping
+                value = mapping.evaluate(
+                    group=group,
+                    provider=self._client.provider,
+                )
+                if value is None:
+                    continue
+                always_merger.merge(raw_scim_group, value)
+            except (PropertyMappingExpressionException, ValueError) as exc:
+                # Value error can be raised when assigning invalid data to an attribute
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    mapping=mapping,
+                ).save()
+                raise StopSync(exc) from exc
+        try:
+            scim_group = SCIMGroupSchema.parse_obj(raw_scim_group)
+        except ValidationError as exc:
+            raise StopSync(exc) from exc
+        scim_group.externalId = str(group.pk)
+
         users = list(group.users.order_by("id").values_list("id", flat=True))
         connections = SCIMUser.objects.filter(provider=self._client.provider, user__pk__in=users)[
             :PAGE_SIZE

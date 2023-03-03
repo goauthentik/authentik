@@ -10,7 +10,7 @@ from authentik.core.models import Group, User
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
 from authentik.providers.scim.clients import PAGE_SIZE
 from authentik.providers.scim.clients.base import SCIMClient
-from authentik.providers.scim.clients.exceptions import SCIMRequestError
+from authentik.providers.scim.clients.exceptions import SCIMRequestException, StopSync
 from authentik.providers.scim.clients.group import SCIMGroupClient
 from authentik.providers.scim.clients.user import SCIMUserClient
 from authentik.providers.scim.models import SCIMProvider
@@ -42,14 +42,18 @@ def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
     )
     groups_paginator = Paginator(Group.objects.all().order_by("pk"), PAGE_SIZE)
     with allow_join_result():
-        for page in users_paginator.page_range:
-            result.messages.append(_("Syncing page %(page)d of users" % {"page": page}))
-            for msg in scim_sync_users.delay(page, provider_pk).get():
-                result.messages.append(msg)
-        for page in groups_paginator.page_range:
-            result.messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
-            for msg in scim_sync_group.delay(page, provider_pk).get():
-                result.messages.append(msg)
+        try:
+            for page in users_paginator.page_range:
+                result.messages.append(_("Syncing page %(page)d of users" % {"page": page}))
+                for msg in scim_sync_users.delay(page, provider_pk).get():
+                    result.messages.append(msg)
+            for page in groups_paginator.page_range:
+                result.messages.append(_("Syncing page %(page)d of groups" % {"page": page}))
+                for msg in scim_sync_group.delay(page, provider_pk).get():
+                    result.messages.append(msg)
+        except StopSync as exc:
+            self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
+            return
     self.set_status(result)
 
 
@@ -70,7 +74,7 @@ def scim_sync_users(page: int, provider_pk: int, **kwargs):
     for user in paginator.page(page).object_list:
         try:
             user_client.write(user)
-        except SCIMRequestError as exc:
+        except SCIMRequestException as exc:
             LOGGER.warning("failed to sync user", exc=exc, user=user)
             messages.append(
                 _(
@@ -98,7 +102,7 @@ def scim_sync_group(page: int, provider_pk: int, **kwargs):
     for group in paginator.page(page).object_list:
         try:
             group_client.write(group)
-        except SCIMRequestError as exc:
+        except SCIMRequestException as exc:
             LOGGER.warning("failed to sync group", exc=exc, group=group)
             messages.append(
                 _(

@@ -6,8 +6,12 @@ from requests import Response
 from authentik.lib.sentry import SentryIgnoredException
 
 
-class SCIMRequestError(SentryIgnoredException):
-    """Error raised when an SCIM request fails"""
+class StopSync(SentryIgnoredException):
+    """Exception raised when a configuration error should stop the sync process"""
+
+
+class SCIMRequestException(SentryIgnoredException):
+    """Exception raised when an SCIM request fails"""
 
     _response: Response
 

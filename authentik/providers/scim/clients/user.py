@@ -1,11 +1,14 @@
 """User client"""
+from deepmerge import always_merger
 from pydantic import ValidationError
-from pydanticscim.user import Email, EmailKind, Name, Photo, PhotoKind
 
+from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
+from authentik.events.models import Event, EventAction
 from authentik.providers.scim.clients.base import SCIMClient
+from authentik.providers.scim.clients.exceptions import StopSync
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
-from authentik.providers.scim.models import SCIMUser
+from authentik.providers.scim.models import SCIMMapping, SCIMUser
 
 
 class SCIMUserClient:
@@ -35,31 +38,33 @@ class SCIMUserClient:
 
     def to_scim(self, user: User) -> SCIMUserSchema:
         """Convert authentik user into SCIM"""
-        # TODO: property mappings
-        name = Name(formatted=user.name)
-        # Some implementations require more specific name parts
-        name.givenName = user.name
-        name.familyName = ""
-        if " " in user.name:
-            name.givenName = user.name.split(" ")[0]
-            name.familyName = user.name.split(" ")[1]
-        scim_user = SCIMUserSchema(
-            userName=user.username,
-            externalId=user.uid,
-            name=name,
-            displayName=user.name,
-            active=user.is_active,
-        )
-        avatar = user.avatar
-        if "://" in avatar:
-            scim_user.photos = [Photo(value=avatar, type=PhotoKind.photo)]
-        locale = user.locale()
-        if locale != "":
-            scim_user.locale = locale
+        raw_scim_user = {}
+        for mapping in (
+            self._client.provider.property_mappings.all().order_by("name").select_subclasses()
+        ):
+            if not isinstance(mapping, SCIMMapping):
+                continue
+            try:
+                mapping: SCIMMapping
+                value = mapping.evaluate(
+                    user=user,
+                    provider=self._client.provider,
+                )
+                if value is None:
+                    continue
+                always_merger.merge(raw_scim_user, value)
+            except (PropertyMappingExpressionException, ValueError) as exc:
+                # Value error can be raised when assigning invalid data to an attribute
+                Event.new(
+                    EventAction.CONFIGURATION_ERROR,
+                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    mapping=mapping,
+                ).save()
+                raise StopSync(exc) from exc
         try:
-            scim_user.emails = [Email(value=user.email, type=EmailKind.other, primary=True)]
-        except ValidationError:
-            pass
+            scim_user = SCIMUserSchema.parse_obj(raw_scim_user)
+        except ValidationError as exc:
+            raise StopSync(exc) from exc
         return scim_user
 
     def _create(self, user: User):

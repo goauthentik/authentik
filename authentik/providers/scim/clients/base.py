@@ -4,7 +4,7 @@ from requests import Session
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_http_session
-from authentik.providers.scim.clients.exceptions import SCIMRequestError
+from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.models import SCIMProvider
 
 
@@ -43,7 +43,7 @@ class SCIMClient:
             self.logger.warning(
                 "Failed to send SCIM request", path=path, method=method, response=response.text
             )
-            raise SCIMRequestError(response)
+            raise SCIMRequestException(response)
         if response.status_code == 204:
             return {}
         return response.json()

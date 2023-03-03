@@ -7,10 +7,17 @@ from authentik.core.models import Group, PropertyMapping, Provider, User
 
 
 class SCIMProvider(Provider):
-    """TODO"""
+    """SCIM 2.0 provider to create users and groups in external applications"""
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
     token = models.TextField(help_text=_("Authentication token"))
+
+    property_mappings_group = models.ManyToManyField(
+        PropertyMapping,
+        default=None,
+        blank=True,
+        help_text=_("Property mappings used for group creation/updating."),
+    )
 
     @property
     def component(self) -> str:
@@ -31,7 +38,7 @@ class SCIMProvider(Provider):
 
 
 class SCIMMapping(PropertyMapping):
-    """TODO"""
+    """Map authentik data to outgoing SCIM requests"""
 
     @property
     def component(self) -> str:
@@ -39,7 +46,9 @@ class SCIMMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        return super().serializer
+        from authentik.providers.scim.api.property_mapping import SCIMMappingSerializer
+
+        return SCIMMappingSerializer
 
     def __str__(self):
         return f"SCIM Mapping {self.name}"

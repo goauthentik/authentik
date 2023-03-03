@@ -13546,6 +13546,292 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /propertymappings/scim/:
+    get:
+      operationId: propertymappings_scim_list
+      description: SCIMMapping Viewset
+      parameters:
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSCIMMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_scim_create
+      description: SCIMMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/scim/{pm_uuid}/:
+    get:
+      operationId: propertymappings_scim_retrieve
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_scim_update
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_scim_partial_update
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSCIMMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_scim_destroy
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/scim/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_scim_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /propertymappings/scope/:
     get:
       operationId: propertymappings_scope_list
@@ -32487,6 +32773,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedSCIMMappingList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMMapping'
+      required:
+      - pagination
+      - results
     PaginatedSCIMProviderList:
       type: object
       properties:
@@ -35216,6 +35537,25 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
+    PatchedSCIMMappingRequest:
+      type: object
+      description: SCIMMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
     PatchedSCIMProviderRequest:
       type: object
       description: SCIMProvider Serializer
@@ -35228,6 +35568,12 @@ components:
           items:
             type: string
             format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
         url:
           type: string
           minLength: 1
@@ -37224,6 +37570,69 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
+    SCIMMapping:
+      type: object
+      description: SCIMMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          readOnly: true
+        verbose_name:
+          type: string
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          readOnly: true
+        meta_model_name:
+          type: string
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    SCIMMappingRequest:
+      type: object
+      description: SCIMMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
     SCIMProvider:
       type: object
       description: SCIMProvider Serializer
@@ -37239,6 +37648,12 @@ components:
           items:
             type: string
             format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
         component:
           type: string
           readOnly: true
@@ -37288,6 +37703,12 @@ components:
           items:
             type: string
             format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
         url:
           type: string
           minLength: 1
