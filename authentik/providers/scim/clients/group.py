@@ -2,9 +2,10 @@
 from deepmerge import always_merger
 from pydantic import ValidationError
 from pydanticscim.group import GroupMember
+from pydanticscim.responses import PatchOp, PatchOperation, PatchRequest
 
 from authentik.core.exceptions import PropertyMappingExpressionException
-from authentik.core.models import Group
+from authentik.core.models import Group, User
 from authentik.events.models import Event, EventAction
 from authentik.providers.scim.clients import PAGE_SIZE
 from authentik.providers.scim.clients.base import SCIMClient
@@ -13,28 +14,23 @@ from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
 from authentik.providers.scim.models import SCIMGroup, SCIMMapping, SCIMUser
 
 
-class SCIMGroupClient:
+class SCIMGroupClient(SCIMClient[Group]):
     """SCIM client for groups"""
-
-    _client: SCIMClient
-
-    def __init__(self, client: SCIMClient) -> None:
-        self._client = client
 
     def write(self, group: Group):
         """Write a group"""
-        scim_group = SCIMGroup.objects.filter(provider=self._client.provider, group=group).first()
+        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=group).first()
         if not scim_group:
             return self._create(group)
         return None
 
     def delete(self, group: Group):
         """Delete group"""
-        scim_group = SCIMGroup.objects.filter(provider=self._client.provider, group=group).first()
+        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=group).first()
         if not scim_group:
-            self._client.logger.debug("Group does not exist in SCIM, skipping")
+            self.logger.debug("Group does not exist in SCIM, skipping")
             return None
-        response = self._client._request("DELETE", f"/Groups/{scim_group.id}")
+        response = self._request("DELETE", f"/Groups/{scim_group.id}")
         scim_group.delete()
         return response
 
@@ -42,7 +38,7 @@ class SCIMGroupClient:
         """Convert authentik user into SCIM"""
         raw_scim_group = {}
         for mapping in (
-            self._client.provider.property_mappings_group.all().order_by("name").select_subclasses()
+            self.provider.property_mappings_group.all().order_by("name").select_subclasses()
         ):
             if not isinstance(mapping, SCIMMapping):
                 continue
@@ -52,7 +48,7 @@ class SCIMGroupClient:
                     user=None,
                     request=None,
                     group=group,
-                    provider=self._client.provider,
+                    provider=self.provider,
                 )
                 if value is None:
                     continue
@@ -72,7 +68,7 @@ class SCIMGroupClient:
         scim_group.externalId = str(group.pk)
 
         users = list(group.users.order_by("id").values_list("id", flat=True))
-        connections = SCIMUser.objects.filter(provider=self._client.provider, user__pk__in=users)[
+        connections = SCIMUser.objects.filter(provider=self.provider, user__pk__in=users)[
             :PAGE_SIZE
         ]
         for user in connections:
@@ -86,11 +82,84 @@ class SCIMGroupClient:
     def _create(self, group: Group):
         """Create group from scratch and create a connection object"""
         scim_group = self.to_scim(group)
-        response = self._client._request(
+        response = self._request(
             "POST",
             "/Groups",
             data=scim_group.json(
                 exclude_unset=True,
             ),
         )
-        SCIMGroup.objects.create(provider=self._client.provider, group=group, id=response["id"])
+        SCIMGroup.objects.create(provider=self.provider, group=group, id=response["id"])
+
+    def _patch(
+        self,
+        group_id: str,
+        *ops: PatchOperation,
+    ):
+        req = PatchRequest(Operations=ops)
+        self._request("PATCH", f"/Groups/{group_id}", data=req.json(exclude_unset=True))
+
+    def post_add(self, group: Group, users_set: set[int]):
+        """Add users in users_set to group"""
+        if len(users_set) < 1:
+            return
+        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=group).first()
+        if not scim_group:
+            self.logger.warning(
+                "could not sync group membership, group does not exist", group=group
+            )
+            return
+        user_ids = list(
+            SCIMUser.objects.filter(user__pk__in=users_set, provider=self.provider).values_list(
+                "id", flat=True
+            )
+        )
+        self._patch(
+            scim_group.id,
+            PatchOperation(
+                op=PatchOp.add,
+                path="members",
+                value=[{"value": x} for x in user_ids],
+            ),
+        )
+
+    def post_remove(self, group: Group, users_set: set[int]):
+        """Remove users in users_set from group"""
+        if len(users_set) < 1:
+            return
+        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=group).first()
+        if not scim_group:
+            self.logger.warning(
+                "could not sync group membership, group does not exist", group=group
+            )
+            return
+        user_ids = list(
+            SCIMUser.objects.filter(user__pk__in=users_set, provider=self.provider).values_list(
+                "id", flat=True
+            )
+        )
+        self._patch(
+            scim_group.id,
+            PatchOperation(
+                op=PatchOp.remove,
+                path="members",
+                value=[{"value": x} for x in user_ids],
+            ),
+        )
+
+    def post_clear(self, user: User):
+        """Remove user from all groups"""
+        scim_group = SCIMGroup.objects.filter(provider=self.provider, group=group).first()
+        if not scim_group:
+            self.logger.warning(
+                "could not sync group membership, group does not exist", group=group
+            )
+            return
+        self._patch(
+            scim_group.id,
+            PatchOperation(
+                op=PatchOp.replace,
+                path="members",
+                value=[],
+            ),
+        )

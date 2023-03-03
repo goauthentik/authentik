@@ -1,6 +1,7 @@
 """SCIM Provider tasks"""
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
+from django.db.models import Model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
@@ -17,6 +18,15 @@ from authentik.providers.scim.models import SCIMProvider
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger(__name__)
+
+
+def client_for_model(provider: SCIMProvider, model: Model) -> SCIMClient:
+    """Get SCIM client for model"""
+    if isinstance(model, User):
+        return SCIMUserClient(provider)
+    if isinstance(model, Group):
+        return SCIMGroupClient(provider)
+    raise ValueError(f"Invalid model {model}")
 
 
 @CELERY_APP.task()
@@ -63,8 +73,7 @@ def scim_sync_users(page: int, provider_pk: int, **kwargs):
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
     if not provider:
         return []
-    client = SCIMClient(provider)
-    user_client = SCIMUserClient(client)
+    client = SCIMUserClient(provider)
     paginator = Paginator(
         User.objects.all().filter(**kwargs).exclude(pk=get_anonymous_user().pk).order_by("pk"),
         PAGE_SIZE,
@@ -73,7 +82,7 @@ def scim_sync_users(page: int, provider_pk: int, **kwargs):
     messages = []
     for user in paginator.page(page).object_list:
         try:
-            user_client.write(user)
+            client.write(user)
         except SCIMRequestException as exc:
             LOGGER.warning("failed to sync user", exc=exc, user=user)
             messages.append(
@@ -94,14 +103,13 @@ def scim_sync_group(page: int, provider_pk: int, **kwargs):
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
     if not provider:
         return []
-    client = SCIMClient(provider)
-    group_client = SCIMGroupClient(client)
+    client = SCIMGroupClient(provider)
     paginator = Paginator(Group.objects.all().filter(**kwargs).order_by("pk"), PAGE_SIZE)
     LOGGER.debug("starting group sync for page", page=page)
     messages = []
     for group in paginator.page(page).object_list:
         try:
-            group_client.write(group)
+            client.write(group)
         except SCIMRequestException as exc:
             LOGGER.warning("failed to sync group", exc=exc, group=group)
             messages.append(

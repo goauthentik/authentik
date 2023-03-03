@@ -1,4 +1,6 @@
 """SCIM Client"""
+from typing import Generic, TypeVar
+
 from pydanticscim.service_provider import ServiceProviderConfiguration
 from requests import Session
 from structlog.stdlib import get_logger
@@ -7,8 +9,10 @@ from authentik.lib.utils.http import get_http_session
 from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.models import SCIMProvider
 
+T = TypeVar("T")
 
-class SCIMClient:
+
+class SCIMClient(Generic[T]):
     """SCIM Client"""
 
     base_url: str
@@ -38,7 +42,7 @@ class SCIMClient:
             **kwargs,
             headers={"Authorization": f"Bearer {self.token}"},
         )
-        self.logger.debug("scim request", path=path, method=method)
+        self.logger.debug("scim request", path=path, method=method, **kwargs)
         if response.status_code >= 400:
             self.logger.warning(
                 "Failed to send SCIM request", path=path, method=method, response=response.text
@@ -51,3 +55,11 @@ class SCIMClient:
     def get_service_provider_config(self):
         """Get Service provider config"""
         return ServiceProviderConfiguration(**self._request("GET", "/ServiceProviderConfig"))
+
+    def write(self, obj: T):
+        """Write object to SCIM"""
+        raise NotImplementedError()
+
+    def delete(self, obj: T):
+        """Delete object from SCIM"""
+        raise NotImplementedError()

@@ -29,6 +29,7 @@ from authentik.lib.utils.errors import exception_to_string
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
+from authentik.providers.scim.models import SCIMGroup, SCIMUser
 
 IGNORED_MODELS = (
     Event,
@@ -49,6 +50,8 @@ IGNORED_MODELS = (
     AuthorizationCode,
     AccessToken,
     RefreshToken,
+    SCIMUser,
+    SCIMGroup,
 )
 
 
@@ -188,7 +191,7 @@ class AuditMiddleware:
         user: User, request: HttpRequest, sender, instance: Model, action: str, **_
     ):
         """Signal handler for all object's m2m_changed"""
-        if action not in ["pre_add", "pre_remove"]:
+        if action not in ["pre_add", "pre_remove", "post_clear"]:
             return
         if not should_log_m2m(instance):
             return
