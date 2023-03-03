@@ -2,7 +2,14 @@
 from typing import Generic, TypeVar
 
 from pydantic import ValidationError
-from pydanticscim.service_provider import ServiceProviderConfiguration
+from pydanticscim.service_provider import (
+    Bulk,
+    ChangePassword,
+    Filter,
+    Patch,
+    ServiceProviderConfiguration,
+    Sort,
+)
 from requests import Session
 from structlog.stdlib import get_logger
 
@@ -55,7 +62,14 @@ class SCIMClient(Generic[T]):
 
     def get_service_provider_config(self):
         """Get Service provider config"""
-        default_config = ServiceProviderConfiguration()
+        default_config = ServiceProviderConfiguration(
+            patch=Patch(supported=False),
+            bulk=Bulk(supported=False),
+            filter=Filter(supported=False),
+            changePassword=ChangePassword(supported=False),
+            sort=Sort(supported=False),
+            authenticationSchemes=[],
+        )
         try:
             return ServiceProviderConfiguration.parse_obj(
                 self._request("GET", "/ServiceProviderConfig")

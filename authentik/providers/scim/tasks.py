@@ -7,6 +7,7 @@ from django.db.models import Model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
+from pydanticscim.responses import PatchOp
 from structlog.stdlib import get_logger
 
 from authentik.core.models import Group, User
@@ -128,8 +129,8 @@ def scim_sync_group(page: int, provider_pk: int, **kwargs):
 
 
 @CELERY_APP.task()
-def scim_signal_post_save(model: str, pk: Any):
-    """Handler for post_save signal"""
+def scim_signal_direct(model: str, pk: Any, op: PatchOp):
+    """Handler for post_save and pre_delete signal"""
     model_class: type[Model] = path_to_class(model)
     instance = model_class.objects.filter(pk=pk).first()
     if not instance:
@@ -137,21 +138,28 @@ def scim_signal_post_save(model: str, pk: Any):
     for provider in SCIMProvider.objects.all():
         client = client_for_model(provider, instance)
         try:
-            client.write(instance)
+            if op == PatchOp.add:
+                client.write(instance)
+            if op == PatchOp.remove:
+                client.delete(instance)
         except StopSync as exc:
             LOGGER.warning(exc)
 
 
 @CELERY_APP.task()
-def scim_signal_pre_delete(model: str, pk: Any):
-    """Handler for post_save signal"""
-    model_class: type[Model] = path_to_class(model)
-    instance = model_class.objects.filter(pk=pk).first()
-    if not instance:
+def scim_signal_m2m(group_pk: str, action: str, pk_set: set[int]):
+    """Update m2m (group membership)"""
+    group = Group.objects.filter(pk=group_pk).first()
+    if not group:
         return
     for provider in SCIMProvider.objects.all():
-        client = client_for_model(provider, instance)
+        client = SCIMGroupClient(provider)
         try:
-            client.delete(instance)
-        except StopSync as exc:
+            op = None
+            if action == "post_add":
+                op = PatchOp.add
+            if action == "post_remove":
+                op = PatchOp.remove
+            client.update_group(group, op, pk_set)
+        except (StopSync, SCIMRequestException) as exc:
             LOGGER.warning(exc)

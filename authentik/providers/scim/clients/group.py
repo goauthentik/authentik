@@ -5,7 +5,7 @@ from pydanticscim.group import GroupMember
 from pydanticscim.responses import PatchOp, PatchOperation, PatchRequest
 
 from authentik.core.exceptions import PropertyMappingExpressionException
-from authentik.core.models import Group, User
+from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
 from authentik.providers.scim.clients import PAGE_SIZE
 from authentik.providers.scim.clients.base import SCIMClient
@@ -99,10 +99,17 @@ class SCIMGroupClient(SCIMClient[Group]):
         req = PatchRequest(Operations=ops)
         self._request("PATCH", f"/Groups/{group_id}", data=req.json(exclude_unset=True))
 
-    def update_group(self):
+    def update_group(self, group: Group, action: PatchOp, users_set: set[int]):
+        if not self._config.patch.supported:
+            # Do patch
+            if action == PatchOp.add:
+                return self._patch_add_users(group, users_set)
+            if action == PatchOp.remove:
+                return self._patch_remove_users(group, users_set)
+        # Replace
         pass
 
-    def post_add(self, group: Group, users_set: set[int]):
+    def _patch_add_users(self, group: Group, users_set: set[int]):
         """Add users in users_set to group"""
         if len(users_set) < 1:
             return
@@ -126,7 +133,7 @@ class SCIMGroupClient(SCIMClient[Group]):
             ),
         )
 
-    def post_remove(self, group: Group, users_set: set[int]):
+    def _patch_remove_users(self, group: Group, users_set: set[int]):
         """Remove users in users_set from group"""
         if len(users_set) < 1:
             return
