@@ -19,6 +19,13 @@ from authentik.root.celery import CELERY_APP
 LOGGER = get_logger(__name__)
 
 
+@CELERY_APP.task()
+def scim_sync_all():
+    """Run sync for all providers"""
+    for provider in SCIMProvider.objects.all():
+        scim_sync.delay(provider.pk)
+
+
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
     """Run SCIM full sync for provider"""

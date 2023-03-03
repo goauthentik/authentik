@@ -1,19 +1,16 @@
 """SCIM Provider API Views"""
-from rest_framework.viewsets import ModelViewSet
 from django.utils.text import slugify
+from drf_spectacular.utils import OpenApiResponse, extend_schema
+from rest_framework.decorators import action
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
+from authentik.admin.api.tasks import TaskSerializer
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.events.monitored_tasks import TaskInfo
 from authentik.providers.scim.models import SCIMProvider
-from drf_spectacular.utils import extend_schema
-from rest_framework.request import Request
-from rest_framework.response import Response
-from drf_spectacular.utils import OpenApiResponse
-
-from rest_framework.decorators import action
-
-from authentik.admin.api.tasks import TaskSerializer
 
 
 class SCIMProviderSerializer(ProviderSerializer):
