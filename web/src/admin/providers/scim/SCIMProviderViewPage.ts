@@ -28,9 +28,9 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SCIMProvider, ProvidersApi, SessionUser } from "@goauthentik/api";
+import { ProvidersApi, SCIMProvider, SessionUser } from "@goauthentik/api";
 
-@customElement("ak-provider-ldap-view")
+@customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
     @property()
     set args(value: { [key: string]: number }) {

@@ -11,10 +11,8 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import {
-    SCIMProvider,
-    ProvidersApi,
-} from "@goauthentik/api";
+
+import { ProvidersApi, SCIMProvider } from "@goauthentik/api";
 
 @customElement("ak-provider-scim-form")
 export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
