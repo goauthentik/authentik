@@ -62,7 +62,7 @@ class PromptChallengeResponse(ChallengeResponse):
         stage: PromptStage = kwargs.pop("stage_instance", None)
         plan: FlowPlan = kwargs.pop("plan", None)
         request: HttpRequest = kwargs.pop("request", None)
-        self.user: User = kwargs.pop("user", None)
+        user: User = kwargs.pop("user", None)
         super().__init__(*args, **kwargs)
         self.stage_instance = stage
         self.plan = plan
@@ -74,10 +74,10 @@ class PromptChallengeResponse(ChallengeResponse):
         for field in fields:
             field: Prompt
             choices = field.get_choices(
-                plan.context.get(PLAN_CONTEXT_PROMPT, {}), self.user, self.request
+                plan.context.get(PLAN_CONTEXT_PROMPT, {}), user, self.request
             )
             current = field.get_placeholder(
-                plan.context.get(PLAN_CONTEXT_PROMPT, {}), self.user, self.request
+                plan.context.get(PLAN_CONTEXT_PROMPT, {}), user, self.request
             )
             self.fields[field.field_key] = field.field(current, choices)
             # Special handling for fields with username type
