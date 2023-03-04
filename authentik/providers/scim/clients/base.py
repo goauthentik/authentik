@@ -18,6 +18,7 @@ from authentik.providers.scim.clients.exceptions import SCIMRequestException
 from authentik.providers.scim.models import SCIMProvider
 
 T = TypeVar("T")
+# pylint: disable=invalid-name
 SchemaType = TypeVar("SchemaType")
 
 

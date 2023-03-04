@@ -55,6 +55,7 @@ class KubernetesObjectReconciler(Generic[T]):
             }
         ).lower()
 
+    # pylint: disable=invalid-name
     def up(self):
         """Create object if it doesn't exist, update if needed or recreate if needed."""
         current = None

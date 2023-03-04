@@ -38,5 +38,4 @@ def m2m_changed_scim(sender: type[Model], instance, action: str, pk_set: set, **
     """Sync group membership"""
     if action not in ["post_add", "post_remove"]:
         return
-    print(sender, type(sender), instance, action, pk_set)
-    scim_signal_m2m.delay(str(instance.pk), action, pk_set)
+    scim_signal_m2m.delay(str(instance.pk), action, list(pk_set))
