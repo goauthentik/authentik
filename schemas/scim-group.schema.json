@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:ietf:params:scim:schemas:core:2.0:Group",
+  "title": "Group",
+  "description": "Group",
+  "properties": {
+    "displayName": {
+      "description": "A human-readable name for the Group. REQUIRED.",
+      "type": "string"
+    },
+    "members": {
+      "description": "A list of members of the Group.",
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "value": {
+            "description": "Identifier of the member of this Group.",
+            "type": "string",
+            "readOnly": true
+          },
+          "$ref": {
+            "description": "The URI corresponding to a SCIM resource that is a member of this Group.",
+            "type": "string",
+            "format": "uri",
+            "readOnly": true
+          },
+          "type": {
+            "description": "A label indicating the type of resource, e.g., 'User' or 'Group'.",
+            "type": "string",
+            "enum": [
+              "User",
+              "Group"
+            ],
+            "readOnly": true
+          }
+        },
+        "readOnly": true
+      }
+    }
+  },
+  "required": [
+    "displayName"
+  ]
+}

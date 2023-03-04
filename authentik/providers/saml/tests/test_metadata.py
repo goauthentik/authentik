@@ -59,7 +59,7 @@ class TestServiceProviderMetadataParser(TestCase):
         request = self.factory.get("/")
         metadata = lxml_from_string(MetadataProcessor(provider, request).build_entity_descriptor())
 
-        schema = etree.XMLSchema(etree.parse("xml/saml-schema-metadata-2.0.xsd"))  # nosec
+        schema = etree.XMLSchema(etree.parse("schemas/saml-schema-metadata-2.0.xsd"))  # nosec
         self.assertTrue(schema.validate(metadata))
 
     def test_simple(self):

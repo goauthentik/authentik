@@ -28,7 +28,7 @@ class TestMetadataProcessor(TestCase):
         xml = MetadataProcessor(self.source, request).build_entity_descriptor()
         metadata = lxml_from_string(xml)
 
-        schema = etree.XMLSchema(etree.parse("xml/saml-schema-metadata-2.0.xsd"))  # nosec
+        schema = etree.XMLSchema(etree.parse("schemas/saml-schema-metadata-2.0.xsd"))  # nosec
         self.assertTrue(schema.validate(metadata))
 
     def test_metadata_consistent(self):
