@@ -60,6 +60,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
             scim_user = SCIMUserSchema.parse_obj(delete_none_keys(raw_scim_user))
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
+        scim_user.externalId = str(obj.uid)
         return scim_user
 
     def _create(self, user: User):
