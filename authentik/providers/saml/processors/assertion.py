@@ -73,9 +73,9 @@ class AssertionProcessor:
         # https://commons.lbl.gov/display/IDMgmt/Attribute+Definitions
         attribute_statement = Element(f"{{{NS_SAML_ASSERTION}}}AttributeStatement")
         user = self.http_request.user
-        for mapping in self.provider.property_mappings.order_by("saml_name").select_subclasses():
-            if not isinstance(mapping, SAMLPropertyMapping):
-                continue
+        for mapping in SAMLPropertyMapping.objects.filter(provider=self.provider).order_by(
+            "saml_name"
+        ):
             try:
                 mapping: SAMLPropertyMapping
                 value = mapping.evaluate(
