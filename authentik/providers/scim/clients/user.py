@@ -57,7 +57,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
                     mapping=mapping,
                 ).save()
                 raise StopSync(exc, obj, mapping) from exc
-        if raw_scim_user == {}:
+        if not raw_scim_user:
             raise StopSync(ValueError("No user mappings configured"), obj)
         try:
             scim_user = SCIMUserSchema.parse_obj(delete_none_keys(raw_scim_user))

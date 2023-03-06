@@ -1,8 +1,5 @@
 """SCIM Membership tests"""
-from json import loads
-
 from django.test import TestCase
-from jsonschema import validate
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
@@ -16,8 +13,11 @@ from authentik.providers.scim.tasks import scim_sync
 class SCIMMembershipTests(TestCase):
     """SCIM Membership tests"""
 
+    provider: SCIMProvider
+
     @apply_blueprint("system/providers-scim.yaml")
     def configure(self) -> None:
+        """Configure provider"""
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",

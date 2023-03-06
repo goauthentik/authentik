@@ -70,7 +70,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                     mapping=mapping,
                 ).save()
                 raise StopSync(exc, obj, mapping) from exc
-        if raw_scim_group == {}:
+        if not raw_scim_group:
             raise StopSync(ValueError("No group mappings configured"), obj)
         try:
             scim_group = SCIMGroupSchema.parse_obj(delete_none_keys(raw_scim_group))

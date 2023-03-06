@@ -28,104 +28,101 @@ class SCIMGroupTests(TestCase):
             [SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/group")]
         )
 
-    def test_group_create(self):
+    @Mocker()
+    def test_group_create(self, mock: Mocker):
         """Test group creation"""
         scim_id = generate_id()
-        with Mocker() as mock:
-            mock: Mocker
-            mock.get(
-                "https://localhost/ServiceProviderConfig",
-                json={},
-            )
-            mock.post(
-                "https://localhost/Groups",
-                json={
-                    "id": scim_id,
-                },
-            )
-            uid = generate_id()
-            group = Group.objects.create(
-                name=uid,
-            )
-            self.assertEqual(mock.call_count, 2)
-            self.assertEqual(mock.request_history[0].method, "GET")
-            self.assertEqual(mock.request_history[1].method, "POST")
-            self.assertJSONEqual(
-                mock.request_history[1].body,
-                {"externalId": str(group.pk), "displayName": group.name},
-            )
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,
+            },
+        )
+        uid = generate_id()
+        group = Group.objects.create(
+            name=uid,
+        )
+        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertJSONEqual(
+            mock.request_history[1].body,
+            {"externalId": str(group.pk), "displayName": group.name},
+        )
 
-    def test_group_create_update(self):
+    @Mocker()
+    def test_group_create_update(self, mock: Mocker):
         """Test group creation and update"""
         scim_id = generate_id()
-        with Mocker() as mock:
-            mock: Mocker
-            mock.get(
-                "https://localhost/ServiceProviderConfig",
-                json={},
-            )
-            mock.post(
-                "https://localhost/Groups",
-                json={
-                    "id": scim_id,
-                },
-            )
-            mock.put(
-                "https://localhost/Groups",
-                json={
-                    "id": scim_id,
-                },
-            )
-            uid = generate_id()
-            group = Group.objects.create(
-                name=uid,
-            )
-            self.assertEqual(mock.call_count, 2)
-            self.assertEqual(mock.request_history[0].method, "GET")
-            self.assertEqual(mock.request_history[1].method, "POST")
-            body = loads(mock.request_history[1].body)
-            with open("schemas/scim-group.schema.json", encoding="utf-8") as schema:
-                validate(body, loads(schema.read()))
-            self.assertEqual(
-                body,
-                {"externalId": str(group.pk), "displayName": group.name},
-            )
-            group.save()
-            self.assertEqual(mock.call_count, 4)
-            self.assertEqual(mock.request_history[0].method, "GET")
-            self.assertEqual(mock.request_history[1].method, "POST")
-            self.assertEqual(mock.request_history[2].method, "GET")
-            self.assertEqual(mock.request_history[3].method, "PUT")
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,
+            },
+        )
+        mock.put(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,
+            },
+        )
+        uid = generate_id()
+        group = Group.objects.create(
+            name=uid,
+        )
+        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        body = loads(mock.request_history[1].body)
+        with open("schemas/scim-group.schema.json", encoding="utf-8") as schema:
+            validate(body, loads(schema.read()))
+        self.assertEqual(
+            body,
+            {"externalId": str(group.pk), "displayName": group.name},
+        )
+        group.save()
+        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertEqual(mock.request_history[2].method, "GET")
+        self.assertEqual(mock.request_history[3].method, "PUT")
 
-    def test_group_create_delete(self):
+    @Mocker()
+    def test_group_create_delete(self, mock: Mocker):
         """Test group creation"""
         scim_id = generate_id()
-        with Mocker() as mock:
-            mock: Mocker
-            mock.get(
-                "https://localhost/ServiceProviderConfig",
-                json={},
-            )
-            mock.post(
-                "https://localhost/Groups",
-                json={
-                    "id": scim_id,
-                },
-            )
-            mock.delete("https://localhost/Groups", status_code=204)
-            uid = generate_id()
-            group = Group.objects.create(
-                name=uid,
-            )
-            self.assertEqual(mock.call_count, 2)
-            self.assertEqual(mock.request_history[0].method, "GET")
-            self.assertEqual(mock.request_history[1].method, "POST")
-            self.assertJSONEqual(
-                mock.request_history[1].body,
-                {"externalId": str(group.pk), "displayName": group.name},
-            )
-            group.delete()
-            self.assertEqual(mock.call_count, 4)
-            self.assertEqual(mock.request_history[0].method, "GET")
-            self.assertEqual(mock.request_history[3].method, "DELETE")
-            self.assertEqual(mock.request_history[3].url, f"https://localhost/Groups/{scim_id}")
+        mock.get(
+            "https://localhost/ServiceProviderConfig",
+            json={},
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": scim_id,
+            },
+        )
+        mock.delete("https://localhost/Groups", status_code=204)
+        uid = generate_id()
+        group = Group.objects.create(
+            name=uid,
+        )
+        self.assertEqual(mock.call_count, 2)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertJSONEqual(
+            mock.request_history[1].body,
+            {"externalId": str(group.pk), "displayName": group.name},
+        )
+        group.delete()
+        self.assertEqual(mock.call_count, 4)
+        self.assertEqual(mock.request_history[0].method, "GET")
+        self.assertEqual(mock.request_history[3].method, "DELETE")
+        self.assertEqual(mock.request_history[3].url, f"https://localhost/Groups/{scim_id}")
