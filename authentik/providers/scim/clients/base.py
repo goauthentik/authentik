@@ -1,6 +1,6 @@
 """SCIM Client"""
 from typing import Generic, TypeVar
-
+from requests import RequestException
 from pydantic import ValidationError
 from pydanticscim.service_provider import (
     Bulk,
@@ -46,12 +46,15 @@ class SCIMClient(Generic[T, SchemaType]):
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
         """Wrapper to send a request to the full URL"""
-        response = self._session.request(
-            method,
-            f"{self.base_url}{path}",
-            **kwargs,
-            headers={"Authorization": f"Bearer {self.token}"},
-        )
+        try:
+            response = self._session.request(
+                method,
+                f"{self.base_url}{path}",
+                **kwargs,
+                headers={"Authorization": f"Bearer {self.token}"},
+            )
+        except RequestException as exc:
+            raise SCIMRequestException(None) from exc
         self.logger.debug("scim request", path=path, method=method, **kwargs)
         if response.status_code >= 400:
             self.logger.warning(

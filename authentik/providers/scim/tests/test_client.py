@@ -15,7 +15,7 @@ class SCIMClientTests(TestCase):
     def setUp(self) -> None:
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
-            url="https://foo",
+            url="https://localhost",
             token=generate_id(),
         )
         self.provider.property_mappings.add(
@@ -31,7 +31,7 @@ class SCIMClientTests(TestCase):
         with Mocker() as mock:
             mock: Mocker
             mock.get(
-                "https://foo/ServiceProviderConfig",
+                "https://localhost/ServiceProviderConfig",
                 json={
                     "schemas": ["urn:ietf:params:scim:schemas:core:2.0:ServiceProviderConfig"],
                     "documentationUri": (
@@ -70,7 +70,7 @@ class SCIMClientTests(TestCase):
         with Mocker() as mock:
             mock: Mocker
             mock.get(
-                "https://foo/ServiceProviderConfig",
+                "https://localhost/ServiceProviderConfig",
                 json={},
             )
             SCIMClient(self.provider)

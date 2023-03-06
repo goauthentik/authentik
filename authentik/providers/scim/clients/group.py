@@ -8,7 +8,6 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
 from authentik.policies.utils import delete_none_keys
-from authentik.providers.scim.clients import PAGE_SIZE
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import StopSync
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
@@ -69,9 +68,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         scim_group.externalId = str(obj.pk)
 
         users = list(obj.users.order_by("id").values_list("id", flat=True))
-        connections = SCIMUser.objects.filter(provider=self.provider, user__pk__in=users)[
-            :PAGE_SIZE
-        ]
+        connections = SCIMUser.objects.filter(provider=self.provider, user__pk__in=users)
         for user in connections:
             scim_group.members.append(
                 GroupMember(

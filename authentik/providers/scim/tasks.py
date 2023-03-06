@@ -74,16 +74,19 @@ def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
 @CELERY_APP.task()
 def scim_sync_users(page: int, provider_pk: int, **kwargs):
     """Sync single or multiple users to SCIM"""
+    messages = []
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
     if not provider:
-        return []
-    client = SCIMUserClient(provider)
+        return messages
+    try:
+        client = SCIMUserClient(provider)
+    except SCIMRequestException:
+        return messages
     paginator = Paginator(
         User.objects.all().filter(**kwargs).exclude(pk=get_anonymous_user().pk).order_by("pk"),
         PAGE_SIZE,
     )
     LOGGER.debug("starting user sync for page", page=page)
-    messages = []
     for user in paginator.page(page).object_list:
         try:
             client.write(user)
@@ -104,13 +107,16 @@ def scim_sync_users(page: int, provider_pk: int, **kwargs):
 @CELERY_APP.task()
 def scim_sync_group(page: int, provider_pk: int, **kwargs):
     """Sync single or multiple groups to SCIM"""
+    messages = []
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
     if not provider:
-        return []
-    client = SCIMGroupClient(provider)
+        return messages
+    try:
+        client = SCIMGroupClient(provider)
+    except SCIMRequestException:
+        return messages
     paginator = Paginator(Group.objects.all().filter(**kwargs).order_by("pk"), PAGE_SIZE)
     LOGGER.debug("starting group sync for page", page=page)
-    messages = []
     for group in paginator.page(page).object_list:
         try:
             client.write(group)

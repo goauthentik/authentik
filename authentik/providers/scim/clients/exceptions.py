@@ -27,12 +27,14 @@ class StopSync(SentryIgnoredException):
 class SCIMRequestException(SentryIgnoredException):
     """Exception raised when an SCIM request fails"""
 
-    _response: Response
+    _response: Optional[Response]
 
-    def __init__(self, response: Response) -> None:
+    def __init__(self, response: Optional[Response]= None) -> None:
         self._response = response
 
     def __str__(self) -> str:
+        if not self._response:
+            return super().__str__()
         try:
             error = SCIMError.parse_raw(self._response.text)
             return error.detail

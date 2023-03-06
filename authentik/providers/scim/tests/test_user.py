@@ -18,7 +18,7 @@ class SCIMUserTests(TestCase):
     def setUp(self) -> None:
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
-            url="https://foo",
+            url="https://localhost",
             token=generate_id(),
         )
         self.provider.property_mappings.add(
@@ -34,11 +34,11 @@ class SCIMUserTests(TestCase):
         with Mocker() as mock:
             mock: Mocker
             mock.get(
-                "https://foo/ServiceProviderConfig",
+                "https://localhost/ServiceProviderConfig",
                 json={},
             )
             mock.post(
-                "https://foo/Users",
+                "https://localhost/Users",
                 json={
                     "id": scim_id,
                 },
@@ -79,17 +79,17 @@ class SCIMUserTests(TestCase):
         with Mocker() as mock:
             mock: Mocker
             mock.get(
-                "https://foo/ServiceProviderConfig",
+                "https://localhost/ServiceProviderConfig",
                 json={},
             )
             mock.post(
-                "https://foo/Users",
+                "https://localhost/Users",
                 json={
                     "id": scim_id,
                 },
             )
             mock.put(
-                "https://foo/Users",
+                "https://localhost/Users",
                 json={
                     "id": scim_id,
                 },
@@ -139,16 +139,16 @@ class SCIMUserTests(TestCase):
         with Mocker() as mock:
             mock: Mocker
             mock.get(
-                "https://foo/ServiceProviderConfig",
+                "https://localhost/ServiceProviderConfig",
                 json={},
             )
             mock.post(
-                "https://foo/Users",
+                "https://localhost/Users",
                 json={
                     "id": scim_id,
                 },
             )
-            mock.delete("https://foo/Users", status_code=204)
+            mock.delete("https://localhost/Users", status_code=204)
             uid = generate_id()
             user = User.objects.create(
                 username=uid,
@@ -182,4 +182,4 @@ class SCIMUserTests(TestCase):
             self.assertEqual(mock.call_count, 4)
             self.assertEqual(mock.request_history[0].method, "GET")
             self.assertEqual(mock.request_history[3].method, "DELETE")
-            self.assertEqual(mock.request_history[3].url, f"https://foo/Users/{scim_id}")
+            self.assertEqual(mock.request_history[3].url, f"https://localhost/Users/{scim_id}")
