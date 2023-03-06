@@ -248,6 +248,7 @@ class Provider(SerializerModel):
     authorization_flow = models.ForeignKey(
         "authentik_flows.Flow",
         on_delete=models.CASCADE,
+        null=True,
         help_text=_("Flow used when authorizing this provider."),
         related_name="provider_authorization",
     )
@@ -630,7 +631,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         try:
             return evaluator.evaluate(self.expression)
         except Exception as exc:
-            raise PropertyMappingExpressionException(str(exc)) from exc
+            raise PropertyMappingExpressionException(exc) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"

@@ -4007,6 +4007,16 @@ paths:
           - app_password
           - recovery
           - verification
+        description: |-
+          * `verification` - Intent Verification
+          * `api` - Intent Api
+          * `recovery` - Intent Recovery
+          * `app_password` - Intent App Password
+
+          * `verification` - Intent Verification
+          * `api` - Intent Api
+          * `recovery` - Intent Recovery
+          * `app_password` - Intent App Password
       - in: query
         name: managed
         schema:
@@ -5864,6 +5874,14 @@ paths:
           - alert
           - notice
           - warning
+        description: |-
+          * `notice` - Notice
+          * `warning` - Warning
+          * `alert` - Alert
+
+          * `notice` - Notice
+          * `warning` - Warning
+          * `alert` - Alert
       - in: query
         name: user
         schema:
@@ -6139,8 +6157,12 @@ paths:
           - alert
           - notice
           - warning
-        description: Controls which severity level the created notifications will
-          have.
+        description: |-
+          Controls which severity level the created notifications will have.
+
+          * `notice` - Notice
+          * `warning` - Warning
+          * `alert` - Alert
       tags:
       - events
       security:
@@ -6391,6 +6413,16 @@ paths:
           - local
           - webhook
           - webhook_slack
+        description: |-
+          * `local` - authentik inbuilt notifications
+          * `webhook` - Generic Webhook
+          * `webhook_slack` - Slack Webhook (Slack/Discord)
+          * `email` - Email
+
+          * `local` - authentik inbuilt notifications
+          * `webhook` - Generic Webhook
+          * `webhook_slack` - Slack Webhook (Slack/Discord)
+          * `email` - Email
       - in: query
         name: name
         schema:
@@ -6724,10 +6756,12 @@ paths:
           - restart
           - restart_with_context
           - retry
-        description: Configure how the flow executor should handle an invalid response
-          to a challenge. RETRY returns the error message and a similar challenge
-          to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
-          restarts the flow while keeping the current context.
+        description: |-
+          Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
+
+          * `retry` - Retry
+          * `restart` - Restart
+          * `restart_with_context` - Restart With Context
       - in: query
         name: order
         schema:
@@ -6771,6 +6805,12 @@ paths:
           enum:
           - all
           - any
+        description: |-
+          * `all` - ALL, all policies must pass
+          * `any` - ANY, any policy must pass
+
+          * `all` - ALL, all policies must pass
+          * `any` - ANY, any policy must pass
       - in: query
         name: re_evaluate_policies
         schema:
@@ -7154,7 +7194,12 @@ paths:
           - continue
           - message
           - message_continue
-        description: Configure what should happen when a flow denies access to a user.
+        description: |-
+          Configure what should happen when a flow denies access to a user.
+
+          * `message_continue` - Message Continue
+          * `message` - Message
+          * `continue` - Continue
       - in: query
         name: designation
         schema:
@@ -7167,8 +7212,16 @@ paths:
           - recovery
           - stage_configuration
           - unenrollment
-        description: Decides what this Flow is used for. For example, the Authentication
-          flow is redirect to when an un-authenticated user visits authentik.
+        description: |-
+          Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
+
+          * `authentication` - Authentication
+          * `authorization` - Authorization
+          * `invalidation` - Invalidation
+          * `enrollment` - Enrollment
+          * `unenrollment` - Unrenollment
+          * `recovery` - Recovery
+          * `stage_configuration` - Stage Configuration
       - in: query
         name: flow_uuid
         schema:
@@ -10778,8 +10831,36 @@ paths:
           - system_task_execution
           - update_available
           - user_write
-        description: Match created events with this action type. When left empty,
-          all action types will be matched.
+        description: |-
+          Match created events with this action type. When left empty, all action types will be matched.
+
+          * `login` - Login
+          * `login_failed` - Login Failed
+          * `logout` - Logout
+          * `user_write` - User Write
+          * `suspicious_request` - Suspicious Request
+          * `password_set` - Password Set
+          * `secret_view` - Secret View
+          * `secret_rotate` - Secret Rotate
+          * `invitation_used` - Invite Used
+          * `authorize_application` - Authorize Application
+          * `source_linked` - Source Linked
+          * `impersonation_started` - Impersonation Started
+          * `impersonation_ended` - Impersonation Ended
+          * `flow_execution` - Flow Execution
+          * `policy_execution` - Policy Execution
+          * `policy_exception` - Policy Exception
+          * `property_mapping_exception` - Property Mapping Exception
+          * `system_task_execution` - System Task Execution
+          * `system_task_exception` - System Task Exception
+          * `system_exception` - System Exception
+          * `configuration_error` - Configuration Error
+          * `model_created` - Model Created
+          * `model_updated` - Model Updated
+          * `model_deleted` - Model Deleted
+          * `email_sent` - Email Sent
+          * `update_available` - Update Available
+          * `custom_` - Custom Prefix
       - in: query
         name: app
         schema:
@@ -13546,6 +13627,292 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /propertymappings/scim/:
+    get:
+      operationId: propertymappings_scim_list
+      description: SCIMMapping Viewset
+      parameters:
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSCIMMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_scim_create
+      description: SCIMMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/scim/{pm_uuid}/:
+    get:
+      operationId: propertymappings_scim_retrieve
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_scim_update
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_scim_partial_update
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSCIMMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_scim_destroy
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/scim/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_scim_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this SCIM Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /propertymappings/scope/:
     get:
       operationId: propertymappings_scope_list
@@ -14351,8 +14718,11 @@ paths:
           enum:
           - confidential
           - public
-        description: Confidential clients are capable of maintaining the confidentiality
-          of their credentials. Public clients are incapable
+        description: |-
+          Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
+
+          * `confidential` - Confidential
+          * `public` - Public
       - in: query
         name: include_claims_in_id_token
         schema:
@@ -14364,7 +14734,11 @@ paths:
           enum:
           - global
           - per_provider
-        description: Configure how the issuer field of the ID Token should be filled.
+        description: |-
+          Configure how the issuer field of the ID Token should be filled.
+
+          * `global` - Same identifier is used for all providers
+          * `per_provider` - Each provider has a different issuer, based on the application slug.
       - in: query
         name: name
         schema:
@@ -14425,8 +14799,14 @@ paths:
           - user_id
           - user_upn
           - user_username
-        description: Configure what data should be used as unique User Identifier.
-          For most cases, the default should be fine.
+        description: |-
+          Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
+
+          * `hashed_user_id` - Based on the Hashed User ID
+          * `user_id` - Based on user ID
+          * `user_username` - Based on the username
+          * `user_email` - Based on the User's Email. This is recommended over the UPN method.
+          * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
       tags:
       - providers
       security:
@@ -15089,6 +15469,16 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#sha384
           - http://www.w3.org/2001/04/xmlenc#sha256
           - http://www.w3.org/2001/04/xmlenc#sha512
+        description: |-
+          * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
+          * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
+          * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
+          * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
+
+          * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
+          * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
+          * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
+          * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
       - in: query
         name: issuer
         schema:
@@ -15149,6 +15539,18 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+        description: |-
+          * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
+          * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
+
+          * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
+          * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
       - in: query
         name: signing_kp
         schema:
@@ -15162,8 +15564,11 @@ paths:
           enum:
           - post
           - redirect
-        description: This determines how authentik sends the response back to the
-          Service Provider.
+        description: |-
+          This determines how authentik sends the response back to the Service Provider.
+
+          * `redirect` - Redirect
+          * `post` - Post
       - in: query
         name: verification_kp
         schema:
@@ -15498,6 +15903,319 @@ paths:
           description: Successfully imported provider
         '400':
           description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim/:
+    get:
+      operationId: providers_scim_list
+      description: SCIMProvider Viewset
+      parameters:
+      - in: query
+        name: authorization_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: token
+        schema:
+          type: string
+      - in: query
+        name: url
+        schema:
+          type: string
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSCIMProviderList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_scim_create
+      description: SCIMProvider Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim/{id}/:
+    get:
+      operationId: providers_scim_retrieve
+      description: SCIMProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: providers_scim_update
+      description: SCIMProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SCIMProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: providers_scim_partial_update
+      description: SCIMProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSCIMProviderRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SCIMProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_scim_destroy
+      description: SCIMProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim/{id}/sync_status/:
+    get:
+      operationId: providers_scim_sync_status_retrieve
+      description: Get provider's sync status
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+          description: ''
+        '404':
+          description: Task not found
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/scim/{id}/used_by/:
+    get:
+      operationId: providers_scim_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this SCIM Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
         '403':
           content:
             application/json:
@@ -16462,6 +17180,12 @@ paths:
           enum:
           - all
           - any
+        description: |-
+          * `all` - ALL, all policies must pass
+          * `any` - ANY, any policy must pass
+
+          * `all` - ALL, all policies must pass
+          * `any` - ANY, any policy must pass
       - in: query
         name: profile_url
         schema:
@@ -16494,8 +17218,14 @@ paths:
           - identifier
           - username_deny
           - username_link
-        description: How the source determines if an existing user should be authenticated
-          or a new user enrolled.
+        description: |-
+          How the source determines if an existing user should be authenticated or a new user enrolled.
+
+          * `identifier` - Use the source-specific identifier
+          * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+          * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+          * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+          * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
       tags:
       - sources
       security:
@@ -16819,6 +17549,12 @@ paths:
           enum:
           - all
           - any
+        description: |-
+          * `all` - ALL, all policies must pass
+          * `any` - ANY, any policy must pass
+
+          * `all` - ALL, all policies must pass
+          * `any` - ANY, any policy must pass
       - name: search
         required: false
         in: query
@@ -16839,8 +17575,14 @@ paths:
           - identifier
           - username_deny
           - username_link
-        description: How the source determines if an existing user should be authenticated
-          or a new user enrolled.
+        description: |-
+          How the source determines if an existing user should be authenticated or a new user enrolled.
+
+          * `identifier` - Use the source-specific identifier
+          * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+          * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+          * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+          * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
       tags:
       - sources
       security:
@@ -17153,6 +17895,14 @@ paths:
           - POST
           - POST_AUTO
           - REDIRECT
+        description: |-
+          * `REDIRECT` - Redirect Binding
+          * `POST` - POST Binding
+          * `POST_AUTO` - POST Binding with auto-confirmation
+
+          * `REDIRECT` - Redirect Binding
+          * `POST` - POST Binding
+          * `POST_AUTO` - POST Binding with auto-confirmation
       - in: query
         name: digest_algorithm
         schema:
@@ -17162,6 +17912,16 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#sha384
           - http://www.w3.org/2001/04/xmlenc#sha256
           - http://www.w3.org/2001/04/xmlenc#sha512
+        description: |-
+          * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
+          * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
+          * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
+          * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
+
+          * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
+          * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
+          * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
+          * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
       - in: query
         name: enabled
         schema:
@@ -17193,8 +17953,14 @@ paths:
           - urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName
           - urn:oasis:names:tc:SAML:2.0:nameid-format:persistent
           - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
-        description: NameID Policy sent to the IdP. Can be unset, in which case no
-          Policy is sent.
+        description: |-
+          NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+          * `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` - Email
+          * `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` - Persistent
+          * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
+          * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
+          * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
       - name: ordering
         required: false
         in: query
@@ -17220,6 +17986,12 @@ paths:
           enum:
           - all
           - any
+        description: |-
+          * `all` - ALL, all policies must pass
+          * `any` - ANY, any policy must pass
+
+          * `all` - ALL, all policies must pass
+          * `any` - ANY, any policy must pass
       - in: query
         name: pre_authentication_flow
         schema:
@@ -17241,6 +18013,18 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha256
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
+        description: |-
+          * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
+          * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
+
+          * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
+          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
+          * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
       - in: query
         name: signing_kp
         schema:
@@ -17272,8 +18056,14 @@ paths:
           - identifier
           - username_deny
           - username_link
-        description: How the source determines if an existing user should be authenticated
-          or a new user enrolled.
+        description: |-
+          How the source determines if an existing user should be authenticated or a new user enrolled.
+
+          * `identifier` - Use the source-specific identifier
+          * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+          * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+          * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+          * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
       tags:
       - sources
       security:
@@ -19173,6 +19963,12 @@ paths:
           enum:
           - basic
           - bearer
+        description: |-
+          * `basic` - Basic
+          * `bearer` - Bearer
+
+          * `basic` - Basic
+          * `bearer` - Bearer
       - in: query
         name: configure_flow
         schema:
@@ -19216,6 +20012,12 @@ paths:
           enum:
           - generic
           - twilio
+        description: |-
+          * `twilio` - Twilio
+          * `generic` - Generic
+
+          * `twilio` - Twilio
+          * `generic` - Generic
       - name: search
         required: false
         in: query
@@ -19767,6 +20569,12 @@ paths:
           enum:
           - 6
           - 8
+        description: |-
+          * `6` - 6 digits, widely compatible
+          * `8` - 8 digits, not compatible with apps like Google Authenticator
+
+          * `6` - 6 digits, widely compatible
+          * `8` - 8 digits, not compatible with apps like Google Authenticator
       - in: query
         name: name
         schema:
@@ -20062,6 +20870,14 @@ paths:
           - configure
           - deny
           - skip
+        description: |-
+          * `skip` - Skip
+          * `deny` - Deny
+          * `configure` - Configure
+
+          * `skip` - Skip
+          * `deny` - Deny
+          * `configure` - Configure
       - name: ordering
         required: false
         in: query
@@ -20335,6 +21151,12 @@ paths:
           enum:
           - cross-platform
           - platform
+        description: |-
+          * `platform` - Platform
+          * `cross-platform` - Cross Platform
+
+          * `platform` - Platform
+          * `cross-platform` - Cross Platform
       - in: query
         name: configure_flow
         schema:
@@ -20370,6 +21192,14 @@ paths:
           - discouraged
           - preferred
           - required
+        description: |-
+          * `discouraged` - Discouraged
+          * `preferred` - Preferred
+          * `required` - Required
+
+          * `discouraged` - Discouraged
+          * `preferred` - Preferred
+          * `required` - Required
       - name: search
         required: false
         in: query
@@ -20389,6 +21219,14 @@ paths:
           - discouraged
           - preferred
           - required
+        description: |-
+          * `required` - Required
+          * `preferred` - Preferred
+          * `discouraged` - Discouraged
+
+          * `required` - Required
+          * `preferred` - Preferred
+          * `discouraged` - Discouraged
       tags:
       - stages
       security:
@@ -20915,6 +21753,14 @@ paths:
           - always_require
           - expiring
           - permanent
+        description: |-
+          * `always_require` - Always Require
+          * `permanent` - Permanent
+          * `expiring` - Expiring
+
+          * `always_require` - Always Require
+          * `permanent` - Permanent
+          * `expiring` - Expiring
       - in: query
         name: name
         schema:
@@ -23289,6 +24135,36 @@ paths:
           - text
           - text_read_only
           - username
+        description: |-
+          * `text` - Text: Simple Text input
+          * `text_read_only` - Text (read-only): Simple Text input, but cannot be edited.
+          * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
+          * `email` - Email: Text field with Email type.
+          * `password` - Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.
+          * `number` - Number
+          * `checkbox` - Checkbox
+          * `date` - Date
+          * `date-time` - Date Time
+          * `file` - File: File upload for arbitrary files. File content will be available in flow context as data-URI
+          * `separator` - Separator: Static Separator Line
+          * `hidden` - Hidden: Hidden field, can be used to insert data into form.
+          * `static` - Static: Static value, displayed as-is.
+          * `ak-locale` - authentik: Selection of locales authentik supports
+
+          * `text` - Text: Simple Text input
+          * `text_read_only` - Text (read-only): Simple Text input, but cannot be edited.
+          * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
+          * `email` - Email: Text field with Email type.
+          * `password` - Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.
+          * `number` - Number
+          * `checkbox` - Checkbox
+          * `date` - Date
+          * `date-time` - Date Time
+          * `file` - File: File upload for arbitrary files. File content will be available in flow context as data-URI
+          * `separator` - Separator: Static Separator Line
+          * `hidden` - Hidden: Hidden field, can be used to insert data into form.
+          * `static` - Static: Static value, displayed as-is.
+          * `ak-locale` - authentik: Selection of locales authentik supports
       tags:
       - stages
       security:
@@ -24702,6 +25578,14 @@ paths:
           - always_create
           - create_when_required
           - never_create
+        description: |-
+          * `never_create` - Never Create
+          * `create_when_required` - Create When Required
+          * `always_create` - Always Create
+
+          * `never_create` - Never Create
+          * `create_when_required` - Create When Required
+          * `always_create` - Always Create
       - in: query
         name: user_path_template
         schema:
@@ -25002,6 +25886,7 @@ components:
       - authentik.providers.oauth2
       - authentik.providers.proxy
       - authentik.providers.saml
+      - authentik.providers.scim
       - authentik.recovery
       - authentik.sources.ldap
       - authentik.sources.oauth
@@ -25030,6 +25915,53 @@ components:
       - authentik.blueprints
       - authentik.core
       type: string
+      description: |-
+        * `authentik.admin` - authentik Admin
+        * `authentik.api` - authentik API
+        * `authentik.crypto` - authentik Crypto
+        * `authentik.events` - authentik Events
+        * `authentik.flows` - authentik Flows
+        * `authentik.lib` - authentik lib
+        * `authentik.outposts` - authentik Outpost
+        * `authentik.policies.dummy` - authentik Policies.Dummy
+        * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
+        * `authentik.policies.expiry` - authentik Policies.Expiry
+        * `authentik.policies.expression` - authentik Policies.Expression
+        * `authentik.policies.password` - authentik Policies.Password
+        * `authentik.policies.reputation` - authentik Policies.Reputation
+        * `authentik.policies` - authentik Policies
+        * `authentik.providers.ldap` - authentik Providers.LDAP
+        * `authentik.providers.oauth2` - authentik Providers.OAuth2
+        * `authentik.providers.proxy` - authentik Providers.Proxy
+        * `authentik.providers.saml` - authentik Providers.SAML
+        * `authentik.providers.scim` - authentik Providers.SCIM
+        * `authentik.recovery` - authentik Recovery
+        * `authentik.sources.ldap` - authentik Sources.LDAP
+        * `authentik.sources.oauth` - authentik Sources.OAuth
+        * `authentik.sources.plex` - authentik Sources.Plex
+        * `authentik.sources.saml` - authentik Sources.SAML
+        * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
+        * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
+        * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
+        * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
+        * `authentik.stages.authenticator_validate` - authentik Stages.Authenticator.Validate
+        * `authentik.stages.authenticator_webauthn` - authentik Stages.Authenticator.WebAuthn
+        * `authentik.stages.captcha` - authentik Stages.Captcha
+        * `authentik.stages.consent` - authentik Stages.Consent
+        * `authentik.stages.deny` - authentik Stages.Deny
+        * `authentik.stages.dummy` - authentik Stages.Dummy
+        * `authentik.stages.email` - authentik Stages.Email
+        * `authentik.stages.identification` - authentik Stages.Identification
+        * `authentik.stages.invitation` - authentik Stages.User Invitation
+        * `authentik.stages.password` - authentik Stages.Password
+        * `authentik.stages.prompt` - authentik Stages.Prompt
+        * `authentik.stages.user_delete` - authentik Stages.User Delete
+        * `authentik.stages.user_login` - authentik Stages.User Login
+        * `authentik.stages.user_logout` - authentik Stages.User Logout
+        * `authentik.stages.user_write` - authentik Stages.User Write
+        * `authentik.tenants` - authentik Tenants
+        * `authentik.blueprints` - authentik Blueprints
+        * `authentik.core` - authentik Core
     AppleChallengeResponseRequest:
       type: object
       description: Pseudo class for plex response
@@ -25097,6 +26029,7 @@ components:
         launch_url:
           type: string
           nullable: true
+          description: Allow formatting of launch URL
           readOnly: true
         open_in_new_tab:
           type: boolean
@@ -25107,6 +26040,9 @@ components:
         meta_icon:
           type: string
           nullable: true
+          description: |-
+            Get the URL to the App Icon image. If the name is /static or starts with http
+            it is returned as-is
           readOnly: true
         meta_description:
           type: string
@@ -25162,6 +26098,9 @@ components:
       - basic
       - bearer
       type: string
+      description: |-
+        * `basic` - Basic
+        * `bearer` - Bearer
     AuthenticateWebAuthnStage:
       type: object
       description: AuthenticateWebAuthnStage Serializer
@@ -25175,15 +26114,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -25246,10 +26189,11 @@ components:
           format: uuid
         current:
           type: boolean
+          description: Check if session is currently active session
           readOnly: true
         user_agent:
           type: object
-          description: User agent details
+          description: Get parsed user agent
           properties:
             device:
               type: object
@@ -25312,7 +26256,7 @@ components:
           readOnly: true
         geo_ip:
           type: object
-          description: GeoIP Details
+          description: Get parsed user agent
           properties:
             continent:
               type: string
@@ -25361,11 +26305,19 @@ components:
       - require_unauthenticated
       - require_superuser
       type: string
+      description: |-
+        * `none` - None
+        * `require_authenticated` - Require Authenticated
+        * `require_unauthenticated` - Require Unauthenticated
+        * `require_superuser` - Require Superuser
     AuthenticatorAttachmentEnum:
       enum:
       - platform
       - cross-platform
       type: string
+      description: |-
+        * `platform` - Platform
+        * `cross-platform` - Cross Platform
     AuthenticatorDuoChallenge:
       type: object
       description: Duo Challenge
@@ -25421,15 +26373,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -25571,15 +26527,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -25723,15 +26683,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -25830,15 +26794,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -25901,15 +26869,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -25937,7 +26909,12 @@ components:
         webauthn_user_verification:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
-          description: Enforce user verification for WebAuthn devices.
+          description: |-
+            Enforce user verification for WebAuthn devices.
+
+            * `required` - Required
+            * `preferred` - Preferred
+            * `discouraged` - Discouraged
       required:
       - component
       - meta_model_name
@@ -25979,7 +26956,12 @@ components:
         webauthn_user_verification:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
-          description: Enforce user verification for WebAuthn devices.
+          description: |-
+            Enforce user verification for WebAuthn devices.
+
+            * `required` - Required
+            * `preferred` - Preferred
+            * `discouraged` - Discouraged
       required:
       - name
     AuthenticatorValidationChallenge:
@@ -26123,12 +27105,20 @@ components:
       - authentik.core.auth.TokenBackend
       - authentik.sources.ldap.auth.LDAPBackend
       type: string
+      description: |-
+        * `authentik.core.auth.InbuiltBackend` - User database + standard password
+        * `authentik.core.auth.TokenBackend` - User database + app passwords
+        * `authentik.sources.ldap.auth.LDAPBackend` - User database + LDAP password
     BindingTypeEnum:
       enum:
       - REDIRECT
       - POST
       - POST_AUTO
       type: string
+      description: |-
+        * `REDIRECT` - Redirect Binding
+        * `POST` - POST Binding
+        * `POST_AUTO` - POST Binding with auto-confirmation
     BlueprintFile:
       type: object
       properties:
@@ -26224,6 +27214,12 @@ components:
       - orphaned
       - unknown
       type: string
+      description: |-
+        * `successful` - Successful
+        * `warning` - Warning
+        * `error` - Error
+        * `orphaned` - Orphaned
+        * `unknown` - Unknown
     Cache:
       type: object
       description: Generic cache stats for an object
@@ -26240,6 +27236,11 @@ components:
       - can_impersonate
       - can_debug
       type: string
+      description: |-
+        * `can_save_media` - Can Save Media
+        * `can_geo_ip` - Can Geo Ip
+        * `can_impersonate` - Can Impersonate
+        * `can_debug` - Can Debug
     CaptchaChallenge:
       type: object
       description: Site public key
@@ -26297,15 +27298,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -26393,32 +27398,40 @@ components:
         fingerprint_sha256:
           type: string
           nullable: true
+          description: Get certificate Hash (SHA256)
           readOnly: true
         fingerprint_sha1:
           type: string
           nullable: true
+          description: Get certificate Hash (SHA1)
           readOnly: true
         cert_expiry:
           type: string
           format: date-time
           nullable: true
+          description: Get certificate expiry
           readOnly: true
         cert_subject:
           type: string
           nullable: true
+          description: Get certificate subject as full rfc4514
           readOnly: true
         private_key_available:
           type: boolean
+          description: Show if this keypair has a private key configured or not
           readOnly: true
         private_key_type:
           type: string
           nullable: true
+          description: Get the private key's type, if set
           readOnly: true
         certificate_download_url:
           type: string
+          description: Get URL to download certificate
           readOnly: true
         private_key_download_url:
           type: string
+          description: Get URL to download private key
           readOnly: true
         managed:
           type: string
@@ -26474,6 +27487,10 @@ components:
       - shell
       - redirect
       type: string
+      description: |-
+        * `native` - NATIVE
+        * `shell` - SHELL
+        * `redirect` - REDIRECT
     ChallengeTypes:
       oneOf:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
@@ -26528,6 +27545,9 @@ components:
       - confidential
       - public
       type: string
+      description: |-
+        * `confidential` - Confidential
+        * `public` - Public
     Config:
       type: object
       description: Serialize authentik Config into DRF Object
@@ -26619,15 +27639,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -26652,6 +27676,10 @@ components:
       - permanent
       - expiring
       type: string
+      description: |-
+        * `always_require` - Always Require
+        * `permanent` - Permanent
+        * `expiring` - Expiring
     ConsentStageRequest:
       type: object
       description: ConsentStage Serializer
@@ -26746,6 +27774,10 @@ components:
       - message
       - continue
       type: string
+      description: |-
+        * `message_continue` - Message Continue
+        * `message` - Message
+        * `continue` - Continue
     DenyStage:
       type: object
       description: DenyStage Serializer
@@ -26759,15 +27791,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -26799,12 +27835,15 @@ components:
       properties:
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         pk:
           type: integer
@@ -26812,6 +27851,7 @@ components:
           type: string
         type:
           type: string
+          description: Get type of device
           readOnly: true
         confirmed:
           type: boolean
@@ -26863,6 +27903,12 @@ components:
       - duo
       - sms
       type: string
+      description: |-
+        * `static` - Static
+        * `totp` - TOTP
+        * `webauthn` - WebAuthn
+        * `duo` - Duo
+        * `sms` - SMS
     DigestAlgorithmEnum:
       enum:
       - http://www.w3.org/2000/09/xmldsig#sha1
@@ -26870,11 +27916,19 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#sha384
       - http://www.w3.org/2001/04/xmlenc#sha512
       type: string
+      description: |-
+        * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
+        * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
+        * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
+        * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
     DigitsEnum:
       enum:
       - 6
       - 8
       type: integer
+      description: |-
+        * `6` - 6 digits, widely compatible
+        * `8` - 8 digits, not compatible with apps like Google Authenticator
     DockerServiceConnection:
       type: object
       description: DockerServiceConnection Serializer
@@ -26895,12 +27949,15 @@ components:
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         url:
           type: string
@@ -27003,18 +28060,23 @@ components:
             will be logged. By default, only execution errors are logged.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         bound_to:
           type: integer
+          description: Return objects policy is bound to
           readOnly: true
         result:
           type: boolean
@@ -27070,15 +28132,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -27147,6 +28213,10 @@ components:
       - waiting
       - invalid
       type: string
+      description: |-
+        * `success` - Success
+        * `waiting` - Waiting
+        * `invalid` - Invalid
     EmailChallenge:
       type: object
       description: Email challenge
@@ -27189,15 +28259,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -27406,6 +28480,34 @@ components:
       - update_available
       - custom_
       type: string
+      description: |-
+        * `login` - Login
+        * `login_failed` - Login Failed
+        * `logout` - Logout
+        * `user_write` - User Write
+        * `suspicious_request` - Suspicious Request
+        * `password_set` - Password Set
+        * `secret_view` - Secret View
+        * `secret_rotate` - Secret Rotate
+        * `invitation_used` - Invite Used
+        * `authorize_application` - Authorize Application
+        * `source_linked` - Source Linked
+        * `impersonation_started` - Impersonation Started
+        * `impersonation_ended` - Impersonation Ended
+        * `flow_execution` - Flow Execution
+        * `policy_execution` - Policy Execution
+        * `policy_exception` - Policy Exception
+        * `property_mapping_exception` - Property Mapping Exception
+        * `system_task_execution` - System Task Execution
+        * `system_task_exception` - System Task Exception
+        * `system_exception` - System Exception
+        * `configuration_error` - Configuration Error
+        * `model_created` - Model Created
+        * `model_updated` - Model Updated
+        * `model_deleted` - Model Deleted
+        * `email_sent` - Email Sent
+        * `update_available` - Update Available
+        * `custom_` - Custom Prefix
     EventMatcherPolicy:
       type: object
       description: Event Matcher Policy Serializer
@@ -27423,24 +28525,57 @@ components:
             will be logged. By default, only execution errors are logged.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         bound_to:
           type: integer
+          description: Return objects policy is bound to
           readOnly: true
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
-          description: Match created events with this action type. When left empty,
-            all action types will be matched.
+          description: |-
+            Match created events with this action type. When left empty, all action types will be matched.
+
+            * `login` - Login
+            * `login_failed` - Login Failed
+            * `logout` - Logout
+            * `user_write` - User Write
+            * `suspicious_request` - Suspicious Request
+            * `password_set` - Password Set
+            * `secret_view` - Secret View
+            * `secret_rotate` - Secret Rotate
+            * `invitation_used` - Invite Used
+            * `authorize_application` - Authorize Application
+            * `source_linked` - Source Linked
+            * `impersonation_started` - Impersonation Started
+            * `impersonation_ended` - Impersonation Ended
+            * `flow_execution` - Flow Execution
+            * `policy_execution` - Policy Execution
+            * `policy_exception` - Policy Exception
+            * `property_mapping_exception` - Property Mapping Exception
+            * `system_task_execution` - System Task Execution
+            * `system_task_exception` - System Task Exception
+            * `system_exception` - System Exception
+            * `configuration_error` - Configuration Error
+            * `model_created` - Model Created
+            * `model_updated` - Model Updated
+            * `model_deleted` - Model Deleted
+            * `email_sent` - Email Sent
+            * `update_available` - Update Available
+            * `custom_` - Custom Prefix
         client_ip:
           type: string
           description: Matches Event's Client IP (strict matching, for network matching
@@ -27448,8 +28583,55 @@ components:
         app:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
-          description: Match events created by selected application. When left empty,
-            all applications are matched.
+          description: |-
+            Match events created by selected application. When left empty, all applications are matched.
+
+            * `authentik.admin` - authentik Admin
+            * `authentik.api` - authentik API
+            * `authentik.crypto` - authentik Crypto
+            * `authentik.events` - authentik Events
+            * `authentik.flows` - authentik Flows
+            * `authentik.lib` - authentik lib
+            * `authentik.outposts` - authentik Outpost
+            * `authentik.policies.dummy` - authentik Policies.Dummy
+            * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
+            * `authentik.policies.expiry` - authentik Policies.Expiry
+            * `authentik.policies.expression` - authentik Policies.Expression
+            * `authentik.policies.password` - authentik Policies.Password
+            * `authentik.policies.reputation` - authentik Policies.Reputation
+            * `authentik.policies` - authentik Policies
+            * `authentik.providers.ldap` - authentik Providers.LDAP
+            * `authentik.providers.oauth2` - authentik Providers.OAuth2
+            * `authentik.providers.proxy` - authentik Providers.Proxy
+            * `authentik.providers.saml` - authentik Providers.SAML
+            * `authentik.providers.scim` - authentik Providers.SCIM
+            * `authentik.recovery` - authentik Recovery
+            * `authentik.sources.ldap` - authentik Sources.LDAP
+            * `authentik.sources.oauth` - authentik Sources.OAuth
+            * `authentik.sources.plex` - authentik Sources.Plex
+            * `authentik.sources.saml` - authentik Sources.SAML
+            * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
+            * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
+            * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
+            * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
+            * `authentik.stages.authenticator_validate` - authentik Stages.Authenticator.Validate
+            * `authentik.stages.authenticator_webauthn` - authentik Stages.Authenticator.WebAuthn
+            * `authentik.stages.captcha` - authentik Stages.Captcha
+            * `authentik.stages.consent` - authentik Stages.Consent
+            * `authentik.stages.deny` - authentik Stages.Deny
+            * `authentik.stages.dummy` - authentik Stages.Dummy
+            * `authentik.stages.email` - authentik Stages.Email
+            * `authentik.stages.identification` - authentik Stages.Identification
+            * `authentik.stages.invitation` - authentik Stages.User Invitation
+            * `authentik.stages.password` - authentik Stages.Password
+            * `authentik.stages.prompt` - authentik Stages.Prompt
+            * `authentik.stages.user_delete` - authentik Stages.User Delete
+            * `authentik.stages.user_login` - authentik Stages.User Login
+            * `authentik.stages.user_logout` - authentik Stages.User Logout
+            * `authentik.stages.user_write` - authentik Stages.User Write
+            * `authentik.tenants` - authentik Tenants
+            * `authentik.blueprints` - authentik Blueprints
+            * `authentik.core` - authentik Core
       required:
       - bound_to
       - component
@@ -27472,8 +28654,36 @@ components:
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
-          description: Match created events with this action type. When left empty,
-            all action types will be matched.
+          description: |-
+            Match created events with this action type. When left empty, all action types will be matched.
+
+            * `login` - Login
+            * `login_failed` - Login Failed
+            * `logout` - Logout
+            * `user_write` - User Write
+            * `suspicious_request` - Suspicious Request
+            * `password_set` - Password Set
+            * `secret_view` - Secret View
+            * `secret_rotate` - Secret Rotate
+            * `invitation_used` - Invite Used
+            * `authorize_application` - Authorize Application
+            * `source_linked` - Source Linked
+            * `impersonation_started` - Impersonation Started
+            * `impersonation_ended` - Impersonation Ended
+            * `flow_execution` - Flow Execution
+            * `policy_execution` - Policy Execution
+            * `policy_exception` - Policy Exception
+            * `property_mapping_exception` - Property Mapping Exception
+            * `system_task_execution` - System Task Execution
+            * `system_task_exception` - System Task Exception
+            * `system_exception` - System Exception
+            * `configuration_error` - Configuration Error
+            * `model_created` - Model Created
+            * `model_updated` - Model Updated
+            * `model_deleted` - Model Deleted
+            * `email_sent` - Email Sent
+            * `update_available` - Update Available
+            * `custom_` - Custom Prefix
         client_ip:
           type: string
           description: Matches Event's Client IP (strict matching, for network matching
@@ -27481,8 +28691,55 @@ components:
         app:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
-          description: Match events created by selected application. When left empty,
-            all applications are matched.
+          description: |-
+            Match events created by selected application. When left empty, all applications are matched.
+
+            * `authentik.admin` - authentik Admin
+            * `authentik.api` - authentik API
+            * `authentik.crypto` - authentik Crypto
+            * `authentik.events` - authentik Events
+            * `authentik.flows` - authentik Flows
+            * `authentik.lib` - authentik lib
+            * `authentik.outposts` - authentik Outpost
+            * `authentik.policies.dummy` - authentik Policies.Dummy
+            * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
+            * `authentik.policies.expiry` - authentik Policies.Expiry
+            * `authentik.policies.expression` - authentik Policies.Expression
+            * `authentik.policies.password` - authentik Policies.Password
+            * `authentik.policies.reputation` - authentik Policies.Reputation
+            * `authentik.policies` - authentik Policies
+            * `authentik.providers.ldap` - authentik Providers.LDAP
+            * `authentik.providers.oauth2` - authentik Providers.OAuth2
+            * `authentik.providers.proxy` - authentik Providers.Proxy
+            * `authentik.providers.saml` - authentik Providers.SAML
+            * `authentik.providers.scim` - authentik Providers.SCIM
+            * `authentik.recovery` - authentik Recovery
+            * `authentik.sources.ldap` - authentik Sources.LDAP
+            * `authentik.sources.oauth` - authentik Sources.OAuth
+            * `authentik.sources.plex` - authentik Sources.Plex
+            * `authentik.sources.saml` - authentik Sources.SAML
+            * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
+            * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
+            * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
+            * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
+            * `authentik.stages.authenticator_validate` - authentik Stages.Authenticator.Validate
+            * `authentik.stages.authenticator_webauthn` - authentik Stages.Authenticator.WebAuthn
+            * `authentik.stages.captcha` - authentik Stages.Captcha
+            * `authentik.stages.consent` - authentik Stages.Consent
+            * `authentik.stages.deny` - authentik Stages.Deny
+            * `authentik.stages.dummy` - authentik Stages.Dummy
+            * `authentik.stages.email` - authentik Stages.Email
+            * `authentik.stages.identification` - authentik Stages.Identification
+            * `authentik.stages.invitation` - authentik Stages.User Invitation
+            * `authentik.stages.password` - authentik Stages.Password
+            * `authentik.stages.prompt` - authentik Stages.Prompt
+            * `authentik.stages.user_delete` - authentik Stages.User Delete
+            * `authentik.stages.user_login` - authentik Stages.User Login
+            * `authentik.stages.user_logout` - authentik Stages.User Logout
+            * `authentik.stages.user_write` - authentik Stages.User Write
+            * `authentik.tenants` - authentik Tenants
+            * `authentik.blueprints` - authentik Blueprints
+            * `authentik.core` - authentik Core
       required:
       - name
     EventRequest:
@@ -27542,6 +28799,7 @@ components:
           $ref: '#/components/schemas/User'
         is_expired:
           type: boolean
+          description: Check if token is expired yet.
           readOnly: true
         expires:
           type: string
@@ -27573,18 +28831,23 @@ components:
             will be logged. By default, only execution errors are logged.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         bound_to:
           type: integer
+          description: Return objects policy is bound to
           readOnly: true
         expression:
           type: string
@@ -27659,10 +28922,21 @@ components:
         designation:
           allOf:
           - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: Decides what this Flow is used for. For example, the Authentication
-            flow is redirect to when an un-authenticated user visits authentik.
+          description: |-
+            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
+
+            * `authentication` - Authentication
+            * `authorization` - Authorization
+            * `invalidation` - Invalidation
+            * `enrollment` - Enrollment
+            * `unenrollment` - Unrenollment
+            * `recovery` - Recovery
+            * `stage_configuration` - Stage Configuration
         background:
           type: string
+          description: |-
+            Get the URL to the background image. If the name is /static or starts with http
+            it is returned as-is
           readOnly: true
         stages:
           type: array
@@ -27678,6 +28952,7 @@ components:
           readOnly: true
         cache_count:
           type: integer
+          description: Get count of cached flows
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
@@ -27687,19 +28962,29 @@ components:
             managers on mobile devices.
         export_url:
           type: string
+          description: Get export URL for flow
           readOnly: true
         layout:
           $ref: '#/components/schemas/LayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
-          description: Configure what should happen when a flow denies access to a
-            user.
+          description: |-
+            Configure what should happen when a flow denies access to a user.
+
+            * `message_continue` - Message Continue
+            * `message` - Message
+            * `continue` - Continue
         authentication:
           allOf:
           - $ref: '#/components/schemas/AuthenticationEnum'
-          description: Required level of authentication and authorization to access
-            a flow.
+          description: |-
+            Required level of authentication and authorization to access a flow.
+
+            * `none` - None
+            * `require_authenticated` - Require Authenticated
+            * `require_unauthenticated` - Require Unauthenticated
+            * `require_superuser` - Require Superuser
       required:
       - background
       - cache_count
@@ -27763,6 +29048,14 @@ components:
       - recovery
       - stage_configuration
       type: string
+      description: |-
+        * `authentication` - Authentication
+        * `authorization` - Authorization
+        * `invalidation` - Invalidation
+        * `enrollment` - Enrollment
+        * `unenrollment` - Unrenollment
+        * `recovery` - Recovery
+        * `stage_configuration` - Stage Configuration
     FlowDiagram:
       type: object
       description: response of the flow's diagram action
@@ -27846,9 +29139,11 @@ components:
         plan_context:
           type: object
           additionalProperties: {}
+          description: Get the plan's context, sanitized
           readOnly: true
         session_id:
           type: string
+          description: Get a unique session ID
           readOnly: true
       required:
       - current_stage
@@ -27875,8 +29170,16 @@ components:
         designation:
           allOf:
           - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: Decides what this Flow is used for. For example, the Authentication
-            flow is redirect to when an un-authenticated user visits authentik.
+          description: |-
+            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
+
+            * `authentication` - Authentication
+            * `authorization` - Authorization
+            * `invalidation` - Invalidation
+            * `enrollment` - Enrollment
+            * `unenrollment` - Unrenollment
+            * `recovery` - Recovery
+            * `stage_configuration` - Stage Configuration
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -27888,13 +29191,22 @@ components:
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
-          description: Configure what should happen when a flow denies access to a
-            user.
+          description: |-
+            Configure what should happen when a flow denies access to a user.
+
+            * `message_continue` - Message Continue
+            * `message` - Message
+            * `continue` - Continue
         authentication:
           allOf:
           - $ref: '#/components/schemas/AuthenticationEnum'
-          description: Required level of authentication and authorization to access
-            a flow.
+          description: |-
+            Required level of authentication and authorization to access a flow.
+
+            * `none` - None
+            * `require_authenticated` - Require Authenticated
+            * `require_unauthenticated` - Require Unauthenticated
+            * `require_superuser` - Require Superuser
       required:
       - designation
       - name
@@ -27926,10 +29238,21 @@ components:
         designation:
           allOf:
           - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: Decides what this Flow is used for. For example, the Authentication
-            flow is redirect to when an un-authenticated user visits authentik.
+          description: |-
+            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
+
+            * `authentication` - Authentication
+            * `authorization` - Authorization
+            * `invalidation` - Invalidation
+            * `enrollment` - Enrollment
+            * `unenrollment` - Unrenollment
+            * `recovery` - Recovery
+            * `stage_configuration` - Stage Configuration
         background:
           type: string
+          description: |-
+            Get the URL to the background image. If the name is /static or starts with http
+            it is returned as-is
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
@@ -27939,14 +29262,19 @@ components:
             managers on mobile devices.
         export_url:
           type: string
+          description: Get export URL for flow
           readOnly: true
         layout:
           $ref: '#/components/schemas/LayoutEnum'
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
-          description: Configure what should happen when a flow denies access to a
-            user.
+          description: |-
+            Configure what should happen when a flow denies access to a user.
+
+            * `message_continue` - Message Continue
+            * `message` - Message
+            * `continue` - Continue
       required:
       - background
       - designation
@@ -27976,8 +29304,16 @@ components:
         designation:
           allOf:
           - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: Decides what this Flow is used for. For example, the Authentication
-            flow is redirect to when an un-authenticated user visits authentik.
+          description: |-
+            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
+
+            * `authentication` - Authentication
+            * `authorization` - Authorization
+            * `invalidation` - Invalidation
+            * `enrollment` - Enrollment
+            * `unenrollment` - Unrenollment
+            * `recovery` - Recovery
+            * `stage_configuration` - Stage Configuration
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -27989,8 +29325,12 @@ components:
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
-          description: Configure what should happen when a flow denies access to a
-            user.
+          description: |-
+            Configure what should happen when a flow denies access to a user.
+
+            * `message_continue` - Message Continue
+            * `message` - Message
+            * `continue` - Continue
       required:
       - designation
       - name
@@ -28034,10 +29374,12 @@ components:
         invalid_response_action:
           allOf:
           - $ref: '#/components/schemas/InvalidResponseActionEnum'
-          description: Configure how the flow executor should handle an invalid response
-            to a challenge. RETRY returns the error message and a similar challenge
-            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
-            restarts the flow while keeping the current context.
+          description: |-
+            Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
+
+            * `retry` - Retry
+            * `restart` - Restart
+            * `restart_with_context` - Restart With Context
       required:
       - order
       - pk
@@ -28070,10 +29412,12 @@ components:
         invalid_response_action:
           allOf:
           - $ref: '#/components/schemas/InvalidResponseActionEnum'
-          description: Configure how the flow executor should handle an invalid response
-            to a challenge. RETRY returns the error message and a similar challenge
-            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
-            restarts the flow while keeping the current context.
+          description: |-
+            Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
+
+            * `retry` - Retry
+            * `restart` - Restart
+            * `restart_with_context` - Restart With Context
       required:
       - order
       - stage
@@ -28320,15 +29664,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -28453,12 +29801,21 @@ components:
       - recovery
       - app_password
       type: string
+      description: |-
+        * `verification` - Intent Verification
+        * `api` - Intent Api
+        * `recovery` - Intent Recovery
+        * `app_password` - Intent App Password
     InvalidResponseActionEnum:
       enum:
       - retry
       - restart
       - restart_with_context
       type: string
+      description: |-
+        * `retry` - Retry
+        * `restart` - Restart
+        * `restart_with_context` - Restart With Context
     Invitation:
       type: object
       description: Invitation Serializer
@@ -28537,15 +29894,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -28586,6 +29947,9 @@ components:
       - global
       - per_provider
       type: string
+      description: |-
+        * `global` - Same identifier is used for all providers
+        * `per_provider` - Each provider has a different issuer, based on the application slug.
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -28606,12 +29970,15 @@ components:
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         kubeconfig:
           type: object
@@ -28654,6 +30021,9 @@ components:
       - direct
       - cached
       type: string
+      description: |-
+        * `direct` - Direct
+        * `cached` - Cached
     LDAPDebug:
       type: object
       properties:
@@ -28755,15 +30125,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object's component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         object_field:
           type: string
@@ -28815,6 +30189,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -28823,6 +30198,7 @@ components:
             format: uuid
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         assigned_application_slug:
           type: string
@@ -28834,12 +30210,15 @@ components:
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         base_dn:
           type: string
@@ -28883,7 +30262,6 @@ components:
       required:
       - assigned_application_name
       - assigned_application_slug
-      - authorization_flow
       - component
       - meta_model_name
       - name
@@ -28901,6 +30279,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -28943,7 +30322,6 @@ components:
         bind_mode:
           $ref: '#/components/schemas/LDAPAPIAccessMode'
       required:
-      - authorization_flow
       - name
     LDAPSource:
       type: object
@@ -28976,23 +30354,33 @@ components:
           description: Flow to use when enrolling new users.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         managed:
           type: string
           nullable: true
@@ -29007,6 +30395,9 @@ components:
         icon:
           type: string
           nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         server_uri:
           type: string
@@ -29110,8 +30501,14 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         user_path_template:
           type: string
           minLength: 1
@@ -29196,6 +30593,12 @@ components:
       - sidebar_left
       - sidebar_right
       type: string
+      description: |-
+        * `stacked` - STACKED
+        * `content_left` - CONTENT_LEFT
+        * `content_right` - CONTENT_RIGHT
+        * `sidebar_left` - SIDEBAR_LEFT
+        * `sidebar_right` - SIDEBAR_RIGHT
     Link:
       type: object
       description: Returns a single link
@@ -29272,12 +30675,22 @@ components:
       - urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName
       - urn:oasis:names:tc:SAML:2.0:nameid-format:transient
       type: string
+      description: |-
+        * `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` - Email
+        * `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` - Persistent
+        * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
+        * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
+        * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
     NotConfiguredActionEnum:
       enum:
       - skip
       - deny
       - configure
       type: string
+      description: |-
+        * `skip` - Skip
+        * `deny` - Deny
+        * `configure` - Configure
     Notification:
       type: object
       description: Notification Serializer
@@ -29337,8 +30750,12 @@ components:
         severity:
           allOf:
           - $ref: '#/components/schemas/SeverityEnum'
-          description: Controls which severity level the created notifications will
-            have.
+          description: |-
+            Controls which severity level the created notifications will have.
+
+            * `notice` - Notice
+            * `warning` - Warning
+            * `alert` - Alert
         group:
           type: string
           format: uuid
@@ -29371,8 +30788,12 @@ components:
         severity:
           allOf:
           - $ref: '#/components/schemas/SeverityEnum'
-          description: Controls which severity level the created notifications will
-            have.
+          description: |-
+            Controls which severity level the created notifications will have.
+
+            * `notice` - Notice
+            * `warning` - Warning
+            * `alert` - Alert
         group:
           type: string
           format: uuid
@@ -29396,6 +30817,7 @@ components:
           $ref: '#/components/schemas/NotificationTransportModeEnum'
         mode_verbose:
           type: string
+          description: Return selected mode with a UI Label
           readOnly: true
         webhook_url:
           type: string
@@ -29419,6 +30841,11 @@ components:
       - webhook_slack
       - email
       type: string
+      description: |-
+        * `local` - authentik inbuilt notifications
+        * `webhook` - Generic Webhook
+        * `webhook_slack` - Slack Webhook (Slack/Discord)
+        * `email` - Email
     NotificationTransportRequest:
       type: object
       description: NotificationTransport Serializer
@@ -29494,6 +30921,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -29502,6 +30930,7 @@ components:
             format: uuid
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         assigned_application_slug:
           type: string
@@ -29513,18 +30942,24 @@ components:
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: Confidential clients are capable of maintaining the confidentiality
-            of their credentials. Public clients are incapable
+          description: |-
+            Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
+
+            * `confidential` - Confidential
+            * `public` - Public
         client_id:
           type: string
           maxLength: 255
@@ -29559,12 +30994,22 @@ components:
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
-          description: Configure what data should be used as unique User Identifier.
-            For most cases, the default should be fine.
+          description: |-
+            Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
+
+            * `hashed_user_id` - Based on the Hashed User ID
+            * `user_id` - Based on user ID
+            * `user_username` - Based on the username
+            * `user_email` - Based on the User's Email. This is recommended over the UPN method.
+            * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
         issuer_mode:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
-          description: Configure how the issuer field of the ID Token should be filled.
+          description: |-
+            Configure how the issuer field of the ID Token should be filled.
+
+            * `global` - Same identifier is used for all providers
+            * `per_provider` - Each provider has a different issuer, based on the application slug.
         jwks_sources:
           type: array
           items:
@@ -29576,7 +31021,6 @@ components:
       required:
       - assigned_application_name
       - assigned_application_slug
-      - authorization_flow
       - component
       - meta_model_name
       - name
@@ -29593,6 +31037,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -29602,8 +31047,11 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: Confidential clients are capable of maintaining the confidentiality
-            of their credentials. Public clients are incapable
+          description: |-
+            Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
+
+            * `confidential` - Confidential
+            * `public` - Public
         client_id:
           type: string
           minLength: 1
@@ -29642,12 +31090,22 @@ components:
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
-          description: Configure what data should be used as unique User Identifier.
-            For most cases, the default should be fine.
+          description: |-
+            Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
+
+            * `hashed_user_id` - Based on the Hashed User ID
+            * `user_id` - Based on user ID
+            * `user_username` - Based on the username
+            * `user_email` - Based on the User's Email. This is recommended over the UPN method.
+            * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
         issuer_mode:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
-          description: Configure how the issuer field of the ID Token should be filled.
+          description: |-
+            Configure how the issuer field of the ID Token should be filled.
+
+            * `global` - Same identifier is used for all providers
+            * `per_provider` - Each provider has a different issuer, based on the application slug.
         jwks_sources:
           type: array
           items:
@@ -29657,7 +31115,6 @@ components:
               authenticate.
           title: Any JWT signed by the JWK of the selected source can be used to authenticate.
       required:
-      - authorization_flow
       - name
     OAuth2ProviderSetupURLs:
       type: object
@@ -29781,23 +31238,33 @@ components:
           description: Flow to use when enrolling new users.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         managed:
           type: string
           nullable: true
@@ -29812,6 +31279,9 @@ components:
         icon:
           type: string
           nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         provider_type:
           $ref: '#/components/schemas/ProviderTypeEnum'
@@ -29840,6 +31310,7 @@ components:
           type: string
         callback_url:
           type: string
+          description: Get OAuth Callback URL
           readOnly: true
         additional_scopes:
           type: string
@@ -29899,8 +31370,14 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         user_path_template:
           type: string
           minLength: 1
@@ -30033,6 +31510,7 @@ components:
           readOnly: true
         token_identifier:
           type: string
+          description: Get Token identifier
           readOnly: true
         config:
           type: object
@@ -30143,6 +31621,9 @@ components:
       - proxy
       - ldap
       type: string
+      description: |-
+        * `proxy` - Proxy
+        * `ldap` - Ldap
     PaginatedApplicationList:
       type: object
       properties:
@@ -32173,6 +33654,76 @@ components:
       required:
       - pagination
       - results
+    PaginatedSCIMMappingList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMMapping'
+      required:
+      - pagination
+      - results
+    PaginatedSCIMProviderList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SCIMProvider'
+      required:
+      - pagination
+      - results
     PaginatedSMSDeviceList:
       type: object
       properties:
@@ -32930,18 +34481,23 @@ components:
             will be logged. By default, only execution errors are logged.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         bound_to:
           type: integer
+          description: Return objects policy is bound to
           readOnly: true
         days:
           type: integer
@@ -32995,18 +34551,23 @@ components:
             will be logged. By default, only execution errors are logged.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         bound_to:
           type: integer
+          description: Return objects policy is bound to
           readOnly: true
         password_field:
           type: string
@@ -33134,15 +34695,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -33411,7 +34976,12 @@ components:
         webauthn_user_verification:
           allOf:
           - $ref: '#/components/schemas/UserVerificationEnum'
-          description: Enforce user verification for WebAuthn devices.
+          description: |-
+            Enforce user verification for WebAuthn devices.
+
+            * `required` - Required
+            * `preferred` - Preferred
+            * `discouraged` - Discouraged
     PatchedBlueprintInstanceRequest:
       type: object
       description: Info about a single blueprint instance file
@@ -33650,8 +35220,36 @@ components:
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
-          description: Match created events with this action type. When left empty,
-            all action types will be matched.
+          description: |-
+            Match created events with this action type. When left empty, all action types will be matched.
+
+            * `login` - Login
+            * `login_failed` - Login Failed
+            * `logout` - Logout
+            * `user_write` - User Write
+            * `suspicious_request` - Suspicious Request
+            * `password_set` - Password Set
+            * `secret_view` - Secret View
+            * `secret_rotate` - Secret Rotate
+            * `invitation_used` - Invite Used
+            * `authorize_application` - Authorize Application
+            * `source_linked` - Source Linked
+            * `impersonation_started` - Impersonation Started
+            * `impersonation_ended` - Impersonation Ended
+            * `flow_execution` - Flow Execution
+            * `policy_execution` - Policy Execution
+            * `policy_exception` - Policy Exception
+            * `property_mapping_exception` - Property Mapping Exception
+            * `system_task_execution` - System Task Execution
+            * `system_task_exception` - System Task Exception
+            * `system_exception` - System Exception
+            * `configuration_error` - Configuration Error
+            * `model_created` - Model Created
+            * `model_updated` - Model Updated
+            * `model_deleted` - Model Deleted
+            * `email_sent` - Email Sent
+            * `update_available` - Update Available
+            * `custom_` - Custom Prefix
         client_ip:
           type: string
           description: Matches Event's Client IP (strict matching, for network matching
@@ -33659,8 +35257,55 @@ components:
         app:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
-          description: Match events created by selected application. When left empty,
-            all applications are matched.
+          description: |-
+            Match events created by selected application. When left empty, all applications are matched.
+
+            * `authentik.admin` - authentik Admin
+            * `authentik.api` - authentik API
+            * `authentik.crypto` - authentik Crypto
+            * `authentik.events` - authentik Events
+            * `authentik.flows` - authentik Flows
+            * `authentik.lib` - authentik lib
+            * `authentik.outposts` - authentik Outpost
+            * `authentik.policies.dummy` - authentik Policies.Dummy
+            * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
+            * `authentik.policies.expiry` - authentik Policies.Expiry
+            * `authentik.policies.expression` - authentik Policies.Expression
+            * `authentik.policies.password` - authentik Policies.Password
+            * `authentik.policies.reputation` - authentik Policies.Reputation
+            * `authentik.policies` - authentik Policies
+            * `authentik.providers.ldap` - authentik Providers.LDAP
+            * `authentik.providers.oauth2` - authentik Providers.OAuth2
+            * `authentik.providers.proxy` - authentik Providers.Proxy
+            * `authentik.providers.saml` - authentik Providers.SAML
+            * `authentik.providers.scim` - authentik Providers.SCIM
+            * `authentik.recovery` - authentik Recovery
+            * `authentik.sources.ldap` - authentik Sources.LDAP
+            * `authentik.sources.oauth` - authentik Sources.OAuth
+            * `authentik.sources.plex` - authentik Sources.Plex
+            * `authentik.sources.saml` - authentik Sources.SAML
+            * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
+            * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
+            * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
+            * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
+            * `authentik.stages.authenticator_validate` - authentik Stages.Authenticator.Validate
+            * `authentik.stages.authenticator_webauthn` - authentik Stages.Authenticator.WebAuthn
+            * `authentik.stages.captcha` - authentik Stages.Captcha
+            * `authentik.stages.consent` - authentik Stages.Consent
+            * `authentik.stages.deny` - authentik Stages.Deny
+            * `authentik.stages.dummy` - authentik Stages.Dummy
+            * `authentik.stages.email` - authentik Stages.Email
+            * `authentik.stages.identification` - authentik Stages.Identification
+            * `authentik.stages.invitation` - authentik Stages.User Invitation
+            * `authentik.stages.password` - authentik Stages.Password
+            * `authentik.stages.prompt` - authentik Stages.Prompt
+            * `authentik.stages.user_delete` - authentik Stages.User Delete
+            * `authentik.stages.user_login` - authentik Stages.User Login
+            * `authentik.stages.user_logout` - authentik Stages.User Logout
+            * `authentik.stages.user_write` - authentik Stages.User Write
+            * `authentik.tenants` - authentik Tenants
+            * `authentik.blueprints` - authentik Blueprints
+            * `authentik.core` - authentik Core
     PatchedEventRequest:
       type: object
       description: Event Serializer
@@ -33720,8 +35365,16 @@ components:
         designation:
           allOf:
           - $ref: '#/components/schemas/FlowDesignationEnum'
-          description: Decides what this Flow is used for. For example, the Authentication
-            flow is redirect to when an un-authenticated user visits authentik.
+          description: |-
+            Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.
+
+            * `authentication` - Authentication
+            * `authorization` - Authorization
+            * `invalidation` - Invalidation
+            * `enrollment` - Enrollment
+            * `unenrollment` - Unrenollment
+            * `recovery` - Recovery
+            * `stage_configuration` - Stage Configuration
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         compatibility_mode:
@@ -33733,13 +35386,22 @@ components:
         denied_action:
           allOf:
           - $ref: '#/components/schemas/DeniedActionEnum'
-          description: Configure what should happen when a flow denies access to a
-            user.
+          description: |-
+            Configure what should happen when a flow denies access to a user.
+
+            * `message_continue` - Message Continue
+            * `message` - Message
+            * `continue` - Continue
         authentication:
           allOf:
           - $ref: '#/components/schemas/AuthenticationEnum'
-          description: Required level of authentication and authorization to access
-            a flow.
+          description: |-
+            Required level of authentication and authorization to access a flow.
+
+            * `none` - None
+            * `require_authenticated` - Require Authenticated
+            * `require_unauthenticated` - Require Unauthenticated
+            * `require_superuser` - Require Superuser
     PatchedFlowStageBindingRequest:
       type: object
       description: FlowStageBinding Serializer
@@ -33765,10 +35427,12 @@ components:
         invalid_response_action:
           allOf:
           - $ref: '#/components/schemas/InvalidResponseActionEnum'
-          description: Configure how the flow executor should handle an invalid response
-            to a challenge. RETRY returns the error message and a similar challenge
-            to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT
-            restarts the flow while keeping the current context.
+          description: |-
+            Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context.
+
+            * `retry` - Retry
+            * `restart` - Restart
+            * `restart_with_context` - Restart With Context
     PatchedGroupRequest:
       type: object
       description: Group Serializer
@@ -33938,6 +35602,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -34010,8 +35675,14 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         user_path_template:
           type: string
           minLength: 1
@@ -34109,8 +35780,12 @@ components:
         severity:
           allOf:
           - $ref: '#/components/schemas/SeverityEnum'
-          description: Controls which severity level the created notifications will
-            have.
+          description: |-
+            Controls which severity level the created notifications will have.
+
+            * `notice` - Notice
+            * `warning` - Warning
+            * `alert` - Alert
         group:
           type: string
           format: uuid
@@ -34157,6 +35832,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -34166,8 +35842,11 @@ components:
         client_type:
           allOf:
           - $ref: '#/components/schemas/ClientTypeEnum'
-          description: Confidential clients are capable of maintaining the confidentiality
-            of their credentials. Public clients are incapable
+          description: |-
+            Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable
+
+            * `confidential` - Confidential
+            * `public` - Public
         client_id:
           type: string
           minLength: 1
@@ -34206,12 +35885,22 @@ components:
         sub_mode:
           allOf:
           - $ref: '#/components/schemas/SubModeEnum'
-          description: Configure what data should be used as unique User Identifier.
-            For most cases, the default should be fine.
+          description: |-
+            Configure what data should be used as unique User Identifier. For most cases, the default should be fine.
+
+            * `hashed_user_id` - Based on the Hashed User ID
+            * `user_id` - Based on user ID
+            * `user_username` - Based on the username
+            * `user_email` - Based on the User's Email. This is recommended over the UPN method.
+            * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
         issuer_mode:
           allOf:
           - $ref: '#/components/schemas/IssuerModeEnum'
-          description: Configure how the issuer field of the ID Token should be filled.
+          description: |-
+            Configure how the issuer field of the ID Token should be filled.
+
+            * `global` - Same identifier is used for all providers
+            * `per_provider` - Each provider has a different issuer, based on the application slug.
         jwks_sources:
           type: array
           items:
@@ -34251,8 +35940,14 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         user_path_template:
           type: string
           minLength: 1
@@ -34474,8 +36169,14 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         user_path_template:
           type: string
           minLength: 1
@@ -34592,6 +36293,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -34634,8 +36336,12 @@ components:
         mode:
           allOf:
           - $ref: '#/components/schemas/ProxyMode'
-          description: Enable support for forwardAuth in traefik and nginx auth_request.
-            Exclusive with internal_host.
+          description: |-
+            Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
+
+            * `proxy` - Proxy
+            * `forward_single` - Forward Single
+            * `forward_domain` - Forward Domain
         intercept_header_auth:
           type: boolean
           description: When enabled, this provider will intercept the authorization
@@ -34714,6 +36420,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -34777,8 +36484,11 @@ components:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
           title: Service Provider Binding
-          description: This determines how authentik sends the response back to the
-            Service Provider.
+          description: |-
+            This determines how authentik sends the response back to the Service Provider.
+
+            * `redirect` - Redirect
+            * `post` - Post
     PatchedSAMLSourceRequest:
       type: object
       description: SAMLSource Serializer
@@ -34810,8 +36520,14 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         user_path_template:
           type: string
           minLength: 1
@@ -34841,8 +36557,14 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/NameIdPolicyEnum'
-          description: NameID Policy sent to the IdP. Can be unset, in which case
-            no Policy is sent.
+          description: |-
+            NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+            * `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` - Email
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` - Persistent
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         signing_kp:
@@ -34863,6 +36585,51 @@ components:
           description: 'Time offset when temporary users should be deleted. This only
             applies if your IDP uses the NameID Format ''transient'', and the user
             doesn''t log out manually. (Format: hours=1;minutes=2;seconds=3).'
+    PatchedSCIMMappingRequest:
+      type: object
+      description: SCIMMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+    PatchedSCIMProviderRequest:
+      type: object
+      description: SCIMProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        url:
+          type: string
+          minLength: 1
+          description: Base URL to SCIM requests, usually ends in /v2
+        token:
+          type: string
+          minLength: 1
+          description: Authentication token
     PatchedSMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -35208,23 +36975,33 @@ components:
           description: Flow to use when enrolling new users.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         managed:
           type: string
           nullable: true
@@ -35239,6 +37016,9 @@ components:
         icon:
           type: string
           nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         client_id:
           type: string
@@ -35335,8 +37115,14 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         user_path_template:
           type: string
           minLength: 1
@@ -35388,18 +37174,23 @@ components:
             will be logged. By default, only execution errors are logged.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         bound_to:
           type: integer
+          description: Return objects policy is bound to
           readOnly: true
       required:
       - bound_to
@@ -35505,6 +37296,9 @@ components:
       - all
       - any
       type: string
+      description: |-
+        * `all` - ALL, all policies must pass
+        * `any` - ANY, any policy must pass
     PolicyRequest:
       type: object
       description: Policy Serializer
@@ -35675,15 +37469,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -35748,6 +37546,21 @@ components:
       - static
       - ak-locale
       type: string
+      description: |-
+        * `text` - Text: Simple Text input
+        * `text_read_only` - Text (read-only): Simple Text input, but cannot be edited.
+        * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
+        * `email` - Email: Text field with Email type.
+        * `password` - Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.
+        * `number` - Number
+        * `checkbox` - Checkbox
+        * `date` - Date
+        * `date-time` - Date Time
+        * `file` - File: File upload for arbitrary files. File content will be available in flow context as data-URI
+        * `separator` - Separator: Static Separator Line
+        * `hidden` - Hidden: Hidden field, can be used to insert data into form.
+        * `static` - Static: Static value, displayed as-is.
+        * `ak-locale` - authentik: Selection of locales authentik supports
     PropertyMapping:
       type: object
       description: PropertyMapping Serializer
@@ -35771,15 +37584,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object's component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
       required:
       - component
@@ -35834,6 +37651,7 @@ components:
             format: uuid
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         assigned_application_slug:
           type: string
@@ -35845,12 +37663,15 @@ components:
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
       required:
       - assigned_application_name
@@ -35867,6 +37688,9 @@ components:
       - twilio
       - generic
       type: string
+      description: |-
+        * `twilio` - Twilio
+        * `generic` - Generic
     ProviderRequest:
       type: object
       description: Provider Serializer
@@ -35901,12 +37725,29 @@ components:
       - mailcow
       - twitch
       type: string
+      description: |-
+        * `apple` - Apple
+        * `azuread` - Azure AD
+        * `discord` - Discord
+        * `facebook` - Facebook
+        * `github` - GitHub
+        * `google` - Google
+        * `openidconnect` - OpenID Connect
+        * `okta` - Okta
+        * `reddit` - reddit
+        * `twitter` - Twitter
+        * `mailcow` - Mailcow
+        * `twitch` - Twitch
     ProxyMode:
       enum:
       - proxy
       - forward_single
       - forward_domain
       type: string
+      description: |-
+        * `proxy` - Proxy
+        * `forward_single` - Forward Single
+        * `forward_domain` - Forward Domain
     ProxyOutpostConfig:
       type: object
       description: Proxy provider serializer for outposts
@@ -35964,14 +37805,19 @@ components:
         mode:
           allOf:
           - $ref: '#/components/schemas/ProxyMode'
-          description: Enable support for forwardAuth in traefik and nginx auth_request.
-            Exclusive with internal_host.
+          description: |-
+            Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
+
+            * `proxy` - Proxy
+            * `forward_single` - Forward Single
+            * `forward_domain` - Forward Domain
         cookie_domain:
           type: string
         access_token_validity:
           type: number
           format: double
           nullable: true
+          description: Get token validity as second count
           readOnly: true
         intercept_header_auth:
           type: boolean
@@ -35981,6 +37827,9 @@ components:
           type: array
           items:
             type: string
+          description: |-
+            Get all the scope names the outpost should request,
+            including custom-defined ones
           readOnly: true
         assigned_application_slug:
           type: string
@@ -36012,6 +37861,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -36020,6 +37870,7 @@ components:
             format: uuid
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         assigned_application_slug:
           type: string
@@ -36031,12 +37882,15 @@ components:
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         client_id:
           type: string
@@ -36076,8 +37930,12 @@ components:
         mode:
           allOf:
           - $ref: '#/components/schemas/ProxyMode'
-          description: Enable support for forwardAuth in traefik and nginx auth_request.
-            Exclusive with internal_host.
+          description: |-
+            Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
+
+            * `proxy` - Proxy
+            * `forward_single` - Forward Single
+            * `forward_domain` - Forward Domain
         intercept_header_auth:
           type: boolean
           description: When enabled, this provider will intercept the authorization
@@ -36111,7 +37969,6 @@ components:
       required:
       - assigned_application_name
       - assigned_application_slug
-      - authorization_flow
       - client_id
       - component
       - external_host
@@ -36132,6 +37989,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -36174,8 +38032,12 @@ components:
         mode:
           allOf:
           - $ref: '#/components/schemas/ProxyMode'
-          description: Enable support for forwardAuth in traefik and nginx auth_request.
-            Exclusive with internal_host.
+          description: |-
+            Enable support for forwardAuth in traefik and nginx auth_request. Exclusive with internal_host.
+
+            * `proxy` - Proxy
+            * `forward_single` - Forward Single
+            * `forward_domain` - Forward Domain
         intercept_header_auth:
           type: boolean
           description: When enabled, this provider will intercept the authorization
@@ -36201,7 +38063,6 @@ components:
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
       required:
-      - authorization_flow
       - external_host
       - name
     RedirectChallenge:
@@ -36271,18 +38132,23 @@ components:
             will be logged. By default, only execution errors are logged.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         bound_to:
           type: integer
+          description: Return objects policy is bound to
           readOnly: true
         check_ip:
           type: boolean
@@ -36327,6 +38193,10 @@ components:
       - preferred
       - required
       type: string
+      description: |-
+        * `discouraged` - Discouraged
+        * `preferred` - Preferred
+        * `required` - Required
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer
@@ -36363,15 +38233,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object's component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         saml_name:
           type: string
@@ -36429,6 +38303,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -36437,6 +38312,7 @@ components:
             format: uuid
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         assigned_application_slug:
           type: string
@@ -36448,12 +38324,15 @@ components:
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         acs_url:
           type: string
@@ -36507,31 +38386,39 @@ components:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
           title: Service Provider Binding
-          description: This determines how authentik sends the response back to the
-            Service Provider.
+          description: |-
+            This determines how authentik sends the response back to the Service Provider.
+
+            * `redirect` - Redirect
+            * `post` - Post
         url_download_metadata:
           type: string
+          description: Get metadata download URL
           readOnly: true
         url_sso_post:
           type: string
+          description: Get SSO Post URL
           readOnly: true
         url_sso_redirect:
           type: string
+          description: Get SSO Redirect URL
           readOnly: true
         url_sso_init:
           type: string
+          description: Get SSO IDP-Initiated URL
           readOnly: true
         url_slo_post:
           type: string
+          description: Get SLO POST URL
           readOnly: true
         url_slo_redirect:
           type: string
+          description: Get SLO redirect URL
           readOnly: true
       required:
       - acs_url
       - assigned_application_name
       - assigned_application_slug
-      - authorization_flow
       - component
       - meta_model_name
       - name
@@ -36572,6 +38459,7 @@ components:
         authorization_flow:
           type: string
           format: uuid
+          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -36635,11 +38523,13 @@ components:
           allOf:
           - $ref: '#/components/schemas/SpBindingEnum'
           title: Service Provider Binding
-          description: This determines how authentik sends the response back to the
-            Service Provider.
+          description: |-
+            This determines how authentik sends the response back to the Service Provider.
+
+            * `redirect` - Redirect
+            * `post` - Post
       required:
       - acs_url
-      - authorization_flow
       - name
     SAMLSource:
       type: object
@@ -36672,23 +38562,33 @@ components:
           description: Flow to use when enrolling new users.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         managed:
           type: string
           nullable: true
@@ -36703,6 +38603,9 @@ components:
         icon:
           type: string
           nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
         pre_authentication_flow:
           type: string
@@ -36729,8 +38632,14 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/NameIdPolicyEnum'
-          description: NameID Policy sent to the IdP. Can be unset, in which case
-            no Policy is sent.
+          description: |-
+            NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+            * `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` - Email
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` - Persistent
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         signing_kp:
@@ -36793,8 +38702,14 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         user_path_template:
           type: string
           minLength: 1
@@ -36824,8 +38739,14 @@ components:
         name_id_policy:
           allOf:
           - $ref: '#/components/schemas/NameIdPolicyEnum'
-          description: NameID Policy sent to the IdP. Can be unset, in which case
-            no Policy is sent.
+          description: |-
+            NameID Policy sent to the IdP. Can be unset, in which case no Policy is sent.
+
+            * `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` - Email
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:persistent` - Persistent
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:X509SubjectName` - X509
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:WindowsDomainQualifiedName` - Windows
+            * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
         signing_kp:
@@ -36851,6 +38772,165 @@ components:
       - pre_authentication_flow
       - slug
       - sso_url
+    SCIMMapping:
+      type: object
+      description: SCIMMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    SCIMMappingRequest:
+      type: object
+      description: SCIMMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects which are managed by authentik. These objects are created
+            and updated automatically. This is flag only indicates that an object
+            can be overwritten by migrations. You can still modify the objects via
+            the API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
+    SCIMProvider:
+      type: object
+      description: SCIMProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        url:
+          type: string
+          description: Base URL to SCIM requests, usually ends in /v2
+        token:
+          type: string
+          description: Authentication token
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - token
+      - url
+      - verbose_name
+      - verbose_name_plural
+    SCIMProviderRequest:
+      type: object
+      description: SCIMProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        property_mappings_group:
+          type: array
+          items:
+            type: string
+            format: uuid
+          description: Property mappings used for group creation/updating.
+        url:
+          type: string
+          minLength: 1
+          description: Base URL to SCIM requests, usually ends in /v2
+        token:
+          type: string
+          minLength: 1
+          description: Authentication token
+      required:
+      - name
+      - token
+      - url
     SMSDevice:
       type: object
       description: Serializer for sms authenticator devices
@@ -36904,15 +38984,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object's component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         scope_name:
           type: string
@@ -36996,15 +39080,19 @@ components:
             Integration
         component:
           type: string
+          description: Return component used to edit this object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
       required:
       - component
@@ -37057,6 +39145,10 @@ components:
       - warning
       - alert
       type: string
+      description: |-
+        * `notice` - Notice
+        * `warning` - Warning
+        * `alert` - Alert
     ShellChallenge:
       type: object
       description: challenge type to render HTML as-is
@@ -37087,6 +39179,12 @@ components:
       - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
       - http://www.w3.org/2000/09/xmldsig#dsa-sha1
       type: string
+      description: |-
+        * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
+        * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
+        * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
+        * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
+        * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
     Source:
       type: object
       description: Source Serializer
@@ -37118,23 +39216,33 @@ components:
           description: Flow to use when enrolling new users.
         component:
           type: string
+          description: Get object component so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         policy_engine_mode:
           $ref: '#/components/schemas/PolicyEngineMode'
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         managed:
           type: string
           nullable: true
@@ -37149,6 +39257,9 @@ components:
         icon:
           type: string
           nullable: true
+          description: |-
+            Get the URL to the Icon. If the name is /static or
+            starts with http it is returned as-is
           readOnly: true
       required:
       - component
@@ -37191,8 +39302,14 @@ components:
         user_matching_mode:
           allOf:
           - $ref: '#/components/schemas/UserMatchingModeEnum'
-          description: How the source determines if an existing user should be authenticated
-            or a new user enrolled.
+          description: |-
+            How the source determines if an existing user should be authenticated or a new user enrolled.
+
+            * `identifier` - Use the source-specific identifier
+            * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+            * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+            * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+            * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
         user_path_template:
           type: string
           minLength: 1
@@ -37238,6 +39355,9 @@ components:
       - redirect
       - post
       type: string
+      description: |-
+        * `redirect` - Redirect
+        * `post` - Post
     Stage:
       type: object
       description: Stage Serializer
@@ -37251,15 +39371,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -37370,6 +39494,12 @@ components:
       - user_email
       - user_upn
       type: string
+      description: |-
+        * `hashed_user_id` - Based on the Hashed User ID
+        * `user_id` - Based on user ID
+        * `user_username` - Based on the username
+        * `user_email` - Based on the User's Email. This is recommended over the UPN method.
+        * `user_upn` - Based on the User's UPN, only works if user has a 'upn' attribute set. Use this method only if you have different UPN and Mail domains.
     System:
       type: object
       description: Get system information.
@@ -37378,21 +39508,25 @@ components:
           type: object
           additionalProperties:
             type: string
+          description: Get Environment
           readOnly: true
         http_headers:
           type: object
           additionalProperties:
             type: string
+          description: Get HTTP Request headers
           readOnly: true
         http_host:
           type: string
+          description: Get HTTP host
           readOnly: true
         http_is_secure:
           type: boolean
+          description: Get HTTP Secure flag
           readOnly: true
         runtime:
           type: object
-          description: Runtime information
+          description: Get versions
           properties:
             python_version:
               type: string
@@ -37416,13 +39550,16 @@ components:
           readOnly: true
         tenant:
           type: string
+          description: Currently active tenant
           readOnly: true
         server_time:
           type: string
           format: date-time
+          description: Current server time
           readOnly: true
         embedded_outpost_host:
           type: string
+          description: Get the FQDN configured on the embedded outpost
           readOnly: true
       required:
       - embedded_outpost_host
@@ -37472,6 +39609,7 @@ components:
           format: date-time
         task_duration:
           type: integer
+          description: Get the duration a task took to run
           readOnly: true
         status:
           $ref: '#/components/schemas/TaskStatusEnum'
@@ -37492,6 +39630,11 @@ components:
       - ERROR
       - UNKNOWN
       type: string
+      description: |-
+        * `SUCCESSFUL` - SUCCESSFUL
+        * `WARNING` - WARNING
+        * `ERROR` - ERROR
+        * `UNKNOWN` - UNKNOWN
     Tenant:
       type: object
       description: Tenant Serializer
@@ -37662,6 +39805,7 @@ components:
           $ref: '#/components/schemas/User'
         is_expired:
           type: boolean
+          description: Check if token is expired yet.
           readOnly: true
         expires:
           type: string
@@ -37672,6 +39816,7 @@ components:
             type: string
         id_token:
           type: string
+          description: Get the token's id_token as JSON String
           readOnly: true
         revoked:
           type: boolean
@@ -37774,6 +39919,11 @@ components:
       - SET_NULL
       - SET_DEFAULT
       type: string
+      description: |-
+        * `CASCADE` - CASCADE
+        * `CASCADE_MANY` - CASCADE_MANY
+        * `SET_NULL` - SET_NULL
+        * `SET_DEFAULT` - SET_DEFAULT
     User:
       type: object
       description: User Serializer
@@ -37871,6 +40021,10 @@ components:
       - create_when_required
       - always_create
       type: string
+      description: |-
+        * `never_create` - Never Create
+        * `create_when_required` - Create When Required
+        * `always_create` - Always Create
     UserDeleteStage:
       type: object
       description: UserDeleteStage Serializer
@@ -37884,15 +40038,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -37924,6 +40082,10 @@ components:
       - username
       - upn
       type: string
+      description: |-
+        * `email` - E Mail
+        * `username` - Username
+        * `upn` - Upn
     UserGroup:
       type: object
       description: Simplified Group Serializer for user's groups
@@ -37935,6 +40097,7 @@ components:
           title: Group uuid
         num_pk:
           type: integer
+          description: Get a numerical, int32 ID for the group
           readOnly: true
         name:
           type: string
@@ -37990,15 +40153,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -38052,15 +40219,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -38094,6 +40265,12 @@ components:
       - username_link
       - username_deny
       type: string
+      description: |-
+        * `identifier` - Use the source-specific identifier
+        * `email_link` - Link to a user with identical email address. Can have security implications when a source doesn't validate email addresses.
+        * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
+        * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
+        * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
     UserMetrics:
       type: object
       description: User Metrics
@@ -38292,6 +40469,7 @@ components:
         settings:
           type: object
           additionalProperties: {}
+          description: Get user settings with tenant and group settings applied
           readOnly: true
       required:
       - avatar
@@ -38399,6 +40577,10 @@ components:
       - preferred
       - discouraged
       type: string
+      description: |-
+        * `required` - Required
+        * `preferred` - Preferred
+        * `discouraged` - Discouraged
     UserWriteStage:
       type: object
       description: UserWriteStage Serializer
@@ -38412,15 +40594,19 @@ components:
           type: string
         component:
           type: string
+          description: Get object type so that we know how to edit the object
           readOnly: true
         verbose_name:
           type: string
+          description: Return object's verbose_name
           readOnly: true
         verbose_name_plural:
           type: string
+          description: Return object's plural verbose_name
           readOnly: true
         meta_model_name:
           type: string
+          description: Return internal model name
           readOnly: true
         flow_set:
           type: array
@@ -38487,15 +40673,19 @@ components:
       properties:
         version_current:
           type: string
+          description: Get current version
           readOnly: true
         version_latest:
           type: string
+          description: Get latest version from cache
           readOnly: true
         build_hash:
           type: string
+          description: Get build hash, if version is not latest or released
           readOnly: true
         outdated:
           type: boolean
+          description: Check if we're running the latest version
           readOnly: true
       required:
       - build_hash

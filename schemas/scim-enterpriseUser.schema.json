@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "urn:ietf:params:scim:schemas:extension:enterprise:2.0:User",
+  "title": "EnterpriseUser",
+  "description": "Enterprise User",
+  "properties": {
+    "employeeNumber": {
+      "description": "Numeric or alphanumeric identifier assigned to a person, typically based on order of hire or association with anorganization.",
+      "type": "string"
+    },
+    "costCenter": {
+      "description": "Identifies the name of a cost center.",
+      "type": "string"
+    },
+    "organization": {
+      "description": "Identifies the name of an organization.",
+      "type": "string"
+    },
+    "division": {
+      "description": "Identifies the name of a division.",
+      "type": "string"
+    },
+    "department": {
+      "description": "Numeric or alphanumeric identifier assigned to a person, typically based on order of hire or association with anorganization.",
+      "type": "string"
+    },
+    "manager": {
+      "description": "The User's manager. A complex type that optionally allows service providers to represent organizational hierarchy by referencing the 'id' attribute of another User.",
+      "type": "object",
+      "properties": {
+        "value": {
+          "description": "The id of the SCIM resource representingthe User's manager.  REQUIRED.",
+          "type": "string"
+        },
+        "$ref": {
+          "description": "The URI of the SCIM resource representing the User's manager.  REQUIRED.",
+          "type": "string",
+          "format": "uri"
+        },
+        "displayName": {
+          "description": "The displayName of the User's manager. OPTIONAL and READ-ONLY.",
+          "type": "string",
+          "readOnly": true
+        }
+      },
+      "required": []
+    }
+  }
+}

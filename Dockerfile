@@ -96,7 +96,7 @@ RUN apt-get update && \
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
-COPY ./xml /xml
+COPY ./schemas /schemas
 COPY ./locale /locale
 COPY ./tests /tests
 COPY ./manage.py /

@@ -44,6 +44,9 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "verbose_name_plural",
             "meta_model_name",
         ]
+        extra_kwargs = {
+            "authorization_flow": {"required": True, "allow_null": False},
+        }
 
 
 class ProviderViewSet(

@@ -32,7 +32,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         return new ProvidersApi(DEFAULT_CONFIG).providersSamlImportMetadataCreate({
             file: file,
             name: data.name,
-            authorizationFlow: data.authorizationFlow,
+            authorizationFlow: data.authorizationFlow || "",
         });
     };
 

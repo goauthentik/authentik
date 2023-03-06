@@ -77,6 +77,7 @@ module.exports = {
                     },
                     items: ["providers/ldap/generic_setup"],
                 },
+                "providers/scim/index",
             ],
         },
         {
