@@ -51,7 +51,11 @@ class SCIMClient(Generic[T, SchemaType]):
                 method,
                 f"{self.base_url}{path}",
                 **kwargs,
-                headers={"Authorization": f"Bearer {self.token}"},
+                headers={
+                    "Authorization": f"Bearer {self.token}",
+                    "Accept": "application/scim+json",
+                    "Content-Type": "application/scim+json",
+                },
             )
         except RequestException as exc:
             raise SCIMRequestException(None) from exc

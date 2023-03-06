@@ -6,7 +6,7 @@ from jsonschema import validate
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Group, User
+from authentik.core.models import Group
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 
