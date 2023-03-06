@@ -154,12 +154,19 @@ While the prerequisites above must be satisfied prior to having your pull reques
 
 ## Styleguides
 
+### PR naming
+
+-   Use the format of `<package>: <verb> <description>`
+    -   See [here](#authentik-packages) for `package`
+    -   Example: `providers/saml2: fix parsing of requests`
+
 ### Git Commit Messages
 
 -   Use the format of `<package>: <verb> <description>`
     -   See [here](#authentik-packages) for `package`
     -   Example: `providers/saml2: fix parsing of requests`
 -   Reference issues and pull requests liberally after the first line
+-   Naming of commits within a PR does not need to adhere to the guidelines as we squash merge PRs
 
 ### Python Styleguide
 
