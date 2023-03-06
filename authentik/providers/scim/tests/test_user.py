@@ -9,6 +9,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
+from authentik.providers.scim.tasks import scim_sync
 
 
 class SCIMUserTests(TestCase):
@@ -183,3 +184,53 @@ class SCIMUserTests(TestCase):
             self.assertEqual(mock.request_history[0].method, "GET")
             self.assertEqual(mock.request_history[3].method, "DELETE")
             self.assertEqual(mock.request_history[3].url, f"https://localhost/Users/{scim_id}")
+
+    def test_user_create(self):
+        """Test user creation"""
+        self.provider.delete()
+        scim_id = generate_id()
+        with Mocker() as mock:
+            mock: Mocker
+            mock.get(
+                "https://localhost/ServiceProviderConfig",
+                json={},
+            )
+            mock.post(
+                "https://localhost/Users",
+                json={
+                    "id": scim_id,
+                },
+            )
+            uid = generate_id()
+            user = User.objects.create(
+                username=uid,
+                name=uid,
+                email=f"{uid}@goauthentik.io",
+            )
+
+            self.setUp()
+            scim_sync.delay(self.provider.pk).get()
+
+            self.assertEqual(mock.call_count, 5)
+            self.assertEqual(mock.request_history[0].method, "GET")
+            self.assertEqual(mock.request_history[-2].method, "POST")
+            self.assertJSONEqual(
+                mock.request_history[-2].body,
+                {
+                    "emails": [
+                        {
+                            "primary": True,
+                            "type": "other",
+                            "value": f"{uid}@goauthentik.io",
+                        }
+                    ],
+                    "externalId": user.uid,
+                    "name": {
+                        "familyName": "",
+                        "formatted": uid,
+                        "givenName": uid,
+                    },
+                    "photos": [],
+                    "userName": uid,
+                },
+            )
