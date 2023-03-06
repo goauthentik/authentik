@@ -631,7 +631,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         try:
             return evaluator.evaluate(self.expression)
         except Exception as exc:
-            raise PropertyMappingExpressionException(str(exc)) from exc
+            raise PropertyMappingExpressionException(exc) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"

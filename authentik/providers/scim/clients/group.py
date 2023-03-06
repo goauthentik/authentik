@@ -7,6 +7,7 @@ from pydanticscim.responses import PatchOp, PatchOperation, PatchRequest
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_keys
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import StopSync
@@ -22,7 +23,15 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
         if not scim_group:
             return self._create(obj)
-        return None
+        scim_group = self.to_scim(obj)
+        scim_group.id = scim_group.id
+        return self._request(
+            "PUT",
+            f"/Groups/{scim_group.id}",
+            data=scim_group.json(
+                exclude_unset=True,
+            ),
+        )
 
     def delete(self, obj: Group):
         """Delete group"""
@@ -57,7 +66,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                 # Value error can be raised when assigning invalid data to an attribute
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
                     mapping=mapping,
                 ).save()
                 raise StopSync(exc, obj, mapping) from exc
@@ -99,14 +108,12 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
 
     def update_group(self, group: Group, action: PatchOp, users_set: set[int]):
         """Update a group, either using PUT to replace it or PATCH if supported"""
-        if not self._config.patch.supported:
-            # Do patch
+        if self._config.patch.supported:
             if action == PatchOp.add:
                 return self._patch_add_users(group, users_set)
             if action == PatchOp.remove:
                 return self._patch_remove_users(group, users_set)
-        # TODO: replace group
-        return None
+        return self.write(group)
 
     def _patch_add_users(self, group: Group, users_set: set[int]):
         """Add users in users_set to group"""

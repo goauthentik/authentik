@@ -5,6 +5,7 @@ from pydantic import ValidationError
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
+from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_keys
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import StopSync
@@ -52,7 +53,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
                 # Value error can be raised when assigning invalid data to an attribute
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    message=f"Failed to evaluate property-mapping {exception_to_string(exc)}",
                     mapping=mapping,
                 ).save()
                 raise StopSync(exc, obj, mapping) from exc

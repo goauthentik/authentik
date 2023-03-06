@@ -54,5 +54,5 @@ entries:
       name: "authentik default SCIM Mapping: Group"
       expression: |
         return {
-            "displayName": request.context['group'].name,
+            "displayName": group.name,
         }

@@ -29,7 +29,7 @@ class SCIMRequestException(SentryIgnoredException):
 
     _response: Optional[Response]
 
-    def __init__(self, response: Optional[Response]= None) -> None:
+    def __init__(self, response: Optional[Response] = None) -> None:
         self._response = response
 
     def __str__(self) -> str:

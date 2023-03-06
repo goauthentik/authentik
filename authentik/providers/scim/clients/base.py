@@ -1,6 +1,6 @@
 """SCIM Client"""
 from typing import Generic, TypeVar
-from requests import RequestException
+
 from pydantic import ValidationError
 from pydanticscim.service_provider import (
     Bulk,
@@ -10,7 +10,7 @@ from pydanticscim.service_provider import (
     ServiceProviderConfiguration,
     Sort,
 )
-from requests import Session
+from requests import RequestException, Session
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_http_session
