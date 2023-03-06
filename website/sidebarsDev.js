@@ -35,10 +35,11 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Development",
+            label: "Setup",
             items: [
                 "setup/full-dev-environment",
-                "setup/frontend-only-dev-environment",
+                "setup/frontend-dev-environment",
+                "setup/website-dev-environment",
             ],
         },
         {
