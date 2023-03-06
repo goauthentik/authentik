@@ -101,6 +101,8 @@ def scim_sync_users(page: int, provider_pk: int, **kwargs):
                     }
                 )
             )
+        except StopSync:
+            break
     return messages
 
 
@@ -131,6 +133,8 @@ def scim_sync_group(page: int, provider_pk: int, **kwargs):
                     }
                 )
             )
+        except StopSync:
+            break
     return messages
 
 
