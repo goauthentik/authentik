@@ -72,6 +72,7 @@ export abstract class AKChart<T> extends AKElement {
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    position: relative;
                 }
                 .container > span {
                     position: absolute;
