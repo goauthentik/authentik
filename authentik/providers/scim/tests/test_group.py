@@ -2,11 +2,12 @@
 from json import loads
 
 from django.test import TestCase
+from guardian.shortcuts import get_anonymous_user
 from jsonschema import validate
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Group
+from authentik.core.models import Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 
@@ -16,6 +17,10 @@ class SCIMGroupTests(TestCase):
 
     @apply_blueprint("system/providers-scim.yaml")
     def setUp(self) -> None:
+        # Delete all users and groups as the mocked HTTP responses only return one ID
+        # which will cause errors with multiple users
+        User.objects.all().exclude(pk=get_anonymous_user().pk).delete()
+        Group.objects.all().delete()
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",

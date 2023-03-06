@@ -2,11 +2,12 @@
 from json import loads
 
 from django.test import TestCase
+from guardian.shortcuts import get_anonymous_user
 from jsonschema import validate
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import User
+from authentik.core.models import Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
@@ -17,6 +18,10 @@ class SCIMUserTests(TestCase):
 
     @apply_blueprint("system/providers-scim.yaml")
     def setUp(self) -> None:
+        # Delete all users and groups as the mocked HTTP responses only return one ID
+        # which will cause errors with multiple users
+        User.objects.all().exclude(pk=get_anonymous_user().pk).delete()
+        Group.objects.all().delete()
         self.provider: SCIMProvider = SCIMProvider.objects.create(
             name=generate_id(),
             url="https://localhost",
@@ -186,8 +191,9 @@ class SCIMUserTests(TestCase):
     @Mocker()
     def test_sync_task(self, mock: Mocker):
         """Test sync tasks"""
-        self.provider.delete()
-        scim_id = generate_id()
+        user_scim_id = generate_id()
+        group_scim_id = generate_id()
+        uid = generate_id()
         mock.get(
             "https://localhost/ServiceProviderConfig",
             json={},
@@ -195,24 +201,35 @@ class SCIMUserTests(TestCase):
         mock.post(
             "https://localhost/Users",
             json={
-                "id": scim_id,
+                "id": user_scim_id,
             },
         )
-        uid = generate_id()
+        mock.put(
+            f"https://localhost/Users/{user_scim_id}",
+            json={
+                "id": user_scim_id,
+            },
+        )
+        mock.post(
+            "https://localhost/Groups",
+            json={
+                "id": group_scim_id,
+            },
+        )
         user = User.objects.create(
             username=uid,
             name=uid,
             email=f"{uid}@goauthentik.io",
         )
 
-        self.setUp()
         scim_sync.delay(self.provider.pk).get()
 
         self.assertEqual(mock.call_count, 5)
         self.assertEqual(mock.request_history[0].method, "GET")
-        self.assertEqual(mock.request_history[-2].method, "POST")
+        self.assertEqual(mock.request_history[1].method, "POST")
+        self.assertEqual(mock.request_history[-2].method, "PUT")
         self.assertJSONEqual(
-            mock.request_history[-2].body,
+            mock.request_history[1].body,
             {
                 "emails": [
                     {
