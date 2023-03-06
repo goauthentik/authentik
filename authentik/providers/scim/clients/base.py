@@ -22,6 +22,18 @@ T = TypeVar("T")
 SchemaType = TypeVar("SchemaType")
 
 
+def default_service_provider_config() -> ServiceProviderConfiguration:
+    """Fallback service provider configuration"""
+    return ServiceProviderConfiguration(
+        patch=Patch(supported=False),
+        bulk=Bulk(supported=False),
+        filter=Filter(supported=False),
+        changePassword=ChangePassword(supported=False),
+        sort=Sort(supported=False),
+        authenticationSchemes=[],
+    )
+
+
 class SCIMClient(Generic[T, SchemaType]):
     """SCIM Client"""
 
@@ -71,14 +83,7 @@ class SCIMClient(Generic[T, SchemaType]):
 
     def get_service_provider_config(self):
         """Get Service provider config"""
-        default_config = ServiceProviderConfiguration(
-            patch=Patch(supported=False),
-            bulk=Bulk(supported=False),
-            filter=Filter(supported=False),
-            changePassword=ChangePassword(supported=False),
-            sort=Sort(supported=False),
-            authenticationSchemes=[],
-        )
+        default_config = default_service_provider_config()
         try:
             return ServiceProviderConfiguration.parse_obj(
                 self._request("GET", "/ServiceProviderConfig")
