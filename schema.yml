@@ -15915,7 +15915,11 @@ paths:
       description: SCIMProvider Viewset
       parameters:
       - in: query
-        name: authorization_flow
+        name: exclude_users_service_account
+        schema:
+          type: boolean
+      - in: query
+        name: filter_group
         schema:
           type: string
           format: uuid
@@ -15945,10 +15949,6 @@ paths:
         required: false
         in: query
         description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: token
         schema:
           type: string
       - in: query
@@ -36630,6 +36630,12 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type: string
+          format: uuid
+          nullable: true
     PatchedSMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -38890,6 +38896,12 @@ components:
         token:
           type: string
           description: Authentication token
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -38927,6 +38939,12 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        exclude_users_service_account:
+          type: boolean
+        filter_group:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - name
       - token

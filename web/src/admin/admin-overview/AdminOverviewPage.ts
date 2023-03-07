@@ -5,8 +5,8 @@ import "@goauthentik/admin/admin-overview/cards/SystemStatusCard";
 import "@goauthentik/admin/admin-overview/cards/VersionStatusCard";
 import "@goauthentik/admin/admin-overview/cards/WorkerStatusCard";
 import "@goauthentik/admin/admin-overview/charts/AdminLoginAuthorizeChart";
-import "@goauthentik/admin/admin-overview/charts/LDAPSyncStatusChart";
 import "@goauthentik/admin/admin-overview/charts/OutpostStatusChart";
+import "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { VERSION } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -134,7 +134,7 @@ export class AdminOverviewPage extends AKElement {
                         >
                             <ak-aggregate-card
                                 icon="pf-icon pf-icon-zone"
-                                header=${t`Outpost instance status`}
+                                header=${t`Outpost status`}
                                 headerLink="#/outpost/outposts"
                             >
                                 <ak-admin-status-chart-outpost></ak-admin-status-chart-outpost>
@@ -143,12 +143,8 @@ export class AdminOverviewPage extends AKElement {
                         <div
                             class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-4-col-on-2xl graph-container"
                         >
-                            <ak-aggregate-card
-                                icon="fa fa-sync-alt"
-                                header=${t`LDAP Sync status`}
-                                headerLink="#/core/sources"
-                            >
-                                <ak-admin-status-chart-ldap-sync></ak-admin-status-chart-ldap-sync>
+                            <ak-aggregate-card icon="fa fa-sync-alt" header=${t`Sync status`}>
+                                <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
                             </ak-aggregate-card>
                         </div>
                         <div class="pf-l-grid__item pf-m-12-col row-divider">

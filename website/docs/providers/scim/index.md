@@ -25,16 +25,20 @@ Data is synchronized in multiple ways:
 
 The actual synchronization process is run in the authentik worker. To allow this process to better to scale, a task is started for each 100 users and groups, so when multiple workers are available the workload will be distributed.
 
-### Supported features
-
-SCIM defines multiple optional features, some of which are supported by the SCIM provider.
-
--   Bulk updates
--   Password changes
--   Etag
-
 ### Attribute mapping
 
 Attribute mapping from authentik to SCIM users is done via property mappings as with other providers. The default mappings for users and groups make some assumptions that should work for most setups, but it is also possible to define custom mappings to add fields.
 
 All selected mappings are applied in the order of their name, and are deeply merged onto the final user data. The final data is then validated against the SCIM schema, and if the data is not valid, the sync is stopped.
+
+### Filtering
+
+By default, service accounts are excluded from being synchronized. This can be configured in the SCIM provider. Additionally, an optional group can be configured to only synchronize the users that are members of the selected group. Changing this group selection does _not_ remove members outside of the group that might have been created previously.
+
+### Supported features
+
+SCIM defines multiple optional features, some of which are supported by the SCIM provider.
+
+-   Patch updates
+
+    If the service provider supports patch updates, authentik will use patch requests to add/remove members of groups. For all other updates, such as user updates and other group updates, PUT requests are used.

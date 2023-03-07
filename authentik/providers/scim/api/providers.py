@@ -31,6 +31,8 @@ class SCIMProviderSerializer(ProviderSerializer):
             "meta_model_name",
             "url",
             "token",
+            "exclude_users_service_account",
+            "filter_group",
         ]
         extra_kwargs = {}
 
@@ -40,7 +42,7 @@ class SCIMProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = SCIMProvider.objects.all()
     serializer_class = SCIMProviderSerializer
-    filterset_fields = ["name", "authorization_flow", "url", "token"]
+    filterset_fields = ["name", "exclude_users_service_account", "url", "filter_group"]
     search_fields = ["name", "url"]
     ordering = ["name", "url"]
 

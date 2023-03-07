@@ -1,13 +1,21 @@
 """SCIM Provider models"""
 from django.db import models
+from django.db.models import Q, QuerySet
 from django.utils.translation import gettext_lazy as _
+from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Group, PropertyMapping, Provider, User
+from authentik.core.models import USER_ATTRIBUTE_SA, Group, PropertyMapping, Provider, User
 
 
 class SCIMProvider(Provider):
     """SCIM 2.0 provider to create users and groups in external applications"""
+
+    exclude_users_service_account = models.BooleanField(default=False)
+
+    filter_group = models.ForeignKey(
+        "authentik_core.group", on_delete=models.SET_DEFAULT, default=None, null=True
+    )
 
     url = models.TextField(help_text=_("Base URL to SCIM requests, usually ends in /v2"))
     token = models.TextField(help_text=_("Authentication token"))
@@ -18,6 +26,31 @@ class SCIMProvider(Provider):
         blank=True,
         help_text=_("Property mappings used for group creation/updating."),
     )
+
+    def get_user_qs(self) -> QuerySet[User]:
+        """Get queryset of all users with consistent ordering
+        according to the provider's settings"""
+        base = User.objects.all().exclude(pk=get_anonymous_user().pk)
+        if self.exclude_users_service_account:
+            base = base.filter(
+                Q(
+                    **{
+                        f"attributes__{USER_ATTRIBUTE_SA}__isnull": True,
+                    }
+                )
+                | Q(
+                    **{
+                        f"attributes__{USER_ATTRIBUTE_SA}": False,
+                    }
+                )
+            )
+        if self.filter_group:
+            base = base.filter(ak_groups__in=[self.filter_group])
+        return base.order_by("pk")
+
+    def get_group_qs(self) -> QuerySet[Group]:
+        """Get queryset of all groups with consistent ordering"""
+        return Group.objects.all().order_by("pk")
 
     @property
     def component(self) -> str:

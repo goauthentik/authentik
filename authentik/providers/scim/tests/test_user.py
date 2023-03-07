@@ -26,6 +26,7 @@ class SCIMUserTests(TestCase):
             name=generate_id(),
             url="https://localhost",
             token=generate_id(),
+            exclude_users_service_account=True,
         )
         self.provider.property_mappings.add(
             SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/user")
