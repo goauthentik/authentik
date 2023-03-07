@@ -42,6 +42,8 @@ export class AggregateCard extends AKElement {
                 }
                 .pf-c-card__body {
                     overflow-x: scroll;
+                    padding-left: calc(var(--pf-c-card--child--PaddingLeft) / 2);
+                    padding-right: calc(var(--pf-c-card--child--PaddingRight) / 2);
                 }
                 .pf-c-card__header,
                 .pf-c-card__title,

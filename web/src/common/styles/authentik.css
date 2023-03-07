@@ -44,6 +44,15 @@ html > form > input {
     left: -2000px;
 }
 
+.pf-icon {
+    display: inline-block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    line-height: 1;
+    vertical-align: middle;
+}
+
 .pf-c-page__header {
     z-index: 0;
     background-color: var(--ak-dark-background-light);
