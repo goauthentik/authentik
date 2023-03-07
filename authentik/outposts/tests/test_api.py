@@ -4,6 +4,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.models import PropertyMapping
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
+from authentik.lib.generators import generate_id
 from authentik.outposts.api.outposts import OutpostSerializer
 from authentik.outposts.models import OutpostType, default_outpost_config
 from authentik.providers.ldap.models import LDAPProvider
@@ -16,7 +17,7 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
     def setUp(self) -> None:
         super().setUp()
         self.mapping = PropertyMapping.objects.create(
-            name="dummy", expression="""return {'foo': 'bar'}"""
+            name=generate_id(), expression="""return {'foo': 'bar'}"""
         )
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
@@ -25,12 +26,12 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
         """Test Outpost validation"""
         valid = OutpostSerializer(
             data={
-                "name": "foo",
+                "name": generate_id(),
                 "type": OutpostType.PROXY,
                 "config": default_outpost_config(),
                 "providers": [
                     ProxyProvider.objects.create(
-                        name="test", authorization_flow=create_test_flow()
+                        name=generate_id(), authorization_flow=create_test_flow()
                     ).pk
                 ],
             }
@@ -38,12 +39,12 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
         self.assertTrue(valid.is_valid())
         invalid = OutpostSerializer(
             data={
-                "name": "foo",
+                "name": generate_id(),
                 "type": OutpostType.PROXY,
                 "config": default_outpost_config(),
                 "providers": [
                     LDAPProvider.objects.create(
-                        name="test", authorization_flow=create_test_flow()
+                        name=generate_id(), authorization_flow=create_test_flow()
                     ).pk
                 ],
             }
@@ -60,15 +61,19 @@ class TestOutpostServiceConnectionsAPI(APITestCase):
 
     def test_outpost_config(self):
         """Test Outpost's config field"""
-        provider = ProxyProvider.objects.create(name="test", authorization_flow=create_test_flow())
-        invalid = OutpostSerializer(data={"name": "foo", "providers": [provider.pk], "config": ""})
+        provider = ProxyProvider.objects.create(
+            name=generate_id(), authorization_flow=create_test_flow()
+        )
+        invalid = OutpostSerializer(
+            data={"name": generate_id(), "providers": [provider.pk], "config": ""}
+        )
         self.assertFalse(invalid.is_valid())
         self.assertIn("config", invalid.errors)
         valid = OutpostSerializer(
             data={
-                "name": "foo",
+                "name": generate_id(),
                 "providers": [provider.pk],
-                "config": default_outpost_config("foo"),
+                "config": default_outpost_config(generate_id()),
                 "type": OutpostType.PROXY,
             }
         )
