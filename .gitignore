@@ -200,3 +200,6 @@ media/
 .idea/
 /gen-*/
 data/
+
+# Local Netlify folder
+.netlify
