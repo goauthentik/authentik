@@ -39,7 +39,7 @@ These tests are all very well-defined, they explain exactly what is tested, what
 
 For example, here you can see the overview of a test that's failed: ![Failed test overview](./failed-overview.png).
 
- And here you see the exact request and the reason why it failed: ![Failed test detail](./failed-detail.png)
+And here you see the exact request and the reason why it failed: ![Failed test detail](./failed-detail.png)
 
 The exact standard definition is linked, which makes it very easy to dig in further and figure out what's supposed to happen.
 
@@ -51,7 +51,7 @@ For authentik, we use these tests to ensure that we adhere to the standard as mu
 
 Unfortunately, it also quite common for clients to deviate from these standards, often requiring special behavior that is customized to be specific to one or more implementations. One example that we had this issue with in the past is VMware's vCenter.
 
-They introduced "Identity federation" in [Version 7](https://blogs.vmware.com/vsphere/2020/04/vsphere-7-new-generation-vsphere.html), but explicitly only supported Microsoft's ADFS identity provider. However under the hood, this was using OIDC, which ADFS has supported for a while.
+VMWare introduced "Identity federation" in [Version 7](https://blogs.vmware.com/vsphere/2020/04/vsphere-7-new-generation-vsphere.html), but explicitly only supported Microsoft's ADFS identity provider. However, under the hood vCenter was itself actually using OIDC, which ADFS has supported for a while.
 
 Of course for us, ADFS being the only supported solution wasn't great, and I was very curious to see if ADFS was _actually_ required. With the OIDC implementation that authentik had at the time, we didn't get very far. Logins would fail with a very cryptic error message, and since this was unsupported territory, there wasn't much we could find to help us figure out what was wrong.
 
