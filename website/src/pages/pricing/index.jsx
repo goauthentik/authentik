@@ -21,17 +21,17 @@ export default function pricingPage() {
                         <div className={"col col--4 margin-vert--md"}>
                             <div className="card" style={{ height: "28rem" }}>
                                 <div className="card__header">
-                                    <h3>Open-source</h3>
+                                    <h3>Open Source</h3>
                                 </div>
                                 <div className="card__body">
-                                    <li>Open Source</li>
-                                    <li>Self Hosted</li>
+                                    <li>Open source</li>
+                                    <li>Self-hosted</li>
                                     <li>Supports OAuth2/OpenID Connect</li>
                                     <li>Supports SAML</li>
                                     <li>Supports LDAP</li>
                                     <li>Supports Proxy authentication</li>
                                     <li>Advanced policy engine</li>
-                                    <li>Community Support</li>
+                                    <li>Community support</li>
                                 </div>
                                 <div className="card__footer">
                                     <h1>Free, forever</h1>
@@ -47,19 +47,16 @@ export default function pricingPage() {
                         <div className={"col col--4 margin-vert--md"}>
                             <div className="card" style={{ height: "28rem" }}>
                                 <div className="card__header">
-                                    <h3>Enterprise</h3>
+                                    <h3>Enterprise Self-Hosted</h3>
                                 </div>
                                 <div className="card__body">
+                                    <li>Self-hosted</li>
                                     <li>Source-available</li>
-                                    <li>Self Hosted</li>
-                                    <li>LTS releases</li>
+                                    <li>Long-term-support releases</li>
                                     <li>Enterprise support plan (50 Users+)</li>
-
-                                    <br></br>
-                                    <h3>Upcoming features</h3>
-                                    <li>Push-notification multifactor</li>
-                                    <li>Desktop authentication</li>
-                                    <li>AI-based risk assessment</li>
+                                    <li>Push-notification MFA (planned)</li>
+                                    <li>Desktop authentication (planned)</li>
+                                    <li>AI-based risk assessment (planned)</li>
                                 </div>
                                 <div className="card__footer">
                                     <h1>
@@ -78,17 +75,22 @@ export default function pricingPage() {
                         <div className={"col col--4 margin-vert--md"}>
                             <div className="card" style={{ height: "28rem" }}>
                                 <div className="card__header">
-                                    <h3>Cloud</h3>
+                                    <h3>Enterprise Cloud</h3>
                                 </div>
                                 <div className="card__body">
-                                    <li>All the features of enterprise</li>
                                     <li>Hosted and Managed by authentik</li>
                                     <li>
-                                        Easily shift to self hosted if needed
+                                        Easily shift to self-hosted if needed
                                     </li>
+                                    <li>Source-available</li>
+                                    <li>Long-term-support releases</li>
+                                    <li>Enterprise support plan (50 Users+)</li>
+                                    <li>Push-notification MFA (planned)</li>
+                                    <li>Desktop authentication (planned)</li>
+                                    <li>AI-based risk assessment (planned)</li>
                                 </div>
                                 <div className="card__footer">
-                                    <h3>Starting at 100 users / $500/month</h3>
+                                    <h4>Minimum 100 users</h4>
                                     <h1>
                                         $5 <small>/user/month</small>
                                     </h1>
@@ -106,10 +108,7 @@ export default function pricingPage() {
             </section>
 
             <section>
-                <div
-                    className="container"
-                    style={{ marginTop: "2rem", marginBottom: "3rem" }}
-                >
+                <div className="container" style={{ marginBottom: "3rem" }}>
                     <div class="row">
                         <div className="col col--8 col--offset-2">
                             <p className="hero__subtitle margin--md">
