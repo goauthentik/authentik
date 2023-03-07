@@ -31,6 +31,8 @@ class SCIMProviderSerializer(ProviderSerializer):
             "meta_model_name",
             "url",
             "token",
+            "exclude_users_service_account",
+            "parent_group",
         ]
         extra_kwargs = {}
 

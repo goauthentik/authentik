@@ -13,7 +13,14 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import { PropertymappingsApi, ProvidersApi, SCIMProvider } from "@goauthentik/api";
+import {
+    CoreApi,
+    CoreGroupsListRequest,
+    Group,
+    PropertymappingsApi,
+    ProvidersApi,
+    SCIMProvider,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-scim-form")
 export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
@@ -77,6 +84,56 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${t`Token to authenticate with. Currently only bearer authentication is supported.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group ?expanded=${true}>
+                <span slot="header">${t`User filtering`}</span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal name="excludeUsersServiceAccount">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.excludeUsersServiceAccount, true)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Exclude service accounts`}</span>
+                        </label>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Parent group`} name="parentGroup">
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Group[]> => {
+                                const args: CoreGroupsListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(
+                                    args,
+                                );
+                                return groups.results;
+                            }}
+                            .renderElement=${(group: Group): string => {
+                                return group.name;
+                            }}
+                            .value=${(group: Group | undefined): string | undefined => {
+                                return group ? group.pk : undefined;
+                            }}
+                            .selected=${(group: Group): boolean => {
+                                return group.pk === this.instance?.parentGroup;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Only sync users within the selected group.`}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

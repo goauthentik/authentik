@@ -6,7 +6,6 @@ from django.core.paginator import Paginator
 from django.db.models import Model
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
-from guardian.shortcuts import get_anonymous_user
 from pydanticscim.responses import PatchOp
 from structlog.stdlib import get_logger
 
@@ -49,12 +48,9 @@ def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
     self.set_uid(slugify(provider.name))
     result = TaskResult(TaskResultStatus.SUCCESSFUL, [])
     result.messages.append(_("Starting full SCIM sync"))
-    # TODO: Filtering
     LOGGER.debug("Starting SCIM sync")
-    users_paginator = Paginator(
-        User.objects.all().exclude(pk=get_anonymous_user().pk).order_by("pk"), PAGE_SIZE
-    )
-    groups_paginator = Paginator(Group.objects.all().order_by("pk"), PAGE_SIZE)
+    users_paginator = Paginator(provider.get_user_qs(), PAGE_SIZE)
+    groups_paginator = Paginator(provider.get_group_qs(), PAGE_SIZE)
     with allow_join_result():
         try:
             for page in users_paginator.page_range:
@@ -72,7 +68,7 @@ def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
 
 
 @CELERY_APP.task()
-def scim_sync_users(page: int, provider_pk: int, **kwargs):
+def scim_sync_users(page: int, provider_pk: int):
     """Sync single or multiple users to SCIM"""
     messages = []
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
@@ -82,10 +78,7 @@ def scim_sync_users(page: int, provider_pk: int, **kwargs):
         client = SCIMUserClient(provider)
     except SCIMRequestException:
         return messages
-    paginator = Paginator(
-        User.objects.all().filter(**kwargs).exclude(pk=get_anonymous_user().pk).order_by("pk"),
-        PAGE_SIZE,
-    )
+    paginator = Paginator(provider.get_user_qs(), PAGE_SIZE)
     LOGGER.debug("starting user sync for page", page=page)
     for user in paginator.page(page).object_list:
         try:
@@ -107,7 +100,7 @@ def scim_sync_users(page: int, provider_pk: int, **kwargs):
 
 
 @CELERY_APP.task()
-def scim_sync_group(page: int, provider_pk: int, **kwargs):
+def scim_sync_group(page: int, provider_pk: int):
     """Sync single or multiple groups to SCIM"""
     messages = []
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
@@ -117,7 +110,7 @@ def scim_sync_group(page: int, provider_pk: int, **kwargs):
         client = SCIMGroupClient(provider)
     except SCIMRequestException:
         return messages
-    paginator = Paginator(Group.objects.all().filter(**kwargs).order_by("pk"), PAGE_SIZE)
+    paginator = Paginator(provider.get_group_qs(), PAGE_SIZE)
     LOGGER.debug("starting group sync for page", page=page)
     for group in paginator.page(page).object_list:
         try:

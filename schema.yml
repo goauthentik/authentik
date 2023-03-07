@@ -36630,6 +36630,12 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        exclude_users_service_account:
+          type: boolean
+        parent_group:
+          type: string
+          format: uuid
+          nullable: true
     PatchedSMSDeviceRequest:
       type: object
       description: Serializer for sms authenticator devices
@@ -38890,6 +38896,12 @@ components:
         token:
           type: string
           description: Authentication token
+        exclude_users_service_account:
+          type: boolean
+        parent_group:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -38927,6 +38939,12 @@ components:
           type: string
           minLength: 1
           description: Authentication token
+        exclude_users_service_account:
+          type: boolean
+        parent_group:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - name
       - token
