@@ -17,7 +17,7 @@ import (
 func GenerateSelfSignedCert() (tls.Certificate, error) {
 	priv, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
-		log.Fatalf("Failed to generate private key: %v", err)
+		log.WithError(err).Warning("Failed to generate private key")
 		return tls.Certificate{}, err
 	}
 
@@ -29,7 +29,7 @@ func GenerateSelfSignedCert() (tls.Certificate, error) {
 	serialNumberLimit := new(big.Int).Lsh(big.NewInt(1), 128)
 	serialNumber, err := rand.Int(rand.Reader, serialNumberLimit)
 	if err != nil {
-		log.Fatalf("Failed to generate serial number: %v", err)
+		log.WithError(err).Warning("Failed to generate serial number")
 		return tls.Certificate{}, err
 	}
 

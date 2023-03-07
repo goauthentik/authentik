@@ -43,7 +43,7 @@ func (ws *WebServer) listenTLS() {
 
 	ln, err := net.Listen("tcp", config.Get().Listen.HTTPS)
 	if err != nil {
-		ws.log.WithError(err).Fatalf("failed to listen (TLS)")
+		ws.log.WithError(err).Warning("failed to listen (TLS)")
 		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}}

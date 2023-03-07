@@ -115,7 +115,8 @@ func (ps *ProxyServer) ServeHTTP() {
 	listenAddress := config.Get().Listen.HTTP
 	listener, err := net.Listen("tcp", listenAddress)
 	if err != nil {
-		ps.log.WithField("listen", listenAddress).WithError(err).Fatalf("listen failed")
+		ps.log.WithField("listen", listenAddress).WithError(err).Warning("Failed to listen")
+		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: listener}
 	defer proxyListener.Close()
@@ -137,6 +138,7 @@ func (ps *ProxyServer) ServeHTTPS() {
 	ln, err := net.Listen("tcp", listenAddress)
 	if err != nil {
 		ps.log.WithError(err).Warning("Failed to listen (TLS)")
+		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}}
 	defer proxyListener.Close()
