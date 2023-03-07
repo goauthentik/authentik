@@ -76,7 +76,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             scim_group = SCIMGroupSchema.parse_obj(delete_none_keys(raw_scim_group))
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
-        scim_group.externalId = str(obj.pk)
+        if not scim_group.externalId:
+            scim_group.externalId = str(obj.pk)
 
         users = list(obj.users.order_by("id").values_list("id", flat=True))
         connections = SCIMUser.objects.filter(provider=self.provider, user__pk__in=users)
