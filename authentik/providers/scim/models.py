@@ -13,7 +13,7 @@ class SCIMProvider(Provider):
 
     exclude_users_service_account = models.BooleanField(default=False)
 
-    parent_group = models.ForeignKey(
+    filter_group = models.ForeignKey(
         "authentik_core.group", on_delete=models.SET_DEFAULT, default=None, null=True
     )
 
@@ -44,8 +44,8 @@ class SCIMProvider(Provider):
                     }
                 )
             )
-        if self.parent_group:
-            base = base.filter(ak_groups__in=[self.parent_group])
+        if self.filter_group:
+            base = base.filter(ak_groups__in=[self.filter_group])
         return base.order_by("pk")
 
     def get_group_qs(self) -> QuerySet[Group]:

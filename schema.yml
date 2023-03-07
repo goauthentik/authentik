@@ -15915,7 +15915,11 @@ paths:
       description: SCIMProvider Viewset
       parameters:
       - in: query
-        name: authorization_flow
+        name: exclude_users_service_account
+        schema:
+          type: boolean
+      - in: query
+        name: filter_group
         schema:
           type: string
           format: uuid
@@ -15945,10 +15949,6 @@ paths:
         required: false
         in: query
         description: A search term.
-        schema:
-          type: string
-      - in: query
-        name: token
         schema:
           type: string
       - in: query
@@ -36632,7 +36632,7 @@ components:
           description: Authentication token
         exclude_users_service_account:
           type: boolean
-        parent_group:
+        filter_group:
           type: string
           format: uuid
           nullable: true
@@ -38898,7 +38898,7 @@ components:
           description: Authentication token
         exclude_users_service_account:
           type: boolean
-        parent_group:
+        filter_group:
           type: string
           format: uuid
           nullable: true
@@ -38941,7 +38941,7 @@ components:
           description: Authentication token
         exclude_users_service_account:
           type: boolean
-        parent_group:
+        filter_group:
           type: string
           format: uuid
           nullable: true

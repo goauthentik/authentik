@@ -106,7 +106,7 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                             <span class="pf-c-switch__label">${t`Exclude service accounts`}</span>
                         </label>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Group`} name="parentGroup">
+                    <ak-form-element-horizontal label=${t`Group`} name="filterGroup">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
@@ -127,7 +127,7 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                                 return group ? group.pk : undefined;
                             }}
                             .selected=${(group: Group): boolean => {
-                                return group.pk === this.instance?.parentGroup;
+                                return group.pk === this.instance?.filterGroup;
                             }}
                             ?blankable=${true}
                         >
