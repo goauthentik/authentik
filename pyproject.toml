@@ -60,7 +60,7 @@ exclude_lines = [
 show_missing = true
 
 [tool.pylint.basic]
-good-names = ["pk", "id", "i", "j", "k", "_"]
+good-names = ["pk", "id", "i", "j", "k", "_", "bar"]
 
 [tool.pylint.master]
 disable = [

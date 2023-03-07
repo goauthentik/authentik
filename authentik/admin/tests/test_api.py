@@ -9,6 +9,7 @@ from authentik.blueprints.tests import reconcile_app
 from authentik.core.models import Group, User
 from authentik.core.tasks import clean_expired_models
 from authentik.events.monitored_tasks import TaskResultStatus
+from authentik.lib.generators import generate_id
 
 
 class TestAdminAPI(TestCase):
@@ -16,8 +17,8 @@ class TestAdminAPI(TestCase):
 
     def setUp(self) -> None:
         super().setUp()
-        self.user = User.objects.create(username="test-user")
-        self.group = Group.objects.create(name="superusers", is_superuser=True)
+        self.user = User.objects.create(username=generate_id())
+        self.group = Group.objects.create(name=generate_id(), is_superuser=True)
         self.group.users.add(self.user)
         self.group.save()
         self.client.force_login(self.user)

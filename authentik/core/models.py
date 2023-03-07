@@ -243,7 +243,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
 class Provider(SerializerModel):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
-    name = models.TextField()
+    name = models.TextField(unique=True)
 
     authorization_flow = models.ForeignKey(
         "authentik_flows.Flow",
@@ -608,7 +608,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
     pm_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.TextField()
+    name = models.TextField(unique=True)
     expression = models.TextField()
 
     objects = InheritanceManager()

@@ -113,7 +113,7 @@ class OutpostServiceConnection(models.Model):
     """Connection details for an Outpost Controller, like Docker or Kubernetes"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
-    name = models.TextField()
+    name = models.TextField(unique=True)
 
     local = models.BooleanField(
         default=False,
@@ -239,7 +239,7 @@ class Outpost(SerializerModel, ManagedModel):
     """Outpost instance which manages a service user and token"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, primary_key=True)
-    name = models.TextField()
+    name = models.TextField(unique=True)
 
     type = models.TextField(choices=OutpostType.choices, default=OutpostType.PROXY)
     service_connection = InheritanceForeignKey(
