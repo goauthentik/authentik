@@ -6,11 +6,11 @@ from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
 from django.core.signals import Signal
 from django.db.models import Model
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from django.http.request import HttpRequest
 
-from authentik.core.models import Application, AuthenticatedSession
+from authentik.core.models import Application, AuthenticatedSession, BackchannelProvider
 
 # Arguments: user: User, password: str
 password_changed = Signal()
@@ -54,3 +54,11 @@ def authenticated_session_delete(sender: type[Model], instance: "AuthenticatedSe
     """Delete session when authenticated session is deleted"""
     cache_key = f"{KEY_PREFIX}{instance.session_key}"
     cache.delete(cache_key)
+
+
+@receiver(pre_save)
+def backchannel_provider_pre_save(sender: type[Model], instance: Model, **_):
+    """Ensure backchannel providers have is_backchannel set to true"""
+    if not isinstance(instance, BackchannelProvider):
+        return
+    instance.is_backchannel = True

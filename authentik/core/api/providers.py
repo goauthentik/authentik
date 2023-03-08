@@ -1,5 +1,7 @@
 """Provider API Views"""
 from django.utils.translation import gettext_lazy as _
+from django_filters.filters import BooleanFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -49,6 +51,22 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         }
 
 
+class ProviderFilter(FilterSet):
+    """Filter for groups"""
+
+    application__isnull = BooleanFilter(
+        field_name="application",
+        lookup_expr="isnull",
+    )
+    backchannel_only = BooleanFilter(
+        method="filter_backchannel_only",
+    )
+
+    def filter_backchannel_only(self, queryset, name, value):
+        """Only return backchannel providers"""
+        return queryset.filter(is_backchannel=value)
+
+
 class ProviderViewSet(
     mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
@@ -63,6 +81,7 @@ class ProviderViewSet(
     filterset_fields = {
         "application": ["isnull"],
     }
+    filterset_class = ProviderFilter
     search_fields = [
         "name",
         "application__name",
@@ -78,6 +97,8 @@ class ProviderViewSet(
         data = []
         for subclass in all_subclasses(self.queryset.model):
             subclass: Provider
+            if subclass._meta.abstract:
+                continue
             data.append(
                 {
                     "name": subclass._meta.verbose_name,

@@ -83,23 +83,16 @@ export class ProviderListPage extends TablePage<Provider> {
     }
 
     row(item: Provider): TemplateResult[] {
-        let app = html``;
-        if (item.component === "ak-provider-scim-form") {
-            app = html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
-                ${t`No application required.`}`;
-        } else if (!item.assignedApplicationName) {
-            app = html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
-                ${t`Warning: Provider not assigned to any application.`}`;
-        } else {
-            app = html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
-                ${t`Assigned to application `}
-                <a href="#/core/applications/${item.assignedApplicationSlug}"
-                    >${item.assignedApplicationName}</a
-                >`;
-        }
         return [
             html`<a href="#/core/providers/${item.pk}"> ${item.name} </a>`,
-            app,
+            item.assignedApplicationName
+                ? html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
+                      ${t`Assigned to application `}
+                      <a href="#/core/applications/${item.assignedApplicationSlug}"
+                          >${item.assignedApplicationName}</a
+                      >`
+                : html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
+                      ${t`Warning: Provider not assigned to any application.`}`,
             html`${item.verboseName}`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
