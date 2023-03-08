@@ -3,7 +3,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -23,7 +22,7 @@ export class Alert extends AKElement {
     level: Level = Level.Warning;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, AKGlobal];
+        return [PFBase, PFAlert];
     }
 
     render(): TemplateResult {

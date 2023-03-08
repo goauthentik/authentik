@@ -14,7 +14,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -64,8 +63,7 @@ export class LibraryPage extends AKElement {
     }
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFDisplay, PFEmptyState, PFPage, PFContent, PFGrid, PFGallery, AKGlobal]
-            .concat(css`
+        return [PFBase, PFDisplay, PFEmptyState, PFPage, PFContent, PFGrid, PFGallery].concat(css`
             :host,
             main {
                 padding: 3% 5%;

@@ -9,7 +9,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -29,7 +28,7 @@ export class AuthenticatorSMSStage extends BaseStage<
     AuthenticatorSMSChallengeResponseRequest
 > {
     static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
+        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
 
     renderPhoneNumber(): TemplateResult {

@@ -25,7 +25,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -60,7 +59,6 @@ export class AdminInterface extends AKElement {
             PFPage,
             PFButton,
             PFDrawer,
-            AKGlobal,
             css`
                 .pf-c-page__main,
                 .pf-c-drawer__content,

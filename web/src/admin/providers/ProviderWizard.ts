@@ -17,7 +17,6 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFHint from "@patternfly/patternfly/components/Hint/hint.css";
@@ -32,7 +31,7 @@ export class InitialProviderWizardPage extends WizardPage {
     providerTypes: TypeCreate[] = [];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFHint, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFForm, PFHint, PFButton, PFRadio];
     }
     sidebarLabel = () => t`Select type`;
 
@@ -91,7 +90,7 @@ export class InitialProviderWizardPage extends WizardPage {
 @customElement("ak-provider-wizard")
 export class ProviderWizard extends AKElement {
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFButton, PFRadio];
     }
 
     @property()

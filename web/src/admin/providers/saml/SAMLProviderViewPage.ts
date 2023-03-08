@@ -17,7 +17,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -72,7 +71,6 @@ export class SAMLProviderViewPage extends AKElement {
             PFForm,
             PFFormControl,
             PFBanner,
-            AKGlobal,
         ];
     }
 

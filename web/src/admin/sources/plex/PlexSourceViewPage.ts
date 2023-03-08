@@ -14,7 +14,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -42,7 +41,7 @@ export class PlexSourceViewPage extends AKElement {
     source?: PlexSource;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList, AKGlobal];
+        return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList];
     }
 
     constructor() {

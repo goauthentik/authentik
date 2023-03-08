@@ -8,7 +8,6 @@ import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -20,7 +19,6 @@ export class HorizontalFormElement extends AKElement {
             PFBase,
             PFForm,
             PFFormControl,
-            AKGlobal,
             css`
                 .pf-c-form__group {
                     display: grid;

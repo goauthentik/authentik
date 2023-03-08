@@ -5,7 +5,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFExpandableSection from "@patternfly/patternfly/components/ExpandableSection/expandable-section.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -21,7 +20,7 @@ export class Expand extends AKElement {
     textClosed = t`Show more`;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFExpandableSection, AKGlobal];
+        return [PFBase, PFExpandableSection];
     }
 
     render(): TemplateResult {

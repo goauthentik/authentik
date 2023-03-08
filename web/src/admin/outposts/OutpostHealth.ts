@@ -7,7 +7,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -22,7 +21,6 @@ export class OutpostHealthElement extends AKElement {
         return [
             PFBase,
             PFDescriptionList,
-            AKGlobal,
             css`
                 li {
                     margin: 5px 0;

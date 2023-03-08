@@ -4,7 +4,6 @@ import { PFSize } from "@goauthentik/elements/Spinner";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -24,7 +23,7 @@ export class EmptyState extends AKElement {
     header = "";
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFEmptyState, PFTitle, AKGlobal];
+        return [PFBase, PFEmptyState, PFTitle];
     }
 
     render(): TemplateResult {

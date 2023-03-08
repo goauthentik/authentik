@@ -19,7 +19,6 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -27,7 +26,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-application-wizard")
 export class ApplicationWizard extends AKElement {
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFButton, PFRadio];
     }
 
     @property({ type: Boolean })

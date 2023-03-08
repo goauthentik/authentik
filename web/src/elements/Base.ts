@@ -2,6 +2,8 @@ import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
 
 import { LitElement } from "lit";
 
+import AKGlobal from "@goauthentik/common/styles/authentik.css";
+
 let css: Promise<string[]> | undefined;
 function fetchCustomCSS(): Promise<string[]> {
     if (!css) {
@@ -26,6 +28,10 @@ export class AKElement extends LitElement {
     constructor() {
         super();
         this.addEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
+        if (!this.shadowRoot) {
+            return;
+        }
+        this.shadowRoot.adoptedStyleSheets = [...this.shadowRoot.adoptedStyleSheets, AKGlobal];
         fetchCustomCSS().then((sheets) => {
             sheets.map((css) => {
                 if (css === "") {

@@ -3,7 +3,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -36,7 +35,6 @@ export class Radio<T> extends AKElement {
             PFBase,
             PFRadio,
             PFForm,
-            AKGlobal,
             css`
                 .pf-c-form__group-control {
                     padding-top: calc(

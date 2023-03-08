@@ -10,7 +10,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -52,7 +51,6 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
             PFFormControl,
             PFTitle,
             PFButton,
-            AKGlobal,
         ];
     }
 

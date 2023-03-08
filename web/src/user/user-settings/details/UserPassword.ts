@@ -9,7 +9,6 @@ import { customElement } from "lit/decorators.js";
 import { property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -22,7 +21,7 @@ export class UserSettingsPassword extends AKElement {
     configureUrl?: string;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFButton, PFForm, PFFormControl, AKGlobal];
+        return [PFBase, PFCard, PFButton, PFForm, PFFormControl];
     }
 
     render(): TemplateResult {

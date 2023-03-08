@@ -4,7 +4,6 @@ import { Chip } from "@goauthentik/elements/chips/Chip";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
 import PFChipGroup from "@patternfly/patternfly/components/ChipGroup/chip-group.css";
@@ -18,7 +17,6 @@ export class ChipGroup extends AKElement {
             PFChip,
             PFChipGroup,
             PFButton,
-            AKGlobal,
             css`
                 ::slotted(*) {
                     margin: 0 2px;

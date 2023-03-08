@@ -9,7 +9,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
@@ -46,16 +45,7 @@ export class IdentificationStage extends BaseStage<
     form?: HTMLFormElement;
 
     static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFAlert,
-            PFLogin,
-            PFForm,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            AKGlobal,
-        ].concat(
+        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(
             css`
                 /* login page's icons */
                 .pf-c-login__main-footer-links-item button {

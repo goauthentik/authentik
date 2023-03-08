@@ -10,7 +10,6 @@ import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -34,7 +33,7 @@ export class PlexLoginInit extends BaseStage<
     authUrl?: string;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle, AKGlobal];
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFButton, PFTitle];
     }
 
     async firstUpdated(): Promise<void> {

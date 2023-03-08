@@ -9,7 +9,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -35,7 +34,6 @@ export class AuthenticatorStaticStage extends BaseStage<
             PFFormControl,
             PFTitle,
             PFButton,
-            AKGlobal,
             css`
                 /* Static OTP Tokens */
                 ul {
