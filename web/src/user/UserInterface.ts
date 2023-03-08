@@ -107,7 +107,7 @@ export class UserInterface extends AKElement {
     }
 
     constructor() {
-        super();
+        super(true);
         this.ws = new WebsocketClient();
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;

@@ -1,15 +1,10 @@
 import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
 import { Themes, uiConfig } from "@goauthentik/common/ui/config";
 
-
-
 import { LitElement } from "lit";
-
-
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
-
 
 let css: Promise<string[]> | undefined;
 function fetchCustomCSS(): Promise<string[]> {
@@ -31,8 +26,12 @@ function fetchCustomCSS(): Promise<string[]> {
     return css;
 }
 
+interface AdoptedStyleSheetsElement {
+    adoptedStyleSheets: readonly CSSStyleSheet[];
+}
+
 export class AKElement extends LitElement {
-    constructor() {
+    constructor(private _isInterface: boolean = false) {
         super();
         this.addEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
     }
@@ -45,20 +44,24 @@ export class AKElement extends LitElement {
         return root;
     }
 
-    private async _initTheme(root: ShadowRoot): Promise<void> {
+    private async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
         const config = await uiConfig();
         if (config.theme.base === Themes.automatic) {
             const matcher = window.matchMedia("(prefers-color-scheme: light)");
             const handler = (ev?: MediaQueryListEvent) => {
-                this._updateTheme(
-                    root,
-                    ev?.matches || matcher.matches ? Themes.light : Themes.dark,
-                );
+                const theme = ev?.matches || matcher.matches ? Themes.light : Themes.dark;
+                this._updateTheme(root, theme);
+                if (this._isInterface) {
+                    this._updateTheme(document, theme);
+                }
             };
             matcher.addEventListener("change", handler);
             handler();
         } else {
             this._updateTheme(root, config.theme.base);
+            if (this._isInterface) {
+                this._updateTheme(document, config.theme.base);
+            }
         }
     }
 
@@ -79,7 +82,7 @@ export class AKElement extends LitElement {
         return;
     }
 
-    private _updateTheme(root: ShadowRoot, theme: Themes): void {
+    private _updateTheme(root: AdoptedStyleSheetsElement, theme: Themes): void {
         this.themeChangeCallback(theme);
         let stylesheet: CSSStyleSheet | undefined;
         if (theme === Themes.dark) {

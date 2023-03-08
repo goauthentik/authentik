@@ -83,7 +83,7 @@ export class AdminInterface extends AKElement {
     }
 
     constructor() {
-        super();
+        super(true);
         this.ws = new WebsocketClient();
         this.sidebarOpen = window.innerWidth >= 1280;
         window.addEventListener("resize", () => {

@@ -171,7 +171,7 @@ export class FlowExecutor extends AKElement implements StageHost {
     }
 
     constructor() {
-        super();
+        super(true);
         this.ws = new WebsocketClient();
         this.flowSlug = window.location.pathname.split("/")[3];
         if (window.location.search.includes("inspector")) {
