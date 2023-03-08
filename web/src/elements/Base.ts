@@ -36,7 +36,7 @@ export class AKElement extends LitElement {
         this.addEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
     }
 
-    protected createRenderRoot(): ShadowRoot {
+    protected createRenderRoot(): ShadowRoot | Element {
         const root = super.createRenderRoot() as ShadowRoot;
         root.adoptedStyleSheets = [...root.adoptedStyleSheets, AKGlobal];
         this._initTheme(root);
