@@ -1,8 +1,15 @@
 import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
+import { Themes, uiConfig } from "@goauthentik/common/ui/config";
+
+
 
 import { LitElement } from "lit";
 
+
+
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
+import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
+
 
 let css: Promise<string[]> | undefined;
 function fetchCustomCSS(): Promise<string[]> {
@@ -28,26 +35,65 @@ export class AKElement extends LitElement {
     constructor() {
         super();
         this.addEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
-        if (!this.shadowRoot) {
-            return;
+    }
+
+    protected createRenderRoot(): ShadowRoot {
+        const root = super.createRenderRoot() as ShadowRoot;
+        root.adoptedStyleSheets = [...root.adoptedStyleSheets, AKGlobal];
+        this._initTheme(root);
+        this._initCustomCSS(root);
+        return root;
+    }
+
+    private async _initTheme(root: ShadowRoot): Promise<void> {
+        const config = await uiConfig();
+        if (config.theme.base === Themes.automatic) {
+            const matcher = window.matchMedia("(prefers-color-scheme: light)");
+            const handler = (ev?: MediaQueryListEvent) => {
+                this._updateTheme(
+                    root,
+                    ev?.matches || matcher.matches ? Themes.light : Themes.dark,
+                );
+            };
+            matcher.addEventListener("change", handler);
+            handler();
+        } else {
+            this._updateTheme(root, config.theme.base);
         }
-        this.shadowRoot.adoptedStyleSheets = [...this.shadowRoot.adoptedStyleSheets, AKGlobal];
-        fetchCustomCSS().then((sheets) => {
-            sheets.map((css) => {
-                if (css === "") {
-                    return;
-                }
-                new CSSStyleSheet().replace(css).then((sheet) => {
-                    if (!this.shadowRoot) {
-                        return;
-                    }
-                    this.shadowRoot.adoptedStyleSheets = [
-                        ...this.shadowRoot.adoptedStyleSheets,
-                        sheet,
-                    ];
-                });
+    }
+
+    private async _initCustomCSS(root: ShadowRoot): Promise<void> {
+        const sheets = await fetchCustomCSS();
+        sheets.map((css) => {
+            if (css === "") {
+                return;
+            }
+            new CSSStyleSheet().replace(css).then((sheet) => {
+                root.adoptedStyleSheets = [...root.adoptedStyleSheets, sheet];
             });
         });
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    themeChangeCallback(theme: Themes): void {
+        return;
+    }
+
+    private _updateTheme(root: ShadowRoot, theme: Themes): void {
+        this.themeChangeCallback(theme);
+        let stylesheet: CSSStyleSheet | undefined;
+        if (theme === Themes.dark) {
+            stylesheet = ThemeDark;
+        }
+        if (!stylesheet) {
+            return;
+        }
+        if (root.adoptedStyleSheets.indexOf(stylesheet) === -1) {
+            root.adoptedStyleSheets = [...root.adoptedStyleSheets, stylesheet];
+        } else {
+            root.adoptedStyleSheets = root.adoptedStyleSheets.filter((v) => v !== stylesheet);
+        }
+        this.requestUpdate();
     }
 
     disconnectedCallback() {

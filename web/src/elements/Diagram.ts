@@ -1,7 +1,8 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { Themes } from "@goauthentik/common/ui/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
-import mermaid from "mermaid";
+import mermaid, { MermaidConfig } from "mermaid";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -31,25 +32,30 @@ export class Diagram extends AKElement {
         ];
     }
 
+    config: MermaidConfig;
+
     constructor() {
         super();
-        const matcher = window.matchMedia("(prefers-color-scheme: light)");
-        const handler = (ev?: MediaQueryListEvent) => {
-            mermaid.initialize({
-                // The type definition for this says number
-                // but the example use strings
-                // and numbers don't work
-                logLevel: "fatal" as unknown as number,
-                startOnLoad: false,
-                theme: ev?.matches || matcher.matches ? "default" : "dark",
-                flowchart: {
-                    curve: "linear",
-                },
-            });
-            this.requestUpdate();
+        this.config = {
+            // The type definition for this says number
+            // but the example use strings
+            // and numbers don't work
+            logLevel: "fatal" as unknown as number,
+            startOnLoad: false,
+            flowchart: {
+                curve: "linear",
+            },
         };
-        matcher.addEventListener("change", handler);
-        handler();
+        mermaid.initialize(this.config);
+    }
+
+    themeChangeCallback(theme: Themes): void {
+        if (theme === Themes.dark) {
+            this.config.theme = "dark";
+        } else {
+            this.config.theme = "default";
+        }
+        mermaid.initialize(this.config);
     }
 
     firstUpdated(): void {

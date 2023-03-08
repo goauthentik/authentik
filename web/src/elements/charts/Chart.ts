@@ -1,4 +1,5 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { Themes } from "@goauthentik/common/ui/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import {
@@ -87,19 +88,13 @@ export abstract class AKChart<T> extends AKElement {
         ];
     }
 
-    constructor() {
-        super();
-        const matcher = window.matchMedia("(prefers-color-scheme: light)");
-        const handler = (ev?: MediaQueryListEvent) => {
-            if (ev?.matches || matcher.matches) {
-                this.fontColour = FONT_COLOUR_LIGHT_MODE;
-            } else {
-                this.fontColour = FONT_COLOUR_DARK_MODE;
-            }
-            this.chart?.update();
-        };
-        matcher.addEventListener("change", handler);
-        handler();
+    themeChangeCallback(theme: Themes): void {
+        if (theme === Themes.light) {
+            this.fontColour = FONT_COLOUR_LIGHT_MODE;
+        } else {
+            this.fontColour = FONT_COLOUR_DARK_MODE;
+        }
+        this.chart?.update();
     }
 
     connectedCallback(): void {

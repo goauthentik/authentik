@@ -15,6 +15,12 @@ export enum LayoutType {
     column_3 = "3-column",
 }
 
+export enum Themes {
+    automatic = "automatic",
+    light = "light",
+    dark = "dark",
+}
+
 export interface UIConfig {
     enabledFeatures: {
         // API Request drawer in navbar
@@ -32,6 +38,7 @@ export interface UIConfig {
         userDisplay: UserDisplay;
     };
     theme: {
+        base: Themes;
         background: string;
         cardBackground: string;
     };
@@ -59,6 +66,7 @@ export class DefaultUIConfig implements UIConfig {
         userDisplay: UserDisplay.username,
     };
     theme = {
+        base: Themes.automatic,
         background: "",
         cardBackground: "",
     };

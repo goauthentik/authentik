@@ -13,6 +13,7 @@ import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
+import { Themes } from "@goauthentik/common/ui/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
 
@@ -125,19 +126,19 @@ export class CodeMirrorTextarea<T> extends AKElement {
         return undefined;
     }
 
-    firstUpdated(): void {
-        const matcher = window.matchMedia("(prefers-color-scheme: light)");
-        const handler = (ev?: MediaQueryListEvent) => {
-            let theme;
-            if (ev?.matches || matcher.matches) {
-                theme = this.themeLight;
-            } else {
-                theme = this.themeDark;
-            }
+    themeChangeCallback(theme: Themes): void {
+        if (theme === Themes.dark) {
             this.editor?.dispatch({
-                effects: this.theme.reconfigure(theme),
+                effects: this.theme.reconfigure(this.themeDark),
             });
-        };
+        } else {
+            this.editor?.dispatch({
+                effects: this.theme.reconfigure(this.themeLight),
+            });
+        }
+    }
+
+    firstUpdated(): void {
         const extensions = [
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),
@@ -156,7 +157,5 @@ export class CodeMirrorTextarea<T> extends AKElement {
             doc: this._value,
         });
         this.shadowRoot?.appendChild(this.editor.dom);
-        matcher.addEventListener("change", handler);
-        handler();
     }
 }
