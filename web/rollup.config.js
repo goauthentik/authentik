@@ -36,7 +36,7 @@ export const resources = [
         src: "node_modules/@patternfly/patternfly/components/Spinner/spinner.css",
         dest: "dist/",
     },
-    { src: "src/common/styles/authentik.css", dest: "dist/" },
+    { src: "src/common/styles/*", dest: "dist/" },
     { src: "src/custom.css", dest: "dist/" },
 
     {

@@ -16,6 +16,7 @@
         {% block head_before %}
         {% endblock %}
         <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/theme-dark.css' %}" media="(prefers-color-scheme: dark)">
         <link rel="stylesheet" type="text/css" href="{% static 'dist/custom.css' %}" data-inject>
         <script src="{% static 'dist/poly.js' %}" type="module"></script>
         {% block head %}
