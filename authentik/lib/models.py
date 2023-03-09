@@ -74,3 +74,21 @@ class DomainlessURLValidator(URLValidator):
         if scheme not in self.schemes:
             value = "default" + value
         super().__call__(value)
+
+
+class DomainlessFormattedURLValidator(DomainlessURLValidator):
+    """URL validator which allows for python format strings"""
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.host_re = r"([%\(\)a-zA-Z])+" + self.domain_re + self.domain_re
+        self.regex = _lazy_re_compile(
+            r"^(?:[a-z0-9.+-]*)://"  # scheme is validated separately
+            r"(?:[^\s:@/]+(?::[^\s:@/]*)?@)?"  # user:pass authentication
+            r"(?:" + self.ipv4_re + "|" + self.ipv6_re + "|" + self.host_re + ")"
+            r"(?::\d{2,5})?"  # port
+            r"(?:[/?#][^\s]*)?"  # resource path
+            r"\Z",
+            re.IGNORECASE,
+        )
+        self.schemes = ["http", "https", "blank"] + list(self.schemes)
