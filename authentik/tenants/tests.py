@@ -7,6 +7,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_tenan
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.time import timedelta_from_string
+from authentik.tenants.api import Themes
 from authentik.tenants.models import Tenant
 
 
@@ -24,6 +25,7 @@ class TestTenants(APITestCase):
                 "branding_title": "authentik",
                 "matched_domain": tenant.domain,
                 "ui_footer_links": CONFIG.y("footer_links"),
+                "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
             },
         )
@@ -42,6 +44,7 @@ class TestTenants(APITestCase):
                 "branding_title": "custom",
                 "matched_domain": "bar.baz",
                 "ui_footer_links": CONFIG.y("footer_links"),
+                "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
             },
         )
@@ -57,6 +60,7 @@ class TestTenants(APITestCase):
                 "branding_title": "authentik",
                 "matched_domain": "fallback",
                 "ui_footer_links": CONFIG.y("footer_links"),
+                "ui_theme": Themes.AUTOMATIC,
                 "default_locale": "",
             },
         )
