@@ -50,18 +50,17 @@ export class Diagram extends AKElement {
         mermaid.initialize(this.config);
     }
 
-    themeChangeCallback(theme: UiThemeEnum): void {
-        if (theme === UiThemeEnum.Dark) {
-            this.config.theme = "dark";
-        } else {
-            this.config.theme = "default";
-        }
-        mermaid.initialize(this.config);
-    }
-
     firstUpdated(): void {
         if (this.handlerBound) return;
         window.addEventListener(EVENT_REFRESH, this.refreshHandler);
+        this.addEventListener("themeChange", ((ev: CustomEvent<UiThemeEnum>) => {
+            if (ev.detail === UiThemeEnum.Dark) {
+                this.config.theme = "dark";
+            } else {
+                this.config.theme = "default";
+            }
+            mermaid.initialize(this.config);
+        }) as EventListener);
         this.handlerBound = true;
         this.refreshHandler();
     }

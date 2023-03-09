@@ -127,19 +127,18 @@ export class CodeMirrorTextarea<T> extends AKElement {
         return undefined;
     }
 
-    themeChangeCallback(theme: UiThemeEnum): void {
-        if (theme === UiThemeEnum.Dark) {
-            this.editor?.dispatch({
-                effects: this.theme.reconfigure(this.themeDark),
-            });
-        } else {
-            this.editor?.dispatch({
-                effects: this.theme.reconfigure(this.themeLight),
-            });
-        }
-    }
-
     firstUpdated(): void {
+        this.addEventListener("themeChange", ((ev: CustomEvent<UiThemeEnum>) => {
+            if (ev.detail === UiThemeEnum.Dark) {
+                this.editor?.dispatch({
+                    effects: this.theme.reconfigure(this.themeDark),
+                });
+            } else {
+                this.editor?.dispatch({
+                    effects: this.theme.reconfigure(this.themeLight),
+                });
+            }
+        }) as EventListener);
         const extensions = [
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),

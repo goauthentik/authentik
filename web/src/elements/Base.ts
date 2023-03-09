@@ -40,6 +40,8 @@ export interface AdoptedStyleSheetsElement {
     adoptedStyleSheets: readonly CSSStyleSheet[];
 }
 
+const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
+
 export class AKElement extends LitElement {
     _mediaMatcher?: MediaQueryList;
     _mediaMatcherHandler?: (ev?: MediaQueryListEvent) => void;
@@ -63,6 +65,14 @@ export class AKElement extends LitElement {
     }
 
     async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
+        // Early activate theme based on media query to prevent light flash
+        // when dark is preferred
+        this._activateTheme(
+            root,
+            window.matchMedia(QUERY_MEDIA_COLOR_LIGHT).matches
+                ? UiThemeEnum.Light
+                : UiThemeEnum.Dark,
+        );
         rootInterface()?._initTheme(root);
     }
 
@@ -78,11 +88,6 @@ export class AKElement extends LitElement {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    themeChangeCallback(theme: UiThemeEnum): void {
-        return;
-    }
-
     _applyTheme(root: AdoptedStyleSheetsElement, theme?: UiThemeEnum): void {
         if (!theme) {
             theme = UiThemeEnum.Automatic;
@@ -91,7 +96,7 @@ export class AKElement extends LitElement {
             // Create a media matcher to automatically switch the theme depending on
             // prefers-color-scheme
             if (!this._mediaMatcher) {
-                this._mediaMatcher = window.matchMedia("(prefers-color-scheme: light)");
+                this._mediaMatcher = window.matchMedia(QUERY_MEDIA_COLOR_LIGHT);
                 this._mediaMatcherHandler = (ev?: MediaQueryListEvent) => {
                     const theme =
                         ev?.matches || this._mediaMatcher?.matches
@@ -100,7 +105,6 @@ export class AKElement extends LitElement {
                     this._activateTheme(root, theme);
                 };
                 this._mediaMatcher.addEventListener("change", this._mediaMatcherHandler);
-                this._mediaMatcherHandler();
             }
             return;
         } else if (this._mediaMatcher && this._mediaMatcherHandler) {
@@ -113,8 +117,17 @@ export class AKElement extends LitElement {
     }
 
     _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum) {
+        if (this._activeTheme === theme) {
+            return;
+        }
         // Make sure we only get to this callback once we've picked a concise theme choice
-        this.themeChangeCallback(theme);
+        this.dispatchEvent(new CustomEvent(
+            "themeChange", {
+                bubbles: true,
+                composed: true,
+                detail: theme,
+            }
+        ));
         this._activeTheme = theme;
         this.setAttribute("theme", theme);
         let stylesheet: CSSStyleSheet | undefined;

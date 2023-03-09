@@ -89,19 +89,18 @@ export abstract class AKChart<T> extends AKElement {
         ];
     }
 
-    themeChangeCallback(theme: UiThemeEnum): void {
-        if (theme === UiThemeEnum.Light) {
-            this.fontColour = FONT_COLOUR_LIGHT_MODE;
-        } else {
-            this.fontColour = FONT_COLOUR_DARK_MODE;
-        }
-        this.chart?.update();
-    }
-
     connectedCallback(): void {
         super.connectedCallback();
         window.addEventListener("resize", this.resizeHandler);
         this.addEventListener(EVENT_REFRESH, this.refreshHandler);
+        this.addEventListener("themeChange", ((ev: CustomEvent<UiThemeEnum>) => {
+            if (ev.detail === UiThemeEnum.Light) {
+                this.fontColour = FONT_COLOUR_LIGHT_MODE;
+            } else {
+                this.fontColour = FONT_COLOUR_DARK_MODE;
+            }
+            this.chart?.update();
+        }) as EventListener);
     }
 
     disconnectedCallback(): void {
