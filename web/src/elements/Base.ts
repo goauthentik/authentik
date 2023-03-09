@@ -1,4 +1,5 @@
 import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { uiConfig } from "@goauthentik/common/ui/config";
 
 import { LitElement } from "lit";
@@ -40,6 +41,10 @@ export interface AdoptedStyleSheetsElement {
 }
 
 export class AKElement extends LitElement {
+    _mediaMatcher?: MediaQueryList;
+    _mediaMatcherHandler?: (ev?: MediaQueryListEvent) => void;
+    _configuredTheme?: UiThemeEnum;
+
     constructor() {
         super();
         this.addEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
@@ -53,19 +58,8 @@ export class AKElement extends LitElement {
         return root;
     }
 
-    private async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
-        const theme = await rootInterface()?._getThemeFromConfig();
-        if (!theme || theme === UiThemeEnum.Automatic) {
-            const matcher = window.matchMedia("(prefers-color-scheme: light)");
-            const handler = (ev?: MediaQueryListEvent) => {
-                const theme = ev?.matches || matcher.matches ? UiThemeEnum.Light : UiThemeEnum.Dark;
-                this._updateTheme(root, theme);
-            };
-            matcher.addEventListener("change", handler);
-            handler();
-        } else {
-            this._updateTheme(root, theme);
-        }
+    async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
+        rootInterface()?._initTheme(root);
     }
 
     private async _initCustomCSS(root: ShadowRoot): Promise<void> {
@@ -85,15 +79,51 @@ export class AKElement extends LitElement {
         return;
     }
 
-    _updateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
-        this.themeChangeCallback(theme);
+    _applyTheme(root: AdoptedStyleSheetsElement, theme?: UiThemeEnum): void {
+        if (!theme) {
+            theme = UiThemeEnum.Automatic;
+        }
         let stylesheet: CSSStyleSheet | undefined;
+        if (!this._configuredTheme) {
+            this._configuredTheme = theme;
+        }
+        if (theme === UiThemeEnum.Automatic) {
+            // Create a media matcher to automatically switch the theme depending on
+            // prefers-color-scheme
+            if (!this._mediaMatcher) {
+                console.log("adding media matcher");
+                this._mediaMatcher = window.matchMedia("(prefers-color-scheme: light)");
+                this._mediaMatcherHandler = (ev?: MediaQueryListEvent) => {
+                    const theme =
+                        ev?.matches || this._mediaMatcher?.matches
+                            ? UiThemeEnum.Light
+                            : UiThemeEnum.Dark;
+                    this._applyTheme(root, theme);
+                };
+                this._mediaMatcher.addEventListener("change", this._mediaMatcherHandler);
+                this._mediaMatcherHandler();
+            }
+            return;
+        } else if (
+            this._mediaMatcher &&
+            this._mediaMatcherHandler &&
+            theme === this._configuredTheme
+        ) {
+            console.log("removing media matcher");
+            // Theme isn't automatic and we have a matcher configured, remove the matcher
+            // to prevent changes
+            this._mediaMatcher.removeEventListener("change", this._mediaMatcherHandler);
+            this._mediaMatcher = undefined;
+        }
+        // Make sure we only get to this callback once we've picked a concise theme choice
+        this.themeChangeCallback(theme);
         if (theme === UiThemeEnum.Dark) {
             stylesheet = ThemeDark;
         }
         if (!stylesheet) {
             return;
         }
+        console.log(`applyTheme actually ${theme}`);
         if (root.adoptedStyleSheets.indexOf(stylesheet) === -1) {
             root.adoptedStyleSheets = [...root.adoptedStyleSheets, stylesheet];
         } else {
@@ -113,12 +143,18 @@ export class AKElement extends LitElement {
 }
 
 export class Interface extends AKElement {
-    _updateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
-        super._updateTheme(root, theme);
-        super._updateTheme(document, theme);
+    _applyTheme(root: AdoptedStyleSheetsElement, theme?: UiThemeEnum): void {
+        super._applyTheme(root, theme);
+        super._applyTheme(document, theme);
     }
 
-    async _getThemeFromConfig(): Promise<UiThemeEnum> {
-        return (await uiConfig()).theme.base;
+    async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
+        const bootstrapTheme = globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+        this._applyTheme(root, bootstrapTheme);
+        uiConfig().then((config) => {
+            if (config.theme.base) {
+                this._applyTheme(root, config.theme.base);
+            }
+        });
     }
 }

@@ -8,7 +8,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { Interface } from "@goauthentik/elements/Base";
+import { AdoptedStyleSheetsElement, Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
@@ -184,8 +184,9 @@ export class FlowExecutor extends Interface implements StageHost {
         tenant().then((tenant) => (this.tenant = tenant));
     }
 
-    async _getThemeFromConfig(): Promise<UiThemeEnum> {
-        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+    async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
+        const bootstrapTheme = globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+        this._applyTheme(root, bootstrapTheme);
     }
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
