@@ -150,7 +150,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
             EditorView.lineWrapping,
             EditorState.readOnly.of(this.readOnly),
             EditorState.tabSize.of(2),
-            this.theme.of(this.themeLight),
+            this.theme.of(this.activeTheme === UiThemeEnum.Dark ? this.themeLight : this.themeDark),
         ];
         this.editor = new EditorView({
             extensions: extensions.filter((p) => p) as Extension[],

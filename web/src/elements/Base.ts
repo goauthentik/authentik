@@ -44,6 +44,11 @@ export class AKElement extends LitElement {
     _mediaMatcher?: MediaQueryList;
     _mediaMatcherHandler?: (ev?: MediaQueryListEvent) => void;
     _configuredTheme?: UiThemeEnum;
+    _activeTheme?: UiThemeEnum;
+
+    get activeTheme(): UiThemeEnum | undefined {
+        return this._activeTheme;
+    }
 
     constructor() {
         super();
@@ -117,6 +122,7 @@ export class AKElement extends LitElement {
         }
         // Make sure we only get to this callback once we've picked a concise theme choice
         this.themeChangeCallback(theme);
+        this._activeTheme = theme;
         if (theme === UiThemeEnum.Dark) {
             stylesheet = ThemeDark;
         }
