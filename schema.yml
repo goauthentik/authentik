@@ -27746,6 +27746,11 @@ components:
             $ref: '#/components/schemas/FooterLink'
           readOnly: true
           default: []
+        ui_theme:
+          allOf:
+          - $ref: '#/components/schemas/UiThemeEnum'
+          readOnly: true
+          default: automatic
         flow_authentication:
           type: string
         flow_invalidation:
@@ -27768,6 +27773,7 @@ components:
       - default_locale
       - matched_domain
       - ui_footer_links
+      - ui_theme
     DeniedActionEnum:
       enum:
       - message_continue
@@ -39910,6 +39916,16 @@ components:
       - description
       - model_name
       - name
+    UiThemeEnum:
+      enum:
+      - automatic
+      - light
+      - dark
+      type: string
+      description: |-
+        * `automatic` - Automatic
+        * `light` - Light
+        * `dark` - Dark
     UsedBy:
       type: object
       description: A list of all objects referencing the queried object

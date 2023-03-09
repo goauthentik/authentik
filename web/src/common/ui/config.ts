@@ -1,7 +1,7 @@
 import { currentInterface } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 
-import { UserSelf } from "@goauthentik/api";
+import { UiThemeEnum, UserSelf } from "@goauthentik/api";
 
 export enum UserDisplay {
     username = "username",
@@ -13,12 +13,6 @@ export enum LayoutType {
     row = "row",
     column_2 = "2-column",
     column_3 = "3-column",
-}
-
-export enum Themes {
-    automatic = "automatic",
-    light = "light",
-    dark = "dark",
 }
 
 export interface UIConfig {
@@ -38,7 +32,7 @@ export interface UIConfig {
         userDisplay: UserDisplay;
     };
     theme: {
-        base: Themes;
+        base: UiThemeEnum;
         background: string;
         cardBackground: string;
     };
@@ -66,7 +60,7 @@ export class DefaultUIConfig implements UIConfig {
         userDisplay: UserDisplay.username,
     };
     theme = {
-        base: Themes.automatic,
+        base: UiThemeEnum.Automatic,
         background: "",
         cardBackground: "",
     };

@@ -1,12 +1,14 @@
 import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
-import { Themes, uiConfig } from "@goauthentik/common/ui/config";
+import { uiConfig } from "@goauthentik/common/ui/config";
 
 import { LitElement } from "lit";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
 
-export function rootInterface(): Interface {
+import { UiThemeEnum } from "@goauthentik/api";
+
+export function rootInterface(): Interface | undefined {
     const el = Array.from(document.body.querySelectorAll("*")).filter(
         (el) => el instanceof Interface,
     );
@@ -52,11 +54,11 @@ export class AKElement extends LitElement {
     }
 
     private async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
-        const theme = await rootInterface()._getThemeFromConfig();
-        if (theme === Themes.automatic) {
+        const theme = await rootInterface()?._getThemeFromConfig();
+        if (!theme || theme === UiThemeEnum.Automatic) {
             const matcher = window.matchMedia("(prefers-color-scheme: light)");
             const handler = (ev?: MediaQueryListEvent) => {
-                const theme = ev?.matches || matcher.matches ? Themes.light : Themes.dark;
+                const theme = ev?.matches || matcher.matches ? UiThemeEnum.Light : UiThemeEnum.Dark;
                 this._updateTheme(root, theme);
             };
             matcher.addEventListener("change", handler);
@@ -79,14 +81,14 @@ export class AKElement extends LitElement {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    themeChangeCallback(theme: Themes): void {
+    themeChangeCallback(theme: UiThemeEnum): void {
         return;
     }
 
-    _updateTheme(root: AdoptedStyleSheetsElement, theme: Themes): void {
+    _updateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
         this.themeChangeCallback(theme);
         let stylesheet: CSSStyleSheet | undefined;
-        if (theme === Themes.dark) {
+        if (theme === UiThemeEnum.Dark) {
             stylesheet = ThemeDark;
         }
         if (!stylesheet) {
@@ -111,12 +113,12 @@ export class AKElement extends LitElement {
 }
 
 export class Interface extends AKElement {
-    _updateTheme(root: AdoptedStyleSheetsElement, theme: Themes): void {
+    _updateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
         super._updateTheme(root, theme);
         super._updateTheme(document, theme);
     }
 
-    async _getThemeFromConfig(): Promise<Themes> {
+    async _getThemeFromConfig(): Promise<UiThemeEnum> {
         return (await uiConfig()).theme.base;
     }
 }

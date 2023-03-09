@@ -1,5 +1,4 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { Themes } from "@goauthentik/common/ui/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import {
@@ -23,6 +22,8 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -88,8 +89,8 @@ export abstract class AKChart<T> extends AKElement {
         ];
     }
 
-    themeChangeCallback(theme: Themes): void {
-        if (theme === Themes.light) {
+    themeChangeCallback(theme: UiThemeEnum): void {
+        if (theme === UiThemeEnum.Light) {
             this.fontColour = FONT_COLOUR_LIGHT_MODE;
         } else {
             this.fontColour = FONT_COLOUR_DARK_MODE;

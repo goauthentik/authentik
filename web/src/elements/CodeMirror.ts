@@ -13,11 +13,12 @@ import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
-import { Themes } from "@goauthentik/common/ui/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
 
 import { customElement, property } from "lit/decorators.js";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-codemirror")
 export class CodeMirrorTextarea<T> extends AKElement {
@@ -126,8 +127,8 @@ export class CodeMirrorTextarea<T> extends AKElement {
         return undefined;
     }
 
-    themeChangeCallback(theme: Themes): void {
-        if (theme === Themes.dark) {
+    themeChangeCallback(theme: UiThemeEnum): void {
+        if (theme === UiThemeEnum.Dark) {
             this.editor?.dispatch({
                 effects: this.theme.reconfigure(this.themeDark),
             });

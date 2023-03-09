@@ -1,5 +1,4 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { Themes } from "@goauthentik/common/ui/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import mermaid, { MermaidConfig } from "mermaid";
@@ -8,6 +7,8 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
@@ -49,8 +50,8 @@ export class Diagram extends AKElement {
         mermaid.initialize(this.config);
     }
 
-    themeChangeCallback(theme: Themes): void {
-        if (theme === Themes.dark) {
+    themeChangeCallback(theme: UiThemeEnum): void {
+        if (theme === UiThemeEnum.Dark) {
             this.config.theme = "dark";
         } else {
             this.config.theme = "default";

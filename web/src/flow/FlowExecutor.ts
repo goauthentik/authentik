@@ -51,8 +51,8 @@ import {
     RedirectChallenge,
     ResponseError,
     ShellChallenge,
+    UiThemeEnum,
 } from "@goauthentik/api";
-import { Themes } from "@goauthentik/common/ui/config";
 
 @customElement("ak-flow-executor")
 export class FlowExecutor extends Interface implements StageHost {
@@ -184,8 +184,8 @@ export class FlowExecutor extends Interface implements StageHost {
         tenant().then((tenant) => (this.tenant = tenant));
     }
 
-    async _getThemeFromConfig(): Promise<Themes>  {
-        return globalAK()?.flow?.theme || Themes.automatic;
+    async _getThemeFromConfig(): Promise<UiThemeEnum> {
+        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
     }
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
