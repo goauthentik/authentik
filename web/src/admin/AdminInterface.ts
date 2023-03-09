@@ -70,11 +70,7 @@ export class AdminInterface extends Interface {
                     display: none;
                 }
                 .pf-c-page {
-                    background-color: var(--pf-c-page--BackgroundColor) !important;
-                }
-                /* Global page background colour */
-                :host([theme="dark"]) .pf-c-page {
-                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
+                    background-color: transparent !important;
                 }
             `,
         ];

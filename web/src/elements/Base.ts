@@ -121,13 +121,13 @@ export class AKElement extends LitElement {
             return;
         }
         // Make sure we only get to this callback once we've picked a concise theme choice
-        this.dispatchEvent(new CustomEvent(
-            "themeChange", {
+        this.dispatchEvent(
+            new CustomEvent("themeChange", {
                 bubbles: true,
                 composed: true,
                 detail: theme,
-            }
-        ));
+            }),
+        );
         this._activeTheme = theme;
         this.setAttribute("theme", theme);
         let stylesheet: CSSStyleSheet | undefined;
