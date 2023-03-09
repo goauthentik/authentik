@@ -196,6 +196,11 @@ module.exports = {
             items: [
                 {
                     type: "category",
+                    label: "Flow",
+                    items: ["interfaces/flow/customization"],
+                },
+                {
+                    type: "category",
                     label: "User",
                     items: ["interfaces/user/customization"],
                 },
