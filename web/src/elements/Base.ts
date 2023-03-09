@@ -6,6 +6,13 @@ import { LitElement } from "lit";
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
 
+export function rootInterface(): Interface {
+    const el = Array.from(document.body.querySelectorAll("*")).filter(
+        (el) => el instanceof Interface,
+    );
+    return el[0] as Interface;
+}
+
 let css: Promise<string[]> | undefined;
 function fetchCustomCSS(): Promise<string[]> {
     if (!css) {
@@ -26,12 +33,12 @@ function fetchCustomCSS(): Promise<string[]> {
     return css;
 }
 
-interface AdoptedStyleSheetsElement {
+export interface AdoptedStyleSheetsElement {
     adoptedStyleSheets: readonly CSSStyleSheet[];
 }
 
 export class AKElement extends LitElement {
-    constructor(private _isInterface: boolean = false) {
+    constructor() {
         super();
         this.addEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
     }
@@ -45,23 +52,17 @@ export class AKElement extends LitElement {
     }
 
     private async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
-        const config = await uiConfig();
-        if (config.theme.base === Themes.automatic) {
+        const theme = await rootInterface()._getThemeFromConfig();
+        if (theme === Themes.automatic) {
             const matcher = window.matchMedia("(prefers-color-scheme: light)");
             const handler = (ev?: MediaQueryListEvent) => {
                 const theme = ev?.matches || matcher.matches ? Themes.light : Themes.dark;
                 this._updateTheme(root, theme);
-                if (this._isInterface) {
-                    this._updateTheme(document, theme);
-                }
             };
             matcher.addEventListener("change", handler);
             handler();
         } else {
-            this._updateTheme(root, config.theme.base);
-            if (this._isInterface) {
-                this._updateTheme(document, config.theme.base);
-            }
+            this._updateTheme(root, theme);
         }
     }
 
@@ -82,7 +83,7 @@ export class AKElement extends LitElement {
         return;
     }
 
-    private _updateTheme(root: AdoptedStyleSheetsElement, theme: Themes): void {
+    _updateTheme(root: AdoptedStyleSheetsElement, theme: Themes): void {
         this.themeChangeCallback(theme);
         let stylesheet: CSSStyleSheet | undefined;
         if (theme === Themes.dark) {
@@ -106,5 +107,16 @@ export class AKElement extends LitElement {
 
     private _handleLocaleChange() {
         this.requestUpdate();
+    }
+}
+
+export class Interface extends AKElement {
+    _updateTheme(root: AdoptedStyleSheetsElement, theme: Themes): void {
+        super._updateTheme(root, theme);
+        super._updateTheme(document, theme);
+    }
+
+    async _getThemeFromConfig(): Promise<Themes> {
+        return (await uiConfig()).theme.base;
     }
 }

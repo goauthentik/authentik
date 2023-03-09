@@ -1,9 +1,11 @@
 import { Config, CurrentTenant } from "@goauthentik/api";
+import { Themes } from "@goauthentik/common/ui/config";
 
 export interface GlobalAuthentik {
     locale?: string;
     flow?: {
         layout: string;
+        theme?: Themes;
     };
     config: Config;
     tenant: CurrentTenant;

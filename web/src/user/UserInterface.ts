@@ -10,7 +10,7 @@ import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
@@ -41,7 +41,7 @@ import { CurrentTenant, EventsApi, SessionUser } from "@goauthentik/api";
 autoDetectLanguage();
 
 @customElement("ak-interface-user")
-export class UserInterface extends AKElement {
+export class UserInterface extends Interface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -107,7 +107,7 @@ export class UserInterface extends AKElement {
     }
 
     constructor() {
-        super(true);
+        super();
         this.ws = new WebsocketClient();
         window.addEventListener(EVENT_NOTIFICATION_DRAWER_TOGGLE, () => {
             this.notificationDrawerOpen = !this.notificationDrawerOpen;

@@ -9,7 +9,7 @@ import {
 import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
@@ -35,7 +35,7 @@ import { AdminApi, SessionUser, Version } from "@goauthentik/api";
 autoDetectLanguage();
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends AKElement {
+export class AdminInterface extends Interface {
     @property({ type: Boolean })
     sidebarOpen = true;
 
@@ -83,7 +83,7 @@ export class AdminInterface extends AKElement {
     }
 
     constructor() {
-        super(true);
+        super();
         this.ws = new WebsocketClient();
         this.sidebarOpen = window.innerWidth >= 1280;
         window.addEventListener("resize", () => {

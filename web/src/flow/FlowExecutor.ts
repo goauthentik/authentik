@@ -8,7 +8,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
@@ -52,9 +52,10 @@ import {
     ResponseError,
     ShellChallenge,
 } from "@goauthentik/api";
+import { Themes } from "@goauthentik/common/ui/config";
 
 @customElement("ak-flow-executor")
-export class FlowExecutor extends AKElement implements StageHost {
+export class FlowExecutor extends Interface implements StageHost {
     flowSlug?: string;
 
     private _challenge?: ChallengeTypes;
@@ -171,7 +172,7 @@ export class FlowExecutor extends AKElement implements StageHost {
     }
 
     constructor() {
-        super(true);
+        super();
         this.ws = new WebsocketClient();
         this.flowSlug = window.location.pathname.split("/")[3];
         if (window.location.search.includes("inspector")) {
@@ -181,6 +182,10 @@ export class FlowExecutor extends AKElement implements StageHost {
             this.inspectorOpen = !this.inspectorOpen;
         });
         tenant().then((tenant) => (this.tenant = tenant));
+    }
+
+    async _getThemeFromConfig(): Promise<Themes>  {
+        return globalAK()?.flow?.theme || Themes.automatic;
     }
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
