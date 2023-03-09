@@ -26,7 +26,11 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
+from authentik.lib.models import (
+    CreatedUpdatedModel,
+    DomainlessFormattedURLValidator,
+    SerializerModel,
+)
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
 
@@ -291,7 +295,7 @@ class Application(SerializerModel, PolicyBindingModel):
     )
 
     meta_launch_url = models.TextField(
-        default="", blank=True, validators=[DomainlessURLValidator()]
+        default="", blank=True, validators=[DomainlessFormattedURLValidator()]
     )
 
     open_in_new_tab = models.BooleanField(
