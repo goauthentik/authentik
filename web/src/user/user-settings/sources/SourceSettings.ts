@@ -41,10 +41,8 @@ export class UserSourceSettingsPage extends AKElement {
                     width: 48px;
                     margin-right: 16px;
                 }
-                @media (prefers-color-scheme: dark) {
-                    .pf-c-data-list__cell img {
-                        filter: invert(1);
-                    }
+                :host([theme="dark"]) .pf-c-data-list__cell img {
+                    filter: invert(1);
                 }
             `,
         ];

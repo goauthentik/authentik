@@ -72,11 +72,9 @@ export class AdminInterface extends Interface {
                 .pf-c-page {
                     background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
-                @media (prefers-color-scheme: dark) {
-                    /* Global page background colour */
-                    .pf-c-page {
-                        --pf-c-page--BackgroundColor: var(--ak-dark-background);
-                    }
+                /* Global page background colour */
+                :host([theme="dark"]) .pf-c-page {
+                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
                 }
             `,
         ];

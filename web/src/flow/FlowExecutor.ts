@@ -153,20 +153,18 @@ export class FlowExecutor extends Interface implements StageHost {
             .pf-c-login.sidebar_right .pf-c-list {
                 color: #000;
             }
-            @media (prefers-color-scheme: dark) {
-                .pf-c-login.sidebar_left .ak-login-container,
-                .pf-c-login.sidebar_right .ak-login-container {
-                    background-color: var(--ak-dark-background);
-                }
-                .pf-c-login.sidebar_left .pf-c-list,
-                .pf-c-login.sidebar_right .pf-c-list {
-                    color: var(--ak-dark-foreground);
-                }
-            }
             .pf-c-login.sidebar_right {
                 justify-content: flex-end;
                 padding-top: 0;
                 padding-bottom: 0;
+            }
+            :host([theme="dark"]) .pf-c-login.sidebar_left .ak-login-container,
+            :host([theme="dark"]) .pf-c-login.sidebar_right .ak-login-container {
+                background-color: var(--ak-dark-background);
+            }
+            :host([theme="dark"]) .pf-c-login.sidebar_left .pf-c-list,
+            :host([theme="dark"]) .pf-c-login.sidebar_right .pf-c-list {
+                color: var(--ak-dark-foreground);
             }
         `);
     }

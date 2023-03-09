@@ -83,6 +83,9 @@ export class UserInterface extends Interface {
                 .pf-c-page {
                     background-color: transparent;
                 }
+                :host([theme="dark"]) .pf-c-page {
+                    background-color: var(--ak-dark-background);
+                }
                 .background-wrapper {
                     background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
