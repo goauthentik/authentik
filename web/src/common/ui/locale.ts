@@ -1,9 +1,11 @@
 import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { messages as enLocale } from "@goauthentik/locales/en";
 import { PluralCategory } from "make-plural";
+import { en } from "make-plural/plurals";
 
 import { Messages, i18n } from "@lingui/core";
-import { detect, fromNavigator, fromUrl } from "@lingui/detect-locale";
+import { fromNavigator, fromUrl } from "@lingui/detect-locale";
 import { t } from "@lingui/macro";
 
 interface Locale {
@@ -21,8 +23,8 @@ export const LOCALES: {
         label: t`English`,
         locale: async () => {
             return {
-                locale: (await import("@goauthentik/locales/en")).messages,
-                plurals: (await import("make-plural/plurals")).en,
+                locale: enLocale,
+                plurals: en,
             };
         },
     },
@@ -32,7 +34,7 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: (await import("@goauthentik/locales/pseudo-LOCALE")).messages,
-                plurals: (await import("make-plural/plurals")).en,
+                plurals: en,
             };
         },
     },
@@ -121,23 +123,35 @@ export const LOCALES: {
 const DEFAULT_FALLBACK = () => "en";
 
 export function autoDetectLanguage() {
-    const detected =
-        detect(
-            () => {
-                return globalAK()?.locale;
-            },
-            fromUrl("locale"),
-            fromNavigator(),
-            DEFAULT_FALLBACK,
-        ) || DEFAULT_FALLBACK();
-    const locales = [detected];
-    // For now we only care about the first locale part
-    if (detected.includes("_")) {
-        locales.push(detected.split("_")[0]);
-    }
-    if (detected.includes("-")) {
-        locales.push(detected.split("-")[0]);
-    }
+    // Always load en locale at the start so we have something and don't error
+    i18n.loadLocaleData("en", { plurals: en });
+    i18n.load("en", enLocale);
+    i18n.activate("en");
+
+    const locales: string[] = [];
+    // Get all locales we can, in order
+    // - Global authentik settings (contains user settings)
+    // - URL parameter
+    // - Navigator
+    // - Fallback (en)
+    // Remove any invalid values, add broader locales (fr-FR becomes fr)
+    // Remove any duplicate values
+    [globalAK()?.locale || "", fromUrl("locale"), fromNavigator(), DEFAULT_FALLBACK()]
+        .filter((v) => v && v !== "")
+        .map((locale) => {
+            locales.push(locale);
+            // For now we only care about the first locale part
+            if (locale.includes("_")) {
+                locales.push(locale.split("_")[0]);
+            }
+            if (locale.includes("-")) {
+                locales.push(locale.split("-")[0]);
+            }
+        })
+        .filter((v, idx, arr) => {
+            return arr.indexOf(v) === idx;
+        });
+    console.debug(`authentik/local: Locales to try: ${locales}`);
     for (const tryLocale of locales) {
         if (LOCALES.find((locale) => locale.code === tryLocale)) {
             console.debug(`authentik/locale: Activating detected locale '${tryLocale}'`);
@@ -150,6 +164,7 @@ export function autoDetectLanguage() {
     console.debug(`authentik/locale: No locale for '${locales}', falling back to en`);
     activateLocale(DEFAULT_FALLBACK());
 }
+
 export function activateLocale(code: string) {
     const urlLocale = fromUrl("locale");
     if (urlLocale !== null && urlLocale !== "") {
@@ -161,6 +176,10 @@ export function activateLocale(code: string) {
         return;
     }
     locale.locale().then((localeData) => {
+        console.debug(`authentik/locale: Loaded locale '${code}'`);
+        if (i18n.locale === code) {
+            return;
+        }
         i18n.loadLocaleData(locale.code, { plurals: localeData.plurals });
         i18n.load(locale.code, localeData.locale);
         i18n.activate(locale.code);

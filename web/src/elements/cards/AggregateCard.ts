@@ -66,11 +66,15 @@ export class AggregateCard extends AKElement {
             : ""}`;
     }
 
+    renderHeader(): TemplateResult {
+        return html`${this.header ? this.header : ""}`;
+    }
+
     render(): TemplateResult {
         return html`<div class="pf-c-card pf-c-card-aggregate">
             <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
                 <div class="pf-c-card__title">
-                    <i class="${ifDefined(this.icon)}"></i>&nbsp;${this.header ? this.header : ""}
+                    <i class="${ifDefined(this.icon)}"></i>&nbsp;${this.renderHeader()}
                 </div>
                 ${this.renderHeaderLink()}
             </div>
