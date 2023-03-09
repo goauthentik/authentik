@@ -29,7 +29,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -71,7 +70,6 @@ export class UserViewPage extends AKElement {
             PFCard,
             PFDescriptionList,
             PFSizing,
-            AKGlobal,
         ];
     }
 

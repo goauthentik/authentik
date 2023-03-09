@@ -8,7 +8,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -39,7 +38,7 @@ export class SearchSelect<T> extends AKElement {
     placeholder: string = t`Select an object.`;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFFormControl, PFSelect, AKGlobal];
+        return [PFBase, PFForm, PFFormControl, PFSelect];
     }
 
     @property({ attribute: false })

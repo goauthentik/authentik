@@ -32,6 +32,10 @@ The following features can be enabled/disabled. By default, all of them are enab
 
 Configure what is shown in the top right corner. Defaults to `username`. Choices: `username`, `name`, `email`
 
+### `settings.theme.base`
+
+Configure the base color scheme. Defaults to `automatic`, which switches between dark and light mode based on the users' browsers' preference. Choices: `automatic`, `dark`, `light`.
+
 ### `settings.theme.background`
 
 Optional CSS which is applied in the background of the background of the user interface; for example

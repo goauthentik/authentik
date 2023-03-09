@@ -7,7 +7,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFTable from "@patternfly/patternfly/components/Table/table.css";
 
 import { EventTopPerUser, EventsApi } from "@goauthentik/api";
@@ -18,7 +17,7 @@ export class TopApplicationsTable extends AKElement {
     topN?: EventTopPerUser[];
 
     static get styles(): CSSResult[] {
-        return [PFTable, AKGlobal];
+        return [PFTable];
     }
 
     firstUpdated(): void {

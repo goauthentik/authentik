@@ -19,7 +19,6 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
@@ -33,7 +32,7 @@ export class InitialPolicyWizardPage extends WizardPage {
     policyTypes: TypeCreate[] = [];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFForm, PFButton, PFRadio];
     }
     sidebarLabel = () => t`Select type`;
 
@@ -85,7 +84,7 @@ export class InitialPolicyWizardPage extends WizardPage {
 @customElement("ak-policy-wizard")
 export class PolicyWizard extends AKElement {
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFButton, PFRadio];
     }
 
     @property()

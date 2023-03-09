@@ -8,7 +8,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AdoptedStyleSheetsElement, Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
@@ -31,7 +31,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -52,10 +51,11 @@ import {
     RedirectChallenge,
     ResponseError,
     ShellChallenge,
+    UiThemeEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
-export class FlowExecutor extends AKElement implements StageHost {
+export class FlowExecutor extends Interface implements StageHost {
     flowSlug?: string;
 
     private _challenge?: ChallengeTypes;
@@ -120,8 +120,7 @@ export class FlowExecutor extends AKElement implements StageHost {
     ws: WebsocketClient;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage, AKGlobal]
-            .concat(css`
+        return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
             .ak-hidden {
                 display: none;
             }
@@ -154,20 +153,18 @@ export class FlowExecutor extends AKElement implements StageHost {
             .pf-c-login.sidebar_right .pf-c-list {
                 color: #000;
             }
-            @media (prefers-color-scheme: dark) {
-                .pf-c-login.sidebar_left .ak-login-container,
-                .pf-c-login.sidebar_right .ak-login-container {
-                    background-color: var(--ak-dark-background);
-                }
-                .pf-c-login.sidebar_left .pf-c-list,
-                .pf-c-login.sidebar_right .pf-c-list {
-                    color: var(--ak-dark-foreground);
-                }
-            }
             .pf-c-login.sidebar_right {
                 justify-content: flex-end;
                 padding-top: 0;
                 padding-bottom: 0;
+            }
+            :host([theme="dark"]) .pf-c-login.sidebar_left .ak-login-container,
+            :host([theme="dark"]) .pf-c-login.sidebar_right .ak-login-container {
+                background-color: var(--ak-dark-background);
+            }
+            :host([theme="dark"]) .pf-c-login.sidebar_left .pf-c-list,
+            :host([theme="dark"]) .pf-c-login.sidebar_right .pf-c-list {
+                color: var(--ak-dark-foreground);
             }
         `);
     }
@@ -183,6 +180,11 @@ export class FlowExecutor extends AKElement implements StageHost {
             this.inspectorOpen = !this.inspectorOpen;
         });
         tenant().then((tenant) => (this.tenant = tenant));
+    }
+
+    async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
+        const bootstrapTheme = globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+        this._applyTheme(root, bootstrapTheme);
     }
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {

@@ -10,7 +10,7 @@ import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
@@ -26,7 +26,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -42,7 +41,7 @@ import { CurrentTenant, EventsApi, SessionUser } from "@goauthentik/api";
 autoDetectLanguage();
 
 @customElement("ak-interface-user")
-export class UserInterface extends AKElement {
+export class UserInterface extends Interface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -74,7 +73,6 @@ export class UserInterface extends AKElement {
             PFDrawer,
             PFDropdown,
             PFNotificationBadge,
-            AKGlobal,
             css`
                 .pf-c-page__main,
                 .pf-c-drawer__content,
@@ -84,6 +82,9 @@ export class UserInterface extends AKElement {
                 }
                 .pf-c-page {
                     background-color: transparent;
+                }
+                :host([theme="dark"]) .pf-c-page {
+                    background-color: var(--ak-dark-background);
                 }
                 .background-wrapper {
                     background-color: var(--pf-c-page--BackgroundColor) !important;

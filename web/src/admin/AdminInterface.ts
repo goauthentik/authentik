@@ -9,7 +9,7 @@ import {
 import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
@@ -25,7 +25,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -36,7 +35,7 @@ import { AdminApi, SessionUser, Version } from "@goauthentik/api";
 autoDetectLanguage();
 
 @customElement("ak-interface-admin")
-export class AdminInterface extends AKElement {
+export class AdminInterface extends Interface {
     @property({ type: Boolean })
     sidebarOpen = true;
 
@@ -60,7 +59,6 @@ export class AdminInterface extends AKElement {
             PFPage,
             PFButton,
             PFDrawer,
-            AKGlobal,
             css`
                 .pf-c-page__main,
                 .pf-c-drawer__content,
@@ -72,13 +70,7 @@ export class AdminInterface extends AKElement {
                     display: none;
                 }
                 .pf-c-page {
-                    background-color: var(--pf-c-page--BackgroundColor) !important;
-                }
-                @media (prefers-color-scheme: dark) {
-                    /* Global page background colour */
-                    .pf-c-page {
-                        --pf-c-page--BackgroundColor: var(--ak-dark-background);
-                    }
+                    background-color: transparent !important;
                 }
             `,
         ];

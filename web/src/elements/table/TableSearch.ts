@@ -6,7 +6,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
@@ -28,7 +27,6 @@ export class TableSearch extends AKElement {
             PFToolbar,
             PFInputGroup,
             PFFormControl,
-            AKGlobal,
             css`
                 ::-webkit-search-cancel-button {
                     display: none;

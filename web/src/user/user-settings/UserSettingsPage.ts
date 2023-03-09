@@ -18,7 +18,6 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -50,7 +49,6 @@ export class UserSettingsPage extends AKElement {
             PFForm,
             PFFormControl,
             PFStack,
-            AKGlobal,
             css`
                 @media screen and (min-width: 1200px) {
                     :host {

@@ -12,7 +12,6 @@ import "@polymer/paper-input/paper-input";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -62,7 +61,6 @@ export class Form<T> extends AKElement {
             PFInputGroup,
             PFFormControl,
             PFSwitch,
-            AKGlobal,
             css`
                 select[multiple] {
                     height: 15em;

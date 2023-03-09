@@ -7,7 +7,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFTreeView from "@patternfly/patternfly/components/TreeView/tree-view.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -139,7 +138,7 @@ export class TreeViewNode extends AKElement {
 @customElement("ak-treeview")
 export class TreeView extends AKElement {
     static get styles(): CSSResult[] {
-        return [PFBase, PFTreeView, AKGlobal];
+        return [PFBase, PFTreeView];
     }
 
     @property({ type: Array })

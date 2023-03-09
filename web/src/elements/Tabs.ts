@@ -8,7 +8,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFTabs from "@patternfly/patternfly/components/Tabs/tabs.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 
@@ -27,7 +26,6 @@ export class Tabs extends AKElement {
         return [
             PFGlobal,
             PFTabs,
-            AKGlobal,
             css`
                 ::slotted(*) {
                     flex-grow: 2;

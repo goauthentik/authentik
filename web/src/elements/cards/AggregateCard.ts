@@ -4,7 +4,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFFlex from "@patternfly/patternfly/layouts/Flex/flex.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -24,7 +23,7 @@ export class AggregateCard extends AKElement {
     isCenter = true;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFFlex, AKGlobal].concat([
+        return [PFBase, PFCard, PFFlex].concat([
             css`
                 .pf-c-card.pf-c-card-aggregate {
                     height: 100%;

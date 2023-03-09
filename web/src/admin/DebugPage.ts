@@ -8,7 +8,6 @@ import * as Sentry from "@sentry/browser";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -20,7 +19,7 @@ import { AdminApi } from "@goauthentik/api";
 @customElement("ak-admin-debug-page")
 export class DebugPage extends AKElement {
     static get styles(): CSSResult[] {
-        return [PFBase, PFCard, PFPage, PFGrid, PFButton, AKGlobal];
+        return [PFBase, PFCard, PFPage, PFGrid, PFButton];
     }
 
     render(): TemplateResult {

@@ -7,7 +7,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
@@ -38,7 +37,6 @@ export class Markdown extends AKElement {
         return [
             PFList,
             PFContent,
-            AKGlobal,
             css`
                 h2:first-of-type {
                     margin-top: 0;

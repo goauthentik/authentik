@@ -3,7 +3,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CSSResult } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -17,6 +16,6 @@ export abstract class BaseUserSettings extends AKElement {
     configureUrl?: string;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFForm, PFFormControl, AKGlobal];
+        return [PFBase, PFButton, PFForm, PFFormControl];
     }
 }

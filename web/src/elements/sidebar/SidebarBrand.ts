@@ -7,13 +7,12 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGlobal from "@patternfly/patternfly/patternfly-base.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CurrentTenant } from "@goauthentik/api";
+import { CurrentTenant, UiThemeEnum } from "@goauthentik/api";
 
 // If the viewport is wider than MIN_WIDTH, the sidebar
 // is shown besides the content, and not overlaid.
@@ -24,6 +23,7 @@ export const DefaultTenant: CurrentTenant = {
     brandingFavicon: "/static/dist/assets/icons/icon.png",
     brandingTitle: "authentik",
     uiFooterLinks: [],
+    uiTheme: UiThemeEnum.Automatic,
     matchedDomain: "",
     defaultLocale: "",
 };
@@ -39,7 +39,6 @@ export class SidebarBrand extends AKElement {
             PFGlobal,
             PFPage,
             PFButton,
-            AKGlobal,
             css`
                 :host {
                     display: flex;
