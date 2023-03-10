@@ -131,7 +131,6 @@ export class AKElement extends LitElement {
     }
 
     _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum) {
-        console.log("activating theme", theme, this._activeTheme, this);
         if (theme === this._activeTheme) {
             return;
         }
