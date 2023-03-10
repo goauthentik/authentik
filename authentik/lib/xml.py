@@ -9,4 +9,4 @@ def get_lxml_parser():
 
 def lxml_from_string(text: str):
     """Wrapper around fromstring"""
-    return fromstring(text, parser=get_lxml_parser())
+    return fromstring(text, parser=get_lxml_parser())  # nosec
