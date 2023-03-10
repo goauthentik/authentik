@@ -23,9 +23,18 @@ http:
             middlewares:
                 - name: authentik
             priority: 10
-            services: # Unchanged
+            services: app
         default-router-auth:
             match: "Host(`app.company`) && PathPrefix(`/outpost.goauthentik.io/`)"
             priority: 15
-            services: http://outpost.company:9000/outpost.goauthentik.io
+            services: authentik
+    services:
+        app:
+            loadBalancer:
+                servers:
+                    - url: http://ipp.internal
+        authentik:
+            loadBalancer:
+                servers:
+                    - url: http://outpost.company:9000/outpost.goauthentik.io
 ```
