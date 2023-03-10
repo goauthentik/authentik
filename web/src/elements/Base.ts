@@ -1,5 +1,4 @@
-import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
-import { globalAK } from "@goauthentik/common/global";
+import { EVENT_LOCALE_CHANGE, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { uiConfig } from "@goauthentik/common/ui/config";
 
 import { LitElement } from "lit";
@@ -68,6 +67,10 @@ export class AKElement extends LitElement {
         return root;
     }
 
+    async getTheme(): Promise<UiThemeEnum> {
+        return rootInterface()?.getTheme() || UiThemeEnum.Automatic;
+    }
+
     async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
         // Early activate theme based on media query to prevent light flash
         // when dark is preferred
@@ -77,7 +80,7 @@ export class AKElement extends LitElement {
                 ? UiThemeEnum.Light
                 : UiThemeEnum.Dark,
         );
-        rootInterface()?._initTheme(root);
+        this._applyTheme(root, await this.getTheme());
     }
 
     private async _initCustomCSS(root: ShadowRoot): Promise<void> {
@@ -120,33 +123,36 @@ export class AKElement extends LitElement {
         this._activateTheme(root, theme);
     }
 
+    static themeToStylesheet(theme?: UiThemeEnum): CSSStyleSheet | undefined {
+        if (theme === UiThemeEnum.Dark) {
+            return ThemeDark;
+        }
+        return undefined;
+    }
+
     _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum) {
-        if (this._activeTheme === theme) {
+        console.log("activating theme", theme, this._activeTheme, this);
+        if (theme === this._activeTheme) {
             return;
         }
         // Make sure we only get to this callback once we've picked a concise theme choice
         this.dispatchEvent(
-            new CustomEvent("themeChange", {
+            new CustomEvent(EVENT_THEME_CHANGE, {
                 bubbles: true,
                 composed: true,
                 detail: theme,
             }),
         );
-        this._activeTheme = theme;
         this.setAttribute("theme", theme);
-        let stylesheet: CSSStyleSheet | undefined;
-        if (theme === UiThemeEnum.Dark) {
-            stylesheet = ThemeDark;
-        }
-        if (!stylesheet) {
-            return;
-        }
-        if (root.adoptedStyleSheets.indexOf(stylesheet) === -1) {
+        const stylesheet = AKElement.themeToStylesheet(theme);
+        const oldStylesheet = AKElement.themeToStylesheet(this._activeTheme);
+        if (stylesheet) {
             root.adoptedStyleSheets = [...root.adoptedStyleSheets, stylesheet];
-        } else {
-            root.adoptedStyleSheets = root.adoptedStyleSheets.filter((v) => v !== stylesheet);
         }
-        this.requestUpdate();
+        if (oldStylesheet) {
+            root.adoptedStyleSheets = root.adoptedStyleSheets.filter((v) => v !== oldStylesheet);
+        }
+        this._activeTheme = theme;
     }
 
     disconnectedCallback() {
@@ -161,13 +167,8 @@ export class Interface extends AKElement {
         super._activateTheme(document, theme);
     }
 
-    async _initTheme(root: AdoptedStyleSheetsElement): Promise<void> {
-        const bootstrapTheme = globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
-        this._applyTheme(root, bootstrapTheme);
-        uiConfig().then((config) => {
-            if (config.theme.base) {
-                this._applyTheme(root, config.theme.base);
-            }
-        });
+    async getTheme(): Promise<UiThemeEnum> {
+        const config = await uiConfig();
+        return config.theme.base;
     }
 }
