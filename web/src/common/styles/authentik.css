@@ -9,12 +9,6 @@
     --ak-dark-background-light: #1c1e21;
     --ak-dark-background-light-ish: #212427;
     --ak-dark-background-lighter: #2b2e33;
-
-    --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
-    --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
-    --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
-    --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
-    --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
 }
 
 ::-webkit-scrollbar {

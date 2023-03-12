@@ -121,6 +121,13 @@ export class FlowExecutor extends Interface implements StageHost {
 
     static get styles(): CSSResult[] {
         return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
+            .pf-c-background-image::before {
+                --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
+            }
             .ak-hidden {
                 display: none;
             }
