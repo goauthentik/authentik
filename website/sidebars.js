@@ -65,7 +65,20 @@ module.exports = {
                     items: [
                         "providers/proxy/custom_headers",
                         "providers/proxy/header_authentication",
-                        "providers/proxy/forward_auth",
+                        {
+                            type: "category",
+                            label: "Forward authentication",
+                            link: {
+                                type: "doc",
+                                id: "providers/proxy/forward_auth",
+                            },
+                            items: [
+                                "providers/proxy/server_nginx",
+                                "providers/proxy/server_traefik",
+                                "providers/proxy/server_envoy",
+                                "providers/proxy/server_caddy",
+                            ],
+                        },
                     ],
                 },
                 {

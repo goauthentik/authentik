@@ -1,0 +1,40 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# nginx
+
+The configuration templates shown below apply to both single-application and domain-level forward auth.
+
+import Placeholders from "./__placeholders.md";
+
+<Placeholders />
+
+<Tabs
+  defaultValue="standalone-nginx"
+  values={[
+    {label: 'Standalone nginx', value: 'standalone-nginx'},
+    {label: 'Ingress', value: 'ingress'},
+    {label: 'Nginx Proxy Manager', value: 'proxy-manager'},
+  ]}>
+  <TabItem value="standalone-nginx">
+
+import NginxStandalone from "./_nginx_standalone.md";
+
+<NginxStandalone />
+
+  </TabItem>
+  <TabItem value="ingress">
+
+import NginxIngress from "./_nginx_ingress.md";
+
+<NginxIngress />
+
+  </TabItem>
+  <TabItem value="proxy-manager">
+
+import NginxProxyManager from "./_nginx_proxy_manager.md";
+
+<NginxProxyManager />
+
+  </TabItem>
+</Tabs>
