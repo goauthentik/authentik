@@ -61,9 +61,13 @@ export class AKElement extends LitElement {
 
     protected createRenderRoot(): ShadowRoot | Element {
         const root = super.createRenderRoot() as ShadowRoot;
-        root.adoptedStyleSheets = [...root.adoptedStyleSheets, AKGlobal];
-        this._initTheme(root);
-        this._initCustomCSS(root);
+        let styleRoot: AdoptedStyleSheetsElement = root;
+        if ("ShadyDOM" in window) {
+            styleRoot = document;
+        }
+        styleRoot.adoptedStyleSheets = [...styleRoot.adoptedStyleSheets, AKGlobal];
+        this._initTheme(styleRoot);
+        this._initCustomCSS(styleRoot);
         return root;
     }
 
@@ -83,7 +87,7 @@ export class AKElement extends LitElement {
         this._applyTheme(root, await this.getTheme());
     }
 
-    private async _initCustomCSS(root: ShadowRoot): Promise<void> {
+    private async _initCustomCSS(root: AdoptedStyleSheetsElement): Promise<void> {
         const sheets = await fetchCustomCSS();
         sheets.map((css) => {
             if (css === "") {
