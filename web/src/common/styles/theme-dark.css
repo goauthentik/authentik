@@ -140,12 +140,12 @@ select[multiple] option:checked {
     --pf-c-input-group--BackgroundColor: transparent;
 }
 .pf-c-form-control {
-    --pf-c-form-control--BorderTopColor: var(--ak-dark-background-lighter);
-    --pf-c-form-control--BorderRightColor: var(--ak-dark-background-lighter);
-    --pf-c-form-control--BorderLeftColor: var(--ak-dark-background-lighter);
-    --pf-global--BackgroundColor--100: transparent;
+    --pf-c-form-control--BorderTopColor: transparent !important;
+    --pf-c-form-control--BorderRightColor: transparent !important;
+    --pf-c-form-control--BorderLeftColor: transparent !important;
+    --pf-global--BackgroundColor--100: var(--ak-dark-background-light) !important;
     --pf-c-form-control--BackgroundColor: var(--ak-dark-background-light);
-    color: var(--ak-dark-foreground);
+    --pf-c-form-control--Color: var(--ak-dark-foreground) !important;
 }
 .pf-c-form-control:disabled {
     background-color: var(--ak-dark-background-light);
@@ -252,7 +252,7 @@ select[multiple] option:checked {
 }
 /* flows */
 .pf-c-login__main {
-    background-color: var(--ak-dark-background);
+    --pf-c-login__main--BackgroundColor: var(--ak-dark-background);
 }
 .pf-c-login__main-body,
 .pf-c-login__main-header,

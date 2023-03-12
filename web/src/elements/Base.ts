@@ -61,12 +61,13 @@ export class AKElement extends LitElement {
 
     protected createRenderRoot(): ShadowRoot | Element {
         const root = super.createRenderRoot() as ShadowRoot;
+        let styleRoot: AdoptedStyleSheetsElement = root;
         if ("ShadyDOM" in window) {
-            return root;
+            styleRoot = document;
         }
-        root.adoptedStyleSheets = [...root.adoptedStyleSheets, AKGlobal];
-        this._initTheme(root);
-        this._initCustomCSS(root);
+        styleRoot.adoptedStyleSheets = [...styleRoot.adoptedStyleSheets, AKGlobal];
+        this._initTheme(styleRoot);
+        this._initCustomCSS(styleRoot);
         return root;
     }
 
