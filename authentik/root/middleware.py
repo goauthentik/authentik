@@ -39,16 +39,22 @@ class SessionMiddleware(UpstreamSessionMiddleware):
             return True
         return False
 
-    def process_request(self, request):
-        session_jwt = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
+    @staticmethod
+    def decode_session_key(key: str) -> str:
+        """Decode raw session cookie, and parse JWT"""
         # We need to support the standard django format of just a session key
         # for testing setups, where the session is directly set
-        session_key = session_jwt if settings.TEST else None
+        session_key = key if settings.TEST else None
         try:
-            session_payload = decode(session_jwt, SIGNING_HASH, algorithms=["HS256"])
+            session_payload = decode(key, SIGNING_HASH, algorithms=["HS256"])
             session_key = session_payload["sid"]
         except (KeyError, PyJWTError):
             pass
+        return session_key
+
+    def process_request(self, request):
+        raw_session = request.COOKIES.get(settings.SESSION_COOKIE_NAME)
+        session_key = SessionMiddleware.decode_session_key(raw_session)
         request.session = self.SessionStore(session_key)
 
     def process_response(self, request: HttpRequest, response: HttpResponse) -> HttpResponse:
