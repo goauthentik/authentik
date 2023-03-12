@@ -88,7 +88,7 @@ export class SystemTaskListPage extends TablePage<Task> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${t`${Math.round(item.taskDuration)} seconds`}
+                                    ${t`${item.taskDuration.toFixed(2)} seconds`}
                                 </div>
                             </dd>
                         </div>
