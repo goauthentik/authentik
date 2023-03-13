@@ -26,6 +26,7 @@ class LDAPProviderSerializer(ProviderSerializer):
             "search_mode",
             "bind_mode",
         ]
+        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
 
 class LDAPProviderViewSet(UsedByMixin, ModelViewSet):

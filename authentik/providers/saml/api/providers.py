@@ -154,6 +154,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "url_slo_post",
             "url_slo_redirect",
         ]
+        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
 
 class SAMLMetadataSerializer(PassiveSerializer):
