@@ -88,8 +88,8 @@ class SCIMClient(Generic[T, SchemaType]):
             return ServiceProviderConfiguration.parse_obj(
                 self._request("GET", "/ServiceProviderConfig")
             )
-        except ValidationError as exc:
-            self.logger.warning("ServiceProviderConfig invalid", exc=exc)
+        except (ValidationError, SCIMRequestException) as exc:
+            self.logger.warning("failed to get ServiceProviderConfig", exc=exc)
             return default_config
 
     def write(self, obj: T):
