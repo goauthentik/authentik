@@ -62,6 +62,23 @@ export class TokenCopyButton extends ActionButton {
                     return;
                 }
                 this.setLoading();
+                // If we're on an insecure origin (non-https and not localhost), we might
+                // not be able to write to the clipboard, and instead show a message
+                if (!navigator.clipboard) {
+                    this.callAction()
+                        .then((v) => {
+                            this.setDone(SUCCESS_CLASS);
+                            showMessage({
+                                level: MessageLevel.info,
+                                message: v as string,
+                            });
+                        })
+                        .catch((err: Error) => {
+                            this.setDone(ERROR_CLASS);
+                            throw err;
+                        });
+                    return;
+                }
                 // Because safari is stupid, it only allows navigator.clipboard.write directly
                 // in the @click handler.
                 // And also chrome is stupid, because it doesn't accept Promises as values for

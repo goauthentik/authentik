@@ -82,6 +82,13 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                 @click=${(e: Event) => {
                                     e.preventDefault();
                                     if (!this.challenge?.configUrl) return;
+                                    if (!navigator.clipboard) {
+                                        showMessage({
+                                            level: MessageLevel.info,
+                                            message: this.challenge?.configUrl,
+                                        });
+                                        return;
+                                    }
                                     navigator.clipboard
                                         .writeText(this.challenge?.configUrl)
                                         .then(() => {
