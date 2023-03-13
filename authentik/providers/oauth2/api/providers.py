@@ -39,6 +39,7 @@ class OAuth2ProviderSerializer(ProviderSerializer):
             "issuer_mode",
             "jwks_sources",
         ]
+        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
 
 class OAuth2ProviderSetupURLs(PassiveSerializer):
