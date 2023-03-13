@@ -55,7 +55,7 @@ export class InitialStageWizardPage extends WizardPage {
             ?.querySelectorAll<HTMLInputElement>("input[type=radio]")
             .forEach((radio) => {
                 if (radio.checked) {
-                    this.host.isValid = true;
+                    radio.dispatchEvent(new CustomEvent("change"));
                 }
             });
     };
