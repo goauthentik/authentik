@@ -7,6 +7,12 @@ Using forward auth uses your existing reverse proxy to do the proxying, and only
 To use forward auth instead of proxying, you have to change a couple of settings.
 In the Proxy Provider, make sure to use one of the Forward auth modes.
 
+The only configuration difference between single application and domain level is the host you specify.
+
+* For single application, you'd use the domain which the application is running on, and only `/outpost.goauthentik.io` is redirected to the outpost.
+
+* For domain level, you'd use the same domain as authentik.
+
 ## Single application
 
 Single application mode works for a single application hosted on its dedicated subdomain. This has the advantage that you can still do per-application access policies in authentik.
@@ -23,8 +29,8 @@ This mode differs from the _Forward auth (single application)_ mode in the follo
 
 There are however also some downsides, mainly the fact that you **can't** restrict individual applications to different users.
 
-The only configuration difference between single application and domain level is the host you specify.
-
-For single application, you'd use the domain which the application is running on, and only `/outpost.goauthentik.io` is redirected to the outpost.
-
-For domain level, you'd use the same domain as authentik.
+For more information and configuration templates for each web server, refer to the following:
+* [NGINX](./server_nginx.mdx)
+* [Traefik](./server_traefik.mdx)
+* [Envoy](./server_envoy.mdx)
+* [Caddy](./server_caddy.mdx)
