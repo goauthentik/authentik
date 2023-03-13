@@ -119,7 +119,7 @@ class WebAuthnDevice(SerializerModel, Device):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
     name = models.TextField(max_length=200)
-    credential_id = models.CharField(max_length=300, unique=True)
+    credential_id = models.TextField(unique=True)
     public_key = models.TextField()
     sign_count = models.IntegerField(default=0)
     rp_id = models.CharField(max_length=253)
