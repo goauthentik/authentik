@@ -26,6 +26,7 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ProvidersApi, SCIMProvider, SessionUser } from "@goauthentik/api";
@@ -59,6 +60,7 @@ export class SCIMProviderViewPage extends AKElement {
             PFBanner,
             PFForm,
             PFFormControl,
+            PFStack,
             PFList,
             PFGrid,
             PFPage,
@@ -113,8 +115,8 @@ export class SCIMProviderViewPage extends AKElement {
                 ${t`SCIM provider is in preview.`}
             </div>
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-l-grid__item pf-m-7-col pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-m-12-col">
+                <div class="pf-l-grid__item pf-m-7-col pf-l-stack pf-m-gutter">
+                    <div class="pf-c-card pf-m-12-col pf-l-stack__item">
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list pf-m-3-col-on-lg">
                                 <div class="pf-c-description-list__group">
@@ -151,7 +153,7 @@ export class SCIMProviderViewPage extends AKElement {
                             </ak-forms-modal>
                         </div>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-l-stack__item">
                         <div class="pf-c-card__title">
                             <p>${t`Sync status`}</p>
                         </div>
