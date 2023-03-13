@@ -10,7 +10,7 @@ title: Skyhigh Security
 Skyhigh Security is a Security Services Edge (SSE), Cloud Access Security Broker (CASB), and Secure Web Gateway (SWG), and Private Access (PA / ZTNA) cloud provider.
 :::
 
-From https://www.skyhighsecurity.com/en-us/why-skyhigh/why-skyhigh.html
+From https://www.skyhighsecurity.com/en-us/about.html
 
 :::note
 We were among the first to recognize the cloud’s potential and knew that protecting data in this new hybrid world required an entirely new approach. We make managing your web and unifying your data policies easy to create and enforce, giving you a single console to provide visibility across all of your infrastructure.
@@ -65,10 +65,10 @@ Create an application linked to this new provider and use the slug name you used
 
 In the Authentik admin Interface, navigate to `Applications` -> `Providers`. Create a SAML provider with the following parameters:
 
--   ACS URL: `https://saml.wgcs.mcafee-cloud.com/saml`
+-   ACS URL: `https://login.auth.ui.trellix.com/sso/saml2`
 -   Issuer: `https://authentik.company/skyhigh-swg`
 -   Service Provider Binding: `Post`
--   Audience: `https://saml.wgcs.mcafee-cloud.com/saml`
+-   Audience: `https://login.auth.ui.trellix.com/sso/saml2`
 -   Signing certificate: Select any certificate
 -   Property mappings: Select all default mappings.
 
@@ -83,7 +83,7 @@ Under the `Setup SAML` section click the `New SAML` button.
 Configure your SAML provider as follows (replace `<slug>` with the name of your slug):
 
 -   SAML Configuration Name: Enter a descriptive name here
--   Service Provider Entity ID: `https://saml.wgcs.mcafee-cloud.com/saml`
+-   Service Provider Entity ID: `https://login.auth.ui.trellix.com/sso/saml2`
 -   SAML Identity Provider URL: `https://authentik.company/application/saml/<slug>/sso/binding/post/`
 -   Identity Provider Entity ID: `https://authentik.company/skyhigh-swg`
 -   User ID Attribute in SAML Response: `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress`
