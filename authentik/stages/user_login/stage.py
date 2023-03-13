@@ -32,16 +32,16 @@ class UserLoginStageView(StageView):
         user: User = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")
-        login(
-            self.request,
-            user,
-            backend=backend,
-        )
         delta = timedelta_from_string(self.executor.current_stage.session_duration)
         if delta.total_seconds() == 0:
             self.request.session.set_expiry(0)
         else:
             self.request.session.set_expiry(delta)
+        login(
+            self.request,
+            user,
+            backend=backend,
+        )
         self.logger.debug(
             "Logged in",
             backend=backend,
