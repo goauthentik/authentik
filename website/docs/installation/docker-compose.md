@@ -1,5 +1,5 @@
 ---
-title: Docker-Compose installation
+title: Docker Compose installation
 ---
 
 This installation method is for test-setups and small-scale productive setups.
@@ -8,7 +8,7 @@ This installation method is for test-setups and small-scale productive setups.
 
 -   A host with at least 2 CPU cores and 2 GB of RAM
 -   Docker
--   Docker-compose
+-   Docker Compose
 
 ## Preparation
 
@@ -31,7 +31,7 @@ echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 
 It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts and configuration issues. They can also be used by [Email stages](../flow/stages/email/) to send verification/recovery emails.
 
-Append this block to your `.env` file
+To configure email credentials, append this block to your `.env` file
 
 ```shell
 # SMTP Host Emails are sent to
@@ -49,7 +49,7 @@ AUTHENTIK_EMAIL__TIMEOUT=10
 AUTHENTIK_EMAIL__FROM=authentik@localhost
 ```
 
-## Configure to run on Port 80/443
+## Configure for port 80/443
 
 By default, authentik listens on port 9000 for HTTP and 9443 for HTTPS. To change the default and instead use ports 80 and 443, you can set the following variables in `.env`:
 
@@ -58,7 +58,7 @@ AUTHENTIK_PORT_HTTP=80
 AUTHENTIK_PORT_HTTPS=443
 ```
 
-Be sure to run `docker-compose up -d`.
+Be sure to run `docker-compose up -d` to rebuild with the new port numbers.
 
 ## Startup
 
