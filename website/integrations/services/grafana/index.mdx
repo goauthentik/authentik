@@ -101,7 +101,7 @@ For more information on group/role mappings, see [Grafana's docs](https://grafan
 
 ### Grafana Configuration Considerations
 
-Make sure in your configuration that `root_url` is set correctly, otherwise your redirect url might get processed incorrectly. For example, if your grafana instance is running on the default configuration and is accessible behind a reverse proxy at `https://grafana.company`, your redirect url will end up looking like this, `https://grafana.company:3000`.
+Make sure in your configuration that `root_url` is set correctly, otherwise your redirect url might get processed incorrectly. For example, if your grafana instance is running on the default configuration and is accessible behind a reverse proxy at `https://grafana.company`, your redirect url will end up looking like this, `https://grafana.company/`.
 If you get `user does not belong to org` error when trying to log into grafana for the first time via OAuth, check if you have an organization with the ID of `1`, if not, then you have to add the following to your grafana config:
 
 ```ini
