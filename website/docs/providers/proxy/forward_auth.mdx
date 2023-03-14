@@ -7,11 +7,19 @@ Using forward auth uses your existing reverse proxy to do the proxying, and only
 To use forward auth instead of proxying, you have to change a couple of settings.
 In the Proxy Provider, make sure to use one of the Forward auth modes.
 
-## Single application
+## Forward auth modes
+
+The only configuration difference between single application mode and domain level mode is the host that you specify.
+
+For single application, you'd use the domain that the application is running on, and only `/outpost.goauthentik.io` is redirected to the outpost.
+
+For domain level, you'd use the same domain as authentik.
+
+### Single application
 
 Single application mode works for a single application hosted on its dedicated subdomain. This has the advantage that you can still do per-application access policies in authentik.
 
-## Domain level
+### Domain level
 
 To use forward auth instead of proxying, you have to change a couple of settings.
 In the Proxy Provider, make sure to use the _Forward auth (domain level)_ mode.
@@ -21,10 +29,13 @@ This mode differs from the _Forward auth (single application)_ mode in the follo
 -   You don't have to configure an application in authentik for each domain
 -   Users don't have to authorize multiple times
 
-There are however also some downsides, mainly the fact that you **can't** restrict individual applications to different users.
+There are, however, also some downsides, mainly the fact that you **can't** restrict individual applications to different users.
 
-The only configuration difference between single application and domain level is the host you specify.
+## Configuration templates
 
-For single application, you'd use the domain which the application is running on, and only `/outpost.goauthentik.io` is redirected to the outpost.
+For configuration templates for each web server, refer to the following:
 
-For domain level, you'd use the same domain as authentik.
+import DocCardList from "@theme/DocCardList";
+import { useCurrentSidebarCategory } from "@docusaurus/theme-common";
+
+<DocCardList items={useCurrentSidebarCategory().items} />
