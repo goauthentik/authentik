@@ -68,14 +68,6 @@ export class UserForm extends ModelForm<User, number> {
                     ${t`User's primary identifier. 150 characters or fewer.`}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Path`} ?required=${true} name="path">
-                <input
-                    type="text"
-                    value="${first(this.instance?.path, "users")}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Name`} name="name">
                 <input
                     type="text"
@@ -109,6 +101,14 @@ export class UserForm extends ModelForm<User, number> {
                 <p class="pf-c-form__helper-text">
                     ${t`Designates whether this user should be treated as active. Unselect this instead of deleting accounts.`}
                 </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Path`} ?required=${true} name="path">
+                <input
+                    type="text"
+                    value="${first(this.instance?.path, "users")}"
+                    class="pf-c-form-control"
+                    required
+                />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Attributes`} ?required=${true} name="attributes">
                 <ak-codemirror
