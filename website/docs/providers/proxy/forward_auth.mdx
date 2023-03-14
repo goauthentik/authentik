@@ -8,6 +8,7 @@ To use forward auth instead of proxying, you have to change a couple of settings
 In the Proxy Provider, make sure to use one of the Forward auth modes.
 
 ## Forward auth modes
+
 The only configuration difference between single application mode and domain level mode is the host that you specify.
 
 For single application, you'd use the domain that the application is running on, and only `/outpost.goauthentik.io` is redirected to the outpost.
@@ -31,8 +32,10 @@ This mode differs from the _Forward auth (single application)_ mode in the follo
 There are, however, also some downsides, mainly the fact that you **can't** restrict individual applications to different users.
 
 ## Configuration templates
+
 For configuration templates for each web server, refer to the following:
 
 import DocCardList from "@theme/DocCardList";
 import { useCurrentSidebarCategory } from "@docusaurus/theme-common";
+
 <DocCardList items={useCurrentSidebarCategory().items} />
