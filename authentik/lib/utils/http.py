@@ -38,13 +38,17 @@ def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
     if OUTPOST_REMOTE_IP_HEADER not in request.META or OUTPOST_TOKEN_HEADER not in request.META:
         return None
     fake_ip = request.META[OUTPOST_REMOTE_IP_HEADER]
-    tokens = Token.filter_not_expired(
-        key=request.META.get(OUTPOST_TOKEN_HEADER), intent=TokenIntents.INTENT_API
+    token = (
+        Token.filter_not_expired(
+            key=request.META.get(OUTPOST_TOKEN_HEADER), intent=TokenIntents.INTENT_API
+        )
+        .select_related("user")
+        .first()
     )
-    if not tokens.exists():
+    if not token:
         LOGGER.warning("Attempted remote-ip override without token", fake_ip=fake_ip)
         return None
-    user = tokens.first().user
+    user = token.user
     if not user.group_attributes(request).get(USER_ATTRIBUTE_CAN_OVERRIDE_IP, False):
         LOGGER.warning(
             "Remote-IP override: user doesn't have permission",

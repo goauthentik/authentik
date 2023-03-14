@@ -1,10 +1,10 @@
 """Test blueprints v1"""
 from django.test import TransactionTestCase
 
-from authentik.blueprints.tests import load_yaml_fixture
 from authentik.blueprints.v1.importer import Importer
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
+from authentik.lib.tests.utils import load_fixture
 
 
 class TestBlueprintsV1State(TransactionTestCase):
@@ -13,7 +13,7 @@ class TestBlueprintsV1State(TransactionTestCase):
     def test_state_present(self):
         """Test state present"""
         flow_slug = generate_id()
-        import_yaml = load_yaml_fixture("fixtures/state_present.yaml", id=flow_slug)
+        import_yaml = load_fixture("fixtures/state_present.yaml", id=flow_slug)
 
         importer = Importer(import_yaml)
         self.assertTrue(importer.validate()[0])
@@ -39,7 +39,7 @@ class TestBlueprintsV1State(TransactionTestCase):
     def test_state_created(self):
         """Test state created"""
         flow_slug = generate_id()
-        import_yaml = load_yaml_fixture("fixtures/state_created.yaml", id=flow_slug)
+        import_yaml = load_fixture("fixtures/state_created.yaml", id=flow_slug)
 
         importer = Importer(import_yaml)
         self.assertTrue(importer.validate()[0])
@@ -65,7 +65,7 @@ class TestBlueprintsV1State(TransactionTestCase):
     def test_state_absent(self):
         """Test state absent"""
         flow_slug = generate_id()
-        import_yaml = load_yaml_fixture("fixtures/state_created.yaml", id=flow_slug)
+        import_yaml = load_fixture("fixtures/state_created.yaml", id=flow_slug)
 
         importer = Importer(import_yaml)
         self.assertTrue(importer.validate()[0])
@@ -74,7 +74,7 @@ class TestBlueprintsV1State(TransactionTestCase):
         flow: Flow = Flow.objects.filter(slug=flow_slug).first()
         self.assertEqual(flow.slug, flow_slug)
 
-        import_yaml = load_yaml_fixture("fixtures/state_absent.yaml", id=flow_slug)
+        import_yaml = load_fixture("fixtures/state_absent.yaml", id=flow_slug)
         importer = Importer(import_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())

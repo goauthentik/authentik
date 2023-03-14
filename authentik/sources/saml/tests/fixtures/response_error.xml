@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<saml2p:Response xmlns:saml2p="urn:oasis:names:tc:SAML:2.0:protocol" Destination="https://127.0.0.1:9443/source/saml/google/acs/" ID="_ee7a8865ac457e7b22cb4f16b39ceca9" IssueInstant="2022-10-14T13:52:04.479Z" Version="2.0">
+    <saml2:Issuer xmlns:saml2="urn:oasis:names:tc:SAML:2.0:assertion">https://accounts.google.com/o/saml2?idpid=</saml2:Issuer>
+    <saml2p:Status>
+        <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Requester">
+            <saml2p:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:RequestDenied"></saml2p:StatusCode>
+        </saml2p:StatusCode>
+        <saml2p:StatusMessage>Invalid request, ACS Url in request http://localhost:9000/source/saml/google/acs/ doesn't match configured ACS Url https://127.0.0.1:9443/source/saml/google/acs/.</saml2p:StatusMessage>
+    </saml2p:Status>
+</saml2p:Response>
