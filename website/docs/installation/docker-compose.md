@@ -1,14 +1,14 @@
 ---
-title: docker-compose installation
+title: Docker-Compose installation
 ---
 
 This installation method is for test-setups and small-scale productive setups.
 
 ## Requirements
 
--   A Linux host with at least 2 CPU cores and 2 GB of RAM.
--   docker
--   docker-compose
+-   A host with at least 2 CPU cores and 2 GB of RAM
+-   Docker
+-   Docker-compose
 
 ## Preparation
 
@@ -49,55 +49,57 @@ AUTHENTIK_EMAIL__TIMEOUT=10
 AUTHENTIK_EMAIL__FROM=authentik@localhost
 ```
 
-## Running on Port 80/443
+## Configure to run on Port 80/443
 
-By default, authentik listens on port 9000 for HTTP and 9443 for HTTPS. To change this, you can set the following variables in `.env`:
+By default, authentik listens on port 9000 for HTTP and 9443 for HTTPS. To change the default and instead use ports 80 and 443, you can set the following variables in `.env`:
 
 ```shell
 AUTHENTIK_PORT_HTTP=80
 AUTHENTIK_PORT_HTTPS=443
 ```
 
-Afterwards, make sure to run `docker-compose up -d`.
+Be sure to run `docker-compose up -d`.
 
 ## Startup
 
-Afterwards, run these commands to finish
+Afterwards, run these commands to finish:
 
 ```shell
 docker-compose pull
 docker-compose up -d
 ```
 
-The compose file statically references the latest version available at the time of downloading the compose file, which can be overridden with the `AUTHENTIK_TAG` environment variable.
+The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file, which can be overridden with the `AUTHENTIK_TAG` environment variable.
 
-authentik will then be reachable on port 9000 (HTTP) and port 9443 (HTTPS).
+authentik is then reachable (by default) on port 9000 (HTTP) and port 9443 (HTTPS).
 
-To start the initial setup, navigate to `https://<your server>/if/flow/initial-setup/`. There you will be prompted to set a password for the akadmin user.
+To start the initial setup, navigate to `https://<your server>/if/flow/initial-setup/`. If you are using your local host, this will be `http://localhost:9000/if/flow/initial-setup/`.
+
+There you will be prompted to set a password for the akadmin user (the default user).
 
 ## Explanation
 
 :::warning
 The server assumes to have local timezone as UTC.
-All internals are handled in UTC, whenever a time is displayed to the user in UI it gets localized.
+All internals are handled in UTC; whenever a time is displayed to the user in UI it gets localized.
 Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers.
 This will not give any advantages.
 On the contrary, it will cause problems with OAuth and SAML authentication,
 e.g. [see this GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
 :::
 
-The docker-compose project contains the following containers:
+The Docker-Compose project contains the following containers:
 
 -   server
 
-    This is the backend service, which does all the logic, runs the API and the actual SSO part. It also runs the frontend, hosts the JS/CSS files, and also serves the files you've uploaded for icons/etc.
+    This is the backend service, which does all the logic, plus runs the API and the SSO functionality. It also runs the frontend, hosts the JS/CSS files, and serves the files you've uploaded for icons/etc.
 
 -   worker
 
     This container executes background tasks, everything you can see on the _System Tasks_ page in the frontend.
 
--   redis & postgresql
+-   redis (for cache)
 
-    Cache and database respectively.
+-   postgresql (default database)
 
 Additionally, if you've enabled GeoIP, there is a container running that regularly updates the GeoIP database.
