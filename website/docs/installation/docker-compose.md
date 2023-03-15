@@ -101,4 +101,3 @@ The Docker-Compose project contains the following containers:
 -   redis (for cache)
 
 -   postgresql (default database)
-
