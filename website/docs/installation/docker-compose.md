@@ -73,7 +73,7 @@ The `docker-compose.yml` file statically references the latest version available
 
 authentik is then reachable (by default) on port 9000 (HTTP) and port 9443 (HTTPS).
 
-To start the initial setup, navigate to `https://<your server>/if/flow/initial-setup/`. If you are using your local host, this will be `http://localhost:9000/if/flow/initial-setup/`.
+To start the initial setup, navigate to `https://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
 
 There you will be prompted to set a password for the akadmin user (the default user).
 
