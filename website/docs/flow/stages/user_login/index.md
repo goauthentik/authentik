@@ -26,6 +26,12 @@ You can set the session to expire after any duration using the syntax of `hours=
 
 All values accept floating-point values.
 
+## Stay signed in offset
+
+When this is set to a higher value than the default _seconds=0_, a prompt is shown, allowing the users to choose if their session should be extended or not. The same syntax as for _Session duration_ applies.
+
+![](./stay_signed_in.png)
+
 ## Terminate other sessions
 
 When enabled, previous sessions of the user logging in will be revoked. This has no affect on OAuth refresh tokens.

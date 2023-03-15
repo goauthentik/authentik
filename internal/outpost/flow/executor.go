@@ -75,6 +75,7 @@ func NewFlowExecutor(ctx context.Context, flowSlug string, refConfig *api.Config
 		StageIdentification:        fe.solveChallenge_Identification,
 		StagePassword:              fe.solveChallenge_Password,
 		StageAuthenticatorValidate: fe.solveChallenge_AuthenticatorValidate,
+		StageUserLogin:             fe.solveChallenge_UserLogin,
 	}
 	// Create new http client that also sets the correct ip
 	config := api.NewConfiguration()

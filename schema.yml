@@ -24994,6 +24994,10 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: remember_me_offset
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -27515,6 +27519,7 @@ components:
       - $ref: '#/components/schemas/PromptChallenge'
       - $ref: '#/components/schemas/RedirectChallenge'
       - $ref: '#/components/schemas/ShellChallenge'
+      - $ref: '#/components/schemas/UserLoginChallenge'
       discriminator:
         propertyName: component
         mapping:
@@ -27540,6 +27545,7 @@ components:
           ak-stage-prompt: '#/components/schemas/PromptChallenge'
           xak-flow-redirect: '#/components/schemas/RedirectChallenge'
           xak-flow-shell: '#/components/schemas/ShellChallenge'
+          ak-stage-user-login: '#/components/schemas/UserLoginChallenge'
     ClientTypeEnum:
       enum:
       - confidential
@@ -29023,6 +29029,7 @@ components:
       - $ref: '#/components/schemas/PasswordChallengeResponseRequest'
       - $ref: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
       - $ref: '#/components/schemas/PromptChallengeResponseRequest'
+      - $ref: '#/components/schemas/UserLoginChallengeResponseRequest'
       discriminator:
         propertyName: component
         mapping:
@@ -29044,6 +29051,7 @@ components:
           ak-stage-password: '#/components/schemas/PasswordChallengeResponseRequest'
           ak-source-plex: '#/components/schemas/PlexAuthenticationChallengeResponseRequest'
           ak-stage-prompt: '#/components/schemas/PromptChallengeResponseRequest'
+          ak-stage-user-login: '#/components/schemas/UserLoginChallengeResponseRequest'
     FlowDesignationEnum:
       enum:
       - authentication
@@ -36807,6 +36815,12 @@ components:
         terminate_other_sessions:
           type: boolean
           description: Terminate all other sessions of the user logging in.
+        remember_me_offset:
+          type: string
+          minLength: 1
+          description: 'Offset the session will be extended by when the user picks
+            the remember me option. Default of 0 means that the remember me option
+            will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
     PatchedUserLogoutStageRequest:
       type: object
       description: UserLogoutStage Serializer
@@ -40170,6 +40184,43 @@ components:
           additionalProperties: {}
       required:
       - name
+    UserLoginChallenge:
+      type: object
+      description: Empty challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-user-login
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+      required:
+      - pending_user
+      - pending_user_avatar
+      - type
+    UserLoginChallengeResponseRequest:
+      type: object
+      description: User login challenge
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-user-login
+        remember_me:
+          type: boolean
+      required:
+      - remember_me
     UserLoginStage:
       type: object
       description: UserLoginStage Serializer
@@ -40208,6 +40259,11 @@ components:
         terminate_other_sessions:
           type: boolean
           description: Terminate all other sessions of the user logging in.
+        remember_me_offset:
+          type: string
+          description: 'Offset the session will be extended by when the user picks
+            the remember me option. Default of 0 means that the remember me option
+            will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - component
       - meta_model_name
@@ -40234,6 +40290,12 @@ components:
         terminate_other_sessions:
           type: boolean
           description: Terminate all other sessions of the user logging in.
+        remember_me_offset:
+          type: string
+          minLength: 1
+          description: 'Offset the session will be extended by when the user picks
+            the remember me option. Default of 0 means that the remember me option
+            will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)'
       required:
       - name
     UserLogoutStage:

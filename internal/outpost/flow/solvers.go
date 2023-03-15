@@ -30,6 +30,11 @@ func (fe *FlowExecutor) solveChallenge_Password(challenge *api.ChallengeTypes, r
 	return api.PasswordChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
 }
 
+func (fe *FlowExecutor) solveChallenge_UserLogin(challenge *api.ChallengeTypes, req api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
+	r := api.NewUserLoginChallengeResponseRequest(true)
+	return api.UserLoginChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
+}
+
 func (fe *FlowExecutor) solveChallenge_AuthenticatorValidate(challenge *api.ChallengeTypes, req api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
 	// We only support duo and code-based authenticators, check if that's allowed
 	var deviceChallenge *api.DeviceChallenge

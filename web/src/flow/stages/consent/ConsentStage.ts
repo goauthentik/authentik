@@ -41,7 +41,9 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderNoPrevious(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
-                <p id="header-text" class="pf-u-mb-xl">${this.challenge.headerText}</p>
+                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">
+                    ${this.challenge.headerText}
+                </h3>
                 ${this.challenge.permissions.length > 0
                     ? html`
                           <p class="pf-u-mb-sm">
@@ -59,7 +61,9 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderAdditional(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
-                <p id="header-text" class="pf-u-mb-xl">${this.challenge.headerText}</p>
+                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">
+                    ${this.challenge.headerText}
+                </h3>
                 ${this.challenge.permissions.length > 0
                     ? html`
                           <p class="pf-u-mb-sm">
