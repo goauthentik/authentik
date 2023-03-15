@@ -102,4 +102,3 @@ The Docker-Compose project contains the following containers:
 
 -   postgresql (default database)
 
-Additionally, if you've enabled GeoIP, there is a container running that regularly updates the GeoIP database.
