@@ -24,18 +24,6 @@ export const resources = [
         src: "node_modules/@patternfly/patternfly/patternfly-base.css",
         dest: "dist/",
     },
-    {
-        src: "node_modules/@patternfly/patternfly/components/Page/page.css",
-        dest: "dist/",
-    },
-    {
-        src: "node_modules/@patternfly/patternfly/components/EmptyState/empty-state.css",
-        dest: "dist/",
-    },
-    {
-        src: "node_modules/@patternfly/patternfly/components/Spinner/spinner.css",
-        dest: "dist/",
-    },
     { src: "src/common/styles/*", dest: "dist/" },
     { src: "src/custom.css", dest: "dist/" },
 
@@ -132,8 +120,27 @@ export const POLY = {
     ].filter((p) => p),
 };
 
+export const standalone = [
+    "loading",
+].map(input => {
+    return {
+        input: `./src/standalone/${input}`,
+        output: [
+            {
+                format: "es",
+                dir: `dist/standalone/${input}`,
+                sourcemap: true,
+                manualChunks: manualChunks,
+            },
+        ],
+        ...defaultOptions,
+    };
+});
+
 export default [
     POLY,
+    // Standalone
+    ...standalone,
     // Flow interface
     {
         input: "./src/flow/FlowInterface.ts",
