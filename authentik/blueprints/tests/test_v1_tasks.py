@@ -6,7 +6,7 @@ from django.test import TransactionTestCase
 from yaml import dump
 
 from authentik.blueprints.models import BlueprintInstance, BlueprintInstanceStatus
-from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_discover, blueprints_find
+from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_discovery, blueprints_find
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 
@@ -53,7 +53,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
             file.seek(0)
             file_hash = sha512(file.read().encode()).hexdigest()
             file.flush()
-            blueprints_discover()  # pylint: disable=no-value-for-parameter
+            blueprints_discovery()  # pylint: disable=no-value-for-parameter
             instance = BlueprintInstance.objects.filter(name=blueprint_id).first()
             self.assertEqual(instance.last_applied_hash, file_hash)
             self.assertEqual(
@@ -81,7 +81,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 )
             )
             file.flush()
-            blueprints_discover()  # pylint: disable=no-value-for-parameter
+            blueprints_discovery()  # pylint: disable=no-value-for-parameter
             blueprint = BlueprintInstance.objects.filter(name="foo").first()
             self.assertEqual(
                 blueprint.last_applied_hash,
@@ -106,7 +106,7 @@ class TestBlueprintsV1Tasks(TransactionTestCase):
                 )
             )
             file.flush()
-            blueprints_discover()  # pylint: disable=no-value-for-parameter
+            blueprints_discovery()  # pylint: disable=no-value-for-parameter
             blueprint.refresh_from_db()
             self.assertEqual(
                 blueprint.last_applied_hash,

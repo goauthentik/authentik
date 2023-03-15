@@ -17,7 +17,7 @@ from authentik.core.models import Application
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
 from authentik.outposts.models import DockerServiceConnection, Outpost, OutpostConfig, OutpostType
-from authentik.outposts.tasks import outpost_local_connection
+from authentik.outposts.tasks import outpost_connection_discovery
 from authentik.providers.proxy.models import ProxyProvider
 from tests.e2e.utils import SeleniumTestCase, retry
 
@@ -210,7 +210,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     @reconcile_app("authentik_crypto")
     def test_proxy_connectivity(self):
         """Test proxy connectivity over websocket"""
-        outpost_local_connection()
+        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
         proxy: ProxyProvider = ProxyProvider.objects.create(
             name="proxy_provider",
             authorization_flow=Flow.objects.get(

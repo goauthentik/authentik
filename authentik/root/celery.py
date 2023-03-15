@@ -73,12 +73,12 @@ def task_error_hook(task_id, exception: Exception, traceback, *args, **kwargs):
 def _get_startup_tasks() -> list[Callable]:
     """Get all tasks to be run on startup"""
     from authentik.admin.tasks import clear_update_notifications
-    from authentik.outposts.tasks import outpost_controller_all, outpost_local_connection
+    from authentik.outposts.tasks import outpost_connection_discovery, outpost_controller_all
     from authentik.providers.proxy.tasks import proxy_set_defaults
 
     return [
         clear_update_notifications,
-        outpost_local_connection,
+        outpost_connection_discovery,
         outpost_controller_all,
         proxy_set_defaults,
     ]
