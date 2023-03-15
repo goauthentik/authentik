@@ -81,7 +81,8 @@ class DomainlessFormattedURLValidator(DomainlessURLValidator):
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.host_re = r"([%\(\)a-zA-Z])+" + self.domain_re + self.domain_re
+        self.formatter_re = r"([%\(\)a-zA-Z])*"
+        self.host_re = "(" + self.formatter_re + self.hostname_re + self.domain_re + "|localhost)"
         self.regex = _lazy_re_compile(
             r"^(?:[a-z0-9.+-]*)://"  # scheme is validated separately
             r"(?:[^\s:@/]+(?::[^\s:@/]*)?@)?"  # user:pass authentication
