@@ -1,25 +1,67 @@
 """Login stage logic"""
+from datetime import timedelta
+from typing import Optional
+
 from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
+from rest_framework.fields import BooleanField, CharField
 
 from authentik.core.models import AuthenticatedSession, User
+from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
-from authentik.flows.stage import StageView
+from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
+from authentik.stages.user_login.models import UserLoginStage
 
 
-class UserLoginStageView(StageView):
+class UserLoginChallenge(WithUserInfoChallenge):
+    """Empty challenge"""
+
+    component = CharField(default="ak-stage-user-login")
+
+
+class UserLoginChallengeResponse(ChallengeResponse):
+    """User login challenge"""
+
+    component = CharField(default="ak-stage-user-login")
+
+    remember_me = BooleanField(required=True)
+
+
+class UserLoginStageView(ChallengeStageView):
     """Finalise Authentication flow by logging the user in"""
 
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Wrapper for post requests"""
-        return self.get(request)
+    response_class = UserLoginChallengeResponse
 
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def get_challenge(self, *args, **kwargs) -> UserLoginChallenge:
+        return UserLoginChallenge()
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Wrapper for post requests"""
+        stage: UserLoginStage = self.executor.current_stage
+        if timedelta_from_string(stage.remember_me_offset).total_seconds() > 0:
+            return super().post(request, *args, **kwargs)
+        return self.do_login(request)
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        stage: UserLoginStage = self.executor.current_stage
+        if timedelta_from_string(stage.remember_me_offset).total_seconds() > 0:
+            return super().post(request, *args, **kwargs)
+        return self.do_login(request)
+
+    def challenge_valid(self, response: UserLoginChallengeResponse) -> HttpResponse:
+        stage: UserLoginStage = self.executor.current_stage
+        remember_me = response.validated_data["remember_me"]
+        offset = None
+        if remember_me:
+            offset = timedelta_from_string(stage.remember_me_offset)
+        return self.do_login(self.request, offset)
+
+    def do_login(self, request: HttpRequest, offset: Optional[timedelta] = None) -> HttpResponse:
         """Attach the currently pending user to the current session"""
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             message = _("No Pending user to login.")
