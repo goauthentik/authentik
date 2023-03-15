@@ -368,9 +368,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             COOKIE_NAME_MFA,
             cookie,
             expires=expiry,
-            path="/",
+            path=settings.SESSION_COOKIE_PATH,
             domain=settings.SESSION_COOKIE_DOMAIN,
-            samesite="Lax",
+            samesite=settings.SESSION_COOKIE_SAMESITE,
         )
         return response
 

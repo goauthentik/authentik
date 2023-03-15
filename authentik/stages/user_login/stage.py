@@ -1,7 +1,4 @@
 """Login stage logic"""
-from datetime import timedelta
-from typing import Optional
-
 from django.contrib import messages
 from django.contrib.auth import login
 from django.http import HttpRequest, HttpResponse
@@ -54,18 +51,13 @@ class UserLoginStageView(ChallengeStageView):
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         stage: UserLoginStage = self.executor.current_stage
         if timedelta_from_string(stage.remember_me_offset).total_seconds() > 0:
-            return super().post(request, *args, **kwargs)
+            return super().get(request, *args, **kwargs)
         return self.do_login(request)
 
     def challenge_valid(self, response: UserLoginChallengeResponse) -> HttpResponse:
-        stage: UserLoginStage = self.executor.current_stage
-        remember_me = response.validated_data["remember_me"]
-        offset = None
-        if remember_me:
-            offset = timedelta_from_string(stage.remember_me_offset)
-        return self.do_login(self.request, offset)
+        return self.do_login(self.request, response.validated_data["remember_me"])
 
-    def do_login(self, request: HttpRequest, offset: Optional[timedelta] = None) -> HttpResponse:
+    def do_login(self, request: HttpRequest, remember: bool = False) -> HttpResponse:
         """Attach the currently pending user to the current session"""
         if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
             message = _("No Pending user to login.")
@@ -79,6 +71,9 @@ class UserLoginStageView(ChallengeStageView):
         if not user.is_active:
             self.logger.warning("User is not active, login will not work.")
         delta = timedelta_from_string(self.executor.current_stage.session_duration)
+        if remember:
+            offset = timedelta_from_string(self.executor.current_stage.remember_me_offset)
+            delta = delta + offset
         if delta.total_seconds() == 0:
             self.request.session.set_expiry(0)
         else:
@@ -93,7 +88,7 @@ class UserLoginStageView(ChallengeStageView):
             backend=backend,
             user=user.username,
             flow_slug=self.executor.flow.slug,
-            session_duration=self.executor.current_stage.session_duration,
+            session_duration=delta,
         )
         # Only show success message if we don't have a source in the flow
         # as sources show their own success messages
