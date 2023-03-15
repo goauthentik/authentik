@@ -32,7 +32,7 @@ export class BaseStage<Tin, Tout> extends AKElement {
     @property({ attribute: false })
     challenge!: Tin;
 
-    async submitForm(e: Event, defaults?: KeyUnknown): Promise<boolean> {
+    async submitForm(e: Event, defaults?: Tout): Promise<boolean> {
         e.preventDefault();
         const object: KeyUnknown = defaults || {};
         const form = new FormData(this.shadowRoot?.querySelector("form") || undefined);

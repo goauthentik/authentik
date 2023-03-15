@@ -372,6 +372,12 @@ export class FlowExecutor extends Interface implements StageHost {
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-validate>`;
+            case "ak-stage-user-login":
+                await import("@goauthentik/flow/stages/user_login/UserLoginStage");
+                return html`<ak-stage-user-login
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-user-login>`;
             // Sources
             case "ak-source-plex":
                 await import("@goauthentik/flow/sources/plex/PlexLoginInit");

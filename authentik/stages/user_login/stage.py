@@ -9,7 +9,7 @@ from django.utils.translation import gettext as _
 from rest_framework.fields import BooleanField, CharField
 
 from authentik.core.models import AuthenticatedSession, User
-from authentik.flows.challenge import ChallengeResponse, WithUserInfoChallenge
+from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, PLAN_CONTEXT_SOURCE
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
@@ -38,7 +38,11 @@ class UserLoginStageView(ChallengeStageView):
     response_class = UserLoginChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> UserLoginChallenge:
-        return UserLoginChallenge()
+        return UserLoginChallenge(
+            data={
+                "type": ChallengeTypes.NATIVE.value,
+            }
+        )
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Wrapper for post requests"""
