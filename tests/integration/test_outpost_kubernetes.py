@@ -10,7 +10,7 @@ from authentik.lib.config import CONFIG
 from authentik.outposts.controllers.k8s.deployment import DeploymentReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
 from authentik.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
-from authentik.outposts.tasks import outpost_local_connection
+from authentik.outposts.tasks import outpost_connection_discovery
 from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
 from authentik.providers.proxy.models import ProxyProvider
 
@@ -21,7 +21,7 @@ class OutpostKubernetesTests(TestCase):
     def setUp(self):
         super().setUp()
         # Ensure that local connection have been created
-        outpost_local_connection()
+        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
         self.provider: ProxyProvider = ProxyProvider.objects.create(
             name="test",
             internal_host="http://localhost",

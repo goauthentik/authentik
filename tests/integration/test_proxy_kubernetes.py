@@ -8,7 +8,7 @@ from structlog.stdlib import get_logger
 from authentik.core.tests.utils import create_test_flow
 from authentik.outposts.controllers.kubernetes import KubernetesController
 from authentik.outposts.models import KubernetesServiceConnection, Outpost, OutpostType
-from authentik.outposts.tasks import outpost_local_connection
+from authentik.outposts.tasks import outpost_connection_discovery
 from authentik.providers.proxy.controllers.k8s.ingress import IngressReconciler
 from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
 from authentik.providers.proxy.models import ProxyMode, ProxyProvider
@@ -23,7 +23,7 @@ class TestProxyKubernetes(TestCase):
 
     def setUp(self):
         # Ensure that local connection have been created
-        outpost_local_connection()
+        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
         self.controller = None
 
     def tearDown(self) -> None:

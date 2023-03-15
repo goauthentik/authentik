@@ -1,10 +1,10 @@
 """Test blueprints v1"""
 from django.test import TransactionTestCase
 
-from authentik.blueprints.tests import load_yaml_fixture
 from authentik.blueprints.v1.importer import Importer
 from authentik.flows.models import Flow
 from authentik.lib.generators import generate_id
+from authentik.lib.tests.utils import load_fixture
 
 
 class TestBlueprintsV1Conditions(TransactionTestCase):
@@ -14,7 +14,7 @@ class TestBlueprintsV1Conditions(TransactionTestCase):
         """Test conditions fulfilled"""
         flow_slug1 = generate_id()
         flow_slug2 = generate_id()
-        import_yaml = load_yaml_fixture(
+        import_yaml = load_fixture(
             "fixtures/conditions_fulfilled.yaml", id1=flow_slug1, id2=flow_slug2
         )
 
@@ -31,7 +31,7 @@ class TestBlueprintsV1Conditions(TransactionTestCase):
         """Test conditions not fulfilled"""
         flow_slug1 = generate_id()
         flow_slug2 = generate_id()
-        import_yaml = load_yaml_fixture(
+        import_yaml = load_fixture(
             "fixtures/conditions_not_fulfilled.yaml", id1=flow_slug1, id2=flow_slug2
         )
 

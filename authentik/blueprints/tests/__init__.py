@@ -1,6 +1,5 @@
 """Blueprint helpers"""
 from functools import wraps
-from pathlib import Path
 from typing import Callable
 
 from django.apps import apps
@@ -45,13 +44,3 @@ def reconcile_app(app_name: str):
         return wrapper
 
     return wrapper_outer
-
-
-def load_yaml_fixture(path: str, **kwargs) -> str:
-    """Load yaml fixture, optionally formatting it with kwargs"""
-    with open(Path(__file__).resolve().parent / Path(path), "r", encoding="utf-8") as _fixture:
-        fixture = _fixture.read()
-        try:
-            return fixture % kwargs
-        except TypeError:
-            return fixture

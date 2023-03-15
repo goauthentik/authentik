@@ -27,6 +27,8 @@
 
     -   Update `website/sidebars.js` to include the new release notes, and move the oldest release into the `Previous versions` category.
 
+        If the release notes are created in advance without a fixed date for the release, only add them to the sidebar once the release is published.
+
     -   Run `make website`
 
     #### For subsequent releases:

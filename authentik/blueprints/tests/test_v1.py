@@ -3,12 +3,12 @@ from os import environ
 
 from django.test import TransactionTestCase
 
-from authentik.blueprints.tests import load_yaml_fixture
 from authentik.blueprints.v1.exporter import FlowExporter
 from authentik.blueprints.v1.importer import Importer, transaction_rollback
 from authentik.core.models import Group
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
+from authentik.lib.tests.utils import load_fixture
 from authentik.policies.expression.models import ExpressionPolicy
 from authentik.policies.models import PolicyBinding
 from authentik.sources.oauth.models import OAuthSource
@@ -113,14 +113,14 @@ class TestBlueprintsV1(TransactionTestCase):
         """Test export and import it twice"""
         count_initial = Prompt.objects.filter(field_key="username").count()
 
-        importer = Importer(load_yaml_fixture("fixtures/static_prompt_export.yaml"))
+        importer = Importer(load_fixture("fixtures/static_prompt_export.yaml"))
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
         count_before = Prompt.objects.filter(field_key="username").count()
         self.assertEqual(count_initial + 1, count_before)
 
-        importer = Importer(load_yaml_fixture("fixtures/static_prompt_export.yaml"))
+        importer = Importer(load_fixture("fixtures/static_prompt_export.yaml"))
         self.assertTrue(importer.apply())
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
@@ -130,7 +130,7 @@ class TestBlueprintsV1(TransactionTestCase):
         ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").delete()
         Group.objects.filter(name="test").delete()
         environ["foo"] = generate_id()
-        importer = Importer(load_yaml_fixture("fixtures/tags.yaml"), {"bar": "baz"})
+        importer = Importer(load_fixture("fixtures/tags.yaml"), {"bar": "baz"})
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         policy = ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").first()
