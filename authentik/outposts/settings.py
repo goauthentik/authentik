@@ -19,9 +19,9 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute=fqdn_rand("outpost_token_ensurer"), hour="*/8"),
         "options": {"queue": "authentik_scheduled"},
     },
-    "outpost_local_connection": {
-        "task": "authentik.outposts.tasks.outpost_local_connection",
-        "schedule": crontab(minute=fqdn_rand("outpost_local_connection"), hour="*/8"),
+    "outpost_connection_discovery": {
+        "task": "authentik.outposts.tasks.outpost_connection_discovery",
+        "schedule": crontab(minute=fqdn_rand("outpost_connection_discovery"), hour="*/8"),
         "options": {"queue": "authentik_scheduled"},
     },
 }

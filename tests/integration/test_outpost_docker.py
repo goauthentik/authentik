@@ -19,7 +19,7 @@ from authentik.outposts.models import (
     OutpostType,
     default_outpost_config,
 )
-from authentik.outposts.tasks import outpost_local_connection
+from authentik.outposts.tasks import outpost_connection_discovery
 from authentik.providers.proxy.models import ProxyProvider
 from tests.e2e.utils import get_docker_tag
 
@@ -58,7 +58,7 @@ class OutpostDockerTests(ChannelsLiveServerTestCase):
         self.ssl_folder = mkdtemp()
         self.container = self._start_container(self.ssl_folder)
         # Ensure that local connection have been created
-        outpost_local_connection()
+        outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
         self.provider: ProxyProvider = ProxyProvider.objects.create(
             name="test",
             internal_host="http://localhost",

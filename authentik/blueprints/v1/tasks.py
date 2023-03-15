@@ -76,7 +76,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
             return
         if isinstance(event, FileCreatedEvent):
             LOGGER.debug("new blueprint file created, starting discovery")
-            blueprints_discover.delay()
+            blueprints_discovery.delay()
         if isinstance(event, FileModifiedEvent):
             path = Path(event.src_path)
             root = Path(CONFIG.y("blueprints_dir")).absolute()
@@ -134,7 +134,7 @@ def blueprints_find():
     throws=(DatabaseError, ProgrammingError, InternalError), base=MonitoredTask, bind=True
 )
 @prefill_task
-def blueprints_discover(self: MonitoredTask):
+def blueprints_discovery(self: MonitoredTask):
     """Find blueprints and check if they need to be created in the database"""
     count = 0
     for blueprint in blueprints_find():
