@@ -3,10 +3,11 @@ package flow
 type StageComponent string
 
 const (
+	StageAccessDenied          = StageComponent("ak-stage-access-denied")
+	StageAuthenticatorValidate = StageComponent("ak-stage-authenticator-validate")
 	StageIdentification        = StageComponent("ak-stage-identification")
 	StagePassword              = StageComponent("ak-stage-password")
-	StageAuthenticatorValidate = StageComponent("ak-stage-authenticator-validate")
-	StageAccessDenied          = StageComponent("ak-stage-access-denied")
+	StageUserLogin             = StageComponent("ak-stage-user-login")
 )
 
 const (
