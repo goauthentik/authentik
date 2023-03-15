@@ -171,7 +171,7 @@ module.exports = {
                 "flow/stages/password/index",
                 "flow/stages/prompt/index",
                 "flow/stages/user_delete",
-                "flow/stages/user_login",
+                "flow/stages/user_login/index",
                 "flow/stages/user_logout",
                 "flow/stages/user_write",
             ],
