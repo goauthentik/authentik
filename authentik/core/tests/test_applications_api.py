@@ -43,14 +43,14 @@ class TestApplicationsAPI(APITestCase):
         self.assertEqual(
             self.client.patch(
                 reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug}),
-                {"meta_launch_url": "https://%(username)s.test.goauthentik.io/%(username)s"},
+                {"meta_launch_url": "https://%(username)s-test.test.goauthentik.io/%(username)s"},
             ).status_code,
             200,
         )
         self.allowed.refresh_from_db()
         self.assertEqual(
             self.allowed.get_launch_url(self.user),
-            f"https://{self.user.username}.test.goauthentik.io/{self.user.username}",
+            f"https://{self.user.username}-test.test.goauthentik.io/{self.user.username}",
         )
 
     def test_set_icon(self):
