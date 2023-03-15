@@ -14,8 +14,6 @@ const D3_WARNING = /Circular dependency.*d3-[interpolate|selection]/;
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
 export const resources = [
-    { src: "node_modules/rapidoc/dist/rapidoc-min.js", dest: "dist/" },
-
     {
         src: "node_modules/@patternfly/patternfly/patternfly.min.css",
         dest: "dist/",
@@ -120,9 +118,7 @@ export const POLY = {
     ].filter((p) => p),
 };
 
-export const standalone = [
-    "loading",
-].map(input => {
+export const standalone = ["api-browser", "loading"].map((input) => {
     return {
         input: `./src/standalone/${input}`,
         output: [
