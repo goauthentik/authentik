@@ -88,7 +88,10 @@ body {
     border-color: transparent;
 }
 .pf-c-tabs__item.pf-m-current {
-    --pf-c-tabs__link--after--BorderColor: #fd4b2d;
+    --pf-c-tabs__link--after--BorderColor: var(--ak-accent);
+}
+.pf-c-tabs__link {
+    --pf-c-tabs__link--Color: var(--ak-dark-foreground);
 }
 .pf-c-tabs.pf-m-vertical .pf-c-tabs__link {
     background-color: transparent;
