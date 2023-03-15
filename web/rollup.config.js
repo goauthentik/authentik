@@ -18,10 +18,6 @@ export const resources = [
         src: "node_modules/@patternfly/patternfly/patternfly.min.css",
         dest: "dist/",
     },
-    {
-        src: "node_modules/@patternfly/patternfly/patternfly-base.css",
-        dest: "dist/",
-    },
     { src: "src/common/styles/*", dest: "dist/" },
     { src: "src/custom.css", dest: "dist/" },
 

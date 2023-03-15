@@ -1,4 +1,4 @@
-import { AKElement } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
@@ -11,7 +11,7 @@ import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-loading")
-export class Loading extends AKElement {
+export class Loading extends Interface {
     static get styles(): CSSResult[] {
         return [PFBase, PFPage, PFSpinner, PFEmptyState];
     }

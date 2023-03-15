@@ -5,6 +5,7 @@ import { LitElement } from "lit";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
@@ -165,6 +166,11 @@ export class AKElement extends LitElement {
 }
 
 export class Interface extends AKElement {
+    constructor() {
+        super();
+        document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFBase];
+    }
+
     _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
         super._activateTheme(root, theme);
         super._activateTheme(document, theme);
