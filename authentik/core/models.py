@@ -228,7 +228,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         except Exception as exc:
             LOGGER.warning("Failed to get default locale", exc=exc)
         if request:
-            return get_tenant(request).locale
+            return get_tenant(request).default_locale
         return ""
 
     @property

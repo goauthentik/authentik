@@ -40,8 +40,6 @@ def get_tenant(request: HttpRequest | Request) -> "Tenant":
 
 def lookup_tenant_for_request(request: HttpRequest) -> "Tenant":
     """Get tenant object for current request"""
-    from authentik.tenants.models import Tenant
-
     db_tenants = (
         Tenant.objects.annotate(host_domain=V(request.get_host()))
         .filter(Q(host_domain__iendswith=F("domain")) | _q_default)

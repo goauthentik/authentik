@@ -26,6 +26,7 @@ from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
 )
+from authentik.tenants.utils import get_tenant
 
 
 class RedirectToAppLaunch(View):
