@@ -1,6 +1,10 @@
 import { t } from "@lingui/macro";
 
-import { FlowDesignationEnum, LayoutEnum } from "@goauthentik/api";
+import { Flow, FlowDesignationEnum, LayoutEnum } from "@goauthentik/api";
+
+export function RenderFlowOption(flow: Flow): string {
+    return `${flow.slug} (${flow.name})`;
+}
 
 export function DesignationToLabel(designation: FlowDesignationEnum): string {
     switch (designation) {

@@ -1,3 +1,4 @@
+import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex";
@@ -364,7 +365,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
-                                return flow.slug;
+                                return RenderFlowOption(flow);
                             }}
                             .renderDescription=${(flow: Flow): TemplateResult => {
                                 return html`${flow.name}`;
@@ -410,7 +411,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
-                                return flow.slug;
+                                return RenderFlowOption(flow);
                             }}
                             .renderDescription=${(flow: Flow): TemplateResult => {
                                 return html`${flow.name}`;
