@@ -104,12 +104,12 @@ export class SearchSelect<T> extends AKElement {
 
     updateData(): void {
         this.fetchObjects(this.query).then((objects) => {
-            this.objects = objects;
-            this.objects.forEach((obj) => {
+            objects.forEach((obj) => {
                 if (this.selected && this.selected(obj, this.objects || [])) {
                     this.selectedObject = obj;
                 }
             });
+            this.objects = objects;
         });
     }
 
@@ -249,6 +249,14 @@ export class SearchSelect<T> extends AKElement {
 
     render(): TemplateResult {
         this.renderMenu();
+        let value = "";
+        if (!this.objects) {
+            value = t`Loading...`;
+        } else if (this.selectedObject) {
+            value = this.renderElement(this.selectedObject);
+        } else if (this.blankable) {
+            value = this.emptyOption;
+        }
         return html`<div class="pf-c-select">
             <div class="pf-c-select__toggle pf-m-typeahead">
                 <div class="pf-c-select__toggle-wrapper">
@@ -285,11 +293,7 @@ export class SearchSelect<T> extends AKElement {
                             this.open = false;
                             this.renderMenu();
                         }}
-                        .value=${this.selectedObject
-                            ? this.renderElement(this.selectedObject)
-                            : this.blankable
-                            ? this.emptyOption
-                            : ""}
+                        .value=${value}
                     />
                 </div>
             </div>
