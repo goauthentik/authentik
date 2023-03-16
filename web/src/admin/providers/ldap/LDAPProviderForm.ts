@@ -1,6 +1,7 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -10,7 +11,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
@@ -19,7 +20,6 @@ import {
     CoreGroupsListRequest,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
-    CurrentTenant,
     Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
@@ -32,14 +32,10 @@ import {
 
 @customElement("ak-provider-ldap-form")
 export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
-    @state()
-    tenant?: CurrentTenant;
     async loadInstance(pk: number): Promise<LDAPProvider> {
-        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
+        return new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
             id: pk,
         });
-        this.tenant = await tenant();
-        return provider;
     }
 
     getSuccessMessage(): string {
@@ -101,7 +97,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                         return flow?.pk;
                     }}
                     .selected=${(flow: Flow): boolean => {
-                        let selected = flow.pk === this.tenant?.flowAuthentication;
+                        let selected = flow.pk === rootInterface()?.tenant?.flowAuthentication;
                         if (this.instance?.authorizationFlow === flow.pk) {
                             selected = true;
                         }

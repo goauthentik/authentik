@@ -12,17 +12,7 @@ import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
-import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
-// Import webauthn-related stages to prevent issues on safari
-// Which is overly sensitive to allowing things only in the context of a
-// user interaction
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import "@goauthentik/flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
-import "@goauthentik/flow/stages/autosubmit/AutosubmitStage";
 import { StageHost } from "@goauthentik/flow/stages/base";
-import "@goauthentik/flow/stages/captcha/CaptchaStage";
-import "@goauthentik/flow/stages/identification/IdentificationStage";
-import "@goauthentik/flow/stages/password/PasswordStage";
 
 import { t } from "@lingui/macro";
 
@@ -278,25 +268,25 @@ export class FlowExecutor extends Interface implements StageHost {
     async renderChallengeNativeElement(): Promise<TemplateResult> {
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":
-                // Statically imported for performance reasons
+                await import("@goauthentik/flow/stages/access_denied/AccessDeniedStage");
                 return html`<ak-stage-access-denied
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-access-denied>`;
             case "ak-stage-identification":
-                // Statically imported for performance reasons
+                await import("@goauthentik/flow/stages/identification/IdentificationStage");
                 return html`<ak-stage-identification
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-identification>`;
             case "ak-stage-password":
-                // Statically imported for performance reasons
+                await import("@goauthentik/flow/stages/password/PasswordStage");
                 return html`<ak-stage-password
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-password>`;
             case "ak-stage-captcha":
-                // Statically imported to prevent browsers blocking urls
+                await import("@goauthentik/flow/stages/captcha/CaptchaStage");
                 return html`<ak-stage-captcha
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -320,7 +310,7 @@ export class FlowExecutor extends Interface implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-email>`;
             case "ak-stage-autosubmit":
-                // Statically imported for performance reasons
+                await import("@goauthentik/flow/stages/autosubmit/AutosubmitStage");
                 return html`<ak-stage-autosubmit
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -363,6 +353,9 @@ export class FlowExecutor extends Interface implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-sms>`;
             case "ak-stage-authenticator-validate":
+                await import(
+                    "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage"
+                );
                 return html`<ak-stage-authenticator-validate
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -406,9 +399,8 @@ export class FlowExecutor extends Interface implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-flow-error>`;
             default:
-                break;
+                return html`Invalid native challenge element`;
         }
-        return html`Invalid native challenge element`;
     }
 
     async renderChallenge(): Promise<TemplateResult> {
