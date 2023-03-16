@@ -23,7 +23,7 @@ I started [authentik](https://github.com/goauthentik/authentik) in 2018 as an op
 
 Building a new startup is, unsurprisingly, quite different from building and maintaining an open source project. With the arrival of funding and the requirement to build a business that could sustain itself now and scale as the company evolved, I had to confront some of the technical choices I made when building authentik – in particular, the choice to build authentik using Python and Django.
 
-The primary reason behind choosing these languages was simple: I knew them well and could write code fast. In retrospect, we know now there was a tradeoff. I was able to code faster but the language itself would eventually impose speed limitations. Python isn’t the slowest language out there but when compared to Node.js and other compiled languages like Ruby, its speed can seem like a big problem. And Django on top of Python makes it even slower.
+The primary reason behind choosing these languages was simple: I knew them well and could write code fast. In retrospect, we know now there was a tradeoff. I was able to code faster but the language itself would eventually impose speed limitations. Python isn’t the slowest language out there but when compared to Node.js and other compiled languages like Go, its speed can seem like a big problem. And Django on top of Python makes it even slower.
 
 And yet, I stand by the decision and as the company has evolved, I think it was a good one. In this post, I’ll explain why this decision was a net positive, the benefits and costs of choosing these languages, and the lessons we learned along the way.
 
