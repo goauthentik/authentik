@@ -355,6 +355,62 @@ class TestAuthorize(OAuthTestCase):
                 delta=5,
             )
 
+    def test_full_fragment_code(self):
+        """Test full authorization"""
+        flow = create_test_flow()
+        provider: OAuth2Provider = OAuth2Provider.objects.create(
+            name=generate_id(),
+            client_id="test",
+            client_secret=generate_key(),
+            authorization_flow=flow,
+            redirect_uris="http://localhost",
+            signing_key=self.keypair,
+        )
+        Application.objects.create(name="app", slug="app", provider=provider)
+        state = generate_id()
+        user = create_test_admin_user()
+        self.client.force_login(user)
+        with patch(
+            "authentik.providers.oauth2.id_token.get_login_event",
+            MagicMock(
+                return_value=Event(
+                    action=EventAction.LOGIN,
+                    context={PLAN_CONTEXT_METHOD: "password"},
+                    created=now(),
+                )
+            ),
+        ):
+            # Step 1, initiate params and get redirect to flow
+            self.client.get(
+                reverse("authentik_providers_oauth2:authorize"),
+                data={
+                    "response_type": "code",
+                    "response_mode": "fragment",
+                    "client_id": "test",
+                    "state": state,
+                    "scope": "openid",
+                    "redirect_uri": "http://localhost",
+                    "nonce": generate_id(),
+                },
+            )
+            response = self.client.get(
+                reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            )
+            code: AuthorizationCode = AuthorizationCode.objects.filter(user=user).first()
+            self.assertJSONEqual(
+                response.content.decode(),
+                {
+                    "component": "xak-flow-redirect",
+                    "type": ChallengeTypes.REDIRECT.value,
+                    "to": (f"http://localhost#code={code.code}" f"&state={state}"),
+                },
+            )
+            self.assertAlmostEqual(
+                code.expires.timestamp() - now().timestamp(),
+                timedelta_from_string(provider.access_code_validity).total_seconds(),
+                delta=5,
+            )
+
     def test_full_form_post_id_token(self):
         """Test full authorization (form_post response)"""
         flow = create_test_flow()
