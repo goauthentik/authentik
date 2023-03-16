@@ -43,7 +43,6 @@ import {
     ChallengeChoices,
     ChallengeTypes,
     ContextualFlowInfo,
-    CurrentTenant,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
     FlowsApi,
@@ -91,9 +90,6 @@ export class FlowExecutor extends Interface implements StageHost {
 
     @property({ type: Boolean })
     loading = false;
-
-    @property({ attribute: false })
-    tenant!: CurrentTenant;
 
     @state()
     inspectorOpen = false;
@@ -186,7 +182,6 @@ export class FlowExecutor extends Interface implements StageHost {
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
         });
-        tenant().then((tenant) => (this.tenant = tenant));
     }
 
     async getTheme(): Promise<UiThemeEnum> {

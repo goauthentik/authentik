@@ -6,6 +6,7 @@ import {
     EVENT_SIDEBAR_TOGGLE,
     VERSION,
 } from "@goauthentik/common/constants";
+import { configureSentry } from "@goauthentik/common/sentry";
 import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -105,6 +106,7 @@ export class AdminInterface extends Interface {
     }
 
     async firstUpdated(): Promise<void> {
+        configureSentry(true);
         this.version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
         this.user = await me();
         if (!this.user.user.isSuperuser && this.user.user.pk > 0) {

@@ -44,7 +44,7 @@ export class AuthenticatorValidateStage
         return this.host.loading;
     }
 
-    get tenant(): CurrentTenant {
+    get tenant(): CurrentTenant | undefined {
         return this.host.tenant;
     }
 

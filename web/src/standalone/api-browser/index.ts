@@ -1,6 +1,7 @@
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { getCookie } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
+import { first, getCookie } from "@goauthentik/common/utils";
+import { Interface } from "@goauthentik/elements/Base";
+import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "rapidoc";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -10,7 +11,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-api-browser")
-export class APIBrowser extends AKElement {
+export class APIBrowser extends Interface {
     @property()
     schemaPath?: string;
 
@@ -93,7 +94,7 @@ export class APIBrowser extends AKElement {
                     <img
                         alt="authentik Logo"
                         class="logo"
-                        src="/static/dist/assets/icons/icon_left_brand.png"
+                        src="${first(this.tenant?.brandingLogo, DefaultTenant.brandingLogo)}"
                     />
                 </div>
             </rapi-doc>

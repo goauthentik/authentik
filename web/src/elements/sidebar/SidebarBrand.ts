@@ -1,11 +1,9 @@
-import { tenant } from "@goauthentik/common/api/config";
 import { EVENT_SIDEBAR_TOGGLE } from "@goauthentik/common/constants";
-import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -30,9 +28,6 @@ export const DefaultTenant: CurrentTenant = {
 
 @customElement("ak-sidebar-brand")
 export class SidebarBrand extends AKElement {
-    @property({ attribute: false })
-    tenant: CurrentTenant = DefaultTenant;
-
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -69,11 +64,6 @@ export class SidebarBrand extends AKElement {
         });
     }
 
-    firstUpdated(): void {
-        configureSentry(true);
-        tenant().then((tenant) => (this.tenant = tenant));
-    }
-
     render(): TemplateResult {
         return html` ${window.innerWidth <= MIN_WIDTH
                 ? html`
@@ -95,7 +85,10 @@ export class SidebarBrand extends AKElement {
             <a href="#/" class="pf-c-page__header-brand-link">
                 <div class="pf-c-brand ak-brand">
                     <img
-                        src="${first(this.tenant.brandingLogo, DefaultTenant.brandingLogo)}"
+                        src="${first(
+                            rootInterface()?.tenant?.brandingLogo,
+                            DefaultTenant.brandingLogo,
+                        )}"
                         alt="authentik Logo"
                         loading="lazy"
                     />
