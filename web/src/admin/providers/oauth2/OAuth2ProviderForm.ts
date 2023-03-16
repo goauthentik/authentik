@@ -1,3 +1,4 @@
+import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
@@ -96,7 +97,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         return flows.results;
                     }}
                     .renderElement=${(flow: Flow): string => {
-                        return flow.slug;
+                        return RenderFlowOption(flow);
                     }}
                     .renderDescription=${(flow: Flow): TemplateResult => {
                         return html`${flow.name}`;

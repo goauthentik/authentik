@@ -1,3 +1,4 @@
+import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
@@ -265,7 +266,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                                 return flows.results;
                             }}
                             .renderElement=${(flow: Flow): string => {
-                                return flow.slug;
+                                return RenderFlowOption(flow);
                             }}
                             .renderDescription=${(flow: Flow): TemplateResult => {
                                 return html`${flow.name}`;

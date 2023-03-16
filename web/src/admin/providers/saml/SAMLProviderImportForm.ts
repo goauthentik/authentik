@@ -1,3 +1,4 @@
+import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { Form } from "@goauthentik/elements/forms/Form";
@@ -59,7 +60,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                         return flows.results;
                     }}
                     .renderElement=${(flow: Flow): string => {
-                        return flow.slug;
+                        return RenderFlowOption(flow);
                     }}
                     .renderDescription=${(flow: Flow): TemplateResult => {
                         return html`${flow.name}`;
