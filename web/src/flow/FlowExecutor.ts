@@ -37,6 +37,7 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     ChallengeChoices,
@@ -119,7 +120,7 @@ export class FlowExecutor extends Interface implements StageHost {
     ws: WebsocketClient;
 
     static get styles(): CSSResult[] {
-        return [PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
+        return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
             .pf-c-background-image::before {
                 --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
                 --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
