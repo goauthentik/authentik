@@ -15,7 +15,7 @@ The authentik product provides the following consoles:
 
 * User Interface: this console view in authentik displays all of the applications and integrations in which you have implemented authentik. Click on the app that you want to access to open it, or drill down to edit its configuration in the admin interface
 
-* Flow panels: [_Flows_](./flow) are the steps by which the various _Stages_ of a login and authentication process occurs.  A stage represents a single verification or logic step in the sign-on process. authentik allows for the customization and exact definition of these flows.
+* Flows: [_Flows_](./flow) are the steps by which the various _Stages_ of a login and authentication process occurs.  A stage represents a single verification or logic step in the sign-on process. authentik allows for the customization and exact definition of these flows.
 
 ## Installation
 
