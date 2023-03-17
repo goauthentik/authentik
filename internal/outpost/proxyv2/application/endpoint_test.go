@@ -34,6 +34,9 @@ func TestEndpointDefault(t *testing.T) {
 func TestEndpointAuthentikHostBrowser(t *testing.T) {
 	c := config.Get()
 	c.AuthentikHostBrowser = "https://browser.test.goauthentik.io"
+	defer func() {
+		c.AuthentikHostBrowser = ""
+	}()
 	pc := api.ProxyOutpostConfig{
 		OidcConfiguration: api.ProxyOutpostConfigOidcConfiguration{
 			AuthorizationEndpoint: "https://test.goauthentik.io/application/o/authorize/",

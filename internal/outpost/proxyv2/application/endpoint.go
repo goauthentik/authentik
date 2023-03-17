@@ -62,8 +62,7 @@ func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bo
 			return ep
 		}
 		newHost = aku
-	}
-	if hostBrowser != "" {
+	} else if hostBrowser != "" {
 		aku, err := url.Parse(hostBrowser)
 		if err != nil {
 			return ep
