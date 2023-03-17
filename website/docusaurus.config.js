@@ -114,7 +114,7 @@ module.exports = {
                     ],
                 },
             ],
-            copyright: `Copyright © ${new Date().getFullYear()} authentik Security Inc. Built with Docusaurus.`,
+            copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
         },
         colorMode: {
             respectPrefersColorScheme: true,
