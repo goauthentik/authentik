@@ -5,13 +5,27 @@ slug: /
 
 ## What is authentik?
 
-authentik is an open-source Identity Provider focused on flexibility and versatility. You can use authentik in an existing environment to add support for new protocols. authentik is also a great solution for implementing signup/recovery/etc in your application, so you don't have to deal with it.
+authentik is an open-source Identity Provider, focused on flexibility and versatility. With authentik, site administrators, application developers, and security engineers a dependable and secure solution for authentication in almost any type of environment. There are robust recovery actions available for the users and applications, including user profile and password management. You can quickly edit, deactivate, or even impersonate a user profile, and set a new passowrd for new users or reset an existing password.
+
+You can use authentik in an existing environment to add support for new protocols, so introducing authentik to your current tech stack doesn't present re-architecting challenges. We already support all of the major providers, such as OAuth2, SAML, LDAP, and SCIM, so you can pick the protocol that you need for each application.
+
+The authentik product provides the following consoles:
+
+* Admin Interface: a visual tool for the creation and management of users and groups, tokens and credentials, application integrations, events, and the Flows that define standard and customizable login and authentication processes. Easy-to-read visual dashboards display system status, recent logins and authenticatin events, and application usage.
+
+* User Interface: this console view in authentik displays all of the applications and integrations in which you have implemented authentik. Click on the app that you want to work on, and drill down into the specifics for that app.
+
+* Flow panels: [_Flows_](./flow) are the steps by which the various _Stages_ of a login and authetnication process occurs.  A stage represents a single verification or logic step in the sign-on process. authentik allows for the customization and exact definition of these flows.
 
 ## Installation
 
-See [Docker-compose](installation/docker-compose) or [Kubernetes](installation/kubernetes)
+Refer to the installatin steps in either [Docker-compose](installation/docker-compose) or [Kubernetes](installation/kubernetes).
+
+For more information about configuration, Beta versions, and additional installation options, see our main [Installation](installation) section.
 
 ## Screenshots
+
+authentik can use Light or Dark mode the Admin interface and the User interface.
 
 | Light                            | Dark                            |
 | -------------------------------- | ------------------------------- |
