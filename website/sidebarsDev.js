@@ -16,6 +16,7 @@ module.exports = {
                 "blueprints/v1/structure",
                 "blueprints/v1/tags",
                 "blueprints/v1/example",
+                "blueprints/v1/models",
                 "blueprints/v1/meta",
             ],
         },
