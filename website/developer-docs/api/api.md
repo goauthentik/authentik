@@ -18,7 +18,7 @@ When authenticating with a flow, you'll get an authenticated Session cookie, tha
 
 ### API Token
 
-Superusers can create tokens to authenticate as any user with a static key, which can optionally be expiring and auto-rotate.
+Users can create tokens to authenticate as any user with a static key, which can optionally be expiring and auto-rotate.
 
 ### JWT Token
 

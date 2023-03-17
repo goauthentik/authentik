@@ -16,6 +16,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.api.authorization import OwnerSuperuserPermissions
 from authentik.api.decorators import permission_required
 from authentik.blueprints.api import ManagedSerializer
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.users import UserSerializer
 from authentik.core.api.utils import PassiveSerializer
@@ -28,6 +29,11 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
     """Token Serializer"""
 
     user_obj = UserSerializer(required=False, source="user", read_only=True)
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self.fields["key"] = CharField()
 
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
         """Ensure only API or App password tokens are created."""
