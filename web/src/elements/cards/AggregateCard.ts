@@ -34,7 +34,6 @@ export class AggregateCard extends AKElement {
                 .center-value {
                     font-size: var(--pf-global--icon--FontSize--lg);
                     text-align: center;
-                    color: var(--pf-global--Color--100);
                 }
                 .subtext {
                     font-size: var(--pf-global--FontSize--sm);
