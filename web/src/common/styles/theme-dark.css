@@ -1,13 +1,10 @@
-.ak-static-page h1 {
-    color: var(--ak-dark-foreground);
-}
 body {
     background-color: var(--ak-dark-background) !important;
 }
 :root {
-    --pf-global--Color--100: var(--ak-dark-foreground);
+    --pf-global--Color--100: var(--ak-dark-foreground) !important;
     --pf-c-page__main-section--m-light--BackgroundColor: var(--ak-dark-background-darker);
-    --pf-global--link--Color: var(--ak-dark-foreground-link);
+    --pf-global--link--Color: var(--ak-dark-foreground-link) !important;
 }
 .pf-c-radio {
     --pf-c-radio__label--Color: var(--ak-dark-foreground);

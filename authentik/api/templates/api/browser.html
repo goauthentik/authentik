@@ -7,82 +7,13 @@ API Browser - {{ tenant.branding_title }}
 {% endblock %}
 
 {% block head %}
-<script type="module" src="{% static 'dist/rapidoc-min.js' %}"></script>
-<script>
-function getCookie(name) {
-    let cookieValue = "";
-    if (document.cookie && document.cookie !== "") {
-        const cookies = document.cookie.split(";");
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === name + "=") {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
-}
-window.addEventListener('DOMContentLoaded', (event) => {
-    const rapidocEl = document.querySelector('rapi-doc');
-    rapidocEl.addEventListener('before-try', (e) => {
-        e.detail.request.headers.append('X-authentik-CSRF', getCookie("authentik_csrf"));
-    });
-});
-</script>
-<style>
-    img.logo {
-        width: 100%;
-        padding: 1rem 0.5rem 1.5rem 0.5rem;
-        min-height: 48px;
-    }
-</style>
+<script src="{% static 'dist/standalone/api-browser/index.js' %}?version={{ version }}" type="module"></script>
+<meta name="theme-color" content="#151515" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#151515" media="(prefers-color-scheme: dark)">
+<link rel="icon" href="{{ tenant.branding_favicon }}">
+<link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
 {% endblock %}
 
 {% block body %}
-<rapi-doc
-    spec-url="{{ path }}"
-    heading-text=""
-    theme="light"
-    render-style="read"
-    default-schema-tab="schema"
-    primary-color="#fd4b2d"
-    nav-bg-color="#212427"
-    bg-color="#000000"
-    text-color="#000000"
-    nav-text-color="#ffffff"
-    nav-hover-bg-color="#3c3f42"
-    nav-accent-color="#4f5255"
-    nav-hover-text-color="#ffffff"
-    use-path-in-nav-bar="true"
-    nav-item-spacing="relaxed"
-    allow-server-selection="false"
-    show-header="false"
-    allow-spec-url-load="false"
-    allow-spec-file-load="false">
-    <div slot="nav-logo">
-        <img  alt="authentik Logo" class="logo" src="{% static 'dist/assets/icons/icon_left_brand.png' %}" />
-    </div>
-</rapi-doc>
-<script>
-const rapidoc = document.querySelector("rapi-doc");
-const matcher = window.matchMedia("(prefers-color-scheme: light)");
-const changer = (ev) => {
-    const style = getComputedStyle(document.documentElement);
-    let bg, text = "";
-    if (matcher.matches) {
-        bg = style.getPropertyValue('--pf-global--BackgroundColor--light-300');
-        text = style.getPropertyValue('--pf-global--Color--300');
-    } else {
-        bg = style.getPropertyValue('--ak-dark-background');
-        text = style.getPropertyValue('--ak-dark-foreground');
-    }
-    rapidoc.attributes.getNamedItem("bg-color").value = bg.trim();
-    rapidoc.attributes.getNamedItem("text-color").value = text.trim();
-    rapidoc.requestUpdate();
-};
-matcher.addEventListener("change", changer);
-window.addEventListener("load", changer);
-</script>
+<ak-api-browser schemaPath="{{ path }}"></ak-api-browser>
 {% endblock %}

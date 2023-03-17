@@ -62,7 +62,7 @@ export class UserSettingsPromptStage extends PromptStage {
             <div class="pf-c-form__horizontal-group">
                 <div class="pf-c-form__actions">
                     <button type="submit" class="pf-c-button pf-m-primary">${t`Save`}</button>
-                    ${this.host.tenant.flowUnenrollment
+                    ${this.host.tenant?.flowUnenrollment
                         ? html` <a
                               class="pf-c-button pf-m-danger"
                               href="/if/flow/${this.host.tenant.flowUnenrollment}/"

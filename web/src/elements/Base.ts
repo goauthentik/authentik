@@ -1,12 +1,15 @@
+import { tenant } from "@goauthentik/common/api/config";
 import { EVENT_LOCALE_CHANGE, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { uiConfig } from "@goauthentik/common/ui/config";
 
 import { LitElement } from "lit";
+import { state } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { UiThemeEnum } from "@goauthentik/api";
+import { CurrentTenant, UiThemeEnum } from "@goauthentik/api";
 
 export function rootInterface(): Interface | undefined {
     const el = Array.from(document.body.querySelectorAll("*")).filter(
@@ -165,6 +168,15 @@ export class AKElement extends LitElement {
 }
 
 export class Interface extends AKElement {
+    @state()
+    tenant?: CurrentTenant;
+
+    constructor() {
+        super();
+        document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFBase];
+        tenant().then((tenant) => (this.tenant = tenant));
+    }
+
     _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
         super._activateTheme(root, theme);
         super._activateTheme(document, theme);

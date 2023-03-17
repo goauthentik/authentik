@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
@@ -36,7 +36,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
-import { CurrentTenant, EventsApi, SessionUser } from "@goauthentik/api";
+import { EventsApi, SessionUser } from "@goauthentik/api";
 
 autoDetectLanguage();
 
@@ -49,9 +49,6 @@ export class UserInterface extends Interface {
     apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
     ws: WebsocketClient;
-
-    @property({ attribute: false })
-    tenant: CurrentTenant = DefaultTenant;
 
     @property({ type: Number })
     notificationsCount = 0;
@@ -128,7 +125,6 @@ export class UserInterface extends Interface {
     }
 
     async firstUpdated(): Promise<void> {
-        this.tenant = await tenant();
         this.me = await me();
         this.config = await uiConfig();
         const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
@@ -165,8 +161,8 @@ export class UserInterface extends Interface {
                     <a href="#/" class="pf-c-page__header-brand-link">
                         <img
                             class="pf-c-brand"
-                            src="${first(this.tenant.brandingLogo, DefaultTenant.brandingLogo)}"
-                            alt="${(this.tenant.brandingTitle, DefaultTenant.brandingTitle)}"
+                            src="${first(this.tenant?.brandingLogo, DefaultTenant.brandingLogo)}"
+                            alt="${(this.tenant?.brandingTitle, DefaultTenant.brandingTitle)}"
                         />
                     </a>
                 </div>

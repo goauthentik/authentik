@@ -1,7 +1,6 @@
 {% extends "base/skeleton.html" %}
 
 {% load static %}
-{% load i18n %}
 
 {% block head %}
 <script src="{% static 'dist/user/UserInterface.js' %}?version={{ version }}" type="module"></script>
@@ -15,19 +14,6 @@
 {% block body %}
 <ak-message-container></ak-message-container>
 <ak-interface-user>
-    <section class="ak-static-page pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl">
-        <div class="pf-c-empty-state" style="height: 100vh;">
-            <div class="pf-c-empty-state__content">
-                <span class="pf-c-spinner pf-m-xl pf-c-empty-state__icon" role="progressbar" aria-valuetext="{% trans 'Loading...' %}">
-                    <span class="pf-c-spinner__clipper"></span>
-                    <span class="pf-c-spinner__lead-ball"></span>
-                    <span class="pf-c-spinner__tail-ball"></span>
-                </span>
-                <h1 class="pf-c-title pf-m-lg">
-                    {% trans "Loading..." %}
-                </h1>
-            </div>
-        </div>
-    </section>
+    <ak-loading></ak-loading>
 </ak-interface-user>
 {% endblock %}

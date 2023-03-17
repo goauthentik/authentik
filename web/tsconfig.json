@@ -4,12 +4,13 @@
         "paths": {
             "@goauthentik/admin/*": ["src/admin/*"],
             "@goauthentik/common/*": ["src/common/*"],
+            "@goauthentik/docs/*": ["../website/docs/*"],
             "@goauthentik/elements/*": ["src/elements/*"],
             "@goauthentik/flow/*": ["src/flow/*"],
-            "@goauthentik/polyfill/*": ["src/polyfill/*"],
-            "@goauthentik/user/*": ["src/user/*"],
             "@goauthentik/locales/*": ["src/locales/*"],
-            "@goauthentik/docs/*": ["../website/docs/*"]
+            "@goauthentik/polyfill/*": ["src/polyfill/*"],
+            "@goauthentik/standalone/*": ["src/standalone/*"],
+            "@goauthentik/user/*": ["src/user/*"]
         },
         "baseUrl": ".",
         "esModuleInterop": true,

@@ -12,7 +12,7 @@ export interface StageHost {
     loading: boolean;
     submit(payload: unknown): Promise<boolean>;
 
-    readonly tenant: CurrentTenant;
+    readonly tenant?: CurrentTenant;
 }
 
 export function readFileAsync(file: Blob) {
