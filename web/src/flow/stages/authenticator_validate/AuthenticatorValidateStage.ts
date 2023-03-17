@@ -16,6 +16,7 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     AuthenticatorValidationChallenge,
@@ -76,7 +77,7 @@ export class AuthenticatorValidateStage
     }
 
     static get styles(): CSSResult[] {
-        return [PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(css`
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(css`
             ul {
                 padding-top: 1rem;
             }

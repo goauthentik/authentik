@@ -69,6 +69,10 @@ export class HorizontalFormElement extends AKElement {
     @property()
     name = "";
 
+    firstUpdated(): void {
+        this.updated();
+    }
+
     updated(): void {
         this.querySelectorAll<HTMLInputElement>("input[autofocus]").forEach((input) => {
             input.focus();
@@ -89,7 +93,7 @@ export class HorizontalFormElement extends AKElement {
                 case "ak-chip-group":
                 case "ak-search-select":
                 case "ak-radio":
-                    (input as HTMLInputElement).name = this.name;
+                    input.setAttribute("name", this.name);
                     break;
                 default:
                     return;
@@ -108,6 +112,7 @@ export class HorizontalFormElement extends AKElement {
     }
 
     render(): TemplateResult {
+        this.updated();
         return html`<div class="pf-c-form__group">
             <div class="pf-c-form__group-label">
                 <label class="pf-c-form__label">

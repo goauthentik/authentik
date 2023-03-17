@@ -172,6 +172,6 @@ export class Interface extends AKElement {
 
     async getTheme(): Promise<UiThemeEnum> {
         const config = await uiConfig();
-        return config.theme.base;
+        return config.theme?.base || UiThemeEnum.Automatic;
     }
 }
