@@ -25,7 +25,7 @@ For more information about configuration, Beta versions, and additional installa
 
 ## Screenshots
 
-authentik can use Light or Dark mode the Admin interface and the User interface.
+authentik can use Light or Dark mode for the Admin interface and the User interface.
 
 | Light                            | Dark                            |
 | -------------------------------- | ------------------------------- |
