@@ -74,8 +74,6 @@
         "@lingui/detect-locale": "^3.17.2",
         "@lingui/macro": "^3.17.2",
         "@patternfly/patternfly": "^4.224.2",
-        "@polymer/iron-form": "^3.0.1",
-        "@polymer/paper-input": "^3.2.1",
         "@rollup/plugin-babel": "^6.0.3",
         "@rollup/plugin-commonjs": "^24.0.1",
         "@rollup/plugin-node-resolve": "^15.0.1",
