@@ -19,10 +19,8 @@ class Command(BaseCommand):
         for blueprint_path in options.get("blueprints", []):
             content = BlueprintInstance(path=blueprint_path).retrieve()
             importer = Importer(content)
-            valid, logs = importer.validate()
+            valid, _ = importer.validate()
             if not valid:
-                for log in logs:
-                    getattr(LOGGER, log.pop("log_level"))(**log)
                 self.stderr.write("blueprint invalid")
                 sys_exit(1)
             importer.apply()
