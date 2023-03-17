@@ -11,15 +11,15 @@ You can use authentik in an existing environment to add support for new protocol
 
 The authentik product provides the following consoles:
 
-* Admin Interface: a visual tool for the creation and management of users and groups, tokens and credentials, application integrations, events, and the Flows that define standard and customizable login and authentication processes. Easy-to-read visual dashboards display system status, recent logins and authenticatin events, and application usage.
+* Admin Interface: a visual tool for the creation and management of users and groups, tokens and credentials, application integrations, events, and the Flows that define standard and customizable login and authentication processes. Easy-to-read visual dashboards display system status, recent logins and authentication events, and application usage.
 
 * User Interface: this console view in authentik displays all of the applications and integrations in which you have implemented authentik. Click on the app that you want to work on, and drill down into the specifics for that app.
 
-* Flow panels: [_Flows_](./flow) are the steps by which the various _Stages_ of a login and authetnication process occurs.  A stage represents a single verification or logic step in the sign-on process. authentik allows for the customization and exact definition of these flows.
+* Flow panels: [_Flows_](./flow) are the steps by which the various _Stages_ of a login and authentication process occurs.  A stage represents a single verification or logic step in the sign-on process. authentik allows for the customization and exact definition of these flows.
 
 ## Installation
 
-Refer to the installatin steps in either [Docker-compose](installation/docker-compose) or [Kubernetes](installation/kubernetes).
+Refer to the installation steps in either [Docker-compose](installation/docker-compose) or [Kubernetes](installation/kubernetes).
 
 For more information about configuration, Beta versions, and additional installation options, see our main [Installation](installation) section.
 
