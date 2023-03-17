@@ -37,7 +37,7 @@ Under _Advanced protocol settings_, set the following:
 
 ## Sentry
 
-**This guide assumes you've installed Sentry using [getsentry/onpremise](https://github.com/getsentry/onpremise)**
+**This guide assumes you've installed Sentry using [getsentry/self-hosted](https://github.com/getsentry/self-hosted)**
 
 Navigate to Settings -> Auth, and click on Configure next to SAML2
 
