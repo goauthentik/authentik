@@ -68,6 +68,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
         if (this.timer) {
             console.debug("authentik/stages/password: cleared focus timer");
             window.clearInterval(this.timer);
+            this.timer = undefined;
         }
     }
 

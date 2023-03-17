@@ -10,9 +10,8 @@ import "@goauthentik/elements/forms/SearchSelect";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     CertificateKeyPair,
@@ -20,6 +19,7 @@ import {
     CoreGroupsListRequest,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
+    CurrentTenant,
     Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
@@ -32,10 +32,14 @@ import {
 
 @customElement("ak-provider-ldap-form")
 export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
-    loadInstance(pk: number): Promise<LDAPProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
+    @state()
+    tenant?: CurrentTenant;
+    async loadInstance(pk: number): Promise<LDAPProvider> {
+        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersLdapRetrieve({
             id: pk,
         });
+        this.tenant = await tenant();
+        return provider;
     }
 
     getSuccessMessage(): string {
@@ -75,46 +79,36 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                ${until(
-                    tenant().then((t) => {
-                        return html`
-                            <ak-search-select
-                                .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                    const args: FlowsInstancesListRequest = {
-                                        ordering: "slug",
-                                        designation:
-                                            FlowsInstancesListDesignationEnum.Authentication,
-                                    };
-                                    if (query !== undefined) {
-                                        args.search = query;
-                                    }
-                                    const flows = await new FlowsApi(
-                                        DEFAULT_CONFIG,
-                                    ).flowsInstancesList(args);
-                                    return flows.results;
-                                }}
-                                .renderElement=${(flow: Flow): string => {
-                                    return RenderFlowOption(flow);
-                                }}
-                                .renderDescription=${(flow: Flow): TemplateResult => {
-                                    return html`${flow.slug}`;
-                                }}
-                                .value=${(flow: Flow | undefined): string | undefined => {
-                                    return flow?.pk;
-                                }}
-                                .selected=${(flow: Flow): boolean => {
-                                    let selected = flow.pk === t.flowAuthentication;
-                                    if (this.instance?.authorizationFlow === flow.pk) {
-                                        selected = true;
-                                    }
-                                    return selected;
-                                }}
-                            >
-                            </ak-search-select>
-                        `;
-                    }),
-                    html`<option>${t`Loading...`}</option>`,
-                )}
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                        const args: FlowsInstancesListRequest = {
+                            ordering: "slug",
+                            designation: FlowsInstancesListDesignationEnum.Authentication,
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
+                        return flows.results;
+                    }}
+                    .renderElement=${(flow: Flow): string => {
+                        return RenderFlowOption(flow);
+                    }}
+                    .renderDescription=${(flow: Flow): TemplateResult => {
+                        return html`${flow.slug}`;
+                    }}
+                    .value=${(flow: Flow | undefined): string | undefined => {
+                        return flow?.pk;
+                    }}
+                    .selected=${(flow: Flow): boolean => {
+                        let selected = flow.pk === this.tenant?.flowAuthentication;
+                        if (this.instance?.authorizationFlow === flow.pk) {
+                            selected = true;
+                        }
+                        return selected;
+                    }}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
                     ${t`Flow used for users to authenticate. Currently only identification and password stages are supported.`}
                 </p>

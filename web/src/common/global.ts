@@ -1,6 +1,7 @@
-import { Config, CurrentTenant } from "@goauthentik/api";
+import { Config, ConfigFromJSON, CurrentTenant, CurrentTenantFromJSON } from "@goauthentik/api";
 
 export interface GlobalAuthentik {
+    _converted?: boolean;
     locale?: string;
     flow?: {
         layout: string;
@@ -13,11 +14,17 @@ export interface GlobalAuthentik {
 }
 
 export interface AuthentikWindow {
-    authentik?: GlobalAuthentik;
+    authentik: GlobalAuthentik;
 }
 
-export function globalAK(): GlobalAuthentik | undefined {
-    return (window as unknown as AuthentikWindow).authentik;
+export function globalAK(): GlobalAuthentik {
+    const ak = (window as unknown as AuthentikWindow).authentik;
+    if (ak && !ak._converted) {
+        ak._converted = true;
+        ak.tenant = CurrentTenantFromJSON(ak.tenant);
+        ak.config = ConfigFromJSON(ak.config);
+    }
+    return ak;
 }
 
 export function docLink(path: string): string {

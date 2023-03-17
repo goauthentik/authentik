@@ -61,6 +61,9 @@ export class LDAPSyncStatusChart extends AKChart<SyncStatus[]> {
                             metrics.healthy += 1;
                         }
                     });
+                    if (health.length < 1) {
+                        metrics.unsynced += 1;
+                    }
                 } catch {
                     metrics.unsynced += 1;
                 }

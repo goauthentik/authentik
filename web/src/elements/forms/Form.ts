@@ -5,9 +5,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { HorizontalFormElement } from "@goauthentik/elements/forms/HorizontalFormElement";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import "@polymer/iron-form/iron-form";
-import { IronFormElement } from "@polymer/iron-form/iron-form";
-import "@polymer/paper-input/paper-input";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -110,63 +107,76 @@ export class Form<T> extends AKElement {
      * Reset the inner iron-form
      */
     resetForm(): void {
-        const ironForm = this.shadowRoot?.querySelector("iron-form");
-        ironForm?.reset();
+        const form = this.shadowRoot?.querySelector<HTMLFormElement>("form");
+        form?.reset();
     }
 
     getFormFiles(): { [key: string]: File } {
-        const ironForm = this.shadowRoot?.querySelector("iron-form");
         const files: { [key: string]: File } = {};
-        if (!ironForm) {
-            return files;
-        }
-        const elements = ironForm._getSubmittableElements();
+        const elements =
+            this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
+                "ak-form-element-horizontal",
+            ) || [];
         for (let i = 0; i < elements.length; i++) {
-            const element = elements[i] as HTMLInputElement;
-            if (element.tagName.toLowerCase() === "input" && element.type === "file") {
-                if ((element.files || []).length < 1) {
+            const element = elements[i];
+            element.requestUpdate();
+            const inputElement = element.querySelector<HTMLInputElement>("[name]");
+            if (!inputElement) {
+                continue;
+            }
+            if (inputElement.tagName.toLowerCase() === "input" && inputElement.type === "file") {
+                if ((inputElement.files || []).length < 1) {
                     continue;
                 }
-                files[element.name] = (element.files || [])[0];
+                files[element.name] = (inputElement.files || [])[0];
             }
         }
         return files;
     }
 
     serializeForm(): T | undefined {
-        const form = this.shadowRoot?.querySelector<IronFormElement>("iron-form");
-        if (!form) {
-            console.warn("authentik/forms: failed to find iron-form");
-            return;
-        }
-        const elements: HTMLInputElement[] = form._getSubmittableElements();
+        const elements =
+            this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
+                "ak-form-element-horizontal",
+            ) || [];
         const json: { [key: string]: unknown } = {};
         elements.forEach((element) => {
-            const values = form._serializeElementValues(element);
-            if (element.hidden) {
+            element.requestUpdate();
+            const inputElement = element.querySelector<HTMLInputElement>("[name]");
+            if (element.hidden || !inputElement) {
                 return;
             }
-            if (element.tagName.toLowerCase() === "select" && "multiple" in element.attributes) {
-                json[element.name] = values;
-            } else if (element.tagName.toLowerCase() === "input" && element.type === "date") {
-                json[element.name] = element.valueAsDate;
-            } else if (
-                element.tagName.toLowerCase() === "input" &&
-                element.type === "datetime-local"
+            if (
+                inputElement.tagName.toLowerCase() === "select" &&
+                "multiple" in inputElement.attributes
             ) {
-                json[element.name] = new Date(element.valueAsNumber);
+                const selectElement = inputElement as unknown as HTMLSelectElement;
+                json[element.name] = Array.from(selectElement.selectedOptions).map((v) => v.value);
             } else if (
-                element.tagName.toLowerCase() === "input" &&
-                "type" in element.dataset &&
-                element.dataset["type"] === "datetime-local"
+                inputElement.tagName.toLowerCase() === "input" &&
+                inputElement.type === "date"
+            ) {
+                json[element.name] = inputElement.valueAsDate;
+            } else if (
+                inputElement.tagName.toLowerCase() === "input" &&
+                inputElement.type === "datetime-local"
+            ) {
+                json[element.name] = new Date(inputElement.valueAsNumber);
+            } else if (
+                inputElement.tagName.toLowerCase() === "input" &&
+                "type" in inputElement.dataset &&
+                inputElement.dataset["type"] === "datetime-local"
             ) {
                 // Workaround for Firefox <93, since 92 and older don't support
                 // datetime-local fields
-                json[element.name] = new Date(element.value);
-            } else if (element.tagName.toLowerCase() === "input" && element.type === "checkbox") {
-                json[element.name] = element.checked;
-            } else if (element.tagName.toLowerCase() === "ak-search-select") {
-                const select = element as unknown as SearchSelect<unknown>;
+                json[element.name] = new Date(inputElement.value);
+            } else if (
+                inputElement.tagName.toLowerCase() === "input" &&
+                inputElement.type === "checkbox"
+            ) {
+                json[element.name] = inputElement.checked;
+            } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
+                const select = inputElement as unknown as SearchSelect<unknown>;
                 let value: unknown;
                 try {
                     value = select.toForm();
@@ -179,9 +189,7 @@ export class Form<T> extends AKElement {
                 }
                 json[element.name] = value;
             } else {
-                for (let v = 0; v < values.length; v++) {
-                    this.serializeFieldRecursive(element, values[v], json);
-                }
+                this.serializeFieldRecursive(inputElement, inputElement.value, json);
             }
         });
         return json as unknown as T;
@@ -213,11 +221,6 @@ export class Form<T> extends AKElement {
         if (!data) {
             return;
         }
-        const form = this.shadowRoot?.querySelector<IronFormElement>("iron-form");
-        if (!form) {
-            console.warn("authentik/forms: failed to find iron-form");
-            return;
-        }
         return this.send(data)
             .then((r) => {
                 showMessage({
@@ -244,8 +247,12 @@ export class Form<T> extends AKElement {
                         throw errorMessage;
                     }
                     // assign all input-related errors to their elements
-                    const elements: HorizontalFormElement[] = form._getSubmittableElements();
+                    const elements =
+                        this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
+                            "ak-form-element-horizontal",
+                        ) || [];
                     elements.forEach((element) => {
+                        element.requestUpdate();
                         const elementName = element.name;
                         if (!elementName) return;
                         if (camelToSnake(elementName) in errorMessage) {
@@ -296,13 +303,7 @@ export class Form<T> extends AKElement {
     }
 
     renderVisible(): TemplateResult {
-        return html`<iron-form
-            @iron-form-presubmit=${(ev: Event) => {
-                this.submit(ev);
-            }}
-        >
-            ${this.renderNonFieldErrors()} ${this.renderForm()}
-        </iron-form>`;
+        return html` ${this.renderNonFieldErrors()} ${this.renderForm()}`;
     }
 
     render(): TemplateResult {
