@@ -11,7 +11,7 @@ You can use authentik in an existing environment to add support for new protocol
 
 The authentik product provides the following consoles:
 
-* Admin Interface: a visual tool for the creation and management of users and groups, tokens and credentials, application integrations, events, and the Flows that define standard and customizable login and authentication processes. Easy-to-read visual dashboards display system status, recent logins and authentication events, and application usage.
+* **Admin interface**: a visual tool for the creation and management of users and groups, tokens and credentials, application integrations, events, and the Flows that define standard and customizable login and authentication processes. Easy-to-read visual dashboards display system status, recent logins and authentication events, and application usage.
 
 * User Interface: this console view in authentik displays all of the applications and integrations in which you have implemented authentik. Click on the app that you want to access to open it, or drill down to edit its configuration in the admin interface
 
