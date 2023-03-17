@@ -2,7 +2,6 @@ package application
 
 import (
 	"net/url"
-	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/api/v3"
@@ -31,40 +30,56 @@ func updateURL(rawUrl string, scheme string, host string) string {
 func GetOIDCEndpoint(p api.ProxyOutpostConfig, authentikHost string, embedded bool) OIDCEndpoint {
 	authUrl := p.OidcConfiguration.AuthorizationEndpoint
 	endUrl := p.OidcConfiguration.EndSessionEndpoint
-	tokenUrl := p.OidcConfiguration.TokenEndpoint
-	jwksUrl := p.OidcConfiguration.JwksUri
 	issuer := p.OidcConfiguration.Issuer
-	if config.Get().AuthentikHostBrowser != "" {
-		authUrl = strings.ReplaceAll(authUrl, authentikHost, config.Get().AuthentikHostBrowser)
-		endUrl = strings.ReplaceAll(endUrl, authentikHost, config.Get().AuthentikHostBrowser)
-		jwksUrl = strings.ReplaceAll(jwksUrl, authentikHost, config.Get().AuthentikHostBrowser)
-		issuer = strings.ReplaceAll(issuer, authentikHost, config.Get().AuthentikHostBrowser)
-	}
 	ep := OIDCEndpoint{
 		Endpoint: oauth2.Endpoint{
 			AuthURL:   authUrl,
-			TokenURL:  tokenUrl,
+			TokenURL:  p.OidcConfiguration.TokenEndpoint,
 			AuthStyle: oauth2.AuthStyleInParams,
 		},
 		EndSessionEndpoint: endUrl,
-		JwksUri:            jwksUrl,
+		JwksUri:            p.OidcConfiguration.JwksUri,
 		TokenIntrospection: p.OidcConfiguration.IntrospectionEndpoint,
 		Issuer:             issuer,
 	}
-	if !embedded {
+	// For the embedded outpost, we use the configure `authentik_host` for the browser URLs
+	// and localhost (which is what we've got from the API) for backchannel URLs
+	//
+	// For other outposts, when `AUTHENTIK_HOST_BROWSER` is set, we use that for the browser URLs
+	// and use what we got from the API for backchannel
+	hostBrowser := config.Get().AuthentikHostBrowser
+	if !embedded && hostBrowser == "" {
 		return ep
 	}
-	if authentikHost == "" {
-		log.Warning("Outpost has localhost/blank API Connection but no authentik_host is configured.")
-		return ep
+	var newHost *url.URL
+	if embedded {
+		if authentikHost == "" {
+			log.Warning("Outpost has localhost/blank API Connection but no authentik_host is configured.")
+			return ep
+		}
+		aku, err := url.Parse(authentikHost)
+		if err != nil {
+			return ep
+		}
+		newHost = aku
 	}
-	aku, err := url.Parse(authentikHost)
-	if err != nil {
-		return ep
+	if hostBrowser != "" {
+		aku, err := url.Parse(hostBrowser)
+		if err != nil {
+			return ep
+		}
+		newHost = aku
 	}
-	ep.AuthURL = updateURL(authUrl, aku.Scheme, aku.Host)
-	ep.EndSessionEndpoint = updateURL(endUrl, aku.Scheme, aku.Host)
-	ep.JwksUri = updateURL(jwksUrl, aku.Scheme, aku.Host)
-	ep.Issuer = updateURL(ep.Issuer, aku.Scheme, aku.Host)
+	// Update all browser-accessed URLs to use the new host and scheme
+	ep.AuthURL = updateURL(authUrl, newHost.Scheme, newHost.Host)
+	ep.EndSessionEndpoint = updateURL(endUrl, newHost.Scheme, newHost.Host)
+	// Update issuer to use the same host and scheme, which would normally break as we don't
+	// change the token URL here, but the token HTTP transport overwrites the Host header
+	//
+	// This is only used in embedded outposts as there we can guarantee that the request
+	// is routed correctly
+	if embedded {
+		ep.Issuer = updateURL(ep.Issuer, newHost.Scheme, newHost.Host)
+	}
 	return ep
 }
