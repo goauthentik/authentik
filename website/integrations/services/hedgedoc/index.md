@@ -31,7 +31,6 @@ To be logged in immediately if you click on the application, set:
 
 -   Launch URL: `https://hedgedoc.company/auth/oauth2`
 
-
 ## HedgeDoc
 
 You need to set the following `env` Variables for Docker based installations.
