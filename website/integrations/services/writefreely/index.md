@@ -44,6 +44,7 @@ Create an application (under _Resources/Applications_) with these settings:
 ### Database
 
 Currently the column `access_token` is configured too small, so it needs to be adjusted
+
 ```
 ALTER TABLE `oauth_users` MODIFY `access_token` varchar(2048);
 ```
@@ -53,16 +54,19 @@ ALTER TABLE `oauth_users` MODIFY `access_token` varchar(2048);
 Configure Writefreely settings by editing the `config.ini` and add the following:
 
 So that new users can be created the following variable must be set to true
+
 ```
 open_registration     = false
 ```
 
 To disable the local login/registration use the following setting (this is useful because writefreely attracts a lot of spam)
+
 ```
 disable_password_auth = false
 ```
 
 The following settings must be made for oauth
+
 ```
 [oauth.generic]
 client_id          = <Client ID>
