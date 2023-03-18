@@ -26,6 +26,7 @@ module.exports = {
                         "services/vikunja/index",
                         "services/wekan/index",
                         "services/wiki-js/index",
+                        "services/writefreely/index",
                         "services/zulip/index",
                     ],
                 },
