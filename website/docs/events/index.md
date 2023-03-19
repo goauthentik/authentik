@@ -6,7 +6,13 @@ Events are authentik's built-in logging system. Whenever any of the following ac
 
 Certain information is stripped from events, to ensure no passwords or other credentials are saved in the log.
 
-If you want to forward these events to another application, forward the log output of all authentik containers. Every event creation is logged with the log level "info".
+## Event retention
+
+The event retention is configured on a per-tenant level, with the default being set to 365 days. For events where a related tenant cannot be found, the retention is also set to 365 days.
+
+If you want to forward these events to another application, forward the log output of all authentik containers. Every event creation is logged with the log level "info". For this configuration, it is also recommended to set the internal retention pretty low (for example, `days=1`).
+
+## Event actions
 
 ### `login`
 
