@@ -157,7 +157,7 @@ class Prompt(SerializerModel):
                     exc=PropertyMappingExpressionException(str(exc)),
                 )
 
-        if isinstance(raw_choices, (list, tuple)):
+        if isinstance(raw_choices, (list, tuple, set)):
             choices = raw_choices
         else:
             choices = [raw_choices]
