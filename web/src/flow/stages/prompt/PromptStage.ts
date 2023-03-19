@@ -6,7 +6,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -29,7 +29,23 @@ import {
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
+        return [
+            PFBase,
+            PFLogin,
+            PFAlert,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            AKGlobal,
+            css`
+                textarea {
+                    min-height: 4em;
+                    max-height: 15em;
+                    resize: vertical;
+                }
+            `,
+        ];
     }
 
     renderPromptInner(prompt: StagePrompt, placeholderAsValue: boolean): string {
@@ -50,7 +66,6 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
                     class="pf-c-form-control"
-                    style="min-height: 4em; max-height: 15em; resize: vertical;"
                     ?required=${prompt.required}
                     value="${placeholderAsValue ? prompt.placeholder : ""}">`;
             case PromptTypeEnum.TextReadOnly:
@@ -65,7 +80,6 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     type="text"
                     name="${prompt.fieldKey}"
                     class="pf-c-form-control"
-                    style="min-height: 4em; max-height: 15em; resize: vertical;"
                     readonly
                     value="${prompt.placeholder}">`;
             case PromptTypeEnum.Username:
