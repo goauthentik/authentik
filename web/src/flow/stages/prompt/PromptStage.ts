@@ -36,7 +36,6 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
             PFFormControl,
             PFTitle,
             PFButton,
-            AKGlobal,
             css`
                 textarea {
                     min-height: 4em;
