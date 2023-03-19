@@ -157,7 +157,7 @@ class Prompt(SerializerModel):
                     exc=PropertyMappingExpressionException(str(exc)),
                 )
 
-        if isinstance(raw_choices, (list, tuple)):
+        if isinstance(raw_choices, (list, tuple, set)):
             choices = raw_choices
         else:
             choices = [raw_choices]
@@ -172,9 +172,9 @@ class Prompt(SerializerModel):
         if self.type in CHOICE_FIELDS:
             # Make sure to return a valid choice as placeholder
             choices = self.get_choices(prompt_context, user, request)
-            if choices:
-                return choices[0]
-            return ""
+            if not choices:
+                return ""
+            return choices[0]
 
         if self.field_key in prompt_context:
             # We don't want to parse this as an expression since a user will
