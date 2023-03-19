@@ -77,7 +77,7 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
                                                 value=${ifDefined(prompt.pk)}
                                                 ?selected=${selected}
                                             >
-                                                ${t`${prompt.fieldKey} ("${prompt.label}", of type ${prompt.type})`}
+                                                ${t`${prompt.name} ("${prompt.fieldKey}", of type ${prompt.type})`}
                                             </option>`;
                                         });
                                     }),

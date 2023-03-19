@@ -8,7 +8,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -24,7 +23,6 @@ export class DashboardUserPage extends AKElement {
             PFPage,
             PFContent,
             PFList,
-            AKGlobal,
             css`
                 .row-divider {
                     margin-top: -4px;

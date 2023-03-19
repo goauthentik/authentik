@@ -8,7 +8,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -23,17 +22,7 @@ import { ConsentChallenge, ConsentChallengeResponseRequest, Permission } from "@
 @customElement("ak-stage-consent")
 export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFLogin,
-            PFList,
-            PFForm,
-            PFSpacing,
-            PFFormControl,
-            PFTitle,
-            PFButton,
-            AKGlobal,
-        ];
+        return [PFBase, PFLogin, PFList, PFForm, PFSpacing, PFFormControl, PFTitle, PFButton];
     }
 
     renderPermissions(perms: Permission[]): TemplateResult {
@@ -52,7 +41,9 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderNoPrevious(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
-                <p id="header-text" class="pf-u-mb-xl">${this.challenge.headerText}</p>
+                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">
+                    ${this.challenge.headerText}
+                </h3>
                 ${this.challenge.permissions.length > 0
                     ? html`
                           <p class="pf-u-mb-sm">
@@ -70,7 +61,9 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
     renderAdditional(): TemplateResult {
         return html`
             <div class="pf-c-form__group">
-                <p id="header-text" class="pf-u-mb-xl">${this.challenge.headerText}</p>
+                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">
+                    ${this.challenge.headerText}
+                </h3>
                 ${this.challenge.permissions.length > 0
                     ? html`
                           <p class="pf-u-mb-sm">

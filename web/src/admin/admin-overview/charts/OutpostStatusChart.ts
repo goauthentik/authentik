@@ -1,3 +1,4 @@
+import { SyncStatus } from "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
 import "@goauthentik/elements/forms/ConfirmationForm";
@@ -9,14 +10,8 @@ import { customElement } from "lit/decorators.js";
 
 import { OutpostsApi } from "@goauthentik/api";
 
-interface OutpostStats {
-    healthy: number;
-    outdated: number;
-    unhealthy: number;
-}
-
 @customElement("ak-admin-status-chart-outpost")
-export class OutpostStatusChart extends AKChart<OutpostStats> {
+export class OutpostStatusChart extends AKChart<SyncStatus[]> {
     getChartType(): string {
         return "doughnut";
     }
@@ -32,47 +27,50 @@ export class OutpostStatusChart extends AKChart<OutpostStats> {
         };
     }
 
-    async apiRequest(): Promise<OutpostStats> {
+    async apiRequest(): Promise<SyncStatus[]> {
         const api = new OutpostsApi(DEFAULT_CONFIG);
         const outposts = await api.outpostsInstancesList({});
-        let healthy = 0;
-        let outdated = 0;
-        let unhealthy = 0;
+        const outpostStats: SyncStatus[] = [];
         await Promise.all(
             outposts.results.map(async (element) => {
                 const health = await api.outpostsInstancesHealthList({
                     uuid: element.pk || "",
                 });
+                const singleStats: SyncStatus = {
+                    unsynced: 0,
+                    healthy: 0,
+                    failed: 0,
+                    total: health.length,
+                    label: element.name,
+                };
                 if (health.length === 0) {
-                    unhealthy += 1;
+                    singleStats.unsynced += 1;
                 }
                 health.forEach((h) => {
                     if (h.versionOutdated) {
-                        outdated += 1;
+                        singleStats.failed += 1;
                     } else {
-                        healthy += 1;
+                        singleStats.healthy += 1;
                     }
                 });
+                outpostStats.push(singleStats);
             }),
         );
         this.centerText = outposts.pagination.count.toString();
-        return {
-            healthy: healthy,
-            outdated: outdated,
-            unhealthy: outposts.pagination.count === 0 ? 1 : unhealthy,
-        };
+        return outpostStats;
     }
 
-    getChartData(data: OutpostStats): ChartData {
+    getChartData(data: SyncStatus[]): ChartData {
         return {
             labels: [t`Healthy outposts`, t`Outdated outposts`, t`Unhealthy outposts`],
-            datasets: [
-                {
-                    backgroundColor: ["#3e8635", "#f0ab00", "#C9190B"],
+            datasets: data.map((d) => {
+                return {
+                    backgroundColor: ["#3e8635", "#C9190B", "#2b9af3"],
                     spanGaps: true,
-                    data: [data.healthy, data.outdated, data.unhealthy],
-                },
-            ],
+                    data: [d.healthy, d.failed, d.unsynced],
+                    label: d.label,
+                };
+            }),
         };
     }
 }

@@ -63,7 +63,8 @@ func (ws *WebServer) Shutdown() {
 func (ws *WebServer) listenPlain() {
 	ln, err := net.Listen("tcp", config.Get().Listen.HTTP)
 	if err != nil {
-		ws.log.WithError(err).Fatal("failed to listen")
+		ws.log.WithError(err).Warning("failed to listen")
+		return
 	}
 	proxyListener := &proxyproto.Listener{Listener: ln}
 	defer proxyListener.Close()

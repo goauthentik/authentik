@@ -26,7 +26,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -58,7 +57,7 @@ export class UserListPage extends TablePage<User> {
     activePath = getURLParam<string>("path", "/");
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFCard, PFAlert, AKGlobal);
+        return super.styles.concat(PFDescriptionList, PFCard, PFAlert);
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {

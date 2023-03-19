@@ -3,7 +3,7 @@ export const SUCCESS_CLASS = "pf-m-success";
 export const ERROR_CLASS = "pf-m-danger";
 export const PROGRESS_CLASS = "pf-m-in-progress";
 export const CURRENT_CLASS = "pf-m-current";
-export const VERSION = "2023.2.2";
+export const VERSION = "2023.3.1";
 export const TITLE_DEFAULT = "authentik";
 export const ROUTE_SEPARATOR = ";";
 
@@ -17,6 +17,7 @@ export const EVENT_FLOW_ADVANCE = "ak-flow-advance";
 export const EVENT_LOCALE_CHANGE = "ak-locale-change";
 export const EVENT_REQUEST_POST = "ak-request-post";
 export const EVENT_MESSAGE = "ak-message";
+export const EVENT_THEME_CHANGE = "ak-theme-change";
 
 export const WS_MSG_TYPE_MESSAGE = "message";
 export const WS_MSG_TYPE_REFRESH = "refresh";

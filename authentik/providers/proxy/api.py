@@ -95,6 +95,7 @@ class ProxyProviderSerializer(ProviderSerializer):
             "refresh_token_validity",
             "outpost_set",
         ]
+        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
 
 class ProxyProviderViewSet(UsedByMixin, ModelViewSet):

@@ -6,7 +6,6 @@ import { t } from "@lingui/macro";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
@@ -15,7 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 @customElement("ak-application-wizard-type-oauth-api")
 export class TypeOAuthAPIApplicationWizardPage extends WizardPage {
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFForm, PFRadio, AKGlobal];
+        return [PFBase, PFButton, PFForm, PFRadio];
     }
 
     sidebarLabel = () => t`Method details`;

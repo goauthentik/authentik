@@ -17,7 +17,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -26,7 +25,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { CoreApi, Group } from "@goauthentik/api";
@@ -51,7 +49,6 @@ export class GroupViewPage extends AKElement {
         return [
             PFBase,
             PFPage,
-            PFFlex,
             PFButton,
             PFDisplay,
             PFGrid,
@@ -59,7 +56,6 @@ export class GroupViewPage extends AKElement {
             PFCard,
             PFDescriptionList,
             PFSizing,
-            AKGlobal,
         ];
     }
 

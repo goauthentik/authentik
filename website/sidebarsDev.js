@@ -16,6 +16,7 @@ module.exports = {
                 "blueprints/v1/structure",
                 "blueprints/v1/tags",
                 "blueprints/v1/example",
+                "blueprints/v1/models",
                 "blueprints/v1/meta",
             ],
         },
@@ -35,10 +36,11 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Development",
+            label: "Setup",
             items: [
                 "setup/full-dev-environment",
-                "setup/frontend-only-dev-environment",
+                "setup/frontend-dev-environment",
+                "setup/website-dev-environment",
             ],
         },
         {

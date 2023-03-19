@@ -182,7 +182,9 @@ class Migration(migrations.Migration):
             model_name="application",
             name="meta_launch_url",
             field=models.TextField(
-                blank=True, default="", validators=[authentik.lib.models.DomainlessURLValidator()]
+                blank=True,
+                default="",
+                validators=[authentik.lib.models.DomainlessFormattedURLValidator()],
             ),
         ),
         migrations.RunPython(

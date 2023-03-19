@@ -9,7 +9,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -28,7 +27,6 @@ export class AccessDeniedIcon extends AKElement {
         return [
             PFBase,
             PFTitle,
-            AKGlobal,
             css`
                 .big-icon {
                     display: flex;
@@ -67,7 +65,7 @@ export class AccessDeniedStage extends BaseStage<
     FlowChallengeResponseRequest
 > {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFList, PFFormControl, PFTitle, AKGlobal];
+        return [PFBase, PFLogin, PFForm, PFList, PFFormControl, PFTitle];
     }
 
     render(): TemplateResult {

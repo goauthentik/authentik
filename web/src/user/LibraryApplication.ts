@@ -10,7 +10,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -35,7 +34,6 @@ export class LibraryApplication extends AKElement {
             PFCard,
             PFButton,
             PFAvatar,
-            AKGlobal,
             css`
                 .pf-c-card {
                     height: 100%;

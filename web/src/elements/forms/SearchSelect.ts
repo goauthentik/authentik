@@ -8,7 +8,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFDropdown from "@patternfly/patternfly/components/Dropdown/dropdown.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -39,7 +38,7 @@ export class SearchSelect<T> extends AKElement {
     placeholder: string = t`Select an object.`;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFFormControl, PFSelect, AKGlobal];
+        return [PFBase, PFForm, PFFormControl, PFSelect];
     }
 
     @property({ attribute: false })
@@ -71,6 +70,7 @@ export class SearchSelect<T> extends AKElement {
     observer: IntersectionObserver;
     dropdownUID: string;
     dropdownContainer: HTMLDivElement;
+    isFetchingData = false;
 
     constructor() {
         super();
@@ -104,13 +104,18 @@ export class SearchSelect<T> extends AKElement {
     }
 
     updateData(): void {
+        if (this.isFetchingData) {
+            return;
+        }
+        this.isFetchingData = true;
         this.fetchObjects(this.query).then((objects) => {
-            this.objects = objects;
-            this.objects.forEach((obj) => {
+            objects.forEach((obj) => {
                 if (this.selected && this.selected(obj, this.objects || [])) {
                     this.selectedObject = obj;
                 }
             });
+            this.objects = objects;
+            this.isFetchingData = false;
         });
     }
 
@@ -201,9 +206,10 @@ export class SearchSelect<T> extends AKElement {
         render(
             html`<div
                 class="pf-c-dropdown pf-m-expanded"
-                ?hidden=${!this.open}
                 style="position: fixed; inset: 0px auto auto 0px; z-index: 9999; transform: translate(${pos.x}px, ${pos.y +
-                this.offsetHeight}px); width: ${pos.width}px;"
+                this.offsetHeight}px); width: ${pos.width}px; ${this.open
+                    ? ""
+                    : "visibility: hidden;"}"
             >
                 <ul
                     class="pf-c-dropdown__menu pf-m-static"
@@ -250,6 +256,14 @@ export class SearchSelect<T> extends AKElement {
 
     render(): TemplateResult {
         this.renderMenu();
+        let value = "";
+        if (!this.objects) {
+            value = t`Loading...`;
+        } else if (this.selectedObject) {
+            value = this.renderElement(this.selectedObject);
+        } else if (this.blankable) {
+            value = this.emptyOption;
+        }
         return html`<div class="pf-c-select">
             <div class="pf-c-select__toggle pf-m-typeahead">
                 <div class="pf-c-select__toggle-wrapper">
@@ -257,6 +271,7 @@ export class SearchSelect<T> extends AKElement {
                         class="pf-c-form-control pf-c-select__toggle-typeahead"
                         type="text"
                         placeholder=${this.placeholder}
+                        spellcheck="false"
                         @input=${(ev: InputEvent) => {
                             this.query = (ev.target as HTMLInputElement).value;
                             this.updateData();
@@ -286,11 +301,7 @@ export class SearchSelect<T> extends AKElement {
                             this.open = false;
                             this.renderMenu();
                         }}
-                        .value=${this.selectedObject
-                            ? this.renderElement(this.selectedObject)
-                            : this.blankable
-                            ? this.emptyOption
-                            : ""}
+                        .value=${value}
                     />
                 </div>
             </div>

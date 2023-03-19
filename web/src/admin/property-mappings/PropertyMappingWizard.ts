@@ -16,7 +16,6 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
@@ -30,7 +29,7 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
     mappingTypes: TypeCreate[] = [];
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFForm, PFButton, PFRadio];
     }
     sidebarLabel = () => t`Select type`;
 
@@ -40,7 +39,7 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
             ?.querySelectorAll<HTMLInputElement>("input[type=radio]")
             .forEach((radio) => {
                 if (radio.checked) {
-                    this.host.isValid = true;
+                    radio.dispatchEvent(new CustomEvent("change"));
                 }
             });
     };
@@ -75,7 +74,7 @@ export class InitialPropertyMappingWizardPage extends WizardPage {
 @customElement("ak-property-mapping-wizard")
 export class PropertyMappingWizard extends AKElement {
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, AKGlobal, PFRadio];
+        return [PFBase, PFButton, PFRadio];
     }
 
     @property({ attribute: false })

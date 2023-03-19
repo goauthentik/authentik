@@ -1,0 +1,40 @@
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+# Traefik
+
+The configuration templates shown below apply to both single-application and domain-level forward auth.
+
+import Placeholders from "./__placeholders.md";
+
+<Placeholders />
+
+<Tabs
+  defaultValue="standalone-traefik"
+  values={[
+    {label: 'Standalone traefik', value: 'standalone-traefik'},
+    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Ingress', value: 'ingress'},
+  ]}>
+  <TabItem value="standalone-traefik">
+
+import TraefikStandalone from "./_traefik_standalone.md";
+
+<TraefikStandalone />
+
+  </TabItem>
+  <TabItem value="docker-compose">
+
+import TraefikCompose from "./_traefik_compose.md";
+
+<TraefikCompose />
+
+  </TabItem>
+  <TabItem value="ingress">
+
+import TraefikIngress from "./_traefik_ingress.md";
+
+<TraefikIngress />
+
+  </TabItem>
+</Tabs>

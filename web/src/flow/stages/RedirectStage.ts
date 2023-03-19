@@ -5,7 +5,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -25,7 +24,6 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             PFButton,
             PFFormControl,
             PFTitle,
-            AKGlobal,
             css`
                 code {
                     word-break: break-all;

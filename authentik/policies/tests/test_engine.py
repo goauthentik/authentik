@@ -2,7 +2,8 @@
 from django.core.cache import cache
 from django.test import TestCase
 
-from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
+from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.exceptions import PolicyEngineException
@@ -17,11 +18,17 @@ class TestPolicyEngine(TestCase):
 
     def setUp(self):
         clear_policy_cache()
-        self.user = User.objects.create_user(username="policyuser")
-        self.policy_false = DummyPolicy.objects.create(result=False, wait_min=0, wait_max=1)
-        self.policy_true = DummyPolicy.objects.create(result=True, wait_min=0, wait_max=1)
-        self.policy_wrong_type = Policy.objects.create(name="wrong_type")
-        self.policy_raises = ExpressionPolicy.objects.create(name="raises", expression="{{ 0/0 }}")
+        self.user = create_test_admin_user()
+        self.policy_false = DummyPolicy.objects.create(
+            name=generate_id(), result=False, wait_min=0, wait_max=1
+        )
+        self.policy_true = DummyPolicy.objects.create(
+            name=generate_id(), result=True, wait_min=0, wait_max=1
+        )
+        self.policy_wrong_type = Policy.objects.create(name=generate_id())
+        self.policy_raises = ExpressionPolicy.objects.create(
+            name=generate_id(), expression="{{ 0/0 }}"
+        )
 
     def test_engine_empty(self):
         """Ensure empty policy list passes"""

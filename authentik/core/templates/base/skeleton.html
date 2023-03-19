@@ -9,15 +9,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <title>{% block title %}{% trans title|default:tenant.branding_title %}{% endblock %}</title>
         <link rel="shortcut icon" type="image/png" href="{% static 'dist/assets/icons/icon.png' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/patternfly-base.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/page.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/empty-state.css' %}">
-        <link rel="stylesheet" type="text/css" href="{% static 'dist/spinner.css' %}">
         {% block head_before %}
         {% endblock %}
         <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">
+        <link rel="stylesheet" type="text/css" href="{% static 'dist/theme-dark.css' %}" media="(prefers-color-scheme: dark)">
         <link rel="stylesheet" type="text/css" href="{% static 'dist/custom.css' %}" data-inject>
-        <script src="{% static 'dist/poly.js' %}" type="module"></script>
+        <script src="{% static 'dist/poly.js' %}?version={{ version }}" type="module"></script>
+        <script src="{% static 'dist/standalone/loading/index.js' %}?version={{ version }}" type="module"></script>
         {% block head %}
         {% endblock %}
         <meta name="sentry-trace" content="{{ sentry_trace }}" />

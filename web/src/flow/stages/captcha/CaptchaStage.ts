@@ -13,7 +13,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -26,7 +25,7 @@ import { CaptchaChallenge, CaptchaChallengeResponseRequest } from "@goauthentik/
 @customElement("ak-stage-captcha")
 export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton, AKGlobal];
+        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
     }
 
     handlers = [this.handleGReCaptcha, this.handleHCaptcha, this.handleTurnstile];

@@ -514,7 +514,12 @@ class OAuthFulfillmentStage(StageView):
                 return urlunsplit(uri)
 
             if self.params.response_mode == ResponseMode.FRAGMENT:
-                query_fragment = self.create_implicit_response(code)
+                query_fragment = {}
+                if self.params.grant_type in [GrantTypes.AUTHORIZATION_CODE]:
+                    query_fragment["code"] = code.code
+                    query_fragment["state"] = [str(self.params.state) if self.params.state else ""]
+                else:
+                    query_fragment = self.create_implicit_response(code)
 
                 uri = uri._replace(
                     fragment=uri.fragment + urlencode(query_fragment, doseq=True),

@@ -15,7 +15,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -65,7 +64,6 @@ export class PageHeader extends AKElement {
             PFButton,
             PFPage,
             PFContent,
-            AKGlobal,
             css`
                 :host {
                     display: flex;

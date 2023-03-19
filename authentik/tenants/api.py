@@ -1,10 +1,11 @@
 """Serializer for tenant models"""
 from typing import Any
 
+from django.db import models
 from drf_spectacular.utils import extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ListField
+from rest_framework.fields import CharField, ChoiceField, ListField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
@@ -59,6 +60,14 @@ class TenantSerializer(ModelSerializer):
         ]
 
 
+class Themes(models.TextChoices):
+    """Themes"""
+
+    AUTOMATIC = "automatic"
+    LIGHT = "light"
+    DARK = "dark"
+
+
 class CurrentTenantSerializer(PassiveSerializer):
     """Partial tenant information for styling"""
 
@@ -70,6 +79,12 @@ class CurrentTenantSerializer(PassiveSerializer):
         child=FooterLinkSerializer(),
         read_only=True,
         default=CONFIG.y("footer_links", []),
+    )
+    ui_theme = ChoiceField(
+        choices=Themes.choices,
+        source="attributes.settings.theme.base",
+        default=Themes.AUTOMATIC,
+        read_only=True,
     )
 
     flow_authentication = CharField(source="flow_authentication.slug", required=False)

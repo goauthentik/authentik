@@ -60,7 +60,7 @@ exclude_lines = [
 show_missing = true
 
 [tool.pylint.basic]
-good-names = ["pk", "id", "i", "j", "k", "_"]
+good-names = ["pk", "id", "i", "j", "k", "_", "bar"]
 
 [tool.pylint.master]
 disable = [
@@ -105,7 +105,7 @@ filterwarnings = [
 
 [tool.poetry]
 name = "authentik"
-version = "2023.2.2"
+version = "2023.3.1"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -161,6 +161,7 @@ wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
 watchdog = "*"
+pydantic-scim = "^0.0.7"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"

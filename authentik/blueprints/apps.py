@@ -55,11 +55,11 @@ class AuthentikBlueprintsConfig(ManagedAppConfig):
         """Load v1 tasks"""
         self.import_module("authentik.blueprints.v1.tasks")
 
-    def reconcile_blueprints_discover(self):
+    def reconcile_blueprints_discovery(self):
         """Run blueprint discovery"""
-        from authentik.blueprints.v1.tasks import blueprints_discover, clear_failed_blueprints
+        from authentik.blueprints.v1.tasks import blueprints_discovery, clear_failed_blueprints
 
-        blueprints_discover.delay()
+        blueprints_discovery.delay()
         clear_failed_blueprints.delay()
 
     def import_models(self):

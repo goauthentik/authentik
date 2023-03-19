@@ -1,12 +1,14 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
-import mermaid from "mermaid";
+import mermaid, { MermaidConfig } from "mermaid";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-diagram")
 export class Diagram extends AKElement {
@@ -31,30 +33,34 @@ export class Diagram extends AKElement {
         ];
     }
 
+    config: MermaidConfig;
+
     constructor() {
         super();
-        const matcher = window.matchMedia("(prefers-color-scheme: light)");
-        const handler = (ev?: MediaQueryListEvent) => {
-            mermaid.initialize({
-                // The type definition for this says number
-                // but the example use strings
-                // and numbers don't work
-                logLevel: "fatal" as unknown as number,
-                startOnLoad: false,
-                theme: ev?.matches || matcher.matches ? "default" : "dark",
-                flowchart: {
-                    curve: "linear",
-                },
-            });
-            this.requestUpdate();
+        this.config = {
+            // The type definition for this says number
+            // but the example use strings
+            // and numbers don't work
+            logLevel: "fatal" as unknown as number,
+            startOnLoad: false,
+            flowchart: {
+                curve: "linear",
+            },
         };
-        matcher.addEventListener("change", handler);
-        handler();
+        mermaid.initialize(this.config);
     }
 
     firstUpdated(): void {
         if (this.handlerBound) return;
         window.addEventListener(EVENT_REFRESH, this.refreshHandler);
+        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
+            if (ev.detail === UiThemeEnum.Dark) {
+                this.config.theme = "dark";
+            } else {
+                this.config.theme = "default";
+            }
+            mermaid.initialize(this.config);
+        }) as EventListener);
         this.handlerBound = true;
         this.refreshHandler();
     }

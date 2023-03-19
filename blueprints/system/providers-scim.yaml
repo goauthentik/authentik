@@ -1,0 +1,58 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - SCIM Provider - Mappings
+entries:
+  - identifiers:
+      managed: goauthentik.io/providers/scim/user
+    model: authentik_providers_scim.scimmapping
+    attrs:
+      name: "authentik default SCIM Mapping: User"
+      expression: |
+        # Some implementations require givenName and familyName to be set
+        givenName, familyName = request.user.name, ""
+        # This default sets givenName to the name before the first space
+        # and the remainder as family name
+        # if the user's name has no space the givenName is the entire name
+        # (this might cause issues with some SCIM implementations)
+        if " " in request.user.name:
+            givenName, _, familyName = request.user.name.partition(" ")
+
+        # photos supports URLs to images, however authentik might return data URIs
+        avatar = request.user.avatar
+        photos = []
+        if "://" in avatar:
+            photos = [{"value": avatar, "type": "photo"}]
+
+        locale = request.user.locale()
+        if locale == "":
+            locale = None
+
+        emails = []
+        if request.user.email != "":
+            emails.append({
+                "value": request.user.email,
+                "type": "other",
+                "primary": True,
+            })
+        return {
+            "userName": request.user.username,
+            "name": {
+                "formatted": request.user.name,
+                "givenName": givenName,
+                "familyName": familyName,
+            },
+            "photos": photos,
+            "locale": locale,
+            "emails": emails,
+        }
+  - identifiers:
+      managed: goauthentik.io/providers/scim/group
+    model: authentik_providers_scim.scimmapping
+    attrs:
+      name: "authentik default SCIM Mapping: Group"
+      expression: |
+        return {
+            "displayName": group.name,
+        }

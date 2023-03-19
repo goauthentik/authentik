@@ -7,19 +7,9 @@ import { EVENT_REFRESH, VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { activateLocale } from "@goauthentik/common/ui/locale";
 
-import {
-    Config,
-    ConfigFromJSON,
-    Configuration,
-    CoreApi,
-    CurrentTenant,
-    CurrentTenantFromJSON,
-    RootApi,
-} from "@goauthentik/api";
+import { Config, Configuration, CoreApi, CurrentTenant, RootApi } from "@goauthentik/api";
 
-let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(
-    ConfigFromJSON(globalAK()?.config),
-);
+let globalConfigPromise: Promise<Config> | undefined = Promise.resolve(globalAK().config);
 export function config(): Promise<Config> {
     if (!globalConfigPromise) {
         globalConfigPromise = new RootApi(DEFAULT_CONFIG).rootConfigRetrieve();
@@ -52,9 +42,7 @@ export function tenantSetLocale(tenant: CurrentTenant) {
     activateLocale(tenant.defaultLocale);
 }
 
-let globalTenantPromise: Promise<CurrentTenant> | undefined = Promise.resolve(
-    CurrentTenantFromJSON(globalAK()?.tenant),
-);
+let globalTenantPromise: Promise<CurrentTenant> | undefined = Promise.resolve(globalAK().tenant);
 export function tenant(): Promise<CurrentTenant> {
     if (!globalTenantPromise) {
         globalTenantPromise = new CoreApi(DEFAULT_CONFIG)
@@ -82,7 +70,7 @@ export const DEFAULT_CONFIG = new Configuration({
     middleware: [
         new CSRFMiddleware(),
         new EventMiddleware(),
-        new LoggingMiddleware(CurrentTenantFromJSON(globalAK()?.tenant)),
+        new LoggingMiddleware(globalAK().tenant),
     ],
 });
 

@@ -26,7 +26,11 @@ from authentik.core.types import UILoginButton, UserSettingSerializer
 from authentik.lib.avatars import get_avatar
 from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
-from authentik.lib.models import CreatedUpdatedModel, DomainlessURLValidator, SerializerModel
+from authentik.lib.models import (
+    CreatedUpdatedModel,
+    DomainlessFormattedURLValidator,
+    SerializerModel,
+)
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
 
@@ -243,11 +247,12 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
 class Provider(SerializerModel):
     """Application-independent Provider instance. For example SAML2 Remote, OAuth2 Application"""
 
-    name = models.TextField()
+    name = models.TextField(unique=True)
 
     authorization_flow = models.ForeignKey(
         "authentik_flows.Flow",
         on_delete=models.CASCADE,
+        null=True,
         help_text=_("Flow used when authorizing this provider."),
         related_name="provider_authorization",
     )
@@ -290,7 +295,7 @@ class Application(SerializerModel, PolicyBindingModel):
     )
 
     meta_launch_url = models.TextField(
-        default="", blank=True, validators=[DomainlessURLValidator()]
+        default="", blank=True, validators=[DomainlessFormattedURLValidator()]
     )
 
     open_in_new_tab = models.BooleanField(
@@ -607,7 +612,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
     """User-defined key -> x mapping which can be used by providers to expose extra data."""
 
     pm_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    name = models.TextField()
+    name = models.TextField(unique=True)
     expression = models.TextField()
 
     objects = InheritanceManager()
@@ -630,7 +635,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         try:
             return evaluator.evaluate(self.expression)
         except Exception as exc:
-            raise PropertyMappingExpressionException(str(exc)) from exc
+            raise PropertyMappingExpressionException(exc) from exc
 
     def __str__(self):
         return f"Property Mapping {self.name}"

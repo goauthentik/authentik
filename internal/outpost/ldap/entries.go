@@ -30,10 +30,14 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	// Only append attributes that don't already exist
 	// TODO: Remove in 2023.3
 	for _, rawAttr := range rawAttrs {
+		exists := false
 		for _, attr := range attrs {
-			if !strings.EqualFold(attr.Name, rawAttr.Name) {
-				attrs = append(attrs, rawAttr)
+			if strings.EqualFold(attr.Name, rawAttr.Name) {
+				exists = true
 			}
+		}
+		if !exists {
+			attrs = append(attrs, rawAttr)
 		}
 	}
 

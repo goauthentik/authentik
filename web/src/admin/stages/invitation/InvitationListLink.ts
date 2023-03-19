@@ -7,7 +7,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
@@ -25,7 +24,7 @@ export class InvitationListLink extends AKElement {
     selectedFlow?: string;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFForm, PFFormControl, PFFlex, PFDescriptionList, AKGlobal];
+        return [PFBase, PFForm, PFFormControl, PFFlex, PFDescriptionList];
     }
 
     renderLink(): string {

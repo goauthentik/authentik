@@ -13,10 +13,13 @@ import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
+import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import YAML from "yaml";
 
 import { customElement, property } from "lit/decorators.js";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 @customElement("ak-codemirror")
 export class CodeMirrorTextarea<T> extends AKElement {
@@ -126,18 +129,17 @@ export class CodeMirrorTextarea<T> extends AKElement {
     }
 
     firstUpdated(): void {
-        const matcher = window.matchMedia("(prefers-color-scheme: light)");
-        const handler = (ev?: MediaQueryListEvent) => {
-            let theme;
-            if (ev?.matches || matcher.matches) {
-                theme = this.themeLight;
+        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
+            if (ev.detail === UiThemeEnum.Dark) {
+                this.editor?.dispatch({
+                    effects: this.theme.reconfigure(this.themeDark),
+                });
             } else {
-                theme = this.themeDark;
+                this.editor?.dispatch({
+                    effects: this.theme.reconfigure(this.themeLight),
+                });
             }
-            this.editor?.dispatch({
-                effects: this.theme.reconfigure(theme),
-            });
-        };
+        }) as EventListener);
         const extensions = [
             history(),
             keymap.of([...defaultKeymap, ...historyKeymap]),
@@ -148,7 +150,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
             EditorView.lineWrapping,
             EditorState.readOnly.of(this.readOnly),
             EditorState.tabSize.of(2),
-            this.theme.of(this.themeLight),
+            this.theme.of(this.activeTheme === UiThemeEnum.Dark ? this.themeDark : this.themeLight),
         ];
         this.editor = new EditorView({
             extensions: extensions.filter((p) => p) as Extension[],
@@ -156,7 +158,5 @@ export class CodeMirrorTextarea<T> extends AKElement {
             doc: this._value,
         });
         this.shadowRoot?.appendChild(this.editor.dom);
-        matcher.addEventListener("change", handler);
-        handler();
     }
 }

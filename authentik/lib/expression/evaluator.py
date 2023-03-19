@@ -1,9 +1,11 @@
 """authentik expression policy evaluator"""
 import re
+import socket
 from ipaddress import ip_address, ip_network
 from textwrap import indent
 from typing import Any, Iterable, Optional
 
+from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
 from django_otp import devices_for_user
 from rest_framework.serializers import ValidationError
@@ -41,6 +43,8 @@ class BaseEvaluator:
             "ak_is_group_member": BaseEvaluator.expr_is_group_member,
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_user_has_authenticator": BaseEvaluator.expr_func_user_has_authenticator,
+            "resolve_dns": BaseEvaluator.expr_resolve_dns,
+            "reverse_dns": BaseEvaluator.expr_reverse_dns,
             "ak_create_event": self.expr_event_create,
             "ak_logger": get_logger(self._filename).bind(),
             "requests": get_http_session(),
@@ -48,6 +52,39 @@ class BaseEvaluator:
             "ip_network": ip_network,
         }
         self._context = {}
+
+    @cached(cache=TLRUCache(maxsize=32, ttu=lambda key, value, now: now + 180))
+    @staticmethod
+    def expr_resolve_dns(host: str, ip_version: Optional[int] = None) -> list[str]:
+        """Resolve host to a list of IPv4 and/or IPv6 addresses."""
+        # Although it seems to be fine (raising OSError), docs warn
+        # against passing `None` for both the host and the port
+        # https://docs.python.org/3/library/socket.html#socket.getaddrinfo
+        host = host or ""
+
+        ip_list = []
+
+        family = 0
+        if ip_version == 4:
+            family = socket.AF_INET
+        if ip_version == 6:
+            family = socket.AF_INET6
+
+        try:
+            for ip_addr in socket.getaddrinfo(host, None, family=family):
+                ip_list.append(str(ip_addr[4][0]))
+        except OSError:
+            pass
+        return list(set(ip_list))
+
+    @cached(cache=TLRUCache(maxsize=32, ttu=lambda key, value, now: now + 180))
+    @staticmethod
+    def expr_reverse_dns(ip_addr: str) -> str:
+        """Perform a reverse DNS lookup."""
+        try:
+            return socket.getfqdn(ip_addr)
+        except OSError:
+            return ip_addr
 
     @staticmethod
     def expr_flatten(value: list[Any] | Any) -> Optional[Any]:

@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
@@ -10,7 +10,7 @@ import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
@@ -26,7 +26,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFBrand from "@patternfly/patternfly/components/Brand/brand.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -37,12 +36,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
-import { CurrentTenant, EventsApi, SessionUser } from "@goauthentik/api";
+import { EventsApi, SessionUser } from "@goauthentik/api";
 
 autoDetectLanguage();
 
 @customElement("ak-interface-user")
-export class UserInterface extends AKElement {
+export class UserInterface extends Interface {
     @property({ type: Boolean })
     notificationDrawerOpen = getURLParam("notificationDrawerOpen", false);
 
@@ -50,9 +49,6 @@ export class UserInterface extends AKElement {
     apiDrawerOpen = getURLParam("apiDrawerOpen", false);
 
     ws: WebsocketClient;
-
-    @property({ attribute: false })
-    tenant: CurrentTenant = DefaultTenant;
 
     @property({ type: Number })
     notificationsCount = 0;
@@ -74,7 +70,6 @@ export class UserInterface extends AKElement {
             PFDrawer,
             PFDropdown,
             PFNotificationBadge,
-            AKGlobal,
             css`
                 .pf-c-page__main,
                 .pf-c-drawer__content,
@@ -130,7 +125,6 @@ export class UserInterface extends AKElement {
     }
 
     async firstUpdated(): Promise<void> {
-        this.tenant = await tenant();
         this.me = await me();
         this.config = await uiConfig();
         const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
@@ -167,8 +161,8 @@ export class UserInterface extends AKElement {
                     <a href="#/" class="pf-c-page__header-brand-link">
                         <img
                             class="pf-c-brand"
-                            src="${first(this.tenant.brandingLogo, DefaultTenant.brandingLogo)}"
-                            alt="${(this.tenant.brandingTitle, DefaultTenant.brandingTitle)}"
+                            src="${first(this.tenant?.brandingLogo, DefaultTenant.brandingLogo)}"
+                            alt="${(this.tenant?.brandingTitle, DefaultTenant.brandingTitle)}"
                         />
                     </a>
                 </div>

@@ -14,6 +14,7 @@ class UserLoginStageSerializer(StageSerializer):
         fields = StageSerializer.Meta.fields + [
             "session_duration",
             "terminate_other_sessions",
+            "remember_me_offset",
         ]
 
 

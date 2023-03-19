@@ -9,7 +9,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { OutpostHealth, OutpostsApi } from "@goauthentik/api";
@@ -29,7 +28,7 @@ export class OutpostHealthSimpleElement extends AKElement {
     showVersion = true;
 
     static get styles(): CSSResult[] {
-        return [PFBase, AKGlobal];
+        return [PFBase];
     }
 
     constructor() {

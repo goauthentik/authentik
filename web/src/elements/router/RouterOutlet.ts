@@ -7,8 +7,6 @@ import "@goauthentik/elements/router/Router404";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
-
 // Poliyfill for hashchange.newURL,
 // https://developer.mozilla.org/en-US/docs/Web/API/WindowEventHandlers/onhashchange
 window.addEventListener("load", () => {
@@ -57,7 +55,6 @@ export class RouterOutlet extends AKElement {
 
     static get styles(): CSSResult[] {
         return [
-            AKGlobal,
             css`
                 :host {
                     background-color: transparent !important;

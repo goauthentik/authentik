@@ -1,4 +1,4 @@
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { EVENT_REFRESH, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import {
@@ -22,6 +22,8 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
+
+import { UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -72,6 +74,7 @@ export abstract class AKChart<T> extends AKElement {
                     display: flex;
                     justify-content: center;
                     align-items: center;
+                    position: relative;
                 }
                 .container > span {
                     position: absolute;
@@ -86,25 +89,18 @@ export abstract class AKChart<T> extends AKElement {
         ];
     }
 
-    constructor() {
-        super();
-        const matcher = window.matchMedia("(prefers-color-scheme: light)");
-        const handler = (ev?: MediaQueryListEvent) => {
-            if (ev?.matches || matcher.matches) {
+    connectedCallback(): void {
+        super.connectedCallback();
+        window.addEventListener("resize", this.resizeHandler);
+        this.addEventListener(EVENT_REFRESH, this.refreshHandler);
+        this.addEventListener(EVENT_THEME_CHANGE, ((ev: CustomEvent<UiThemeEnum>) => {
+            if (ev.detail === UiThemeEnum.Light) {
                 this.fontColour = FONT_COLOUR_LIGHT_MODE;
             } else {
                 this.fontColour = FONT_COLOUR_DARK_MODE;
             }
             this.chart?.update();
-        };
-        matcher.addEventListener("change", handler);
-        handler();
-    }
-
-    connectedCallback(): void {
-        super.connectedCallback();
-        window.addEventListener("resize", this.resizeHandler);
-        this.addEventListener(EVENT_REFRESH, this.refreshHandler);
+        }) as EventListener);
     }
 
     disconnectedCallback(): void {

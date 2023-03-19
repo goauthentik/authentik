@@ -2,7 +2,7 @@
 title: Docker
 ---
 
-The docker integration will automatically deploy and manage outpost containers using the Docker HTTP API.
+The Docker integration automatically deploys and manages outpost containers using the Docker HTTP API.
 
 This integration has the advantage over manual deployments of automatic updates (whenever authentik is updated, it updates the outposts), and authentik can (in a future version) automatically rotate the token that the outpost uses to communicate with the core authentik server.
 
@@ -10,8 +10,8 @@ The following outpost settings are used:
 
 -   `object_naming_template`: Configures how the container is called
 -   `container_image`: Optionally overwrites the standard container image (see [Configuration](../../installation/configuration.md) to configure the global default)
--   `docker_network`: The docker network the container should be added to. This needs to be modified if you plan to connect to authentik using the internal hostname.
--   `docker_map_ports`: Enable/disable the mapping of ports. When using a proxy outpost with traefik for example, you might not want to bind ports as they are routed through traefik.
+-   `docker_network`: The Docker network the container should be added to. This needs to be modified if you plan to connect to authentik using the internal hostname.
+-   `docker_map_ports`: Enable/disable the mapping of ports. When using a proxy outpost with Traefik for example, you might not want to bind ports as they are routed through Traefik.
 -   `docker_labels`: Optional additional labels that can be applied to the container.
 
 The container is created with the following hardcoded properties:
@@ -20,7 +20,7 @@ The container is created with the following hardcoded properties:
 
     -   `io.goauthentik.outpost-uuid`: Used by authentik to identify the container, and to allow for name changes.
 
-    Additionally, the proxy outposts have the following extra labels to add themselves into traefik automatically.
+    Additionally, the proxy outposts have the following extra labels to add themselves into Traefik automatically.
 
     -   `traefik.enable`: "true"
     -   `traefik.http.routers.ak-outpost-<outpost-name>-router.rule`: `Host(...)`
@@ -32,7 +32,7 @@ The container is created with the following hardcoded properties:
 
 ## Permissions
 
-To minimise the potential risks of mapping the docker socket into a container/giving an application access to the docker API, many people use Projects like [docker-socket-proxy](https://github.com/Tecnativa/docker-socket-proxy). authentik requires these permissions from the docker API:
+To minimise the potential risks of mapping the Docker socket into a container/giving an application access to the Docker API, many people use Projects like [docker-socket-proxy](https://github.com/Tecnativa/docker-socket-proxy). authentik requires these permissions from the Docker API:
 
 -   Images/Pull: authentik tries to pre-pull the custom image if one is configured, otherwise falling back to the default image.
 -   Containers/Read: Gather infos about currently running container
@@ -42,18 +42,18 @@ To minimise the potential risks of mapping the docker socket into a container/gi
 
 ## Remote hosts (TLS)
 
-To connect remote hosts, you can follow this Guide from Docker [Use TLS (HTTPS) to protect the Docker daemon socket](https://docs.docker.com/engine/security/protect-access/#use-tls-https-to-protect-the-docker-daemon-socket) to configure Docker.
+To connect remote hosts, follow this guide from Docker [Use TLS (HTTPS) to protect the Docker daemon socket](https://docs.docker.com/engine/security/protect-access/#use-tls-https-to-protect-the-docker-daemon-socket) to configure Docker.
 
-Afterwards, create two Certificate-keypairs in authentik:
+Afterwards, create two certificate-keypairs in authentik:
 
 -   `Docker CA`, with the contents of `~/.docker/ca.pem` as Certificate
--   `Docker Cert`, with the contents of `~/.docker/cert.pem` as Certificate and `~/.docker/key.pem` as Private key.
+-   `Docker Cert`, with the contents of `~/.docker/cert.pem` as the certificate and `~/.docker/key.pem` as the private key.
 
 Create an integration with `Docker CA` as _TLS Verification Certificate_ and `Docker Cert` as _TLS Authentication Certificate_.
 
 ## Remote hosts (SSH)
 
-Starting with authentik 2021.12.5, you can connect to remote docker hosts using SSH. To configure this, create a new SSH keypair using these commands:
+Starting with authentik 2021.12.5, you can connect to remote Docker hosts using SSH. To configure this, create a new SSH keypair using these commands:
 
 ```
 # Generate the keypair itself, using RSA keys in the PEM format

@@ -41,7 +41,7 @@ class TaskResult:
 
     def with_error(self, exc: Exception) -> "TaskResult":
         """Since errors might not always be pickle-able, set the traceback"""
-        self.messages.append(str(exc))
+        self.messages.append(exception_to_string(exc))
         return self
 
 
@@ -111,6 +111,7 @@ class MonitoredTask(Task):
     _result: Optional[TaskResult]
 
     _uid: Optional[str]
+    start: Optional[float] = None
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -118,7 +119,6 @@ class MonitoredTask(Task):
         self._uid = None
         self._result = None
         self.result_timeout_hours = 6
-        self.start = default_timer()
 
     def set_uid(self, uid: str):
         """Set UID, so in the case of an unexpected error its saved correctly"""
@@ -127,6 +127,10 @@ class MonitoredTask(Task):
     def set_status(self, result: TaskResult):
         """Set result for current run, will overwrite previous result."""
         self._result = result
+
+    def before_start(self, task_id, args, kwargs):
+        self.start = default_timer()
+        return super().before_start(task_id, args, kwargs)
 
     # pylint: disable=too-many-arguments
     def after_return(self, status, retval, task_id, args: list[Any], kwargs: dict[str, Any], einfo):
@@ -138,7 +142,7 @@ class MonitoredTask(Task):
         info = TaskInfo(
             task_name=self.__name__,
             task_description=self.__doc__,
-            start_timestamp=self.start,
+            start_timestamp=self.start or default_timer(),
             finish_timestamp=default_timer(),
             finish_time=datetime.now(),
             result=self._result,
@@ -162,7 +166,7 @@ class MonitoredTask(Task):
         TaskInfo(
             task_name=self.__name__,
             task_description=self.__doc__,
-            start_timestamp=self.start,
+            start_timestamp=self.start or default_timer(),
             finish_timestamp=default_timer(),
             finish_time=datetime.now(),
             result=self._result,

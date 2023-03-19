@@ -5,6 +5,7 @@ from unittest.mock import patch
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
 from django.urls import reverse
+from django.utils.timezone import now
 
 from authentik.core.models import AuthenticatedSession
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
@@ -16,6 +17,7 @@ from authentik.flows.tests.test_executor import TO_STAGE_RESPONSE_MOCK
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id
 from authentik.lib.utils.http import DEFAULT_IP
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.user_login.models import UserLoginStage
 
 
@@ -103,7 +105,44 @@ class TestUserLoginStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
         self.assertNotEqual(list(self.client.session.keys()), [])
+        session_key = self.client.session.session_key
+        session = AuthenticatedSession.objects.filter(session_key=session_key).first()
+        self.assertAlmostEqual(
+            session.expires.timestamp() - now().timestamp(),
+            timedelta_from_string(self.stage.session_duration).total_seconds(),
+            delta=1,
+        )
         sleep(3)
+        self.client.session.clear_expired()
+        self.assertEqual(list(self.client.session.keys()), [])
+
+    def test_expiry_remember(self):
+        """Test with expiry"""
+        self.stage.session_duration = "seconds=2"
+        self.stage.remember_me_offset = "seconds=2"
+        self.stage.save()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+            data={"remember_me": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        self.assertNotEqual(list(self.client.session.keys()), [])
+        session_key = self.client.session.session_key
+        session = AuthenticatedSession.objects.filter(session_key=session_key).first()
+        self.assertAlmostEqual(
+            session.expires.timestamp() - now().timestamp(),
+            timedelta_from_string(self.stage.session_duration).total_seconds()
+            + timedelta_from_string(self.stage.remember_me_offset).total_seconds(),
+            delta=1,
+        )
+        sleep(5)
         self.client.session.clear_expired()
         self.assertEqual(list(self.client.session.keys()), [])
 

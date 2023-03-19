@@ -41,7 +41,7 @@ export function me(): Promise<SessionUser> {
                         settings: {},
                     },
                 };
-                if (ex.response.status === 401 || ex.response.status === 403) {
+                if (ex.response?.status === 401 || ex.response?.status === 403) {
                     const relativeUrl = window.location
                         .toString()
                         .substring(window.location.origin.length);

@@ -3,11 +3,10 @@ import "@goauthentik/elements/Alert";
 import { Level } from "@goauthentik/elements/Alert";
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 
@@ -35,7 +34,15 @@ export class Markdown extends AKElement {
     ];
 
     static get styles(): CSSResult[] {
-        return [PFList, PFContent, AKGlobal];
+        return [
+            PFList,
+            PFContent,
+            css`
+                h2:first-of-type {
+                    margin-top: 0;
+                }
+            `,
+        ];
     }
 
     replaceAdmonitions(input: string): string {

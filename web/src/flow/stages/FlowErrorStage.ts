@@ -7,7 +7,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -25,7 +24,6 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
             PFForm,
             PFFormControl,
             PFTitle,
-            AKGlobal,
             css`
                 pre {
                     overflow-x: scroll;

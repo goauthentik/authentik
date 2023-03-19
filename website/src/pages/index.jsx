@@ -114,13 +114,13 @@ function Home() {
                                                     firstImage={{
                                                         id: 1,
                                                         imageUrl: useBaseUrl(
-                                                            "img/screen_apps_light.jpg"
+                                                            "img/screen_apps_dark.jpg"
                                                         ),
                                                     }}
                                                     secondImage={{
                                                         id: 2,
                                                         imageUrl: useBaseUrl(
-                                                            "img/screen_apps_dark.jpg"
+                                                            "img/screen_apps_light.jpg"
                                                         ),
                                                     }}
                                                 />
@@ -166,13 +166,13 @@ function Home() {
                                                     firstImage={{
                                                         id: 1,
                                                         imageUrl: useBaseUrl(
-                                                            "img/screen_admin_light.jpg"
+                                                            "img/screen_admin_dark.jpg"
                                                         ),
                                                     }}
                                                     secondImage={{
                                                         id: 2,
                                                         imageUrl: useBaseUrl(
-                                                            "img/screen_admin_dark.jpg"
+                                                            "img/screen_admin_light.jpg"
                                                         ),
                                                     }}
                                                 />

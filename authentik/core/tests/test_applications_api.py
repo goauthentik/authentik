@@ -37,6 +37,22 @@ class TestApplicationsAPI(APITestCase):
             order=0,
         )
 
+    def test_formatted_launch_url(self):
+        """Test formatted launch URL"""
+        self.client.force_login(self.user)
+        self.assertEqual(
+            self.client.patch(
+                reverse("authentik_api:application-detail", kwargs={"slug": self.allowed.slug}),
+                {"meta_launch_url": "https://%(username)s-test.test.goauthentik.io/%(username)s"},
+            ).status_code,
+            200,
+        )
+        self.allowed.refresh_from_db()
+        self.assertEqual(
+            self.allowed.get_launch_url(self.user),
+            f"https://{self.user.username}-test.test.goauthentik.io/{self.user.username}",
+        )
+
     def test_set_icon(self):
         """Test set_icon"""
         file = ContentFile(b"text", "name")

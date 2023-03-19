@@ -13,7 +13,6 @@ import { AdminApi, Version } from "@goauthentik/api";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-    header = t`Version`;
     headerLink = "https://goauthentik.io/docs/releases";
     icon = "pf-icon pf-icon-bundle";
 
@@ -38,6 +37,10 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
             icon: "fa fa-check-circle pf-m-success",
             message: html`${t`Up-to-date!`}`,
         });
+    }
+
+    renderHeader(): TemplateResult {
+        return html`${t`Version`}`;
     }
 
     renderValue(): TemplateResult {

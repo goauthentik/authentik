@@ -31,7 +31,7 @@ RUN pip install --no-cache-dir poetry && \
     poetry export -f requirements.txt --dev --output requirements-dev.txt
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.20.1-bullseye AS go-builder
+FROM docker.io/golang:1.20.2-bullseye AS go-builder
 
 WORKDIR /work
 
@@ -47,7 +47,7 @@ COPY ./go.sum /work/go.sum
 RUN go build -o /work/authentik ./cmd/server/
 
 # Stage 5: MaxMind GeoIP
-FROM docker.io/maxmindinc/geoipupdate:v4.10 as geoip
+FROM docker.io/maxmindinc/geoipupdate:v4.11 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City"
 ENV GEOIPUPDATE_VERBOSE="true"
@@ -96,7 +96,7 @@ RUN apt-get update && \
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
-COPY ./xml /xml
+COPY ./schemas /schemas
 COPY ./locale /locale
 COPY ./tests /tests
 COPY ./manage.py /

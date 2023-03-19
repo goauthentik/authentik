@@ -40,6 +40,10 @@ from authentik.lib.models import SerializerModel
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 
+# Context set when the serializer is created in a blueprint context
+# Update website/developer-docs/blueprints/v1/models.md when used
+SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
+
 
 def is_model_allowed(model: type[Model]) -> bool:
     """Check if model is allowed"""
@@ -158,7 +162,12 @@ class Importer:
             raise EntryInvalidError(f"Model {model} not allowed")
         if issubclass(model, BaseMetaModel):
             serializer_class: type[Serializer] = model.serializer()
-            serializer = serializer_class(data=entry.get_attrs(self.__import))
+            serializer = serializer_class(
+                data=entry.get_attrs(self.__import),
+                context={
+                    SERIALIZER_CONTEXT_BLUEPRINT: entry,
+                },
+            )
             try:
                 serializer.is_valid(raise_exception=True)
             except ValidationError as exc:
@@ -217,7 +226,12 @@ class Importer:
         always_merger.merge(full_data, updated_identifiers)
         serializer_kwargs["data"] = full_data
 
-        serializer: Serializer = model().serializer(**serializer_kwargs)
+        serializer: Serializer = model().serializer(
+            context={
+                SERIALIZER_CONTEXT_BLUEPRINT: entry,
+            },
+            **serializer_kwargs,
+        )
         try:
             serializer.is_valid(raise_exception=True)
         except ValidationError as exc:

@@ -81,6 +81,22 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                             </a>
                         </ak-alert>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Stay signed in offset`}
+                        ?required=${true}
+                        name="rememberMeOffset"
+                    >
+                        <input
+                            type="text"
+                            value="${first(this.instance?.rememberMeOffset, "seconds=0")}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${t`If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.`}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="terminateOtherSessions">
                         <label class="pf-c-switch">
                             <input

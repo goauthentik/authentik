@@ -36,7 +36,7 @@ Flows are designated for a single purpose. This designation changes when a flow 
 
 This is designates a flow to be used for authentication.
 
-The authentication flow should always contain a [**User Login**](stages/user_login.md) stage, which attaches the staged user to the current session.
+The authentication flow should always contain a [**User Login**](stages/user_login/index.md) stage, which attaches the staged user to the current session.
 
 #### Invalidation
 

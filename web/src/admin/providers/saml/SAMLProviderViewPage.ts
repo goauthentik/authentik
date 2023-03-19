@@ -2,6 +2,7 @@ import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { MessageLevel } from "@goauthentik/common/messages";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
@@ -9,6 +10,7 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
+import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { t } from "@lingui/macro";
 
@@ -17,7 +19,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -72,7 +73,6 @@ export class SAMLProviderViewPage extends AKElement {
             PFForm,
             PFFormControl,
             PFBanner,
-            AKGlobal,
         ];
     }
 
@@ -103,6 +103,14 @@ export class SAMLProviderViewPage extends AKElement {
                         <ak-action-button
                             class="pf-m-secondary"
                             .apiRequest=${() => {
+                                if (!navigator.clipboard) {
+                                    return Promise.resolve(
+                                        showMessage({
+                                            level: MessageLevel.info,
+                                            message: this.provider?.urlDownloadMetadata || "",
+                                        }),
+                                    );
+                                }
                                 return navigator.clipboard.writeText(
                                     this.provider?.urlDownloadMetadata || "",
                                 );
@@ -373,6 +381,15 @@ export class SAMLProviderViewPage extends AKElement {
                                   <ak-action-button
                                       class="pf-m-secondary"
                                       .apiRequest=${() => {
+                                          if (!navigator.clipboard) {
+                                              return Promise.resolve(
+                                                  showMessage({
+                                                      level: MessageLevel.info,
+                                                      message:
+                                                          this.provider?.urlDownloadMetadata || "",
+                                                  }),
+                                              );
+                                          }
                                           return navigator.clipboard.writeText(
                                               this.provider?.urlDownloadMetadata || "",
                                           );

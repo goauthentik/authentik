@@ -18,7 +18,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
@@ -58,7 +57,6 @@ export class ApplicationListPage extends TablePage<Application> {
         return super.styles.concat(
             PFAvatar,
             PFCard,
-            AKGlobal,
             css`
                 /* Fix alignment issues with images in tables */
                 .pf-c-table tbody > tr > * {
@@ -97,7 +95,6 @@ export class ApplicationListPage extends TablePage<Application> {
             ></ak-application-wizard>
             <div class="pf-c-sidebar__panel pf-m-width-25">
                 <div class="pf-c-card">
-                    <div class="pf-c-card__title">${t`About applications`}</div>
                     <div class="pf-c-card__body">
                         <ak-markdown .md=${MDApplication}></ak-markdown>
                     </div>

@@ -1,6 +1,4 @@
 """Test Service-Provider Metadata Parser"""
-from pathlib import Path
-
 import xmlsec
 from defusedxml.lxml import fromstring
 from django.test import RequestFactory, TestCase
@@ -9,17 +7,12 @@ from lxml import etree  # nosec
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_cert, create_test_flow
 from authentik.lib.generators import generate_id
+from authentik.lib.tests.utils import load_fixture
 from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
 from authentik.sources.saml.processors.constants import NS_MAP
-
-
-def load_fixture(path: str, **kwargs) -> str:
-    """Load fixture"""
-    with open(Path(__file__).resolve().parent / Path(path), "r", encoding="utf-8") as _fixture:
-        return _fixture.read()
 
 
 class TestServiceProviderMetadataParser(TestCase):
@@ -59,7 +52,7 @@ class TestServiceProviderMetadataParser(TestCase):
         request = self.factory.get("/")
         metadata = lxml_from_string(MetadataProcessor(provider, request).build_entity_descriptor())
 
-        schema = etree.XMLSchema(etree.parse("xml/saml-schema-metadata-2.0.xsd"))  # nosec
+        schema = etree.XMLSchema(etree.parse("schemas/saml-schema-metadata-2.0.xsd"))  # nosec
         self.assertTrue(schema.validate(metadata))
 
     def test_simple(self):

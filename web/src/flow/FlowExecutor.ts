@@ -8,21 +8,11 @@ import { globalAK } from "@goauthentik/common/global";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
-import { AKElement } from "@goauthentik/elements/Base";
+import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
-import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
-// Import webauthn-related stages to prevent issues on safari
-// Which is overly sensitive to allowing things only in the context of a
-// user interaction
-import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
-import "@goauthentik/flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage";
-import "@goauthentik/flow/stages/autosubmit/AutosubmitStage";
 import { StageHost } from "@goauthentik/flow/stages/base";
-import "@goauthentik/flow/stages/captcha/CaptchaStage";
-import "@goauthentik/flow/stages/identification/IdentificationStage";
-import "@goauthentik/flow/stages/password/PasswordStage";
 
 import { t } from "@lingui/macro";
 
@@ -31,7 +21,6 @@ import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBackgroundImage from "@patternfly/patternfly/components/BackgroundImage/background-image.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -44,7 +33,6 @@ import {
     ChallengeChoices,
     ChallengeTypes,
     ContextualFlowInfo,
-    CurrentTenant,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
     FlowsApi,
@@ -52,10 +40,11 @@ import {
     RedirectChallenge,
     ResponseError,
     ShellChallenge,
+    UiThemeEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-flow-executor")
-export class FlowExecutor extends AKElement implements StageHost {
+export class FlowExecutor extends Interface implements StageHost {
     flowSlug?: string;
 
     private _challenge?: ChallengeTypes;
@@ -92,9 +81,6 @@ export class FlowExecutor extends AKElement implements StageHost {
     @property({ type: Boolean })
     loading = false;
 
-    @property({ attribute: false })
-    tenant!: CurrentTenant;
-
     @state()
     inspectorOpen = false;
 
@@ -120,8 +106,14 @@ export class FlowExecutor extends AKElement implements StageHost {
     ws: WebsocketClient;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage, AKGlobal]
-            .concat(css`
+        return [PFBase, PFLogin, PFDrawer, PFButton, PFTitle, PFList, PFBackgroundImage].concat(css`
+            .pf-c-background-image::before {
+                --pf-c-background-image--BackgroundImage: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage-2x: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage--sm: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage--sm-2x: var(--ak-flow-background);
+                --pf-c-background-image--BackgroundImage--lg: var(--ak-flow-background);
+            }
             .ak-hidden {
                 display: none;
             }
@@ -154,20 +146,18 @@ export class FlowExecutor extends AKElement implements StageHost {
             .pf-c-login.sidebar_right .pf-c-list {
                 color: #000;
             }
-            @media (prefers-color-scheme: dark) {
-                .pf-c-login.sidebar_left .ak-login-container,
-                .pf-c-login.sidebar_right .ak-login-container {
-                    background-color: var(--ak-dark-background);
-                }
-                .pf-c-login.sidebar_left .pf-c-list,
-                .pf-c-login.sidebar_right .pf-c-list {
-                    color: var(--ak-dark-foreground);
-                }
-            }
             .pf-c-login.sidebar_right {
                 justify-content: flex-end;
                 padding-top: 0;
                 padding-bottom: 0;
+            }
+            :host([theme="dark"]) .pf-c-login.sidebar_left .ak-login-container,
+            :host([theme="dark"]) .pf-c-login.sidebar_right .ak-login-container {
+                background-color: var(--ak-dark-background);
+            }
+            :host([theme="dark"]) .pf-c-login.sidebar_left .pf-c-list,
+            :host([theme="dark"]) .pf-c-login.sidebar_right .pf-c-list {
+                color: var(--ak-dark-foreground);
             }
         `);
     }
@@ -182,7 +172,10 @@ export class FlowExecutor extends AKElement implements StageHost {
         this.addEventListener(EVENT_FLOW_INSPECTOR_TOGGLE, () => {
             this.inspectorOpen = !this.inspectorOpen;
         });
-        tenant().then((tenant) => (this.tenant = tenant));
+    }
+
+    async getTheme(): Promise<UiThemeEnum> {
+        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
     }
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
@@ -275,25 +268,25 @@ export class FlowExecutor extends AKElement implements StageHost {
     async renderChallengeNativeElement(): Promise<TemplateResult> {
         switch (this.challenge?.component) {
             case "ak-stage-access-denied":
-                // Statically imported for performance reasons
+                await import("@goauthentik/flow/stages/access_denied/AccessDeniedStage");
                 return html`<ak-stage-access-denied
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-access-denied>`;
             case "ak-stage-identification":
-                // Statically imported for performance reasons
+                await import("@goauthentik/flow/stages/identification/IdentificationStage");
                 return html`<ak-stage-identification
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-identification>`;
             case "ak-stage-password":
-                // Statically imported for performance reasons
+                await import("@goauthentik/flow/stages/password/PasswordStage");
                 return html`<ak-stage-password
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-password>`;
             case "ak-stage-captcha":
-                // Statically imported to prevent browsers blocking urls
+                await import("@goauthentik/flow/stages/captcha/CaptchaStage");
                 return html`<ak-stage-captcha
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -317,7 +310,7 @@ export class FlowExecutor extends AKElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-email>`;
             case "ak-stage-autosubmit":
-                // Statically imported for performance reasons
+                await import("@goauthentik/flow/stages/autosubmit/AutosubmitStage");
                 return html`<ak-stage-autosubmit
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
@@ -360,10 +353,19 @@ export class FlowExecutor extends AKElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-sms>`;
             case "ak-stage-authenticator-validate":
+                await import(
+                    "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage"
+                );
                 return html`<ak-stage-authenticator-validate
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-stage-authenticator-validate>`;
+            case "ak-stage-user-login":
+                await import("@goauthentik/flow/stages/user_login/UserLoginStage");
+                return html`<ak-stage-user-login
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                ></ak-stage-user-login>`;
             // Sources
             case "ak-source-plex":
                 await import("@goauthentik/flow/sources/plex/PlexLoginInit");
@@ -397,9 +399,8 @@ export class FlowExecutor extends AKElement implements StageHost {
                     .challenge=${this.challenge}
                 ></ak-stage-flow-error>`;
             default:
-                break;
+                return html`Invalid native challenge element`;
         }
-        return html`Invalid native challenge element`;
     }
 
     async renderChallenge(): Promise<TemplateResult> {
@@ -545,7 +546,7 @@ export class FlowExecutor extends AKElement implements StageHost {
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@saishmenon"
+                                                                  href="https://unsplash.com/@aaronburden"
                                                                   >${t`Background image`}</a
                                                               >
                                                           </li>

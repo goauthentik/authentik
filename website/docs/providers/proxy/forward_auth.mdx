@@ -2,21 +2,24 @@
 title: Forward auth
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-
-Using forward auth uses your existing reverse proxy to do the proxying, and only uses the
-authentik outpost to check authentication and authorization.
+Using forward auth uses your existing reverse proxy to do the proxying, and only uses the authentik outpost to check authentication and authorization.
 
 To use forward auth instead of proxying, you have to change a couple of settings.
 In the Proxy Provider, make sure to use one of the Forward auth modes.
 
-## Single application
+## Forward auth modes
 
-Single application mode works for a single application hosted on its dedicated subdomain. This
-has the advantage that you can still do per-application access policies in authentik.
+The only configuration difference between single application mode and domain level mode is the host that you specify.
 
-## Domain level
+For single application, you'd use the domain that the application is running on, and only `/outpost.goauthentik.io` is redirected to the outpost.
+
+For domain level, you'd use the same domain as authentik.
+
+### Single application
+
+Single application mode works for a single application hosted on its dedicated subdomain. This has the advantage that you can still do per-application access policies in authentik.
+
+### Domain level
 
 To use forward auth instead of proxying, you have to change a couple of settings.
 In the Proxy Provider, make sure to use the _Forward auth (domain level)_ mode.
@@ -26,127 +29,13 @@ This mode differs from the _Forward auth (single application)_ mode in the follo
 -   You don't have to configure an application in authentik for each domain
 -   Users don't have to authorize multiple times
 
-There are however also some downsides, mainly the fact that you **can't** restrict individual
-applications to different users.
+There are, however, also some downsides, mainly the fact that you **can't** restrict individual applications to different users.
 
-The only configuration difference between single application and domain level is the host you specify.
+## Configuration templates
 
-For single application, you'd use the domain which the application is running on, and only /outpost.goauthentik.io
-is redirected to the outpost.
+For configuration templates for each web server, refer to the following:
 
-For domain level, you'd use the same domain as authentik.
+import DocCardList from "@theme/DocCardList";
+import { useCurrentSidebarCategory } from "@docusaurus/theme-common";
 
-:::info
-_example-outpost_ is used as a placeholder for the outpost name.
-_authentik.company_ is used as a placeholder for the authentik install.
-_app.company_ is used as a placeholder for the external domain for the application.
-_outpost.company_ is used as a placeholder for the outpost. When using the embedded outpost, this can be the same as _authentik.company_
-:::
-
-## Nginx
-
-<Tabs
-  defaultValue="standalone-nginx"
-  values={[
-    {label: 'Standalone nginx', value: 'standalone-nginx'},
-    {label: 'Ingress', value: 'ingress'},
-    {label: 'Nginx Proxy Manager', value: 'proxy-manager'},
-  ]}>
-  <TabItem value="standalone-nginx">
-
-import NginxStandalone from "./_nginx_standalone.md";
-
-<NginxStandalone />
-
-  </TabItem>
-  <TabItem value="ingress">
-
-import NginxIngress from "./_nginx_ingress.md";
-
-<NginxIngress />
-
-  </TabItem>
-  <TabItem value="proxy-manager">
-
-import NginxProxyManager from "./_nginx_proxy_manager.md";
-
-<NginxProxyManager />
-
-  </TabItem>
-</Tabs>
-
-## Traefik
-
-<Tabs
-  defaultValue="standalone-traefik"
-  values={[
-    {label: 'Standalone traefik', value: 'standalone-traefik'},
-    {label: 'docker-compose', value: 'docker-compose'},
-    {label: 'Ingress', value: 'ingress'},
-  ]}>
-  <TabItem value="standalone-traefik">
-
-import TraefikStandalone from "./_traefik_standalone.md";
-
-<TraefikStandalone />
-
-  </TabItem>
-  <TabItem value="docker-compose">
-
-import TraefikCompose from "./_traefik_compose.md";
-
-<TraefikCompose />
-
-  </TabItem>
-  <TabItem value="ingress">
-
-import TraefikIngress from "./_traefik_ingress.md";
-
-<TraefikIngress />
-
-  </TabItem>
-</Tabs>
-
-## Enovy (Istio)
-
-:::info
-Requires authentik 2022.6
-:::
-
-:::info
-Support for this is still in preview, please report bugs on [GitHub](https://github.com/goauthentik/authentik/issues).
-:::
-
-<Tabs
-  defaultValue="envoy-istio"
-  values={[
-    {label: 'Envoy (Istio)', value: 'envoy-istio'},
-  ]}>
-  <TabItem value="envoy-istio">
-
-import EnvoyIstio from "./_envoy_istio.md";
-
-<EnvoyIstio />
-
-  </TabItem>
-</Tabs>
-
-## Caddy
-
-:::info
-Requires authentik 2022.8
-:::
-
-<Tabs
-  defaultValue="caddy-standalone"
-  values={[
-    {label: 'Caddy (standalone)', value: 'caddy-standalone'},
-  ]}>
-  <TabItem value="caddy-standalone">
-
-import CaddyStandalone from "./_caddy_standalone.md";
-
-<CaddyStandalone />
-
-  </TabItem>
-</Tabs>
+<DocCardList items={useCurrentSidebarCategory().items} />

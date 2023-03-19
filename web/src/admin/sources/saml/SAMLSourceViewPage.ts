@@ -16,7 +16,6 @@ import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -44,7 +43,7 @@ export class SAMLSourceViewPage extends AKElement {
     source?: SAMLSource;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFGrid, PFButton, PFContent, PFCard, PFDescriptionList, AKGlobal];
+        return [PFBase, PFPage, PFGrid, PFButton, PFContent, PFCard, PFDescriptionList];
     }
 
     constructor() {

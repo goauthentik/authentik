@@ -16,7 +16,6 @@ import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -66,17 +65,7 @@ export class ApplicationViewPage extends AKElement {
     missingOutpost = false;
 
     static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFBanner,
-            PFPage,
-            PFContent,
-            PFButton,
-            PFDescriptionList,
-            PFGrid,
-            PFCard,
-            AKGlobal,
-        ];
+        return [PFBase, PFBanner, PFPage, PFContent, PFButton, PFDescriptionList, PFGrid, PFCard];
     }
 
     render(): TemplateResult {

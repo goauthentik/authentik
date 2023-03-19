@@ -65,7 +65,20 @@ module.exports = {
                     items: [
                         "providers/proxy/custom_headers",
                         "providers/proxy/header_authentication",
-                        "providers/proxy/forward_auth",
+                        {
+                            type: "category",
+                            label: "Forward authentication",
+                            link: {
+                                type: "doc",
+                                id: "providers/proxy/forward_auth",
+                            },
+                            items: [
+                                "providers/proxy/server_nginx",
+                                "providers/proxy/server_traefik",
+                                "providers/proxy/server_envoy",
+                                "providers/proxy/server_caddy",
+                            ],
+                        },
                     ],
                 },
                 {
@@ -77,6 +90,7 @@ module.exports = {
                     },
                     items: ["providers/ldap/generic_setup"],
                 },
+                "providers/scim/index",
             ],
         },
         {
@@ -157,7 +171,7 @@ module.exports = {
                 "flow/stages/password/index",
                 "flow/stages/prompt/index",
                 "flow/stages/user_delete",
-                "flow/stages/user_login",
+                "flow/stages/user_login/index",
                 "flow/stages/user_logout",
                 "flow/stages/user_write",
             ],
@@ -195,6 +209,11 @@ module.exports = {
             items: [
                 {
                     type: "category",
+                    label: "Flow",
+                    items: ["interfaces/flow/customization"],
+                },
+                {
+                    type: "category",
                     label: "User",
                     items: ["interfaces/user/customization"],
                 },
@@ -220,13 +239,14 @@ module.exports = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
+                "releases/2023/v2023.3",
                 "releases/2023/v2023.2",
                 "releases/2023/v2023.1",
-                "releases/2022/v2022.12",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2022/v2022.12",
                         "releases/2022/v2022.11",
                         "releases/2022/v2022.10",
                         "releases/2022/v2022.9",
@@ -300,9 +320,10 @@ module.exports = {
             },
             items: [
                 "security/policy",
+                "security/CVE-2022-23555",
                 "security/CVE-2022-46145",
                 "security/CVE-2022-46172",
-                "security/CVE-2022-23555",
+                "security/CVE-2023-26481",
             ],
         },
     ],

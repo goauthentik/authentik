@@ -3,7 +3,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFLabel from "@patternfly/patternfly/components/Label/label.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
@@ -26,7 +25,7 @@ export class Label extends AKElement {
     compact = false;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLabel, AKGlobal];
+        return [PFBase, PFLabel];
     }
 
     getDefaultIcon(): string {

@@ -1,3 +1,4 @@
+import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -60,7 +61,7 @@ export class TypeOAuthCodeApplicationWizardPage extends WizardFormPage {
                         return flows.results;
                     }}
                     .renderElement=${(flow: Flow): string => {
-                        return flow.slug;
+                        return RenderFlowOption(flow);
                     }}
                     .renderDescription=${(flow: Flow): TemplateResult => {
                         return html`${flow.name}`;

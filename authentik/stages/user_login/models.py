@@ -24,6 +24,15 @@ class UserLoginStage(Stage):
     terminate_other_sessions = models.BooleanField(
         default=False, help_text=_("Terminate all other sessions of the user logging in.")
     )
+    remember_me_offset = models.TextField(
+        default="seconds=0",
+        validators=[timedelta_string_validator],
+        help_text=_(
+            "Offset the session will be extended by when the user picks the remember me option. "
+            "Default of 0 means that the remember me option will not be shown. "
+            "(Format: hours=-1;minutes=-2;seconds=-3)"
+        ),
+    )
 
     @property
     def serializer(self) -> type[BaseSerializer]:

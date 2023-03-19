@@ -14,7 +14,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -42,16 +41,7 @@ export class FlowViewPage extends AKElement {
     flow!: Flow;
 
     static get styles(): CSSResult[] {
-        return [
-            PFBase,
-            PFPage,
-            PFDescriptionList,
-            PFButton,
-            PFCard,
-            PFContent,
-            PFGrid,
-            AKGlobal,
-        ].concat(
+        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid].concat(
             css`
                 img.pf-icon {
                     max-height: 24px;
