@@ -7,7 +7,14 @@ from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
-from rest_framework.fields import BooleanField, CharField, ChoiceField, IntegerField, empty
+from rest_framework.fields import (
+    BooleanField,
+    CharField,
+    ChoiceField,
+    IntegerField,
+    ListField,
+    empty,
+)
 from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import PassiveSerializer
@@ -33,6 +40,7 @@ class StagePromptSerializer(PassiveSerializer):
     placeholder = CharField(allow_blank=True)
     order = IntegerField()
     sub_text = CharField(allow_blank=True)
+    choices = ListField(child=CharField(allow_blank=True), allow_empty=True, allow_null=True)
 
 
 class PromptChallenge(Challenge):
@@ -65,10 +73,13 @@ class PromptChallengeResponse(ChallengeResponse):
         fields = list(self.stage_instance.fields.all())
         for field in fields:
             field: Prompt
+            choices = field.get_choices(
+                plan.context.get(PLAN_CONTEXT_PROMPT, {}), user, self.request
+            )
             current = field.get_placeholder(
                 plan.context.get(PLAN_CONTEXT_PROMPT, {}), user, self.request
             )
-            self.fields[field.field_key] = field.field(current)
+            self.fields[field.field_key] = field.field(current, choices)
             # Special handling for fields with username type
             # these check for existing users with the same username
             if field.type == FieldTypes.USERNAME:
@@ -99,7 +110,12 @@ class PromptChallengeResponse(ChallengeResponse):
         # Check if we have any static or hidden fields, and ensure they
         # still have the same value
         static_hidden_fields: QuerySet[Prompt] = self.stage_instance.fields.filter(
-            type__in=[FieldTypes.HIDDEN, FieldTypes.STATIC, FieldTypes.TEXT_READ_ONLY]
+            type__in=[
+                FieldTypes.HIDDEN,
+                FieldTypes.STATIC,
+                FieldTypes.TEXT_READ_ONLY,
+                FieldTypes.TEXT_AREA_READ_ONLY,
+            ]
         )
         for static_hidden in static_hidden_fields:
             field = self.fields[static_hidden.field_key]
@@ -180,8 +196,15 @@ class PromptStageView(ChallengeStageView):
         context_prompt = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
         for field in fields:
             data = StagePromptSerializer(field).data
-            data["placeholder"] = field.get_placeholder(
-                context_prompt, self.get_pending_user(), self.request
+            # Ensure all choices and placeholders are str, as otherwise further in
+            # we can fail serializer validation if we return some types such as bool
+            choices = field.get_choices(context_prompt, self.get_pending_user(), self.request)
+            if choices:
+                data["choices"] = [str(choice) for choice in choices]
+            else:
+                data["choices"] = None
+            data["placeholder"] = str(
+                field.get_placeholder(context_prompt, self.get_pending_user(), self.request)
             )
             serializers.append(data)
         challenge = PromptChallenge(

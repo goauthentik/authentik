@@ -50,10 +50,22 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ${t`Text: Simple Text input`}
             </option>
             <option
+                value=${PromptTypeEnum.TextArea}
+                ?selected=${this.instance?.type === PromptTypeEnum.TextArea}
+            >
+                ${t`Text Area: Multiline text input`}
+            </option>
+            <option
                 value=${PromptTypeEnum.TextReadOnly}
                 ?selected=${this.instance?.type === PromptTypeEnum.TextReadOnly}
             >
                 ${t`Text (read-only): Simple Text input, but cannot be edited.`}
+            </option>
+            <option
+                value=${PromptTypeEnum.TextAreaReadOnly}
+                ?selected=${this.instance?.type === PromptTypeEnum.TextAreaReadOnly}
+            >
+                ${t`Text Area (read-only): Multiline text input, but cannot be edited.`}
             </option>
             <option
                 value=${PromptTypeEnum.Username}
@@ -84,6 +96,18 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ?selected=${this.instance?.type === PromptTypeEnum.Checkbox}
             >
                 ${t`Checkbox`}
+            </option>
+            <option
+                value=${PromptTypeEnum.RadioButtonGroup}
+                ?selected=${this.instance?.type === PromptTypeEnum.RadioButtonGroup}
+            >
+                ${t`Radio Button Group (fixed choice)`}
+            </option>
+            <option
+                value=${PromptTypeEnum.Dropdown}
+                ?selected=${this.instance?.type === PromptTypeEnum.Dropdown}
+            >
+                ${t`Dropdown (fixed choice)`}
             </option>
             <option
                 value=${PromptTypeEnum.Date}
@@ -210,7 +234,11 @@ export class PromptForm extends ModelForm<Prompt, string> {
             <ak-form-element-horizontal label=${t`Placeholder`} name="placeholder">
                 <ak-codemirror mode="python" value="${ifDefined(this.instance?.placeholder)}">
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">${t`Optionally pre-fill the input value`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${t`Optionally pre-fill the input value.
+                    When creating a "Radio Button Group" or "Dropdown", enable interpreting as
+                    expression and return a list to return multiple choices.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Help text`} name="subText">
                 <ak-codemirror mode="htmlmixed" value="${ifDefined(this.instance?.subText)}">

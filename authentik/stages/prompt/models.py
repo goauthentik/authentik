@@ -11,6 +11,7 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     BooleanField,
     CharField,
+    ChoiceField,
     DateField,
     DateTimeField,
     EmailField,
@@ -38,10 +39,17 @@ class FieldTypes(models.TextChoices):
 
     # Simple text field
     TEXT = "text", _("Text: Simple Text input")
+    # Long text field
+    TEXT_AREA = "text_area", _("Text area: Multiline Text Input.")
     # Simple text field
     TEXT_READ_ONLY = "text_read_only", _(
         "Text (read-only): Simple Text input, but cannot be edited."
     )
+    # Long text field
+    TEXT_AREA_READ_ONLY = "text_area_read_only", _(
+        "Text area (read-only): Multiline Text input, but cannot be edited."
+    )
+
     # Same as text, but has autocomplete for password managers
     USERNAME = (
         "username",
@@ -58,6 +66,10 @@ class FieldTypes(models.TextChoices):
     )
     NUMBER = "number"
     CHECKBOX = "checkbox"
+    RADIO_BUTTON_GROUP = "radio-button-group", _(
+        "Fixed choice field rendered as a group of radio buttons."
+    )
+    DROPDOWN = "dropdown", _("Fixed choice field rendered as a dropdown.")
     DATE = "date"
     DATE_TIME = "date-time"
 
@@ -74,6 +86,9 @@ class FieldTypes(models.TextChoices):
     STATIC = "static", _("Static: Static value, displayed as-is.")
 
     AK_LOCALE = "ak-locale", _("authentik: Selection of locales authentik supports")
+
+
+CHOICE_FIELDS = (FieldTypes.RADIO_BUTTON_GROUP, FieldTypes.DROPDOWN)
 
 
 class InlineFileField(CharField):
@@ -102,7 +117,13 @@ class Prompt(SerializerModel):
     label = models.TextField()
     type = models.CharField(max_length=100, choices=FieldTypes.choices)
     required = models.BooleanField(default=True)
-    placeholder = models.TextField(blank=True)
+    placeholder = models.TextField(
+        blank=True,
+        help_text=_(
+            "When creating a Radio Button Group or Dropdown, enable interpreting as "
+            "expression and return a list to return multiple choices."
+        ),
+    )
     sub_text = models.TextField(blank=True, default="")
 
     order = models.IntegerField(default=0)
@@ -115,8 +136,46 @@ class Prompt(SerializerModel):
 
         return PromptSerializer
 
+    def get_choices(
+        self, prompt_context: dict, user: User, request: HttpRequest
+    ) -> Optional[tuple[dict[str, Any]]]:
+        """Get fully interpolated list of choices"""
+        if self.type not in CHOICE_FIELDS:
+            return None
+
+        raw_choices = self.placeholder
+
+        if self.field_key in prompt_context:
+            raw_choices = prompt_context[self.field_key]
+        elif self.placeholder_expression:
+            evaluator = PropertyMappingEvaluator(self, user, request, prompt_context=prompt_context)
+            try:
+                raw_choices = evaluator.evaluate(self.placeholder)
+            except Exception as exc:  # pylint:disable=broad-except
+                LOGGER.warning(
+                    "failed to evaluate prompt choices",
+                    exc=PropertyMappingExpressionException(str(exc)),
+                )
+
+        if isinstance(raw_choices, (list, tuple, set)):
+            choices = raw_choices
+        else:
+            choices = [raw_choices]
+
+        if len(choices) == 0:
+            LOGGER.warning("failed to get prompt choices", choices=choices, input=raw_choices)
+
+        return tuple(choices)
+
     def get_placeholder(self, prompt_context: dict, user: User, request: HttpRequest) -> str:
         """Get fully interpolated placeholder"""
+        if self.type in CHOICE_FIELDS:
+            # Make sure to return a valid choice as placeholder
+            choices = self.get_choices(prompt_context, user, request)
+            if not choices:
+                return ""
+            return choices[0]
+
         if self.field_key in prompt_context:
             # We don't want to parse this as an expression since a user will
             # be able to control the input
@@ -133,16 +192,16 @@ class Prompt(SerializerModel):
                 )
         return self.placeholder
 
-    def field(self, default: Optional[Any]) -> CharField:
-        """Get field type for Challenge and response"""
+    def field(self, default: Optional[Any], choices: Optional[list[Any]] = None) -> CharField:
+        """Get field type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""
         field_class = CharField
         kwargs = {
             "required": self.required,
         }
-        if self.type == FieldTypes.TEXT:
+        if self.type in (FieldTypes.TEXT, FieldTypes.TEXT_AREA):
             kwargs["trim_whitespace"] = False
             kwargs["allow_blank"] = not self.required
-        if self.type == FieldTypes.TEXT_READ_ONLY:
+        if self.type in (FieldTypes.TEXT_READ_ONLY, FieldTypes.TEXT_AREA_READ_ONLY):
             field_class = ReadOnlyField
             # required can't be set for ReadOnlyField
             kwargs["required"] = False
@@ -154,13 +213,15 @@ class Prompt(SerializerModel):
         if self.type == FieldTypes.CHECKBOX:
             field_class = BooleanField
             kwargs["required"] = False
+        if self.type in CHOICE_FIELDS:
+            field_class = ChoiceField
+            kwargs["choices"] = choices or []
         if self.type == FieldTypes.DATE:
             field_class = DateField
         if self.type == FieldTypes.DATE_TIME:
             field_class = DateTimeField
         if self.type == FieldTypes.FILE:
             field_class = InlineFileField
-
         if self.type == FieldTypes.SEPARATOR:
             kwargs["required"] = False
             kwargs["label"] = ""

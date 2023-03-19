@@ -6,7 +6,7 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
@@ -28,7 +28,22 @@ import {
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFAlert, PFForm, PFFormControl, PFTitle, PFButton];
+        return [
+            PFBase,
+            PFLogin,
+            PFAlert,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            css`
+                textarea {
+                    min-height: 4em;
+                    max-height: 15em;
+                    resize: vertical;
+                }
+            `,
+        ];
     }
 
     renderPromptInner(prompt: StagePrompt, placeholderAsValue: boolean): string {
@@ -42,8 +57,24 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     class="pf-c-form-control"
                     ?required=${prompt.required}
                     value="${placeholderAsValue ? prompt.placeholder : ""}">`;
+            case PromptTypeEnum.TextArea:
+                return `<textarea
+                    type="text"
+                    name="${prompt.fieldKey}"
+                    placeholder="${prompt.placeholder}"
+                    autocomplete="off"
+                    class="pf-c-form-control"
+                    ?required=${prompt.required}
+                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
             case PromptTypeEnum.TextReadOnly:
                 return `<input
+                    type="text"
+                    name="${prompt.fieldKey}"
+                    class="pf-c-form-control"
+                    readonly
+                    value="${prompt.placeholder}">`;
+            case PromptTypeEnum.TextAreaReadOnly:
+                return `<textarea
                     type="text"
                     name="${prompt.fieldKey}"
                     class="pf-c-form-control"
@@ -113,6 +144,38 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     ?required=${prompt.required}>`;
             case PromptTypeEnum.Static:
                 return `<p>${prompt.placeholder}</p>`;
+            case PromptTypeEnum.Dropdown:
+                return `<select class="pf-c-form-control" name="${prompt.fieldKey}">
+                    ${prompt.choices
+                        ?.map((choice) => {
+                            return `<option
+                            value=${choice}
+                            ${prompt.placeholder === choice ? "selected" : ""}
+                        >
+                            ${choice}
+                        </option>`;
+                        })
+                        .join("")}
+                </select>`;
+            case PromptTypeEnum.RadioButtonGroup:
+                return (
+                    prompt.choices
+                        ?.map((choice) => {
+                            return ` <div class="pf-c-check">
+                                    <input
+                                        type="radio"
+                                        class="pf-c-check__input"
+                                        name="${prompt.fieldKey}"
+                                        checked="${prompt.placeholder === choice}"
+                                        required="${prompt.required}"
+                                        value="${choice}"
+                                    />
+                                    <label class="pf-c-check__label">${choice}</label>
+                                </div>
+                            `;
+                        })
+                        .join("") || ""
+                );
             case PromptTypeEnum.AkLocale:
                 return `<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     <option value="" ${prompt.placeholder === "" ? "selected" : ""}>

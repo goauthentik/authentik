@@ -24125,24 +24125,32 @@ paths:
           - checkbox
           - date
           - date-time
+          - dropdown
           - email
           - file
           - hidden
           - number
           - password
+          - radio-button-group
           - separator
           - static
           - text
+          - text_area
+          - text_area_read_only
           - text_read_only
           - username
         description: |-
           * `text` - Text: Simple Text input
+          * `text_area` - Text area: Multiline Text Input.
           * `text_read_only` - Text (read-only): Simple Text input, but cannot be edited.
+          * `text_area_read_only` - Text area (read-only): Multiline Text input, but cannot be edited.
           * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
           * `email` - Email: Text field with Email type.
           * `password` - Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.
           * `number` - Number
           * `checkbox` - Checkbox
+          * `radio-button-group` - Fixed choice field rendered as a group of radio buttons.
+          * `dropdown` - Fixed choice field rendered as a dropdown.
           * `date` - Date
           * `date-time` - Date Time
           * `file` - File: File upload for arbitrary files. File content will be available in flow context as data-URI
@@ -24152,12 +24160,16 @@ paths:
           * `ak-locale` - authentik: Selection of locales authentik supports
 
           * `text` - Text: Simple Text input
+          * `text_area` - Text area: Multiline Text Input.
           * `text_read_only` - Text (read-only): Simple Text input, but cannot be edited.
+          * `text_area_read_only` - Text area (read-only): Multiline Text input, but cannot be edited.
           * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
           * `email` - Email: Text field with Email type.
           * `password` - Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.
           * `number` - Number
           * `checkbox` - Checkbox
+          * `radio-button-group` - Fixed choice field rendered as a group of radio buttons.
+          * `dropdown` - Fixed choice field rendered as a dropdown.
           * `date` - Date
           * `date-time` - Date Time
           * `file` - File: File upload for arbitrary files. File content will be available in flow context as data-URI
@@ -36262,6 +36274,8 @@ components:
           type: boolean
         placeholder:
           type: string
+          description: When creating a Radio Button Group or Dropdown, enable interpreting
+            as expression and return a list to return multiple choices.
         order:
           type: integer
           maximum: 2147483647
@@ -37388,6 +37402,8 @@ components:
           type: boolean
         placeholder:
           type: string
+          description: When creating a Radio Button Group or Dropdown, enable interpreting
+            as expression and return a list to return multiple choices.
         order:
           type: integer
           maximum: 2147483647
@@ -37461,6 +37477,8 @@ components:
           type: boolean
         placeholder:
           type: string
+          description: When creating a Radio Button Group or Dropdown, enable interpreting
+            as expression and return a list to return multiple choices.
         order:
           type: integer
           maximum: 2147483647
@@ -37554,12 +37572,16 @@ components:
     PromptTypeEnum:
       enum:
       - text
+      - text_area
       - text_read_only
+      - text_area_read_only
       - username
       - email
       - password
       - number
       - checkbox
+      - radio-button-group
+      - dropdown
       - date
       - date-time
       - file
@@ -37570,12 +37592,16 @@ components:
       type: string
       description: |-
         * `text` - Text: Simple Text input
+        * `text_area` - Text area: Multiline Text Input.
         * `text_read_only` - Text (read-only): Simple Text input, but cannot be edited.
+        * `text_area_read_only` - Text area (read-only): Multiline Text input, but cannot be edited.
         * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
         * `email` - Email: Text field with Email type.
         * `password` - Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.
         * `number` - Number
         * `checkbox` - Checkbox
+        * `radio-button-group` - Fixed choice field rendered as a group of radio buttons.
+        * `dropdown` - Fixed choice field rendered as a dropdown.
         * `date` - Date
         * `date-time` - Date Time
         * `file` - File: File upload for arbitrary files. File content will be available in flow context as data-URI
@@ -39448,7 +39474,13 @@ components:
           type: integer
         sub_text:
           type: string
+        choices:
+          type: array
+          items:
+            type: string
+          nullable: true
       required:
+      - choices
       - field_key
       - label
       - order
