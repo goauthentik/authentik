@@ -146,7 +146,7 @@ class UserManager(DjangoUserManager):
 class User(SerializerModel, GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding of user-based settings"""
 
-    uuid = models.UUIDField(default=uuid4, editable=False)
+    uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
     path = models.TextField(default="users")
 
