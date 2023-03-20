@@ -1,3 +1,14 @@
+import "@goauthentik/admin/providers/RelatedApplicationButton";
+import "@goauthentik/admin/providers/radius/RadiusProviderForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/events/ObjectChangelog";
+
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, customElement, html, property } from "lit-element";
@@ -14,17 +25,6 @@ import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { ProvidersApi, RadiusProvider } from "@goauthentik/api";
-
-import "@goauthentik/elements/CodeMirror";
-import "@goauthentik/elements/Tabs";
-import "@goauthentik/elements/buttons/ModalButton";
-import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
-import "@goauthentik/admin/providers/RelatedApplicationButton";
-import "@goauthentik/admin/providers/radius/RadiusProviderForm";
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { AKElement } from "@goauthentik/elements/Base";
 
 @customElement("ak-provider-radius-view")
 export class RadiusProviderViewPage extends AKElement {

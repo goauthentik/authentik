@@ -1,19 +1,23 @@
+import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, randomString } from "@goauthentik/common/utils";
+import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
 
 import { customElement } from "lit-element";
 import { TemplateResult, html } from "lit-html";
 import { ifDefined } from "lit-html/directives/if-defined";
-import { until } from "lit-html/directives/until";
 
 import {
+    Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
+    FlowsInstancesListRequest,
     ProvidersApi,
     RadiusProvider,
 } from "@goauthentik/api";
@@ -62,29 +66,37 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <select class="pf-c-form-control">
-                    ${until(
-                        new FlowsApi(DEFAULT_CONFIG)
-                            .flowsInstancesList({
-                                ordering: "pk",
-                                designation: FlowsInstancesListDesignationEnum.Authentication,
-                            })
-                            .then((flows) => {
-                                return flows.results.map((flow) => {
-                                    return html`<option
-                                        value=${ifDefined(flow.pk)}
-                                        ?selected=${this.instance?.authorizationFlow === flow.pk}
-                                    >
-                                        ${flow.name} (${flow.slug})
-                                    </option>`;
-                                });
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
-                <p class="pf-c-form__helper-text">
-                    ${t`Flow used for users to authenticate. Currently only identification and password stages are supported.`}
-                </p>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                        const args: FlowsInstancesListRequest = {
+                            ordering: "slug",
+                            designation: FlowsInstancesListDesignationEnum.Authentication,
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
+                        return flows.results;
+                    }}
+                    .renderElement=${(flow: Flow): string => {
+                        return RenderFlowOption(flow);
+                    }}
+                    .renderDescription=${(flow: Flow): TemplateResult => {
+                        return html`${flow.slug}`;
+                    }}
+                    .value=${(flow: Flow | undefined): string | undefined => {
+                        return flow?.pk;
+                    }}
+                    .selected=${(flow: Flow): boolean => {
+                        let selected = flow.pk === rootInterface()?.tenant?.flowAuthentication;
+                        if (this.instance?.authorizationFlow === flow.pk) {
+                            selected = true;
+                        }
+                        return selected;
+                    }}
+                >
+                </ak-search-select>
+                <p class="pf-c-form__helper-text">${t`Flow used for users to authenticate.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${t`Shared secret`}
