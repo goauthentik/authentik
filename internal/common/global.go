@@ -1,7 +1,6 @@
 package common
 
 import (
-	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
@@ -11,7 +10,6 @@ import (
 )
 
 func Init() chan os.Signal {
-	rand.Seed(time.Now().UnixNano())
 	interrupt := make(chan os.Signal, 1)
 	signal.Notify(interrupt, os.Interrupt)
 	signal.Notify(interrupt, syscall.SIGINT)

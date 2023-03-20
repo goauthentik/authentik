@@ -201,7 +201,7 @@ export class Form<T> extends AKElement {
         json: { [key: string]: unknown },
     ): void {
         let parent = json;
-        if (!element.name.includes(".")) {
+        if (!element.name?.includes(".")) {
             parent[element.name] = value;
             return;
         }
