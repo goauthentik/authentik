@@ -272,9 +272,9 @@ class ConfigurableStage(models.Model):
 
 
 class FriendlyNamedStage(models.Model):
-    """Abstract base class for a Stage that can be have a user-friendly name configured."""
+    """Abstract base class for a Stage that can have a user friendly name configured."""
 
-    friendly_name = models.CharField(max_length=50, blank=True)
+    friendly_name = models.TextField(blank=True)
 
     class Meta:
         abstract = True
