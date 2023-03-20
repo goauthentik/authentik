@@ -1,8 +1,7 @@
 import { t } from "@lingui/macro";
 
-import { CSSResult, LitElement, TemplateResult, customElement, html, property } from "lit-element";
+import { CSSResult, TemplateResult, customElement, html, property } from "lit-element";
 
-import AKGlobal from "../../../authentik.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -16,18 +15,19 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { ProvidersApi, RadiusProvider } from "@goauthentik/api";
 
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import { EVENT_REFRESH } from "../../../constants";
-import "../../../elements/CodeMirror";
-import "../../../elements/Tabs";
-import "../../../elements/buttons/ModalButton";
-import "../../../elements/buttons/SpinnerButton";
-import "../../../elements/events/ObjectChangelog";
-import "../RelatedApplicationButton";
-import "./RadiusProviderForm";
+import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/Tabs";
+import "@goauthentik/elements/buttons/ModalButton";
+import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/events/ObjectChangelog";
+import "@goauthentik/admin/providers/RelatedApplicationButton";
+import "@goauthentik/admin/providers/radius/RadiusProviderForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import { AKElement } from "@goauthentik/elements/Base";
 
 @customElement("ak-provider-radius-view")
-export class RadiusProviderViewPage extends LitElement {
+export class RadiusProviderViewPage extends AKElement {
     @property()
     set args(value: { [key: string]: number }) {
         this.providerID = value.id;
@@ -57,7 +57,6 @@ export class RadiusProviderViewPage extends LitElement {
             PFCard,
             PFDescriptionList,
             PFSizing,
-            AKGlobal,
         ];
     }
 

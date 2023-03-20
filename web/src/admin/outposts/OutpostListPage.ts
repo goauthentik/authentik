@@ -33,6 +33,8 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
             return t`Proxy`;
         case OutpostTypeEnum.Ldap:
             return t`LDAP`;
+        case OutpostTypeEnum.Radius:
+            return t`Radius`;
         case OutpostTypeEnum.UnknownDefaultOpenApi:
             return t`Unknown type`;
     }

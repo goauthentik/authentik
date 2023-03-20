@@ -1,3 +1,9 @@
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first, randomString } from "@goauthentik/common/utils";
+import "@goauthentik/elements/forms/FormGroup";
+import "@goauthentik/elements/forms/HorizontalFormElement";
+import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+
 import { t } from "@lingui/macro";
 
 import { customElement } from "lit-element";
@@ -11,12 +17,6 @@ import {
     ProvidersApi,
     RadiusProvider,
 } from "@goauthentik/api";
-
-import { DEFAULT_CONFIG } from "../../../api/Config";
-import "../../../elements/forms/FormGroup";
-import "../../../elements/forms/HorizontalFormElement";
-import { ModelForm } from "../../../elements/forms/ModelForm";
-import { first, randomString } from "../../../utils";
 
 @customElement("ak-provider-radius-form")
 export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {

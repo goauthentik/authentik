@@ -28,7 +28,12 @@ class RadiusProviderViewSet(UsedByMixin, ModelViewSet):
     serializer_class = RadiusProviderSerializer
     ordering = ["name"]
     search_fields = ["name", "client_networks"]
-    filterset_fields = ["name", "client_networks"]
+    filterset_fields = {
+        "application": ["isnull"],
+        "name": ["iexact"],
+        "authorization_flow__slug": ["iexact"],
+        "client_networks": ["iexact"],
+    }
 
 
 class RadiusOutpostConfigSerializer(ModelSerializer):

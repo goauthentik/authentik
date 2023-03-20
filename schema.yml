@@ -15530,11 +15530,19 @@ paths:
       description: RadiusProvider Viewset
       parameters:
       - in: query
-        name: client_networks
+        name: application__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: authorization_flow__slug__iexact
         schema:
           type: string
       - in: query
-        name: name
+        name: client_networks__iexact
+        schema:
+          type: string
+      - in: query
+        name: name__iexact
         schema:
           type: string
       - name: ordering
