@@ -79,7 +79,7 @@ authentik is then reachable (by default) on port 9000 (HTTP) and port 9443 (HTTP
 
 To start the initial setup, navigate to `https://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
 
-There you will be prompted to set a password for the akadmin user (the default user).
+There you are prompted to set a password for the akadmin user (the default user).
 
 ## Explanation
 
