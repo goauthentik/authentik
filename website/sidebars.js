@@ -55,6 +55,7 @@ module.exports = {
                     ],
                 },
                 "providers/saml",
+                "providers/radius",
                 {
                     type: "category",
                     label: "Proxy Provider",
