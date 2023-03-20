@@ -128,6 +128,8 @@ jobs:
             glob: tests/e2e/test_provider_saml* tests/e2e/test_source_saml*
           - name: ldap
             glob: tests/e2e/test_provider_ldap* tests/e2e/test_source_ldap*
+          - name: radius
+            glob: tests/e2e/test_provider_radius*
           - name: flows
             glob: tests/e2e/test_flows*
     steps:

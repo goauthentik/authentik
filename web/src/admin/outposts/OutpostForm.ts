@@ -104,6 +104,27 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             </option>`;
                         });
                     });
+            case OutpostTypeEnum.Radius:
+                return new ProvidersApi(DEFAULT_CONFIG)
+                    .providersRadiusList({
+                        ordering: "name",
+                        applicationIsnull: false,
+                    })
+                    .then((providers) => {
+                        return providers.results.map((provider) => {
+                            const selected = Array.from(this.instance?.providers || []).some(
+                                (sp) => {
+                                    return sp == provider.pk;
+                                },
+                            );
+                            return html`<option
+                                value=${ifDefined(provider.pk)}
+                                ?selected=${selected}
+                            >
+                                ${provider.assignedApplicationName} (${provider.name})
+                            </option>`;
+                        });
+                    });
             case OutpostTypeEnum.UnknownDefaultOpenApi:
                 return Promise.resolve([
                     html` <option value="">${t`Unknown outpost type`}</option>`,

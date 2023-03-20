@@ -79,6 +79,7 @@
                             "authentik_providers_oauth2.refreshtoken",
                             "authentik_providers_oauth2.scopemapping",
                             "authentik_providers_proxy.proxyprovider",
+                            "authentik_providers_radius.radiusprovider",
                             "authentik_providers_saml.samlpropertymapping",
                             "authentik_providers_saml.samlprovider",
                             "authentik_providers_scim.scimmapping",

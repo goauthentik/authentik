@@ -105,9 +105,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                     }}
                 >
                 </ak-search-select>
-                <p class="pf-c-form__helper-text">
-                    ${t`Flow used for users to authenticate. Currently only identification and password stages are supported.`}
-                </p>
+                <p class="pf-c-form__helper-text">${t`Flow used for users to authenticate.`}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Search group`} name="searchGroup">
                 <ak-search-select
