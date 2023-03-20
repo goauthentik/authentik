@@ -20,6 +20,10 @@ msgstr ""
 #~ msgid "#/identity/users/{0}"
 #~ msgstr "#/identity/users/{0}"
 
+#: src/elements/user/SessionList.ts
+msgid "(Current session)"
+msgstr ""
+
 #~ msgid "(Format: days=-1;minutes=-2;seconds=-3)."
 #~ msgstr ""
 
@@ -37,6 +41,8 @@ msgstr "(Formato: hours=1;minutes=2;seconds=3)."
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/events/EventListPage.ts
 #: src/admin/events/EventListPage.ts
+#: src/admin/events/EventViewPage.ts
+#: src/admin/events/EventViewPage.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/groups/RelatedGroupList.ts
@@ -180,26 +186,32 @@ msgid "API request failed"
 msgstr "Solicitud de API fallida"
 
 #: src/admin/applications/ApplicationListPage.ts
-msgid "About applications"
-msgstr "Acerca de las aplicaciones"
+#~ msgid "About applications"
+#~ msgstr "Acerca de las aplicaciones"
 
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 msgid "Access Key"
 msgstr "Clave de acceso"
 
-#~ msgid "Access code validity"
-#~ msgstr "Validez de código de acceso"
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Access Token validity"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Access code validity"
+msgstr "Validez de código de acceso"
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "Access token URL"
 msgstr "URL de token de acceso"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Access token validity"
-msgstr "Validez de token de acceso"
+#~ msgid "Access token validity"
+#~ msgstr "Validez de token de acceso"
 
 #: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
+#: src/admin/events/EventViewPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
@@ -466,6 +478,7 @@ msgid "Any policy must match to grant access"
 msgstr ""
 
 #: src/admin/events/EventInfo.ts
+#: src/admin/events/EventViewPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "App"
 msgstr "App"
@@ -625,6 +638,7 @@ msgstr "Las afirmaciones están vacías"
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
 msgid "Assigned to application"
 msgstr "Asignado a la aplicación"
@@ -639,6 +653,10 @@ msgstr "Asignado a {0} objeto(s)."
 #: src/admin/events/EventInfo.ts
 msgid "Attempted to log in as {0}"
 msgstr "Se intentó iniciar sesión como {0}"
+
+#: src/admin/providers/scim/SCIMProviderForm.ts
+msgid "Attribute mapping"
+msgstr ""
 
 #: src/admin/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded."
@@ -681,6 +699,7 @@ msgstr "Tipo de autenticación"
 msgid "Authentication URL"
 msgstr "URL de autenticación"
 
+#: src/admin/providers/radius/RadiusProviderForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
@@ -919,8 +938,8 @@ msgid "Branding shown in page title and several other places."
 msgstr "La marca se muestra en el título de la página y en otros lugares."
 
 #: src/elements/user/SessionList.ts
-msgid "Browser"
-msgstr "Navegador"
+#~ msgid "Browser"
+#~ msgstr "Navegador"
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
 #~ msgid "Build hash:"
@@ -1072,7 +1091,9 @@ msgstr "Cambia tu contraseña"
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 #: src/admin/sources/plex/PlexSourceViewPage.ts
@@ -1230,11 +1251,17 @@ msgstr "ID de cliente"
 
 #: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
+#: src/admin/events/EventViewPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
 msgid "Client IP"
 msgstr "IP del cliente"
+
+#: src/admin/providers/radius/RadiusProviderForm.ts
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
+msgid "Client Networks"
+msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Client Secret"
@@ -1304,16 +1331,21 @@ msgstr ""
 #~ msgid "Configure WebAuthn"
 #~ msgstr "Configurar WebAuthn"
 
-#~ msgid "Configure how long access codes are valid for."
-#~ msgstr "Configurar durante cuánto tiempo son válidos los códigos de acceso."
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Configure how long access codes are valid for."
+msgstr "Configurar durante cuánto tiempo son válidos los códigos de acceso."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how long access tokens are valid for."
 msgstr "Configurar durante cuánto tiempo son válidos los tokens de acceso."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Configure how long refresh tokens and their id_tokens are valid for."
-msgstr "Configurar durante cuánto tiempo son válidos los tokens de actualización y sus id_tokens."
+#~ msgid "Configure how long refresh tokens and their id_tokens are valid for."
+#~ msgstr "Configurar durante cuánto tiempo son válidos los tokens de actualización y sus id_tokens."
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Configure how long refresh tokens are valid for."
+msgstr ""
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Configure how long tokens are valid for."
@@ -1724,6 +1756,10 @@ msgstr ""
 msgid "Create {0}"
 msgstr "Crear {0}"
 
+#: src/admin/events/EventViewPage.ts
+msgid "Created"
+msgstr ""
+
 #: src/admin/stages/invitation/InvitationListPage.ts
 msgid "Created by"
 msgstr "Creado por"
@@ -1941,8 +1977,8 @@ msgid "Determines how long a session lasts. Default of 0 seconds means that the 
 msgstr "Determina la duración de una sesión. El valor predeterminado de 0 segundos significa que las sesiones duran hasta que se cierra el navegador."
 
 #: src/elements/user/SessionList.ts
-msgid "Device"
-msgstr "Dispositivo"
+#~ msgid "Device"
+#~ msgstr "Dispositivo"
 
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Device classes"
@@ -1967,6 +2003,10 @@ msgstr "Dispositivo(s)"
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 msgid "Diagram"
 msgstr "Diagrama"
+
+#: src/admin/stages/user_login/UserLoginStageForm.ts
+msgid "Different browsers handle session cookies differently, and might not remove them even when the browser is closed."
+msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
@@ -2064,6 +2104,10 @@ msgstr "Descargar clave privada"
 msgid "Download signing certificate"
 msgstr "Descargar certificado de firma"
 
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Dropdown (fixed choice)"
+msgstr ""
+
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider, or all providers use the same certificate."
 msgstr ""
@@ -2138,7 +2182,9 @@ msgstr ""
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 #: src/admin/sources/plex/PlexSourceViewPage.ts
@@ -2310,22 +2356,34 @@ msgstr "Error: configuración de origen no admitida: {0}"
 #~ msgstr "Error: configuración de etapa no admitida: {0}"
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "Evaluate on plan"
-msgstr "Evaluar según el plan"
+#~ msgid "Evaluate on plan"
+#~ msgstr "Evaluar según el plan"
 
 #: src/admin/flows/StageBindingForm.ts
 msgid "Evaluate policies before the Stage is present to the user."
 msgstr "Evaluar las políticas antes de que la etapa se presente al usuario."
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
-msgstr "Evaluar las políticas durante el proceso de planificación de flujo. Deshabilite esto para políticas basadas en entradas. Debe usarse junto con «Reevaluar políticas», ya que con ambas opciones deshabilitadas, las políticas **no** se evalúan."
+msgid "Evaluate policies during the Flow planning process."
+msgstr ""
+
+#: src/admin/flows/StageBindingForm.ts
+#~ msgid "Evaluate policies during the Flow planning process. Disable this for input-based policies. Should be used in conjunction with 'Re-evaluate policies', as with both options disabled, policies are **not** evaluated."
+#~ msgstr "Evaluar las políticas durante el proceso de planificación de flujo. Deshabilite esto para políticas basadas en entradas. Debe usarse junto con «Reevaluar políticas», ya que con ambas opciones deshabilitadas, las políticas **no** se evalúan."
+
+#: src/admin/flows/StageBindingForm.ts
+msgid "Evaluate when flow is planned"
+msgstr ""
+
+#: src/admin/flows/StageBindingForm.ts
+msgid "Evaluate when stage is run"
+msgstr ""
 
 #: src/admin/events/EventListPage.ts
 msgid "Event Log"
 msgstr "Registro de eventos"
 
-#: src/admin/events/EventInfoPage.ts
+#: src/admin/events/EventViewPage.ts
 msgid "Event info"
 msgstr "Información del evento"
 
@@ -2339,7 +2397,7 @@ msgstr "Información del evento"
 msgid "Event retention"
 msgstr "Retención de eventos"
 
-#: src/admin/events/EventInfoPage.ts
+#: src/admin/events/EventViewPage.ts
 msgid "Event {0}"
 msgstr "Evento {0}"
 
@@ -2365,6 +2423,10 @@ msgstr ""
 #: src/admin/events/EventInfo.ts
 msgid "Exception"
 msgstr "Excepción"
+
+#: src/admin/providers/scim/SCIMProviderForm.ts
+msgid "Exclude service accounts"
+msgstr ""
 
 #~ msgid "Execute"
 #~ msgstr "Ejecutar"
@@ -2400,6 +2462,7 @@ msgid "Expires"
 msgstr "Caduca"
 
 #: src/admin/tokens/TokenForm.ts
+#: src/admin/users/ServiceAccountForm.ts
 msgid "Expires on"
 msgstr "Caduca el"
 
@@ -2408,6 +2471,7 @@ msgid "Expires?"
 msgstr "¿Caduca?"
 
 #: src/admin/tokens/TokenForm.ts
+#: src/admin/users/ServiceAccountForm.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Expiring"
@@ -2449,6 +2513,7 @@ msgstr "Exportar flujo"
 #: src/admin/property-mappings/PropertyMappingLDAPForm.ts
 #: src/admin/property-mappings/PropertyMappingNotification.ts
 #: src/admin/property-mappings/PropertyMappingSAMLForm.ts
+#: src/admin/property-mappings/PropertyMappingSCIMForm.ts
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "Expression"
 msgstr "Expresión"
@@ -2460,6 +2525,7 @@ msgstr "Expresión"
 #: src/admin/property-mappings/PropertyMappingLDAPForm.ts
 #: src/admin/property-mappings/PropertyMappingNotification.ts
 #: src/admin/property-mappings/PropertyMappingSAMLForm.ts
+#: src/admin/property-mappings/PropertyMappingSCIMForm.ts
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "Expression using Python."
 msgstr "Expresión con Python."
@@ -2489,6 +2555,10 @@ msgstr ""
 msgid "External host"
 msgstr "Servidor externo"
 
+#: src/admin/admin-overview/charts/SyncStatusChart.ts
+msgid "Failed"
+msgstr ""
+
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
 #: src/admin/users/UserChart.ts
 msgid "Failed Logins"
@@ -2507,8 +2577,8 @@ msgid "Failed login"
 msgstr "Inicio de sesión incorrecto"
 
 #: src/admin/admin-overview/charts/LDAPSyncStatusChart.ts
-msgid "Failed sources"
-msgstr "Origenes fallidos"
+#~ msgid "Failed sources"
+#~ msgstr "Origenes fallidos"
 
 #: src/admin/flows/FlowListPage.ts
 msgid "Failed to delete flow cache"
@@ -2647,8 +2717,13 @@ msgid "Flow used by an authenticated user to configure this Stage. If empty, use
 msgstr "Flujo utilizado por un usuario autenticado para configurar esta etapa. Si está vacío, el usuario no podrá configurar esta etapa."
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "Flow used for users to authenticate. Currently only identification and password stages are supported."
-msgstr "Flujo utilizado para que los usuarios se autentiquen. Actualmente, solo se admiten las etapas de identificación y contraseña."
+#: src/admin/providers/radius/RadiusProviderForm.ts
+msgid "Flow used for users to authenticate."
+msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+#~ msgid "Flow used for users to authenticate. Currently only identification and password stages are supported."
+#~ msgstr "Flujo utilizado para que los usuarios se autentiquen. Actualmente, solo se admiten las etapas de identificación y contraseña."
 
 #: src/admin/tenants/TenantForm.ts
 msgid "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used."
@@ -2808,6 +2883,7 @@ msgstr "Ir a la página anterior"
 #: src/admin/events/RuleForm.ts
 #: src/admin/policies/PolicyBindingForm.ts
 #: src/admin/policies/PolicyBindingForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/stages/user_write/UserWriteStageForm.ts
 msgid "Group"
@@ -2817,6 +2893,7 @@ msgstr "Grupo"
 msgid "Group Info"
 msgstr ""
 
+#: src/admin/providers/scim/SCIMProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "Group Property Mappings"
 msgstr "Mapeo de propiedades de grupos"
@@ -2849,7 +2926,6 @@ msgstr "Grupo(s)"
 
 #: src/admin/AdminInterface.ts
 #: src/admin/groups/GroupListPage.ts
-#: src/admin/users/UserForm.ts
 #: src/admin/users/UserViewPage.ts
 msgid "Groups"
 msgstr "Grupos"
@@ -2891,13 +2967,17 @@ msgstr ""
 msgid "Health and Version"
 msgstr "Salud y versión"
 
+#: src/admin/admin-overview/charts/SyncStatusChart.ts
+msgid "Healthy"
+msgstr ""
+
 #: src/admin/admin-overview/charts/OutpostStatusChart.ts
 msgid "Healthy outposts"
 msgstr "Controladores saludables"
 
 #: src/admin/admin-overview/charts/LDAPSyncStatusChart.ts
-msgid "Healthy sources"
-msgstr "Fuentes saludables"
+#~ msgid "Healthy sources"
+#~ msgstr "Fuentes saludables"
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Help text"
@@ -2922,6 +3002,8 @@ msgstr "Ocultar cuentas de servicio"
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
@@ -2987,7 +3069,9 @@ msgstr "Icono mostrado en la pestaña del navegador."
 #: src/admin/system-tasks/SystemTaskListPage.ts
 #: src/admin/tokens/TokenForm.ts
 #: src/admin/tokens/TokenListPage.ts
+#: src/admin/tokens/TokenListPage.ts
 #: src/user/user-settings/tokens/UserTokenForm.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Identifier"
 msgstr "Identificador"
@@ -3040,6 +3124,10 @@ msgstr "Si no se especifican URI de redireccionamiento explícitos, se guardará
 #~ "and show a notice."
 #~ msgstr ""
 
+#: src/admin/stages/user_login/UserLoginStageForm.ts
+msgid "If set to a duration above 0, the user will have the option to choose to \"stay signed in\", which will extend their session by the time specified here."
+msgstr ""
+
 #: src/admin/tenants/TenantForm.ts
 msgid "If set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code."
 msgstr ""
@@ -3061,12 +3149,13 @@ msgid "If this flag is set, this Stage will jump to the next Stage when no Invit
 msgstr "Si se establece este parámetro, esta etapa saltará a la siguiente etapa cuando no se proporcione ninguna invitación. De forma predeterminada, esta etapa cancelará el flujo cuando no se proporcione ninguna invitación."
 
 #: src/admin/tokens/TokenForm.ts
+#: src/admin/users/ServiceAccountForm.ts
 msgid "If this is selected, the token will expire. Upon expiration, the token will be rotated."
 msgstr "Si se selecciona, el token caducará. Al expirar, el token se rotará."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "If you are using an Implicit, client-side flow (where the token-endpoint isn't used), you probably want to increase this time."
-msgstr "Si utilizas un flujo implícito del lado del cliente (donde no se usa el punto final del token), probablemente quieras aumentar este tiempo."
+#~ msgid "If you are using an Implicit, client-side flow (where the token-endpoint isn't used), you probably want to increase this time."
+#~ msgstr "Si utilizas un flujo implícito del lado del cliente (donde no se usa el punto final del token), probablemente quieras aumentar este tiempo."
 
 #: src/admin/outposts/OutpostDeploymentModal.ts
 msgid "If your authentik Instance is using a self-signed certificate, set this value."
@@ -3313,9 +3402,14 @@ msgstr "Mapeo de atributos LDAP"
 msgid "LDAP DN under which bind requests and search requests can be made."
 msgstr "DN de LDAP con el que se pueden realizar solicitudes de conexión y de búsqueda."
 
+#: src/admin/admin-overview/charts/SyncStatusChart.ts
+#: src/admin/admin-overview/charts/SyncStatusChart.ts
+msgid "LDAP Source"
+msgstr ""
+
 #: src/admin/admin-overview/AdminOverviewPage.ts
-msgid "LDAP Sync status"
-msgstr "Estado de sincronización de LDAP"
+#~ msgid "LDAP Sync status"
+#~ msgstr "Estado de sincronización de LDAP"
 
 #: src/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
 msgid "LDAP details"
@@ -3415,12 +3509,20 @@ msgstr "Enlace para usar la invitación."
 msgid "Link users on unique identifier"
 msgstr "Vincular usuarios en un identificador único"
 
+#: src/admin/providers/radius/RadiusProviderForm.ts
+msgid ""
+"List of CIDRs (comma-seperated) that clients can connect from. A more specific\n"
+"CIDR will match before a looser one. Clients connecting from a non-specified CIDR\n"
+"will be dropped."
+msgstr ""
+
 #: src/admin/sources/plex/PlexSourceForm.ts
 msgid "Load servers"
 msgstr "Cargar servidores"
 
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/applications/ApplicationViewPage.ts
+#: src/admin/events/EventViewPage.ts
 #: src/elements/table/Table.ts
 #: src/flow/FlowExecutor.ts
 #: src/flow/FlowExecutor.ts
@@ -3445,6 +3547,7 @@ msgstr "Cargar servidores"
 #: src/flow/stages/identification/IdentificationStage.ts
 #: src/flow/stages/password/PasswordStage.ts
 #: src/flow/stages/prompt/PromptStage.ts
+#: src/flow/stages/user_login/UserLoginStage.ts
 #: src/user/LibraryPage.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
@@ -3460,15 +3563,15 @@ msgstr ""
 
 #: src/admin/events/RuleForm.ts
 #: src/admin/flows/StageBindingForm.ts
-#: src/admin/groups/GroupForm.ts
 #: src/admin/outposts/OutpostForm.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
-#: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
@@ -3477,8 +3580,10 @@ msgstr ""
 #: src/admin/stages/invitation/InvitationListLink.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
-#: src/admin/users/UserForm.ts
 #: src/elements/Spinner.ts
+#: src/elements/forms/SearchSelect.ts
+#: src/standalone/loading/index.ts
+#: src/standalone/loading/index.ts
 msgid "Loading..."
 msgstr "Cargando..."
 
@@ -3645,7 +3750,6 @@ msgstr "Hacer coincidir en función del sufijo del dominio, si configura domain.
 msgid "Maximum age (in days)"
 msgstr "Duración máxima (en días)"
 
-#: src/admin/groups/GroupForm.ts
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/users/GroupSelectModal.ts
 msgid "Members"
@@ -3776,6 +3880,7 @@ msgstr "Mis aplicaciones"
 #: src/admin/property-mappings/PropertyMappingListPage.ts
 #: src/admin/property-mappings/PropertyMappingNotification.ts
 #: src/admin/property-mappings/PropertyMappingSAMLForm.ts
+#: src/admin/property-mappings/PropertyMappingSCIMForm.ts
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 #: src/admin/providers/ProviderListPage.ts
 #: src/admin/providers/ldap/LDAPProviderForm.ts
@@ -3784,9 +3889,13 @@ msgstr "Mis aplicaciones"
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/radius/RadiusProviderForm.ts
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderImportForm.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
 #: src/admin/sources/SourceListPage.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
@@ -3942,6 +4051,7 @@ msgstr "Nginx (independiente)"
 #: src/admin/users/UserListPage.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/UserDevicesList.ts
+#: src/flow/stages/user_login/UserLoginStage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "No"
 msgstr "No"
@@ -3971,6 +4081,10 @@ msgstr "No hay datos adicionales disponibles."
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "No additional setup is required."
 msgstr "No se requiere ninguna configuración adicional."
+
+#: src/admin/providers/ProviderListPage.ts
+msgid "No application required."
+msgstr ""
 
 #: src/elements/forms/ModalForm.ts
 #: src/elements/forms/ModalForm.ts
@@ -4076,6 +4190,7 @@ msgstr "No lo usa ningún otro objeto."
 #: src/flow/stages/captcha/CaptchaStage.ts
 #: src/flow/stages/consent/ConsentStage.ts
 #: src/flow/stages/password/PasswordStage.ts
+#: src/flow/stages/user_login/UserLoginStage.ts
 msgid "Not you?"
 msgstr "¿No eres tú?"
 
@@ -4127,8 +4242,12 @@ msgstr "Número desde el que se enviará el SMS."
 #~ msgstr "Códigos de autorización de OAuth"
 
 #: src/admin/users/UserViewPage.ts
-msgid "OAuth Refresh Codes"
-msgstr "Códigos de actualización de OAuth"
+#~ msgid "OAuth Refresh Codes"
+#~ msgstr "Códigos de actualización de OAuth"
+
+#: src/admin/users/UserViewPage.ts
+msgid "OAuth Refresh Tokens"
+msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceDiagram.ts
 msgid "OAuth Source {0}"
@@ -4198,6 +4317,7 @@ msgstr ""
 
 #: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
+#: src/admin/events/EventViewPage.ts
 #: src/elements/events/ObjectChangelog.ts
 #: src/elements/events/UserEvents.ts
 msgid "On behalf of {0}"
@@ -4214,6 +4334,10 @@ msgstr ""
 #: src/admin/events/TransportForm.ts
 msgid "Only send notification once, for example when sending a webhook into a chat channel."
 msgstr "Envíar notificaciones solo una vez, por ejemplo, al enviar un webhook a un canal de chat."
+
+#: src/admin/providers/scim/SCIMProviderForm.ts
+msgid "Only sync users within the selected group."
+msgstr ""
 
 #: src/elements/notifications/APIDrawer.ts
 msgid "Open API Browser"
@@ -4279,8 +4403,15 @@ msgid "Optionally enter a group name. Applications with identical groups are sho
 msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
-msgid "Optionally pre-fill the input value"
-msgstr "Rellenar previamente el valor de entrada opcionalmente"
+#~ msgid "Optionally pre-fill the input value"
+#~ msgstr "Rellenar previamente el valor de entrada opcionalmente"
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid ""
+"Optionally pre-fill the input value.\n"
+"When creating a \"Radio Button Group\" or \"Dropdown\", enable interpreting as\n"
+"expression and return a list to return multiple choices."
+msgstr ""
 
 #: src/admin/property-mappings/PropertyMappingSAMLForm.ts
 msgid "Optionally set the 'FriendlyName' value of the Assertion attribute."
@@ -4363,7 +4494,9 @@ msgstr "Los puestos avanzados son implementaciones de componentes auténticos pa
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 #: src/admin/sources/plex/PlexSourceViewPage.ts
@@ -4664,6 +4797,7 @@ msgstr "Asignaciones de propiedades"
 msgid "Property mappings"
 msgstr "Mapeos de propiedades"
 
+#: src/admin/providers/scim/SCIMProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "Property mappings used to group creation."
 msgstr "Asignaciones de propiedades utilizadas para la creación de grupos."
@@ -4672,13 +4806,19 @@ msgstr "Asignaciones de propiedades utilizadas para la creación de grupos."
 msgid "Property mappings used to user creation."
 msgstr "Asignaciones de propiedades utilizadas para la creación de usuarios."
 
+#: src/admin/providers/scim/SCIMProviderForm.ts
+msgid "Property mappings used to user mapping."
+msgstr ""
+
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Protocol Settings"
 msgstr "Configuración de protocolo"
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/radius/RadiusProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
@@ -4795,6 +4935,14 @@ msgstr "Acciones rápidas"
 #~ msgid "RSA-SHA512"
 #~ msgstr "RSA-SHA512"
 
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Radio Button Group (fixed choice)"
+msgstr ""
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "Radius"
+msgstr ""
+
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "Raw JWKS data."
 msgstr ""
@@ -4804,8 +4952,8 @@ msgid "Re-authenticate with plex"
 msgstr "Vuelva a autenticarse con plex"
 
 #: src/admin/flows/StageBindingForm.ts
-msgid "Re-evaluate policies"
-msgstr "Reevaluar las políticas"
+#~ msgid "Re-evaluate policies"
+#~ msgstr "Reevaluar las políticas"
 
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Receive a push notification on your device."
@@ -4869,8 +5017,16 @@ msgstr "Actualizar"
 #~ msgstr "Actualizar código"
 
 #: src/elements/oauth/UserRefreshList.ts
-msgid "Refresh Code(s)"
-msgstr "Actualizar código (s)"
+#~ msgid "Refresh Code(s)"
+#~ msgstr "Actualizar código (s)"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Refresh Token validity"
+msgstr ""
+
+#: src/elements/oauth/UserRefreshList.ts
+msgid "Refresh Tokens(s)"
+msgstr ""
 
 #: src/flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts
 msgid "Register device"
@@ -5060,6 +5216,7 @@ msgstr "¿Revocado?"
 msgid "Root"
 msgstr ""
 
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 msgid "Run sync again"
 msgstr "Vuelve a ejecutar la sincronización"
@@ -5089,6 +5246,19 @@ msgstr ""
 
 #~ msgid "SAML details (import from metadata)"
 #~ msgstr ""
+
+#: src/admin/admin-overview/charts/SyncStatusChart.ts
+#: src/admin/admin-overview/charts/SyncStatusChart.ts
+msgid "SCIM Provider"
+msgstr ""
+
+#: src/admin/providers/scim/SCIMProviderForm.ts
+msgid "SCIM base url, usually ends in /v2."
+msgstr ""
+
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
+msgid "SCIM provider is in preview."
+msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
@@ -5243,9 +5413,14 @@ msgstr "Autenticador clave de seguridad"
 #: src/admin/property-mappings/PropertyMappingLDAPForm.ts
 #: src/admin/property-mappings/PropertyMappingNotification.ts
 #: src/admin/property-mappings/PropertyMappingSAMLForm.ts
+#: src/admin/property-mappings/PropertyMappingSCIMForm.ts
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "See documentation for a list of all variables."
 msgstr "Consulte la documentación para obtener una lista de todas las variables."
+
+#: src/admin/stages/user_login/UserLoginStageForm.ts
+msgid "See here."
+msgstr ""
 
 #: src/admin/blueprints/BlueprintForm.ts
 msgid "See more about OCI support here:"
@@ -5253,6 +5428,10 @@ msgstr ""
 
 #: src/admin/outposts/OutpostForm.ts
 msgid "See more here:"
+msgstr ""
+
+#: src/flow/stages/user_login/UserLoginStage.ts
+msgid "Select Yes to reduce the number of times you're asked to sign in."
 msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
@@ -5471,6 +5650,10 @@ msgstr "Configuración"
 #: src/admin/events/RuleListPage.ts
 msgid "Severity"
 msgstr "Gravedad"
+
+#: src/admin/providers/radius/RadiusProviderForm.ts
+msgid "Shared secret"
+msgstr ""
 
 #: src/admin/stages/prompt/PromptStageForm.ts
 msgid "Show arbitrary input fields to the user, for example during enrollment. Data is saved in the flow context under the 'prompt_data' variable."
@@ -5748,6 +5931,14 @@ msgstr "Estatus"
 #~ msgid "Status: Enabled"
 #~ msgstr "Estado: habilitado"
 
+#: src/admin/stages/user_login/UserLoginStageForm.ts
+msgid "Stay signed in offset"
+msgstr ""
+
+#: src/flow/stages/user_login/UserLoginStage.ts
+msgid "Stay signed in?"
+msgstr ""
+
 #: src/user/UserInterface.ts
 msgid "Stop impersonation"
 msgstr "Detener la suplantación"
@@ -5837,6 +6028,7 @@ msgstr "La invitación se creó correctamente."
 #: src/admin/property-mappings/PropertyMappingLDAPForm.ts
 #: src/admin/property-mappings/PropertyMappingNotification.ts
 #: src/admin/property-mappings/PropertyMappingSAMLForm.ts
+#: src/admin/property-mappings/PropertyMappingSCIMForm.ts
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "Successfully created mapping."
 msgstr "La asignación se creó correctamente."
@@ -5861,7 +6053,9 @@ msgstr "Se ha creado el mensaje correctamente."
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
+#: src/admin/providers/radius/RadiusProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
 msgid "Successfully created provider."
 msgstr "El proveedor se creó correctamente."
 
@@ -6014,6 +6208,7 @@ msgstr "La invitación se actualizó correctamente."
 #: src/admin/property-mappings/PropertyMappingLDAPForm.ts
 #: src/admin/property-mappings/PropertyMappingNotification.ts
 #: src/admin/property-mappings/PropertyMappingSAMLForm.ts
+#: src/admin/property-mappings/PropertyMappingSCIMForm.ts
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "Successfully updated mapping."
 msgstr "Se ha actualizado correctamente la asignación."
@@ -6042,7 +6237,9 @@ msgstr "Se actualizó correctamente el mensaje."
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
+#: src/admin/providers/radius/RadiusProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
 msgid "Successfully updated provider."
 msgstr "El proveedor se actualizó correctamente."
 
@@ -6139,9 +6336,15 @@ msgstr "Juego de caracteres de símbolo"
 msgid "Sync groups"
 msgstr "Sincronizar grupos"
 
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
+msgid "Sync not run yet."
+msgstr ""
+
 #~ msgid "Sync parent group"
 #~ msgstr "Sincronizar grupo principal"
 
+#: src/admin/admin-overview/AdminOverviewPage.ts
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 msgid "Sync status"
 msgstr "Estado de sincronización"
@@ -6223,6 +6426,7 @@ msgstr "Plantilla"
 
 #: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
+#: src/admin/events/EventViewPage.ts
 msgid "Tenant"
 msgstr "inquilino"
 
@@ -6234,6 +6438,10 @@ msgstr "Inquilino (s)"
 #: src/admin/tenants/TenantListPage.ts
 msgid "Tenants"
 msgstr "Inquilinos"
+
+#: src/admin/stages/user_login/UserLoginStageForm.ts
+msgid "Terminate other sessions"
+msgstr ""
 
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/policies/PolicyListPage.ts
@@ -6252,6 +6460,14 @@ msgstr "Asignación de propiedades de"
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Text (read-only): Simple Text input, but cannot be edited."
 msgstr "Texto (solo lectura): entrada de texto simple, pero no se puede editar."
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Text Area (read-only): Multiline text input, but cannot be edited."
+msgstr ""
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Text Area: Multiline text input"
+msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Text: Simple Text input"
@@ -6485,8 +6701,9 @@ msgstr "Para permitir que un usuario restablezca directamente su contraseña, co
 msgid "To use SSL instead, use 'ldaps://' and disable this option."
 msgstr "Para usar SSL en su lugar, use 'ldaps: //' y deshabilite esta opción."
 
-#~ msgid "Token"
-#~ msgstr "Token"
+#: src/admin/providers/scim/SCIMProviderForm.ts
+msgid "Token"
+msgstr "Token"
 
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
@@ -6505,7 +6722,10 @@ msgstr "Caducidad del token"
 msgid "Token is managed by authentik."
 msgstr "El token es administrado por authentik."
 
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
+msgid "Token to authenticate with. Currently only bearer authentication is supported."
+msgstr ""
+
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Token validity"
 msgstr "Validez del token"
@@ -6639,6 +6859,8 @@ msgid "UPN"
 msgstr "UPN"
 
 #: src/admin/blueprints/BlueprintForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
 msgid "URL"
 msgstr ""
 
@@ -6768,9 +6990,13 @@ msgstr ""
 msgid "Unread notifications"
 msgstr "Notificaciones sin leer"
 
+#: src/admin/admin-overview/charts/SyncStatusChart.ts
+msgid "Unsynced / N/A"
+msgstr ""
+
 #: src/admin/admin-overview/charts/LDAPSyncStatusChart.ts
-msgid "Unsynced sources"
-msgstr "Fuentes no sincronizadas"
+#~ msgid "Unsynced sources"
+#~ msgstr "Fuentes no sincronizadas"
 
 #: src/admin/admin-overview/cards/VersionStatusCard.ts
 msgid "Up-to-date!"
@@ -6801,7 +7027,9 @@ msgstr "¡Actuales!"
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
 #: src/admin/sources/SourceListPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
@@ -6859,6 +7087,7 @@ msgid "Update Invitation"
 msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
 msgid "Update LDAP Provider"
 msgstr "Actualizar proveedor LDAP"
 
@@ -6897,6 +7126,10 @@ msgstr "Mensaje de actualización"
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Update Proxy Provider"
 msgstr "Actualizar proveedor de proxy"
+
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
+msgid "Update Radius Provider"
+msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
 msgid "Update SAML Provider"
@@ -7033,6 +7266,7 @@ msgstr ""
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventListPage.ts
+#: src/admin/events/EventViewPage.ts
 #: src/admin/policies/PolicyBindingForm.ts
 #: src/admin/policies/PolicyBindingForm.ts
 #: src/admin/policies/PolicyTestForm.ts
@@ -7053,6 +7287,7 @@ msgstr "Usuario"
 msgid "User Info"
 msgstr "Información del usuario"
 
+#: src/admin/providers/scim/SCIMProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "User Property Mappings"
 msgstr "Asignaciones de propiedades de usuario"
@@ -7086,6 +7321,10 @@ msgstr "Eventos del usuario"
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "User fields"
 msgstr "Campos de usuario"
+
+#: src/admin/providers/scim/SCIMProviderForm.ts
+msgid "User filtering"
+msgstr ""
 
 #: src/admin/users/UserListPage.ts
 msgid "User folders"
@@ -7433,6 +7672,10 @@ msgstr "Al conectarse a un servidor LDAP con TLS, los certificados no se comprue
 msgid "When connecting via SSH, this keypair is used for authentication."
 msgstr "Cuando se conecta a través de SSH, este par de claves se usa para la autenticación."
 
+#: src/admin/stages/user_login/UserLoginStageForm.ts
+msgid "When enabled, all previous sessions of the user will be terminated."
+msgstr ""
+
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "When enabled, authentik will intercept the Authorization header to authenticate the request."
 msgstr ""
@@ -7562,6 +7805,7 @@ msgstr ""
 #: src/admin/users/UserListPage.ts
 #: src/elements/oauth/UserRefreshList.ts
 #: src/elements/user/UserDevicesList.ts
+#: src/flow/stages/user_login/UserLoginStage.ts
 #: src/user/user-settings/tokens/UserTokenList.ts
 msgid "Yes"
 msgstr "Sí"
