@@ -56,11 +56,11 @@ from authentik.providers.oauth2.api.tokens import (
     RefreshTokenViewSet,
 )
 from authentik.providers.proxy.api import ProxyOutpostConfigViewSet, ProxyProviderViewSet
+from authentik.providers.radius.api import RadiusOutpostConfigViewSet, RadiusProviderViewSet
 from authentik.providers.saml.api.property_mapping import SAMLPropertyMappingViewSet
 from authentik.providers.saml.api.providers import SAMLProviderViewSet
 from authentik.providers.scim.api.property_mapping import SCIMMappingViewSet
 from authentik.providers.scim.api.providers import SCIMProviderViewSet
-from authentik.providers.radius.api import RadiusOutpostConfigViewSet, RadiusProviderViewSet
 from authentik.sources.ldap.api import LDAPPropertyMappingViewSet, LDAPSourceViewSet
 from authentik.sources.oauth.api.source import OAuthSourceViewSet
 from authentik.sources.oauth.api.source_connection import UserOAuthSourceConnectionViewSet

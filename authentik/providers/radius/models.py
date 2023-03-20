@@ -46,6 +46,5 @@ class RadiusProvider(OutpostModel, Provider):
         return f"Radius Provider {self.name}"
 
     class Meta:
-
         verbose_name = _("Radius Provider")
         verbose_name_plural = _("Radius Providers")

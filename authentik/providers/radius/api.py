@@ -12,7 +12,6 @@ class RadiusProviderSerializer(ProviderSerializer):
     """RadiusProvider Serializer"""
 
     class Meta:
-
         model = RadiusProvider
         fields = ProviderSerializer.Meta.fields + [
             "client_networks",
@@ -39,7 +38,6 @@ class RadiusOutpostConfigSerializer(ModelSerializer):
     auth_flow_slug = CharField(source="authorization_flow.slug")
 
     class Meta:
-
         model = RadiusProvider
         fields = [
             "pk",
