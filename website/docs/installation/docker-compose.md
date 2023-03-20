@@ -2,7 +2,7 @@
 title: Docker Compose installation
 ---
 
-This installation method is for test-setups and small-scale productive setups.
+This installation method is for test-setups and small-scale production setups.
 
 ## Requirements
 
@@ -69,7 +69,11 @@ docker-compose pull
 docker-compose up -d
 ```
 
-The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file, which can be overridden with the `AUTHENTIK_TAG` environment variable.
+The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file. We recommend that you edit the `.env` file and use the `AUTHENTIK_TAG` environment variable to override the default version defined in the compose file.
+
+```
+AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server:${AUTHENTIK_TAG:-2023.3.1}
+```
 
 authentik is then reachable (by default) on port 9000 (HTTP) and port 9443 (HTTPS).
 
