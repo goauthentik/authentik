@@ -9,15 +9,28 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/internal/outpost/radius/metrics"
+	"goauthentik.io/internal/utils"
 	"layeh.com/radius"
 )
 
 type RadiusRequest struct {
 	*radius.Request
-	Log  *log.Entry
-	ID   string
+	log  *log.Entry
+	id   string
 	span *sentry.Span
 	pi   *ProviderInstance
+}
+
+func (r *RadiusRequest) Log() *log.Entry {
+	return r.log
+}
+
+func (r *RadiusRequest) RemoteAddr() string {
+	return utils.GetIP(r.Request.RemoteAddr)
+}
+
+func (r *RadiusRequest) ID() string {
+	return r.id
 }
 
 func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) {
@@ -37,8 +50,8 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 
 	nr := &RadiusRequest{
 		Request: r,
-		Log:     rl,
-		ID:      rid,
+		log:     rl,
+		id:      rid,
 		span:    span,
 	}
 
@@ -54,7 +67,7 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 		}
 	}
 	if pi == nil {
-		nr.Log.WithField("hashed_secret", string(sha512.New().Sum(r.Secret))).Warning("No provider found")
+		nr.Log().WithField("hashed_secret", string(sha512.New().Sum(r.Secret))).Warning("No provider found")
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		return
 	}

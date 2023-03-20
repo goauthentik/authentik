@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                     "client_networks",
                     models.TextField(
                         default="0.0.0.0/0, ::/0",
-                        help_text="List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.",
+                        help_text="List of CIDRs (comma-separated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.",
                     ),
                 ),
             ],
