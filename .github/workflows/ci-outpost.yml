@@ -59,8 +59,9 @@ jobs:
         type:
           - proxy
           - ldap
+          - radius
         arch:
-          - 'linux/amd64'
+          - "linux/amd64"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -106,6 +107,7 @@ jobs:
         type:
           - proxy
           - ldap
+          - radius
         goos: [linux]
         goarch: [amd64, arm64]
     steps:
@@ -115,8 +117,8 @@ jobs:
           go-version: "^1.17"
       - uses: actions/setup-node@v3.6.0
         with:
-          node-version: '18'
-          cache: 'npm'
+          node-version: "18"
+          cache: "npm"
           cache-dependency-path: web/package-lock.json
       - name: Generate API
         run: make gen-client-go
