@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { Chip } from "@goauthentik/elements/chips/Chip";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
@@ -27,6 +27,9 @@ export class ChipGroup extends AKElement {
             `,
         ];
     }
+
+    @property()
+    name?: string;
 
     set value(v: (string | number | undefined)[]) {
         return;
