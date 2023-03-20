@@ -18,7 +18,7 @@ class AuthenticatorTOTPStageSerializer(StageSerializer):
 
     class Meta:
         model = AuthenticatorTOTPStage
-        fields = StageSerializer.Meta.fields + ["configure_flow", "digits"]
+        fields = StageSerializer.Meta.fields + ["configure_flow", "friendly_name", "digits"]
 
 
 class AuthenticatorTOTPStageViewSet(UsedByMixin, ModelViewSet):

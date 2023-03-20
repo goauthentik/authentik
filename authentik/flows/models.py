@@ -271,6 +271,15 @@ class ConfigurableStage(models.Model):
         abstract = True
 
 
+class FriendlyNamedStage(models.Model):
+    """Abstract base class for a Stage that can be have a user-friendly name configured."""
+
+    friendly_name = models.CharField(max_length=50, blank=True)
+
+    class Meta:
+        abstract = True
+
+
 class FlowToken(Token):
     """Subclass of a standard Token, stores the currently active flow plan upon creation.
     Can be used to later resume a flow."""

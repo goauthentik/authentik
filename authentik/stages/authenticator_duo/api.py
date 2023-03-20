@@ -33,6 +33,7 @@ class AuthenticatorDuoStageSerializer(StageSerializer):
         model = AuthenticatorDuoStage
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
+            "friendly_name",
             "client_id",
             "client_secret",
             "api_hostname",

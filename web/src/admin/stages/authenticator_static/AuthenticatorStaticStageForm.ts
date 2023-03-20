@@ -62,6 +62,17 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
                     required
                 />
             </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`Friendly name`}
+                ?required=${false}
+                name="friendlyName"
+            >
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.friendlyName || "")}"
+                    class="pf-c-form-control"
+                />
+            </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
