@@ -109,7 +109,7 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.clientNetworks, "0.0.0.0/0")}"
+                            value="${first(this.instance?.clientNetworks, "0.0.0.0/0, ::/0")}"
                             class="pf-c-form-control"
                             required
                         />

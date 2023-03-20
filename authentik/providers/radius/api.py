@@ -19,6 +19,7 @@ class RadiusProviderSerializer(ProviderSerializer):
             # an admin might have to view it
             "shared_secret",
         ]
+        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
 
 class RadiusProviderViewSet(UsedByMixin, ModelViewSet):

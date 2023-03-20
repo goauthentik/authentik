@@ -36844,7 +36844,6 @@ components:
         authorization_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -38623,7 +38622,6 @@ components:
         authorization_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -38665,6 +38663,7 @@ components:
       required:
       - assigned_application_name
       - assigned_application_slug
+      - authorization_flow
       - component
       - meta_model_name
       - name
@@ -38681,7 +38680,6 @@ components:
         authorization_flow:
           type: string
           format: uuid
-          nullable: true
           description: Flow used when authorizing this provider.
         property_mappings:
           type: array
@@ -38699,6 +38697,7 @@ components:
           minLength: 1
           description: Shared secret between clients and server to hash packets.
       required:
+      - authorization_flow
       - name
     RedirectChallenge:
       type: object
