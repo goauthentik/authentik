@@ -1,4 +1,6 @@
 """authentik URL Configuration"""
+from channels.auth import AuthMiddleware
+from channels.sessions import CookieMiddleware
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.urls import path
@@ -9,6 +11,8 @@ from authentik.core.views import apps, impersonate
 from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.interface import FlowInterfaceView, InterfaceView
 from authentik.core.views.session import EndSessionView
+from authentik.root.asgi_middleware import SessionMiddleware
+from authentik.root.messages.consumer import MessageConsumer
 
 urlpatterns = [
     path(
@@ -61,6 +65,12 @@ urlpatterns = [
     path(
         "ws/client/",
         InterfaceView.as_view(template_name="if/admin.html"),
+    ),
+]
+
+websocket_urlpatterns = [
+    path(
+        "ws/client/", CookieMiddleware(SessionMiddleware(AuthMiddleware(MessageConsumer.as_asgi())))
     ),
 ]
 
