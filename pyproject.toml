@@ -169,15 +169,16 @@ black = "*"
 bump2version = "*"
 colorama = "*"
 coverage = { extras = ["toml"], version = "*" }
+django-silk = "*"
 importlib-metadata = "*"
 pylint = "*"
 pylint-django = "*"
+pyrad = "*"
 pytest = "*"
 pytest-django = "*"
 pytest-randomly = "*"
 requests-mock = "*"
 selenium = "*"
-django-silk = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

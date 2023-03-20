@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM docker.io/golang:1.19.0-bullseye AS builder
+FROM docker.io/golang:1.20.2-bullseye AS builder
 
 WORKDIR /go/src/goauthentik.io
 
@@ -19,8 +19,8 @@ ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 COPY --from=builder /go/radius /
 
-HEALTHCHECK CMD [ "wget", "--spider", "http://localhost:9300/outpost.goauthentik.io/ping" ]
+HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "wget", "--spider", "http://localhost:9300/outpost.goauthentik.io/ping" ]
 
-EXPOSE 3389 6636 9300
+EXPOSE 1812/udp 9300
 
 ENTRYPOINT ["/radius"]
