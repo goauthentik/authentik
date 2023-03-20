@@ -11,6 +11,7 @@ class AuthentikCoreConfig(ManagedAppConfig):
     label = "authentik_core"
     verbose_name = "authentik Core"
     mountpoint = ""
+    ws_mountpoint = "authentik.outposts.urls"
     default = True
 
     def reconcile_load_core_signals(self):
