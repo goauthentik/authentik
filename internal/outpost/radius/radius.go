@@ -38,14 +38,11 @@ func NewServer(ac *ak.APIController) *RadiusServer {
 		ac:        ac,
 		providers: []*ProviderInstance{},
 	}
-
-	server := radius.PacketServer{
+	rs.s = radius.PacketServer{
 		Handler:      rs,
 		SecretSource: rs,
 		Addr:         config.Get().Listen.Radius,
 	}
-
-	rs.s = server
 	return rs
 }
 
@@ -110,9 +107,9 @@ func (rs *RadiusServer) Start() error {
 
 func (rs *RadiusServer) Stop() error {
 	ctx, cancel := context.WithCancel(context.Background())
-	rs.s.Shutdown(ctx)
+	err := rs.s.Shutdown(ctx)
 	cancel()
-	return nil
+	return err
 }
 
 func (rs *RadiusServer) TimerFlowCacheExpiry(context.Context) {}
