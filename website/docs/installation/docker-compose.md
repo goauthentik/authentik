@@ -2,7 +2,7 @@
 title: Docker Compose installation
 ---
 
-This installation method is for test-setups and small-scale productive setups.
+This installation method is for test-setups and small-scale production setups.
 
 ## Requirements
 
@@ -69,13 +69,13 @@ docker-compose pull
 docker-compose up -d
 ```
 
-The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file, which can be overridden with the `AUTHENTIK_TAG` environment variable.
+The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file. Each time you upgrade to a newer version of authentik, you download a new `docker-compose.yml` file, which points to the latest available version. For more information, refer to the **Upgrading** section in the [Release Notes](../releases).
 
-authentik is then reachable (by default) on port 9000 (HTTP) and port 9443 (HTTPS).
+By default, authentik is reachable (by default) on port 9000 (HTTP) and port 9443 (HTTPS).
 
 To start the initial setup, navigate to `https://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
 
-There you will be prompted to set a password for the akadmin user (the default user).
+There you are prompted to set a password for the akadmin user (the default user).
 
 ## Explanation
 
