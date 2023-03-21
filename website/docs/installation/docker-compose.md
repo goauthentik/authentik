@@ -71,11 +71,7 @@ docker-compose up -d
 
 The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file. Each time you upgrade to a newer version of authentik, you download a new `docker-compose.yml` file, which points to the latest available version. For more information, refer to the **Upgrading** section in the [Release Notes](../releases).
 
-```
-AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server:${AUTHENTIK_TAG:-2023.3.1}
-```
-
-authentik is then reachable (by default) on port 9000 (HTTP) and port 9443 (HTTPS).
+By default, authentik is reachable (by default) on port 9000 (HTTP) and port 9443 (HTTPS).
 
 To start the initial setup, navigate to `https://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
 
