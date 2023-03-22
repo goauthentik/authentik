@@ -4,7 +4,7 @@ metadata:
 entries:
 - attrs:
     designation: invalidation
-    name: Logout
+    name: Logged out of application
     title: You've logged out of %(app)s.
     authentication: none
   identifiers:
