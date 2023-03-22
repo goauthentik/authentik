@@ -159,6 +159,86 @@ export class SAMLProviderFormPage extends BaseProviderForm<SAMLProvider> {
                 </div>
             </ak-form-group>
 
+            <ak-form-group .expanded=${true}>
+                <span slot="header"> ${t`Flow settings`} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${t`Authorization flow`}
+                        ?required=${true}
+                        name="authorizationFlow"
+                    >
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation: FlowsInstancesListDesignationEnum.Authorization,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return RenderFlowOption(flow);
+                            }}
+                            .renderDescription=${(flow: Flow): TemplateResult => {
+                                return html`${flow.name}`;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                return flow.pk === this.instance?.authorizationFlow;
+                            }}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Flow used when authorizing this provider.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${t`Invalidation flow`}
+                        ?required=${true}
+                        name="invalidationFlow"
+                    >
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                                const args: FlowsInstancesListRequest = {
+                                    ordering: "slug",
+                                    designation: FlowsInstancesListDesignationEnum.Invalidation,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
+                                    args,
+                                );
+                                return flows.results;
+                            }}
+                            .renderElement=${(flow: Flow): string => {
+                                return RenderFlowOption(flow);
+                            }}
+                            .renderDescription=${(flow: Flow): TemplateResult => {
+                                return html`${flow.name}`;
+                            }}
+                            .value=${(flow: Flow | undefined): string | undefined => {
+                                return flow?.pk;
+                            }}
+                            .selected=${(flow: Flow): boolean => {
+                                return flow.pk === this.instance?.invalidationFlow;
+                            }}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${t`Flow used when authorizing this provider.`}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+
             <ak-form-group>
                 <span slot="header"> ${msg("Advanced protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
