@@ -122,14 +122,18 @@ class FlowErrorChallenge(Challenge):
 class AccessDeniedChallenge(WithUserInfoChallenge):
     """Challenge when a flow's active stage calls `stage_invalid()`."""
 
-    error_message = CharField(required=False)
     component = CharField(default="ak-stage-access-denied")
+
+    error_message = CharField(required=False)
 
 
 class SessionEndChallenge(WithUserInfoChallenge):
     """Challenge for ending a session"""
 
     component = CharField(default="ak-stage-session-end")
+
+    application_name = CharField(required=True)
+    application_launch_url = CharField(required=False)
 
 
 class PermissionDict(TypedDict):

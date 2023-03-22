@@ -46973,7 +46973,12 @@ components:
           type: string
         pending_user_avatar:
           type: string
+        application_name:
+          type: string
+        application_launch_url:
+          type: string
       required:
+      - application_name
       - pending_user
       - pending_user_avatar
       - type
