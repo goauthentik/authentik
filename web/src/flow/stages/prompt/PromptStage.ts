@@ -150,7 +150,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                         ?.map((choice) => {
                             return `<option
                             value="${choice}"
-                            ${prompt.placeholder === choice ? "selected" : ""}
+                            ?selected=${prompt.placeholder === choice}
                         >
                             ${choice}
                         </option>`;
