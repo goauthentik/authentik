@@ -1,7 +1,8 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/elements/EmptyState";
 import { Form } from "@goauthentik/elements/forms/Form";
 
-import { TemplateResult } from "lit";
+import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
 export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
@@ -43,6 +44,13 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     resetForm(): void {
         this.instance = undefined;
         this._initialLoad = false;
+    }
+
+    renderVisible(): TemplateResult {
+        if (!this.instance) {
+            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
+        }
+        return super.renderVisible();
     }
 
     render(): TemplateResult {
