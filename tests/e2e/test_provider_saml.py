@@ -414,6 +414,7 @@ class TestProviderSAML(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-implicit-consent.yaml",
+        "default/flow-default-provider-invalidation.yaml",
     )
     @apply_blueprint(
         "system/providers-saml.yaml",
@@ -425,6 +426,7 @@ class TestProviderSAML(SeleniumTestCase):
         authorization_flow = Flow.objects.get(
             slug="default-provider-authorization-implicit-consent"
         )
+        invalidation_flow = Flow.objects.get(slug="default-provider-invalidation-flow")
         provider: SAMLProvider = SAMLProvider.objects.create(
             name="saml-test",
             acs_url="http://localhost:9009/saml/acs",
@@ -432,6 +434,7 @@ class TestProviderSAML(SeleniumTestCase):
             issuer="authentik-e2e",
             sp_binding=SAMLBindings.POST,
             authorization_flow=authorization_flow,
+            invalidation_flow=invalidation_flow,
             signing_kp=create_test_cert(),
         )
         provider.property_mappings.set(SAMLPropertyMapping.objects.all())
@@ -449,7 +452,7 @@ class TestProviderSAML(SeleniumTestCase):
         self.driver.get("http://localhost:9009/saml/logout")
         self.wait_for_url(
             self.url(
-                "authentik_core:if-session-end",
-                application_slug=app.slug,
+                "authentik_core:if-flow",
+                flow_slug=invalidation_flow.slug,
             )
         )

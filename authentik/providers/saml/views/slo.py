@@ -2,7 +2,7 @@
 
 from django.http import HttpRequest
 from django.http.response import HttpResponse
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.csrf import csrf_exempt
@@ -10,6 +10,11 @@ from structlog.stdlib import get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction
+from authentik.flows.challenge import SessionEndChallenge
+from authentik.flows.models import in_memory_stage
+from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
+from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.policies.views import PolicyAccessView
 from authentik.providers.saml.exceptions import CannotHandleAssertion
@@ -45,9 +50,20 @@ class SAMLSLOView(PolicyAccessView):
         method_response = self.check_saml_request()
         if method_response:
             return method_response
-        return redirect(
-            "authentik_core:if-session-end",
-            application_slug=self.kwargs["application_slug"],
+        planner = FlowPlanner(self.provider.invalidation_flow)
+        planner.allow_empty_flows = True
+        plan = planner.plan(
+            request,
+            {
+                PLAN_CONTEXT_APPLICATION: self.application,
+            },
+        )
+        plan.insert_stage(in_memory_stage(SessionEndChallenge))
+        request.session[SESSION_KEY_PLAN] = plan
+        return redirect_with_qs(
+            "authentik_core:if-flow",
+            self.request.GET,
+            flow_slug=self.provider.invalidation_flow.slug,
         )
 
     def post(self, request: HttpRequest, application_slug: str) -> HttpResponse:
