@@ -95,7 +95,7 @@ SAML2_GROUP_ATTRIBUTE=http://schemas.xmlsoap.org/claims/Group
 SAML2_DISPLAY_NAME_ATTRIBUTES=http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname
 # Identity Provider entityID URL
 SAML2_IDP_ENTITYID=METADATAURL
-# Auto-load metatadata from the IDP
+# Auto-load metadata from the IDP
 # Setting this to true negates the need to specify the next three options
 SAML2_AUTOLOAD_METADATA=true
 

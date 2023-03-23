@@ -61,7 +61,7 @@ In authentik, create an application (under _Resources/Applications_) with these 
 
 ## zammad Setup
 
-Configure Zammad SAML settings by going to settings (the gear icon), and selecting `Security -> Third-party Applications` and activiate `Authentication via SAML` and change the following fields:
+Configure Zammad SAML settings by going to settings (the gear icon), and selecting `Security -> Third-party Applications` and activate `Authentication via SAML` and change the following fields:
 
 -   Display name: authentik
 -   IDP SSO target URL: https://authentik.company/application/saml/ticketsystem-seatable/sso/binding/init/

@@ -51,9 +51,9 @@ The following placeholders will be used:
     - `StartTLS`: Unchecked
     - `Skip SSL/TLS Verification`:
         - If using a certificate issued by a certificate authority Jellyfin trusts, leave this unchecked.
-        - If you're using a self signed certifcate, check this box.
+        - If you're using a self signed certificate, check this box.
     - `Allow password change`: Unchecked
-        - Since authentik already has a frontend for password resets, its not nessessary to include this in Jellyfin, especially since it requires bind user to have privileges.
+        - Since authentik already has a frontend for password resets, its not necessary to include this in Jellyfin, especially since it requires bind user to have privileges.
     - `Password Reset URL`: Empty
     - `LDAP Bind User`: Set this to a the user you want to bind to in authentik. By default the path will be `ou=users,dc=company,dc=com` so the LDAP Bind user will be `cn=ldap_bind_user,ou=users,dc=company,dc=com`.
     - `LDAP Bind User Password`: The Password of the user. If using a Service account, this is the token.

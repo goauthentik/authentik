@@ -29,6 +29,7 @@ jobs:
           - bandit
           - pyright
           - pending-migrations
+          - codespell
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

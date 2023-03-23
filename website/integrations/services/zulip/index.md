@@ -13,7 +13,7 @@ From https://zulip.com
 With Zulip, you can catch up on important conversations while ignoring irrelevant ones.
 :::
 
-## Preperation
+## Preparation
 
 The following placeholders will be used:
 

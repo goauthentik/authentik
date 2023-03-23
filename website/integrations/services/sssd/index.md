@@ -17,7 +17,7 @@ a consequence, it cannot be used to provide automount or sudo
 configuration nor can it provide netgroups or services to `nss`.
 Kerberos is also not supported.
 
-## Preperation
+## Preparation
 
 The following placeholders will be used:
 

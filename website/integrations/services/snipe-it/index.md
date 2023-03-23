@@ -87,7 +87,7 @@ Change the following fields
 -   LDAP Filter: &(objectClass=user)
 -   Username Field: mail
     :::note
-    Setting the Username fieled to mail is recommended in order to ensure the usernameisunique. See https://snipe-it.readme.io/docs/ldap-sync-login
+    Setting the Username field to mail is recommended in order to ensure the usernameisunique. See https://snipe-it.readme.io/docs/ldap-sync-login
     :::
 -   Allow unauthenticated bind: **unticked**
 -   Last Name: sn
