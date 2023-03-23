@@ -94,7 +94,7 @@ export class SearchSelect<T> extends AKElement {
 
     toForm(): unknown {
         if (!this.objects) {
-            return new PreventFormSubmit(t`Loading options...`);
+            throw new PreventFormSubmit(t`Loading options...`);
         }
         return this.value(this.selectedObject) || "";
     }

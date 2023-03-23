@@ -214,11 +214,11 @@ export abstract class Form<T> extends AKElement {
 
     async submit(ev: Event): Promise<unknown | undefined> {
         ev.preventDefault();
-        const data = this.serializeForm();
-        if (!data) {
-            return;
-        }
         try {
+            const data = this.serializeForm();
+            if (!data) {
+                return;
+            }
             const response = await this.send(data);
             showMessage({
                 level: MessageLevel.success,
