@@ -103,7 +103,7 @@ export class Tabs extends AKElement {
             if (this.pageIdentifier in params) {
                 if (this.querySelector(`[slot='${params[this.pageIdentifier]}']`) !== null) {
                     // To update the URL to match with the current slot
-                    this.currentPage = params[this.pageIdentifier] as string;
+                    this.onClick(params[this.pageIdentifier] as string);
                 }
             }
         }
