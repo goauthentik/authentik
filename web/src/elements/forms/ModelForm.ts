@@ -73,6 +73,9 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         if (!this._initialDataLoad && viewportVisible) {
             this.load().then(() => {
                 this._initialDataLoad = true;
+                // Class attributes changed in this.load() might not be @property()
+                // or @state() so let's trigger a re-render to be sure we get updated
+                this.requestUpdate();
             });
         }
         return super.render();
