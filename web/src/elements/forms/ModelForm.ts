@@ -18,9 +18,14 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         if (this.viewportCheck && !this.isInViewport) {
             return;
         }
+        if (this._isLoading) {
+            return;
+        }
+        this._isLoading = true;
         this.load().then(() => {
             this.loadInstance(value).then((instance) => {
                 this.instance = instance;
+                this._isLoading = false;
                 this.requestUpdate();
             });
         });
@@ -32,6 +37,8 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     private _initialLoad = false;
     // Keep track if we've done the general data loading of load()
     private _initialDataLoad = false;
+
+    private _isLoading = false;
 
     @property({ attribute: false })
     instance?: T = this.defaultInstance;
@@ -69,8 +76,9 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
         if (this._instancePk && !this._initialLoad && viewportVisible) {
             this.instancePk = this._instancePk;
             this._initialLoad = true;
-        }
-        if (!this._initialDataLoad && viewportVisible) {
+        } else if (!this._initialDataLoad && viewportVisible) {
+            // else if since if the above case triggered that will also call this.load(), so
+            // ensure we don't load again
             this.load().then(() => {
                 this._initialDataLoad = true;
                 // Class attributes changed in this.load() might not be @property()

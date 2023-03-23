@@ -19,7 +19,7 @@ export abstract class WizardForm extends Form<KeyUnknown> {
     @property({ attribute: false })
     nextDataCallback!: (data: KeyUnknown) => Promise<boolean>;
 
-    submit(): Promise<boolean> | undefined {
+    async submit(): Promise<boolean | undefined> {
         const data = this.serializeForm();
         if (!data) {
             return;

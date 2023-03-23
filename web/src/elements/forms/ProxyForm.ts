@@ -16,7 +16,7 @@ export abstract class ProxyForm extends Form<unknown> {
 
     innerElement?: Form<unknown>;
 
-    submit(ev: Event): Promise<unknown> | undefined {
+    async submit(ev: Event): Promise<unknown | undefined> {
         return this.innerElement?.submit(ev);
     }
 
