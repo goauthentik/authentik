@@ -13,7 +13,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
@@ -47,7 +46,7 @@ export function deviceTypeName(device: Device): string {
 @customElement("ak-user-settings-mfa")
 export class MFADevicesPage extends Table<Device> {
     @property({ attribute: false })
-    userSettings?: Promise<UserSetting[]>;
+    userSettings?: UserSetting[];
 
     checkbox = true;
 
@@ -70,41 +69,32 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     renderToolbar(): TemplateResult {
+        const settings = (this.userSettings || []).filter((stage) => {
+            if (stage.component === "ak-user-settings-password") {
+                return false;
+            }
+            return stage.configureUrl;
+        });
         return html`<ak-dropdown class="pf-c-dropdown">
                 <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
                     <span class="pf-c-dropdown__toggle-text">${t`Enroll`}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
-                    ${until(
-                        this.userSettings?.then((stages) => {
-                            return stages
-                                .filter((stage) => {
-                                    if (stage.component === "ak-user-settings-password") {
-                                        return false;
-                                    }
-                                    return stage.configureUrl;
-                                })
-                                .map((stage) => {
-                                    return html`<li>
-                                        <a
-                                            href="${ifDefined(stage.configureUrl)}${AndNext(
-                                                `/if/user/#/settings;${JSON.stringify({
-                                                    page: "page-mfa",
-                                                })}`,
-                                            )}"
-                                            class="pf-c-dropdown__menu-item"
-                                        >
-                                            ${stageToAuthenticatorName(stage)}
-                                        </a>
-                                    </li>`;
-                                });
-                        }),
-                        html`<ak-empty-state
-                            ?loading="${true}"
-                            header=${t`Loading`}
-                        ></ak-empty-state>`,
-                    )}
+                    ${settings.map((stage) => {
+                        return html`<li>
+                            <a
+                                href="${ifDefined(stage.configureUrl)}${AndNext(
+                                    `/if/user/#/settings;${JSON.stringify({
+                                        page: "page-mfa",
+                                    })}`,
+                                )}"
+                                class="pf-c-dropdown__menu-item"
+                            >
+                                ${stageToAuthenticatorName(stage)}
+                            </a>
+                        </li>`;
+                    })}
                 </ul>
             </ak-dropdown>
             ${super.renderToolbar()}`;
