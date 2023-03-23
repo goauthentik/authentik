@@ -5,6 +5,7 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -441,8 +442,8 @@ export class SAMLProviderViewPage extends AKElement {
     }
 
     renderTabPreview(): TemplateResult {
-        if (!this.provider) {
-            return html``;
+        if (!this.preview) {
+            return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
         }
         return html` <div
             class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"

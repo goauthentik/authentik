@@ -6,6 +6,7 @@ import { convertToTitle } from "@goauthentik/common/utils";
 import MDProviderOAuth2 from "@goauthentik/docs/providers/oauth2/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
@@ -343,7 +344,9 @@ export class OAuth2ProviderViewPage extends AKElement {
                     ${t`Example JWT payload (for currently authenticated user)`}
                 </div>
                 <div class="pf-c-card__body">
-                    <pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>
+                    ${this.preview
+                        ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
+                        : html` <ak-empty-state ?loading=${true}></ak-empty-state> `}
                 </div>
             </div>
         </div>`;
