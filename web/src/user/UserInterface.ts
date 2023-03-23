@@ -5,7 +5,7 @@ import {
     EVENT_WS_MESSAGE,
 } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
-import { UIConfig, UserDisplay, uiConfig } from "@goauthentik/common/ui/config";
+import { UserDisplay } from "@goauthentik/common/ui/config";
 import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
@@ -55,9 +55,6 @@ export class UserInterface extends Interface {
 
     @state()
     me?: SessionUser;
-
-    @state()
-    config?: UIConfig;
 
     static get styles(): CSSResult[] {
         return [
@@ -126,7 +123,6 @@ export class UserInterface extends Interface {
 
     async firstUpdated(): Promise<void> {
         this.me = await me();
-        this.config = await uiConfig();
         const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
             seen: false,
             ordering: "-created",
@@ -137,11 +133,11 @@ export class UserInterface extends Interface {
     }
 
     render(): TemplateResult {
-        if (!this.config || !this.me) {
+        if (!this.uiConfig || !this.me) {
             return html``;
         }
         let userDisplay = "";
-        switch (this.config.navbar.userDisplay) {
+        switch (this.uiConfig.navbar.userDisplay) {
             case UserDisplay.username:
                 userDisplay = this.me.user.username;
                 break;
@@ -155,7 +151,7 @@ export class UserInterface extends Interface {
                 userDisplay = this.me.user.username;
         }
         return html`<div class="pf-c-page">
-            <div class="background-wrapper" style="${this.config.theme.background}"></div>
+            <div class="background-wrapper" style="${this.uiConfig.theme.background}"></div>
             <header class="pf-c-page__header">
                 <div class="pf-c-page__header-brand">
                     <a href="#/" class="pf-c-page__header-brand-link">
@@ -168,7 +164,7 @@ export class UserInterface extends Interface {
                 </div>
                 <div class="pf-c-page__header-tools">
                     <div class="pf-c-page__header-tools-group">
-                        ${this.config.enabledFeatures.apiDrawer
+                        ${this.uiConfig.enabledFeatures.apiDrawer
                             ? html`<div
                                   class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
                               >
@@ -186,7 +182,7 @@ export class UserInterface extends Interface {
                                   </button>
                               </div>`
                             : html``}
-                        ${this.config.enabledFeatures.notificationDrawer
+                        ${this.uiConfig.enabledFeatures.notificationDrawer
                             ? html`<div
                                   class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
                               >
@@ -216,7 +212,7 @@ export class UserInterface extends Interface {
                                   </button>
                               </div> `
                             : html``}
-                        ${this.config.enabledFeatures.settings
+                        ${this.uiConfig.enabledFeatures.settings
                             ? html` <div class="pf-c-page__header-tools-item">
                                   <a class="pf-c-button pf-m-plain" type="button" href="#/settings">
                                       <i class="fas fa-cog" aria-hidden="true"></i>

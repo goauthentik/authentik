@@ -11,7 +11,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     Flow,
@@ -19,6 +18,7 @@ import {
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
     IdentificationStage,
+    PaginatedSourceList,
     SourcesApi,
     Stage,
     StagesApi,
@@ -33,6 +33,14 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
             stageUuid: pk,
         });
     }
+
+    async load(): Promise<void> {
+        this.sources = await new SourcesApi(DEFAULT_CONFIG).sourcesAllList({
+            ordering: "slug",
+        });
+    }
+
+    sources?: PaginatedSourceList;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -80,7 +88,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                 <span slot="header"> ${t`Stage-specific settings`} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`User fields`} name="userFields">
-                        <select name="users" class="pf-c-form-control" multiple>
+                        <select class="pf-c-form-control" multiple>
                             <option
                                 value=${UserFieldsEnum.Username}
                                 ?selected=${this.isUserFieldSelected(UserFieldsEnum.Username)}
@@ -187,35 +195,28 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         name="sources"
                     >
                         <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new SourcesApi(DEFAULT_CONFIG)
-                                    .sourcesAllList({})
-                                    .then((sources) => {
-                                        return sources.results.map((source) => {
-                                            let selected = Array.from(
-                                                this.instance?.sources || [],
-                                            ).some((su) => {
-                                                return su == source.pk;
-                                            });
-                                            // Creating a new instance, auto-select built-in source
-                                            // Only when no other sources exist
-                                            if (
-                                                !this.instance &&
-                                                source.component === "" &&
-                                                sources.results.length < 2
-                                            ) {
-                                                selected = true;
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(source.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${source.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.sources?.results.map((source) => {
+                                let selected = Array.from(this.instance?.sources || []).some(
+                                    (su) => {
+                                        return su == source.pk;
+                                    },
+                                );
+                                // Creating a new instance, auto-select built-in source
+                                // Only when no other sources exist
+                                if (
+                                    !this.instance &&
+                                    source.component === "" &&
+                                    (this.sources?.results || []).length < 2
+                                ) {
+                                    selected = true;
+                                }
+                                return html`<option
+                                    value=${ifDefined(source.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${source.name}
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP.`}

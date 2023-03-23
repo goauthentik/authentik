@@ -25,11 +25,6 @@ export class Radio<T> extends AKElement {
     @property()
     value?: T;
 
-    @property({ attribute: false })
-    onChange: (value: T) => void = () => {
-        return;
-    };
-
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -63,7 +58,13 @@ export class Radio<T> extends AKElement {
                         id=${elId}
                         @change=${() => {
                             this.value = opt.value;
-                            this.onChange(opt.value);
+                            this.dispatchEvent(
+                                new CustomEvent("change", {
+                                    bubbles: true,
+                                    composed: true,
+                                    detail: opt.value,
+                                }),
+                            );
                         }}
                         .checked=${opt.value === this.value}
                     />

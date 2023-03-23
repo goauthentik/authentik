@@ -10,9 +10,15 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
-import { AdminApi, EventMatcherPolicy, EventsApi, PoliciesApi, TypeCreate } from "@goauthentik/api";
+import {
+    AdminApi,
+    App,
+    EventMatcherPolicy,
+    EventsApi,
+    PoliciesApi,
+    TypeCreate,
+} from "@goauthentik/api";
 
 @customElement("ak-policy-event-matcher-form")
 export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string> {
@@ -21,6 +27,12 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
             policyUuid: pk,
         });
     }
+
+    async load(): Promise<void> {
+        this.apps = await new AdminApi(DEFAULT_CONFIG).adminAppsList();
+    }
+
+    apps?: App[];
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -118,19 +130,14 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                             <option value="" ?selected=${this.instance?.app === undefined}>
                                 ---------
                             </option>
-                            ${until(
-                                new AdminApi(DEFAULT_CONFIG).adminAppsList().then((apps) => {
-                                    return apps.map((app) => {
-                                        return html`<option
-                                            value=${app.name}
-                                            ?selected=${this.instance?.app === app.name}
-                                        >
-                                            ${app.label}
-                                        </option>`;
-                                    });
-                                }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.apps?.map((app) => {
+                                return html`<option
+                                    value=${app.name}
+                                    ?selected=${this.instance?.app === app.name}
+                                >
+                                    ${app.label}
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Match events created by selected application. When left empty, all applications are matched.`}

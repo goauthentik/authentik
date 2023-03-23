@@ -1,6 +1,6 @@
-import { tenant } from "@goauthentik/common/api/config";
+import { config, tenant } from "@goauthentik/common/api/config";
 import { EVENT_LOCALE_CHANGE, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 
 import { LitElement } from "lit";
 import { state } from "lit/decorators.js";
@@ -9,13 +9,13 @@ import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import ThemeDark from "@goauthentik/common/styles/theme-dark.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CurrentTenant, UiThemeEnum } from "@goauthentik/api";
+import { Config, CurrentTenant, UiThemeEnum } from "@goauthentik/api";
 
-export function rootInterface(): Interface | undefined {
+export function rootInterface<T extends Interface>(): T | undefined {
     const el = Array.from(document.body.querySelectorAll("*")).filter(
         (el) => el instanceof Interface,
     );
-    return el[0] as Interface;
+    return el[0] as T;
 }
 
 let css: Promise<string[]> | undefined;
@@ -171,10 +171,17 @@ export class Interface extends AKElement {
     @state()
     tenant?: CurrentTenant;
 
+    @state()
+    uiConfig?: UIConfig;
+
+    @state()
+    config?: Config;
+
     constructor() {
         super();
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFBase];
         tenant().then((tenant) => (this.tenant = tenant));
+        config().then((config) => (this.config = config));
     }
 
     _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
@@ -183,7 +190,9 @@ export class Interface extends AKElement {
     }
 
     async getTheme(): Promise<UiThemeEnum> {
-        const config = await uiConfig();
-        return config.theme?.base || UiThemeEnum.Automatic;
+        if (!this.uiConfig) {
+            this.uiConfig = await uiConfig();
+        }
+        return this.uiConfig.theme?.base || UiThemeEnum.Automatic;
     }
 }

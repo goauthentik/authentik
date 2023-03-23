@@ -10,9 +10,14 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
-import { PoliciesApi, PromptStage, StagesApi } from "@goauthentik/api";
+import {
+    PaginatedPolicyList,
+    PaginatedPromptList,
+    PoliciesApi,
+    PromptStage,
+    StagesApi,
+} from "@goauthentik/api";
 
 @customElement("ak-stage-prompt-form")
 export class PromptStageForm extends ModelForm<PromptStage, string> {
@@ -21,6 +26,18 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
             stageUuid: pk,
         });
     }
+
+    async load(): Promise<void> {
+        this.prompts = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsList({
+            ordering: "field_name",
+        });
+        this.policies = await new PoliciesApi(DEFAULT_CONFIG).policiesAllList({
+            ordering: "name",
+        });
+    }
+
+    prompts?: PaginatedPromptList;
+    policies?: PaginatedPolicyList;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -61,28 +78,19 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`Fields`} ?required=${true} name="fields">
                         <select name="users" class="pf-c-form-control" multiple>
-                            ${until(
-                                new StagesApi(DEFAULT_CONFIG)
-                                    .stagesPromptPromptsList({
-                                        ordering: "field_name",
-                                    })
-                                    .then((prompts) => {
-                                        return prompts.results.map((prompt) => {
-                                            const selected = Array.from(
-                                                this.instance?.fields || [],
-                                            ).some((su) => {
-                                                return su == prompt.pk;
-                                            });
-                                            return html`<option
-                                                value=${ifDefined(prompt.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${t`${prompt.name} ("${prompt.fieldKey}", of type ${prompt.type})`}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.prompts?.results.map((prompt) => {
+                                const selected = Array.from(this.instance?.fields || []).some(
+                                    (su) => {
+                                        return su == prompt.pk;
+                                    },
+                                );
+                                return html`<option
+                                    value=${ifDefined(prompt.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${t`${prompt.name} ("${prompt.fieldKey}", of type ${prompt.type})`}
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Hold control/command to select multiple items.`}
@@ -101,28 +109,19 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
                         name="validationPolicies"
                     >
                         <select name="users" class="pf-c-form-control" multiple>
-                            ${until(
-                                new PoliciesApi(DEFAULT_CONFIG)
-                                    .policiesAllList({
-                                        ordering: "name",
-                                    })
-                                    .then((policies) => {
-                                        return policies.results.map((policy) => {
-                                            const selected = Array.from(
-                                                this.instance?.validationPolicies || [],
-                                            ).some((su) => {
-                                                return su == policy.pk;
-                                            });
-                                            return html`<option
-                                                value=${ifDefined(policy.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${t`${policy.name} (${policy.verboseName})`}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.policies?.results.map((policy) => {
+                                const selected = Array.from(
+                                    this.instance?.validationPolicies || [],
+                                ).some((su) => {
+                                    return su == policy.pk;
+                                });
+                                return html`<option
+                                    value=${ifDefined(policy.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${t`${policy.name} (${policy.verboseName})`}
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Selected policies are executed when the stage is submitted to validate the data.`}

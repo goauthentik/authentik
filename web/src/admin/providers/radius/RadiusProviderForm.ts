@@ -9,9 +9,9 @@ import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
 
-import { customElement } from "lit-element";
-import { TemplateResult, html } from "lit-html";
+import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit-html/directives/if-defined.js";
+import { customElement } from "lit/decorators.js";
 
 import {
     Flow,

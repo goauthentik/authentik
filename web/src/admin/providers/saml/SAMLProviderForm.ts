@@ -12,7 +12,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     CertificateKeyPair,
@@ -23,6 +22,7 @@ import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
+    PaginatedSAMLPropertyMappingList,
     PropertymappingsApi,
     PropertymappingsSamlListRequest,
     ProvidersApi,
@@ -39,6 +39,16 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
             id: pk,
         });
     }
+
+    async load(): Promise<void> {
+        this.propertyMappings = await new PropertymappingsApi(
+            DEFAULT_CONFIG,
+        ).propertymappingsSamlList({
+            ordering: "saml_name",
+        });
+    }
+
+    propertyMappings?: PaginatedSAMLPropertyMappingList;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -241,36 +251,27 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new PropertymappingsApi(DEFAULT_CONFIG)
-                                    .propertymappingsSamlList({
-                                        ordering: "saml_name",
-                                    })
-                                    .then((mappings) => {
-                                        return mappings.results.map((mapping) => {
-                                            let selected = false;
-                                            if (!this.instance?.propertyMappings) {
-                                                selected =
-                                                    mapping.managed?.startsWith(
-                                                        "goauthentik.io/providers/saml",
-                                                    ) || false;
-                                            } else {
-                                                selected = Array.from(
-                                                    this.instance?.propertyMappings,
-                                                ).some((su) => {
-                                                    return su == mapping.pk;
-                                                });
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(mapping.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${mapping.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.propertyMappings?.results.map((mapping) => {
+                                let selected = false;
+                                if (!this.instance?.propertyMappings) {
+                                    selected =
+                                        mapping.managed?.startsWith(
+                                            "goauthentik.io/providers/saml",
+                                        ) || false;
+                                } else {
+                                    selected = Array.from(this.instance?.propertyMappings).some(
+                                        (su) => {
+                                            return su == mapping.pk;
+                                        },
+                                    );
+                                }
+                                return html`<option
+                                    value=${ifDefined(mapping.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${mapping.name}
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Hold control/command to select multiple items.`}

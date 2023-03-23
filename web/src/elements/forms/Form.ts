@@ -7,7 +7,7 @@ import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -22,7 +22,7 @@ import { ResponseError, ValidationError } from "@goauthentik/api";
 
 export class PreventFormSubmit {
     // Stub class which can be returned by form elements to prevent the form from submitting
-    constructor(public message: string) {}
+    constructor(public message: string, public element?: HorizontalFormElement) {}
 }
 
 export class APIError extends Error {
@@ -36,16 +36,15 @@ export interface KeyUnknown {
 }
 
 @customElement("ak-form")
-export class Form<T> extends AKElement {
+export abstract class Form<T> extends AKElement {
+    abstract send(data: T): Promise<unknown>;
+
     viewportCheck = true;
 
     @property()
     successMessage = "";
 
-    @property()
-    send!: (data: T) => Promise<unknown>;
-
-    @property({ attribute: false })
+    @state()
     nonFieldErrors?: string[];
 
     static get styles(): CSSResult[] {
@@ -177,17 +176,15 @@ export class Form<T> extends AKElement {
                 json[element.name] = inputElement.checked;
             } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
                 const select = inputElement as unknown as SearchSelect<unknown>;
-                let value: unknown;
                 try {
-                    value = select.toForm();
-                } catch {
-                    console.debug("authentik/form: SearchSelect.value error");
-                    return;
+                    const value = select.toForm();
+                    json[element.name] = value;
+                } catch (exc) {
+                    if (exc instanceof PreventFormSubmit) {
+                        throw new PreventFormSubmit(exc.message, element);
+                    }
+                    throw exc;
                 }
-                if (value instanceof PreventFormSubmit) {
-                    throw new Error(value.message);
-                }
-                json[element.name] = value;
             } else {
                 this.serializeFieldRecursive(inputElement, inputElement.value, json);
             }
@@ -215,30 +212,27 @@ export class Form<T> extends AKElement {
         parent[nameElements[nameElements.length - 1]] = value;
     }
 
-    submit(ev: Event): Promise<unknown> | undefined {
+    async submit(ev: Event): Promise<unknown | undefined> {
         ev.preventDefault();
-        const data = this.serializeForm();
-        if (!data) {
-            return;
-        }
-        return this.send(data)
-            .then((r) => {
-                showMessage({
-                    level: MessageLevel.success,
-                    message: this.getSuccessMessage(),
-                });
-                this.dispatchEvent(
-                    new CustomEvent(EVENT_REFRESH, {
-                        bubbles: true,
-                        composed: true,
-                    }),
-                );
-                return r;
-            })
-            .catch(async (ex: Error | ResponseError) => {
-                if (!(ex instanceof ResponseError)) {
-                    throw ex;
-                }
+        try {
+            const data = this.serializeForm();
+            if (!data) {
+                return;
+            }
+            const response = await this.send(data);
+            showMessage({
+                level: MessageLevel.success,
+                message: this.getSuccessMessage(),
+            });
+            this.dispatchEvent(
+                new CustomEvent(EVENT_REFRESH, {
+                    bubbles: true,
+                    composed: true,
+                }),
+            );
+            return response;
+        } catch (ex) {
+            if (ex instanceof ResponseError) {
                 let msg = ex.response.statusText;
                 if (ex.response.status > 399 && ex.response.status < 500) {
                     const errorMessage: ValidationError = await ex.response.json();
@@ -277,9 +271,14 @@ export class Form<T> extends AKElement {
                     message: msg,
                     level: MessageLevel.error,
                 });
-                // rethrow the error so the form doesn't close
-                throw ex;
-            });
+            }
+            if (ex instanceof PreventFormSubmit && ex.element) {
+                ex.element.errorMessages = [ex.message];
+                ex.element.invalid = true;
+            }
+            // rethrow the error so the form doesn't close
+            throw ex;
+        }
     }
 
     renderForm(): TemplateResult {

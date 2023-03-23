@@ -2,6 +2,7 @@ import { DesignationToLabel, LayoutToLabel } from "@goauthentik/admin/flows/util
 import { AuthenticationEnum } from "@goauthentik/api/dist/models/AuthenticationEnum";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -12,7 +13,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     CapabilitiesEnum,
@@ -315,73 +315,62 @@ export class FlowForm extends ModelForm<Flow, string> {
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    ${until(
-                        config().then((c) => {
-                            if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
-                                return html`<ak-form-element-horizontal
-                                        label=${t`Background`}
-                                        name="background"
-                                    >
-                                        <input type="file" value="" class="pf-c-form-control" />
-                                        ${this.instance?.background
-                                            ? html`
-                                                  <p class="pf-c-form__helper-text">
-                                                      ${t`Currently set to:`}
-                                                      ${this.instance?.background}
-                                                  </p>
-                                              `
-                                            : html``}
-                                        <p class="pf-c-form__helper-text">
-                                            ${t`Background shown during execution.`}
-                                        </p>
-                                    </ak-form-element-horizontal>
-                                    ${this.instance?.background
-                                        ? html`
-                                              <ak-form-element-horizontal>
-                                                  <label class="pf-c-switch">
-                                                      <input
-                                                          class="pf-c-switch__input"
-                                                          type="checkbox"
-                                                          @change=${(ev: Event) => {
-                                                              const target =
-                                                                  ev.target as HTMLInputElement;
-                                                              this.clearBackground = target.checked;
-                                                          }}
-                                                      />
-                                                      <span class="pf-c-switch__toggle">
-                                                          <span class="pf-c-switch__toggle-icon">
-                                                              <i
-                                                                  class="fas fa-check"
-                                                                  aria-hidden="true"
-                                                              ></i>
-                                                          </span>
-                                                      </span>
-                                                      <span class="pf-c-switch__label">
-                                                          ${t`Clear icon`}
-                                                      </span>
-                                                  </label>
-                                                  <p class="pf-c-form__helper-text">
-                                                      ${t`Delete currently set background image.`}
-                                                  </p>
-                                              </ak-form-element-horizontal>
-                                          `
-                                        : html``}`;
-                            }
-                            return html`<ak-form-element-horizontal
-                                label=${t`Background`}
-                                name="background"
-                            >
-                                <input
-                                    type="text"
-                                    value="${first(this.instance?.background, "")}"
-                                    class="pf-c-form-control"
-                                />
-                                <p class="pf-c-form__helper-text">
-                                    ${t`Background shown during execution.`}
-                                </p>
-                            </ak-form-element-horizontal>`;
-                        }),
-                    )}
+                    ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.SaveMedia)
+                        ? html`<ak-form-element-horizontal label=${t`Background`} name="background">
+                                  <input type="file" value="" class="pf-c-form-control" />
+                                  ${this.instance?.background
+                                      ? html`
+                                            <p class="pf-c-form__helper-text">
+                                                ${t`Currently set to:`} ${this.instance?.background}
+                                            </p>
+                                        `
+                                      : html``}
+
+                                  <p class="pf-c-form__helper-text">
+                                      ${t`Background shown during execution.`}
+                                  </p>
+                              </ak-form-element-horizontal>
+                              ${this.instance?.background
+                                  ? html`
+                                        <ak-form-element-horizontal>
+                                            <label class="pf-c-switch">
+                                                <input
+                                                    class="pf-c-switch__input"
+                                                    type="checkbox"
+                                                    @change=${(ev: Event) => {
+                                                        const target =
+                                                            ev.target as HTMLInputElement;
+                                                        this.clearBackground = target.checked;
+                                                    }}
+                                                />
+                                                <span class="pf-c-switch__toggle">
+                                                    <span class="pf-c-switch__toggle-icon">
+                                                        <i
+                                                            class="fas fa-check"
+                                                            aria-hidden="true"
+                                                        ></i>
+                                                    </span>
+                                                </span>
+                                                <span class="pf-c-switch__label">
+                                                    ${t`Clear background`}
+                                                </span>
+                                            </label>
+                                            <p class="pf-c-form__helper-text">
+                                                ${t`Delete currently set background image.`}
+                                            </p>
+                                        </ak-form-element-horizontal>
+                                    `
+                                  : html``}`
+                        : html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                              <input
+                                  type="text"
+                                  value="${first(this.instance?.background, "")}"
+                                  class="pf-c-form-control"
+                              />
+                              <p class="pf-c-form__helper-text">
+                                  ${t`Background shown during execution.`}
+                              </p>
+                          </ak-form-element-horizontal>`}
                 </div>
             </ak-form-group>
         </form>`;

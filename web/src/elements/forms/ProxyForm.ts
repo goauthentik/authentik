@@ -4,7 +4,7 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-proxy-form")
-export class ProxyForm extends Form<unknown> {
+export abstract class ProxyForm extends Form<unknown> {
     @property()
     type!: string;
 
@@ -16,7 +16,7 @@ export class ProxyForm extends Form<unknown> {
 
     innerElement?: Form<unknown>;
 
-    submit(ev: Event): Promise<unknown> | undefined {
+    async submit(ev: Event): Promise<unknown | undefined> {
         return this.innerElement?.submit(ev);
     }
 
@@ -39,7 +39,9 @@ export class ProxyForm extends Form<unknown> {
         if (this.type in this.typeMap) {
             elementName = this.typeMap[this.type];
         }
-        this.innerElement = document.createElement(elementName) as Form<unknown>;
+        if (!this.innerElement) {
+            this.innerElement = document.createElement(elementName) as Form<unknown>;
+        }
         this.innerElement.viewportCheck = this.viewportCheck;
         for (const k in this.args) {
             this.innerElement.setAttribute(k, this.args[k] as string);

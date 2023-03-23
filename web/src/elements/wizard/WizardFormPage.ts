@@ -13,13 +13,13 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-wizard-form")
-export class WizardForm extends Form<KeyUnknown> {
+export abstract class WizardForm extends Form<KeyUnknown> {
     viewportCheck = false;
 
     @property({ attribute: false })
     nextDataCallback!: (data: KeyUnknown) => Promise<boolean>;
 
-    submit(): Promise<boolean> | undefined {
+    async submit(): Promise<boolean | undefined> {
         const data = this.serializeForm();
         if (!data) {
             return;
