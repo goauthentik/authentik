@@ -4,6 +4,20 @@ UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
 
+CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
+		-I .github/codespell-words.txt \
+		-S 'web/src/locales/**' \
+		authentik \
+		internal \
+		cmd \
+		web/src \
+		website/src \
+		website/blog \
+		website/developer-docs \
+		website/docs \
+		website/integrations \
+		website/src
+
 all: lint-fix lint test gen web
 
 test-go:
@@ -26,21 +40,7 @@ test:
 lint-fix:
 	isort authentik tests scripts lifecycle
 	black authentik tests scripts lifecycle
-	codespell \
-		-D - -D .github/codespell-dictionary.txt \
-		-I .github/codespell-words.txt \
-		-S 'web/src/locales/**' \
-		-w \
-			authentik \
-			internal \
-			cmd \
-			web/src \
-			website/src \
-			website/blog \
-			website/developer-docs \
-			website/docs \
-			website/integrations \
-			website/src
+	codespell -w $(CODESPELL_ARGS)
 
 lint:
 	pylint authentik tests lifecycle
@@ -178,6 +178,9 @@ ci-pylint: ci--meta-debug
 
 ci-black: ci--meta-debug
 	black --check $(PY_SOURCES)
+
+ci-codespell: ci--meta-debug
+	codespell $(CODESPELL_ARGS) -s
 
 ci-isort: ci--meta-debug
 	isort --check $(PY_SOURCES)
