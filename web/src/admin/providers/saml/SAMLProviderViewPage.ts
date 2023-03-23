@@ -18,7 +18,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -32,7 +31,13 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CryptoApi, ProvidersApi, SAMLMetadata, SAMLProvider } from "@goauthentik/api";
+import {
+    CertificateKeyPair,
+    CryptoApi,
+    ProvidersApi,
+    SAMLMetadata,
+    SAMLProvider,
+} from "@goauthentik/api";
 
 interface SAMLPreviewAttribute {
     attributes: {
@@ -55,7 +60,23 @@ export class SAMLProviderViewPage extends AKElement {
             .providersSamlRetrieve({
                 id: value,
             })
-            .then((prov) => (this.provider = prov));
+            .then((prov) => {
+                this.provider = prov;
+                if (prov.signingKp) {
+                    new CryptoApi(DEFAULT_CONFIG)
+                        .cryptoCertificatekeypairsRetrieve({
+                            kpUuid: prov.signingKp,
+                        })
+                        .then((kp) => (this.signer = kp));
+                }
+                if (prov.verificationKp) {
+                    new CryptoApi(DEFAULT_CONFIG)
+                        .cryptoCertificatekeypairsRetrieve({
+                            kpUuid: prov.verificationKp,
+                        })
+                        .then((kp) => (this.verifier = kp));
+                }
+            });
     }
 
     @property({ attribute: false })
@@ -66,6 +87,12 @@ export class SAMLProviderViewPage extends AKElement {
 
     @state()
     metadata?: SAMLMetadata;
+
+    @state()
+    signer?: CertificateKeyPair;
+
+    @state()
+    verifier?: CertificateKeyPair;
 
     static get styles(): CSSResult[] {
         return [
@@ -91,7 +118,7 @@ export class SAMLProviderViewPage extends AKElement {
         });
     }
 
-    async renderRelatedObjects(): Promise<TemplateResult> {
+    renderRelatedObjects(): TemplateResult {
         const relatedObjects = [];
         if (this.provider?.assignedApplicationName) {
             relatedObjects.push(html`<div class="pf-c-description-list__group">
@@ -129,10 +156,7 @@ export class SAMLProviderViewPage extends AKElement {
                 </dd>
             </div>`);
         }
-        if (this.provider?.signingKp) {
-            const kp = await new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsRetrieve({
-                kpUuid: this.provider.signingKp,
-            });
+        if (this.signer) {
             relatedObjects.push(html`<div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
                     <span class="pf-c-description-list__text"
@@ -141,7 +165,9 @@ export class SAMLProviderViewPage extends AKElement {
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
-                        <a class="pf-c-button pf-m-primary" href=${kp.certificateDownloadUrl}
+                        <a
+                            class="pf-c-button pf-m-primary"
+                            href=${this.signer.certificateDownloadUrl}
                             >${t`Download`}</a
                         >
                     </div>
@@ -283,7 +309,7 @@ export class SAMLProviderViewPage extends AKElement {
                         </ak-forms-modal>
                     </div>
                 </div>
-                ${until(this.renderRelatedObjects())}
+                ${this.renderRelatedObjects()}
                 ${
                     this.provider.assignedApplicationName
                         ? html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">

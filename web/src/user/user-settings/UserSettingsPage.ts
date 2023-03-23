@@ -1,10 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { me } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
+import { UserInterface } from "@goauthentik/user/UserInterface";
 import "@goauthentik/user/user-settings/details/UserPassword";
 import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";
 import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
@@ -111,26 +111,20 @@ export class UserSettingsPage extends AKElement {
                         data-tab-title="${t`Sessions`}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        ${until(
-                            me().then((u) => {
-                                return html`<ak-user-session-list
-                                    targetUser=${u.user.username}
-                                ></ak-user-session-list>`;
-                            }),
-                        )}
+                        <ak-user-session-list
+                            targetUser=${ifDefined(
+                                rootInterface<UserInterface>()?.me?.user.username,
+                            )}
+                        ></ak-user-session-list>
                     </section>
                     <section
                         slot="page-consents"
                         data-tab-title="${t`Consent`}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        ${until(
-                            me().then((u) => {
-                                return html`<ak-user-consent-list
-                                    userId=${u.user.pk}
-                                ></ak-user-consent-list>`;
-                            }),
-                        )}
+                        <ak-user-consent-list
+                            userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
+                        ></ak-user-consent-list>
                     </section>
                     <section
                         slot="page-mfa"

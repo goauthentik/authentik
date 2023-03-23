@@ -1,3 +1,4 @@
+import { AdminInterface } from "@goauthentik/admin/AdminInterface";
 import "@goauthentik/admin/users/ServiceAccountForm";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
@@ -6,7 +7,6 @@ import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { rootInterface } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
@@ -25,7 +25,6 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -89,6 +88,10 @@ export class UserListPage extends TablePage<User> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+        const currentUser = rootInterface<AdminInterface>()?.user;
+        const shouldShowWarning = this.selectedElements.find((el) => {
+            return el.pk === currentUser?.user.pk || el.pk == currentUser?.original?.pk;
+        });
         return html`<ak-forms-delete-bulk
             objectLabel=${t`User(s)`}
             .objects=${this.selectedElements}
@@ -110,28 +113,18 @@ export class UserListPage extends TablePage<User> {
                 });
             }}
         >
-            ${until(
-                me().then((user) => {
-                    const shouldShowWarning = this.selectedElements.find((el) => {
-                        return el.pk === user.user.pk || el.pk == user.original?.pk;
-                    });
-                    if (shouldShowWarning) {
-                        return html`
-                            <div slot="notice" class="pf-c-form__alert">
-                                <div class="pf-c-alert pf-m-inline pf-m-warning">
-                                    <div class="pf-c-alert__icon">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                    </div>
-                                    <h4 class="pf-c-alert__title">
-                                        ${t`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`}
-                                    </h4>
-                                </div>
-                            </div>
-                        `;
-                    }
-                    return html``;
-                }),
-            )}
+            ${shouldShowWarning
+                ? html`<div slot="notice" class="pf-c-form__alert">
+                      <div class="pf-c-alert pf-m-inline pf-m-warning">
+                          <div class="pf-c-alert__icon">
+                              <i class="fas fa-exclamation-circle"></i>
+                          </div>
+                          <h4 class="pf-c-alert__title">
+                              ${t`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`}
+                          </h4>
+                      </div>
+                  </div>`
+                : html``}
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
@@ -320,7 +313,7 @@ export class UserListPage extends TablePage<User> {
                 <div class="pf-c-card__title">${t`User folders`}</div>
                 <div class="pf-c-card__body">
                     <ak-treeview
-                        .items=${this.userPaths?.paths}
+                        .items=${this.userPaths?.paths || []}
                         activePath=${this.activePath}
                     ></ak-treeview>
                 </div>
