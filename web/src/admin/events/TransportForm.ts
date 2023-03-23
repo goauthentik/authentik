@@ -2,6 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { t } from "@lingui/macro";
@@ -56,35 +57,6 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         }
     };
 
-    renderTransportModes(): TemplateResult {
-        return html`
-            <option
-                value=${NotificationTransportModeEnum.Local}
-                ?selected=${this.instance?.mode === NotificationTransportModeEnum.Local}
-            >
-                ${t`Local (notifications will be created within authentik)`}
-            </option>
-            <option
-                value=${NotificationTransportModeEnum.Email}
-                ?selected=${this.instance?.mode === NotificationTransportModeEnum.Email}
-            >
-                ${t`Email`}
-            </option>
-            <option
-                value=${NotificationTransportModeEnum.Webhook}
-                ?selected=${this.instance?.mode === NotificationTransportModeEnum.Webhook}
-            >
-                ${t`Webhook (generic)`}
-            </option>
-            <option
-                value=${NotificationTransportModeEnum.WebhookSlack}
-                ?selected=${this.instance?.mode === NotificationTransportModeEnum.WebhookSlack}
-            >
-                ${t`Webhook (Slack/Discord)`}
-            </option>
-        `;
-    }
-
     onModeChange(mode: string | undefined): void {
         if (
             mode === NotificationTransportModeEnum.Webhook ||
@@ -107,15 +79,32 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Mode`} ?required=${true} name="mode">
-                <select
-                    class="pf-c-form-control"
-                    @change=${(ev: Event) => {
-                        const current = (ev.target as HTMLInputElement).value;
-                        this.onModeChange(current);
+                <ak-radio
+                    @change=${(ev: CustomEvent<NotificationTransportModeEnum>) => {
+                        this.onModeChange(ev.detail);
                     }}
+                    .options=${[
+                        {
+                            label: t`Local (notifications will be created within authentik)`,
+                            value: NotificationTransportModeEnum.Local,
+                            default: true,
+                        },
+                        {
+                            label: t`Email`,
+                            value: NotificationTransportModeEnum.Email,
+                        },
+                        {
+                            label: t`Webhook (generic)`,
+                            value: NotificationTransportModeEnum.Webhook,
+                        },
+                        {
+                            label: t`Webhook (Slack/Discord)`,
+                            value: NotificationTransportModeEnum.WebhookSlack,
+                        },
+                    ]}
+                    .value=${this.instance?.mode}
                 >
-                    ${this.renderTransportModes()}
-                </select>
+                </ak-radio>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}

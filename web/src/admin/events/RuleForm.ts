@@ -120,7 +120,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 <ak-radio
                     .options=${[
                         {
-                            label: "Alert",
+                            label: t`Alert`,
                             value: SeverityEnum.Alert,
                             default: true,
                         },
