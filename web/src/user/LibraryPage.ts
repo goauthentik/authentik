@@ -1,7 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { LayoutType, UIConfig, uiConfig } from "@goauthentik/common/ui/config";
+import { LayoutType } from "@goauthentik/common/ui/config";
 import { groupBy } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
@@ -12,7 +12,7 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
+import { ifDefined } from "lit/directives/if-defined";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
@@ -130,10 +130,11 @@ export class LibraryPage extends AKElement {
         return groupBy(this.filterApps(), (app) => app.group || "");
     }
 
-    renderApps(config: UIConfig): TemplateResult {
+    renderApps(): TemplateResult {
         let groupClass = "";
         let groupGrid = "";
-        switch (config.layout.type) {
+        const uiConfig = rootInterface()?.uiConfig;
+        switch (uiConfig?.layout.type) {
             case LayoutType.row:
                 groupClass = "pf-m-12-col";
                 groupGrid =
@@ -161,7 +162,7 @@ export class LibraryPage extends AKElement {
                             return html`<ak-library-app
                                 class="pf-l-grid__item"
                                 .application=${app}
-                                background=${config.theme.cardBackground}
+                                background=${ifDefined(uiConfig?.theme.cardBackground)}
                                 ?selected=${app.slug === this.selectedApp?.slug}
                             ></ak-library-app>`;
                         })}
@@ -172,57 +173,48 @@ export class LibraryPage extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`${until(
-            uiConfig().then((config) => {
-                return html`<main
-                    role="main"
-                    class="pf-c-page__main"
-                    tabindex="-1"
-                    id="main-content"
-                >
-                    <div class="pf-c-content header">
-                        <h1>${t`My applications`}</h1>
-                        ${config.enabledFeatures.search
-                            ? html`<input
-                                  @input=${(ev: InputEvent) => {
-                                      this.query = (ev.target as HTMLInputElement).value;
-                                      updateURLParams({
-                                          search: this.query,
-                                      });
-                                      if (!this.fuse) return;
-                                      const apps = this.fuse.search(this.query);
-                                      if (apps.length < 1) return;
-                                      this.selectedApp = apps[0].item;
-                                  }}
-                                  @keydown=${(ev: KeyboardEvent) => {
-                                      if (ev.key === "Enter" && this.selectedApp?.launchUrl) {
-                                          window.location.assign(this.selectedApp.launchUrl);
-                                      } else if (ev.key === "Escape") {
-                                          (ev.target as HTMLInputElement).value = "";
-                                          this.query = "";
-                                          updateURLParams({
-                                              search: this.query,
-                                          });
-                                          this.selectedApp = undefined;
-                                      }
-                                  }}
-                                  type="text"
-                                  class="pf-u-display-none pf-u-display-block-on-md"
-                                  autofocus
-                                  placeholder=${t`Search...`}
-                              />`
-                            : html``}
-                    </div>
-                    <section class="pf-c-page__main-section">
-                        ${loading(
-                            this.apps,
-                            html`${this.filterApps().length > 0
-                                ? this.renderApps(config)
-                                : this.renderEmptyState()}`,
-                        )}
-                    </section>
-                </main>`;
-            }),
-        )}`;
+        return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
+            <div class="pf-c-content header">
+                <h1>${t`My applications`}</h1>
+                ${rootInterface()?.uiConfig?.enabledFeatures.search
+                    ? html`<input
+                          @input=${(ev: InputEvent) => {
+                              this.query = (ev.target as HTMLInputElement).value;
+                              updateURLParams({
+                                  search: this.query,
+                              });
+                              if (!this.fuse) return;
+                              const apps = this.fuse.search(this.query);
+                              if (apps.length < 1) return;
+                              this.selectedApp = apps[0].item;
+                          }}
+                          @keydown=${(ev: KeyboardEvent) => {
+                              if (ev.key === "Enter" && this.selectedApp?.launchUrl) {
+                                  window.location.assign(this.selectedApp.launchUrl);
+                              } else if (ev.key === "Escape") {
+                                  (ev.target as HTMLInputElement).value = "";
+                                  this.query = "";
+                                  updateURLParams({
+                                      search: this.query,
+                                  });
+                                  this.selectedApp = undefined;
+                              }
+                          }}
+                          type="text"
+                          class="pf-u-display-none pf-u-display-block-on-md"
+                          autofocus
+                          placeholder=${t`Search...`}
+                      />`
+                    : html``}
+            </div>
+            <section class="pf-c-page__main-section">
+                ${loading(
+                    this.apps,
+                    html`${this.filterApps().length > 0
+                        ? this.renderApps()
+                        : this.renderEmptyState()}`,
+                )}
+            </section>
+        </main>`;
     }
 }

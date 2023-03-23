@@ -72,9 +72,6 @@ export class SidebarItem extends AKElement {
     @property()
     path?: string;
 
-    @property({ attribute: false })
-    condition: () => Promise<boolean> = async () => true;
-
     activeMatchers: RegExp[] = [];
 
     @property({ type: Boolean })
@@ -148,13 +145,7 @@ export class SidebarItem extends AKElement {
         return html`${until(this.renderInner())}`;
     }
 
-    async renderInner(): Promise<TemplateResult> {
-        if (this.condition) {
-            const result = await this.condition();
-            if (!result) {
-                return html``;
-            }
-        }
+    renderInner(): TemplateResult {
         if (this.childItems.length > 0) {
             return html`<li
                 class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"

@@ -3,10 +3,11 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
-import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
+import { rootInterface } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -25,7 +26,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
@@ -189,19 +189,16 @@ export class RelatedUserList extends Table<User> {
                         <i class="fas fa-edit"></i>
                     </button>
                 </ak-forms-modal>
-                ${until(
-                    config().then((config) => {
-                        if (config.capabilities.includes(CapabilitiesEnum.Impersonate)) {
-                            return html`<a
-                                class="pf-c-button pf-m-tertiary"
-                                href="${`/-/impersonation/${item.pk}/`}"
-                            >
-                                ${t`Impersonate`}
-                            </a>`;
-                        }
-                        return html``;
-                    }),
-                )}`,
+                ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.Impersonate)
+                    ? html`
+                          <a
+                              class="pf-c-button pf-m-tertiary"
+                              href="${`/-/impersonation/${item.pk}/`}"
+                          >
+                              ${t`Impersonate`}
+                          </a>
+                      `
+                    : html``}`,
         ];
     }
 
@@ -266,70 +263,61 @@ export class RelatedUserList extends Table<User> {
                                             ${t`Set password`}
                                         </button>
                                     </ak-forms-modal>
-                                    ${until(
-                                        tenant().then((tenant) => {
-                                            if (!tenant.flowRecovery) {
-                                                return html`
-                                                    <p>
-                                                        ${t`To let a user directly reset a their password, configure a recovery flow on the currently active tenant.`}
-                                                    </p>
-                                                `;
-                                            }
-                                            return html`
-                                                <ak-action-button
-                                                    class="pf-m-secondary"
-                                                    .apiRequest=${() => {
-                                                        return new CoreApi(DEFAULT_CONFIG)
-                                                            .coreUsersRecoveryRetrieve({
-                                                                id: item.pk || 0,
-                                                            })
-                                                            .then((rec) => {
-                                                                showMessage({
-                                                                    level: MessageLevel.success,
-                                                                    message: t`Successfully generated recovery link`,
-                                                                    description: rec.link,
-                                                                });
-                                                            })
-                                                            .catch((ex: ResponseError) => {
-                                                                ex.response.json().then(() => {
-                                                                    showMessage({
-                                                                        level: MessageLevel.error,
-                                                                        message: t`No recovery flow is configured.`,
-                                                                    });
-                                                                });
-                                                            });
-                                                    }}
-                                                >
-                                                    ${t`Copy recovery link`}
-                                                </ak-action-button>
-                                                ${item.email
-                                                    ? html`<ak-forms-modal
-                                                          .closeAfterSuccessfulSubmit=${false}
-                                                      >
-                                                          <span slot="submit">
-                                                              ${t`Send link`}
-                                                          </span>
-                                                          <span slot="header">
-                                                              ${t`Send recovery link to user`}
-                                                          </span>
-                                                          <ak-user-reset-email-form
-                                                              slot="form"
-                                                              .user=${item}
-                                                          >
-                                                          </ak-user-reset-email-form>
-                                                          <button
-                                                              slot="trigger"
-                                                              class="pf-c-button pf-m-secondary"
-                                                          >
-                                                              ${t`Email recovery link`}
-                                                          </button>
-                                                      </ak-forms-modal>`
-                                                    : html`<span
-                                                          >${t`Recovery link cannot be emailed, user has no email address saved.`}</span
-                                                      >`}
-                                            `;
-                                        }),
-                                    )}
+                                    ${rootInterface()?.tenant?.flowRecovery
+                                        ? html`
+                                              <ak-action-button
+                                                  class="pf-m-secondary"
+                                                  .apiRequest=${() => {
+                                                      return new CoreApi(DEFAULT_CONFIG)
+                                                          .coreUsersRecoveryRetrieve({
+                                                              id: item.pk,
+                                                          })
+                                                          .then((rec) => {
+                                                              showMessage({
+                                                                  level: MessageLevel.success,
+                                                                  message: t`Successfully generated recovery link`,
+                                                                  description: rec.link,
+                                                              });
+                                                          })
+                                                          .catch((ex: ResponseError) => {
+                                                              ex.response.json().then(() => {
+                                                                  showMessage({
+                                                                      level: MessageLevel.error,
+                                                                      message: t`No recovery flow is configured.`,
+                                                                  });
+                                                              });
+                                                          });
+                                                  }}
+                                              >
+                                                  ${t`Copy recovery link`}
+                                              </ak-action-button>
+                                              ${item.email
+                                                  ? html`<ak-forms-modal
+                                                        .closeAfterSuccessfulSubmit=${false}
+                                                    >
+                                                        <span slot="submit"> ${t`Send link`} </span>
+                                                        <span slot="header">
+                                                            ${t`Send recovery link to user`}
+                                                        </span>
+                                                        <ak-user-reset-email-form
+                                                            slot="form"
+                                                            .user=${item}
+                                                        >
+                                                        </ak-user-reset-email-form>
+                                                        <button
+                                                            slot="trigger"
+                                                            class="pf-c-button pf-m-secondary"
+                                                        >
+                                                            ${t`Email recovery link`}
+                                                        </button>
+                                                    </ak-forms-modal>`
+                                                  : html`<span
+                                                        >${t`Recovery link cannot be emailed, user has no email address saved.`}</span
+                                                    >`}
+                                          `
+                                        : html` <p>
+                                              ${t`To let a user directly reset a their password, configure a recovery flow on the currently active tenant.`}
+                                          </p>`}
                                 </div>
                             </dd>
                         </div>

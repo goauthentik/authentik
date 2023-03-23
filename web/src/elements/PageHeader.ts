@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_API_DRAWER_TOGGLE,
     EVENT_NOTIFICATION_DRAWER_TOGGLE,
@@ -8,7 +8,7 @@ import {
 } from "@goauthentik/common/constants";
 import { currentInterface } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
 
@@ -35,17 +35,16 @@ export class PageHeader extends AKElement {
 
     @property()
     set header(value: string) {
-        tenant().then((tenant) => {
-            const currentIf = currentInterface();
-            let title = tenant.brandingTitle || TITLE_DEFAULT;
-            if (currentIf === "admin") {
-                title = `${t`Admin`} - ${title}`;
-            }
-            if (value !== "") {
-                title = `${value} - ${title}`;
-            }
-            document.title = title;
-        });
+        const tenant = rootInterface()?.tenant;
+        const currentIf = currentInterface();
+        let title = tenant?.brandingTitle || TITLE_DEFAULT;
+        if (currentIf === "admin") {
+            title = `${t`Admin`} - ${title}`;
+        }
+        if (value !== "") {
+            title = `${value} - ${title}`;
+        }
+        document.title = title;
         this._header = value;
     }
 

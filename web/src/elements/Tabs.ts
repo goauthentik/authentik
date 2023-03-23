@@ -79,6 +79,12 @@ export class Tabs extends AKElement {
                 composed: true,
             }),
         );
+        page.dispatchEvent(
+            new CustomEvent("activate", {
+                bubbles: true,
+                composed: true,
+            }),
+        );
     }
 
     renderTab(page: Element): TemplateResult {

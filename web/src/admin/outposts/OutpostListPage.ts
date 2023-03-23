@@ -18,13 +18,12 @@ import { t } from "@lingui/macro";
 
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { Outpost, OutpostTypeEnum, OutpostsApi } from "@goauthentik/api";
+import { Outpost, OutpostHealth, OutpostTypeEnum, OutpostsApi } from "@goauthentik/api";
 
 export function TypeToLabel(type?: OutpostTypeEnum): string {
     if (!type) return "";
@@ -56,14 +55,31 @@ export class OutpostListPage extends TablePage<Outpost> {
     searchEnabled(): boolean {
         return true;
     }
+
     async apiEndpoint(page: number): Promise<PaginatedResponse<Outpost>> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList({
+        const outposts = await new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesList({
             ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
+        Promise.all(
+            outposts.results.map((outpost) => {
+                return new OutpostsApi(DEFAULT_CONFIG)
+                    .outpostsInstancesHealthList({
+                        uuid: outpost.pk,
+                    })
+                    .then((health) => {
+                        this.health[outpost.pk] = health;
+                    });
+            }),
+        );
+        return outposts;
     }
+
+    @state()
+    health: { [key: string]: OutpostHealth[] } = {};
+
     columns(): TableColumn[] {
         return [
             new TableColumn(t`Name`, "name"),
@@ -136,25 +152,15 @@ export class OutpostListPage extends TablePage<Outpost> {
                     ${t`Detailed health (one instance per column, data is cached so may be out of date)`}
                 </h3>
                 <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                    ${until(
-                        new OutpostsApi(DEFAULT_CONFIG)
-                            .outpostsInstancesHealthList({
-                                uuid: item.pk,
-                            })
-                            .then((health) => {
-                                return health.map((h) => {
-                                    return html` <div class="pf-c-description-list__group">
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
-                                                <ak-outpost-health
-                                                    .outpostHealth=${h}
-                                                ></ak-outpost-health>
-                                            </div>
-                                        </dd>
-                                    </div>`;
-                                });
-                            }),
-                    )}
+                    ${this.health[item.pk].map((h) => {
+                        return html`<div class="pf-c-description-list__group">
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    <ak-outpost-health .outpostHealth=${h}></ak-outpost-health>
+                                </div>
+                            </dd>
+                        </div>`;
+                    })}
                 </dl>
             </div>
         </td>`;
