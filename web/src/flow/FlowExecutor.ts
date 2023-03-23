@@ -1,4 +1,4 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import {
     EVENT_FLOW_ADVANCE,
     EVENT_FLOW_INSPECTOR_TOGGLE,
@@ -64,13 +64,11 @@ export class FlowExecutor extends Interface implements StageHost {
             );
             window.location.assign((value as RedirectChallenge).to);
         }
-        tenant().then((tenant) => {
-            if (value?.flowInfo?.title) {
-                document.title = `${value.flowInfo?.title} - ${tenant.brandingTitle}`;
-            } else {
-                document.title = tenant.brandingTitle || TITLE_DEFAULT;
-            }
-        });
+        if (value?.flowInfo?.title) {
+            document.title = `${value.flowInfo?.title} - ${this.tenant?.brandingTitle}`;
+        } else {
+            document.title = this.tenant?.brandingTitle || TITLE_DEFAULT;
+        }
         this.requestUpdate();
     }
 
@@ -527,15 +525,13 @@ export class FlowExecutor extends Interface implements StageHost {
                                         <footer class="pf-c-login__footer">
                                             <p></p>
                                             <ul class="pf-c-list pf-m-inline">
-                                                ${until(
-                                                    this.tenant?.uiFooterLinks?.map((link) => {
-                                                        return html`<li>
-                                                            <a href="${link.href || ""}"
-                                                                >${link.name}</a
-                                                            >
-                                                        </li>`;
-                                                    }),
-                                                )}
+                                                ${this.tenant?.uiFooterLinks?.map((link) => {
+                                                    return html`<li>
+                                                        <a href="${link.href || ""}"
+                                                            >${link.name}</a
+                                                        >
+                                                    </li>`;
+                                                })}
                                                 <li>
                                                     <a
                                                         href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"

@@ -1,13 +1,14 @@
+import { AdminInterface } from "@goauthentik/admin/AdminInterface";
 import "@goauthentik/admin/users/ServiceAccountForm";
 import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
-import { DEFAULT_CONFIG, config, tenant } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
+import { rootInterface } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/TreeView";
@@ -23,14 +24,13 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CapabilitiesEnum, CoreApi, ResponseError, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, ResponseError, User, UserPath } from "@goauthentik/api";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
@@ -56,18 +56,25 @@ export class UserListPage extends TablePage<User> {
     @property()
     activePath = getURLParam<string>("path", "/");
 
+    @state()
+    userPaths?: UserPath;
+
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDescriptionList, PFCard, PFAlert);
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersList({
+        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
             pathStartswith: getURLParam("path", ""),
         });
+        this.userPaths = await new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve({
+            search: this.search,
+        });
+        return users;
     }
 
     columns(): TableColumn[] {
@@ -81,6 +88,10 @@ export class UserListPage extends TablePage<User> {
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
+        const currentUser = rootInterface<AdminInterface>()?.user;
+        const shouldShowWarning = this.selectedElements.find((el) => {
+            return el.pk === currentUser?.user.pk || el.pk == currentUser?.original?.pk;
+        });
         return html`<ak-forms-delete-bulk
             objectLabel=${t`User(s)`}
             .objects=${this.selectedElements}
@@ -102,28 +113,18 @@ export class UserListPage extends TablePage<User> {
                 });
             }}
         >
-            ${until(
-                me().then((user) => {
-                    const shouldShowWarning = this.selectedElements.find((el) => {
-                        return el.pk === user.user.pk || el.pk == user.original?.pk;
-                    });
-                    if (shouldShowWarning) {
-                        return html`
-                            <div slot="notice" class="pf-c-form__alert">
-                                <div class="pf-c-alert pf-m-inline pf-m-warning">
-                                    <div class="pf-c-alert__icon">
-                                        <i class="fas fa-exclamation-circle"></i>
-                                    </div>
-                                    <h4 class="pf-c-alert__title">
-                                        ${t`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`}
-                                    </h4>
-                                </div>
-                            </div>
-                        `;
-                    }
-                    return html``;
-                }),
-            )}
+            ${shouldShowWarning
+                ? html`<div slot="notice" class="pf-c-form__alert">
+                      <div class="pf-c-alert pf-m-inline pf-m-warning">
+                          <div class="pf-c-alert__icon">
+                              <i class="fas fa-exclamation-circle"></i>
+                          </div>
+                          <h4 class="pf-c-alert__title">
+                              ${t`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`}
+                          </h4>
+                      </div>
+                  </div>`
+                : html``}
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${t`Delete`}
             </button>
@@ -148,19 +149,16 @@ export class UserListPage extends TablePage<User> {
                         <i class="fas fa-edit"></i>
                     </button>
                 </ak-forms-modal>
-                ${until(
-                    config().then((config) => {
-                        if (config.capabilities.includes(CapabilitiesEnum.Impersonate)) {
-                            return html`<a
-                                class="pf-c-button pf-m-tertiary"
-                                href="${`/-/impersonation/${item.pk}/`}"
-                            >
-                                ${t`Impersonate`}
-                            </a>`;
-                        }
-                        return html``;
-                    }),
-                )}`,
+                ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.Impersonate)
+                    ? html`
+                          <a
+                              class="pf-c-button pf-m-tertiary"
+                              href="${`/-/impersonation/${item.pk}/`}"
+                          >
+                              ${t`Impersonate`}
+                          </a>
+                      `
+                    : html``}`,
         ];
     }
 
@@ -194,7 +192,7 @@ export class UserListPage extends TablePage<User> {
                                             return new CoreApi(
                                                 DEFAULT_CONFIG,
                                             ).coreUsersPartialUpdate({
-                                                id: item.pk || 0,
+                                                id: item.pk,
                                                 patchedUserRequest: {
                                                     isActive: !item.isActive,
                                                 },
@@ -225,70 +223,61 @@ export class UserListPage extends TablePage<User> {
                                             ${t`Set password`}
                                         </button>
                                     </ak-forms-modal>
-                                    ${until(
-                                        tenant().then((tenant) => {
-                                            if (!tenant.flowRecovery) {
-                                                return html`
-                                                    <p>
-                                                        ${t`To let a user directly reset a their password, configure a recovery flow on the currently active tenant.`}
-                                                    </p>
-                                                `;
-                                            }
-                                            return html`
-                                                <ak-action-button
-                                                    class="pf-m-secondary"
-                                                    .apiRequest=${() => {
-                                                        return new CoreApi(DEFAULT_CONFIG)
-                                                            .coreUsersRecoveryRetrieve({
-                                                                id: item.pk || 0,
-                                                            })
-                                                            .then((rec) => {
-                                                                showMessage({
-                                                                    level: MessageLevel.success,
-                                                                    message: t`Successfully generated recovery link`,
-                                                                    description: rec.link,
-                                                                });
-                                                            })
-                                                            .catch((ex: ResponseError) => {
-                                                                ex.response.json().then(() => {
-                                                                    showMessage({
-                                                                        level: MessageLevel.error,
-                                                                        message: t`No recovery flow is configured.`,
-                                                                    });
-                                                                });
-                                                            });
-                                                    }}
-                                                >
-                                                    ${t`Copy recovery link`}
-                                                </ak-action-button>
-                                                ${item.email
-                                                    ? html`<ak-forms-modal
-                                                          .closeAfterSuccessfulSubmit=${false}
-                                                      >
-                                                          <span slot="submit">
-                                                              ${t`Send link`}
-                                                          </span>
-                                                          <span slot="header">
-                                                              ${t`Send recovery link to user`}
-                                                          </span>
-                                                          <ak-user-reset-email-form
-                                                              slot="form"
-                                                              .user=${item}
-                                                          >
-                                                          </ak-user-reset-email-form>
-                                                          <button
-                                                              slot="trigger"
-                                                              class="pf-c-button pf-m-secondary"
-                                                          >
-                                                              ${t`Email recovery link`}
-                                                          </button>
-                                                      </ak-forms-modal>`
-                                                    : html`<span
-                                                          >${t`Recovery link cannot be emailed, user has no email address saved.`}</span
-                                                      >`}
-                                            `;
-                                        }),
-                                    )}
+                                    ${rootInterface()?.tenant?.flowRecovery
+                                        ? html`
+                                              <ak-action-button
+                                                  class="pf-m-secondary"
+                                                  .apiRequest=${() => {
+                                                      return new CoreApi(DEFAULT_CONFIG)
+                                                          .coreUsersRecoveryRetrieve({
+                                                              id: item.pk,
+                                                          })
+                                                          .then((rec) => {
+                                                              showMessage({
+                                                                  level: MessageLevel.success,
+                                                                  message: t`Successfully generated recovery link`,
+                                                                  description: rec.link,
+                                                              });
+                                                          })
+                                                          .catch((ex: ResponseError) => {
+                                                              ex.response.json().then(() => {
+                                                                  showMessage({
+                                                                      level: MessageLevel.error,
+                                                                      message: t`No recovery flow is configured.`,
+                                                                  });
+                                                              });
+                                                          });
+                                                  }}
+                                              >
+                                                  ${t`Copy recovery link`}
+                                              </ak-action-button>
+                                              ${item.email
+                                                  ? html`<ak-forms-modal
+                                                        .closeAfterSuccessfulSubmit=${false}
+                                                    >
+                                                        <span slot="submit"> ${t`Send link`} </span>
+                                                        <span slot="header">
+                                                            ${t`Send recovery link to user`}
+                                                        </span>
+                                                        <ak-user-reset-email-form
+                                                            slot="form"
+                                                            .user=${item}
+                                                        >
+                                                        </ak-user-reset-email-form>
+                                                        <button
+                                                            slot="trigger"
+                                                            class="pf-c-button pf-m-secondary"
+                                                        >
+                                                            ${t`Email recovery link`}
+                                                        </button>
+                                                    </ak-forms-modal>`
+                                                  : html`<span
+                                                        >${t`Recovery link cannot be emailed, user has no email address saved.`}</span
+                                                    >`}
+                                          `
+                                        : html` <p>
+                                              ${t`To let a user directly reset a their password, configure a recovery flow on the currently active tenant.`}
+                                          </p>`}
                                 </div>
                             </dd>
                         </div>
@@ -323,18 +312,10 @@ export class UserListPage extends TablePage<User> {
             <div class="pf-c-card">
                 <div class="pf-c-card__title">${t`User folders`}</div>
                 <div class="pf-c-card__body">
-                    ${until(
-                        new CoreApi(DEFAULT_CONFIG)
-                            .coreUsersPathsRetrieve({
-                                search: this.search,
-                            })
-                            .then((paths) => {
-                                return html`<ak-treeview
-                                    .items=${paths.paths}
-                                    activePath=${this.activePath}
-                                ></ak-treeview>`;
-                            }),
-                    )}
+                    <ak-treeview
+                        .items=${this.userPaths?.paths || []}
+                        activePath=${this.activePath}
+                    ></ak-treeview>
                 </div>
             </div>
         </div>`;

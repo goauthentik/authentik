@@ -1,14 +1,12 @@
-import { uiConfig } from "@goauthentik/common/ui/config";
-import { me } from "@goauthentik/common/users";
 import { truncateWords } from "@goauthentik/common/utils";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { UserInterface } from "@goauthentik/user/UserInterface";
 
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -80,6 +78,7 @@ export class LibraryApplication extends AKElement {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
         }
+        const me = rootInterface<UserInterface>()?.me;
         return html` <div
             class="pf-c-card pf-m-hoverable pf-m-compact ${this.selected
                 ? "pf-m-selectable pf-m-selected"
@@ -93,24 +92,16 @@ export class LibraryApplication extends AKElement {
                 >
                     ${this.renderIcon()}
                 </a>
-                ${until(
-                    uiConfig().then((config) => {
-                        if (!config.enabledFeatures.applicationEdit) {
-                            return html``;
-                        }
-                        return me().then((u) => {
-                            if (!u.user.isSuperuser) return html``;
-                            return html`
-                                <a
-                                    class="pf-c-button pf-m-control pf-m-small"
-                                    href="/if/admin/#/core/applications/${this.application?.slug}"
-                                >
-                                    <i class="fas fa-pencil-alt"></i>
-                                </a>
-                            `;
-                        });
-                    }),
-                )}
+                ${rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
+                    ? html`
+                          <a
+                              class="pf-c-button pf-m-control pf-m-small"
+                              href="/if/admin/#/core/applications/${this.application?.slug}"
+                          >
+                              <i class="fas fa-pencil-alt"></i>
+                          </a>
+                      `
+                    : html``}
             </div>
             <div class="pf-c-card__title">
                 <p>

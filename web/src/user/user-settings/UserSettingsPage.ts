@@ -1,10 +1,10 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { me } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
+import { UserInterface } from "@goauthentik/user/UserInterface";
 import "@goauthentik/user/user-settings/details/UserPassword";
 import "@goauthentik/user/user-settings/details/UserSettingsFlowExecutor";
 import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
@@ -16,7 +16,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -62,7 +61,7 @@ export class UserSettingsPage extends AKElement {
     }
 
     @state()
-    userSettings!: Promise<UserSetting[]>;
+    userSettings?: UserSetting[];
 
     constructor() {
         super();
@@ -71,11 +70,14 @@ export class UserSettingsPage extends AKElement {
         });
     }
 
-    firstUpdated(): void {
-        this.userSettings = new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
+    async firstUpdated(): Promise<void> {
+        this.userSettings = await new StagesApi(DEFAULT_CONFIG).stagesAllUserSettingsList();
     }
 
     render(): TemplateResult {
+        const pwStage = this.userSettings?.filter(
+            (stage) => stage.component === "ak-user-settings-password",
+        );
         return html`<div class="pf-c-page">
             <main role="main" class="pf-c-page__main" tabindex="-1">
                 <ak-tabs ?vertical="${true}">
@@ -89,20 +91,11 @@ export class UserSettingsPage extends AKElement {
                                 <ak-user-settings-flow-executor></ak-user-settings-flow-executor>
                             </div>
                             <div class="pf-l-stack__item">
-                                ${until(
-                                    this.userSettings?.then((settings) => {
-                                        const pwStage = settings.filter(
-                                            (stage) =>
-                                                stage.component === "ak-user-settings-password",
-                                        );
-                                        if (pwStage.length > 0) {
-                                            return html`<ak-user-settings-password
-                                                configureUrl=${ifDefined(pwStage[0].configureUrl)}
-                                            ></ak-user-settings-password>`;
-                                        }
-                                        return html``;
-                                    }),
-                                )}
+                                ${pwStage
+                                    ? html`<ak-user-settings-password
+                                          configureUrl=${ifDefined(pwStage[0].configureUrl)}
+                                      ></ak-user-settings-password>`
+                                    : html``}
                             </div>
                         </div>
                     </section>
@@ -111,26 +104,20 @@ export class UserSettingsPage extends AKElement {
                         data-tab-title="${t`Sessions`}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        ${until(
-                            me().then((u) => {
-                                return html`<ak-user-session-list
-                                    targetUser=${u.user.username}
-                                ></ak-user-session-list>`;
-                            }),
-                        )}
+                        <ak-user-session-list
+                            targetUser=${ifDefined(
+                                rootInterface<UserInterface>()?.me?.user.username,
+                            )}
+                        ></ak-user-session-list>
                     </section>
                     <section
                         slot="page-consents"
                         data-tab-title="${t`Consent`}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        ${until(
-                            me().then((u) => {
-                                return html`<ak-user-consent-list
-                                    userId=${u.user.pk}
-                                ></ak-user-consent-list>`;
-                            }),
-                        )}
+                        <ak-user-consent-list
+                            userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
+                        ></ak-user-consent-list>
                     </section>
                     <section
                         slot="page-mfa"

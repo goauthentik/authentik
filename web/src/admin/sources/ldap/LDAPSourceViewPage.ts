@@ -12,8 +12,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -24,7 +23,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { LDAPSource, SourcesApi, TaskStatusEnum } from "@goauthentik/api";
+import { LDAPSource, SourcesApi, Task, TaskStatusEnum } from "@goauthentik/api";
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends AKElement {
@@ -41,6 +40,9 @@ export class LDAPSourceViewPage extends AKElement {
 
     @property({ attribute: false })
     source!: LDAPSource;
+
+    @state()
+    syncState: Task[] = [];
 
     static get styles(): CSSResult[] {
         return [PFBase, PFPage, PFButton, PFGrid, PFContent, PFCard, PFDescriptionList, PFList];
@@ -63,6 +65,15 @@ export class LDAPSourceViewPage extends AKElement {
                 slot="page-overview"
                 data-tab-title="${t`Overview`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => {
+                    new SourcesApi(DEFAULT_CONFIG)
+                        .sourcesLdapSyncStatusList({
+                            slug: this.source.slug,
+                        })
+                        .then((state) => {
+                            this.syncState = state;
+                        });
+                }}
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
@@ -123,39 +134,31 @@ export class LDAPSourceViewPage extends AKElement {
                             <p>${t`Sync status`}</p>
                         </div>
                         <div class="pf-c-card__body">
-                            ${until(
-                                new SourcesApi(DEFAULT_CONFIG)
-                                    .sourcesLdapSyncStatusList({
-                                        slug: this.source.slug,
-                                    })
-                                    .then((tasks) => {
-                                        if (tasks.length < 1) {
-                                            return html`<p>${t`Not synced yet.`}</p>`;
-                                        }
-                                        return html`<ul class="pf-c-list">
-                                            ${tasks.map((task) => {
-                                                let header = "";
-                                                if (task.status === TaskStatusEnum.Warning) {
-                                                    header = t`Task finished with warnings`;
-                                                } else if (task.status === TaskStatusEnum.Error) {
-                                                    header = t`Task finished with errors`;
-                                                } else {
-                                                    header = t`Last sync: ${task.taskFinishTimestamp.toLocaleString()}`;
-                                                }
-                                                return html`<li>
-                                                    <p>${task.taskName}</p>
-                                                    <ul class="pf-c-list">
-                                                        <li>${header}</li>
-                                                        ${task.messages.map((m) => {
-                                                            return html`<li>${m}</li>`;
-                                                        })}
-                                                    </ul>
-                                                </li> `;
-                                            })}
-                                        </ul>`;
-                                    }),
-                                "loading",
-                            )}
+                            ${this.syncState.length < 1
+                                ? html`<p>${t`Not synced yet.`}</p>`
+                                : html`
+                                      <ul class="pf-c-list">
+                                          ${this.syncState.map((task) => {
+                                              let header = "";
+                                              if (task.status === TaskStatusEnum.Warning) {
+                                                  header = t`Task finished with warnings`;
+                                              } else if (task.status === TaskStatusEnum.Error) {
+                                                  header = t`Task finished with errors`;
+                                              } else {
+                                                  header = t`Last sync: ${task.taskFinishTimestamp.toLocaleString()}`;
+                                              }
+                                              return html`<li>
+                                                  <p>${task.taskName}</p>
+                                                  <ul class="pf-c-list">
+                                                      <li>${header}</li>
+                                                      ${task.messages.map((m) => {
+                                                          return html`<li>${m}</li>`;
+                                                      })}
+                                                  </ul>
+                                              </li> `;
+                                          })}
+                                      </ul>
+                                  `}
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-action-button

@@ -73,12 +73,8 @@ export class Tabs extends AKElement {
         updateURLParams(params);
         const page = this.querySelector(`[slot='${this.currentPage}']`);
         if (!page) return;
-        page.dispatchEvent(
-            new CustomEvent(EVENT_REFRESH, {
-                bubbles: true,
-                composed: true,
-            }),
-        );
+        page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
+        page.dispatchEvent(new CustomEvent("activate"));
     }
 
     renderTab(page: Element): TemplateResult {
@@ -94,10 +90,10 @@ export class Tabs extends AKElement {
         const pages = Array.from(this.querySelectorAll(":scope > [slot^='page-']"));
         if (window.location.hash.includes(ROUTE_SEPARATOR)) {
             const params = getURLParams();
-            if (this.pageIdentifier in params) {
+            if (this.pageIdentifier in params && !this.currentPage) {
                 if (this.querySelector(`[slot='${params[this.pageIdentifier]}']`) !== null) {
                     // To update the URL to match with the current slot
-                    this.currentPage = params[this.pageIdentifier] as string;
+                    this.onClick(params[this.pageIdentifier] as string);
                 }
             }
         }

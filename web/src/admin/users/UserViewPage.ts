@@ -3,10 +3,10 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
-import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/PageHeader";
@@ -27,7 +27,6 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -197,21 +196,18 @@ export class UserViewPage extends AKElement {
                                 </button>
                             </ak-forms-modal>
                         </div>
-                        ${until(
-                            config().then((config) => {
-                                if (config.capabilities.includes(CapabilitiesEnum.Impersonate)) {
-                                    return html` <div class="pf-c-card__footer">
-                                        <a
-                                            class="pf-c-button pf-m-tertiary"
-                                            href="${`/-/impersonation/${this.user?.pk}/`}"
-                                        >
-                                            ${t`Impersonate`}
-                                        </a>
-                                    </div>`;
-                                }
-                                return html``;
-                            }),
-                        )}
+                        ${rootInterface()?.config?.capabilities.includes(
+                            CapabilitiesEnum.Impersonate,
+                        )
+                            ? html`
+                                  <a
+                                      class="pf-c-button pf-m-tertiary"
+                                      href="${`/-/impersonation/${this.user?.pk}/`}"
+                                  >
+                                      ${t`Impersonate`}
+                                  </a>
+                              `
+                            : html``}
                         <div class="pf-c-card__footer">
                             <ak-user-active-form
                                 .obj=${this.user}

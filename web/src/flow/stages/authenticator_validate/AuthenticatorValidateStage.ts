@@ -40,6 +40,7 @@ export class AuthenticatorValidateStage
     set loading(value: boolean) {
         this.host.loading = value;
     }
+
     get loading(): boolean {
         return this.host.loading;
     }

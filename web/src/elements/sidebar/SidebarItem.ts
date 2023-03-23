@@ -4,7 +4,6 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
 
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
@@ -71,9 +70,6 @@ export class SidebarItem extends AKElement {
 
     @property()
     path?: string;
-
-    @property({ attribute: false })
-    condition: () => Promise<boolean> = async () => true;
 
     activeMatchers: RegExp[] = [];
 
@@ -145,16 +141,10 @@ export class SidebarItem extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`${until(this.renderInner())}`;
+        return this.renderInner();
     }
 
-    async renderInner(): Promise<TemplateResult> {
-        if (this.condition) {
-            const result = await this.condition();
-            if (!result) {
-                return html``;
-            }
-        }
+    renderInner(): TemplateResult {
         if (this.childItems.length > 0) {
             return html`<li
                 class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"

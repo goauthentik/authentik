@@ -1,8 +1,8 @@
-import { DEFAULT_CONFIG, tenant } from "@goauthentik/common/api/config";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { refreshMe } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
@@ -22,7 +22,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     ChallengeChoices,
     ChallengeTypes,
-    CurrentTenant,
     FlowChallengeResponseRequest,
     FlowErrorChallenge,
     FlowsApi,
@@ -51,16 +50,8 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
     @property({ type: Boolean })
     loading = false;
 
-    @property({ attribute: false })
-    tenant!: CurrentTenant;
-
     static get styles(): CSSResult[] {
         return [PFBase, PFCard, PFPage, PFButton, PFContent];
-    }
-
-    constructor() {
-        super();
-        tenant().then((tenant) => (this.tenant = tenant));
     }
 
     submit(payload?: FlowChallengeResponseRequest): Promise<boolean> {
@@ -93,13 +84,12 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
     }
 
     firstUpdated(): void {
-        tenant().then((tenant) => {
-            this.flowSlug = tenant.flowUserSettings;
-            if (!this.flowSlug) {
-                return;
-            }
-            this.nextChallenge();
-        });
+        const tenant = rootInterface()?.tenant;
+        this.flowSlug = tenant?.flowUserSettings;
+        if (!this.flowSlug) {
+            return;
+        }
+        this.nextChallenge();
     }
 
     async nextChallenge(): Promise<void> {

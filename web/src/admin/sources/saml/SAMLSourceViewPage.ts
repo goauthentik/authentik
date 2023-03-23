@@ -12,9 +12,8 @@ import "@goauthentik/elements/forms/ModalForm";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -24,7 +23,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SAMLSource, SourcesApi } from "@goauthentik/api";
+import { SAMLMetadata, SAMLSource, SourcesApi } from "@goauthentik/api";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
@@ -41,6 +40,9 @@ export class SAMLSourceViewPage extends AKElement {
 
     @property({ attribute: false })
     source?: SAMLSource;
+
+    @state()
+    metadata?: SAMLMetadata;
 
     static get styles(): CSSResult[] {
         return [PFBase, PFPage, PFGrid, PFButton, PFContent, PFCard, PFDescriptionList];
@@ -152,35 +154,34 @@ export class SAMLSourceViewPage extends AKElement {
                 slot="page-metadata"
                 data-tab-title="${t`Metadata`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
+                @activate=${() => {
+                    new SourcesApi(DEFAULT_CONFIG)
+                        .sourcesSamlMetadataRetrieve({
+                            slug: this.source?.slug || "",
+                        })
+                        .then((metadata) => {
+                            this.metadata = metadata;
+                        });
+                }}
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        ${until(
-                            new SourcesApi(DEFAULT_CONFIG)
-                                .sourcesSamlMetadataRetrieve({
-                                    slug: this.source.slug,
-                                })
-                                .then((m) => {
-                                    return html`
-                                        <div class="pf-c-card__body">
-                                            <ak-codemirror
-                                                mode="xml"
-                                                ?readOnly=${true}
-                                                value="${ifDefined(m.metadata)}"
-                                            ></ak-codemirror>
-                                        </div>
-                                        <div class="pf-c-card__footer">
-                                            <a
-                                                class="pf-c-button pf-m-primary"
-                                                target="_blank"
-                                                href=${ifDefined(m.downloadUrl)}
-                                            >
-                                                ${t`Download`}
-                                            </a>
-                                        </div>
-                                    `;
-                                }),
-                        )}
+                        <div class="pf-c-card__body">
+                            <ak-codemirror
+                                mode="xml"
+                                ?readOnly=${true}
+                                value="${ifDefined(this.metadata?.metadata)}"
+                            ></ak-codemirror>
+                        </div>
+                        <div class="pf-c-card__footer">
+                            <a
+                                class="pf-c-button pf-m-primary"
+                                target="_blank"
+                                href=${ifDefined(this.metadata?.downloadUrl)}
+                            >
+                                ${t`Download`}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </section>

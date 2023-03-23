@@ -16,11 +16,10 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
-import { OutpostsApi, ServiceConnection } from "@goauthentik/api";
+import { OutpostsApi, ServiceConnection, ServiceConnectionState } from "@goauthentik/api";
 
 @customElement("ak-outpost-service-connection-list")
 export class OutpostServiceConnectionListPage extends TablePage<ServiceConnection> {
@@ -40,13 +39,30 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     checkbox = true;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<ServiceConnection>> {
-        return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList({
-            ordering: this.order,
-            page: page,
-            pageSize: (await uiConfig()).pagination.perPage,
-            search: this.search || "",
-        });
+        const connections = await new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsAllList(
+            {
+                ordering: this.order,
+                page: page,
+                pageSize: (await uiConfig()).pagination.perPage,
+                search: this.search || "",
+            },
+        );
+        Promise.all(
+            connections.results.map((connection) => {
+                return new OutpostsApi(DEFAULT_CONFIG)
+                    .outpostsServiceConnectionsAllStateRetrieve({
+                        uuid: connection.pk,
+                    })
+                    .then((state) => {
+                        this.state[connection.pk] = state;
+                    });
+            }),
+        );
+        return connections;
     }
+
+    @state()
+    state: { [key: string]: ServiceConnectionState } = {};
 
     columns(): TableColumn[] {
         return [
@@ -62,27 +78,16 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
     order = "name";
 
     row(item: ServiceConnection): TemplateResult[] {
+        const itemState = this.state[item.pk];
         return [
             html`${item.name}`,
             html`${item.verboseName}`,
             html`<ak-label color=${item.local ? PFColor.Grey : PFColor.Green}>
                 ${item.local ? t`Yes` : t`No`}
             </ak-label>`,
-            html`${until(
-                new OutpostsApi(DEFAULT_CONFIG)
-                    .outpostsServiceConnectionsAllStateRetrieve({
-                        uuid: item.pk || "",
-                    })
-                    .then((state) => {
-                        if (state.healthy) {
-                            return html`<ak-label color=${PFColor.Green}
-                                >${ifDefined(state.version)}</ak-label
-                            >`;
-                        }
-                        return html`<ak-label color=${PFColor.Red}>${t`Unhealthy`}</ak-label>`;
-                    }),
-                html`<ak-spinner></ak-spinner>`,
-            )}`,
+            html`${itemState.healthy
+                ? html`<ak-label color=${PFColor.Green}>${ifDefined(itemState.version)}</ak-label>`
+                : html`<ak-label color=${PFColor.Red}>${t`Unhealthy`}</ak-label>`}`,
             html` <ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update ${item.verboseName}`} </span>

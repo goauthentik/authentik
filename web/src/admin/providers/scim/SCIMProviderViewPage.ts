@@ -1,7 +1,6 @@
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { me } from "@goauthentik/common/users";
 import MDSCIMProvider from "@goauthentik/docs/providers/scim/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Markdown";
@@ -14,7 +13,6 @@ import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -29,7 +27,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ProvidersApi, SCIMProvider, SessionUser } from "@goauthentik/api";
+import { ProvidersApi, SCIMProvider, Task } from "@goauthentik/api";
 
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
@@ -51,7 +49,7 @@ export class SCIMProviderViewPage extends AKElement {
     provider?: SCIMProvider;
 
     @state()
-    me?: SessionUser;
+    syncState?: Task;
 
     static get styles(): CSSResult[] {
         return [
@@ -76,9 +74,6 @@ export class SCIMProviderViewPage extends AKElement {
             if (!this.provider?.pk) return;
             this.providerID = this.provider?.pk;
         });
-        me().then((user) => {
-            this.me = user;
-        });
     }
 
     render(): TemplateResult {
@@ -86,7 +81,22 @@ export class SCIMProviderViewPage extends AKElement {
             return html``;
         }
         return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${t`Overview`}">
+            <section
+                slot="page-overview"
+                data-tab-title="${t`Overview`}"
+                @activate=${() => {
+                    new ProvidersApi(DEFAULT_CONFIG)
+                        .providersScimSyncStatusRetrieve({
+                            id: this.provider?.pk || 0,
+                        })
+                        .then((state) => {
+                            this.syncState = state;
+                        })
+                        .catch(() => {
+                            this.syncState = undefined;
+                        });
+                }}
+            >
                 ${this.renderTabOverview()}
             </section>
             <section
@@ -158,23 +168,13 @@ export class SCIMProviderViewPage extends AKElement {
                             <p>${t`Sync status`}</p>
                         </div>
                         <div class="pf-c-card__body">
-                            ${until(
-                                new ProvidersApi(DEFAULT_CONFIG)
-                                    .providersScimSyncStatusRetrieve({
-                                        id: this.provider.pk,
-                                    })
-                                    .then((task) => {
-                                        return html` <ul class="pf-c-list">
-                                            ${task.messages.map((m) => {
-                                                return html`<li>${m}</li>`;
-                                            })}
-                                        </ul>`;
-                                    })
-                                    .catch(() => {
-                                        return html`${t`Sync not run yet.`}`;
-                                    }),
-                                "loading",
-                            )}
+                            ${this.syncState
+                                ? html` <ul class="pf-c-list">
+                                      ${this.syncState.messages.map((m) => {
+                                          return html`<li>${m}</li>`;
+                                      })}
+                                  </ul>`
+                                : html` ${t`Sync not run yet.`} `}
                         </div>
 
                         <div class="pf-c-card__footer">
