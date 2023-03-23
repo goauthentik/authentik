@@ -75,7 +75,7 @@ return request.user.email
 
 ## Weblate configuration
 
-The variables bellow need to be set, depending on if you deploy in a container or not you can take a look at the following links
+The variables below need to be set, depending on if you deploy in a container or not you can take a look at the following links
 
 -   https://docs.weblate.org/en/latest/admin/config.html#config
 -   https://docs.weblate.org/en/latest/admin/install/docker.html#docker-environment
@@ -96,4 +96,4 @@ Should you wish to only allow registration and login through Authentik, you shou
 -   REQUIRE_LOGIN: `1`
 -   NO_EMAIL_AUTH: `1`
 
-Should you wish to deploy this in a container prefix all the variables with `WEBLATE_` and set them as enviornment variables
+Should you wish to deploy this in a container prefix all the variables with `WEBLATE_` and set them as environment variables

@@ -136,7 +136,7 @@ module.exports = {
             items: [
                 {
                     type: "category",
-                    label: "Directory syncronization",
+                    label: "Directory synchronization",
                     items: [
                         "sources/active-directory/index",
                         "sources/freeipa/index",

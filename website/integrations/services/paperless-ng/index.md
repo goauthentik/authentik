@@ -45,7 +45,7 @@ Now restart your container:
 **Provider**
 In authentik, go to the Admin Interface and click _Applications/Providers_.
 
-Create a Proxy Provider. Give it a name (e.g. `Paperless Proxy`), then choose explicit or implicit consent (whether you want authentic to show a button to proceed to Paperless after login, or to just go there).
+Create a Proxy Provider. Give it a name (e.g. `Paperless Proxy`), then choose explicit or implicit consent (whether you want authentik to show a button to proceed to Paperless after login, or to just go there).
 
 Choose Forward Auth (single application), then add the External host: `https://paperless.company`
 

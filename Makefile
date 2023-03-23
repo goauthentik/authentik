@@ -26,14 +26,21 @@ test:
 lint-fix:
 	isort authentik tests scripts lifecycle
 	black authentik tests scripts lifecycle
-	codespell -I .github/codespell-words.txt -S 'web/src/locales/**' -w \
-		authentik \
-		internal \
-		cmd \
-		web/src \
-		website/src \
-		website/docs \
-		website/developer-docs
+	codespell \
+		-D - -D .github/codespell-dictionary.txt \
+		-I .github/codespell-words.txt \
+		-S 'web/src/locales/**' \
+		-w \
+			authentik \
+			internal \
+			cmd \
+			web/src \
+			website/src \
+			website/blog \
+			website/developer-docs \
+			website/docs \
+			website/integrations \
+			website/src
 
 lint:
 	pylint authentik tests lifecycle

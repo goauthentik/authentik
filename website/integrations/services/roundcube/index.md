@@ -16,7 +16,7 @@ It provides full functionality you expect from an email client, including MIME s
 This integration describes how to use Roundcube's oauth support with authentik to automatically sign into an email account.
 The mail server must support XOAUTH2 for both SMTPD and IMAP/POP. Postfix SMTP server can also use Dovecot for authentication which provides Postfix with xoauth2 capability without configuring it separately.
 
-## Preperation
+## Preparation
 
 The following placeholders will be used:
 

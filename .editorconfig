@@ -15,3 +15,6 @@ indent_size = 2
 
 [*.go]
 indent_style = tab
+
+[Makefile]
+indent_style = tab

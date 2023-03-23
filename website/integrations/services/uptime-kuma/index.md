@@ -53,6 +53,6 @@ To avoid that all users get admin access to Uptime Kuma create a group in authen
 
 ## Uptime Kuma
 
-Disble auth from Uptime Kuma, go to `Settings` > `Advanced` > `Disable Auth`
+Disable auth from Uptime Kuma, go to `Settings` > `Advanced` > `Disable Auth`
 
 To access the dashboard, open `https://uptime-kuma.company/dashboard`, this will start the login with authentik. You can also set this address as the Launch URL for the application.

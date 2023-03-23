@@ -13,7 +13,7 @@ QNAP Systems, Inc. is a Taiwanese corporation that specializes in network-attach
 Connecting a QNAP NAS to an LDAP Directory is a little bit special
 as it is **not** (well) documented what really is done behind the scenes of QNAP.
 
-## Preperation
+## Preparation
 
 The following placeholders will be used:
 

@@ -57,7 +57,7 @@ In authentik, create an outpost (under _Applications/Outposts_) of type `LDAP` t
 -   Name: LDAP
 -   Type: LDAP
 
-## pfSense unsecure setup (without SSL)
+## pfSense insecure setup (without SSL)
 
 :::caution
 This setup should only be used for testing purpose, because passwords will be sent in clear text to authentik.
