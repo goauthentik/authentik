@@ -1,5 +1,6 @@
 import "@goauthentik/admin/stages/StageWizard";
 import "@goauthentik/admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
+import "@goauthentik/admin/stages/authenticator_duo/DuoDeviceImportForm";
 import "@goauthentik/admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
 import "@goauthentik/admin/stages/authenticator_static/AuthenticatorStaticStageForm";
 import "@goauthentik/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm";
@@ -33,7 +34,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import { Stage, StagesApi } from "@goauthentik/api";
 
@@ -100,20 +100,24 @@ export class StageListPage extends TablePage<Stage> {
         </ak-forms-delete-bulk>`;
     }
 
-    async renderStageActions(stage: Stage): Promise<TemplateResult> {
-        if (stage.component === "ak-stage-authenticator-duo-form") {
-            await import("@goauthentik/admin/stages/authenticator_duo/DuoDeviceImportForm");
-            return html`<ak-forms-modal>
-                <span slot="submit">${t`Import`}</span>
-                <span slot="header">${t`Import Duo device`}</span>
-                <ak-stage-authenticator-duo-device-import-form slot="form" .instancePk=${stage.pk}>
-                </ak-stage-authenticator-duo-device-import-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-file-import"></i>
-                </button>
-            </ak-forms-modal>`;
+    renderStageActions(stage: Stage): TemplateResult {
+        switch (stage.component) {
+            case "ak-stage-authenticator-duo-form":
+                return html`<ak-forms-modal>
+                    <span slot="submit">${t`Import`}</span>
+                    <span slot="header">${t`Import Duo device`}</span>
+                    <ak-stage-authenticator-duo-device-import-form
+                        slot="form"
+                        .instancePk=${stage.pk}
+                    >
+                    </ak-stage-authenticator-duo-device-import-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <i class="fas fa-file-import"></i>
+                    </button>
+                </ak-forms-modal>`;
+            default:
+                return html``;
         }
-        return html``;
     }
 
     row(item: Stage): TemplateResult[] {
@@ -144,7 +148,7 @@ export class StageListPage extends TablePage<Stage> {
                         <i class="fas fa-edit"></i>
                     </button>
                 </ak-forms-modal>
-                ${until(this.renderStageActions(item))}`,
+                ${this.renderStageActions(item)}`,
         ];
     }
 
