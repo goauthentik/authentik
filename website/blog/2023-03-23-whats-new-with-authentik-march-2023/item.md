@@ -67,9 +67,9 @@ The following offerings are described in detail on the new page (coming soon!) i
     Our forever-free offering, the open source authentik project, has been active for over 5 years, and now has the support of Authentik Security. For self-hosted environments, works using all major authentication protocols (OAuth2/OpenID Connect, SAML, LDAP, and proxy authentication), with an advanced, customizable policy engine, and community support.
 
 -   Enterprise Self-hosted
-   Our Enterprise Self-hosted plan offers all of the features of open source authentic (and is still source-available), plus releases with long-term-support (LTS), an enterprise-level support plan, and additional features for larger organizations such as AI-based risk assessment and multifactor authentication (MFA) with push notification.
+    Our Enterprise Self-hosted plan offers all of the features of open source authentic (and is still source-available), plus releases with long-term-support (LTS), an enterprise-level support plan, and additional features for larger organizations such as AI-based risk assessment and multifactor authentication (MFA) with push notification.
 -   Enterprise Cloud
-   The Enterprise Cloud plan provides the convenience of our enterprise-level product as a SaaS offering, hosted and managed by Authentik Security. For many organizations, the benefits of decreased operational costs and universal data access (no VPN, servers, and network configuration required) make SaaS the best choice. With the cloud offering, the same enterprise-level support plan is included, and migrating to self-hosted is always an option.
+    The Enterprise Cloud plan provides the convenience of our enterprise-level product as a SaaS offering, hosted and managed by Authentik Security. For many organizations, the benefits of decreased operational costs and universal data access (no VPN, servers, and network configuration required) make SaaS the best choice. With the cloud offering, the same enterprise-level support plan is included, and migrating to self-hosted is always an option.
 
 Take a look at the new [Plans page](https://goauthentik.io/pricing/), and if you’re interested in the upcoming feature sets and learning more about our Cloud or self-hosted offerings, join the wait list and let’s start talking about what your company needs.
 
