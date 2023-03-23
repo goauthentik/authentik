@@ -47,7 +47,7 @@ export abstract class ModelForm<T, PKT extends string | number> extends Form<T> 
     }
 
     renderVisible(): TemplateResult {
-        if (!this.instance) {
+        if (this._instancePk && !this.instance) {
             return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
         }
         return super.renderVisible();
