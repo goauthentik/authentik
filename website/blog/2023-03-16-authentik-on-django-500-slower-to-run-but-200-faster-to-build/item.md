@@ -19,7 +19,7 @@ hide_table_of_contents: false
 
 # authentik on Django: 500% slower to run but 200% faster to build
 
-I started [authentik](https://github.com/goauthentik/authentik) in 2018 as an open source hobby project but in 2022, with help from Open Core Ventures, I started [Authentik Security](../2022-11-02-the-next-step-for-authentik.md), an open core company built around the authentik project.
+I started [authentik](https://github.com/goauthentik/authentik) in 2018 as an open source hobby project but in 2022, with help from Open Core Ventures, I started [Authentik Security](../2022-11-02-the-next-step-for-authentik/item.md), an open core company built around the authentik project.
 
 Building a new startup is, unsurprisingly, quite different from building and maintaining an open source project. With the arrival of funding and the requirement to build a business that could sustain itself now and scale as the company evolved, I had to confront some of the technical choices I made when building authentik – in particular, the choice to build authentik using Python and Django.
 
