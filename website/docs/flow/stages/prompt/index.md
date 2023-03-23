@@ -30,7 +30,7 @@ The prompt can be any of the following types:
 | authentik: Locale     | Display a list of all locales authentik supports.                                          |
 
 :::note
-`Radio Button Group` and `Dropdown` options require authentik 2023.3+
+`TextArea`, `TextArea (Read only)`. `Radio Button Group` and `Dropdown` options require authentik 2023.4+
 :::
 
 Some types have special behaviors:
