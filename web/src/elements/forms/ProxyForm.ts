@@ -4,7 +4,7 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 @customElement("ak-proxy-form")
-export class ProxyForm extends Form<unknown> {
+export abstract class ProxyForm extends Form<unknown> {
     @property()
     type!: string;
 

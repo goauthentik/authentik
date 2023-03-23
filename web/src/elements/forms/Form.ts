@@ -7,7 +7,7 @@ import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -36,16 +36,15 @@ export interface KeyUnknown {
 }
 
 @customElement("ak-form")
-export class Form<T> extends AKElement {
+export abstract class Form<T> extends AKElement {
+    abstract send(data: T): Promise<unknown>;
+
     viewportCheck = true;
 
     @property()
     successMessage = "";
 
-    @property()
-    send!: (data: T) => Promise<unknown>;
-
-    @property({ attribute: false })
+    @state()
     nonFieldErrors?: string[];
 
     static get styles(): CSSResult[] {
