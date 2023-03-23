@@ -2,6 +2,7 @@ import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -13,7 +14,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     BindingTypeEnum,
@@ -161,62 +161,52 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                     </option>
                 </select>
             </ak-form-element-horizontal>
-            ${until(
-                config().then((c) => {
-                    if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
-                        return html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
-                                <input type="file" value="" class="pf-c-form-control" />
-                                ${this.instance?.icon
-                                    ? html`
-                                          <p class="pf-c-form__helper-text">
-                                              ${t`Currently set to:`} ${this.instance?.icon}
-                                          </p>
-                                      `
-                                    : html``}
-                            </ak-form-element-horizontal>
-                            ${this.instance?.icon
-                                ? html`
-                                      <ak-form-element-horizontal>
-                                          <label class="pf-c-switch">
-                                              <input
-                                                  class="pf-c-switch__input"
-                                                  type="checkbox"
-                                                  @change=${(ev: Event) => {
-                                                      const target = ev.target as HTMLInputElement;
-                                                      this.clearIcon = target.checked;
-                                                  }}
-                                              />
-                                              <span class="pf-c-switch__toggle">
-                                                  <span class="pf-c-switch__toggle-icon">
-                                                      <i
-                                                          class="fas fa-check"
-                                                          aria-hidden="true"
-                                                      ></i>
-                                                  </span>
-                                              </span>
-                                              <span class="pf-c-switch__label">
-                                                  ${t`Clear icon`}
-                                              </span>
-                                          </label>
-                                          <p class="pf-c-form__helper-text">
-                                              ${t`Delete currently set icon.`}
-                                          </p>
-                                      </ak-form-element-horizontal>
-                                  `
-                                : html``}`;
-                    }
-                    return html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
-                        <input
-                            type="text"
-                            value="${first(this.instance?.icon, "")}"
-                            class="pf-c-form-control"
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${t`Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".`}
-                        </p>
-                    </ak-form-element-horizontal>`;
-                }),
-            )}
+            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.SaveMedia)
+                ? html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                          <input type="file" value="" class="pf-c-form-control" />
+                          ${this.instance?.icon
+                              ? html`
+                                    <p class="pf-c-form__helper-text">
+                                        ${t`Currently set to:`} ${this.instance?.icon}
+                                    </p>
+                                `
+                              : html``}
+                      </ak-form-element-horizontal>
+                      ${this.instance?.icon
+                          ? html`
+                                <ak-form-element-horizontal>
+                                    <label class="pf-c-switch">
+                                        <input
+                                            class="pf-c-switch__input"
+                                            type="checkbox"
+                                            @change=${(ev: Event) => {
+                                                const target = ev.target as HTMLInputElement;
+                                                this.clearIcon = target.checked;
+                                            }}
+                                        />
+                                        <span class="pf-c-switch__toggle">
+                                            <span class="pf-c-switch__toggle-icon">
+                                                <i class="fas fa-check" aria-hidden="true"></i>
+                                            </span>
+                                        </span>
+                                        <span class="pf-c-switch__label"> ${t`Clear icon`} </span>
+                                    </label>
+                                    <p class="pf-c-form__helper-text">
+                                        ${t`Delete currently set icon.`}
+                                    </p>
+                                </ak-form-element-horizontal>
+                            `
+                          : html``}`
+                : html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                      <input
+                          type="text"
+                          value="${first(this.instance?.icon, "")}"
+                          class="pf-c-form-control"
+                      />
+                      <p class="pf-c-form__helper-text">
+                          ${t`Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".`}
+                      </p>
+                  </ak-form-element-horizontal>`}
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Protocol settings`} </span>
