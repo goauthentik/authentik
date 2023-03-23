@@ -73,18 +73,8 @@ export class Tabs extends AKElement {
         updateURLParams(params);
         const page = this.querySelector(`[slot='${this.currentPage}']`);
         if (!page) return;
-        page.dispatchEvent(
-            new CustomEvent(EVENT_REFRESH, {
-                bubbles: true,
-                composed: true,
-            }),
-        );
-        page.dispatchEvent(
-            new CustomEvent("activate", {
-                bubbles: true,
-                composed: true,
-            }),
-        );
+        page.dispatchEvent(new CustomEvent(EVENT_REFRESH));
+        page.dispatchEvent(new CustomEvent("activate"));
     }
 
     renderTab(page: Element): TemplateResult {
