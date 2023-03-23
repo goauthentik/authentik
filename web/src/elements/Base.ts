@@ -11,11 +11,11 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Config, CurrentTenant, UiThemeEnum } from "@goauthentik/api";
 
-export function rootInterface(): Interface | undefined {
+export function rootInterface<T extends Interface>(): T | undefined {
     const el = Array.from(document.body.querySelectorAll("*")).filter(
         (el) => el instanceof Interface,
     );
-    return el[0] as Interface;
+    return el[0] as T;
 }
 
 let css: Promise<string[]> | undefined;
