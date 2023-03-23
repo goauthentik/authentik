@@ -39,10 +39,25 @@ jobs:
       - name: test
         working-directory: website/
         run: npm test
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3.6.0
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: website/package-lock.json
+      - working-directory: website/
+        run: npm ci
+      - name: build
+        working-directory: website/
+        run: npm run build
   ci-website-mark:
     needs:
       - lint-prettier
       - test
+      - build
     runs-on: ubuntu-latest
     steps:
       - run: echo mark
