@@ -9,22 +9,24 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
-import { EmailStage, StagesApi } from "@goauthentik/api";
+import { EmailStage, StagesApi, TypeCreate } from "@goauthentik/api";
 
 @customElement("ak-stage-email-form")
 export class EmailStageForm extends ModelForm<EmailStage, string> {
-    loadInstance(pk: string): Promise<EmailStage> {
-        return new StagesApi(DEFAULT_CONFIG)
-            .stagesEmailRetrieve({
-                stageUuid: pk,
-            })
-            .then((stage) => {
-                this.showConnectionSettings = !stage.useGlobalSettings;
-                return stage;
-            });
+    async loadInstance(pk: string): Promise<EmailStage> {
+        const stage = await new StagesApi(DEFAULT_CONFIG).stagesEmailRetrieve({
+            stageUuid: pk,
+        });
+        this.showConnectionSettings = !stage.useGlobalSettings;
+        return stage;
     }
+
+    async load(): Promise<void> {
+        this.templates = await new StagesApi(DEFAULT_CONFIG).stagesEmailTemplatesList();
+    }
+
+    templates?: TypeCreate[];
 
     @property({ type: Boolean })
     showConnectionSettings = false;
@@ -232,23 +234,15 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                         name="template"
                     >
                         <select name="users" class="pf-c-form-control">
-                            ${until(
-                                new StagesApi(DEFAULT_CONFIG)
-                                    .stagesEmailTemplatesList()
-                                    .then((templates) => {
-                                        return templates.map((template) => {
-                                            const selected =
-                                                this.instance?.template === template.name;
-                                            return html`<option
-                                                value=${ifDefined(template.name)}
-                                                ?selected=${selected}
-                                            >
-                                                ${template.description}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.templates?.map((template) => {
+                                const selected = this.instance?.template === template.name;
+                                return html`<option
+                                    value=${ifDefined(template.name)}
+                                    ?selected=${selected}
+                                >
+                                    ${template.description}
+                                </option>`;
+                            })}
                         </select>
                     </ak-form-element-horizontal>
                 </div>

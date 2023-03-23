@@ -13,7 +13,6 @@ import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
@@ -28,6 +27,8 @@ import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
+    PaginatedOAuthSourceList,
+    PaginatedScopeMappingList,
     PropertymappingsApi,
     ProvidersApi,
     ProxyMode,
@@ -51,17 +52,29 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
         );
     }
 
-    loadInstance(pk: number): Promise<ProxyProvider> {
-        return new ProvidersApi(DEFAULT_CONFIG)
-            .providersProxyRetrieve({
-                id: pk,
-            })
-            .then((provider) => {
-                this.showHttpBasic = first(provider.basicAuthEnabled, true);
-                this.mode = first(provider.mode, ProxyMode.Proxy);
-                return provider;
-            });
+    async loadInstance(pk: number): Promise<ProxyProvider> {
+        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersProxyRetrieve({
+            id: pk,
+        });
+        this.showHttpBasic = first(provider.basicAuthEnabled, true);
+        this.mode = first(provider.mode, ProxyMode.Proxy);
+        return provider;
     }
+
+    async load(): Promise<void> {
+        this.propertyMappings = await new PropertymappingsApi(
+            DEFAULT_CONFIG,
+        ).propertymappingsScopeList({
+            ordering: "scope_name",
+        });
+        this.oauthSources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList({
+            ordering: "name",
+            hasJwks: true,
+        });
+    }
+
+    propertyMappings?: PaginatedScopeMappingList;
+    oauthSources?: PaginatedOAuthSourceList;
 
     @state()
     showHttpBasic = true;
@@ -392,34 +405,23 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new PropertymappingsApi(DEFAULT_CONFIG)
-                                    .propertymappingsScopeList({
-                                        ordering: "scope_name",
-                                    })
-                                    .then((scopes) => {
-                                        return scopes.results
-                                            .filter((scope) => {
-                                                return !scope.managed?.startsWith(
-                                                    "goauthentik.io/providers",
-                                                );
-                                            })
-                                            .map((scope) => {
-                                                const selected = (
-                                                    this.instance?.propertyMappings || []
-                                                ).some((su) => {
-                                                    return su == scope.pk;
-                                                });
-                                                return html`<option
-                                                    value=${ifDefined(scope.pk)}
-                                                    ?selected=${selected}
-                                                >
-                                                    ${scope.name}
-                                                </option>`;
-                                            });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.propertyMappings?.results
+                                .filter((scope) => {
+                                    return !scope.managed?.startsWith("goauthentik.io/providers");
+                                })
+                                .map((scope) => {
+                                    const selected = (this.instance?.propertyMappings || []).some(
+                                        (su) => {
+                                            return su == scope.pk;
+                                        },
+                                    );
+                                    return html`<option
+                                        value=${ifDefined(scope.pk)}
+                                        ?selected=${selected}
+                                    >
+                                        ${scope.name}
+                                    </option>`;
+                                })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Additional scope mappings, which are passed to the proxy.`}
@@ -497,29 +499,14 @@ ${this.instance?.skipPathRegex}</textarea
                     ${this.showHttpBasic ? this.renderHttpBasic() : html``}
                     <ak-form-element-horizontal label=${t`Trusted OIDC Sources`} name="jwksSources">
                         <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new SourcesApi(DEFAULT_CONFIG)
-                                    .sourcesOauthList({
-                                        ordering: "name",
-                                        hasJwks: true,
-                                    })
-                                    .then((sources) => {
-                                        return sources.results.map((source) => {
-                                            const selected = (
-                                                this.instance?.jwksSources || []
-                                            ).some((su) => {
-                                                return su == source.pk;
-                                            });
-                                            return html`<option
-                                                value=${source.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${source.name} (${source.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.oauthSources?.results.map((source) => {
+                                const selected = (this.instance?.jwksSources || []).some((su) => {
+                                    return su == source.pk;
+                                });
+                                return html`<option value=${source.pk} ?selected=${selected}>
+                                    ${source.name} (${source.slug})
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.`}

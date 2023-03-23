@@ -10,29 +10,34 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     AuthenticatorValidateStage,
     DeviceClassesEnum,
     NotConfiguredActionEnum,
+    PaginatedStageList,
     StagesApi,
     UserVerificationEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-validate-form")
 export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValidateStage, string> {
-    loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
-        return new StagesApi(DEFAULT_CONFIG)
-            .stagesAuthenticatorValidateRetrieve({
-                stageUuid: pk,
-            })
-            .then((stage) => {
-                this.showConfigurationStages =
-                    stage.notConfiguredAction === NotConfiguredActionEnum.Configure;
-                return stage;
-            });
+    async loadInstance(pk: string): Promise<AuthenticatorValidateStage> {
+        const stage = await new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateRetrieve({
+            stageUuid: pk,
+        });
+        this.showConfigurationStages =
+            stage.notConfiguredAction === NotConfiguredActionEnum.Configure;
+        return stage;
     }
+
+    async load(): Promise<void> {
+        this.stages = await new StagesApi(DEFAULT_CONFIG).stagesAllList({
+            ordering: "name",
+        });
+    }
+
+    stages?: PaginatedStageList;
 
     @property({ type: Boolean })
     showConfigurationStages = true;
@@ -216,28 +221,19 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                                   name="configurationStages"
                               >
                                   <select class="pf-c-form-control" multiple>
-                                      ${until(
-                                          new StagesApi(DEFAULT_CONFIG)
-                                              .stagesAllList({
-                                                  ordering: "name",
-                                              })
-                                              .then((stages) => {
-                                                  return stages.results.map((stage) => {
-                                                      const selected = Array.from(
-                                                          this.instance?.configurationStages || [],
-                                                      ).some((su) => {
-                                                          return su == stage.pk;
-                                                      });
-                                                      return html`<option
-                                                          value=${ifDefined(stage.pk)}
-                                                          ?selected=${selected}
-                                                      >
-                                                          ${stage.name} (${stage.verboseName})
-                                                      </option>`;
-                                                  });
-                                              }),
-                                          html`<option>${t`Loading...`}</option>`,
-                                      )}
+                                      ${this.stages?.results.map((stage) => {
+                                          const selected = Array.from(
+                                              this.instance?.configurationStages || [],
+                                          ).some((su) => {
+                                              return su == stage.pk;
+                                          });
+                                          return html`<option
+                                              value=${ifDefined(stage.pk)}
+                                              ?selected=${selected}
+                                          >
+                                              ${stage.name} (${stage.verboseName})
+                                          </option>`;
+                                      })}
                                   </select>
                                   <p class="pf-c-form__helper-text">
                                       ${t`Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.`}

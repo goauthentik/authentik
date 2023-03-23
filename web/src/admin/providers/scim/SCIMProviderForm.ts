@@ -11,12 +11,12 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     CoreApi,
     CoreGroupsListRequest,
     Group,
+    PaginatedSCIMMappingList,
     PropertymappingsApi,
     ProvidersApi,
     SCIMProvider,
@@ -29,6 +29,16 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
             id: pk,
         });
     }
+
+    async load(): Promise<void> {
+        this.propertyMappings = await new PropertymappingsApi(
+            DEFAULT_CONFIG,
+        ).propertymappingsScimList({
+            ordering: "managed",
+        });
+    }
+
+    propertyMappings?: PaginatedSCIMMappingList;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -147,36 +157,26 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new PropertymappingsApi(DEFAULT_CONFIG)
-                                    .propertymappingsScimList({
-                                        ordering: "managed",
-                                    })
-                                    .then((mappings) => {
-                                        return mappings.results.map((mapping) => {
-                                            let selected = false;
-                                            if (!this.instance?.propertyMappings) {
-                                                selected =
-                                                    mapping.managed ===
-                                                        "goauthentik.io/providers/scim/user" ||
-                                                    false;
-                                            } else {
-                                                selected = Array.from(
-                                                    this.instance?.propertyMappings,
-                                                ).some((su) => {
-                                                    return su == mapping.pk;
-                                                });
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(mapping.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${mapping.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.propertyMappings?.results.map((mapping) => {
+                                let selected = false;
+                                if (!this.instance?.propertyMappings) {
+                                    selected =
+                                        mapping.managed === "goauthentik.io/providers/scim/user" ||
+                                        false;
+                                } else {
+                                    selected = Array.from(this.instance?.propertyMappings).some(
+                                        (su) => {
+                                            return su == mapping.pk;
+                                        },
+                                    );
+                                }
+                                return html`<option
+                                    value=${ifDefined(mapping.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${mapping.name}
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Property mappings used to user mapping.`}
@@ -191,35 +191,25 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                         name="propertyMappingsGroup"
                     >
                         <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new PropertymappingsApi(DEFAULT_CONFIG)
-                                    .propertymappingsScimList({
-                                        ordering: "managed",
-                                    })
-                                    .then((mappings) => {
-                                        return mappings.results.map((mapping) => {
-                                            let selected = false;
-                                            if (!this.instance?.propertyMappingsGroup) {
-                                                selected =
-                                                    mapping.managed ===
-                                                    "goauthentik.io/providers/scim/group";
-                                            } else {
-                                                selected = Array.from(
-                                                    this.instance?.propertyMappingsGroup,
-                                                ).some((su) => {
-                                                    return su == mapping.pk;
-                                                });
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(mapping.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${mapping.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.propertyMappings?.results.map((mapping) => {
+                                let selected = false;
+                                if (!this.instance?.propertyMappingsGroup) {
+                                    selected =
+                                        mapping.managed === "goauthentik.io/providers/scim/group";
+                                } else {
+                                    selected = Array.from(
+                                        this.instance?.propertyMappingsGroup,
+                                    ).some((su) => {
+                                        return su == mapping.pk;
+                                    });
+                                }
+                                return html`<option
+                                    value=${ifDefined(mapping.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${mapping.name}
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Property mappings used to group creation.`}

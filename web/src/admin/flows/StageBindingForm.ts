@@ -1,3 +1,4 @@
+import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -10,11 +11,13 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
+    Flow,
     FlowStageBinding,
     FlowsApi,
+    FlowsInstancesListDesignationEnum,
+    FlowsInstancesListRequest,
     InvalidResponseActionEnum,
     PolicyEngineMode,
     Stage,
@@ -85,23 +88,32 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             `;
         }
         return html`<ak-form-element-horizontal label=${t`Target`} ?required=${true} name="target">
-            <select class="pf-c-form-control">
-                ${until(
-                    new FlowsApi(DEFAULT_CONFIG)
-                        .flowsInstancesList({
-                            ordering: "slug",
-                        })
-                        .then((flows) => {
-                            return flows.results.map((flow) => {
-                                // No ?selected check here, as this input isn't shown on update forms
-                                return html`<option value=${ifDefined(flow.pk)}>
-                                    ${flow.name} (${flow.slug})
-                                </option>`;
-                            });
-                        }),
-                    html`<option>${t`Loading...`}</option>`,
-                )}
-            </select>
+            <ak-search-select
+                .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                    const args: FlowsInstancesListRequest = {
+                        ordering: "slug",
+                        designation: FlowsInstancesListDesignationEnum.Authorization,
+                    };
+                    if (query !== undefined) {
+                        args.search = query;
+                    }
+                    const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
+                    return flows.results;
+                }}
+                .renderElement=${(flow: Flow): string => {
+                    return RenderFlowOption(flow);
+                }}
+                .renderDescription=${(flow: Flow): TemplateResult => {
+                    return html`${flow.name}`;
+                }}
+                .value=${(flow: Flow | undefined): string | undefined => {
+                    return flow?.pk;
+                }}
+                .selected=${(flow: Flow): boolean => {
+                    return flow.pk === this.instance?.target;
+                }}
+            >
+            </ak-search-select>
         </ak-form-element-horizontal>`;
     }
 

@@ -9,7 +9,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     CoreApi,
@@ -17,14 +16,23 @@ import {
     EventsApi,
     Group,
     NotificationRule,
+    PaginatedNotificationTransportList,
     SeverityEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-event-rule-form")
 export class RuleForm extends ModelForm<NotificationRule, string> {
+    eventTransports?: PaginatedNotificationTransportList;
+
     loadInstance(pk: string): Promise<NotificationRule> {
         return new EventsApi(DEFAULT_CONFIG).eventsRulesRetrieve({
             pbmUuid: pk,
+        });
+    }
+
+    async load(): Promise<void> {
+        this.eventTransports = await new EventsApi(DEFAULT_CONFIG).eventsTransportsList({
+            ordering: "name",
         });
     }
 
@@ -86,28 +94,14 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Transports`} ?required=${true} name="transports">
                 <select class="pf-c-form-control" multiple>
-                    ${until(
-                        new EventsApi(DEFAULT_CONFIG)
-                            .eventsTransportsList({
-                                ordering: "name",
-                            })
-                            .then((transports) => {
-                                return transports.results.map((transport) => {
-                                    const selected = Array.from(
-                                        this.instance?.transports || [],
-                                    ).some((su) => {
-                                        return su == transport.pk;
-                                    });
-                                    return html`<option
-                                        value=${ifDefined(transport.pk)}
-                                        ?selected=${selected}
-                                    >
-                                        ${transport.name}
-                                    </option>`;
-                                });
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
+                    ${this.eventTransports?.results.map((transport) => {
+                        const selected = Array.from(this.instance?.transports || []).some((su) => {
+                            return su == transport.pk;
+                        });
+                        return html`<option value=${ifDefined(transport.pk)} ?selected=${selected}>
+                            ${transport.name}
+                        </option>`;
+                    })}
                 </select>
                 <p class="pf-c-form__helper-text">
                     ${t`Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.`}

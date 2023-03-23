@@ -11,9 +11,8 @@ import "@goauthentik/elements/utils/TimeDeltaHelp";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     CertificateKeyPair,
@@ -26,6 +25,8 @@ import {
     FlowsInstancesListRequest,
     IssuerModeEnum,
     OAuth2Provider,
+    PaginatedOAuthSourceList,
+    PaginatedScopeMappingList,
     PropertymappingsApi,
     ProvidersApi,
     SourcesApi,
@@ -34,19 +35,31 @@ import {
 
 @customElement("ak-provider-oauth2-form")
 export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
-    loadInstance(pk: number): Promise<OAuth2Provider> {
-        return new ProvidersApi(DEFAULT_CONFIG)
-            .providersOauth2Retrieve({
-                id: pk,
-            })
-            .then((provider) => {
-                this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
-                return provider;
-            });
+    propertyMappings?: PaginatedScopeMappingList;
+    oauthSources?: PaginatedOAuthSourceList;
+
+    @state()
+    showClientSecret = true;
+
+    async loadInstance(pk: number): Promise<OAuth2Provider> {
+        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
+            id: pk,
+        });
+        this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
+        return provider;
     }
 
-    @property({ type: Boolean })
-    showClientSecret = true;
+    async load(): Promise<void> {
+        this.propertyMappings = await new PropertymappingsApi(
+            DEFAULT_CONFIG,
+        ).propertymappingsScopeList({
+            ordering: "scope_name",
+        });
+        this.oauthSources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList({
+            ordering: "name",
+            hasJwks: true,
+        });
+    }
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -287,36 +300,27 @@ ${this.instance?.redirectUris}</textarea
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${t`Scopes`} name="propertyMappings">
                         <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new PropertymappingsApi(DEFAULT_CONFIG)
-                                    .propertymappingsScopeList({
-                                        ordering: "scope_name",
-                                    })
-                                    .then((scopes) => {
-                                        return scopes.results.map((scope) => {
-                                            let selected = false;
-                                            if (!this.instance?.propertyMappings) {
-                                                selected =
-                                                    scope.managed?.startsWith(
-                                                        "goauthentik.io/providers/oauth2/scope-",
-                                                    ) || false;
-                                            } else {
-                                                selected = Array.from(
-                                                    this.instance?.propertyMappings,
-                                                ).some((su) => {
-                                                    return su == scope.pk;
-                                                });
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(scope.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${scope.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.propertyMappings?.results.map((scope) => {
+                                let selected = false;
+                                if (!this.instance?.propertyMappings) {
+                                    selected =
+                                        scope.managed?.startsWith(
+                                            "goauthentik.io/providers/oauth2/scope-",
+                                        ) || false;
+                                } else {
+                                    selected = Array.from(this.instance?.propertyMappings).some(
+                                        (su) => {
+                                            return su == scope.pk;
+                                        },
+                                    );
+                                }
+                                return html`<option
+                                    value=${ifDefined(scope.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${scope.name}
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Select which scopes can be used by the client. The client still has to specify the scope to access the data.`}
@@ -413,29 +417,14 @@ ${this.instance?.redirectUris}</textarea
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${t`Trusted OIDC Sources`} name="jwksSources">
                         <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new SourcesApi(DEFAULT_CONFIG)
-                                    .sourcesOauthList({
-                                        ordering: "name",
-                                        hasJwks: true,
-                                    })
-                                    .then((sources) => {
-                                        return sources.results.map((source) => {
-                                            const selected = (
-                                                this.instance?.jwksSources || []
-                                            ).some((su) => {
-                                                return su == source.pk;
-                                            });
-                                            return html`<option
-                                                value=${source.pk}
-                                                ?selected=${selected}
-                                            >
-                                                ${source.name} (${source.slug})
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.oauthSources?.results.map((source) => {
+                                const selected = (this.instance?.jwksSources || []).some((su) => {
+                                    return su == source.pk;
+                                });
+                                return html`<option value=${source.pk} ?selected=${selected}>
+                                    ${source.name} (${source.slug})
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.`}

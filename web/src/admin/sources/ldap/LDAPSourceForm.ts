@@ -10,7 +10,6 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import {
     CertificateKeyPair,
@@ -21,6 +20,7 @@ import {
     Group,
     LDAPSource,
     LDAPSourceRequest,
+    PaginatedLDAPPropertyMappingList,
     PropertymappingsApi,
     SourcesApi,
 } from "@goauthentik/api";
@@ -32,6 +32,16 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
             slug: pk,
         });
     }
+
+    async load(): Promise<void> {
+        this.propertyMappings = await new PropertymappingsApi(
+            DEFAULT_CONFIG,
+        ).propertymappingsLdapList({
+            ordering: "managed,object_field",
+        });
+    }
+
+    propertyMappings?: PaginatedLDAPPropertyMappingList;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -241,40 +251,31 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new PropertymappingsApi(DEFAULT_CONFIG)
-                                    .propertymappingsLdapList({
-                                        ordering: "managed,object_field",
-                                    })
-                                    .then((mappings) => {
-                                        return mappings.results.map((mapping) => {
-                                            let selected = false;
-                                            if (!this.instance?.propertyMappings) {
-                                                selected =
-                                                    mapping.managed?.startsWith(
-                                                        "goauthentik.io/sources/ldap/default",
-                                                    ) ||
-                                                    mapping.managed?.startsWith(
-                                                        "goauthentik.io/sources/ldap/ms",
-                                                    ) ||
-                                                    false;
-                                            } else {
-                                                selected = Array.from(
-                                                    this.instance?.propertyMappings,
-                                                ).some((su) => {
-                                                    return su == mapping.pk;
-                                                });
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(mapping.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${mapping.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.propertyMappings?.results.map((mapping) => {
+                                let selected = false;
+                                if (!this.instance?.propertyMappings) {
+                                    selected =
+                                        mapping.managed?.startsWith(
+                                            "goauthentik.io/sources/ldap/default",
+                                        ) ||
+                                        mapping.managed?.startsWith(
+                                            "goauthentik.io/sources/ldap/ms",
+                                        ) ||
+                                        false;
+                                } else {
+                                    selected = Array.from(this.instance?.propertyMappings).some(
+                                        (su) => {
+                                            return su == mapping.pk;
+                                        },
+                                    );
+                                }
+                                return html`<option
+                                    value=${ifDefined(mapping.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${mapping.name}
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Property mappings used to user creation.`}
@@ -289,35 +290,26 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         name="propertyMappingsGroup"
                     >
                         <select class="pf-c-form-control" multiple>
-                            ${until(
-                                new PropertymappingsApi(DEFAULT_CONFIG)
-                                    .propertymappingsLdapList({
-                                        ordering: "managed,object_field",
-                                    })
-                                    .then((mappings) => {
-                                        return mappings.results.map((mapping) => {
-                                            let selected = false;
-                                            if (!this.instance?.propertyMappingsGroup) {
-                                                selected =
-                                                    mapping.managed ===
-                                                    "goauthentik.io/sources/ldap/default-name";
-                                            } else {
-                                                selected = Array.from(
-                                                    this.instance?.propertyMappingsGroup,
-                                                ).some((su) => {
-                                                    return su == mapping.pk;
-                                                });
-                                            }
-                                            return html`<option
-                                                value=${ifDefined(mapping.pk)}
-                                                ?selected=${selected}
-                                            >
-                                                ${mapping.name}
-                                            </option>`;
-                                        });
-                                    }),
-                                html`<option>${t`Loading...`}</option>`,
-                            )}
+                            ${this.propertyMappings?.results.map((mapping) => {
+                                let selected = false;
+                                if (!this.instance?.propertyMappingsGroup) {
+                                    selected =
+                                        mapping.managed ===
+                                        "goauthentik.io/sources/ldap/default-name";
+                                } else {
+                                    selected = Array.from(
+                                        this.instance?.propertyMappingsGroup,
+                                    ).some((su) => {
+                                        return su == mapping.pk;
+                                    });
+                                }
+                                return html`<option
+                                    value=${ifDefined(mapping.pk)}
+                                    ?selected=${selected}
+                                >
+                                    ${mapping.name}
+                                </option>`;
+                            })}
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${t`Property mappings used to group creation.`}
