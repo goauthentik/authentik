@@ -100,7 +100,7 @@ export class Tabs extends AKElement {
         const pages = Array.from(this.querySelectorAll(":scope > [slot^='page-']"));
         if (window.location.hash.includes(ROUTE_SEPARATOR)) {
             const params = getURLParams();
-            if (this.pageIdentifier in params) {
+            if (this.pageIdentifier in params && !this.currentPage) {
                 if (this.querySelector(`[slot='${params[this.pageIdentifier]}']`) !== null) {
                     // To update the URL to match with the current slot
                     this.onClick(params[this.pageIdentifier] as string);
