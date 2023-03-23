@@ -15,8 +15,7 @@ import "@goauthentik/elements/events/ObjectChangelog";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
-import { until } from "lit/directives/until.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -29,30 +28,34 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { OAuth2Provider, OAuth2ProviderSetupURLs, ProvidersApi } from "@goauthentik/api";
+import {
+    OAuth2Provider,
+    OAuth2ProviderSetupURLs,
+    PropertyMappingPreview,
+    ProvidersApi,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-oauth2-view")
 export class OAuth2ProviderViewPage extends AKElement {
     @property({ type: Number })
     set providerID(value: number) {
-        const api = new ProvidersApi(DEFAULT_CONFIG);
-        api.providersOauth2Retrieve({
-            id: value,
-        }).then((prov) => {
-            this.provider = prov;
-        });
-        api.providersOauth2SetupUrlsRetrieve({
-            id: value,
-        }).then((prov) => {
-            this.providerUrls = prov;
-        });
+        new ProvidersApi(DEFAULT_CONFIG)
+            .providersOauth2Retrieve({
+                id: value,
+            })
+            .then((prov) => {
+                this.provider = prov;
+            });
     }
 
     @property({ attribute: false })
     provider?: OAuth2Provider;
 
-    @property({ attribute: false })
+    @state()
     providerUrls?: OAuth2ProviderSetupURLs;
+
+    @state()
+    preview?: PropertyMappingPreview;
 
     static get styles(): CSSResult[] {
         return [
@@ -82,10 +85,32 @@ export class OAuth2ProviderViewPage extends AKElement {
             return html``;
         }
         return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${t`Overview`}">
+            <section
+                slot="page-overview"
+                data-tab-title="${t`Overview`}"
+                @activate=${() => {
+                    new ProvidersApi(DEFAULT_CONFIG)
+                        .providersOauth2SetupUrlsRetrieve({
+                            id: this.provider?.pk || 0,
+                        })
+                        .then((prov) => {
+                            this.providerUrls = prov;
+                        });
+                }}
+            >
                 ${this.renderTabOverview()}
             </section>
-            <section slot="page-preview" data-tab-title="${t`Preview`}">
+            <section
+                slot="page-preview"
+                data-tab-title="${t`Preview`}"
+                @activate=${() => {
+                    new ProvidersApi(DEFAULT_CONFIG)
+                        .providersOauth2PreviewUserRetrieve({
+                            id: this.provider?.pk || 0,
+                        })
+                        .then((preview) => (this.preview = preview));
+                }}
+            >
                 ${this.renderTabPreview()}
             </section>
             <section
@@ -318,15 +343,7 @@ export class OAuth2ProviderViewPage extends AKElement {
                     ${t`Example JWT payload (for currently authenticated user)`}
                 </div>
                 <div class="pf-c-card__body">
-                    ${until(
-                        new ProvidersApi(DEFAULT_CONFIG)
-                            .providersOauth2PreviewUserRetrieve({
-                                id: this.provider?.pk,
-                            })
-                            .then((data) => {
-                                return html`<pre>${JSON.stringify(data.preview, null, 4)}</pre>`;
-                            }),
-                    )}
+                    <pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>
                 </div>
             </div>
         </div>`;

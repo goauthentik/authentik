@@ -11,13 +11,12 @@ export class AggregatePromiseCard extends AggregateCard {
     @property({ attribute: false })
     promise?: Promise<Record<string, unknown>>;
 
-    promiseProxy(): Promise<TemplateResult> {
+    async promiseProxy(): Promise<TemplateResult> {
         if (!this.promise) {
-            return new Promise<TemplateResult>(() => html``);
+            return html``;
         }
-        return this.promise.then((s) => {
-            return html`<i class="fa fa-check-circle"></i>&nbsp;${s.toString()}`;
-        });
+        const value = await this.promise;
+        return html`<i class="fa fa-check-circle"></i>&nbsp;${value.toString()}`;
     }
 
     renderInner(): TemplateResult {

@@ -1,10 +1,9 @@
-import { me } from "@goauthentik/common/users";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AdminInterface } from "@goauthentik/admin/AdminInterface";
+import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-import { until } from "lit/directives/until.js";
 
 import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
@@ -34,18 +33,12 @@ export class SidebarUser extends AKElement {
     }
 
     render(): TemplateResult {
+        const me = rootInterface<AdminInterface>()?.user;
         return html`
             <a href="/if/user/#/settings" class="pf-c-nav__link user-avatar" id="user-settings">
-                ${until(
-                    me().then((u) => {
-                        return html`<img
-                            class="pf-c-avatar"
-                            src="${ifDefined(u.user.avatar)}"
-                            alt=""
-                        />`;
-                    }),
-                    html``,
-                )}
+                ${me
+                    ? html`<img class="pf-c-avatar" src="${ifDefined(me.user.avatar)}" alt="" />`
+                    : html``}
             </a>
             <a href="/flows/-/default/invalidation/" class="pf-c-nav__link user-logout" id="logout">
                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>

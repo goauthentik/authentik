@@ -15,7 +15,7 @@ import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 import { until } from "lit/directives/until.js";
 
@@ -31,7 +31,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CryptoApi, ProvidersApi, SAMLProvider } from "@goauthentik/api";
+import { CryptoApi, ProvidersApi, SAMLMetadata, SAMLProvider } from "@goauthentik/api";
 
 interface SAMLPreviewAttribute {
     attributes: {
@@ -59,6 +59,12 @@ export class SAMLProviderViewPage extends AKElement {
 
     @property({ attribute: false })
     provider?: SAMLProvider;
+
+    @state()
+    preview?: SAMLPreviewAttribute;
+
+    @state()
+    metadata?: SAMLMetadata;
 
     static get styles(): CSSResult[] {
         return [
@@ -160,7 +166,19 @@ export class SAMLProviderViewPage extends AKElement {
                 ${this.renderTabOverview()}
             </section>
             ${this.renderTabMetadata()}
-            <section slot="page-preview" data-tab-title="${t`Preview`}">
+            <section
+                slot="page-preview"
+                data-tab-title="${t`Preview`}"
+                @activate=${() => {
+                    new ProvidersApi(DEFAULT_CONFIG)
+                        .providersSamlPreviewUserRetrieve({
+                            id: this.provider?.pk || 0,
+                        })
+                        .then((preview) => {
+                            this.preview = preview.preview as SAMLPreviewAttribute;
+                        });
+                }}
+            >
                 ${this.renderTabPreview()}
             </section>
             <section
@@ -364,7 +382,17 @@ export class SAMLProviderViewPage extends AKElement {
         }
         return html`
             ${this.provider.assignedApplicationName
-                ? html` <section slot="page-metadata" data-tab-title="${t`Metadata`}">
+                ? html` <section
+                      slot="page-metadata"
+                      data-tab-title="${t`Metadata`}"
+                      @activate=${() => {
+                          new ProvidersApi(DEFAULT_CONFIG)
+                              .providersSamlMetadataRetrieve({
+                                  id: this.provider?.pk || 0,
+                              })
+                              .then((metadata) => (this.metadata = metadata));
+                      }}
+                  >
                       <div
                           class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
                       >
@@ -399,19 +427,11 @@ export class SAMLProviderViewPage extends AKElement {
                                   </ak-action-button>
                               </div>
                               <div class="pf-c-card__footer">
-                                  ${until(
-                                      new ProvidersApi(DEFAULT_CONFIG)
-                                          .providersSamlMetadataRetrieve({
-                                              id: this.provider.pk || 0,
-                                          })
-                                          .then((m) => {
-                                              return html`<ak-codemirror
-                                                  mode="xml"
-                                                  ?readOnly=${true}
-                                                  value="${ifDefined(m.metadata)}"
-                                              ></ak-codemirror>`;
-                                          }),
-                                  )}
+                                  <ak-codemirror
+                                      mode="xml"
+                                      ?readOnly=${true}
+                                      value="${ifDefined(this.metadata?.metadata)}"
+                                  ></ak-codemirror>
                               </div>
                           </div>
                       </div>
@@ -429,57 +449,42 @@ export class SAMLProviderViewPage extends AKElement {
         >
             <div class="pf-c-card">
                 <div class="pf-c-card__title">${t`Example SAML attributes`}</div>
-                ${until(
-                    new ProvidersApi(DEFAULT_CONFIG)
-                        .providersSamlPreviewUserRetrieve({
-                            id: this.provider?.pk,
-                        })
-                        .then((data) => {
-                            const d = data.preview as SAMLPreviewAttribute;
-                            return html`
-                                <div class="pf-c-card__body">
-                                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text"
-                                                    >${t`NameID attribute`}</span
-                                                >
-                                            </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
-                                                    ${d.nameID}
-                                                </div>
-                                            </dd>
-                                        </div>
-                                    </dl>
+                <div class="pf-c-card__body">
+                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                        <div class="pf-c-description-list__group">
+                            <dt class="pf-c-description-list__term">
+                                <span class="pf-c-description-list__text"
+                                    >${t`NameID attribute`}</span
+                                >
+                            </dt>
+                            <dd class="pf-c-description-list__description">
+                                <div class="pf-c-description-list__text">
+                                    ${this.preview?.nameID}
                                 </div>
-                                <div class="pf-c-card__body">
-                                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                                        ${d.attributes.map((attr) => {
-                                            return html` <div class="pf-c-description-list__group">
-                                                <dt class="pf-c-description-list__term">
-                                                    <span class="pf-c-description-list__text"
-                                                        >${attr.Name}</span
-                                                    >
-                                                </dt>
-                                                <dd class="pf-c-description-list__description">
-                                                    <div class="pf-c-description-list__text">
-                                                        <ul class="pf-c-list">
-                                                            ${attr.Value.map((value) => {
-                                                                return html`
-                                                                    <li><pre>${value}</pre></li>
-                                                                `;
-                                                            })}
-                                                        </ul>
-                                                    </div>
-                                                </dd>
-                                            </div>`;
-                                        })}
-                                    </dl>
-                                </div>
-                            `;
-                        }),
-                )}
+                            </dd>
+                        </div>
+                    </dl>
+                </div>
+                <div class="pf-c-card__body">
+                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                        ${this.preview?.attributes.map((attr) => {
+                            return html` <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">${attr.Name}</span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        <ul class="pf-c-list">
+                                            ${attr.Value.map((value) => {
+                                                return html` <li><pre>${value}</pre></li> `;
+                                            })}
+                                        </ul>
+                                    </div>
+                                </dd>
+                            </div>`;
+                        })}
+                    </dl>
+                </div>
             </div>
         </div>`;
     }
