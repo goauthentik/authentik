@@ -37,7 +37,7 @@ We have a roadmap with several new features, and we want to hear your opinions o
 
 Roadmapped features include:
 
--   **RBAC ~~tighter access control~~**
+-   **RBAC**
     -   Currently there’s only the option of users to be superusers or regular users, and superusers can edit everything, including all authentic objects. This goes against the security principle of [least privilege](https://en.wikipedia.org/wiki/Principle_of_least_privilege), and as such goes against our security-focused mantra. Role-based access control (RBAC) restricts CRUD rights on authentik objects based on a specific _role,_ providing even more fine-grained control.
 -   **UX improvements**
     -   Ease of use and clear, intuitive UIs is always one of our main goals, and we’re now focusing yet more on making the experience of using authentik even better. Less jumping around in the UI and more helpful context actions, suggestions, and recommendations.
@@ -62,13 +62,12 @@ One of the primary ways for us to hear your input will be right there on the new
 
 The following offerings are described in detail on the new page (coming soon!) in our website.
 
--   Open Source
-
+-   Open Source:
     Our forever-free offering, the open source authentik project, has been active for over 5 years, and now has the support of Authentik Security. For self-hosted environments, works using all major authentication protocols (OAuth2/OpenID Connect, SAML, LDAP, and proxy authentication), with an advanced, customizable policy engine, and community support.
 
--   Enterprise Self-hosted
+-   Enterprise Self-hosted:
     Our Enterprise Self-hosted plan offers all of the features of open source authentic (and is still source-available), plus releases with long-term-support (LTS), an enterprise-level support plan, and additional features for larger organizations such as AI-based risk assessment and multifactor authentication (MFA) with push notification.
--   Enterprise Cloud
+-   Enterprise Cloud:
     The Enterprise Cloud plan provides the convenience of our enterprise-level product as a SaaS offering, hosted and managed by Authentik Security. For many organizations, the benefits of decreased operational costs and universal data access (no VPN, servers, and network configuration required) make SaaS the best choice. With the cloud offering, the same enterprise-level support plan is included, and migrating to self-hosted is always an option.
 
 Take a look at the new [Plans page](https://goauthentik.io/pricing/), and if you’re interested in the upcoming feature sets and learning more about our Cloud or self-hosted offerings, join the wait list and let’s start talking about what your company needs.
