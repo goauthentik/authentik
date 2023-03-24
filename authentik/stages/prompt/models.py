@@ -120,8 +120,17 @@ class Prompt(SerializerModel):
     placeholder = models.TextField(
         blank=True,
         help_text=_(
-            "When creating a Radio Button Group or Dropdown, enable interpreting as "
+            "Optionally provide a short hint that describes the expected input value. "
+            "When creating a fixed choice field, enable interpreting as "
             "expression and return a list to return multiple choices."
+        ),
+    )
+    initial_value = models.TextField(
+        blank=True,
+        help_text=_(
+            "Optionally pre-fill the input with an initial value. "
+            "When creating a fixed choice field, enable interpreting as "
+            "expression and return a list to return multiple default choices."
         ),
     )
     sub_text = models.TextField(blank=True, default="")
@@ -129,6 +138,7 @@ class Prompt(SerializerModel):
     order = models.IntegerField(default=0)
 
     placeholder_expression = models.BooleanField(default=False)
+    initial_value_expression = models.BooleanField(default=False)
 
     @property
     def serializer(self) -> Type[BaseSerializer]:
