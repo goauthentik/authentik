@@ -42,7 +42,7 @@ jobs:
           signoff: true
           team-reviewers: "@goauthentik/core"
           author: authentik bot <github-bot@goauthentik.io>
-      - uses: peter-evans/enable-pull-request-automerge@v2
+      - uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
