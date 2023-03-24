@@ -18995,14 +18995,14 @@ paths:
           - http://www.w3.org/2001/04/xmlenc#sha256
           - http://www.w3.org/2001/04/xmlenc#sha512
       - in: query
-        name: is_backchannel
-        schema:
-          type: boolean
-      - in: query
         name: invalidation_flow
         schema:
           type: string
           format: uuid
+      - in: query
+        name: is_backchannel
+        schema:
+          type: boolean
       - in: query
         name: issuer
         schema:
@@ -43207,6 +43207,11 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -45264,6 +45269,11 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -45344,6 +45354,11 @@ components:
           type: string
           format: uuid
           description: Flow used when authorizing this provider.
+        invalidation_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used ending the session from a provider.
         property_mappings:
           type: array
           items:
@@ -46003,12 +46018,16 @@ components:
         authorization_flow:
           type: string
           format: uuid
+        invalidation_flow:
+          type: string
+          format: uuid
         file:
           type: string
           format: binary
       required:
       - authorization_flow
       - file
+      - invalidation_flow
       - name
     SAMLProviderRequest:
       type: object

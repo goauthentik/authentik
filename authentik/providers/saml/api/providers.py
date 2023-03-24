@@ -174,6 +174,9 @@ class SAMLProviderImportSerializer(PassiveSerializer):
     authorization_flow = PrimaryKeyRelatedField(
         queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION),
     )
+    invalidation_flow = PrimaryKeyRelatedField(
+        queryset=Flow.objects.filter(designation=FlowDesignation.INVALIDATION),
+    )
     file = FileField()
 
 
@@ -263,7 +266,9 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         try:
             metadata = ServiceProviderMetadataParser().parse(file.read().decode())
             metadata.to_provider(
-                data.validated_data["name"], data.validated_data["authorization_flow"]
+                data.validated_data["name"],
+                data.validated_data["authorization_flow"],
+                data.validated_data["invalidation_flow"],
             )
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))

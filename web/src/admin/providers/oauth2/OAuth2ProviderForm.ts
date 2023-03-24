@@ -172,69 +172,6 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
                 required
             ></ak-text-input>
 
-            <ak-form-element-horizontal
-                name="authenticationFlow"
-                label=${msg("Authentication flow")}
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${provider?.authenticationFlow}
-                    required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when a user access this provider and is not authenticated.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                name="authorizationFlow"
-                label=${msg("Authorization flow")}
-                ?required=${true}
-            >
-                <ak-flow-search
-                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                    .currentFlow=${provider?.authorizationFlow}
-                    required
-                ></ak-flow-search>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Flow used when authorizing this provider.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Invalidation flow`}
-                ?required=${true}
-                name="invalidationFlow"
-            >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Invalidation,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.invalidationFlow;
-                    }}
-                >
-                </ak-search-select>
-                <p class="pf-c-form__helper-text">
-                    ${t`Flow used when authorizing this provider.`}
-                </p>
-            </ak-form-element-horizontal>
-
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
@@ -289,80 +226,49 @@ export class OAuth2ProviderFormPage extends BaseProviderForm<OAuth2Provider> {
             </ak-form-group>
 
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Flow settings`} </span>
+                <span slot="header"> ${msg("Flow settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Authorization flow`}
-                        ?required=${true}
-                        name="authorizationFlow"
+                        name="authenticationFlow"
+                        label=${msg("Authentication flow")}
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Authorization,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return flow.pk === this.instance?.authorizationFlow;
-                            }}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${provider?.authenticationFlow}
+                            required
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow used when authorizing this provider.`}
+                            ${msg(
+                                "Flow used when a user access this provider and is not authenticated.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Invalidation flow`}
+                        name="authorizationFlow"
+                        label=${msg("Authorization flow")}
+                        ?required=${true}
+                    >
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                            .currentFlow=${provider?.authorizationFlow}
+                            required
+                        ></ak-flow-search>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used when authorizing this provider.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Invalidation flow")}
                         ?required=${true}
                         name="invalidationFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Invalidation,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return flow.pk === this.instance?.invalidationFlow;
-                            }}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${provider?.invalidationFlow}
+                            required
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow used when authorizing this provider.`}
+                            ${msg("Flow used when logging out of this provider.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

@@ -49,12 +49,13 @@ class ServiceProviderMetadata:
 
     signing_keypair: CertificateKeyPair | None = None
 
-    def to_provider(self, name: str, authorization_flow: Flow) -> SAMLProvider:
+    def to_provider(self, name: str, authorization_flow: Flow, invalidation_flow: Flow) -> SAMLProvider:
         """Create a SAMLProvider instance from the details. `name` is required,
         as depending on the metadata CertificateKeypairs might have to be created."""
         provider = SAMLProvider.objects.create(
             name=name,
             authorization_flow=authorization_flow,
+            invalidation_flow=invalidation_flow
         )
         provider.issuer = self.entity_id
         provider.sp_binding = self.acs_binding

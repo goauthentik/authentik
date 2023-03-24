@@ -357,7 +357,6 @@ class Provider(SerializerModel):
         ),
         related_name="provider_authentication",
     )
-
     authorization_flow = models.ForeignKey(
         "authentik_flows.Flow",
         # Set to cascade even though null is allowed, since most providers
