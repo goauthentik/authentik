@@ -36717,8 +36717,14 @@ components:
           type: boolean
         placeholder:
           type: string
-          description: When creating a Radio Button Group or Dropdown, enable interpreting
-            as expression and return a list to return multiple choices.
+          description: Optionally provide a short hint that describes the expected
+            input value. When creating a fixed choice field, enable interpreting as
+            expression and return a list to return multiple choices.
+        initial_value:
+          type: string
+          description: Optionally pre-fill the input with an initial value. When creating
+            a fixed choice field, enable interpreting as expression and return a list
+            to return multiple default choices.
         order:
           type: integer
           maximum: 2147483647
@@ -36730,6 +36736,8 @@ components:
         sub_text:
           type: string
         placeholder_expression:
+          type: boolean
+        initial_value_expression:
           type: boolean
     PatchedPromptStageRequest:
       type: object
@@ -36853,7 +36861,7 @@ components:
         client_networks:
           type: string
           minLength: 1
-          description: List of CIDRs (comma-seperated) that clients can connect from.
+          description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
         shared_secret:
@@ -37871,8 +37879,14 @@ components:
           type: boolean
         placeholder:
           type: string
-          description: When creating a Radio Button Group or Dropdown, enable interpreting
-            as expression and return a list to return multiple choices.
+          description: Optionally provide a short hint that describes the expected
+            input value. When creating a fixed choice field, enable interpreting as
+            expression and return a list to return multiple choices.
+        initial_value:
+          type: string
+          description: Optionally pre-fill the input with an initial value. When creating
+            a fixed choice field, enable interpreting as expression and return a list
+            to return multiple default choices.
         order:
           type: integer
           maximum: 2147483647
@@ -37884,6 +37898,8 @@ components:
         sub_text:
           type: string
         placeholder_expression:
+          type: boolean
+        initial_value_expression:
           type: boolean
       required:
       - field_key
@@ -37946,8 +37962,14 @@ components:
           type: boolean
         placeholder:
           type: string
-          description: When creating a Radio Button Group or Dropdown, enable interpreting
-            as expression and return a list to return multiple choices.
+          description: Optionally provide a short hint that describes the expected
+            input value. When creating a fixed choice field, enable interpreting as
+            expression and return a list to return multiple choices.
+        initial_value:
+          type: string
+          description: Optionally pre-fill the input with an initial value. When creating
+            a fixed choice field, enable interpreting as expression and return a list
+            to return multiple default choices.
         order:
           type: integer
           maximum: 2147483647
@@ -37959,6 +37981,8 @@ components:
         sub_text:
           type: string
         placeholder_expression:
+          type: boolean
+        initial_value_expression:
           type: boolean
       required:
       - field_key
@@ -38598,7 +38622,7 @@ components:
           type: string
         client_networks:
           type: string
-          description: List of CIDRs (comma-seperated) that clients can connect from.
+          description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
         shared_secret:
@@ -38654,7 +38678,7 @@ components:
           readOnly: true
         client_networks:
           type: string
-          description: List of CIDRs (comma-seperated) that clients can connect from.
+          description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
         shared_secret:
@@ -38689,7 +38713,7 @@ components:
         client_networks:
           type: string
           minLength: 1
-          description: List of CIDRs (comma-seperated) that clients can connect from.
+          description: List of CIDRs (comma-separated) that clients can connect from.
             A more specific CIDR will match before a looser one. Clients connecting
             from a non-specified CIDR will be dropped.
         shared_secret:
