@@ -16,7 +16,7 @@
         "test": "node --test"
     },
     "dependencies": {
-        "@docusaurus/plugin-client-redirects": "2.3.1",
+        "@docusaurus/plugin-client-redirects": "2.4.0",
         "@docusaurus/preset-classic": "2.3.1",
         "@docusaurus/theme-mermaid": "^2.3.1",
         "@mdx-js/react": "^1.6.22",
