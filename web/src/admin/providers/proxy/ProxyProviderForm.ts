@@ -315,6 +315,41 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
+                label=${t`Authentication flow`}
+                ?required=${false}
+                name="authenticationFlow"
+            >
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                        const args: FlowsInstancesListRequest = {
+                            ordering: "slug",
+                            designation: FlowsInstancesListDesignationEnum.Authentication,
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
+                        return flows.results;
+                    }}
+                    .renderElement=${(flow: Flow): string => {
+                        return RenderFlowOption(flow);
+                    }}
+                    .renderDescription=${(flow: Flow): TemplateResult => {
+                        return html`${flow.name}`;
+                    }}
+                    .value=${(flow: Flow | undefined): string | undefined => {
+                        return flow?.pk;
+                    }}
+                    .selected=${(flow: Flow): boolean => {
+                        return flow.pk === this.instance?.authenticationFlow;
+                    }}
+                >
+                </ak-search-select>
+                <p class="pf-c-form__helper-text">
+                    ${t`Flow used when a user access this provider and is not authenticated.`}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
                 label=${t`Authorization flow`}
                 ?required=${true}
                 name="authorizationFlow"

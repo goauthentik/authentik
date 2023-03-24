@@ -86,31 +86,34 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 ?required=${false}
                 name="authenticationFlow"
             >
-                <select class="pf-c-form-control">
-                    <option value="" ?selected=${this.instance?.authenticationFlow === undefined}>
-                        ---------
-                    </option>
-                    ${until(
-                        new FlowsApi(DEFAULT_CONFIG)
-                            .flowsInstancesList({
-                                ordering: "slug",
-                                designation: FlowsInstancesListDesignationEnum.Authentication,
-                            })
-                            .then((flows) => {
-                                return flows.results.map((flow) => {
-                                    return html`<option
-                                        value=${ifDefined(flow.pk)}
-                                        ?selected=${this.instance?.authenticationFlow === flow.pk}
-                                    >
-                                        ${flow.name} (${flow.slug})
-                                    </option>`;
-                                });
-                            }),
-                        html`<option>${t`Loading...`}</option>`,
-                    )}
-                </select>
+                <ak-search-select
+                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
+                        const args: FlowsInstancesListRequest = {
+                            ordering: "slug",
+                            designation: FlowsInstancesListDesignationEnum.Authentication,
+                        };
+                        if (query !== undefined) {
+                            args.search = query;
+                        }
+                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
+                        return flows.results;
+                    }}
+                    .renderElement=${(flow: Flow): string => {
+                        return RenderFlowOption(flow);
+                    }}
+                    .renderDescription=${(flow: Flow): TemplateResult => {
+                        return html`${flow.name}`;
+                    }}
+                    .value=${(flow: Flow | undefined): string | undefined => {
+                        return flow?.pk;
+                    }}
+                    .selected=${(flow: Flow): boolean => {
+                        return flow.pk === this.instance?.authenticationFlow;
+                    }}
+                >
+                </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Flow used when authenticating using this provider.`}
+                    ${t`Flow used when a user access this provider and is not authenticated.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
