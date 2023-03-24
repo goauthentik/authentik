@@ -479,14 +479,15 @@ class ToDefaultFlow(View):
     def dispatch(self, request: HttpRequest) -> HttpResponse:
         tenant: Tenant = request.tenant
         flow = None
-        # First, attempt to get default flow from application
-        if SESSION_KEY_APPLICATION_PRE in self.request.session:
-            application: Application = self.request.session[SESSION_KEY_APPLICATION_PRE]
-            if application.provider is not None:
-                flow = application.provider.authentication_flow
-        # Then, attempt to get default flow from tenant
-        elif self.designation == FlowDesignation.AUTHENTICATION:
-            flow = tenant.flow_authentication
+        # First, attempt to get default flow from tenant
+        if self.designation == FlowDesignation.AUTHENTICATION:
+            # Attempt to get default flow from application
+            if SESSION_KEY_APPLICATION_PRE in self.request.session:
+                application: Application = self.request.session[SESSION_KEY_APPLICATION_PRE]
+                if application.provider:
+                    flow = application.provider.authentication_flow
+            else:
+                flow = tenant.flow_authentication
         elif self.designation == FlowDesignation.INVALIDATION:
             flow = tenant.flow_invalidation
         # If no flow was set, get the first based on slug and policy
