@@ -136,7 +136,11 @@ class Prompt(SerializerModel):
         return PromptSerializer
 
     def get_choices(
-        self, prompt_context: dict, user: User, request: HttpRequest
+        self,
+        prompt_context: dict,
+        user: User,
+        request: HttpRequest,
+        dry_run: Optional[bool] = False,
     ) -> Optional[tuple[dict[str, Any]]]:
         """Get fully interpolated list of choices"""
         if self.type not in CHOICE_FIELDS:
@@ -147,14 +151,19 @@ class Prompt(SerializerModel):
         if self.field_key in prompt_context:
             raw_choices = prompt_context[self.field_key]
         elif self.placeholder_expression:
-            evaluator = PropertyMappingEvaluator(self, user, request, prompt_context=prompt_context)
+            evaluator = PropertyMappingEvaluator(
+                self, user, request, prompt_context=prompt_context, dry_run=dry_run
+            )
             try:
                 raw_choices = evaluator.evaluate(self.placeholder)
             except Exception as exc:  # pylint:disable=broad-except
+                wrapped = PropertyMappingExpressionException(str(exc))
                 LOGGER.warning(
                     "failed to evaluate prompt choices",
-                    exc=PropertyMappingExpressionException(str(exc)),
+                    exc=wrapped,
                 )
+                if dry_run:
+                    raise wrapped from exc
 
         if isinstance(raw_choices, (list, tuple, set)):
             choices = raw_choices
@@ -166,11 +175,17 @@ class Prompt(SerializerModel):
 
         return tuple(choices)
 
-    def get_placeholder(self, prompt_context: dict, user: User, request: HttpRequest) -> str:
+    def get_placeholder(
+        self,
+        prompt_context: dict,
+        user: User,
+        request: HttpRequest,
+        dry_run: Optional[bool] = False,
+    ) -> str:
         """Get fully interpolated placeholder"""
         if self.type in CHOICE_FIELDS:
             # Make sure to return a valid choice as placeholder
-            choices = self.get_choices(prompt_context, user, request)
+            choices = self.get_choices(prompt_context, user, request, dry_run=dry_run)
             if not choices:
                 return ""
             return choices[0]
@@ -181,14 +196,19 @@ class Prompt(SerializerModel):
             return prompt_context[self.field_key]
 
         if self.placeholder_expression:
-            evaluator = PropertyMappingEvaluator(self, user, request, prompt_context=prompt_context)
+            evaluator = PropertyMappingEvaluator(
+                self, user, request, prompt_context=prompt_context, dry_run=dry_run
+            )
             try:
                 return evaluator.evaluate(self.placeholder)
             except Exception as exc:  # pylint:disable=broad-except
+                wrapped = PropertyMappingExpressionException(str(exc))
                 LOGGER.warning(
                     "failed to evaluate prompt placeholder",
-                    exc=PropertyMappingExpressionException(str(exc)),
+                    exc=wrapped,
                 )
+                if dry_run:
+                    raise wrapped from exc
         return self.placeholder
 
     def field(self, default: Optional[Any], choices: Optional[list[Any]] = None) -> CharField:

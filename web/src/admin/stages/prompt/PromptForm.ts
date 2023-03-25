@@ -15,7 +15,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { Prompt, PromptChallenge, PromptTypeEnum, StagesApi } from "@goauthentik/api";
+import {
+    Prompt,
+    PromptChallenge,
+    PromptTypeEnum,
+    ResponseError,
+    StagesApi,
+    ValidationErrorFromJSON,
+} from "@goauthentik/api";
 
 class PreviewStageHost implements StageHost {
     challenge = undefined;
@@ -34,6 +41,9 @@ class PreviewStageHost implements StageHost {
 export class PromptForm extends ModelForm<Prompt, string> {
     @state()
     preview?: PromptChallenge;
+
+    @state()
+    previewError?: string[];
 
     @state()
     previewResult: unknown;
@@ -66,9 +76,17 @@ export class PromptForm extends ModelForm<Prompt, string> {
         if (!data) {
             return;
         }
-        this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({
-            promptRequest: data,
-        });
+        try {
+            this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({
+                promptRequest: data,
+            });
+            this.previewError = undefined;
+        } catch (exc) {
+            const errorMessage = ValidationErrorFromJSON(
+                await (exc as ResponseError).response.json(),
+            );
+            this.previewError = errorMessage.nonFieldErrors;
+        }
     }
 
     getSuccessMessage(): string {
@@ -224,6 +242,16 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         </ak-stage-prompt>
                     </div>
                 </div>
+                ${this.previewError
+                    ? html`
+                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                              <div class="pf-c-card__body">${t`Preview errors`}</div>
+                              <div class="pf-c-card__body">
+                                  ${this.previewError.map((err) => html`<pre>${err}</pre>`)}
+                              </div>
+                          </div>
+                      `
+                    : html``}
                 ${this.previewResult
                     ? html`
                           <div class="pf-c-card pf-l-grid__item pf-m-12-col">

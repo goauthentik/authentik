@@ -18,7 +18,7 @@ import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-gro
 import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ResponseError, ValidationError } from "@goauthentik/api";
+import { ResponseError, ValidationError, ValidationErrorFromJSON } from "@goauthentik/api";
 
 export class PreventFormSubmit {
     // Stub class which can be returned by form elements to prevent the form from submitting
@@ -232,7 +232,7 @@ export abstract class Form<T> extends AKElement {
             if (ex instanceof ResponseError) {
                 let msg = ex.response.statusText;
                 if (ex.response.status > 399 && ex.response.status < 500) {
-                    const errorMessage: ValidationError = await ex.response.json();
+                    const errorMessage = ValidationErrorFromJSON(await ex.response.json());
                     if (!errorMessage) return errorMessage;
                     if (errorMessage instanceof Error) {
                         throw errorMessage;
@@ -254,8 +254,8 @@ export abstract class Form<T> extends AKElement {
                             element.invalid = false;
                         }
                     });
-                    if ("non_field_errors" in errorMessage) {
-                        this.nonFieldErrors = errorMessage["non_field_errors"];
+                    if (errorMessage.nonFieldErrors) {
+                        this.nonFieldErrors = errorMessage.nonFieldErrors;
                     }
                     // Only change the message when we have `detail`.
                     // Everything else is handled in the form.
