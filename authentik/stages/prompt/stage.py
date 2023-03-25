@@ -190,23 +190,27 @@ class PromptStageView(ChallengeStageView):
 
     response_class = PromptChallengeResponse
 
-    def get_challenge(self, *args, **kwargs) -> Challenge:
-        fields: list[Prompt] = list(self.executor.current_stage.fields.all().order_by("order"))
+    def get_prompt_challenge_fields(self, fields: list[Prompt], context: dict):
         serializers = []
-        context_prompt = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
         for field in fields:
             data = StagePromptSerializer(field).data
             # Ensure all choices and placeholders are str, as otherwise further in
             # we can fail serializer validation if we return some types such as bool
-            choices = field.get_choices(context_prompt, self.get_pending_user(), self.request)
+            choices = field.get_choices(context, self.get_pending_user(), self.request)
             if choices:
                 data["choices"] = [str(choice) for choice in choices]
             else:
                 data["choices"] = None
             data["placeholder"] = str(
-                field.get_placeholder(context_prompt, self.get_pending_user(), self.request)
+                field.get_placeholder(context, self.get_pending_user(), self.request)
             )
             serializers.append(data)
+        return serializers
+
+    def get_challenge(self, *args, **kwargs) -> Challenge:
+        fields: list[Prompt] = list(self.executor.current_stage.fields.all().order_by("order"))
+        context_prompt = self.executor.plan.context.get(PLAN_CONTEXT_PROMPT, {})
+        serializers = self.get_prompt_challenge_fields(fields, context_prompt)
         challenge = PromptChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,

@@ -102,9 +102,6 @@ export abstract class Form<T> extends AKElement {
             });
     }
 
-    /**
-     * Reset the inner iron-form
-     */
     resetForm(): void {
         const form = this.shadowRoot?.querySelector<HTMLFormElement>("form");
         form?.reset();

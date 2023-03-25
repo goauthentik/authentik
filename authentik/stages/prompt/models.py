@@ -59,9 +59,8 @@ class FieldTypes(models.TextChoices):
     PASSWORD = (
         "password",  # noqa # nosec
         _(
-            "Password: Masked input, password is validated against sources. Policies still "
-            "have to be applied to this Stage. If two of these are used in the same stage, "
-            "they are ensured to be identical."
+            "Password: Masked input, multiple inputs of this type on the same prompt "
+            "need to be identical."
         ),
     )
     NUMBER = "number"

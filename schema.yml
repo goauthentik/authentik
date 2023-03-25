@@ -24517,7 +24517,7 @@ paths:
           * `text_area_read_only` - Text area (read-only): Multiline Text input, but cannot be edited.
           * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
           * `email` - Email: Text field with Email type.
-          * `password` - Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.
+          * `password` - Password: Masked input, multiple inputs of this type on the same prompt need to be identical.
           * `number` - Number
           * `checkbox` - Checkbox
           * `radio-button-group` - Fixed choice field rendered as a group of radio buttons.
@@ -24536,7 +24536,7 @@ paths:
           * `text_area_read_only` - Text area (read-only): Multiline Text input, but cannot be edited.
           * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
           * `email` - Email: Text field with Email type.
-          * `password` - Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.
+          * `password` - Password: Masked input, multiple inputs of this type on the same prompt need to be identical.
           * `number` - Number
           * `checkbox` - Checkbox
           * `radio-button-group` - Fixed choice field rendered as a group of radio buttons.
@@ -24771,6 +24771,39 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/prompt/prompts/preview/:
+    post:
+      operationId: stages_prompt_prompts_preview_create
+      description: Preview a prompt as a challenge, just like a flow would receive
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PromptRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromptChallenge'
           description: ''
         '400':
           content:
@@ -38125,7 +38158,7 @@ components:
         * `text_area_read_only` - Text area (read-only): Multiline Text input, but cannot be edited.
         * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
         * `email` - Email: Text field with Email type.
-        * `password` - Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical.
+        * `password` - Password: Masked input, multiple inputs of this type on the same prompt need to be identical.
         * `number` - Number
         * `checkbox` - Checkbox
         * `radio-button-group` - Fixed choice field rendered as a group of radio buttons.
