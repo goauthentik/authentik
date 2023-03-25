@@ -101,12 +101,25 @@ export class PromptForm extends ModelForm<Prompt, string> {
         return super.styles.concat(PFGrid, PFTitle);
     }
 
+    _shouldRefresh = false;
+    _timer = 0;
+
     connectedCallback(): void {
         super.connectedCallback();
-        this.addEventListener("change", () => {
-            this.refreshPreview();
-            console.log("refresh");
-        });
+        // Only check if we should update once a second, to prevent spamming API requests
+        // when many fields are edited
+        const minUpdateDelay = 1000;
+        this._timer = setInterval(() => {
+            if (this._shouldRefresh) {
+                this.refreshPreview();
+                this._shouldRefresh = false;
+            }
+        }, minUpdateDelay) as unknown as number;
+    }
+
+    disconnectedCallback(): void {
+        super.disconnectedCallback();
+        clearTimeout(this._timer);
     }
 
     renderTypes(): TemplateResult {
@@ -275,7 +288,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     class="pf-c-form-control"
                     required
                     @input=${() => {
-                        this.refreshPreview();
+                        this._shouldRefresh = true;
                     }}
                 />
                 <p class="pf-c-form__helper-text">
@@ -289,7 +302,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     class="pf-c-form-control"
                     required
                     @input=${() => {
-                        this.refreshPreview();
+                        this._shouldRefresh = true;
                     }}
                 />
                 <p class="pf-c-form__helper-text">
@@ -306,7 +319,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     class="pf-c-form-control"
                     required
                     @input=${() => {
-                        this.refreshPreview();
+                        this._shouldRefresh = true;
                     }}
                 />
                 <p class="pf-c-form__helper-text">${t`Label shown next to/above the prompt.`}</p>
@@ -315,7 +328,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <select
                     class="pf-c-form-control"
                     @change=${() => {
-                        this.refreshPreview();
+                        this._shouldRefresh = true;
                     }}
                 >
                     ${this.renderTypes()}
@@ -328,7 +341,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         type="checkbox"
                         ?checked=${first(this.instance?.required, false)}
                         @change=${() => {
-                            this.refreshPreview();
+                            this._shouldRefresh = true;
                         }}
                     />
                     <span class="pf-c-switch__toggle">
@@ -346,7 +359,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         type="checkbox"
                         ?checked=${first(this.instance?.placeholderExpression, false)}
                         @change=${() => {
-                            this.refreshPreview();
+                            this._shouldRefresh = true;
                         }}
                     />
                     <span class="pf-c-switch__toggle">
@@ -368,7 +381,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     mode="python"
                     value="${ifDefined(this.instance?.placeholder)}"
                     @change=${() => {
-                        this.refreshPreview();
+                        this._shouldRefresh = true;
                     }}
                 >
                 </ak-codemirror>
@@ -383,7 +396,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     mode="htmlmixed"
                     value="${ifDefined(this.instance?.subText)}"
                     @change=${() => {
-                        this.refreshPreview();
+                        this._shouldRefresh = true;
                     }}
                 >
                 </ak-codemirror>
