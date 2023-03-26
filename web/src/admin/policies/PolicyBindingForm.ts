@@ -9,7 +9,6 @@ import { t } from "@lingui/macro";
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
@@ -83,7 +82,10 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         );
     }
 
-    send = (data: PolicyBinding): Promise<PolicyBinding> => {
+    send(data: PolicyBinding): Promise<unknown> {
+        if (this.targetPk) {
+            data.target = this.targetPk;
+        }
         if (this.instance?.pk) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUpdate({
                 policyBindingUuid: this.instance.pk,
@@ -94,7 +96,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                 policyBindingRequest: data,
             });
         }
-    };
+    }
 
     async getOrder(): Promise<number> {
         if (this.instance?.pk) {
@@ -270,12 +272,6 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     </ak-form-element-horizontal>
                 </div>
             </div>
-            <input
-                required
-                name="target"
-                type="hidden"
-                value=${ifDefined(this.instance?.target || this.targetPk)}
-            />
             <ak-form-element-horizontal name="enabled">
                 <label class="pf-c-switch">
                     <input

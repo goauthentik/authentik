@@ -10,7 +10,6 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     Flow,
@@ -48,19 +47,21 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             return t`Successfully created binding.`;
         }
     }
-
-    send = (data: FlowStageBinding): Promise<FlowStageBinding> => {
+    send(data: FlowStageBinding): Promise<unknown> {
         if (this.instance?.pk) {
             return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUpdate({
                 fsbUuid: this.instance.pk,
                 flowStageBindingRequest: data,
             });
         } else {
+            if (this.targetPk) {
+                data.target = this.targetPk;
+            }
             return new FlowsApi(DEFAULT_CONFIG).flowsBindingsCreate({
                 flowStageBindingRequest: data,
             });
         }
-    };
+    }
 
     async getOrder(): Promise<number> {
         if (this.instance?.pk) {
@@ -78,14 +79,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
 
     renderTarget(): TemplateResult {
         if (this.instance?.target || this.targetPk) {
-            return html`
-                <input
-                    required
-                    name="target"
-                    type="hidden"
-                    value=${ifDefined(this.instance?.target || this.targetPk)}
-                />
-            `;
+            return html``;
         }
         return html`<ak-form-element-horizontal label=${t`Target`} ?required=${true} name="target">
             <ak-search-select
