@@ -46,4 +46,4 @@ def m2m_changed_scim(
         scim_signal_m2m.delay(str(instance.pk), action, list(pk_set))
     else:
         for group_pk in pk_set:
-            scim_signal_m2m.delay(group_pk, action, list(instance.pk))
+            scim_signal_m2m.delay(group_pk, action, [instance.pk])
