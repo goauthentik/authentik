@@ -59,7 +59,9 @@ class TestUserWriteStage(FlowTestCase):
         user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
         self.assertTrue(user_qs.exists())
         self.assertTrue(user_qs.first().check_password(password))
-        self.assertEqual(list(user_qs.first().ak_groups.all()), [self.group, self.other_group])
+        self.assertEqual(
+            list(user_qs.first().ak_groups.order_by("name")), [self.other_group, self.group]
+        )
         self.assertEqual(user_qs.first().attributes, {USER_ATTRIBUTE_SOURCES: [self.source.name]})
 
     def test_user_update(self):
