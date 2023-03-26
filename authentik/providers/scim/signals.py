@@ -34,8 +34,16 @@ def pre_delete_scim(sender: type[Model], instance: User | Group, **_):
 
 
 @receiver(m2m_changed, sender=User.ak_groups.through)
-def m2m_changed_scim(sender: type[Model], instance, action: str, pk_set: set, **kwargs):
+def m2m_changed_scim(
+    sender: type[Model], instance, action: str, pk_set: set, reverse: bool, **kwargs
+):
     """Sync group membership"""
     if action not in ["post_add", "post_remove"]:
         return
-    scim_signal_m2m.delay(str(instance.pk), action, list(pk_set))
+    # reverse: instance is a Group, pk_set is a list of user pks
+    # non-reverse: instance is a User, pk_set is a list of groups
+    if reverse:
+        scim_signal_m2m.delay(str(instance.pk), action, list(pk_set))
+    else:
+        for group_pk in pk_set:
+            scim_signal_m2m.delay(group_pk, action, [instance.pk])

@@ -151,7 +151,7 @@ def scim_signal_direct(model: str, pk: Any, raw_op: str):
 
 
 @CELERY_APP.task()
-def scim_signal_m2m(group_pk: str, action: str, pk_set: set[int]):
+def scim_signal_m2m(group_pk: str, action: str, pk_set: list[int]):
     """Update m2m (group membership)"""
     group = Group.objects.filter(pk=group_pk).first()
     if not group:
