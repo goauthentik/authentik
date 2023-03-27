@@ -40080,6 +40080,8 @@ components:
           type: boolean
         placeholder:
           type: string
+        initial_value:
+          type: string
         order:
           type: integer
         sub_text:
@@ -40092,6 +40094,7 @@ components:
       required:
       - choices
       - field_key
+      - initial_value
       - label
       - order
       - placeholder

@@ -29,6 +29,8 @@ from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import Policy
 
+CHOICES_CONTEXT_SUFFIX = "__choices"
+
 LOGGER = get_logger()
 
 
@@ -155,8 +157,8 @@ class Prompt(SerializerModel):
 
         raw_choices = self.placeholder
 
-        if self.field_key in prompt_context:
-            raw_choices = prompt_context[self.field_key]
+        if self.field_key + CHOICES_CONTEXT_SUFFIX in prompt_context:
+            raw_choices = prompt_context[self.field_key + CHOICES_CONTEXT_SUFFIX]
         elif self.placeholder_expression:
             evaluator = PropertyMappingEvaluator(self, user, request, prompt_context=prompt_context)
             try:
@@ -180,16 +182,9 @@ class Prompt(SerializerModel):
     def get_placeholder(self, prompt_context: dict, user: User, request: HttpRequest) -> str:
         """Get fully interpolated placeholder"""
         if self.type in CHOICE_FIELDS:
-            # Make sure to return a valid choice as placeholder
-            choices = self.get_choices(prompt_context, user, request)
-            if not choices:
-                return ""
-            return choices[0]
-
-        if self.field_key in prompt_context:
-            # We don't want to parse this as an expression since a user will
-            # be able to control the input
-            return prompt_context[self.field_key]
+            # Choice fields use the placeholder to define all valid choices.
+            # Therefore their actual placeholder is always blank
+            return ""
 
         if self.placeholder_expression:
             evaluator = PropertyMappingEvaluator(self, user, request, prompt_context=prompt_context)
@@ -201,6 +196,36 @@ class Prompt(SerializerModel):
                     exc=PropertyMappingExpressionException(str(exc)),
                 )
         return self.placeholder
+
+    def get_initial_value(self, prompt_context: dict, user: User, request: HttpRequest) -> str:
+        """Get fully interpolated initial value"""
+
+        if self.field_key in prompt_context:
+            # We don't want to parse this as an expression since a user will
+            # be able to control the input
+            value = prompt_context[self.field_key]
+        elif self.initial_value_expression:
+            evaluator = PropertyMappingEvaluator(self, user, request, prompt_context=prompt_context)
+            try:
+                value = evaluator.evaluate(self.initial_value)
+            except Exception as exc:  # pylint:disable=broad-except
+                LOGGER.warning(
+                    "failed to evaluate prompt initial value",
+                    exc=PropertyMappingExpressionException(str(exc)),
+                )
+                value = self.initial_value
+        else:
+            value = self.initial_value
+
+        if self.type in CHOICE_FIELDS:
+            # Ensure returned value is a valid choice
+            choices = self.get_choices(prompt_context, user, request)
+            if not choices:
+                return ""
+            if value not in choices:
+                return choices[0]
+
+        return value
 
     def field(self, default: Optional[Any], choices: Optional[list[Any]] = None) -> CharField:
         """Get field type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""

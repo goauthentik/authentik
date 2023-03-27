@@ -17,7 +17,7 @@ export class UserSettingsPromptStage extends PromptStage {
         return super.styles.concat(PFCheck);
     }
 
-    renderPromptInner(prompt: StagePrompt, placeholderAsValue: boolean): string {
+    renderPromptInner(prompt: StagePrompt): string {
         switch (prompt.type) {
             // Checkbox requires slightly different rendering here due to the use of horizontal form elements
             case PromptTypeEnum.Checkbox:
@@ -25,12 +25,12 @@ export class UserSettingsPromptStage extends PromptStage {
                     type="checkbox"
                     class="pf-c-check__input"
                     name="${prompt.fieldKey}"
-                    ?checked=${prompt.placeholder !== ""}
+                    ?checked=${prompt.initialValue !== ""}
                     ?required=${prompt.required}
                     style="vertical-align: bottom"
                 />`;
             default:
-                return super.renderPromptInner(prompt, placeholderAsValue);
+                return super.renderPromptInner(prompt);
         }
     }
 
@@ -47,13 +47,13 @@ export class UserSettingsPromptStage extends PromptStage {
                         return error.string;
                     })}
                 >
-                    ${unsafeHTML(this.renderPromptInner(prompt, true))}
+                    ${unsafeHTML(this.renderPromptInner(prompt))}
                     ${this.renderPromptHelpText(prompt)}
                 </ak-form-element-horizontal>
             `;
         }
         return html`
-            ${unsafeHTML(this.renderPromptInner(prompt, true))} ${this.renderPromptHelpText(prompt)}
+            ${unsafeHTML(this.renderPromptInner(prompt))} ${this.renderPromptHelpText(prompt)}
         `;
     }
 
