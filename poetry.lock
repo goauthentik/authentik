@@ -3028,14 +3028,14 @@ pyasn1 = ">=0.1.3"
 
 [[package]]
 name = "selenium"
-version = "4.8.2"
+version = "4.8.3"
 description = ""
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "selenium-4.8.2-py3-none-any.whl", hash = "sha256:bd04eb41395605d9b2b65fe587f3fed21431da75512985c52772529e5e210c60"},
-    {file = "selenium-4.8.2.tar.gz", hash = "sha256:c48372905bffcc3b24bd55ab4683a07ee5e1f30fe918c59558ea5ee44cedf6c3"},
+    {file = "selenium-4.8.3-py3-none-any.whl", hash = "sha256:28430ac54a54fa59ad1f5392a1b89b169fe3ab2c2ccd1a9a10b6fe74f36cd6da"},
+    {file = "selenium-4.8.3.tar.gz", hash = "sha256:61cda3a304f82637162bc155cae7bf88fdb04c115fa2cb1c1c2e1358fcd19a9f"},
 ]
 
 [package.dependencies]
