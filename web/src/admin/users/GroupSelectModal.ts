@@ -8,8 +8,10 @@ import { TableModal } from "@goauthentik/elements/table/TableModal";
 
 import { t } from "@lingui/macro";
 
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
+
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
 import { CoreApi, Group } from "@goauthentik/api";
 
@@ -26,6 +28,10 @@ export class GroupSelectModal extends TableModal<Group> {
     confirm!: (selectedItems: Group[]) => Promise<unknown>;
 
     order = "name";
+
+    static get styles(): CSSResult[] {
+        return super.styles.concat(PFBanner);
+    }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Group>> {
         return new CoreApi(DEFAULT_CONFIG).coreGroupsList({
@@ -61,11 +67,19 @@ export class GroupSelectModal extends TableModal<Group> {
     }
 
     renderModalInner(): TemplateResult {
+        const willSuperuser = this.selectedElements.filter((g) => g.isSuperuser).length > 0;
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
                     <h1 class="pf-c-title pf-m-2xl">${t`Select groups to add user to`}</h1>
                 </div>
             </section>
+            ${willSuperuser
+                ? html`
+                      <div class="pf-c-banner pf-m-warning">
+                          ${t`Warning: Adding the user to the selected group(s) will give them superuser permissions.`}
+                      </div>
+                  `
+                : html``}
             <section class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</section>
             <footer class="pf-c-modal-box__footer">
                 <ak-spinner-button
