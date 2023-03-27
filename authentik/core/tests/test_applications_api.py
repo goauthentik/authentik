@@ -129,6 +129,7 @@ class TestApplicationsAPI(APITestCase):
                         "provider_obj": {
                             "assigned_application_name": "allowed",
                             "assigned_application_slug": "allowed",
+                            "authentication_flow": None,
                             "authorization_flow": str(self.provider.authorization_flow.pk),
                             "component": "ak-provider-oauth2-form",
                             "meta_model_name": "authentik_providers_oauth2.oauth2provider",
@@ -178,6 +179,7 @@ class TestApplicationsAPI(APITestCase):
                         "provider_obj": {
                             "assigned_application_name": "allowed",
                             "assigned_application_slug": "allowed",
+                            "authentication_flow": None,
                             "authorization_flow": str(self.provider.authorization_flow.pk),
                             "component": "ak-provider-oauth2-form",
                             "meta_model_name": "authentik_providers_oauth2.oauth2provider",

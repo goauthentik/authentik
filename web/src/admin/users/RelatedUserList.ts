@@ -28,6 +28,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { CapabilitiesEnum, CoreApi, Group, ResponseError, User } from "@goauthentik/api";
@@ -44,7 +45,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return t`Successfully added user(s).`;
     }
 
-    send = async (data: { users: number[] }): Promise<{ users: number[] }> => {
+    async send(data: { users: number[] }): Promise<{ users: number[] }> {
         await Promise.all(
             data.users.map((user) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
@@ -56,10 +57,11 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
             }),
         );
         return data;
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            ${this.group?.isSuperuser ? html`` : html``}
             <ak-form-element-horizontal label=${t`Users to add`} name="users">
                 <div class="pf-c-input-group">
                     <ak-group-member-select-table
@@ -115,7 +117,7 @@ export class RelatedUserList extends Table<User> {
     hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFAlert);
+        return super.styles.concat(PFDescriptionList, PFAlert, PFBanner);
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {
@@ -334,6 +336,13 @@ export class RelatedUserList extends Table<User> {
                 ? html`<ak-forms-modal>
                       <span slot="submit"> ${t`Add`} </span>
                       <span slot="header"> ${t`Add User`} </span>
+                      ${this.targetGroup.isSuperuser
+                          ? html`
+                                <div class="pf-c-banner pf-m-warning" slot="above-form">
+                                    ${t`Warning: This group is configured with superuser access. Added users will have superuser access.`}
+                                </div>
+                            `
+                          : html``}
                       <ak-user-related-add .group=${this.targetGroup} slot="form">
                       </ak-user-related-add>
                       <button slot="trigger" class="pf-c-button pf-m-primary">

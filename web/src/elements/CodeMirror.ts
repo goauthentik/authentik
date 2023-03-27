@@ -12,6 +12,7 @@ import {
 import * as yamlMode from "@codemirror/legacy-modes/mode/yaml";
 import { Compartment, EditorState, Extension } from "@codemirror/state";
 import { oneDark } from "@codemirror/theme-one-dark";
+import { ViewUpdate } from "@codemirror/view";
 import { EditorView, drawSelection, keymap, lineNumbers } from "@codemirror/view";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -148,6 +149,16 @@ export class CodeMirrorTextarea<T> extends AKElement {
             lineNumbers(),
             drawSelection(),
             EditorView.lineWrapping,
+            EditorView.updateListener.of((v: ViewUpdate) => {
+                if (!v.docChanged) {
+                    return;
+                }
+                this.dispatchEvent(
+                    new CustomEvent("change", {
+                        detail: v,
+                    }),
+                );
+            }),
             EditorState.readOnly.of(this.readOnly),
             EditorState.tabSize.of(2),
             this.theme.of(this.activeTheme === UiThemeEnum.Dark ? this.themeDark : this.themeLight),

@@ -1,4 +1,3 @@
-import { AdminInterface } from "@goauthentik/admin/AdminInterface";
 import "@goauthentik/admin/admin-overview/TopApplicationsTable";
 import "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
 import "@goauthentik/admin/admin-overview/cards/RecentEventsCard";
@@ -9,7 +8,8 @@ import "@goauthentik/admin/admin-overview/charts/AdminLoginAuthorizeChart";
 import "@goauthentik/admin/admin-overview/charts/OutpostStatusChart";
 import "@goauthentik/admin/admin-overview/charts/SyncStatusChart";
 import { VERSION } from "@goauthentik/common/constants";
-import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import { me } from "@goauthentik/common/users";
+import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
@@ -17,12 +17,14 @@ import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+
+import { SessionUser } from "@goauthentik/api";
 
 export function versionFamily(): string {
     const parts = VERSION.split(".");
@@ -56,11 +58,17 @@ export class AdminOverviewPage extends AKElement {
         ];
     }
 
+    @state()
+    user?: SessionUser;
+
+    async firstUpdated(): Promise<void> {
+        this.user = await me();
+    }
+
     render(): TemplateResult {
-        const user = rootInterface<AdminInterface>()?.user;
-        let name = user?.user.username;
-        if (user?.user.name) {
-            name = user.user.name;
+        let name = this.user?.user.username;
+        if (this.user?.user.name) {
+            name = this.user.user.name;
         }
         return html`<ak-page-header icon="" header="" description=${t`General system status`}>
                 <span slot="header"> ${t`Welcome, ${name}.`} </span>

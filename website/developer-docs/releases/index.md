@@ -9,6 +9,7 @@
 
 -   Check if any of the changes merged to the branch make changes to the API schema, and if so update the package `@goauthentik/api` in `/web`
 -   Push the branch, which will run the CI pipeline to make sure all tests pass
+-   Create the version subdomain for the version branch ([see](https://github.com/goauthentik/terraform/commit/87792678ed525711be9c8c15dd4b931077dbaac2)) and add the subdomain in Netlify ([here](https://app.netlify.com/sites/authentik/settings/domain))
 -   Create/update the release notes
 
     #### For initial releases:

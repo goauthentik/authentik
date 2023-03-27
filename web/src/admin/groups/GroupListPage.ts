@@ -81,7 +81,7 @@ export class GroupListPage extends TablePage<Group> {
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
             html`${item.parentName || t`-`}`,
             html`${Array.from(item.users || []).length}`,
-            html` <ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
+            html`<ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
                 ${item.isSuperuser ? t`Yes` : t`No`}
             </ak-label>`,
             html` <ak-forms-modal>

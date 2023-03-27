@@ -32,7 +32,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
         return t`Successfully added user to group(s).`;
     }
 
-    send = async (data: { groups: string[] }): Promise<{ groups: string[] }> => {
+    async send(data: { groups: string[] }): Promise<unknown> {
         await Promise.all(
             data.groups.map((group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsAddUserCreate({
@@ -44,7 +44,7 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
             }),
         );
         return data;
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

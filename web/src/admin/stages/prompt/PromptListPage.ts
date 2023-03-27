@@ -87,7 +87,7 @@ export class PromptListPage extends TablePage<Prompt> {
             html`${item.promptstageSet?.map((stage) => {
                 return html`<li>${stage.name}</li>`;
             })}`,
-            html` <ak-forms-modal>
+            html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update Prompt`} </span>
                 <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>

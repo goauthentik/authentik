@@ -1028,14 +1028,14 @@ bcrypt = ["bcrypt"]
 
 [[package]]
 name = "django-filter"
-version = "22.1"
+version = "23.1"
 description = "Django-filter is a reusable Django application for allowing users to filter querysets dynamically."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "django-filter-22.1.tar.gz", hash = "sha256:ed473b76e84f7e83b2511bb2050c3efb36d135207d0128dfe3ae4b36e3594ba5"},
-    {file = "django_filter-22.1-py3-none-any.whl", hash = "sha256:ed429e34760127e3520a67f415bec4c905d4649fbe45d0d6da37e6ff5e0287eb"},
+    {file = "django-filter-23.1.tar.gz", hash = "sha256:dee5dcf2cea4d7f767e271b6d01f767fce7500676d5e5dc58dac8154000b87df"},
+    {file = "django_filter-23.1-py3-none-any.whl", hash = "sha256:e3c52ad83c32fb5882125105efb5fea2a1d6a85e7dc64b04ef52edbf14451b6c"},
 ]
 
 [package.dependencies]
@@ -3028,14 +3028,14 @@ pyasn1 = ">=0.1.3"
 
 [[package]]
 name = "selenium"
-version = "4.8.2"
+version = "4.8.3"
 description = ""
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "selenium-4.8.2-py3-none-any.whl", hash = "sha256:bd04eb41395605d9b2b65fe587f3fed21431da75512985c52772529e5e210c60"},
-    {file = "selenium-4.8.2.tar.gz", hash = "sha256:c48372905bffcc3b24bd55ab4683a07ee5e1f30fe918c59558ea5ee44cedf6c3"},
+    {file = "selenium-4.8.3-py3-none-any.whl", hash = "sha256:28430ac54a54fa59ad1f5392a1b89b169fe3ab2c2ccd1a9a10b6fe74f36cd6da"},
+    {file = "selenium-4.8.3.tar.gz", hash = "sha256:61cda3a304f82637162bc155cae7bf88fdb04c115fa2cb1c1c2e1358fcd19a9f"},
 ]
 
 [package.dependencies]

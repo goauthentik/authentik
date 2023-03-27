@@ -21,11 +21,14 @@ PROPERTY_MAPPING_TIME = Histogram(
 class PropertyMappingEvaluator(BaseEvaluator):
     """Custom Evaluator that adds some different context variables."""
 
+    dry_run: bool
+
     def __init__(
         self,
         model: Model,
         user: Optional[User] = None,
         request: Optional[HttpRequest] = None,
+        dry_run: Optional[bool] = False,
         **kwargs,
     ):
         if hasattr(model, "name"):
@@ -42,9 +45,13 @@ class PropertyMappingEvaluator(BaseEvaluator):
             req.http_request = request
         self._context["request"] = req
         self._context.update(**kwargs)
+        self.dry_run = dry_run
 
     def handle_error(self, exc: Exception, expression_source: str):
         """Exception Handler"""
+        # For dry-run requests we don't save exceptions
+        if self.dry_run:
+            return
         error_string = exception_to_string(exc)
         event = Event.new(
             EventAction.PROPERTY_MAPPING_EXCEPTION,

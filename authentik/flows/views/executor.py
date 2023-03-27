@@ -22,6 +22,7 @@ from sentry_sdk.api import set_tag
 from sentry_sdk.hub import Hub
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
 from authentik.flows.challenge import (
     Challenge,
@@ -480,8 +481,14 @@ class ToDefaultFlow(View):
         flow = None
         # First, attempt to get default flow from tenant
         if self.designation == FlowDesignation.AUTHENTICATION:
-            flow = tenant.flow_authentication
-        if self.designation == FlowDesignation.INVALIDATION:
+            # Attempt to get default flow from application
+            if SESSION_KEY_APPLICATION_PRE in self.request.session:
+                application: Application = self.request.session[SESSION_KEY_APPLICATION_PRE]
+                if application.provider:
+                    flow = application.provider.authentication_flow
+            else:
+                flow = tenant.flow_authentication
+        elif self.designation == FlowDesignation.INVALIDATION:
             flow = tenant.flow_invalidation
         # If no flow was set, get the first based on slug and policy
         if not flow:

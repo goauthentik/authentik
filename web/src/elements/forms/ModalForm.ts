@@ -65,6 +65,7 @@ export class ModalForm extends ModalButton {
                     </h1>
                 </div>
             </section>
+            <slot name="above-form"></slot>
             <section
                 class="pf-c-modal-box__body"
                 @scroll=${() => {
