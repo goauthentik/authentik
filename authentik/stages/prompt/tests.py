@@ -148,9 +148,9 @@ class TestPromptStage(FlowTestCase):
             password_prompt.field_key: "test",
             password2_prompt.field_key: "test",
             number_prompt.field_key: 3,
-            hidden_prompt.field_key: hidden_prompt.placeholder,
-            static_prompt.field_key: static_prompt.placeholder,
-            radio_button_group.field_key: radio_button_group.placeholder,
+            hidden_prompt.field_key: hidden_prompt.initial_value,
+            static_prompt.field_key: static_prompt.initial_value,
+            radio_button_group.field_key: radio_button_group.initial_value,
             dropdown.field_key: "",
         }
 
