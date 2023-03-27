@@ -27,7 +27,7 @@ image:
 
 ## Minor changes/fixes
 
-_Insert output of `make gen-changelog` here_
+_Insert the output of `make gen-changelog` here_
 
 ## API Changes
 
