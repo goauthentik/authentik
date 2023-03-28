@@ -11,7 +11,7 @@ import Fuse from "fuse.js";
 import { t } from "@lingui/macro";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -36,25 +36,43 @@ export class LibraryPage extends AKElement {
     @property({ attribute: false })
     apps?: PaginatedResponse<Application>;
 
-    @property({ attribute: false })
+    @state()
     selectedApp?: Application;
+
+    @state()
+    filteredApps: Application[] = [];
 
     @property()
     query = getURLParam<string | undefined>("search", undefined);
 
-    fuse?: Fuse<Application>;
+    fuse: Fuse<Application>;
 
     constructor() {
         super();
+        this.fuse = new Fuse([], {
+            keys: [
+                { name: "name", weight: 3 },
+                "slug",
+                "group",
+                { name: "metaDescription", weight: 0.5 },
+                { name: "metaPublisher", weight: 0.5 },
+            ],
+            findAllMatches: true,
+            includeScore: true,
+            shouldSort: true,
+            ignoreFieldNorm: true,
+            useExtendedSearch: true,
+            threshold: 0.5,
+        });
         new CoreApi(DEFAULT_CONFIG).coreApplicationsList({}).then((apps) => {
             this.apps = apps;
-            this.fuse = new Fuse(apps.results, {
-                keys: ["slug", "name", "metaDescription", "metaPublisher", "group"],
-            });
-            if (!this.fuse || !this.query) return;
+            this.filteredApps = apps.results;
+            this.fuse.setCollection(apps.results);
+            if (!this.query) return;
             const matchingApps = this.fuse.search(this.query);
             if (matchingApps.length < 1) return;
             this.selectedApp = matchingApps[0].item;
+            this.filteredApps = matchingApps.map((a) => a.item);
         });
     }
 
@@ -110,24 +128,22 @@ export class LibraryPage extends AKElement {
         </div>`;
     }
 
-    filterApps(): Application[] {
-        return (
-            this.apps?.results.filter((app) => {
-                if (app.launchUrl && app.launchUrl !== "") {
-                    // If the launch URL is a full URL, only show with http or https
-                    if (app.launchUrl.indexOf("://") !== -1) {
-                        return app.launchUrl.startsWith("http");
-                    }
-                    // If the URL doesn't include a protocol, assume its a relative path
-                    return true;
+    filterApps(apps: Application[]): Application[] {
+        return apps.filter((app) => {
+            if (app.launchUrl && app.launchUrl !== "") {
+                // If the launch URL is a full URL, only show with http or https
+                if (app.launchUrl.indexOf("://") !== -1) {
+                    return app.launchUrl.startsWith("http");
                 }
-                return false;
-            }) || []
-        );
+                // If the URL doesn't include a protocol, assume its a relative path
+                return true;
+            }
+            return false;
+        });
     }
 
     getApps(): [string, Application[]][] {
-        return groupBy(this.filterApps(), (app) => app.group || "");
+        return groupBy(this.filterApps(this.filteredApps), (app) => app.group || "");
     }
 
     renderApps(): TemplateResult {
@@ -172,6 +188,19 @@ export class LibraryPage extends AKElement {
         </div>`;
     }
 
+    resetSearch(): void {
+        const searchInput = this.shadowRoot?.querySelector("input");
+        if (searchInput) {
+            searchInput.value = "";
+        }
+        this.query = "";
+        updateURLParams({
+            search: this.query,
+        });
+        this.selectedApp = undefined;
+        this.filteredApps = this.apps?.results || [];
+    }
+
     render(): TemplateResult {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
             <div class="pf-c-content header">
@@ -180,37 +209,36 @@ export class LibraryPage extends AKElement {
                     ? html`<input
                           @input=${(ev: InputEvent) => {
                               this.query = (ev.target as HTMLInputElement).value;
+                              if (this.query === "") {
+                                  return this.resetSearch();
+                              }
                               updateURLParams({
                                   search: this.query,
                               });
-                              if (!this.fuse) return;
                               const apps = this.fuse.search(this.query);
                               if (apps.length < 1) return;
                               this.selectedApp = apps[0].item;
+                              this.filteredApps = apps.map((a) => a.item);
                           }}
                           @keydown=${(ev: KeyboardEvent) => {
                               if (ev.key === "Enter" && this.selectedApp?.launchUrl) {
                                   window.location.assign(this.selectedApp.launchUrl);
                               } else if (ev.key === "Escape") {
-                                  (ev.target as HTMLInputElement).value = "";
-                                  this.query = "";
-                                  updateURLParams({
-                                      search: this.query,
-                                  });
-                                  this.selectedApp = undefined;
+                                  this.resetSearch();
                               }
                           }}
                           type="text"
                           class="pf-u-display-none pf-u-display-block-on-md"
                           autofocus
                           placeholder=${t`Search...`}
+                          value=${ifDefined(this.query)}
                       />`
                     : html``}
             </div>
             <section class="pf-c-page__main-section">
                 ${loading(
                     this.apps,
-                    html`${this.filterApps().length > 0
+                    html`${this.filteredApps.length > 0
                         ? this.renderApps()
                         : this.renderEmptyState()}`,
                 )}
