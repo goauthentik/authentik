@@ -22,6 +22,8 @@
 
     -   Paste the list of commits since the previous release under the `Minor changes/fixes` section.
 
+        Run `make gen-changelog` and use the contents of `changelog.md`. Remove merged PRs from bumped dependencies unless they fix security issues or are otherwise notable. Remove merged PRs with the `website/` prefix.
+
     -   Sort the list of commits alphabetically and remove all commits that have little importance, like dependency updates and linting fixes
 
     -   Run `make gen-diff` and copy the contents of `diff.md` under `API Changes`
@@ -36,7 +38,7 @@
 
     -   Paste the list of commits since the previous release into `website/docs/releases/v2022.12.md`, creating a new section called `## Fixed in 2022.12.2` underneath the `Minor changes/fixes` section
 
-    -   Sort the list of commits alphabetically and remove all commits that have little importance, like dependency updates and linting fixes
+    -   Run `make gen-changelog` and use the contents of `changelog.md`. Remove merged PRs from bumped dependencies unless they fix security issues or are otherwise notable. Remove merged PRs with the `website/` prefix.
 
     -   Run `make gen-diff` and copy the contents of `diff.md` under `API Changes`, replacing the previous changes
 
