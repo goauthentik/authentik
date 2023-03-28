@@ -477,6 +477,7 @@ class ToDefaultFlow(View):
         return None
 
     def get_flow(self) -> Flow:
+        """Get a flow for the selected designation"""
         tenant: Tenant = self.request.tenant
         # First, attempt to get default flow from tenant
         if self.designation == FlowDesignation.AUTHENTICATION:
