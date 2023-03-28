@@ -973,24 +973,6 @@ files = [
 ]
 
 [[package]]
-name = "deprecated"
-version = "1.2.13"
-description = "Python @deprecated decorator to deprecate old python classes, functions or methods."
-category = "main"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
-files = [
-    {file = "Deprecated-1.2.13-py2.py3-none-any.whl", hash = "sha256:64756e3e14c8c5eea9795d93c524551432a0be75629f8f29e67ab8caf076c76d"},
-    {file = "Deprecated-1.2.13.tar.gz", hash = "sha256:43ac5335da90c31c24ba028af536a91d41d53f9e6901ddb021bcc572ce44e38d"},
-]
-
-[package.dependencies]
-wrapt = ">=1.10,<2"
-
-[package.extras]
-dev = ["PyTest", "PyTest (<5)", "PyTest-Cov", "PyTest-Cov (<2.6)", "bump2version (<1)", "configparser (<5)", "importlib-metadata (<3)", "importlib-resources (<4)", "sphinx (<2)", "sphinxcontrib-websupport (<2)", "tox", "zipp (<2)"]
-
-[[package]]
 name = "dill"
 version = "0.3.6"
 description = "serialize all of python"
@@ -2912,20 +2894,15 @@ files = [
 
 [[package]]
 name = "redis"
-version = "4.3.4"
+version = "4.5.3"
 description = "Python client for Redis database and key-value store"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "redis-4.3.4-py3-none-any.whl", hash = "sha256:a52d5694c9eb4292770084fa8c863f79367ca19884b329ab574d5cb2036b3e54"},
-    {file = "redis-4.3.4.tar.gz", hash = "sha256:ddf27071df4adf3821c4f2ca59d67525c3a82e5f268bed97b813cb4fabf87880"},
+    {file = "redis-4.5.3-py3-none-any.whl", hash = "sha256:7df17a0a2b72a4c8895b462dd07616c51b1dcb48fdd7ecb7b6f4bf39ecb2e94e"},
+    {file = "redis-4.5.3.tar.gz", hash = "sha256:56732e156fe31801c4f43396bd3ca0c2a7f6f83d7936798531b9848d103381aa"},
 ]
-
-[package.dependencies]
-async-timeout = ">=4.0.2"
-deprecated = ">=1.2.3"
-packaging = ">=20.4"
 
 [package.extras]
 hiredis = ["hiredis (>=1.0.0)"]
@@ -3788,7 +3765,7 @@ files = [
 name = "wrapt"
 version = "1.14.1"
 description = "Module for decorators, wrappers and monkey patching."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 files = [
