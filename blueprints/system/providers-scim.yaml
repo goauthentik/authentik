@@ -43,8 +43,10 @@ entries:
                 "givenName": givenName,
                 "familyName": familyName,
             },
+            "displayName": request.user.name,
             "photos": photos,
             "locale": locale,
+            "active": request.user.is_active,
             "emails": emails,
         }
   - identifiers:
