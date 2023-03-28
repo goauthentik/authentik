@@ -82,9 +82,11 @@ class SCIMMembershipTests(TestCase):
                 mocker.request_history[3].body,
                 {
                     "emails": [],
+                    "active": True,
                     "externalId": user.uid,
                     "name": {"familyName": "", "formatted": "", "givenName": ""},
                     "photos": [],
+                    "displayName": "",
                     "userName": user.username,
                 },
             )
@@ -163,6 +165,8 @@ class SCIMMembershipTests(TestCase):
             self.assertJSONEqual(
                 mocker.request_history[3].body,
                 {
+                    "active": True,
+                    "displayName": "",
                     "emails": [],
                     "externalId": user.uid,
                     "name": {"familyName": "", "formatted": "", "givenName": ""},
