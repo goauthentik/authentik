@@ -58,7 +58,7 @@
         "@babel/plugin-transform-runtime": "^7.21.0",
         "@babel/preset-env": "^7.20.2",
         "@babel/preset-typescript": "^7.21.0",
-        "@codemirror/lang-html": "^6.4.2",
+        "@codemirror/lang-html": "^6.4.3",
         "@codemirror/lang-javascript": "^6.1.4",
         "@codemirror/lang-python": "^6.1.2",
         "@codemirror/lang-xml": "^6.0.2",
