@@ -61,6 +61,7 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
+                "active": True,
                 "emails": [
                     {
                         "primary": True,
@@ -74,6 +75,7 @@ class SCIMUserTests(TestCase):
                     "formatted": uid,
                     "givenName": uid,
                 },
+                "displayName": uid,
                 "photos": [],
                 "userName": uid,
             },
@@ -115,6 +117,7 @@ class SCIMUserTests(TestCase):
         self.assertEqual(
             body,
             {
+                "active": True,
                 "emails": [
                     {
                         "primary": True,
@@ -122,6 +125,7 @@ class SCIMUserTests(TestCase):
                         "value": f"{uid}@goauthentik.io",
                     }
                 ],
+                "displayName": uid,
                 "externalId": user.uid,
                 "name": {
                     "familyName": "",
@@ -166,6 +170,7 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
+                "active": True,
                 "emails": [
                     {
                         "primary": True,
@@ -179,6 +184,7 @@ class SCIMUserTests(TestCase):
                     "formatted": uid,
                     "givenName": uid,
                 },
+                "displayName": uid,
                 "photos": [],
                 "userName": uid,
             },
@@ -232,6 +238,7 @@ class SCIMUserTests(TestCase):
         self.assertJSONEqual(
             mock.request_history[1].body,
             {
+                "active": True,
                 "emails": [
                     {
                         "primary": True,
@@ -245,6 +252,7 @@ class SCIMUserTests(TestCase):
                     "formatted": uid,
                     "givenName": uid,
                 },
+                "displayName": uid,
                 "photos": [],
                 "userName": uid,
             },
