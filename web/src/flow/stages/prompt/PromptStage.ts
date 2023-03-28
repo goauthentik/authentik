@@ -1,4 +1,5 @@
 import { LOCALES } from "@goauthentik/common/ui/locale";
+import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
@@ -19,6 +20,7 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
+    CapabilitiesEnum,
     PromptChallenge,
     PromptChallengeResponseRequest,
     PromptTypeEnum,
@@ -181,14 +183,24 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     <option value="" ${prompt.placeholder === "" ? "selected" : ""}>
                         ${t`Auto-detect (based on your browser)`}
                     </option>
-                    ${LOCALES.map((locale) => {
-                        return `<option
+                    ${LOCALES.filter((locale) => {
+                        // Only show debug locale if debug mode is enabled
+                        if (locale.code === "debug") {
+                            return rootInterface()?.config?.capabilities.includes(
+                                CapabilitiesEnum.Debug,
+                            );
+                        }
+                        return true;
+                    })
+                        .map((locale) => {
+                            return `<option
                             value=${locale.code}
                             ${prompt.placeholder === locale.code ? "selected" : ""}
                         >
                             ${locale.code.toUpperCase()} - ${locale.label}
                         </option>`;
-                    }).join("")}
+                        })
+                        .join("")}
                 </select>`;
             default:
                 return `<p>invalid type '${prompt.type}'</p>`;
