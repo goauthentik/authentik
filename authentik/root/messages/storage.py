@@ -1,7 +1,6 @@
 """Channels Messages storage"""
 from asgiref.sync import async_to_sync
-from channels import DEFAULT_CHANNEL_LAYER
-from channels.layers import channel_layers
+from channels.layers import get_channel_layer
 from django.contrib.messages.storage.base import Message
 from django.contrib.messages.storage.session import SessionStorage
 from django.core.cache import cache
@@ -11,21 +10,13 @@ SESSION_KEY = "_messages"
 CACHE_PREFIX = "goauthentik.io/root/messages_"
 
 
-async def closing_send(channel, message):
-    """Wrapper around layer send that closes the connection"""
-    # See https://github.com/django/channels_redis/issues/332
-    # TODO: Remove this after channels_redis 4.1 is released
-    channel_layer = channel_layers.make_backend(DEFAULT_CHANNEL_LAYER)
-    await channel_layer.send(channel, message)
-    await channel_layer.close_pools()
-
-
 class ChannelsStorage(SessionStorage):
     """Send contrib.messages over websocket"""
 
     def __init__(self, request: HttpRequest) -> None:
         # pyright: reportGeneralTypeIssues=false
         super().__init__(request)
+        self.channel = get_channel_layer()
 
     def _store(self, messages: list[Message], response, *args, **kwargs):
         prefix = f"{CACHE_PREFIX}{self.request.session.session_key}_messages_"
@@ -37,7 +28,7 @@ class ChannelsStorage(SessionStorage):
         for key in keys:
             uid = key.replace(prefix, "")
             for message in messages:
-                async_to_sync(closing_send)(
+                async_to_sync(self.channel.send)(
                     uid,
                     {
                         "type": "event.update",
