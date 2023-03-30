@@ -13,8 +13,13 @@ authors:
 tags:
     - JWT
     - token
-    - idendity provider
-    - user access
+    - identity provider
+    - history
+    - JWS
+    - JWKS
+    - JWE
+    - JSON
+    - SSO
 hide_table_of_contents: false
 ---
 
