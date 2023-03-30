@@ -50,7 +50,7 @@ In the example above, the following claims are included in the JWT: `sub` (the s
 
 -   In the **Verified Signature** part, we see more information about how the JWT was signed, as well as the signature that was created by the server using a secret key. The electronic signature is simply a unique mathematical computation, and this signature is for the specific payload of the JWT. If any data in the JWT is modified, then the JWT must be re-signed. In the case of malfeasance, the attacker would have to know the original secret or private key in order to re-sign. If they didn’t know the secret data, then the modified data is rendered useless because the server cannot validate the signature.
 
-In the example above, the token is signed using a single secret key. This is known as *symmetric signing*, with the HMACSHA256 (HMAC + SHA256 checksum) algorithm. JWTs can also be signed with a public/private key pair (i.e using an RSA or ECDSA algorithm); this is known as *asymmetric signing* because one single secret can not perform both operations (sign,validate / encrypt,decrypt).
+In the example above, the token is signed using a single secret key. This is known as _symmetric signing_, with the HMACSHA256 (HMAC + SHA256 checksum) algorithm. JWTs can also be signed with a public/private key pair (i.e using an RSA or ECDSA algorithm); this is known as _asymmetric signing_ because one single secret can not perform both operations (sign,validate / encrypt,decrypt).
 
 There are two types of JWTs:
 
