@@ -37,28 +37,7 @@ As briefly described above, a JWT is a security token that is to used securely a
 
 There are typically three parts to a JWT, and in an encoded JWT each part is separated by a period (.). In the table below, the entire encoded JWT is shown in the left column, with three different colors to highlight the three different parts, which are shown decoded in the right column.
 
-| Encoded                                                                                                                                                     | Decoded                          |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
-| eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c | HEADER: algorithm and token type |
-
-{
-“alg”: “HS256”,
-“typ”: “JWT”
-} |
-| | PAYLOAD: data about the user and the token
-
-{
-“sub”: “1234567890” ,
-”name” : “John Doe” ,
-“iat”: “1516239022”
-} |
-| | VERIFY SIGNATURE
-
-HMACSHA256(
-base64UrlEncode(header) + "." +
-base64UrlEncode(payload),
-_your-256-bit-secret_
-) secret base64 encoded |
+![](./table.png)
 
 Let’s take a closer look at each of the three parts, as shown above:
 
