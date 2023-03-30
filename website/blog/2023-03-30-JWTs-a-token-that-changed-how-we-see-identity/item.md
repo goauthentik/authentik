@@ -25,7 +25,7 @@ hide_table_of_contents: false
 
 Even though JWTs (JSON Web Tokens, pronounced “jots”) have been around since [2010](https://en.wikipedia.org/wiki/JSON_Web_Token), it’s worth examining their more recent rise to become the dominant standard for managing authentication requests for application access.
 
-When JWTs were first introduced, it was immediately clear that they were already an improvement on using a single string to represent the user information needed for authentication. The single string credential method was simple, but not as secure. There was no way to provide additional data or internal checks about the validity of the string or its issuer. With JWTs, there are expanded capabilities with more parts; there is an HTTP header, JSON-encoded payloads (called “claims”, which hold data about the user and about the token itself, such as an expiration date), and a signature (either a private key or a private/public key combination).
+When JWTs were first introduced, it was immediately clear that they were already an improvement on using a single string to represent the user information needed for authentication. The single string credential method was simple, but not as secure. There was no way to provide additional data or internal checks about the validity of the string or its issuer. With JWTs, there are expanded capabilities with more parts; there is a **header**, JSON-encoded **payloads** (called “claims”, which hold data about the user and about the token itself, such as an expiration date), and a **signature** (either a private key or a private/public key combination).
 
 Let’s look a bit more closely at what a JWT is, review a short history of JWT evolutions and adoption, then discuss how JWTs are used in authentik.
 
