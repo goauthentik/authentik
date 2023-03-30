@@ -27,6 +27,6 @@ class UserSettingSerializer(PassiveSerializer):
 
     object_uid = CharField()
     component = CharField()
-    title = CharField()
+    title = CharField(required=True)
     configure_url = CharField(required=False)
     icon_url = CharField(required=False)
