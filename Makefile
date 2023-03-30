@@ -50,9 +50,6 @@ lint:
 migrate:
 	python -m lifecycle.migrate
 
-run:
-	go run -v ./cmd/server/
-
 i18n-extract: i18n-extract-core web-extract
 
 i18n-extract-core:

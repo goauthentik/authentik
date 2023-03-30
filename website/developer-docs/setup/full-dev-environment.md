@@ -52,4 +52,4 @@ To format the frontend code, run `make web`.
 
 ## Running
 
-Now that the backend and frontend have been setup and built, you can start authentik by running `make run`. authentik should now be accessible at `http://localhost:9000`.
+Now that the backend and frontend have been setup and built, you can start authentik by running `ak server`. authentik should now be accessible at `http://localhost:9000`.

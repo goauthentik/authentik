@@ -1,10 +1,13 @@
 #!/bin/bash -e
+MODE_FILE="${TMPDIR}/authentik-mode"
+
 function log {
     printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" > /dev/stderr
 }
 
 function wait_for_db {
     python -m lifecycle.wait_for_db
+    python -m lifecycle.migrate
     log "Bootstrap completed"
 }
 
@@ -31,22 +34,35 @@ function check_if_root {
     chown -R authentik:authentik /media /certs
     chmod ug+rwx /media
     chmod ug+rx /certs
-    exec chpst -u authentik:$GROUP env HOME=/authentik $1
+    chpst -u authentik:$GROUP env HOME=/authentik $1
 }
 
-MODE_FILE="/tmp/authentik-mode"
+function set_mode {
+    echo $1 > $MODE_FILE
+    trap cleanup EXIT
+}
+
+function cleanup {
+    rm -f ${MODE_FILE}
+}
 
 if [[ "$1" == "server" ]]; then
     wait_for_db
-    echo "server" > $MODE_FILE
-    python -m lifecycle.migrate
+    set_mode "server"
+    # If we have bootstrap credentials set, run bootstrap tasks outside of main server
+    # sync, so that we can sure the first start actually has working bootstrap
+    # credentials
     if [[ ! -z "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || ! -z "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
         python -m manage bootstrap_tasks
     fi
-    exec /authentik-proxy
+    if [[ -x "$(command -v authentik)" ]]; then
+        authentik
+    else
+        go run -v ./cmd/server/
+    fi
 elif [[ "$1" == "worker" ]]; then
     wait_for_db
-    echo "worker" > $MODE_FILE
+    set_mode "worker"
     check_if_root "celery -A authentik.root.celery worker -Ofair --max-tasks-per-child=1 --autoscale 3,1 -E -B -s /tmp/celerybeat-schedule -Q authentik,authentik_scheduled,authentik_events"
 elif [[ "$1" == "worker-status" ]]; then
     wait_for_db
