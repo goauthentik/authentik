@@ -32,7 +32,28 @@ As briefly described above, a JWT is a security token that is to used securely a
 
 There are typically three parts to a JWT, and in an encoded JWT each part is separated by a period (.). In the table below, the entire encoded JWT is shown in the left column, with three different colors to highlight the three different parts, which are shown decoded in the right column.
 
-![alt_text](./image1.png "image_tooltip")
+| Encoded                                                                                                                                                     | Decoded                          |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- |
+| eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c | HEADER: algorithm and token type |
+
+{
+“alg”: “HS256”,
+“typ”: “JWT”
+} |
+| | PAYLOAD: data about the user and the token
+
+{
+“sub”: “1234567890” ,
+”name” : “John Doe” ,
+“iat”: “1516239022”
+} |
+| | VERIFY SIGNATURE
+
+HMACSHA256(
+base64UrlEncode(header) + "." +
+base64UrlEncode(payload),
+_your-256-bit-secret_
+) secret base64 encoded |
 
 Let’s take a closer look at each of the three parts, as shown above:
 
@@ -63,7 +84,7 @@ Since 2015, JWTs have become one of the most common authentication methods. Give
 
 Consider how authentication and authorization are handled in a microservices setting. When a request is made on the client, the client first communicates with the authorization server and retrieves a JWT. This JWT contains user details and serves as the access token that is sent to microservices to gan access. All services within the environment can now validate and decode the token in order to determine the user who is requesting access.
 
-![alt_text](./image2.png "image_tooltip")
+![alt_text](./image1.png "image_tooltip")
 
 This architectural workflow has proven to be effective in modern web applications that are often highly distributed. Indeed, JWTs are now the standard in most identity providers and cloud platforms, as well as many other enterprise systems and modern database platforms, such as Netflix, CockroachDB, MongoDB, VMWare, and the list goes on.
 
