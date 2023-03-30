@@ -476,26 +476,32 @@ class ToDefaultFlow(View):
         LOGGER.debug("flow_by_policy: no flow found", filters=flow_filter)
         return None
 
-    def dispatch(self, request: HttpRequest) -> HttpResponse:
-        tenant: Tenant = request.tenant
+    def get_flow(self) -> Flow:
+        """Get a flow for the selected designation"""
+        tenant: Tenant = self.request.tenant
         flow = None
         # First, attempt to get default flow from tenant
         if self.designation == FlowDesignation.AUTHENTICATION:
-            # Attempt to get default flow from application
-            if SESSION_KEY_APPLICATION_PRE in self.request.session:
-                application: Application = self.request.session[SESSION_KEY_APPLICATION_PRE]
-                if application.provider:
-                    flow = application.provider.authentication_flow
-            else:
-                flow = tenant.flow_authentication
+            flow = tenant.flow_authentication
+            # Check if we have a default flow from application
+            application: Optional[Application] = self.request.session.get(
+                SESSION_KEY_APPLICATION_PRE
+            )
+            if application and application.provider and application.provider.authentication_flow:
+                flow = application.provider.authentication_flow
         elif self.designation == FlowDesignation.INVALIDATION:
             flow = tenant.flow_invalidation
+        if flow:
+            return flow
         # If no flow was set, get the first based on slug and policy
-        if not flow:
-            flow = self.flow_by_policy(request, designation=self.designation)
+        flow = self.flow_by_policy(self.request, designation=self.designation)
+        if flow:
+            return flow
         # If we still don't have a flow, 404
-        if not flow:
-            raise Http404
+        raise Http404
+
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
+        flow = self.get_flow()
         # If user already has a pending plan, clear it so we don't have to later.
         if SESSION_KEY_PLAN in self.request.session:
             plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]

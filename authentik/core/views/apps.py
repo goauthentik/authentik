@@ -12,16 +12,19 @@ from authentik.flows.challenge import (
     RedirectChallenge,
 )
 from authentik.flows.exceptions import FlowNonApplicableException
-from authentik.flows.models import in_memory_stage
+from authentik.flows.models import FlowDesignation, in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, FlowPlanner
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.flows.views.executor import (
+    SESSION_KEY_APPLICATION_PRE,
+    SESSION_KEY_PLAN,
+    ToDefaultFlow,
+)
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.stages.consent.stage import (
     PLAN_CONTEXT_CONSENT_HEADER,
     PLAN_CONTEXT_CONSENT_PERMISSIONS,
 )
-from authentik.tenants.models import Tenant
 
 
 class RedirectToAppLaunch(View):
@@ -36,10 +39,10 @@ class RedirectToAppLaunch(View):
         # Check if we're authenticated already, saves us the flow run
         if request.user.is_authenticated:
             return HttpResponseRedirect(app.get_launch_url(request.user))
+        self.request.session[SESSION_KEY_APPLICATION_PRE] = app
         # otherwise, do a custom flow plan that includes the application that's
         # being accessed, to improve usability
-        tenant: Tenant = request.tenant
-        flow = tenant.flow_authentication
+        flow = ToDefaultFlow(request=request, designation=FlowDesignation.AUTHENTICATION).get_flow()
         planner = FlowPlanner(flow)
         planner.allow_empty_flows = True
         try:
