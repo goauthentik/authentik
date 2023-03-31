@@ -12,6 +12,7 @@ from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnec
 from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
+from authentik.flows.views.executor import FlowExecutorView
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -24,6 +25,12 @@ PLAN_CONTEXT_USER_PATH = "user_path"
 
 class UserWriteStageView(StageView):
     """Finalise Enrollment flow by creating a user object."""
+
+    def __init__(self, executor: FlowExecutorView, **kwargs):
+        super().__init__(executor, **kwargs)
+        self.disallowed_user_attributes = [
+            "groups",
+        ]
 
     @staticmethod
     def write_attribute(user: User, key: str, value: Any):
@@ -90,19 +97,23 @@ class UserWriteStageView(StageView):
                 setter = getattr(user, setter_name)
                 if callable(setter):
                     setter(value)
+            elif key in self.disallowed_user_attributes:
+                self.logger.info("discarding key", key=key)
+                continue
             # For exact attributes match, update the dictionary in place
             elif key == "attributes":
                 user.attributes.update(value)
-            # User has this key already
-            elif hasattr(user, key) and not key.startswith("attributes."):
-                setattr(user, key, value)
-            # Otherwise we just save it as custom attribute, but only if the value is prefixed with
-            # `attribute_`, to prevent accidentally saving values
-            else:
-                if not key.startswith("attributes.") and not key.startswith("attributes_"):
-                    self.logger.warning("discarding key", key=key)
-                    continue
+            # If using dot notation, use the correct helper to update the nested value
+            elif key.startswith("attributes.") or key.startswith("attributes_"):
                 UserWriteStageView.write_attribute(user, key, value)
+            # User has this key already
+            elif hasattr(user, key):
+                setattr(user, key, value)
+            # If none of the cases above matched, we have an attribute that the user doesn't have,
+            # has no setter for, is not a nested attributes value and as such is invalid
+            else:
+                self.logger.info("discarding key", key=key)
+                continue
         # Check if we're writing from a source, and save the source to the attributes
         if PLAN_CONTEXT_SOURCES_CONNECTION in self.executor.plan.context:
             if USER_ATTRIBUTE_SOURCES not in user.attributes or not isinstance(
