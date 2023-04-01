@@ -10,7 +10,7 @@ import (
 
 func TestEndpointDefault(t *testing.T) {
 	pc := api.ProxyOutpostConfig{
-		OidcConfiguration: api.ProxyOutpostConfigOidcConfiguration{
+		OidcConfiguration: api.OpenIDConnectConfiguration{
 			AuthorizationEndpoint: "https://test.goauthentik.io/application/o/authorize/",
 			EndSessionEndpoint:    "https://test.goauthentik.io/application/o/test-app/end-session/",
 			IntrospectionEndpoint: "https://test.goauthentik.io/application/o/introspect/",
@@ -38,7 +38,7 @@ func TestEndpointAuthentikHostBrowser(t *testing.T) {
 		c.AuthentikHostBrowser = ""
 	}()
 	pc := api.ProxyOutpostConfig{
-		OidcConfiguration: api.ProxyOutpostConfigOidcConfiguration{
+		OidcConfiguration: api.OpenIDConnectConfiguration{
 			AuthorizationEndpoint: "https://test.goauthentik.io/application/o/authorize/",
 			EndSessionEndpoint:    "https://test.goauthentik.io/application/o/test-app/end-session/",
 			IntrospectionEndpoint: "https://test.goauthentik.io/application/o/introspect/",
@@ -62,7 +62,7 @@ func TestEndpointAuthentikHostBrowser(t *testing.T) {
 
 func TestEndpointEmbedded(t *testing.T) {
 	pc := api.ProxyOutpostConfig{
-		OidcConfiguration: api.ProxyOutpostConfigOidcConfiguration{
+		OidcConfiguration: api.OpenIDConnectConfiguration{
 			AuthorizationEndpoint: "https://test.goauthentik.io/application/o/authorize/",
 			EndSessionEndpoint:    "https://test.goauthentik.io/application/o/test-app/end-session/",
 			IntrospectionEndpoint: "https://test.goauthentik.io/application/o/introspect/",

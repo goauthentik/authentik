@@ -12,7 +12,7 @@ import (
 
 func TestRedirectToStart_Proxy(t *testing.T) {
 	a := newTestApplication()
-	a.proxyConfig.Mode = *api.NewNullableProxyMode(api.PROXYMODE_PROXY.Ptr())
+	a.proxyConfig.Mode = api.PROXYMODE_PROXY.Ptr()
 	a.proxyConfig.ExternalHost = "https://test.goauthentik.io"
 	req, _ := http.NewRequest("GET", "/foo/bar/baz", nil)
 
@@ -29,7 +29,7 @@ func TestRedirectToStart_Proxy(t *testing.T) {
 
 func TestRedirectToStart_Forward(t *testing.T) {
 	a := newTestApplication()
-	a.proxyConfig.Mode = *api.NewNullableProxyMode(api.PROXYMODE_FORWARD_SINGLE.Ptr())
+	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_SINGLE.Ptr()
 	a.proxyConfig.ExternalHost = "https://test.goauthentik.io"
 	req, _ := http.NewRequest("GET", "/foo/bar/baz", nil)
 
@@ -47,7 +47,7 @@ func TestRedirectToStart_Forward(t *testing.T) {
 func TestRedirectToStart_Forward_Domain_Invalid(t *testing.T) {
 	a := newTestApplication()
 	a.proxyConfig.CookieDomain = api.PtrString("foo")
-	a.proxyConfig.Mode = *api.NewNullableProxyMode(api.PROXYMODE_FORWARD_DOMAIN.Ptr())
+	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
 	a.proxyConfig.ExternalHost = "https://test.goauthentik.io"
 	req, _ := http.NewRequest("GET", "/foo/bar/baz", nil)
 
@@ -65,7 +65,7 @@ func TestRedirectToStart_Forward_Domain_Invalid(t *testing.T) {
 func TestRedirectToStart_Forward_Domain(t *testing.T) {
 	a := newTestApplication()
 	a.proxyConfig.CookieDomain = api.PtrString("goauthentik.io")
-	a.proxyConfig.Mode = *api.NewNullableProxyMode(api.PROXYMODE_FORWARD_DOMAIN.Ptr())
+	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
 	a.proxyConfig.ExternalHost = "https://test.goauthentik.io"
 	req, _ := http.NewRequest("GET", "/foo/bar/baz", nil)
 

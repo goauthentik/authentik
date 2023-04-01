@@ -50,12 +50,12 @@ func newTestApplication() *Application {
 			InternalHost:               api.PtrString("http://backend"),
 			InternalHostSslValidation:  api.PtrBool(true),
 			CookieDomain:               api.PtrString(""),
-			Mode:                       *api.NewNullableProxyMode(api.PROXYMODE_FORWARD_SINGLE.Ptr()),
+			Mode:                       api.PROXYMODE_FORWARD_SINGLE.Ptr(),
 			SkipPathRegex:              api.PtrString("/skip.*"),
 			BasicAuthEnabled:           api.PtrBool(true),
 			BasicAuthUserAttribute:     api.PtrString("username"),
 			BasicAuthPasswordAttribute: api.PtrString("password"),
-			OidcConfiguration: api.ProxyOutpostConfigOidcConfiguration{
+			OidcConfiguration: api.OpenIDConnectConfiguration{
 				AuthorizationEndpoint: "http://fake-auth.t.goauthentik.io/auth",
 				TokenEndpoint:         "http://fake-auth.t.goauthentik.io/token",
 				UserinfoEndpoint:      "http://fake-auth.t.goauthentik.io/userinfo",

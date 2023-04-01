@@ -84,7 +84,7 @@ gen-client-ts:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.0.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/gen-ts-api \
@@ -104,7 +104,7 @@ gen-client-go:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.0.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
 		-i /local/schema.yml \
 		-g go \
 		-o /local/gen-go-api \
