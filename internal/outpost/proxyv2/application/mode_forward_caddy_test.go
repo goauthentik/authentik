@@ -110,7 +110,7 @@ func TestForwardHandleCaddy_Single_Claims(t *testing.T) {
 
 func TestForwardHandleCaddy_Domain_Blank(t *testing.T) {
 	a := newTestApplication()
-	a.proxyConfig.Mode = *api.NewNullableProxyMode(api.PROXYMODE_FORWARD_DOMAIN.Ptr())
+	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
 	a.proxyConfig.CookieDomain = api.PtrString("foo")
 	req, _ := http.NewRequest("GET", "/outpost.goauthentik.io/auth/caddy", nil)
 
@@ -122,7 +122,7 @@ func TestForwardHandleCaddy_Domain_Blank(t *testing.T) {
 
 func TestForwardHandleCaddy_Domain_Header(t *testing.T) {
 	a := newTestApplication()
-	a.proxyConfig.Mode = *api.NewNullableProxyMode(api.PROXYMODE_FORWARD_DOMAIN.Ptr())
+	a.proxyConfig.Mode = api.PROXYMODE_FORWARD_DOMAIN.Ptr()
 	a.proxyConfig.CookieDomain = api.PtrString("foo")
 	a.proxyConfig.ExternalHost = "http://auth.test.goauthentik.io"
 	req, _ := http.NewRequest("GET", "/outpost.goauthentik.io/auth/caddy", nil)

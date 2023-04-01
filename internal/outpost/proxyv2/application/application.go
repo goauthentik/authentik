@@ -192,7 +192,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 	mux.HandleFunc("/outpost.goauthentik.io/start", a.handleAuthStart)
 	mux.HandleFunc("/outpost.goauthentik.io/callback", a.handleAuthCallback)
 	mux.HandleFunc("/outpost.goauthentik.io/sign_out", a.handleSignOut)
-	switch *p.Mode.Get() {
+	switch *p.Mode {
 	case api.PROXYMODE_PROXY:
 		err = a.configureProxy()
 	case api.PROXYMODE_FORWARD_SINGLE:
@@ -229,7 +229,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 }
 
 func (a *Application) Mode() api.ProxyMode {
-	return *a.proxyConfig.Mode.Get()
+	return *a.proxyConfig.Mode
 }
 
 func (a *Application) HasQuerySignature(r *http.Request) bool {

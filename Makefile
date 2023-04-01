@@ -71,7 +71,7 @@ gen-diff:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-diff:2.1.0-beta.3 \
+		docker.io/openapitools/openapi-diff:2.1.0-beta.6 \
 		--markdown /local/diff.md \
 		/local/old_schema.yml /local/schema.yml
 	rm old_schema.yml
@@ -84,7 +84,7 @@ gen-client-ts:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.0.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
 		-i /local/schema.yml \
 		-g typescript-fetch \
 		-o /local/gen-ts-api \
@@ -97,20 +97,21 @@ gen-client-ts:
 	\cp -rfv gen-ts-api/* web/node_modules/@goauthentik/api
 
 gen-client-go:
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O config.yaml
-	mkdir -p templates
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O templates/README.mustache
-	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O templates/go.mod.mustache
+	mkdir -p ./gen-go-api ./gen-go-api/templates
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./gen-go-api/config.yaml
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./gen-go-api/templates/README.mustache
+	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/go.mod.mustache -O ./gen-go-api/templates/go.mod.mustache
+	cp schema.yml ./gen-go-api/
 	docker run \
-		--rm -v ${PWD}:/local \
+		--rm -v ${PWD}/gen-go-api:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-generator-cli:v6.0.0 generate \
+		docker.io/openapitools/openapi-generator-cli:v6.5.0 generate \
 		-i /local/schema.yml \
 		-g go \
-		-o /local/gen-go-api \
+		-o /local/ \
 		-c /local/config.yaml
 	go mod edit -replace goauthentik.io/api/v3=./gen-go-api
-	rm -rf config.yaml ./templates/
+	rm -rf ./gen-go-api/config.yaml ./gen-go-api/templates/
 
 gen-dev-config:
 	python -m scripts.generate_config
