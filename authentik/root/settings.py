@@ -276,6 +276,10 @@ DATABASES = {
         "USER": CONFIG.y("postgresql.user"),
         "PASSWORD": CONFIG.y("postgresql.password"),
         "PORT": int(CONFIG.y("postgresql.port")),
+        "SSLMODE": CONFIG.y("postgresql.sslmode"),
+        "SSLROOTCERT": CONFIG.y("postgresql.sslrootcert"),
+        "SSLCERT": CONFIG.y("postgresql.sslcert"),
+        "SSLKEY": CONFIG.y("postgresql.sslkey"),
     }
 }
 
