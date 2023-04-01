@@ -71,7 +71,7 @@ gen-diff:
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
-		docker.io/openapitools/openapi-diff:2.1.0-beta.3 \
+		docker.io/openapitools/openapi-diff:2.1.0-beta.6 \
 		--markdown /local/diff.md \
 		/local/old_schema.yml /local/schema.yml
 	rm old_schema.yml
