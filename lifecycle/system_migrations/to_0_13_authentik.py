@@ -1,5 +1,5 @@
 # flake8: noqa
-from redis import Redis
+import redis_sentinel_url
 
 from authentik.lib.config import CONFIG
 from lifecycle.migrate import BaseMigration
@@ -107,15 +107,5 @@ class Migration(BaseMigration):
         self.cur.execute(SQL_STATEMENT)
         self.con.commit()
         # We also need to clean the cache to make sure no pickeled objects still exist
-        for db in [
-            CONFIG.y("redis.message_queue_db"),
-            CONFIG.y("redis.cache_db"),
-            CONFIG.y("redis.ws_db"),
-        ]:
-            redis = Redis(
-                host=CONFIG.y("redis.host"),
-                port=6379,
-                db=db,
-                password=CONFIG.y("redis.password"),
-            )
-            redis.flushall()
+        _, redis = redis_sentinel_url.connect(CONFIG.y("redis.url"))
+        redis.flushall()

@@ -1,25 +1,24 @@
 package application
 
 import (
-	"fmt"
 	"math"
 	"net/url"
 	"os"
 	"path"
-	"strconv"
 	"strings"
 
-	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
-	"gopkg.in/boj/redistore.v1"
+	"goauthentik.io/internal/outpost/proxyv2/redisstore"
 )
 
 const RedisKeyPrefix = "authentik_proxy_session_"
+// Amount of time for cookies/redis keys to expire.
+const sessionExpire = 86400 * 30
 
 func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) sessions.Store {
 	maxAge := 0
@@ -28,16 +27,29 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		// Add one to the validity to ensure we don't have a session with indefinite length
 		maxAge = int(*t) + 1
 	}
-	if config.Get().Redis.Host != "" {
-		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.DB))
+
+	redisURL, err := url.Parse(config.Get().Redis.URL)
+
+	if err != nil {	
+		client, err := redisstore.GetRedisClient(redisURL)
 		if err != nil {
 			panic(err)
 		}
-		rs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
-		rs.SetMaxLength(math.MaxInt)
-		rs.SetKeyPrefix(RedisKeyPrefix)
+		rs, err := redisstore.NewStoreWithUniversalClient(
+			client,
+			redisstore.WithOptions(&sessions.Options{
+				Path: "/",
+				Domain: *p.CookieDomain,
+				MaxAge: sessionExpire,
+			}),
+			redisstore.WithKeyPrefix(RedisKeyPrefix),
+			redisstore.WithMaxLength(math.MaxInt),
+			redisstore.WithCodecs(codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))),
+		)
+		if err != nil {
+			panic(err)
+		}
 
-		rs.Options.Domain = *p.CookieDomain
 		a.log.Trace("using redis session backend")
 		return rs
 	}
@@ -105,31 +117,19 @@ func (a *Application) Logout(sub string) error {
 			}
 		}
 	}
-	if rs, ok := a.sessions.(*redistore.RediStore); ok {
-		pool := rs.Pool.Get()
-		defer pool.Close()
-		rep, err := pool.Do("KEYS", fmt.Sprintf("%s*", RedisKeyPrefix))
+	if rs, ok := a.sessions.(*redisstore.RedisStore); ok {
+		keys, err := rs.Keys()
 		if err != nil {
 			return err
 		}
-		keys, err := redis.Strings(rep, err)
-		if err != nil {
-			return err
-		}
-		serializer := redistore.GobSerializer{}
 		for _, key := range keys {
-			v, err := pool.Do("GET", key)
-			if err != nil {
-				a.log.WithError(err).Warning("failed to get value")
-				continue
-			}
-			b, err := redis.Bytes(v, err)
+			b, err := rs.GetBytesByKey(key)
 			if err != nil {
 				a.log.WithError(err).Warning("failed to load value")
 				continue
 			}
 			s := sessions.Session{}
-			err = serializer.Deserialize(b, &s)
+			err = rs.Deserialize(b, &s)
 			if err != nil {
 				a.log.WithError(err).Warning("failed to deserialize")
 				continue
@@ -141,7 +141,7 @@ func (a *Application) Logout(sub string) error {
 			claims := c.(Claims)
 			if claims.Sub == sub {
 				a.log.WithField("key", key).Trace("deleting session")
-				_, err := pool.Do("DEL", key)
+				rs.DeleteByKey(key)
 				if err != nil {
 					a.log.WithError(err).Warning("failed to delete key")
 					continue

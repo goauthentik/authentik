@@ -6,10 +6,11 @@ from time import sleep
 from urllib.parse import quote_plus
 
 from psycopg2 import OperationalError, connect
-from redis import Redis
 from redis.exceptions import RedisError
 
 from authentik.lib.config import CONFIG
+
+import redis_sentinel_url
 
 CONFIG.log("info", "Starting authentik bootstrap")
 
@@ -37,17 +38,10 @@ while True:
         CONFIG.log("info", f"PostgreSQL connection failed, retrying... ({exc})")
 CONFIG.log("info", "PostgreSQL connection successful")
 
-REDIS_PROTOCOL_PREFIX = "redis://"
-if CONFIG.y_bool("redis.tls", False):
-    REDIS_PROTOCOL_PREFIX = "rediss://"
-REDIS_URL = (
-    f"{REDIS_PROTOCOL_PREFIX}:"
-    f"{quote_plus(CONFIG.y('redis.password'))}@{quote_plus(CONFIG.y('redis.host'))}:"
-    f"{int(CONFIG.y('redis.port'))}/{CONFIG.y('redis.db')}"
-)
+REDIS_URL = CONFIG.y('redis.url')
 while True:
     try:
-        redis = Redis.from_url(REDIS_URL)
+        _, redis = redis_sentinel_url.connect(REDIS_URL)
         redis.ping()
         break
     except RedisError as exc:
