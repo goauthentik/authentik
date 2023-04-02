@@ -1,5 +1,6 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -9,7 +10,6 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     AuthenticatorTOTPStage,
@@ -58,10 +58,24 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
             <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
+                    value="${first(this.instance?.name, "")}"
                     class="pf-c-form-control"
                     required
                 />
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`Authenticator type name`}
+                ?required=${false}
+                name="friendlyName"
+            >
+                <input
+                    type="text"
+                    value="${first(this.instance?.friendlyName, "")}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Display name of this authenticator, used by users when they enroll an authenticator.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Stage-specific settings`} </span>

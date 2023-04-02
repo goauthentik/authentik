@@ -19,6 +19,7 @@ class AuthenticatorSMSStageSerializer(StageSerializer):
         model = AuthenticatorSMSStage
         fields = StageSerializer.Meta.fields + [
             "configure_flow",
+            "friendly_name",
             "provider",
             "from_number",
             "account_sid",

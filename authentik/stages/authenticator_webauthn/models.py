@@ -12,7 +12,7 @@ from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 
 from authentik.core.types import UserSettingSerializer
-from authentik.flows.models import ConfigurableStage, Stage
+from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 
 
@@ -66,7 +66,7 @@ class AuthenticatorAttachment(models.TextChoices):
     CROSS_PLATFORM = "cross-platform"
 
 
-class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
+class AuthenticateWebAuthnStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """WebAuthn stage"""
 
     user_verification = models.TextField(
@@ -100,7 +100,7 @@ class AuthenticateWebAuthnStage(ConfigurableStage, Stage):
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={
-                "title": str(self._meta.verbose_name),
+                "title": self.friendly_name or str(self._meta.verbose_name),
                 "component": "ak-user-settings-authenticator-webauthn",
             }
         )

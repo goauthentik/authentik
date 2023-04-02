@@ -7,10 +7,10 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from authentik.core.types import UserSettingSerializer
-from authentik.flows.models import ConfigurableStage, Stage
+from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 
 
-class AuthenticatorStaticStage(ConfigurableStage, Stage):
+class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Generate static tokens for the user as a backup."""
 
     token_count = models.IntegerField(default=6)
@@ -34,7 +34,7 @@ class AuthenticatorStaticStage(ConfigurableStage, Stage):
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={
-                "title": str(self._meta.verbose_name),
+                "title": self.friendly_name or str(self._meta.verbose_name),
                 "component": "ak-user-settings-authenticator-static",
             }
         )
