@@ -41,7 +41,7 @@ class AuthenticatorTOTPStage(ConfigurableStage, FriendlyNamedStage, Stage):
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={
-                "title": self.friendly_name or _("TOTP authenticator"),
+                "title": self.friendly_name or str(self._meta.verbose_name),
                 "component": "ak-user-settings-authenticator-totp",
             }
         )
