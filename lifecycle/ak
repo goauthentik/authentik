@@ -1,5 +1,6 @@
 #!/bin/bash -e
 MODE_FILE="${TMPDIR}/authentik-mode"
+WORKER_HEARTBEAT="${TMPDIR}/authentik-worker"
 
 function log {
     printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" > /dev/stderr
@@ -80,7 +81,13 @@ elif [[ "$1" == "healthcheck" ]]; then
     if [[ $mode == "server" ]]; then
         exec curl --user-agent "goauthentik.io lifecycle Healthcheck" -I http://localhost:9000/-/health/ready/
     elif [[ $mode == "worker" ]]; then
-        exec celery -A authentik.root.celery inspect ping -d celery@$HOSTNAME --timeout 5 -j
+        mtime=$(stat -f %m $WORKER_HEARTBEAT)
+        time=$(date +"%s")
+        if [ "$(( $time - $mtime ))" -gt "30" ]; then
+            log "Worker hasn't updated heartbeat in 30 seconds"
+            exit 1
+        fi
+        exit 0
     fi
 elif [[ "$1" == "dump_config" ]]; then
     exec python -m authentik.lib.config
