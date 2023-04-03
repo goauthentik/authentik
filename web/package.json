@@ -56,7 +56,7 @@
         "@babel/core": "^7.21.4",
         "@babel/plugin-proposal-decorators": "^7.21.0",
         "@babel/plugin-transform-runtime": "^7.21.4",
-        "@babel/preset-env": "^7.20.2",
+        "@babel/preset-env": "^7.21.4",
         "@babel/preset-typescript": "^7.21.4",
         "@codemirror/lang-html": "^6.4.3",
         "@codemirror/lang-javascript": "^6.1.4",
