@@ -20,6 +20,7 @@ The following is a set of guidelines for contributing to authentik and its compo
 -   [Reporting Bugs](#reporting-bugs)
 -   [Suggesting Enhancements](#suggesting-enhancements)
 -   [Your First Code Contribution](#your-first-code-contribution)
+    [Help with the Docs](#help-with-the-docs)
 -   [Pull Requests](#pull-requests)
 
 [Styleguides](#styleguides)
@@ -134,6 +135,9 @@ When you are creating an enhancement suggestion, please fill in [the template](h
 authentik can be run locally, all though depending on which part you want to work on, different pre-requisites are required.
 
 This is documented in the [developer docs](https://goauthentik.io/developer-docs/?utm_source=github)
+
+### Help with the Docs
+Contributions to the technical documentation are greatly appreciated. Open a PR if you have improvements to make or new content to add. If you have questions or suggestions about the documentation, open an Issue. No contribution is too small.
 
 ### Pull Requests
 
