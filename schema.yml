@@ -20346,6 +20346,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: friendly_name
+        schema:
+          type: string
+      - in: query
         name: from_number
         schema:
           type: string
@@ -20651,6 +20655,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: friendly_name
+        schema:
+          type: string
+      - in: query
         name: name
         schema:
           type: string
@@ -20946,6 +20954,10 @@ paths:
 
           * `6` - 6 digits, widely compatible
           * `8` - 8 digits, not compatible with apps like Google Authenticator
+      - in: query
+        name: friendly_name
+        schema:
+          type: string
       - in: query
         name: name
         schema:
@@ -21533,6 +21545,10 @@ paths:
         schema:
           type: string
           format: uuid
+      - in: query
+        name: friendly_name
+        schema:
+          type: string
       - in: query
         name: name
         schema:
@@ -26560,6 +26576,9 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
         authenticator_attachment:
@@ -26592,6 +26611,10 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
         authenticator_attachment:
@@ -26819,6 +26842,9 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
         client_id:
           type: string
         api_hostname:
@@ -26875,6 +26901,10 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -26973,6 +27003,9 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
         provider:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
@@ -27023,6 +27056,10 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
         provider:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
@@ -27129,6 +27166,9 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
         token_count:
           type: integer
           maximum: 2147483647
@@ -27157,6 +27197,10 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
         token_count:
           type: integer
           maximum: 2147483647
@@ -27240,6 +27284,9 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
         digits:
           allOf:
           - $ref: '#/components/schemas/DigitsEnum'
@@ -27270,6 +27317,10 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
         digits:
           allOf:
           - $ref: '#/components/schemas/DigitsEnum'
@@ -35347,6 +35398,10 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
         user_verification:
           $ref: '#/components/schemas/UserVerificationEnum'
         authenticator_attachment:
@@ -35372,6 +35427,10 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
         client_id:
           type: string
           minLength: 1
@@ -35404,6 +35463,10 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
         provider:
           $ref: '#/components/schemas/ProviderEnum'
         from_number:
@@ -35446,6 +35509,10 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
         token_count:
           type: integer
           maximum: 2147483647
@@ -35467,6 +35534,10 @@ components:
           nullable: true
           description: Flow used by an authenticated user to configure this Stage.
             If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
         digits:
           allOf:
           - $ref: '#/components/schemas/DigitsEnum'

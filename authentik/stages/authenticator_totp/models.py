@@ -7,7 +7,7 @@ from django.views import View
 from rest_framework.serializers import BaseSerializer
 
 from authentik.core.types import UserSettingSerializer
-from authentik.flows.models import ConfigurableStage, Stage
+from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 
 
 class TOTPDigits(models.IntegerChoices):
@@ -17,7 +17,7 @@ class TOTPDigits(models.IntegerChoices):
     EIGHT = 8, _("8 digits, not compatible with apps like Google Authenticator")
 
 
-class AuthenticatorTOTPStage(ConfigurableStage, Stage):
+class AuthenticatorTOTPStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Enroll a user's device into Time-based OTP."""
 
     digits = models.IntegerField(choices=TOTPDigits.choices)
@@ -41,7 +41,7 @@ class AuthenticatorTOTPStage(ConfigurableStage, Stage):
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={
-                "title": str(self._meta.verbose_name),
+                "title": self.friendly_name or str(self._meta.verbose_name),
                 "component": "ak-user-settings-authenticator-totp",
             }
         )

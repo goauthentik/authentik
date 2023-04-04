@@ -17,7 +17,7 @@ from twilio.rest import Client
 from authentik.core.types import UserSettingSerializer
 from authentik.events.models import Event, EventAction, NotificationWebhookMapping
 from authentik.events.utils import sanitize_item
-from authentik.flows.models import ConfigurableStage, Stage
+from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.http import get_http_session
@@ -39,7 +39,7 @@ class SMSAuthTypes(models.TextChoices):
     BEARER = "bearer"
 
 
-class AuthenticatorSMSStage(ConfigurableStage, Stage):
+class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Use SMS-based TOTP instead of authenticator-based."""
 
     provider = models.TextField(choices=SMSProviders.choices)
@@ -168,7 +168,7 @@ class AuthenticatorSMSStage(ConfigurableStage, Stage):
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={
-                "title": str(self._meta.verbose_name),
+                "title": self.friendly_name or str(self._meta.verbose_name),
                 "component": "ak-user-settings-authenticator-sms",
             }
         )

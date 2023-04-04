@@ -4,8 +4,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { Table, TableColumn } from "@goauthentik/elements/table/Table";
+import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
 
 import { t } from "@lingui/macro";
@@ -17,17 +16,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
 export function stageToAuthenticatorName(stage: UserSetting): string {
-    switch (stage.component) {
-        case "ak-user-settings-authenticator-duo":
-            return t`Duo authenticator`;
-        case "ak-user-settings-authenticator-sms":
-            return t`SMS authenticator`;
-        case "ak-user-settings-authenticator-static":
-            return t`Static authenticator`;
-        case "ak-user-settings-authenticator-totp":
-            return t`TOTP authenticator`;
-        case "ak-user-settings-authenticator-webauthn":
-            return t`Security key authenticator`;
+    if (stage.title) {
+        return stage.title;
     }
     return `Invalid stage component ${stage.component}`;
 }

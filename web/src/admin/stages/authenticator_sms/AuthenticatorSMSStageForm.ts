@@ -11,7 +11,6 @@ import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     AuthTypeEnum,
@@ -76,7 +75,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
             >
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.accountSid || "")}"
+                    value="${first(this.instance?.accountSid, "")}"
                     class="pf-c-form-control"
                     required
                 />
@@ -87,7 +86,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
             <ak-form-element-horizontal label=${t`Twilio Auth Token`} ?required=${true} name="auth">
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.auth || "")}"
+                    value="${first(this.instance?.auth, "")}"
                     class="pf-c-form-control"
                     required
                 />
@@ -131,7 +130,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
             >
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.accountSid || "")}"
+                    value="${first(this.instance?.accountSid, "")}"
                     class="pf-c-form-control"
                     required
                 />
@@ -142,7 +141,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
             <ak-form-element-horizontal label=${t`API Auth Username`} ?required=${true} name="auth">
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.auth || "")}"
+                    value="${first(this.instance?.auth, "")}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
@@ -156,7 +155,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
             >
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.authPassword)}"
+                    value="${first(this.instance?.authPassword, "")}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
@@ -206,10 +205,24 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
             <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.name || "")}"
+                    value="${first(this.instance?.name, "")}"
                     class="pf-c-form-control"
                     required
                 />
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${t`Authenticator type name`}
+                ?required=${false}
+                name="friendlyName"
+            >
+                <input
+                    type="text"
+                    value="${first(this.instance?.friendlyName, "")}"
+                    class="pf-c-form-control"
+                />
+                <p class="pf-c-form__helper-text">
+                    ${t`Display name of this authenticator, used by users when they enroll an authenticator.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Stage-specific settings`} </span>
@@ -247,7 +260,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                     >
                         <input
                             type="text"
-                            value="${ifDefined(this.instance?.fromNumber || "")}"
+                            value="${first(this.instance?.fromNumber, "")}"
                             class="pf-c-form-control"
                             required
                         />

@@ -57,6 +57,10 @@ if __name__ == "__main__":
         password=CONFIG.y("postgresql.password"),
         host=CONFIG.y("postgresql.host"),
         port=int(CONFIG.y("postgresql.port")),
+        sslmode=CONFIG.y("postgresql.sslmode"),
+        sslrootcert=CONFIG.y("postgresql.sslrootcert"),
+        sslcert=CONFIG.y("postgresql.sslcert"),
+        sslkey=CONFIG.y("postgresql.sslkey"),
     )
     curr = conn.cursor()
     try:

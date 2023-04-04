@@ -12,12 +12,12 @@ from rest_framework.serializers import BaseSerializer, Serializer
 
 from authentik import __version__
 from authentik.core.types import UserSettingSerializer
-from authentik.flows.models import ConfigurableStage, Stage
+from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import authentik_user_agent
 
 
-class AuthenticatorDuoStage(ConfigurableStage, Stage):
+class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup Duo authenticator devices"""
 
     api_hostname = models.TextField()
@@ -68,7 +68,7 @@ class AuthenticatorDuoStage(ConfigurableStage, Stage):
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
         return UserSettingSerializer(
             data={
-                "title": str(self._meta.verbose_name),
+                "title": self.friendly_name or str(self._meta.verbose_name),
                 "component": "ak-user-settings-authenticator-duo",
             }
         )
