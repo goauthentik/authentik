@@ -154,9 +154,9 @@ export class SCIMProviderViewPage extends AKElement {
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
                                 <span slot="submit"> ${t`Update`} </span>
-                                <span slot="header"> ${t`Update LDAP Provider`} </span>
-                                <ak-provider-ldap-form slot="form" .instancePk=${this.provider.pk}>
-                                </ak-provider-ldap-form>
+                                <span slot="header"> ${t`Update SCIM Provider`} </span>
+                                <ak-provider-scim-form slot="form" .instancePk=${this.provider.pk}>
+                                </ak-provider-scim-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
                                     ${t`Edit`}
                                 </button>
