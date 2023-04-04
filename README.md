@@ -19,9 +19,9 @@ authentik is an open-source Identity Provider focused on flexibility and versati
 
 ## Installation
 
-For small/test setups it is recommended to use docker-compose, see the [documentation](https://goauthentik.io/docs/installation/docker-compose/?utm_source=github)
+For small/test setups it is recommended to use Docker Compose; refer to the [documentation](https://goauthentik.io/docs/installation/docker-compose/?utm_source=github).
 
-For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/?utm_source=github)
+For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/?utm_source=github).
 
 ## Screenshots
 
@@ -32,15 +32,15 @@ For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/h
 
 ## Development
 
-See [Development Documentation](https://goauthentik.io/developer-docs/?utm_source=github)
+See [Developer Documentation](https://goauthentik.io/developer-docs/?utm_source=github)
 
 ## Security
 
 See [SECURITY.md](SECURITY.md)
 
-## Support
+## Adoption and Contributions
 
-Your organization uses authentik? We'd love to add your logo to the readme and our website! Email us @ hello@goauthentik.io or open a GitHub Issue/PR!
+Your organization uses authentik? We'd love to add your logo to the readme and our website! Email us @ hello@goauthentik.io or open a GitHub Issue/PR! For more information about contributing to authentik, read our [CONTRIBUTING.md file](./CONTRIBUTING.md).
 
 ## Sponsors
 
