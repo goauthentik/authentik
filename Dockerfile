@@ -85,7 +85,9 @@ RUN apt-get update && \
     # Required for runtime
     apt-get install -y --no-install-recommends libpq5 openssl libxmlsec1-openssl libmaxminddb0 && \
     # Required for bootstrap & healtcheck
-    apt-get install -y --no-install-recommends runit && \
+    apt-get install -y --no-install-recommends curl runit && \
+    # Upgrade pip to latest version
+    pip install --upgrade pip && \
     pip install --no-cache-dir -r /requirements.txt && \
     apt-get remove --purge -y build-essential pkg-config libxmlsec1-dev libpq-dev python3-dev && \
     apt-get autoremove --purge -y && \
