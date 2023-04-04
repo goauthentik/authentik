@@ -27,8 +27,8 @@ COPY ./pyproject.toml /work
 COPY ./poetry.lock /work
 
 RUN pip install --no-cache-dir poetry && \
-    poetry export -f requirements.txt --output requirements.txt && \
-    poetry export -f requirements.txt --dev --output requirements-dev.txt
+    poetry export --without-hashes -f requirements.txt --output requirements.txt && \
+    poetry export --without-hashes -f requirements.txt --dev --output requirements-dev.txt
 
 # Stage 4: Build go proxy
 FROM docker.io/golang:1.20.2-bullseye AS go-builder
