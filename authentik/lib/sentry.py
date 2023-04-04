@@ -19,9 +19,12 @@ from rest_framework.exceptions import APIException
 from sentry_sdk import HttpTransport
 from sentry_sdk import init as sentry_sdk_init
 from sentry_sdk.api import set_tag
+from sentry_sdk.integrations.argv import ArgvIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.redis import RedisIntegration
+from sentry_sdk.integrations.socket import SocketIntegration
+from sentry_sdk.integrations.stdlib import StdlibIntegration
 from sentry_sdk.integrations.threading import ThreadingIntegration
 from structlog.stdlib import get_logger
 from websockets.exceptions import WebSocketException
@@ -61,10 +64,13 @@ def sentry_init(**sentry_init_kwargs):
     sentry_sdk_init(
         dsn=CONFIG.y("error_reporting.sentry_dsn"),
         integrations=[
+            ArgvIntegration(),
+            StdlibIntegration(),
             DjangoIntegration(transaction_style="function_name"),
-            CeleryIntegration(),
+            CeleryIntegration(monitor_beat_tasks=True),
             RedisIntegration(),
             ThreadingIntegration(propagate_hub=True),
+            SocketIntegration(),
         ],
         before_send=before_send,
         traces_sampler=traces_sampler,
