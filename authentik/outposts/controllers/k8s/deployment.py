@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 from django.utils.text import slugify
 from kubernetes.client import (
     AppsV1Api,
+    V1Capabilities,
     V1Container,
     V1ContainerPort,
     V1Deployment,
@@ -13,9 +14,12 @@ from kubernetes.client import (
     V1LabelSelector,
     V1ObjectMeta,
     V1ObjectReference,
+    V1PodSecurityContext,
     V1PodSpec,
     V1PodTemplateSpec,
+    V1SeccompProfile,
     V1SecretKeySelector,
+    V1SecurityContext,
 )
 
 from authentik import __version__, get_full_version
@@ -103,6 +107,12 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                         image_pull_secrets=[
                             V1ObjectReference(name=secret) for secret in image_pull_secrets
                         ],
+                        security_context=V1PodSecurityContext(
+                            run_as_non_root=True,
+                            seccomp_profile=V1SeccompProfile(
+                                type="RuntimeDefault",
+                            ),
+                        ),
                         containers=[
                             V1Container(
                                 name=str(self.outpost.type),
@@ -146,6 +156,12 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                         ),
                                     ),
                                 ],
+                                security_context=V1SecurityContext(
+                                    allow_privilege_escalation=False,
+                                    capabilities=V1Capabilities(
+                                        drop=["ALL"],
+                                    ),
+                                ),
                             )
                         ],
                     ),
