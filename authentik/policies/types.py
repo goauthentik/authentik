@@ -69,10 +69,11 @@ class PolicyRequest:
 
 @dataclass
 class PolicyResult:
-    """Small data-class to hold policy results"""
+    """Result from evaluating a policy."""
 
     passing: bool
     messages: tuple[str, ...]
+    raw_result: Any
 
     source_binding: Optional["PolicyBinding"]
     source_results: Optional[list["PolicyResult"]]
@@ -83,6 +84,7 @@ class PolicyResult:
         super().__init__()
         self.passing = passing
         self.messages = messages
+        self.raw_result = None
         self.source_binding = None
         self.source_results = []
         self.log_messages = []

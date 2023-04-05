@@ -8,6 +8,7 @@ from typing import Any, Iterable, Optional
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
 from django_otp import devices_for_user
+from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
 from sentry_sdk.hub import Hub
 from sentry_sdk.tracing import Span
@@ -16,7 +17,9 @@ from structlog.stdlib import get_logger
 from authentik.core.models import User
 from authentik.events.models import Event
 from authentik.lib.utils.http import get_http_session
-from authentik.policies.types import PolicyRequest
+from authentik.policies.models import Policy, PolicyBinding
+from authentik.policies.process import PolicyProcess
+from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 
@@ -37,19 +40,20 @@ class BaseEvaluator:
         # update website/docs/expressions/_objects.md
         # update website/docs/expressions/_functions.md
         self._globals = {
-            "regex_match": BaseEvaluator.expr_regex_match,
-            "regex_replace": BaseEvaluator.expr_regex_replace,
-            "list_flatten": BaseEvaluator.expr_flatten,
+            "ak_call_policy": self.expr_func_call_policy,
+            "ak_create_event": self.expr_event_create,
             "ak_is_group_member": BaseEvaluator.expr_is_group_member,
+            "ak_logger": get_logger(self._filename).bind(),
             "ak_user_by": BaseEvaluator.expr_user_by,
             "ak_user_has_authenticator": BaseEvaluator.expr_func_user_has_authenticator,
-            "resolve_dns": BaseEvaluator.expr_resolve_dns,
-            "reverse_dns": BaseEvaluator.expr_reverse_dns,
-            "ak_create_event": self.expr_event_create,
-            "ak_logger": get_logger(self._filename).bind(),
-            "requests": get_http_session(),
             "ip_address": ip_address,
             "ip_network": ip_network,
+            "list_flatten": BaseEvaluator.expr_flatten,
+            "regex_match": BaseEvaluator.expr_regex_match,
+            "regex_replace": BaseEvaluator.expr_regex_replace,
+            "requests": get_http_session(),
+            "resolve_dns": BaseEvaluator.expr_resolve_dns,
+            "reverse_dns": BaseEvaluator.expr_reverse_dns,
         }
         self._context = {}
 
@@ -151,6 +155,19 @@ class BaseEvaluator:
                 event.from_http(policy_request)
                 return
         event.save()
+
+    def expr_func_call_policy(self, name: str, **kwargs) -> PolicyResult:
+        """Call policy by name, with current request"""
+        policy = Policy.objects.filter(name=name).select_subclasses().first()
+        if not policy:
+            raise ValueError(f"Policy '{name}' not found.")
+        user = self._context.get("user", get_anonymous_user())
+        req = PolicyRequest(user)
+        if "request" in self._context:
+            req = self._context["request"]
+        req.context.update(kwargs)
+        proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
+        return proc.profiling_wrapper()
 
     def wrap_expression(self, expression: str, params: Iterable[str]) -> str:
         """Wrap expression in a function, call it, and save the result as `result`"""
