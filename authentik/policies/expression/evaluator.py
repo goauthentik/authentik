@@ -83,6 +83,7 @@ class PolicyEvaluator(BaseEvaluator):
             return PolicyResult(False, str(exc))
         else:
             policy_result = PolicyResult(False, *self._messages)
+            policy_result.raw_result = result
             if result is None:
                 LOGGER.warning(
                     "Expression policy returned None",
