@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM docker.io/golang:1.20.2-bullseye AS builder
+FROM docker.io/golang:1.20.3-bullseye AS builder
 
 WORKDIR /go/src/goauthentik.io
 
