@@ -30,7 +30,7 @@ jobs:
         run: |
           export VERSION=`node -e 'console.log(require("../gen-ts-api/package.json").version)'`
           npm i @goauthentik/api@$VERSION
-      - uses: peter-evans/create-pull-request@v4
+      - uses: peter-evans/create-pull-request@v5
         id: cpr
         with:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
