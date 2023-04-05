@@ -7,7 +7,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm ci && npm run build-proxy
 
 # Stage 2: Build
-FROM docker.io/golang:1.20.2-bullseye AS builder
+FROM docker.io/golang:1.20.3-bullseye AS builder
 
 WORKDIR /go/src/goauthentik.io
 
