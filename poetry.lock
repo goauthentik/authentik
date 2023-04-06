@@ -1240,14 +1240,14 @@ files = [
 
 [[package]]
 name = "duo-client"
-version = "4.7.0"
+version = "4.7.1"
 description = "Reference client for Duo Security APIs"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "duo_client-4.7.0-py2.py3-none-any.whl", hash = "sha256:33743445639c9f226fe9193f562fc300c9014ff2680a83daccd4dc7277111617"},
-    {file = "duo_client-4.7.0.tar.gz", hash = "sha256:a6a263e8060fb518f80a5f2c4b7256c8e53d2cecab5b09839699a3201a0e22eb"},
+    {file = "duo_client-4.7.1-py2.py3-none-any.whl", hash = "sha256:35f1ea54111fa1304127e4d169bf553aee826db62b33c972c45f65a02756c820"},
+    {file = "duo_client-4.7.1.tar.gz", hash = "sha256:f859b5d5b434daf46674c74fd7c6f2d34002df3c54e519e64a284aeb491226ef"},
 ]
 
 [package.dependencies]
