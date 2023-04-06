@@ -9,8 +9,6 @@ from authentik.flows.planner import PLAN_CONTEXT_SSO
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.exceptions import PolicyException
-from authentik.policies.models import Policy, PolicyBinding
-from authentik.policies.process import PolicyProcess
 from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
@@ -32,21 +30,10 @@ class PolicyEvaluator(BaseEvaluator):
         # update website/docs/expressions/_functions.md
         self._context["ak_message"] = self.expr_func_message
         self._context["ak_user_has_authenticator"] = self.expr_func_user_has_authenticator
-        self._context["ak_call_policy"] = self.expr_func_call_policy
 
     def expr_func_message(self, message: str):
         """Wrapper to append to messages list, which is returned with PolicyResult"""
         self._messages.append(message)
-
-    def expr_func_call_policy(self, name: str, **kwargs) -> PolicyResult:
-        """Call policy by name, with current request"""
-        policy = Policy.objects.filter(name=name).select_subclasses().first()
-        if not policy:
-            raise ValueError(f"Policy '{name}' not found.")
-        req: PolicyRequest = self._context["request"]
-        req.context.update(kwargs)
-        proc = PolicyProcess(PolicyBinding(policy=policy), request=req, connection=None)
-        return proc.profiling_wrapper()
 
     def set_policy_request(self, request: PolicyRequest):
         """Update context based on policy request (if http request is given, update that too)"""
@@ -83,6 +70,7 @@ class PolicyEvaluator(BaseEvaluator):
             return PolicyResult(False, str(exc))
         else:
             policy_result = PolicyResult(False, *self._messages)
+            policy_result.raw_result = result
             if result is None:
                 LOGGER.warning(
                     "Expression policy returned None",
