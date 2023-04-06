@@ -15,7 +15,7 @@
 
 ## What is authentik?
 
-authentik is an open-source Identity Provider focused on flexibility and versatility. You can use authentik in an existing environment to add support for new protocols. authentik is also a great solution for implementing signup/recovery/etc in your application, so you don't have to deal with it.
+Authentik is an open-source Identity Provider that emphasizes flexibility and versatility. It can be seamlessly integrated into existing environments to support new protocols. Authentik is also a great solution for implementing sign-up, recovery, and other similar features in your application, saving you the hassle of dealing with them.
 
 ## Installation
 
@@ -40,7 +40,7 @@ See [SECURITY.md](SECURITY.md)
 
 ## Adoption and Contributions
 
-Your organization uses authentik? We'd love to add your logo to the readme and our website! Email us @ hello@goauthentik.io or open a GitHub Issue/PR! For more information about contributing to authentik, read our [CONTRIBUTING.md file](./CONTRIBUTING.md).
+Your organization uses authentik? We'd love to add your logo to the readme and our website! Email us @ hello@goauthentik.io or open a GitHub Issue/PR! For more information on how to contribute to authentik, please refer to our [CONTRIBUTING.md file](./CONTRIBUTING.md).
 
 ## Sponsors
 
