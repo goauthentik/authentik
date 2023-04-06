@@ -117,7 +117,7 @@
         "ts-lit-plugin": "^1.2.1",
         "tslib": "^2.5.0",
         "turnstile-types": "^1.1.2",
-        "typescript": "^4.9.5",
+        "typescript": "^5.0.3",
         "webcomponent-qr-code": "^1.1.1",
         "yaml": "^2.2.1"
     }
