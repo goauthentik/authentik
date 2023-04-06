@@ -103,7 +103,7 @@
         "eslint-plugin-custom-elements": "0.0.7",
         "eslint-plugin-lit": "^1.8.2",
         "fuse.js": "^6.6.2",
-        "lit": "^2.7.1",
+        "lit": "^2.7.2",
         "mermaid": "^10.1.0",
         "moment": "^2.29.4",
         "prettier": "^2.8.7",
