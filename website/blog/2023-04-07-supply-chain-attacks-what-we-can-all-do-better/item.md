@@ -1,6 +1,6 @@
 ---
-title: "JWT: A token that changed how we see identity"
-slug: 2023-03-30-JWT-a-token-that-changed-how-we-see-identity
+title: "Supply chain attacks: what we can all do better"
+slug: 2023-04-07-supply-chain-attacks-what-we-can-all-do-better
 authors:
     - name: Jens Langhammer
       title: CTO at Authentik Security Inc
