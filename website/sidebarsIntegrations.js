@@ -13,6 +13,7 @@ module.exports = {
                     label: "Chat, Communication & Collaboration",
                     items: [
                         "services/bookstack/index",
+                        "services/dokuwiki/index",
                         "services/hedgedoc/index",
                         "services/kimai/index",
                         "services/mastodon/index",
