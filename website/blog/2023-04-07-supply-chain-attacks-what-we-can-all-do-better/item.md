@@ -19,6 +19,8 @@ hide_table_of_contents: false
 
 Supply chains, whether for automotive parts or microprocessors, are complex, as we all know from recent history. Modern software, with more components than ever and automated package management, is also complex, and this complexity provides a rich environment for supply chain attacks. Supply chain attacks inject malicious code into an application via the building blocks of the application (for example, dependencies) in order to compromise the app in order to infect multiple users.
 
+<!--truncate-->
+
 Using the inherent connections and dependencies of our typical complex workflows for upgrades, deployments, build systems, and other software maintenance workflows, supply chain attackers take advantage of the distributed networks and the myriad of third-party hardware, software, services to insert malware into core systems, and take control from there.
 
 For example, NMS (Network Management Systems) are prime targets for attackers, who can use credentials for system _monitoring_ to laterally move into positions that allow _control_ of target systems. This tunneling into the complex system is a hallmark of supply chain attacks. With so many parts and pieces, plus frequently lax gatekeeping of access between components and layers, determined attackers can easily find an unwatched access point to enter, then steadily progress through the system to gain more and more control.
