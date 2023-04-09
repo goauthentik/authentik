@@ -91,4 +91,4 @@ Whenever any vendor that you use within your environment’s ecosystem issues a 
 
 ## What else can we all do?
 
-Here at authentik our engineers and product team are constantly thinking of ways to further harden and protect our users’ sites. We’d love to hear from you all about what you’d like to see done by us, and by the industry as a whole. Leave us a comment below, reach out to us at hello@authentik, and visit our [GitHub repository](https://github.com/goauthentik/authentik).
+Here at authentik our engineers and product team are constantly thinking of ways to further harden and protect our users’ sites. We’d love to hear from you all about what you’d like to see done by us, and by the industry as a whole. Leave us a comment below, reach out to us at hello@goauthentik.io, and visit our [GitHub repository](https://github.com/goauthentik/authentik).
