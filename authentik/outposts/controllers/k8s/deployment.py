@@ -108,7 +108,6 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                             V1ObjectReference(name=secret) for secret in image_pull_secrets
                         ],
                         security_context=V1PodSecurityContext(
-                            run_as_non_root=True,
                             seccomp_profile=V1SeccompProfile(
                                 type="RuntimeDefault",
                             ),
@@ -157,6 +156,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                     ),
                                 ],
                                 security_context=V1SecurityContext(
+                                    run_as_non_root=True,
                                     allow_privilege_escalation=False,
                                     capabilities=V1Capabilities(
                                         drop=["ALL"],

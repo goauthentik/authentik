@@ -23,4 +23,6 @@ HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "wget", "--spider
 
 EXPOSE 3389 6636 9300
 
+USER 1000
+
 ENTRYPOINT ["/ldap"]

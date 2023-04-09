@@ -23,4 +23,6 @@ HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "wget", "--spider
 
 EXPOSE 1812/udp 9300
 
+USER 1000
+
 ENTRYPOINT ["/radius"]
