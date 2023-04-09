@@ -7,7 +7,7 @@ ENV NODE_ENV=production
 RUN cd /static && npm ci && npm run build-proxy
 
 # Stage 2: Build
-FROM docker.io/golang:1.20.2-bullseye AS builder
+FROM docker.io/golang:1.20.3-bullseye AS builder
 
 WORKDIR /go/src/goauthentik.io
 
@@ -35,5 +35,7 @@ COPY --from=web-builder /static/authentik/ /web/authentik/
 HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "wget", "--spider", "http://localhost:9300/outpost.goauthentik.io/ping" ]
 
 EXPOSE 9000 9300 9443
+
+USER 1000
 
 ENTRYPOINT ["/proxy"]

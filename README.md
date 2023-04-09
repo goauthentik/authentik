@@ -15,13 +15,13 @@
 
 ## What is authentik?
 
-authentik is an open-source Identity Provider focused on flexibility and versatility. You can use authentik in an existing environment to add support for new protocols. authentik is also a great solution for implementing signup/recovery/etc in your application, so you don't have to deal with it.
+Authentik is an open-source Identity Provider that emphasizes flexibility and versatility. It can be seamlessly integrated into existing environments to support new protocols. Authentik is also a great solution for implementing sign-up, recovery, and other similar features in your application, saving you the hassle of dealing with them.
 
 ## Installation
 
-For small/test setups it is recommended to use docker-compose, see the [documentation](https://goauthentik.io/docs/installation/docker-compose/?utm_source=github)
+For small/test setups it is recommended to use Docker Compose; refer to the [documentation](https://goauthentik.io/docs/installation/docker-compose/?utm_source=github).
 
-For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/?utm_source=github)
+For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/helm). This is documented [here](https://goauthentik.io/docs/installation/kubernetes/?utm_source=github).
 
 ## Screenshots
 
@@ -32,15 +32,15 @@ For bigger setups, there is a Helm Chart [here](https://github.com/goauthentik/h
 
 ## Development
 
-See [Development Documentation](https://goauthentik.io/developer-docs/?utm_source=github)
+See [Developer Documentation](https://goauthentik.io/developer-docs/?utm_source=github)
 
 ## Security
 
 See [SECURITY.md](SECURITY.md)
 
-## Support
+## Adoption and Contributions
 
-Your organization uses authentik? We'd love to add your logo to the readme and our website! Email us @ hello@goauthentik.io or open a GitHub Issue/PR!
+Your organization uses authentik? We'd love to add your logo to the readme and our website! Email us @ hello@goauthentik.io or open a GitHub Issue/PR! For more information on how to contribute to authentik, please refer to our [CONTRIBUTING.md file](./CONTRIBUTING.md).
 
 ## Sponsors
 

@@ -29,6 +29,29 @@ user = list_flatten(["foo"])
 # user = "foo"
 ```
 
+### `ak_call_policy(name: str, **kwargs) -> PolicyResult`
+
+:::info
+Requires authentik 2021.12
+:::
+
+Call another policy with the name _name_. Current request is passed to policy. Key-word arguments
+can be used to modify the request's context.
+
+Example:
+
+```python
+result = ak_call_policy("test-policy")
+# result is a PolicyResult object, so you can access `.passing` and `.messages`.
+# Starting with authentik 2023.4 you can also access `.raw_result`, which is the raw value returned from the called policy
+# `result.passing` will always be a boolean if the policy is passing or not.
+return result.passing
+
+result = ak_call_policy("test-policy-2", foo="bar")
+# Inside the `test-policy-2` you can then use `request.context["foo"]`
+return result.passing
+```
+
 ### `ak_is_group_member(user: User, **group_filters) -> bool`
 
 Check if `user` is member of a group matching `**group_filters`.
