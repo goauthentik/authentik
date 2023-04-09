@@ -36,4 +36,6 @@ HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "wget", "--spider
 
 EXPOSE 9000 9300 9443
 
+USER 1000
+
 ENTRYPOINT ["/proxy"]
