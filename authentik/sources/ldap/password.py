@@ -50,7 +50,7 @@ class LDAPPasswordChanger:
 
     def get_domain_root_dn(self) -> str:
         """Attempt to get root DN via MS specific fields or generic LDAP fields"""
-        info = self._source.connection.server.info
+        info = self._source.connection.server().info
         if "rootDomainNamingContext" in info.other:
             return info.other["rootDomainNamingContext"][0]
         naming_contexts = info.naming_contexts
