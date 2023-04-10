@@ -122,7 +122,7 @@ def blueprints_find():
         )
         blueprint.meta = from_dict(BlueprintMetadata, metadata) if metadata else None
         blueprints.append(blueprint)
-        LOGGER.info(
+        LOGGER.debug(
             "parsed & loaded blueprint",
             hash=file_hash,
             path=str(path),

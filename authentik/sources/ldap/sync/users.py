@@ -16,7 +16,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users into authentik"""
 
     def get_objects(self, **kwargs) -> Generator:
-        return self._source.connection.extend.standard.paged_search(
+        return self._connection.extend.standard.paged_search(
             search_base=self.base_dn_users,
             search_filter=self._source.user_object_filter,
             search_scope=SUBTREE,

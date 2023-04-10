@@ -4,7 +4,7 @@ from typing import Optional
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from ldap3 import ALL, RANDOM, Connection, Server, ServerPool, Tls, NONE
+from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPSchemaError
 from rest_framework.serializers import Serializer
 
@@ -136,7 +136,7 @@ class LDAPSource(Source):
         connection_kwargs.setdefault("user", self.bind_cn)
         connection_kwargs.setdefault("password", self.bind_password)
         connection = Connection(
-            self.server(server_kwargs),
+            self.server(**server_kwargs),
             raise_exceptions=True,
             receive_timeout=LDAP_TIMEOUT,
             **connection_kwargs,
