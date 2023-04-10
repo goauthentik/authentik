@@ -542,7 +542,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@aaronburden"
+                                                                  href="https://unsplash.com/@clarissemeyer"
                                                                   >${t`Background image`}</a
                                                               >
                                                           </li>
