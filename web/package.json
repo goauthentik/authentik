@@ -98,7 +98,7 @@
         "construct-style-sheets-polyfill": "^3.1.0",
         "core-js": "^3.30.0",
         "country-flag-icons": "^1.5.7",
-        "eslint": "^8.37.0",
+        "eslint": "^8.38.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.7",
         "eslint-plugin-lit": "^1.8.2",
