@@ -11,7 +11,6 @@ from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
 import authentik.events.models
 import authentik.lib.models
-from authentik.events.models import EventAction, NotificationSeverity, TransportMode
 from authentik.lib.migrations import progress_bar
 
 

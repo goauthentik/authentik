@@ -10,7 +10,6 @@ from duo_client.admin import Admin
 from duo_client.auth import Auth
 from rest_framework.serializers import BaseSerializer, Serializer
 
-from authentik import __version__
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel

@@ -182,6 +182,9 @@ ci-pylint: ci--meta-debug
 ci-black: ci--meta-debug
 	black --check $(PY_SOURCES)
 
+ci-ruff: ci--meta-debug
+	ruff check $(PY_SOURCES)
+
 ci-codespell: ci--meta-debug
 	codespell $(CODESPELL_ARGS) -s
 

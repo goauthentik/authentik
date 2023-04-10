@@ -155,6 +155,6 @@ if not CONFIG.y_bool("disable_startup_analytics", False):
                 },
                 timeout=5,
             )
-        # pylint: disable=bare-except
-        except:  # nosec
+        # pylint: disable=broad-exception-caught
+        except Exception:  # nosec
             pass

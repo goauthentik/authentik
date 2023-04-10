@@ -23,13 +23,14 @@ jobs:
       fail-fast: false
       matrix:
         job:
-          - pylint
-          - black
-          - isort
           - bandit
-          - pyright
-          - pending-migrations
+          - black
           - codespell
+          - isort
+          - pending-migrations
+          - pylint
+          - pyright
+          - ruff
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
