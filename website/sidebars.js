@@ -54,8 +54,8 @@ module.exports = {
                         "providers/oauth2/device_code",
                     ],
                 },
-                "providers/saml",
-                "providers/radius",
+                "providers/saml/index",
+                "providers/radius/index",
                 {
                     type: "category",
                     label: "Proxy Provider",
