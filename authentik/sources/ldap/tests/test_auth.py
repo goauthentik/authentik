@@ -1,5 +1,5 @@
 """LDAP Source tests"""
-from unittest.mock import Mock, PropertyMock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 from django.db.models import Q
 from django.test import TestCase
@@ -37,7 +37,7 @@ class LDAPSyncTests(TestCase):
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
             )
         )
-        connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
             user_sync.sync()
@@ -64,7 +64,7 @@ class LDAPSyncTests(TestCase):
             )
         )
         self.source.save()
-        connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
             user_sync.sync()
