@@ -3,6 +3,7 @@ from typing import Any, Generator
 
 from django.db.models.base import Model
 from django.db.models.query import QuerySet
+from ldap3 import Connection
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
@@ -19,10 +20,12 @@ class BaseLDAPSynchronizer:
 
     _source: LDAPSource
     _logger: BoundLogger
+    _connection: Connection
     _messages: list[str]
 
     def __init__(self, source: LDAPSource):
         self._source = source
+        self._connection = source.connection()
         self._messages = []
         self._logger = get_logger().bind(source=source, syncer=self.__class__.__name__)
 

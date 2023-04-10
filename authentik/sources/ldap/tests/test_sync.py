@@ -1,5 +1,5 @@
 """LDAP Source tests"""
-from unittest.mock import PropertyMock, patch
+from unittest.mock import MagicMock, patch
 
 from django.db.models import Q
 from django.test import TestCase
@@ -48,7 +48,7 @@ class LDAPSyncTests(TestCase):
         )
         self.source.property_mappings.set([mapping])
         self.source.save()
-        connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
             user_sync.sync()
@@ -69,7 +69,7 @@ class LDAPSyncTests(TestCase):
             )
         )
         self.source.save()
-        connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
 
         # Create the user beforehand so we can set attributes and check they aren't removed
         user = User.objects.create(
@@ -103,7 +103,7 @@ class LDAPSyncTests(TestCase):
             )
         )
         self.source.save()
-        connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
             user_sync.sync()
@@ -121,11 +121,11 @@ class LDAPSyncTests(TestCase):
         self.source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/default-name")
         )
-        _user = create_test_admin_user()
-        parent_group = Group.objects.get(name=_user.username)
-        self.source.sync_parent_group = parent_group
-        connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            _user = create_test_admin_user()
+            parent_group = Group.objects.get(name=_user.username)
+            self.source.sync_parent_group = parent_group
             self.source.save()
             group_sync = GroupLDAPSynchronizer(self.source)
             group_sync.sync()
@@ -148,7 +148,7 @@ class LDAPSyncTests(TestCase):
         self.source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/openldap-cn")
         )
-        connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             self.source.save()
             group_sync = GroupLDAPSynchronizer(self.source)
@@ -173,7 +173,7 @@ class LDAPSyncTests(TestCase):
         self.source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/openldap-cn")
         )
-        connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             self.source.save()
             user_sync = UserLDAPSynchronizer(self.source)
@@ -195,7 +195,7 @@ class LDAPSyncTests(TestCase):
             )
         )
         self.source.save()
-        connection = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             ldap_sync_all.delay().get()
 
@@ -210,6 +210,6 @@ class LDAPSyncTests(TestCase):
             )
         )
         self.source.save()
-        connection = PropertyMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
+        connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             ldap_sync_all.delay().get()

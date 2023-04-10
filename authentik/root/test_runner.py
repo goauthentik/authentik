@@ -16,7 +16,7 @@ class PytestTestRunner:  # pragma: no cover
         self.failfast = failfast
         self.keepdb = keepdb
 
-        self.args = ["-vv"]
+        self.args = ["-vv", "--full-trace"]
         if self.failfast:
             self.args.append("--exitfirst")
         if self.keepdb:

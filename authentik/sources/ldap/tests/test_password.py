@@ -1,5 +1,5 @@
 """LDAP Source tests"""
-from unittest.mock import PropertyMock, patch
+from unittest.mock import MagicMock, patch
 
 from django.test import TestCase
 
@@ -10,7 +10,7 @@ from authentik.sources.ldap.password import LDAPPasswordChanger
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 
 LDAP_PASSWORD = generate_key()
-LDAP_CONNECTION_PATCH = PropertyMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+LDAP_CONNECTION_PATCH = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
 
 
 class LDAPPasswordTests(TestCase):

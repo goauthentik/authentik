@@ -1,9 +1,11 @@
 """authentik LDAP Models"""
 from ssl import CERT_REQUIRED
+from typing import Optional
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from ldap3 import ALL, RANDOM, Connection, Server, ServerPool, Tls
+from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
+from ldap3.core.exceptions import LDAPSchemaError
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
@@ -103,8 +105,7 @@ class LDAPSource(Source):
 
         return LDAPSourceSerializer
 
-    @property
-    def server(self) -> Server:
+    def server(self, **kwargs) -> Server:
         """Get LDAP Server/ServerPool"""
         servers = []
         tls_kwargs = {}
@@ -113,32 +114,45 @@ class LDAPSource(Source):
             tls_kwargs["validate"] = CERT_REQUIRED
         if ciphers := CONFIG.y("ldap.tls.ciphers", None):
             tls_kwargs["ciphers"] = ciphers.strip()
-        kwargs = {
+        server_kwargs = {
             "get_info": ALL,
             "connect_timeout": LDAP_TIMEOUT,
             "tls": Tls(**tls_kwargs),
         }
+        server_kwargs.update(kwargs)
         if "," in self.server_uri:
             for server in self.server_uri.split(","):
-                servers.append(Server(server, **kwargs))
+                servers.append(Server(server, **server_kwargs))
         else:
-            servers = [Server(self.server_uri, **kwargs)]
+            servers = [Server(self.server_uri, **server_kwargs)]
         return ServerPool(servers, RANDOM, active=True, exhaust=True)
 
-    @property
-    def connection(self) -> Connection:
+    def connection(
+        self, server_kwargs: Optional[dict] = None, connection_kwargs: Optional[dict] = None
+    ) -> Connection:
         """Get a fully connected and bound LDAP Connection"""
+        server_kwargs = server_kwargs or {}
+        connection_kwargs = connection_kwargs or {}
+        connection_kwargs.setdefault("user", self.bind_cn)
+        connection_kwargs.setdefault("password", self.bind_password)
         connection = Connection(
-            self.server,
+            self.server(**server_kwargs),
             raise_exceptions=True,
-            user=self.bind_cn,
-            password=self.bind_password,
             receive_timeout=LDAP_TIMEOUT,
+            **connection_kwargs,
         )
 
         if self.start_tls:
             connection.start_tls(read_server_info=False)
-        connection.bind()
+        try:
+            connection.bind()
+        except LDAPSchemaError as exc:
+            # Schema error, so try connecting without schema info
+            # See https://github.com/goauthentik/authentik/issues/4590
+            if server_kwargs.get("get_info", ALL) == NONE:
+                raise exc
+            server_kwargs["get_info"] = NONE
+            return self.connection(server_kwargs, connection_kwargs)
         return connection
 
     class Meta:

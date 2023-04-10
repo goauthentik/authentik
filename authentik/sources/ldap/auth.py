@@ -2,13 +2,12 @@
 from typing import Optional
 
 from django.http import HttpRequest
-from ldap3 import Connection
 from ldap3.core.exceptions import LDAPException, LDAPInvalidCredentialsResult
 from structlog.stdlib import get_logger
 
 from authentik.core.auth import InbuiltBackend
 from authentik.core.models import User
-from authentik.sources.ldap.models import LDAP_TIMEOUT, LDAPSource
+from authentik.sources.ldap.models import LDAPSource
 
 LOGGER = get_logger()
 LDAP_DISTINGUISHED_NAME = "distinguishedName"
@@ -58,12 +57,11 @@ class LDAPBackend(InbuiltBackend):
         # Try to bind as new user
         LOGGER.debug("Attempting Binding as user", user=user)
         try:
-            temp_connection = Connection(
-                source.server,
-                user=user.attributes.get(LDAP_DISTINGUISHED_NAME),
-                password=password,
-                raise_exceptions=True,
-                receive_timeout=LDAP_TIMEOUT,
+            temp_connection = source.connection(
+                connection_kwargs={
+                    "user": user.attributes.get(LDAP_DISTINGUISHED_NAME),
+                    "password": password,
+                }
             )
             temp_connection.bind()
             return user
