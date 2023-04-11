@@ -9,7 +9,7 @@ This feature is still in technical preview, so please report any Bugs you run in
 You can configure a Radius Provider for applications that don't support any other protocols or require Radius.
 
 :::info
-This provider requires the deployment of the [Radius Outpost](../../outposts/)
+This provider requires the deployment of the [RADIUS Outpost](../../outposts/)
 :::
 
 Currently, only authentication requests are supported.
@@ -36,7 +36,7 @@ The following stages are supported:
 
 ### Limitations
 
-The radius provider only supports the clear-text protocol:
+The RADIUS provider only supports the clear-text protocol:
 
 ![](./protocols.png)
 
