@@ -88,8 +88,8 @@ jobs:
       fail-fast: false
       matrix:
         psql:
-          - 11-alpine
           - 12-alpine
+          - 15-alpine
     steps:
       - uses: actions/checkout@v3
       - name: Setup authentik env
