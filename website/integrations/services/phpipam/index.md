@@ -200,7 +200,7 @@ Select Create New => SAML2 Authentication
     1. To get this cert, access the authentik installation at authentik.company
     2. Select Applications => Providers => phpipam-saml
     3. Select Download signing certificate
-    4. Paste in the contents of the signing certifacte into if IDP X.509 field
+    4. Paste in the contents of the signing certificate into if IDP X.509 field
 -   Sign Authn requests: Off
 
 Leave everything else as default. Save changes
