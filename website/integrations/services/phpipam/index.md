@@ -66,17 +66,17 @@ The groups are used for property mappings later to give the user the correct per
 5. **Assign groups to users for testing**
 
     - admin-permission-group
-        - Select Directory => Groups
+        - Select Directory -> Groups
         - Select `admin-permission-group`
         - Select Add Existing user
         - Select test-user0
     - operator-permission-group
-        - Select Directory => Groups
+        - Select Directory -> Groups
         - Select `operator-permission-group`
         - Select Add Existing user
         - Select test-user1
     - guest-permission-group
-        - Select Directory => Groups
+        - Select Directory -> Groups
         - Select `guest-permission-group`
         - Select Add Existing user
         - Select test-user2
@@ -86,7 +86,7 @@ The groups are used for property mappings later to give the user the correct per
 In order to support automatic user provisioning (JIT) with phpIPAM, additional SAML attributes need to be passed. See [phpipam docs](https://github.com/phpipam/phpipam/blob/master/doc/Authentication/SAML2.md#automatic-user-jit-provisioning) for more details about specific attributes to pass.
 
 -   Select Property Mappings
--   Select Create => SAML Property Mapping => Next
+-   Select Create -> SAML Property Mapping -> Next
 
 1. display_name
 
@@ -125,7 +125,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
     - Expression:
 
     ```python
-    if  ak_is_group_member(request.user, name="operator-permission-group"):
+    if ak_is_group_member(request.user, name="operator-permission-group"):
         return "Operators"
     elif ak_is_group_member(request.user, name="guest-permission-group"):
         return "Guests"
@@ -133,10 +133,10 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
 
 5. modules
     - Name: phpipam-modules
-    - SAML Attribute Name: groups
+    - SAML Attribute Name: modules
     - Expression:
     ```python
-    if  ak_is_group_member(request.user, name="operator-permission-group"):
+    if ak_is_group_member(request.user, name="operator-permission-group"):
         return "*:2"
     elif ak_is_group_member(request.user, name="guest-permission-group"):
         return "*:1"
@@ -146,7 +146,7 @@ In order to support automatic user provisioning (JIT) with phpIPAM, additional S
 
 ### Step 3 - Provider creation
 
--   Select Create => SAML Provider
+-   Select Create -> SAML Provider
     -   Name: phpipam-saml
     -   Authorization flow: `default-provider-authorization-explicit-consent`
     -   Protocol Settings:
@@ -186,7 +186,7 @@ Leave all other settings as default
 
 Login as the local administrator account at `phpipam.company`
 Select Authentication Methods
-Select Create New => SAML2 Authentication
+Select Create New -> SAML2 Authentication
 
 -   Description: authentik
 -   Enable JIT: On
@@ -198,7 +198,7 @@ Select Create New => SAML2 Authentication
 -   IDP Logout url: https://authentik.company/application/saml/<application_name>/slo/binding/redirect/
 -   IDP X.509 public cert: This will be the .pem contents of the cert used as the signing certificate
     1. To get this cert, access the authentik installation at authentik.company
-    2. Select Applications => Providers => phpipam-saml
+    2. Select Applications -> Providers -> phpipam-saml
     3. Select Download signing certificate
     4. Paste in the contents of the signing certificate into if IDP X.509 field
 -   Sign Authn requests: Off
