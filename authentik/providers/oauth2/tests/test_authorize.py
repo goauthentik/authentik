@@ -9,7 +9,7 @@ from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import ChallengeTypes
-from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.generators import generate_id
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.oauth2.constants import TOKEN_TYPE
 from authentik.providers.oauth2.errors import AuthorizeError, ClientIdError, RedirectUriError
@@ -298,7 +298,6 @@ class TestAuthorize(OAuthTestCase):
         provider: OAuth2Provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
-            client_secret=generate_key(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
             signing_key=self.keypair,
@@ -361,7 +360,6 @@ class TestAuthorize(OAuthTestCase):
         provider: OAuth2Provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id="test",
-            client_secret=generate_key(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
             signing_key=self.keypair,
@@ -417,7 +415,6 @@ class TestAuthorize(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
             signing_key=self.keypair,
@@ -467,7 +464,6 @@ class TestAuthorize(OAuthTestCase):
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
             client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=flow,
             redirect_uris="http://localhost",
             signing_key=self.keypair,
