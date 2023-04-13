@@ -29,9 +29,6 @@ from authentik.providers.oauth2.utils import cors_allow
 
 LOGGER = get_logger()
 
-PLAN_CONTEXT_PARAMS = "params"
-PLAN_CONTEXT_SCOPES = "scopes"
-
 
 class ProviderInfoView(View):
     """OpenID-compliant Provider Info"""
