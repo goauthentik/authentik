@@ -14,7 +14,6 @@ from rest_framework.serializers import ValidationError
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
-from authentik.events.utils import cleanse_dict, sanitize_dict
 from authentik.flows.challenge import ChallengeResponse, ChallengeTypes, WithUserInfoChallenge
 from authentik.flows.exceptions import FlowSkipStageException
 from authentik.flows.models import FlowDesignation, NotConfiguredAction, Stage
@@ -382,13 +381,9 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             self.logger.debug("Set user from user-less flow", user=webauthn_device.user)
             self.executor.plan.context[PLAN_CONTEXT_PENDING_USER] = webauthn_device.user
             self.executor.plan.context[PLAN_CONTEXT_METHOD] = "auth_webauthn_pwl"
-            self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS] = cleanse_dict(
-                sanitize_dict(
-                    {
-                        "device": webauthn_device,
-                    }
-                )
-            )
+            self.executor.plan.context[PLAN_CONTEXT_METHOD_ARGS] = {
+                "device": webauthn_device,
+            }
         return self.set_valid_mfa_cookie(response.device)
 
     def cleanup(self):

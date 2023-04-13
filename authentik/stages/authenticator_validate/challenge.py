@@ -33,7 +33,6 @@ from authentik.stages.authenticator_validate.models import AuthenticatorValidate
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.stage import SESSION_KEY_WEBAUTHN_CHALLENGE
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
-from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_TITLE
 
 LOGGER = get_logger()
 
@@ -175,8 +174,6 @@ def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) ->
     pushinfo = {
         __("Domain"): stage_view.request.get_host(),
     }
-    if PLAN_CONTEXT_CONSENT_TITLE in stage_view.executor.plan.context:
-        pushinfo[__("Title")] = stage_view.executor.plan.context[PLAN_CONTEXT_CONSENT_TITLE]
     if SESSION_KEY_APPLICATION_PRE in stage_view.request.session:
         pushinfo[__("Application")] = stage_view.request.session.get(
             SESSION_KEY_APPLICATION_PRE, Application()

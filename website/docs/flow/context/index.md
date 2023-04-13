@@ -10,7 +10,7 @@ Any data can be stored in the flow context, however there are some reserved keys
 
 ### `pending_user` (User object)
 
-`pending_user` is used by multiple stages. In the context of most flow executions, it holds the user that is executing the flow. This value is not set automatically, it is set via the [Identifications tage](../stages/identification/).
+`pending_user` is used by multiple stages. In the context of most flow executions, it holds the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../stages/identification/).
 
 Stages that require a user, such as the [Password stage](../stages/password/), the [Authenticator validation stage](../stages/authenticator_validate/) and others will use this value if it is set, and fallback to the request's users when possible.
 
