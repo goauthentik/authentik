@@ -94,8 +94,10 @@ export const punctuation = "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~";
 
 export function randomString(len: number, charset: string): string {
     const chars = [];
+    const array = new Uint8Array(len);
+    self.crypto.getRandomValues(array);
     for (let index = 0; index < len; index++) {
-        chars.push(charset[Math.floor(charset.length * Math.random())]);
+        chars.push(charset[Math.floor(charset.length * (array[index] / Math.pow(2, 8)))]);
     }
     return chars.join("");
 }

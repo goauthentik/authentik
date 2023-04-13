@@ -98,25 +98,25 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">${t`Flow used for users to authenticate.`}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${t`Shared secret`}
-                ?required=${true}
-                name="sharedSecret"
-            >
-                <input
-                    type="text"
-                    value="${first(
-                        this.instance?.sharedSecret,
-                        randomString(128, ascii_letters + digits),
-                    )}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${t`Protocol settings`} </span>
                 <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${t`Shared secret`}
+                        ?required=${true}
+                        name="sharedSecret"
+                    >
+                        <input
+                            type="text"
+                            value="${first(
+                                this.instance?.sharedSecret,
+                                randomString(128, ascii_letters + digits),
+                            )}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Client Networks`}
                         ?required=${true}
