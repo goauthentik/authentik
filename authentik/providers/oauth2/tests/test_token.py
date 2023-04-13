@@ -38,8 +38,6 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://TestServer",
             signing_key=self.keypair,
@@ -67,8 +65,6 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
             signing_key=self.keypair,
@@ -90,8 +86,6 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             signing_key=self.keypair,
@@ -120,8 +114,6 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             signing_key=self.keypair,
@@ -163,8 +155,6 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             signing_key=self.keypair,
@@ -215,8 +205,6 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://local.invalid",
             signing_key=self.keypair,
@@ -263,8 +251,6 @@ class TestToken(OAuthTestCase):
         """test request param"""
         provider = OAuth2Provider.objects.create(
             name=generate_id(),
-            client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
             signing_key=self.keypair,

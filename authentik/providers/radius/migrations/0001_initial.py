@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 (
                     "shared_secret",
                     models.TextField(
-                        default=authentik.lib.generators.generate_key,
+                        default=authentik.lib.generators.generate_id,
                         help_text="Shared secret between clients and server to hash packets.",
                     ),
                 ),

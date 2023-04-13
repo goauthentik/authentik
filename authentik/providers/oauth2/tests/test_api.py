@@ -7,7 +7,6 @@ from rest_framework.test import APITestCase
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.lib.generators import generate_id, generate_key
 from authentik.providers.oauth2.models import OAuth2Provider, ScopeMapping
 
 
@@ -18,8 +17,6 @@ class TestAPI(APITestCase):
     def setUp(self) -> None:
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
         )
