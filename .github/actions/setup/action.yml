@@ -1,6 +1,11 @@
 name: 'Setup authentik testing environment'
 description: 'Setup authentik testing environment'
 
+inputs:
+  postgresql_tag:
+    description: "Optional postgresql image tag"
+    default: "12"
+
 runs:
   using: "composite"
   steps:
@@ -24,6 +29,7 @@ runs:
     - name: Setup dependencies
       shell: bash
       run: |
+        export PSQL_TAG=${{ inputs.postgresql_tag }}
         docker-compose -f .github/actions/setup/docker-compose.yml up -d
         poetry env use python3.11
         poetry install

@@ -5,7 +5,7 @@ from sys import exit as sysexit
 from time import sleep
 from urllib.parse import quote_plus
 
-from psycopg import OperationalError, connect
+from psycopg2 import OperationalError, connect
 from redis import Redis
 from redis.exceptions import RedisError
 

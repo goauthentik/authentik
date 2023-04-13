@@ -3,7 +3,7 @@ version: '3.7'
 services:
   postgresql:
     container_name: postgres
-    image: library/postgres:12
+    image: library/postgres:${PSQL_TAG:-12}
     volumes:
     - db-data:/var/lib/postgresql/data
     environment:

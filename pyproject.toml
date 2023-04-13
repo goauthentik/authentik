@@ -141,7 +141,7 @@ lxml = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
 paramiko = "*"
-psycopg = { extras = ["binary"], version = "*" }
+psycopg2-binary = "*"
 pycryptodome = "*"
 pyjwt = "*"
 python = "^3.11"
