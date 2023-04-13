@@ -14,7 +14,7 @@ This installation method is for test-setups and small-scale production setups.
 
 Download the latest `docker-compose.yml` from [here](https://goauthentik.io/docker-compose.yml). Place it in a directory of your choice.
 
-If this is a fresh authentik installation, you need to generate a password. If you don't already have a password gernerator installed, you can run this command to install **pwgen**, a popular generator:
+If this is a fresh authentik installation, you need to generate a password. If you don't already have a password generator installed, you can run this command to install **pwgen**, a popular generator:
 
 ```shell
 # You can also use openssl instead: `openssl rand -base64 36`
