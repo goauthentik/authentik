@@ -2,7 +2,7 @@
 title: SAML Provider
 ---
 
-This provider allows you to integrate enterprise software using the SAML2 Protocol. It supports signed requests and uses [Property Mappings](../property-mappings/#saml-property-mapping) to determine which fields are exposed and what values they return. This makes it possible to expose vendor-specific fields.
+This provider allows you to integrate enterprise software using the SAML2 Protocol. It supports signed requests and uses [Property Mappings](../../property-mappings/#saml-property-mapping) to determine which fields are exposed and what values they return. This makes it possible to expose vendor-specific fields.
 Default fields are exposed through auto-generated Property Mappings, which are prefixed with "authentik default".
 
 | Endpoint                  | URL                                                          |

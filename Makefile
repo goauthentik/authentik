@@ -65,6 +65,7 @@ gen-build:
 
 gen-changelog:
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
+	npx prettier --write changelog.md
 
 gen-diff:
 	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > old_schema.yml
@@ -75,6 +76,7 @@ gen-diff:
 		--markdown /local/diff.md \
 		/local/old_schema.yml /local/schema.yml
 	rm old_schema.yml
+	npx prettier --write diff.md
 
 gen-clean:
 	rm -rf web/api/src/
