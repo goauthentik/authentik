@@ -6,7 +6,7 @@ from inspect import getmembers, isclass
 from pathlib import Path
 from typing import Any
 
-from psycopg import connect
+from psycopg2 import connect
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
