@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Provider
-from authentik.lib.generators import generate_key
+from authentik.lib.generators import generate_id
 from authentik.outposts.models import OutpostModel
 
 
@@ -14,7 +14,7 @@ class RadiusProvider(OutpostModel, Provider):
     """Allow applications to authenticate against authentik's users using Radius."""
 
     shared_secret = models.TextField(
-        default=generate_key,
+        default=generate_id,
         help_text=_("Shared secret between clients and server to hash packets."),
     )
 
