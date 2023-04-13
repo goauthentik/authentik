@@ -41,6 +41,13 @@ jobs:
         run: npm test
   build:
     runs-on: ubuntu-latest
+    name: ${{ matrix.job }}
+    strategy:
+      fail-fast: false
+      matrix:
+        job:
+          - build
+          - build-docs-only
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3.6.0
@@ -52,7 +59,7 @@ jobs:
         run: npm ci
       - name: build
         working-directory: website/
-        run: npm run build
+        run: npm run ${{ matrix.job }}
   ci-website-mark:
     needs:
       - lint-prettier
