@@ -47,10 +47,11 @@ class LDAPPasswordChanger:
 
     def __init__(self, source: LDAPSource) -> None:
         self._source = source
+        self._connection = source.connection()
 
     def get_domain_root_dn(self) -> str:
         """Attempt to get root DN via MS specific fields or generic LDAP fields"""
-        info = self._source.connection.server.info
+        info = self._connection.server.info
         if "rootDomainNamingContext" in info.other:
             return info.other["rootDomainNamingContext"][0]
         naming_contexts = info.naming_contexts
@@ -61,7 +62,7 @@ class LDAPPasswordChanger:
         """Check if DOMAIN_PASSWORD_COMPLEX is enabled"""
         root_dn = self.get_domain_root_dn()
         try:
-            root_attrs = self._source.connection.extend.standard.paged_search(
+            root_attrs = self._connection.extend.standard.paged_search(
                 search_base=root_dn,
                 search_filter="(objectClass=*)",
                 search_scope=BASE,
@@ -90,14 +91,14 @@ class LDAPPasswordChanger:
             LOGGER.info(f"User has no {LDAP_DISTINGUISHED_NAME} set.")
             return
         try:
-            self._source.connection.extend.microsoft.modify_password(user_dn, password)
+            self._connection.extend.microsoft.modify_password(user_dn, password)
         except LDAPAttributeError:
-            self._source.connection.extend.standard.modify_password(user_dn, new_password=password)
+            self._connection.extend.standard.modify_password(user_dn, new_password=password)
 
     def _ad_check_password_existing(self, password: str, user_dn: str) -> bool:
         """Check if a password contains sAMAccount or displayName"""
         users = list(
-            self._source.connection.extend.standard.paged_search(
+            self._connection.extend.standard.paged_search(
                 search_base=user_dn,
                 search_filter=self._source.user_object_filter,
                 search_scope=BASE,

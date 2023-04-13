@@ -14,7 +14,7 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users and groups into authentik"""
 
     def get_objects(self, **kwargs) -> Generator:
-        return self._source.connection.extend.standard.paged_search(
+        return self._connection.extend.standard.paged_search(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=SUBTREE,
