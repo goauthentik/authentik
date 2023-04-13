@@ -20,7 +20,7 @@ The following is a set of guidelines for contributing to authentik and its compo
 -   [Reporting Bugs](#reporting-bugs)
 -   [Suggesting Enhancements](#suggesting-enhancements)
 -   [Your First Code Contribution](#your-first-code-contribution)
-    [Help with the Docs](#help-with-the-docs)
+-   [Help with the Docs](#help-with-the-docs)
 -   [Pull Requests](#pull-requests)
 
 [Styleguides](#styleguides)
