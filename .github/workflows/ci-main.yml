@@ -80,12 +80,21 @@ jobs:
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
   test-unittest:
+    name: test-unittest - PostgreSQL ${{ matrix.psql }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        psql:
+          - 11-alpine
+          - 12-alpine
     steps:
       - uses: actions/checkout@v3
       - name: Setup authentik env
         uses: ./.github/actions/setup
+        with:
+          postgresql_tag: ${{ matrix.psql }}
       - name: run unittest
         run: |
           poetry run make test
