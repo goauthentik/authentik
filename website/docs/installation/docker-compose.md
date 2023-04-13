@@ -25,6 +25,7 @@ sudo apt-get install -y pwgen
 
 Next, run the following commands to generate a password and write it to your `.env` file:
 
+```shell
 echo "PG_PASS=$(pwgen -s 40 1)" >> .env
 echo "AUTHENTIK_SECRET_KEY=$(pwgen -s 50 1)" >> .env
 # Skip if you don't want to enable error reporting
