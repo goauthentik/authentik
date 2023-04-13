@@ -2,7 +2,7 @@ import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { PlexAPIClient, PlexResource, popupCenterScreen } from "@goauthentik/common/helpers/plex";
-import { first, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -51,7 +51,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
 
     get defaultInstance(): PlexSource | undefined {
         return {
-            clientId: randomString(40),
+            clientId: randomString(40, ascii_letters + digits),
         } as PlexSource;
     }
 

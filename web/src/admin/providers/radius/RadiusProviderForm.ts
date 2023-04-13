@@ -1,6 +1,6 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -105,7 +105,10 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
             >
                 <input
                     type="text"
-                    value="${first(this.instance?.sharedSecret, randomString(128))}"
+                    value="${first(
+                        this.instance?.sharedSecret,
+                        randomString(128, ascii_letters + digits),
+                    )}"
                     class="pf-c-form-control"
                     required
                 />

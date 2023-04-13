@@ -1,6 +1,6 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -203,7 +203,10 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.clientId, randomString(40))}"
+                            value="${first(
+                                this.instance?.clientId,
+                                randomString(40, ascii_letters + digits),
+                            )}"
                             class="pf-c-form-control"
                             required
                         />
@@ -215,7 +218,10 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                     >
                         <input
                             type="text"
-                            value="${first(this.instance?.clientSecret, randomString(128))}"
+                            value="${first(
+                                this.instance?.clientSecret,
+                                randomString(128, ascii_letters + digits),
+                            )}"
                             class="pf-c-form-control"
                         />
                     </ak-form-element-horizontal>
