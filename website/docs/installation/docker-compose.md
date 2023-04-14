@@ -32,7 +32,7 @@ echo "AUTHENTIK_SECRET_KEY=$(pwgen -s 50 1)" >> .env
 echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 ```
 
-## Email configuration (optional, but recommended)
+## Email configuration (optional but recommended)
 
 It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts and configuration issues. They can also be used by [Email stages](../flow/stages/email/) to send verification/recovery emails.
 
