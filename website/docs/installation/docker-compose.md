@@ -28,6 +28,11 @@ Next, run the following commands to generate a password and secret key and write
 ```shell
 echo "PG_PASS=$(pwgen -s 40 1)" >> .env
 echo "AUTHENTIK_SECRET_KEY=$(pwgen -s 50 1)" >> .env
+```
+
+To enable error reporting, run the following command:
+
+```shell
 # Skip if you don't want to enable error reporting
 echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 ```
