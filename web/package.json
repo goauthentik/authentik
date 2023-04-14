@@ -96,7 +96,7 @@
         "chartjs-adapter-moment": "^1.0.1",
         "codemirror": "^6.0.1",
         "construct-style-sheets-polyfill": "^3.1.0",
-        "core-js": "^3.30.0",
+        "core-js": "^3.30.1",
         "country-flag-icons": "^1.5.7",
         "eslint": "^8.38.0",
         "eslint-config-google": "^0.14.0",
