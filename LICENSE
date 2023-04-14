@@ -1,6 +1,11 @@
-MIT License
+Copyright (c) 2023 Jens Langhammer
 
-Copyright (c) 2022 Jens Langhammer
+Portions of this software are licensed as follows:
+* All content residing under the "website/" directory of this repository is licensed under "Creative Commons: CC BY-SA 4.0 license".
+* All content that resides under the "authentik/enterprise/" directory of this repository, if that directory exists, is licensed under the license defined in "authentik/enterprise/LICENSE".
+* All client-side JavaScript (when served directly or after being compiled, arranged, augmented, or combined), is licensed under the "MIT Expat" license.
+* All third party components incorporated into the authentik are licensed under the original license provided by the owner of the applicable component.
+* Content outside of the above mentioned directories or restrictions above is available under the "MIT" license as defined below.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
