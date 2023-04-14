@@ -107,8 +107,8 @@ function Comparison() {
                             </tr>
                             <tr>
                                 <td className="row-label">SCIM</td>
-                                <td className="result failed authentik">
-                                    <X></X>
+                                <td className="result passed authentik">
+                                    <Check></Check>
                                 </td>
                                 <td className="result warning">
                                     <AlertTriangle></AlertTriangle>
@@ -241,8 +241,8 @@ function Comparison() {
                             </tr>
                             <tr>
                                 <td className="row-label">SCIM</td>
-                                <td className="result failed authentik">
-                                    <X></X>
+                                <td className="result warning authentik">
+                                    <AlertTriangle></AlertTriangle>
                                 </td>
                                 <td className="result warning">
                                     <AlertTriangle></AlertTriangle>

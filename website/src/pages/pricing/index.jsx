@@ -12,10 +12,6 @@ export default function pricingPage() {
                     style={{ marginTop: "2rem", marginBottom: "4rem" }}
                 >
                     <h1 style={{ textAlign: "center" }}>Pricing</h1>
-                    <p style={{ textAlign: "center" }}>
-                        All variants include security patches for all supported
-                        versions.
-                    </p>
 
                     <div className={"row"}>
                         <div className={"col col--4 margin-vert--md"}>
@@ -29,9 +25,9 @@ export default function pricingPage() {
                                     <li>Supports OAuth2/OpenID Connect</li>
                                     <li>Supports SAML</li>
                                     <li>Supports LDAP</li>
+                                    <li>Supports SCIM</li>
                                     <li>Supports Proxy authentication</li>
                                     <li>Advanced policy engine</li>
-                                    <li>Community support</li>
                                 </div>
                                 <div className="card__footer">
                                     <h1>Free, forever</h1>
@@ -53,7 +49,8 @@ export default function pricingPage() {
                                     <li>Self-hosted</li>
                                     <li>Source-available</li>
                                     <li>Long-term-support releases</li>
-                                    <li>Enterprise support plan (50 Users+)</li>
+                                    <li>Enterprise support plan</li>
+                                    <li>Web-based RDP/SSH access (planned)</li>
                                     <li>Push-notification MFA (planned)</li>
                                     <li>Desktop authentication (planned)</li>
                                     <li>AI-based risk assessment (planned)</li>
@@ -84,7 +81,8 @@ export default function pricingPage() {
                                     </li>
                                     <li>Source-available</li>
                                     <li>Long-term-support releases</li>
-                                    <li>Enterprise support plan (50 Users+)</li>
+                                    <li>Enterprise support plan</li>
+                                    <li>Web-based RDP/SSH access (planned)</li>
                                     <li>Push-notification MFA (planned)</li>
                                     <li>Desktop authentication (planned)</li>
                                     <li>AI-based risk assessment (planned)</li>
