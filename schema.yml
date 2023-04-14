@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.3.1
+  version: 2023.4.0
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
