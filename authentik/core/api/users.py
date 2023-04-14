@@ -211,8 +211,9 @@ class UserMetricsSerializer(PassiveSerializer):
     def get_logins(self, _):
         """Get successful logins per 8 hours for the last 7 days"""
         user = self.context["user"]
+        request = self.context["request"]
         return (
-            get_objects_for_user(user, "authentik_events.view_event").filter(
+            get_objects_for_user(request.user, "authentik_events.view_event").filter(
                 action=EventAction.LOGIN, user__pk=user.pk
             )
             # 3 data points per day, so 8 hour spans
@@ -223,8 +224,9 @@ class UserMetricsSerializer(PassiveSerializer):
     def get_logins_failed(self, _):
         """Get failed logins per 8 hours for the last 7 days"""
         user = self.context["user"]
+        request = self.context["request"]
         return (
-            get_objects_for_user(user, "authentik_events.view_event").filter(
+            get_objects_for_user(request.user, "authentik_events.view_event").filter(
                 action=EventAction.LOGIN_FAILED, context__username=user.username
             )
             # 3 data points per day, so 8 hour spans
@@ -235,8 +237,9 @@ class UserMetricsSerializer(PassiveSerializer):
     def get_authorizations(self, _):
         """Get failed logins per 8 hours for the last 7 days"""
         user = self.context["user"]
+        request = self.context["request"]
         return (
-            get_objects_for_user(user, "authentik_events.view_event").filter(
+            get_objects_for_user(request.user, "authentik_events.view_event").filter(
                 action=EventAction.AUTHORIZE_APPLICATION, user__pk=user.pk
             )
             # 3 data points per day, so 8 hour spans
@@ -471,8 +474,9 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     def metrics(self, request: Request, pk: int) -> Response:
         """User metrics per 1h"""
         user: User = self.get_object()
-        serializer = UserMetricsSerializer(True)
+        serializer = UserMetricsSerializer(instance={})
         serializer.context["user"] = user
+        serializer.context["request"] = request
         return Response(serializer.data)
 
     @permission_required("authentik_core.reset_user_password")
