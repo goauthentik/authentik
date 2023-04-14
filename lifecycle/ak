@@ -81,7 +81,7 @@ elif [[ "$1" == "healthcheck" ]]; then
     if [[ $mode == "server" ]]; then
         exec curl --user-agent "goauthentik.io lifecycle Healthcheck" -I http://localhost:9000/-/health/ready/
     elif [[ $mode == "worker" ]]; then
-        mtime=$(stat -f %m $WORKER_HEARTBEAT)
+        mtime=$(date -r $WORKER_HEARTBEAT +"%s")
         time=$(date +"%s")
         if [ "$(( $time - $mtime ))" -gt "30" ]; then
             log "Worker hasn't updated heartbeat in 30 seconds"
