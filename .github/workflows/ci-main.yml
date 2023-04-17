@@ -60,7 +60,7 @@ jobs:
           cp authentik/lib/default.yml local.env.yml
           cp -R .github ..
           cp -R scripts ..
-          git checkout $(git describe --abbrev=0 --match 'version/*')
+          git checkout $(git describe --tags $(git rev-list --tags --max-count=1))
           rm -rf .github/ scripts/
           mv ../.github ../scripts .
       - name: Setup authentik env (ensure stable deps are installed)
