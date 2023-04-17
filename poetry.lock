@@ -1230,14 +1230,14 @@ ssh = ["paramiko (>=2.4.3)"]
 
 [[package]]
 name = "drf-spectacular"
-version = "0.26.1"
+version = "0.26.2"
 description = "Sane and flexible OpenAPI 3 schema generation for Django REST framework"
 category = "main"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "drf-spectacular-0.26.1.tar.gz", hash = "sha256:1599a204bf9cc6be7ef3e509859885a38d4f871fe287a1f191479868afd9e234"},
-    {file = "drf_spectacular-0.26.1-py3-none-any.whl", hash = "sha256:6df86ff6c2dc663792e5ff618643bf41d2ac9dc6fb5d1b0f273e2778bab951e5"},
+    {file = "drf-spectacular-0.26.2.tar.gz", hash = "sha256:005623d6bb9de37d2d0ec24ccd59c636e4a42f9af252f1470129ac32ccab38cb"},
+    {file = "drf_spectacular-0.26.2-py3-none-any.whl", hash = "sha256:e80eba58d9579bf6c3380ffd6d6a9b466c4bc35b23da0ba76dfcc96de1e907d7"},
 ]
 
 [package.dependencies]
