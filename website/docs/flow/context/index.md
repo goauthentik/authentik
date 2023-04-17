@@ -2,10 +2,10 @@
 title: Flow Context
 ---
 
-Each flow execution has an independent context. This context can hold arbitrary data, which can be used and transformed by stages and policies.
+Each flow execution has an independent *context*. This context holds all of the arbitrary data about that specific flow, data which can then be used and transformed by stages and policies.
 
 ## Managing data in a flow context
-You create and manage the data for a context by configuring policies, stages, and bindings. As you plan your flow, and setup the requird stages, etc. you are creating the context data for that flow.
+You create and manage the data for a context by configuring policies, stages, and bindings. As you plan your flow, and set up the required stages, etc. you are creating the context data for that flow.
 
 For example, in the Identification Stage (part of the default login flow), you can define whether users will be prompted to enter an email address, a username, or both. All such information about the flow's configuration makes up the context.
 
@@ -13,7 +13,7 @@ Any data can be stored in the flow context, however there are some reserved keys
 
 ## Context dictionary and reserved keywords
 
-This section describes the commmon data objects that are used in authentik, and provides a list of reserved keys that should not be used except by authentik internally.
+This section describes the data objects (the context) that are used in authentik, and provides a list of reserved keys that should not be used except internally by authentik.
 
 ### Common objects
 
