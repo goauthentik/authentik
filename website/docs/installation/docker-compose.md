@@ -67,7 +67,7 @@ COMPOSE_PORT_HTTP=80
 COMPOSE_PORT_HTTPS=443
 ```
 
-Be sure to run `docker-compose up -d` to rebuild with the new port numbers.
+See [Configuration](../installation/configuration) to change the internal ports. Be sure to run `docker-compose up -d` to rebuild with the new port numbers.
 
 ## Startup
 
