@@ -60,7 +60,7 @@ AUTHENTIK_EMAIL__FROM=authentik@localhost
 
 ## Configure for port 80/443
 
-By default, authentik listens on port 9000 for HTTP and 9443 for HTTPS. To change the default and instead use ports 80 and 443, you can set the following variables in `.env`:
+By default, authentik listens internally on port 9000 for HTTP and 9443 for HTTPS. To change the exposed ports to 80 and 443, you can set the following variables in `.env`:
 
 ```shell
 COMPOSE_PORT_HTTP=80
