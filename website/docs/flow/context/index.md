@@ -19,7 +19,7 @@ This section describes the data objects (the context) that are used in authentik
 
 #### `pending_user` (User object)
 
-`pending_user` is used by multiple stages. In the context of most flow executions, it holds the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../stages/identification/).
+`pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../stages/identification/).
 
 Stages that require a user, such as the [Password stage](../stages/password/), the [Authenticator validation stage](../stages/authenticator_validate/) and others will use this value if it is set, and fallback to the request's users when possible.
 
