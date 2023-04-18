@@ -47,11 +47,12 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             return t`Successfully created binding.`;
         }
     }
+
     send(data: FlowStageBinding): Promise<unknown> {
         if (this.instance?.pk) {
-            return new FlowsApi(DEFAULT_CONFIG).flowsBindingsUpdate({
+            return new FlowsApi(DEFAULT_CONFIG).flowsBindingsPartialUpdate({
                 fsbUuid: this.instance.pk,
-                flowStageBindingRequest: data,
+                patchedFlowStageBindingRequest: data,
             });
         } else {
             if (this.targetPk) {
