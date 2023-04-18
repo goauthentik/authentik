@@ -17,6 +17,11 @@ line-length = 100
 target-version = ['py311']
 exclude = 'node_modules'
 
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["**/migrations/**", "**/node_modules/**"]
+
 [tool.isort]
 multi_line_output = 3
 include_trailing_comma = true
@@ -30,12 +35,12 @@ force_to_top = "*"
 source = ["authentik"]
 relative_files = true
 omit = [
-  "*/asgi.py",
-  "manage.py",
-  "*/migrations/*",
-  "*/management/commands/*",
-  "*/apps.py",
-  "website/",
+    "*/asgi.py",
+    "manage.py",
+    "*/migrations/*",
+    "*/management/commands/*",
+    "*/apps.py",
+    "website/",
 ]
 
 [tool.coverage.report]
@@ -43,19 +48,19 @@ sort = "Cover"
 skip_covered = true
 precision = 2
 exclude_lines = [
-  "pragma: no cover",
-  # Don't complain about missing debug-only code:
-  "def __unicode__",
-  "def __str__",
-  "def __repr__",
-  "if self.debug",
-  "if TYPE_CHECKING",
-  # Don't complain if tests don't hit defensive assertion code:
-  "raise AssertionError",
-  "raise NotImplementedError",
-  # Don't complain if non-runnable code isn't run:
-  "if 0:",
-  "if __name__ == .__main__.:",
+    "pragma: no cover",
+    # Don't complain about missing debug-only code:
+    "def __unicode__",
+    "def __str__",
+    "def __repr__",
+    "if self.debug",
+    "if TYPE_CHECKING",
+    # Don't complain if tests don't hit defensive assertion code:
+    "raise AssertionError",
+    "raise NotImplementedError",
+    # Don't complain if non-runnable code isn't run:
+    "if 0:",
+    "if __name__ == .__main__.:",
 ]
 show_missing = true
 
@@ -64,20 +69,20 @@ good-names = ["pk", "id", "i", "j", "k", "_", "bar"]
 
 [tool.pylint.master]
 disable = [
-  "arguments-differ",
-  "locally-disabled",
-  "too-many-ancestors",
-  "too-few-public-methods",
-  "import-outside-toplevel",
-  "signature-differs",
-  "similarities",
-  "cyclic-import",
-  "protected-access",
-  "unused-argument",
-  "raise-missing-from",
-  "fixme",
-  # To preserve django's translation function we need to use %-formatting
-  "consider-using-f-string",
+    "arguments-differ",
+    "locally-disabled",
+    "too-many-ancestors",
+    "too-few-public-methods",
+    "import-outside-toplevel",
+    "signature-differs",
+    "similarities",
+    "cyclic-import",
+    "protected-access",
+    "unused-argument",
+    "raise-missing-from",
+    "fixme",
+    # To preserve django's translation function we need to use %-formatting
+    "consider-using-f-string",
 ]
 
 load-plugins = ["pylint_django", "pylint.extensions.bad_builtin"]
@@ -99,8 +104,8 @@ python_files = ["tests.py", "test_*.py", "*_tests.py"]
 junit_family = "xunit2"
 addopts = "-p no:celery --junitxml=unittest.xml"
 filterwarnings = [
-  "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
-  "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
+    "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
+    "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
 ]
 
 [tool.poetry]
@@ -176,8 +181,10 @@ pylint-django = "*"
 pyrad = "*"
 pytest = "*"
 pytest-django = "*"
+pytest-github-actions-annotate-failures = "*"
 pytest-randomly = "*"
 requests-mock = "*"
+ruff = "*"
 selenium = "*"
 
 [build-system]

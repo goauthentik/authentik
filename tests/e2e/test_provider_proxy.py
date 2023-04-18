@@ -11,7 +11,6 @@ from docker.client import DockerClient, from_env
 from docker.models.containers import Container
 from selenium.webdriver.common.by import By
 
-from authentik import __version__
 from authentik.blueprints.tests import apply_blueprint, reconcile_app
 from authentik.core.models import Application
 from authentik.flows.models import Flow

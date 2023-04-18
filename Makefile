@@ -3,6 +3,7 @@ PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
+PY_SOURCES = authentik tests scripts lifecycle
 
 CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
@@ -38,13 +39,14 @@ test:
 	coverage report
 
 lint-fix:
-	isort authentik tests scripts lifecycle
-	black authentik tests scripts lifecycle
+	isort authentik $(PY_SOURCES)
+	black authentik $(PY_SOURCES)
+	ruff authentik $(PY_SOURCES)
 	codespell -w $(CODESPELL_ARGS)
 
 lint:
-	pylint authentik tests lifecycle
-	bandit -r authentik tests lifecycle -x node_modules
+	pylint $(PY_SOURCES)
+	bandit -r $(PY_SOURCES) -x node_modules
 	golangci-lint run -v
 
 migrate:
@@ -171,7 +173,6 @@ website-watch:
 
 # These targets are use by GitHub actions to allow usage of matrix
 # which makes the YAML File a lot smaller
-PY_SOURCES=authentik tests lifecycle
 ci--meta-debug:
 	python -V
 	node --version
@@ -181,6 +182,9 @@ ci-pylint: ci--meta-debug
 
 ci-black: ci--meta-debug
 	black --check $(PY_SOURCES)
+
+ci-ruff: ci--meta-debug
+	ruff check $(PY_SOURCES)
 
 ci-codespell: ci--meta-debug
 	codespell $(CODESPELL_ARGS) -s
