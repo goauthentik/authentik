@@ -184,6 +184,7 @@ pytest-django = "*"
 pytest-github-actions-annotate-failures = "*"
 pytest-randomly = "*"
 requests-mock = "*"
+ruff = "*"
 selenium = "*"
 
 [build-system]

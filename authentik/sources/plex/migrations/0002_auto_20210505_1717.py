@@ -4,7 +4,6 @@ import django.contrib.postgres.fields
 from django.db import migrations, models
 
 
-
 class Migration(migrations.Migration):
     dependencies = [
         ("authentik_sources_plex", "0001_initial"),
