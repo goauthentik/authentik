@@ -36,6 +36,6 @@ The following stages are supported:
 
 ### Limitations
 
-The RADIUS provider only supports the PAP protocol:
+The RADIUS provider only supports the [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol:
 
 ![](./protocols.png)
