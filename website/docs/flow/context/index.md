@@ -2,9 +2,10 @@
 title: Flow Context
 ---
 
-Each flow execution has an independent *context*. This context holds all of the arbitrary data about that specific flow, data which can then be used and transformed by stages and policies.
+Each flow execution has an independent _context_. This context holds all of the arbitrary data about that specific flow, data which can then be used and transformed by stages and policies.
 
 ## Managing data in a flow context
+
 You create and manage the data for a context by configuring policies, stages, and bindings. As you plan your flow, and set up the required stages, etc. you are creating the context data for that flow.
 
 For example, in the Identification Stage (part of the default login flow), you can define whether users will be prompted to enter an email address, a username, or both. All such information about the flow's configuration makes up the context.
@@ -13,7 +14,11 @@ Any data can be stored in the flow context, however there are some reserved keys
 
 ## Context dictionary and reserved keywords
 
-This section describes the data objects (the context) that are used in authentik, and provides a list of reserved keys that should not be used except internally by authentik.
+This section describes the data objects (the context) that are used in authentik, and provides a list of keys, what they are used for and when they are set.
+
+:::warning
+Keys prefixed with `goauthentik.io` are used internally by authentik and are subject to change without notice, and should not be modified in policies in most cases.
+:::
 
 ### Common objects
 
@@ -39,6 +44,14 @@ This data can be modified with policies. The data is also used by stages like [U
 
 #### `redirect` (string)
 
+Optionally override the email address that the email will be sent to. If not set, defaults to the email of `pending_user`.
+
+#### Identifications tage
+
+##### `pending_user_identifier` (string)
+
+If _Show matched user_ is disabled, this key will hold the user identifier entered by the user in the identification stage.
+
 Stores the final redirect that the user's browser will be sent to after the flow is finished executing successfully. This is set when an un-authenticated user attempts to access a secured application, and when a user authenticates/enrolls with an external source.
 
 #### `application` (Application object)
@@ -54,6 +67,10 @@ When a user authenticates/enrolls via an external source, this will be set to th
 #### `is_sso` (boolean)
 
 Set to `True` when the flow is executed from an "SSO" context. For example, this is set when a flow is used during the authentication or enrollment via an external source, and if a flow is executed to authorize access to an application.
+
+#### `is_restored` (Token object)
+
+Set when a flow execution is continued from a token. This happens for example when an [Email stage](../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution.
 
 ### Stage-specific
 
@@ -136,3 +153,19 @@ Example:
     "jwk_id": ""
 }
 ```
+
+#### Email stage
+
+##### `email_sent` (boolean)
+
+Boolean set to true after the email form the email stage has been sent.
+
+##### `email` (string)
+
+Optionally override the email address that the email will be sent to. If not set, defaults to the email of `pending_user`.
+
+#### Identifications tage
+
+##### `pending_user_identifier` (string)
+
+If _Show matched user_ is disabled, this key will be set to the user identifier entered by the user in the identification stage.

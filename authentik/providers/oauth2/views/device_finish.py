@@ -8,7 +8,7 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.providers.oauth2.models import DeviceToken
 
-PLAN_CONTEXT_DEVICE = "device"
+PLAN_CONTEXT_DEVICE = "goauthentik.io/providers/oauth2/device"
 
 
 class OAuthDeviceCodeFinishChallenge(Challenge):
