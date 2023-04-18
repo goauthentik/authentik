@@ -64,7 +64,7 @@
         "@codemirror/lang-xml": "^6.0.2",
         "@codemirror/legacy-modes": "^6.3.2",
         "@codemirror/theme-one-dark": "^6.1.2",
-        "@formatjs/intl-listformat": "^7.1.9",
+        "@formatjs/intl-listformat": "^7.2.0",
         "@fortawesome/fontawesome-free": "^6.4.0",
         "@goauthentik/api": "^2023.4.0-1681471246",
         "@hcaptcha/types": "^1.0.3",
