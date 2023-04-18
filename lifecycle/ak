@@ -79,7 +79,7 @@ elif [[ "$1" == "test-all" ]]; then
 elif [[ "$1" == "healthcheck" ]]; then
     mode=$(cat $MODE_FILE)
     if [[ $mode == "server" ]]; then
-        exec curl --user-agent "goauthentik.io lifecycle Healthcheck" -I http://localhost:9000/-/health/ready/
+        exec curl --user-agent "goauthentik.io lifecycle Healthcheck" -I "http://${AUTHENTIK_LISTEN__HTTP}/-/health/ready/
     elif [[ $mode == "worker" ]]; then
         mtime=$(date -r $WORKER_HEARTBEAT +"%s")
         time=$(date +"%s")
