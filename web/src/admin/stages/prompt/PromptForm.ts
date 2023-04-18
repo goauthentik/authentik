@@ -65,20 +65,20 @@ export class PromptForm extends ModelForm<Prompt, string> {
         const prompt = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsRetrieve({
             promptUuid: pk,
         });
-        this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({
-            promptRequest: prompt,
-        });
+        await this.refreshPreview(prompt);
         return prompt;
     }
 
-    async refreshPreview(): Promise<void> {
-        const data = this.serializeForm();
-        if (!data) {
-            return;
+    async refreshPreview(prompt?: Prompt): Promise<void> {
+        if (!prompt) {
+            prompt = this.serializeForm();
+            if (!prompt) {
+                return;
+            }
         }
         try {
             this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({
-                promptRequest: data,
+                promptRequest: prompt,
             });
             this.previewError = undefined;
         } catch (exc) {
