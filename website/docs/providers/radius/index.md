@@ -36,8 +36,6 @@ The following stages are supported:
 
 ### Limitations
 
-The RADIUS provider only supports the clear-text protocol:
+The RADIUS provider only supports the [PAP](https://en.wikipedia.org/wiki/Password_Authentication_Protocol) (Password Authentication Protocol) protocol:
 
 ![](./protocols.png)
-
-This does not mean that passwords are stored in cleartext, they are hashed and salted in authentik. However as all protocols besides Clear-text, EAP-MD5 and EAP-PWD require the password to be stored in the database in clear text, they are not supported.
