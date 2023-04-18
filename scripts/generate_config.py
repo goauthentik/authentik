@@ -3,7 +3,7 @@ from yaml import safe_dump
 
 from authentik.lib.generators import generate_id
 
-with open("local.env.yml", "w") as _config:
+with open("local.env.yml", "w", encoding="utf-8") as _config:
     safe_dump(
         {
             "log_level": "debug",
