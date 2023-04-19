@@ -26351,6 +26351,7 @@ components:
       - authentik.tenants
       - authentik.blueprints
       - authentik.core
+      - authentik.enterprise
       type: string
       description: |-
         * `authentik.admin` - authentik Admin
@@ -26400,6 +26401,7 @@ components:
         * `authentik.tenants` - authentik Tenants
         * `authentik.blueprints` - authentik Blueprints
         * `authentik.core` - authentik Core
+        * `authentik.enterprise` - authentik Enterprise
     AppleChallengeResponseRequest:
       type: object
       description: Pseudo class for plex response
@@ -27708,12 +27710,14 @@ components:
       - can_geo_ip
       - can_impersonate
       - can_debug
+      - is_enterprise
       type: string
       description: |-
         * `can_save_media` - Can Save Media
         * `can_geo_ip` - Can Geo Ip
         * `can_impersonate` - Can Impersonate
         * `can_debug` - Can Debug
+        * `is_enterprise` - Is Enterprise
     CaptchaChallenge:
       type: object
       description: Site public key
@@ -29114,6 +29118,7 @@ components:
             * `authentik.tenants` - authentik Tenants
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
+            * `authentik.enterprise` - authentik Enterprise
       required:
       - bound_to
       - component
@@ -29223,6 +29228,7 @@ components:
             * `authentik.tenants` - authentik Tenants
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
+            * `authentik.enterprise` - authentik Enterprise
       required:
       - name
     EventRequest:
@@ -35908,6 +35914,7 @@ components:
             * `authentik.tenants` - authentik Tenants
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
+            * `authentik.enterprise` - authentik Enterprise
     PatchedEventRequest:
       type: object
       description: Event Serializer
