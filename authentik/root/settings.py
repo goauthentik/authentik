@@ -1,6 +1,7 @@
 """root settings for authentik"""
 
 import importlib
+import json
 import logging
 import os
 from hashlib import sha512
@@ -183,26 +184,18 @@ REST_FRAMEWORK = {
     },
 }
 
-REDIS_PROTOCOL_PREFIX = "redis://"
-REDIS_CELERY_TLS_REQUIREMENTS = ""
-if CONFIG.y_bool("redis.tls", False):
-    REDIS_PROTOCOL_PREFIX = "rediss://"
-    REDIS_CELERY_TLS_REQUIREMENTS = f"?ssl_cert_reqs={CONFIG.y('redis.tls_reqs')}"
-_redis_url = (
-    f"{REDIS_PROTOCOL_PREFIX}:"
-    f"{quote_plus(CONFIG.y('redis.password'))}@{quote_plus(CONFIG.y('redis.host'))}:"
-    f"{int(CONFIG.y('redis.port'))}"
-)
-
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"{_redis_url}/{CONFIG.y('redis.db')}",
+        "LOCATION": f"{CONFIG.y('redis.url')}",
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
-        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
+        "OPTIONS": {
+            "REDIS_CLIENT_CLASS": "authentik.lib.utils.redis_translation.CustomClient",
+        },
         "KEY_PREFIX": "authentik_cache",
     }
 }
+DJANGO_REDIS_CONNECTION_FACTORY = "authentik.lib.utils.redis_translation.CustomConnectionFactory"
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
@@ -256,9 +249,9 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "BACKEND": "authentik.lib.utils.redis_translation.CustomChannelLayer",
         "CONFIG": {
-            "hosts": [f"{_redis_url}/{CONFIG.y('redis.db')}"],
+            "url": f"{CONFIG.y('redis.url')}",
             "prefix": "authentik_channels",
         },
     },
@@ -346,8 +339,9 @@ CELERY_BEAT_SCHEDULE = {
 }
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
-CELERY_BROKER_URL = f"{_redis_url}/{CONFIG.y('redis.db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
-CELERY_RESULT_BACKEND = f"{_redis_url}/{CONFIG.y('redis.db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
+CELERY_BROKER_URL = f"{CONFIG.y('redis.broker_url')}"
+CELERY_BROKER_TRANSPORT_OPTIONS = json.loads(f"{CONFIG.y('redis.broker_transport_options', '{}')}")
+CELERY_RESULT_BACKEND = f"{CONFIG.y('redis.url')}"
 
 # Sentry integration
 env = get_env()

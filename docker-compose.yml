@@ -36,7 +36,8 @@ services:
     restart: unless-stopped
     command: server
     environment:
-      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_REDIS__URL: redis://localhost:6379/0
+      AUTHENTIK_REDIS__BROKER__URL: redis://localhost:6379/0
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}
@@ -54,7 +55,8 @@ services:
     restart: unless-stopped
     command: worker
     environment:
-      AUTHENTIK_REDIS__HOST: redis
+      AUTHENTIK_REDIS__URL: redis://localhost:6379/0
+      AUTHENTIK_REDIS__BROKER__URL: redis://localhost:6379/0
       AUTHENTIK_POSTGRESQL__HOST: postgresql
       AUTHENTIK_POSTGRESQL__USER: ${PG_USER:-authentik}
       AUTHENTIK_POSTGRESQL__NAME: ${PG_DB:-authentik}

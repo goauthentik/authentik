@@ -6,7 +6,7 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import Callable
 
-from celery import Celery, bootsteps
+from celery import bootsteps
 from celery.apps.worker import Worker
 from celery.signals import (
     after_task_publish,
@@ -24,12 +24,13 @@ from structlog.stdlib import get_logger
 
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.redis_translation import CustomCelery
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 
 LOGGER = get_logger()
-CELERY_APP = Celery("authentik")
+CELERY_APP = CustomCelery("authentik")
 CTX_TASK_ID = ContextVar(STRUCTLOG_KEY_PREFIX + "task_id", default=Ellipsis)
 HEARTBEAT_FILE = Path(gettempdir() + "/authentik-worker")
 

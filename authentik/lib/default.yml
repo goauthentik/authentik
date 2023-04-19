@@ -5,7 +5,7 @@ postgresql:
   name: authentik
   user: authentik
   port: 5432
-  password: 'env://POSTGRES_PASSWORD'
+  password: "env://POSTGRES_PASSWORD"
   use_pgbouncer: false
 
 listen:
@@ -14,12 +14,9 @@ listen:
   listen_metrics: 0.0.0.0:9300
 
 redis:
-  host: localhost
-  port: 6379
-  password: ''
-  tls: false
-  tls_reqs: "none"
-  db: 0
+  url: "redis://localhost:6379/0"
+  broker_url: "redis://localhost:6379/0"
+  broker_transport_options: ""
   cache_timeout: 300
   cache_timeout_flows: 300
   cache_timeout_policies: 300

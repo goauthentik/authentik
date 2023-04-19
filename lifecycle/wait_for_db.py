@@ -7,7 +7,7 @@ from urllib.parse import quote_plus
 
 from psycopg2 import OperationalError, connect
 from redis.exceptions import RedisError
-from redis_sentinel_url import connect as redis_connect
+from parser import parse_url
 
 from authentik.lib.config import CONFIG
 
@@ -44,7 +44,7 @@ CONFIG.log("info", "PostgreSQL connection successful")
 REDIS_URL = CONFIG.y('redis.url')
 while True:
     try:
-        _, redis = redis_connect(REDIS_URL)
+        redis = parse_url(REDIS_URL)
         redis.ping()
         break
     except RedisError as exc:
