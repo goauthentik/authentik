@@ -38,6 +38,7 @@ class StagePromptSerializer(PassiveSerializer):
     type = ChoiceField(choices=FieldTypes.choices)
     required = BooleanField()
     placeholder = CharField(allow_blank=True)
+    initial_value = CharField(allow_blank=True)
     order = IntegerField()
     sub_text = CharField(allow_blank=True)
     choices = ListField(child=CharField(allow_blank=True), allow_empty=True, allow_null=True)
@@ -76,7 +77,7 @@ class PromptChallengeResponse(ChallengeResponse):
             choices = field.get_choices(
                 plan.context.get(PLAN_CONTEXT_PROMPT, {}), user, self.request
             )
-            current = field.get_placeholder(
+            current = field.get_initial_value(
                 plan.context.get(PLAN_CONTEXT_PROMPT, {}), user, self.request
             )
             self.fields[field.field_key] = field.field(current, choices)
@@ -197,8 +198,9 @@ class PromptStageView(ChallengeStageView):
         serializers = []
         for field in fields:
             data = StagePromptSerializer(field).data
-            # Ensure all choices and placeholders are str, as otherwise further in
-            # we can fail serializer validation if we return some types such as bool
+            # Ensure all choices, placeholders and initial values are str, as
+            # otherwise further in we can fail serializer validation if we return
+            # some types such as bool
             choices = field.get_choices(context, self.get_pending_user(), self.request, dry_run)
             if choices:
                 data["choices"] = [str(choice) for choice in choices]
@@ -206,6 +208,9 @@ class PromptStageView(ChallengeStageView):
                 data["choices"] = None
             data["placeholder"] = str(
                 field.get_placeholder(context, self.get_pending_user(), self.request, dry_run)
+            )
+            data["initial_value"] = str(
+                field.get_initial_value(context, self.get_pending_user(), self.request, dry_run)
             )
             serializers.append(data)
         return serializers

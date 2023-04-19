@@ -27,6 +27,11 @@ from authentik.providers.oauth2.id_token import IDToken, SubModes
 from authentik.sources.oauth.models import OAuthSource
 
 
+def generate_client_secret() -> str:
+    """Generate client secret with adequate length"""
+    return generate_id(128)
+
+
 class ClientTypes(models.TextChoices):
     """Confidential clients are capable of maintaining the confidentiality
     of their credentials. Public clients are incapable."""
@@ -132,7 +137,7 @@ class OAuth2Provider(Provider):
         max_length=255,
         blank=True,
         verbose_name=_("Client Secret"),
-        default=generate_key,
+        default=generate_client_secret,
     )
     redirect_uris = models.TextField(
         default="",

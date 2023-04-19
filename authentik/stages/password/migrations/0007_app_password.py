@@ -4,7 +4,7 @@ from django.apps.registry import Apps
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 
-from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT
+from authentik.stages.password import BACKEND_APP_PASSWORD
 
 
 def update_default_backends(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):

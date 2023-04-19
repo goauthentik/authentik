@@ -9,7 +9,6 @@ from docker import DockerClient, from_env
 from docker.models.containers import Container
 from docker.types.healthcheck import Healthcheck
 
-from authentik import __version__
 from authentik.core.tests.utils import create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import (

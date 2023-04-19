@@ -1,5 +1,5 @@
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { groupBy, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/Form";
 
@@ -89,7 +89,7 @@ export class SearchSelect<T> extends AKElement {
                 });
         });
         this.observer.observe(this);
-        this.dropdownUID = `dropdown-${randomString(10)}`;
+        this.dropdownUID = `dropdown-${randomString(10, ascii_letters + digits)}`;
     }
 
     toForm(): unknown {

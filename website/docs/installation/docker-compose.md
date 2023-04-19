@@ -14,20 +14,29 @@ This installation method is for test-setups and small-scale production setups.
 
 Download the latest `docker-compose.yml` from [here](https://goauthentik.io/docker-compose.yml). Place it in a directory of your choice.
 
-If this is a fresh authentik install run the following commands to generate a password:
+If this is a fresh authentik installation, you need to generate a password and a secret key. If you don't already have a password generator installed, you can run this command to install **pwgen**, a popular generator:
 
 ```shell
 # You can also use openssl instead: `openssl rand -base64 36`
 sudo apt-get install -y pwgen
-# Because of a PostgreSQL limitation, only passwords up to 99 chars are supported
-# See https://www.postgresql.org/message-id/09512C4F-8CB9-4021-B455-EF4C4F0D55A0@amazon.com
+```
+
+Next, run the following commands to generate a password and secret key and write them to your `.env` file:
+
+```shell
 echo "PG_PASS=$(pwgen -s 40 1)" >> .env
 echo "AUTHENTIK_SECRET_KEY=$(pwgen -s 50 1)" >> .env
-# Skip if you don't want to enable error reporting
+# Because of a PostgreSQL limitation, only passwords up to 99 chars are supported
+# See https://www.postgresql.org/message-id/09512C4F-8CB9-4021-B455-EF4C4F0D55A0@amazon.com
+```
+
+To enable error reporting, run the following command:
+
+```shell
 echo "AUTHENTIK_ERROR_REPORTING__ENABLED=true" >> .env
 ```
 
-## Email configuration (optional, but recommended)
+## Email configuration (optional but recommended)
 
 It is also recommended to configure global email credentials. These are used by authentik to notify you about alerts and configuration issues. They can also be used by [Email stages](../flow/stages/email/) to send verification/recovery emails.
 

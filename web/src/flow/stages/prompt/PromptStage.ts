@@ -48,7 +48,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
         ];
     }
 
-    renderPromptInner(prompt: StagePrompt, placeholderAsValue: boolean): string {
+    renderPromptInner(prompt: StagePrompt): string {
         switch (prompt.type) {
             case PromptTypeEnum.Text:
                 return `<input
@@ -58,7 +58,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     autocomplete="off"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
-                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
+                    value="${prompt.initialValue}">`;
             case PromptTypeEnum.TextArea:
                 return `<textarea
                     type="text"
@@ -67,21 +67,23 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     autocomplete="off"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
-                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
+                    value="${prompt.initialValue}"">`;
             case PromptTypeEnum.TextReadOnly:
                 return `<input
                     type="text"
                     name="${prompt.fieldKey}"
+                    placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     readonly
-                    value="${prompt.placeholder}">`;
+                    value="${prompt.initialValue}">`;
             case PromptTypeEnum.TextAreaReadOnly:
                 return `<textarea
                     type="text"
                     name="${prompt.fieldKey}"
+                    placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     readonly
-                    value="${prompt.placeholder}">`;
+                    value="${prompt.initialValue}">`;
             case PromptTypeEnum.Username:
                 return `<input
                     type="text"
@@ -90,7 +92,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     autocomplete="username"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
-                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
+                    value="${prompt.initialValue}">`;
             case PromptTypeEnum.Email:
                 return `<input
                     type="email"
@@ -98,7 +100,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}
-                    value="${placeholderAsValue ? prompt.placeholder : ""}">`;
+                    value="${prompt.initialValue}">`;
             case PromptTypeEnum.Password:
                 return `<input
                     type="password"
@@ -113,46 +115,50 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?required=${prompt.required}>`;
+                    ?required=${prompt.required}
+                    value="${prompt.initialValue}">`;
             case PromptTypeEnum.Date:
                 return `<input
                     type="date"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?required=${prompt.required}>`;
+                    ?required=${prompt.required}
+                    value="${prompt.initialValue}">`;
             case PromptTypeEnum.DateTime:
                 return `<input
                     type="datetime"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?required=${prompt.required}>`;
+                    ?required=${prompt.required}
+                    value="${prompt.initialValue}">`;
             case PromptTypeEnum.File:
                 return `<input
                     type="file"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     class="pf-c-form-control"
-                    ?required=${prompt.required}>`;
+                    ?required=${prompt.required}
+                    value="${prompt.initialValue}">`;
             case PromptTypeEnum.Separator:
                 return `<ak-divider>${prompt.placeholder}</ak-divider>`;
             case PromptTypeEnum.Hidden:
                 return `<input
                     type="hidden"
                     name="${prompt.fieldKey}"
-                    value="${prompt.placeholder}"
+                    value="${prompt.initialValue}"
                     class="pf-c-form-control"
                     ?required=${prompt.required}>`;
             case PromptTypeEnum.Static:
-                return `<p>${prompt.placeholder}</p>`;
+                return `<p>${prompt.initialValue}</p>`;
             case PromptTypeEnum.Dropdown:
                 return `<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices
                         ?.map((choice) => {
                             return `<option
                             value="${choice}"
-                            ?selected=${prompt.placeholder === choice}
+                            ?selected=${prompt.initialValue === choice}
                         >
                             ${choice}
                         </option>`;
@@ -168,7 +174,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                                         type="radio"
                                         class="pf-c-check__input"
                                         name="${prompt.fieldKey}"
-                                        checked="${prompt.placeholder === choice}"
+                                        checked="${prompt.initialValue === choice}"
                                         required="${prompt.required}"
                                         value="${choice}"
                                     />
@@ -180,7 +186,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 );
             case PromptTypeEnum.AkLocale:
                 return `<select class="pf-c-form-control" name="${prompt.fieldKey}">
-                    <option value="" ${prompt.placeholder === "" ? "selected" : ""}>
+                    <option value="" ${prompt.initialValue === "" ? "selected" : ""}>
                         ${t`Auto-detect (based on your browser)`}
                     </option>
                     ${LOCALES.filter((locale) => {
@@ -195,7 +201,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                         .map((locale) => {
                             return `<option
                             value=${locale.code}
-                            ${prompt.placeholder === locale.code ? "selected" : ""}
+                            ${prompt.initialValue === locale.code ? "selected" : ""}
                         >
                             ${locale.code.toUpperCase()} - ${locale.label}
                         </option>`;
@@ -234,7 +240,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     type="checkbox"
                     class="pf-c-check__input"
                     name="${prompt.fieldKey}"
-                    ?checked=${prompt.placeholder !== ""}
+                    ?checked=${prompt.initialValue !== ""}
                     ?required=${prompt.required}
                 />
                 <label class="pf-c-check__label">${prompt.label}</label>
@@ -251,11 +257,10 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 class="pf-c-form__group"
                 .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
             >
-                ${unsafeHTML(this.renderPromptInner(prompt, false))}
-                ${this.renderPromptHelpText(prompt)}
+                ${unsafeHTML(this.renderPromptInner(prompt))} ${this.renderPromptHelpText(prompt)}
             </ak-form-element>`;
         }
-        return html` ${unsafeHTML(this.renderPromptInner(prompt, false))}
+        return html` ${unsafeHTML(this.renderPromptInner(prompt))}
         ${this.renderPromptHelpText(prompt)}`;
     }
 

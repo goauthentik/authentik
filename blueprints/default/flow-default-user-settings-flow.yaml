@@ -13,12 +13,14 @@ entries:
   id: flow
 - attrs:
     order: 200
-    placeholder: |
+    placeholder: Username
+    placeholder_expression: false
+    initial_value: |
       try:
           return user.username
       except:
           return ''
-    placeholder_expression: true
+    initial_value_expression: true
     required: true
     type: text
     field_key: username
@@ -29,12 +31,14 @@ entries:
   model: authentik_stages_prompt.prompt
 - attrs:
     order: 201
-    placeholder: |
+    placeholder: Name
+    placeholder_expression: false
+    initial_value: |
       try:
           return user.name
       except:
           return ''
-    placeholder_expression: true
+    initial_value_expression: true
     required: true
     type: text
     field_key: name
@@ -45,12 +49,14 @@ entries:
   model: authentik_stages_prompt.prompt
 - attrs:
     order: 202
-    placeholder: |
+    placeholder: Email
+    placeholder_expression: false
+    initial_value: |
       try:
           return user.email
       except:
           return ''
-    placeholder_expression: true
+    initial_value_expression: true
     required: true
     type: email
     field_key: email
@@ -61,12 +67,14 @@ entries:
   model: authentik_stages_prompt.prompt
 - attrs:
     order: 203
-    placeholder: |
+    placeholder: Locale
+    placeholder_expression: false
+    initial_value: |
       try:
           return user.attributes.get("settings", {}).get("locale", "")
       except:
           return ''
-    placeholder_expression: true
+    initial_value_expression: true
     required: true
     type: ak-locale
     field_key: attributes.settings.locale

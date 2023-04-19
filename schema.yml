@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.3.1
+  version: 2023.4.1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -26351,6 +26351,7 @@ components:
       - authentik.tenants
       - authentik.blueprints
       - authentik.core
+      - authentik.enterprise
       type: string
       description: |-
         * `authentik.admin` - authentik Admin
@@ -26400,6 +26401,7 @@ components:
         * `authentik.tenants` - authentik Tenants
         * `authentik.blueprints` - authentik Blueprints
         * `authentik.core` - authentik Core
+        * `authentik.enterprise` - authentik Enterprise
     AppleChallengeResponseRequest:
       type: object
       description: Pseudo class for plex response
@@ -27708,12 +27710,14 @@ components:
       - can_geo_ip
       - can_impersonate
       - can_debug
+      - is_enterprise
       type: string
       description: |-
         * `can_save_media` - Can Save Media
         * `can_geo_ip` - Can Geo Ip
         * `can_impersonate` - Can Impersonate
         * `can_debug` - Can Debug
+        * `is_enterprise` - Is Enterprise
     CaptchaChallenge:
       type: object
       description: Site public key
@@ -29114,6 +29118,7 @@ components:
             * `authentik.tenants` - authentik Tenants
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
+            * `authentik.enterprise` - authentik Enterprise
       required:
       - bound_to
       - component
@@ -29223,6 +29228,7 @@ components:
             * `authentik.tenants` - authentik Tenants
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
+            * `authentik.enterprise` - authentik Enterprise
       required:
       - name
     EventRequest:
@@ -35908,6 +35914,7 @@ components:
             * `authentik.tenants` - authentik Tenants
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
+            * `authentik.enterprise` - authentik Enterprise
     PatchedEventRequest:
       type: object
       description: Event Serializer
@@ -36862,8 +36869,14 @@ components:
           type: boolean
         placeholder:
           type: string
-          description: When creating a Radio Button Group or Dropdown, enable interpreting
-            as expression and return a list to return multiple choices.
+          description: Optionally provide a short hint that describes the expected
+            input value. When creating a fixed choice field, enable interpreting as
+            expression and return a list to return multiple choices.
+        initial_value:
+          type: string
+          description: Optionally pre-fill the input with an initial value. When creating
+            a fixed choice field, enable interpreting as expression and return a list
+            to return multiple default choices.
         order:
           type: integer
           maximum: 2147483647
@@ -36875,6 +36888,8 @@ components:
         sub_text:
           type: string
         placeholder_expression:
+          type: boolean
+        initial_value_expression:
           type: boolean
     PatchedPromptStageRequest:
       type: object
@@ -38034,8 +38049,14 @@ components:
           type: boolean
         placeholder:
           type: string
-          description: When creating a Radio Button Group or Dropdown, enable interpreting
-            as expression and return a list to return multiple choices.
+          description: Optionally provide a short hint that describes the expected
+            input value. When creating a fixed choice field, enable interpreting as
+            expression and return a list to return multiple choices.
+        initial_value:
+          type: string
+          description: Optionally pre-fill the input with an initial value. When creating
+            a fixed choice field, enable interpreting as expression and return a list
+            to return multiple default choices.
         order:
           type: integer
           maximum: 2147483647
@@ -38047,6 +38068,8 @@ components:
         sub_text:
           type: string
         placeholder_expression:
+          type: boolean
+        initial_value_expression:
           type: boolean
       required:
       - field_key
@@ -38109,8 +38132,14 @@ components:
           type: boolean
         placeholder:
           type: string
-          description: When creating a Radio Button Group or Dropdown, enable interpreting
-            as expression and return a list to return multiple choices.
+          description: Optionally provide a short hint that describes the expected
+            input value. When creating a fixed choice field, enable interpreting as
+            expression and return a list to return multiple choices.
+        initial_value:
+          type: string
+          description: Optionally pre-fill the input with an initial value. When creating
+            a fixed choice field, enable interpreting as expression and return a list
+            to return multiple default choices.
         order:
           type: integer
           maximum: 2147483647
@@ -38122,6 +38151,8 @@ components:
         sub_text:
           type: string
         placeholder_expression:
+          type: boolean
+        initial_value_expression:
           type: boolean
       required:
       - field_key
@@ -40267,6 +40298,8 @@ components:
           type: boolean
         placeholder:
           type: string
+        initial_value:
+          type: string
         order:
           type: integer
         sub_text:
@@ -40279,6 +40312,7 @@ components:
       required:
       - choices
       - field_key
+      - initial_value
       - label
       - order
       - placeholder

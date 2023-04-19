@@ -3,6 +3,8 @@
 import django.utils.timezone
 from django.db import migrations, models
 
+import authentik.providers.oauth2.models
+
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -36,5 +38,15 @@ class Migration(migrations.Migration):
                 verbose_name="Authentication time",
             ),
             preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name="oauth2provider",
+            name="client_secret",
+            field=models.CharField(
+                blank=True,
+                default=authentik.providers.oauth2.models.generate_client_secret,
+                max_length=255,
+                verbose_name="Client Secret",
+            ),
         ),
     ]

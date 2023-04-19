@@ -69,6 +69,7 @@ SESSION_KEY_GET = "authentik/flows/get"
 SESSION_KEY_POST = "authentik/flows/post"
 SESSION_KEY_HISTORY = "authentik/flows/history"
 QS_KEY_TOKEN = "flow_token"  # nosec
+QS_QUERY = "query"
 
 
 def challenge_types():
@@ -173,7 +174,7 @@ class FlowExecutorView(APIView):
             op="authentik.flow.executor.dispatch", description=self.flow.slug
         ) as span:
             span.set_data("authentik Flow", self.flow.slug)
-            get_params = QueryDict(request.GET.get("query", ""))
+            get_params = QueryDict(request.GET.get(QS_QUERY, ""))
             if QS_KEY_TOKEN in get_params:
                 plan = self._check_flow_token(get_params[QS_KEY_TOKEN])
                 if plan:

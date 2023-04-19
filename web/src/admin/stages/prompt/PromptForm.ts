@@ -65,20 +65,20 @@ export class PromptForm extends ModelForm<Prompt, string> {
         const prompt = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsRetrieve({
             promptUuid: pk,
         });
-        this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({
-            promptRequest: prompt,
-        });
+        await this.refreshPreview(prompt);
         return prompt;
     }
 
-    async refreshPreview(): Promise<void> {
-        const data = this.serializeForm();
-        if (!data) {
-            return;
+    async refreshPreview(prompt?: Prompt): Promise<void> {
+        if (!prompt) {
+            prompt = this.serializeForm();
+            if (!prompt) {
+                return;
+            }
         }
         try {
             this.preview = await new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsPreviewCreate({
-                promptRequest: data,
+                promptRequest: prompt,
             });
             this.previewError = undefined;
         } catch (exc) {
@@ -372,8 +372,8 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     >
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`When checked, the placeholder will be evaluated in the same way environment as a property mapping.
-                    If the evaluation failed, the placeholder itself is returned.`}
+                    ${t`When checked, the placeholder will be evaluated in the same way a property mapping is.
+                    If the evaluation fails, the placeholder itself is returned.`}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Placeholder`} name="placeholder">
@@ -386,9 +386,39 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Optionally pre-fill the input value.
-                    When creating a "Radio Button Group" or "Dropdown", enable interpreting as
+                    ${t`Optionally provide a short hint that describes the expected input value.
+                    When creating a fixed choice field, enable interpreting as
                     expression and return a list to return multiple choices.`}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="initialValueExpression">
+                <label class="pf-c-switch">
+                    <input
+                        class="pf-c-switch__input"
+                        type="checkbox"
+                        ?checked=${first(this.instance?.initialValueExpression, false)}
+                    />
+                    <span class="pf-c-switch__toggle">
+                        <span class="pf-c-switch__toggle-icon">
+                            <i class="fas fa-check" aria-hidden="true"></i>
+                        </span>
+                    </span>
+                    <span class="pf-c-switch__label"
+                        >${t`Interpret initial value as expression`}</span
+                    >
+                </label>
+                <p class="pf-c-form__helper-text">
+                    ${t`When checked, the initial value will be evaluated in the same way a property mapping is.
+                    If the evaluation fails, the initial value itself is returned.`}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${t`Initial value`} name="initialValue">
+                <ak-codemirror mode="python" value="${ifDefined(this.instance?.initialValue)}">
+                </ak-codemirror>
+                <p class="pf-c-form__helper-text">
+                    ${t`Optionally pre-fill the input with an initial value.
+                    When creating a fixed choice field, enable interpreting as
+                    expression and return a list to return multiple default choices.`}}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Help text`} name="subText">

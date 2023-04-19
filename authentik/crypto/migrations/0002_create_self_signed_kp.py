@@ -2,8 +2,6 @@
 
 from django.db import migrations
 
-from authentik.lib.generators import generate_id
-
 
 class Migration(migrations.Migration):
     dependencies = [

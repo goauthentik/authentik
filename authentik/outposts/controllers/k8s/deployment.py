@@ -22,7 +22,7 @@ from kubernetes.client import (
     V1SecurityContext,
 )
 
-from authentik import __version__, get_full_version
+from authentik import get_full_version
 from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate

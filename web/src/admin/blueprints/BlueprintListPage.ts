@@ -126,7 +126,11 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
     row(item: BlueprintInstance): TemplateResult[] {
         let description = undefined;
         const descKey = "blueprints.goauthentik.io/description";
-        if (Object.hasOwn(item.metadata?.labels, descKey)) {
+        if (
+            item.metadata &&
+            item.metadata.labels &&
+            Object.hasOwn(item.metadata?.labels, descKey)
+        ) {
             description = item.metadata?.labels[descKey];
         }
         return [

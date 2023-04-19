@@ -200,12 +200,14 @@ export class UserViewPage extends AKElement {
                             CapabilitiesEnum.Impersonate,
                         )
                             ? html`
-                                  <a
-                                      class="pf-c-button pf-m-tertiary"
-                                      href="${`/-/impersonation/${this.user?.pk}/`}"
-                                  >
-                                      ${t`Impersonate`}
-                                  </a>
+                                  <div class="pf-c-card__footer">
+                                      <a
+                                          class="pf-c-button pf-m-tertiary"
+                                          href="${`/-/impersonation/${this.user?.pk}/`}"
+                                      >
+                                          ${t`Impersonate`}
+                                      </a>
+                                  </div>
                               `
                             : html``}
                         <div class="pf-c-card__footer">

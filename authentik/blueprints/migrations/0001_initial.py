@@ -6,7 +6,6 @@ from pathlib import Path
 import django.contrib.postgres.fields
 from dacite.core import from_dict
 from django.apps.registry import Apps
-from django.conf import settings
 from django.db import migrations, models
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor
 from yaml import load
@@ -15,7 +14,7 @@ from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_SYSTEM
 from authentik.lib.config import CONFIG
 
 
-def check_blueprint_v1_file(BlueprintInstance: type["BlueprintInstance"], path: Path):
+def check_blueprint_v1_file(BlueprintInstance: type, path: Path):
     """Check if blueprint should be imported"""
     from authentik.blueprints.models import BlueprintInstanceStatus
     from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata

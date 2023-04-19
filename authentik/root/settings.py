@@ -263,7 +263,7 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     "default": {
-        "ENGINE": "authentik.root.db_engine",
+        "ENGINE": "django_prometheus.db.backends.postgresql",
         "HOST": CONFIG.y("postgresql.host"),
         "NAME": CONFIG.y("postgresql.name"),
         "USER": CONFIG.y("postgresql.user"),
@@ -486,3 +486,12 @@ if DEBUG:
 INSTALLED_APPS.append("authentik.core")
 
 CONFIG.log("info", "Booting authentik", version=__version__)
+
+# Attempt to load enterprise app, if available
+try:
+    importlib.import_module("authentik.enterprise.apps")
+    CONFIG.log("info", "Enabled authentik enterprise")
+    INSTALLED_APPS.append("authentik.enterprise")
+    _update_settings("authentik.enterprise.settings")
+except ImportError:
+    pass

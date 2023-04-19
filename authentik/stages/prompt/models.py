@@ -29,6 +29,8 @@ from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import Policy
 
+CHOICES_CONTEXT_SUFFIX = "__choices"
+
 LOGGER = get_logger()
 
 
@@ -119,8 +121,17 @@ class Prompt(SerializerModel):
     placeholder = models.TextField(
         blank=True,
         help_text=_(
-            "When creating a Radio Button Group or Dropdown, enable interpreting as "
+            "Optionally provide a short hint that describes the expected input value. "
+            "When creating a fixed choice field, enable interpreting as "
             "expression and return a list to return multiple choices."
+        ),
+    )
+    initial_value = models.TextField(
+        blank=True,
+        help_text=_(
+            "Optionally pre-fill the input with an initial value. "
+            "When creating a fixed choice field, enable interpreting as "
+            "expression and return a list to return multiple default choices."
         ),
     )
     sub_text = models.TextField(blank=True, default="")
@@ -128,6 +139,7 @@ class Prompt(SerializerModel):
     order = models.IntegerField(default=0)
 
     placeholder_expression = models.BooleanField(default=False)
+    initial_value_expression = models.BooleanField(default=False)
 
     @property
     def serializer(self) -> Type[BaseSerializer]:
@@ -148,8 +160,8 @@ class Prompt(SerializerModel):
 
         raw_choices = self.placeholder
 
-        if self.field_key in prompt_context:
-            raw_choices = prompt_context[self.field_key]
+        if self.field_key + CHOICES_CONTEXT_SUFFIX in prompt_context:
+            raw_choices = prompt_context[self.field_key + CHOICES_CONTEXT_SUFFIX]
         elif self.placeholder_expression:
             evaluator = PropertyMappingEvaluator(
                 self, user, request, prompt_context=prompt_context, dry_run=dry_run
@@ -184,16 +196,9 @@ class Prompt(SerializerModel):
     ) -> str:
         """Get fully interpolated placeholder"""
         if self.type in CHOICE_FIELDS:
-            # Make sure to return a valid choice as placeholder
-            choices = self.get_choices(prompt_context, user, request, dry_run=dry_run)
-            if not choices:
-                return ""
-            return choices[0]
-
-        if self.field_key in prompt_context:
-            # We don't want to parse this as an expression since a user will
-            # be able to control the input
-            return prompt_context[self.field_key]
+            # Choice fields use the placeholder to define all valid choices.
+            # Therefore their actual placeholder is always blank
+            return ""
 
         if self.placeholder_expression:
             evaluator = PropertyMappingEvaluator(
@@ -210,6 +215,47 @@ class Prompt(SerializerModel):
                 if dry_run:
                     raise wrapped from exc
         return self.placeholder
+
+    def get_initial_value(
+        self,
+        prompt_context: dict,
+        user: User,
+        request: HttpRequest,
+        dry_run: Optional[bool] = False,
+    ) -> str:
+        """Get fully interpolated initial value"""
+
+        if self.field_key in prompt_context:
+            # We don't want to parse this as an expression since a user will
+            # be able to control the input
+            value = prompt_context[self.field_key]
+        elif self.initial_value_expression:
+            evaluator = PropertyMappingEvaluator(
+                self, user, request, prompt_context=prompt_context, dry_run=dry_run
+            )
+            try:
+                value = evaluator.evaluate(self.initial_value)
+            except Exception as exc:  # pylint:disable=broad-except
+                wrapped = PropertyMappingExpressionException(str(exc))
+                LOGGER.warning(
+                    "failed to evaluate prompt initial value",
+                    exc=wrapped,
+                )
+                if dry_run:
+                    raise wrapped from exc
+                value = self.initial_value
+        else:
+            value = self.initial_value
+
+        if self.type in CHOICE_FIELDS:
+            # Ensure returned value is a valid choice
+            choices = self.get_choices(prompt_context, user, request)
+            if not choices:
+                return ""
+            if value not in choices:
+                return choices[0]
+
+        return value
 
     def field(self, default: Optional[Any], choices: Optional[list[Any]] = None) -> CharField:
         """Get field type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""

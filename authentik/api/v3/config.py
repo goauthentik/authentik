@@ -29,6 +29,7 @@ class Capabilities(models.TextChoices):
     CAN_GEO_IP = "can_geo_ip"
     CAN_IMPERSONATE = "can_impersonate"
     CAN_DEBUG = "can_debug"
+    IS_ENTERPRISE = "is_enterprise"
 
 
 class ErrorReportingConfigSerializer(PassiveSerializer):
@@ -70,6 +71,8 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_IMPERSONATE)
         if settings.DEBUG:  # pragma: no cover
             caps.append(Capabilities.CAN_DEBUG)
+        if "authentik.enterprise" in settings.INSTALLED_APPS:
+            caps.append(Capabilities.IS_ENTERPRISE)
         return caps
 
     def get_config(self) -> ConfigSerializer:

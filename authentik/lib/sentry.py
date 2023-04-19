@@ -98,7 +98,7 @@ def traces_sampler(sampling_context: dict) -> float:
 def before_send(event: dict, hint: dict) -> Optional[dict]:
     """Check if error is database error, and ignore if so"""
     # pylint: disable=no-name-in-module
-    from psycopg.errors import Error
+    from psycopg2.errors import Error
 
     ignored_classes = (
         # Inbuilt types

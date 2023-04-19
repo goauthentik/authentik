@@ -9,7 +9,7 @@ from jwt import decode
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application, Group
 from authentik.core.tests.utils import create_test_cert, create_test_flow
-from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.generators import generate_id
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.constants import (
     GRANT_TYPE_CLIENT_CREDENTIALS,
@@ -39,7 +39,7 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
             slug=generate_id(),
             provider_type="openidconnect",
             consumer_key=generate_id(),
-            consumer_secret=generate_key(),
+            consumer_secret=generate_id(),
             authorization_url="http://foo",
             access_token_url=f"http://{generate_id()}",
             profile_url="http://foo",
@@ -52,8 +52,6 @@ class TestTokenClientCredentialsJWTSource(OAuthTestCase):
 
         self.provider: OAuth2Provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
             signing_key=self.cert,

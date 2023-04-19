@@ -15,7 +15,7 @@ function wait_for_db {
 function check_if_root {
     if [[ $EUID -ne 0 ]]; then
         log "Not running as root, disabling permission fixes"
-        $1
+        exec $1
         return
     fi
     SOCKET="/var/run/docker.sock"
@@ -35,7 +35,7 @@ function check_if_root {
     chown -R authentik:authentik /media /certs
     chmod ug+rwx /media
     chmod ug+rx /certs
-    chpst -u authentik:$GROUP env HOME=/authentik $1
+    exec chpst -u authentik:$GROUP env HOME=/authentik $1
 }
 
 function set_mode {
@@ -57,9 +57,9 @@ if [[ "$1" == "server" ]]; then
         python -m manage bootstrap_tasks
     fi
     if [[ -x "$(command -v authentik)" ]]; then
-        authentik
+        exec authentik
     else
-        go run -v ./cmd/server/
+        exec go run -v ./cmd/server/
     fi
 elif [[ "$1" == "worker" ]]; then
     wait_for_db
@@ -81,7 +81,7 @@ elif [[ "$1" == "healthcheck" ]]; then
     if [[ $mode == "server" ]]; then
         exec curl --user-agent "goauthentik.io lifecycle Healthcheck" -I http://localhost:9000/-/health/ready/
     elif [[ $mode == "worker" ]]; then
-        mtime=$(stat -f %m $WORKER_HEARTBEAT)
+        mtime=$(date -r $WORKER_HEARTBEAT +"%s")
         time=$(date +"%s")
         if [ "$(( $time - $mtime ))" -gt "30" ]; then
             log "Worker hasn't updated heartbeat in 30 seconds"

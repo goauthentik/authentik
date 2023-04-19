@@ -37,7 +37,7 @@ Some types have special behaviors:
 
 -   _Username_: Input is validated against other usernames to ensure a unique value is provided.
 -   _Password_: All prompts with the type password within the same stage are compared and must be equal. If they are not equal, an error is shown
--   _Hidden_ and _Static_: Their placeholder values are defaults and are not user-changeable.
+-   _Hidden_ and _Static_: Their initial values are defaults and are not user-changeable.
 -   _Radio Button Group_ and _Dropdown_: Only allow the user to select one of a set of predefined values.
 
 A prompt has the following attributes:
@@ -60,14 +60,33 @@ A flag which decides whether or not this field is required.
 
 ### `placeholder`
 
-A field placeholder, shown within the input field. This field is also used by the `hidden` type as the actual value.
+A field placeholder, shown within the input field.
 
 By default, the placeholder is interpreted as-is. If you enable _Interpret placeholder as expression_, the placeholder
 will be evaluated as a python expression. This happens in the same environment as [_Property mappings_](../../../property-mappings/expression).
 
-In the case of `Radio Button Group` and `Dropdown` prompts, this field defines all possible values. When interpreted as-is, only one value will be allowed (the placeholder string). When interpreted as expression, a list of values can be returned to define multiple choices. For example, `return ["first option", 42, "another option"]` defines 3 possible values.
+In the case of `Radio Button Group` and `Dropdown` prompts, this field defines all possible values (choices). When interpreted as-is, only one value will be allowed (the placeholder string). When interpreted as expression, a list of values can be returned to define multiple choices. For example, `return ["first option", 42, "another option"]` defines 3 possible values.
 
 You can access both the HTTP request and the user as with a mapping. Additionally, you can access `prompt_context`, which is a dictionary of the current state of the prompt stage's data.
+
+For `Radio Button Group` and `Dropdown` prompts, if a key with the same name as the prompt's `field_key` and a suffix of `__choices` (`<field_key>__choices`) is present in the `prompt_context` dictionary, its value will be returned directly, even if _Interpret placeholder as expression_ is enabled.
+
+### `initial_value`
+
+The prompt's initial value. It can also be left empty, in which case the field will not have a pre-filled value.
+
+With the `hidden` prompt, the initial value will also be the actual value, because the field is hidden to the user.
+
+By default, the initial value is interpreted as-is. If you enable _Interpret initial value as expression_, the initial value
+will be evaluated as a python expression. This happens in the same environment as [_Property mappings_](../../../property-mappings/expression).
+
+In the case of `Radio Button Group` and `Dropdown` prompts, this field defines the default choice. When interpreted as-is, the default choice will be the initial value string. When interpreted as expression, the default choice will be the returned value. For example, `return 42` defines `42` as the default choice.
+
+:::note
+The default choice defined for any fixed choice field **must** be one of the valid choices specified in the prompt's placeholder.
+:::
+
+You can access both the HTTP request and the user as with a mapping. Additionally, you can access `prompt_context`, which is a dictionary of the current state of the prompt stage's data. If a key with the same name as the prompt's `field_key` is present in the `prompt_context` dictionary, its value will be returned directly, even if _Interpret initial value as expression_ is enabled.
 
 ### `order`
 

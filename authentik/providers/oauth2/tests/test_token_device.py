@@ -7,7 +7,7 @@ from django.urls import reverse
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Application
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
-from authentik.lib.generators import generate_code_fixed_length, generate_id, generate_key
+from authentik.lib.generators import generate_code_fixed_length, generate_id
 from authentik.providers.oauth2.constants import GRANT_TYPE_DEVICE_CODE
 from authentik.providers.oauth2.models import DeviceToken, OAuth2Provider, ScopeMapping
 from authentik.providers.oauth2.tests.utils import OAuthTestCase
@@ -22,8 +22,6 @@ class TestTokenDeviceCode(OAuthTestCase):
         self.factory = RequestFactory()
         self.provider = OAuth2Provider.objects.create(
             name="test",
-            client_id=generate_id(),
-            client_secret=generate_key(),
             authorization_flow=create_test_flow(),
             redirect_uris="http://testserver",
             signing_key=create_test_cert(),
