@@ -45,7 +45,7 @@ This data can be modified with policies. The data is also used by stages like [U
 
 #### `redirect` (string)
 
-Optionally override the email address that the email will be sent to. If not set, defaults to the email of `pending_user`.
+Stores the final redirect URL that the user's browser will be sent to after the flow is finished executing successfully. This is set when an un-authenticated user attempts to access a secured application, and when a user authenticates/enrolls with an external source.
 
 #### Identifications tage
 
@@ -87,7 +87,7 @@ An optional list of all permissions that will be given to the application by gra
 
 #### Autosubmit stage
 
-The autosubmit stage is an internal stage type that is not configurable via the API/Web interface. It is used in certain situations, where a POST request has to be sent from the browser, such as with SAML POST bindings. This works by using an HTML form that is submitted automatically.
+The autosubmit stage is an internal stage type that is not configurable via the API/Web interface. It is used in certain situations, where a POST request is sent from the browser, such as with SAML POST bindings. This works by using an HTML form that is submitted automatically.
 
 ##### `title` (string)
 
