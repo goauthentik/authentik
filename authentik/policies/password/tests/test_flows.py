@@ -59,6 +59,7 @@ class TestPasswordPolicyFlow(FlowTestCase):
                     "label": "PASSWORD_LABEL",
                     "order": 0,
                     "placeholder": "PASSWORD_PLACEHOLDER",
+                    "initial_value": "",
                     "required": True,
                     "type": "password",
                     "sub_text": "",
