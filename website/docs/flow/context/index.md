@@ -13,7 +13,7 @@ For example, in the Identification Stage (part of the default login flow), you c
 
 Any data can be stored in the flow context, however there are some reserved keys in the context dictionary that are used by authentik stages.
 
-## Context dictionary and reserved keywords
+## Context dictionary and reserved keys
 
 This section describes the data objects (the context) that are used in authentik, and provides a list of keys, what they are used for and when they are set.
 
@@ -21,7 +21,7 @@ This section describes the data objects (the context) that are used in authentik
 Keys prefixed with `goauthentik.io` are used internally by authentik and are subject to change without notice, and should not be modified in policies in most cases.
 :::
 
-### Common objects
+### Common keys
 
 #### `pending_user` ([User object](../../user-group/user.md))
 
@@ -63,7 +63,7 @@ When an unauthenticated user attempts to access a secured resource, they are red
 
 When a user authenticates/enrolls via an external source, this will be set to the source they are using.
 
-### Scenario-specific
+### Scenario-specific keys
 
 #### `is_sso` (boolean)
 
@@ -73,7 +73,7 @@ Set to `True` when the flow is executed from an "SSO" context. For example, this
 
 Set when a flow execution is continued from a token. This happens for example when an [Email stage](../stages/email/index.mdx) is used and the user clicks on the link within the email. The token object contains the key that was used to restore the flow execution.
 
-### Stage-specific
+### Stage-specific keys
 
 #### Consent stage
 
