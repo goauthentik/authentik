@@ -23,7 +23,7 @@ Keys prefixed with `goauthentik.io` are used internally by authentik and are sub
 
 ### Common objects
 
-#### `pending_user` (User object)
+#### `pending_user` ([User object](../../user-group/user.md))
 
 `pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../stages/identification/).
 
@@ -97,13 +97,13 @@ Optional title of the form shown to the user. Automatically set when this stage 
 
 URL that the form will be submitted to.
 
-##### `attrs` (dict)
+##### `attrs` (dictionary)
 
 Key-value pairs of the data that is included in the form and will be submitted to `url`.
 
 #### User write stage
 
-##### `groups` (List of Group objects)
+##### `groups` (List of [Group objects](../../user-group/group.md))
 
 See [Group](../../user-group/group.md). If set in the flow context, the `pending_user` will be added to all the groups in this list.
 
@@ -132,7 +132,7 @@ Possible options:
 -   `auth_webauthn_pwl` (Passwordless authentication via WebAuthn)
 -   `jwt` ([M2M](../../providers/oauth2/client_credentials.md) authentication via an existing JWT)
 
-##### `auth_method_args` (dict)
+##### `auth_method_args` (dictionary)
 
 Additional arguments used during the authentication. Value varies depending on `auth_method`.
 
