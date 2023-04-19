@@ -13,7 +13,7 @@ from django_redis.client.default import DefaultClient
 from redis.client import StrictRedis
 from redis.cluster import RedisCluster
 
-from lifecycle.parser import get_client, get_redis_options, process_config
+from authentik.lib.utils.parser import get_client, get_redis_options, process_config
 
 
 class CustomBackend(RedisBackend):
@@ -33,9 +33,9 @@ class CustomCelery(Celery):
     def _get_backend(self):
         loader = self.loader
         loader.override_backends = {
-            "redis": "authentik.lib.utils.redis_translation:CustomBackend",
-            "rediss": "authentik.lib.utils.redis_translation:CustomBackend",
-            "sentinel": "authentik.lib.utils.redis_translation:CustomBackend"
+            "redis": "authentik.root.redis_middleware:CustomBackend",
+            "rediss": "authentik.root.redis_middleware:CustomBackend",
+            "sentinel": "authentik.root.redis_middleware:CustomBackend"
         }
         backend, url = backends.by_url(
             self.backend_cls or self.conf.result_backend,

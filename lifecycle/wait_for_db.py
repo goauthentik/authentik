@@ -3,13 +3,12 @@
 import authentik. This is done by the dockerfile."""
 from sys import exit as sysexit
 from time import sleep
-from urllib.parse import quote_plus
 
 from psycopg2 import OperationalError, connect
 from redis.exceptions import RedisError
-from parser import parse_url
 
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.parser import parse_url
 
 CONFIG.log("info", "Starting authentik bootstrap")
 

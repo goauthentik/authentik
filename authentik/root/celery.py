@@ -24,7 +24,7 @@ from structlog.stdlib import get_logger
 
 from authentik.lib.sentry import before_send
 from authentik.lib.utils.errors import exception_to_string
-from authentik.lib.utils.redis_translation import CustomCelery
+from authentik.root.redis_translation import CustomCelery
 
 # set the default Django settings module for the 'celery' program.
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")

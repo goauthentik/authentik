@@ -190,12 +190,12 @@ CACHES = {
         "LOCATION": f"{CONFIG.y('redis.url')}",
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {
-            "REDIS_CLIENT_CLASS": "authentik.lib.utils.redis_translation.CustomClient",
+            "REDIS_CLIENT_CLASS": "authentik.root.redis_middleware.CustomClient",
         },
         "KEY_PREFIX": "authentik_cache",
     }
 }
-DJANGO_REDIS_CONNECTION_FACTORY = "authentik.lib.utils.redis_translation.CustomConnectionFactory"
+DJANGO_REDIS_CONNECTION_FACTORY = "authentik.root.redis_middleware.CustomConnectionFactory"
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
@@ -249,7 +249,7 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "authentik.lib.utils.redis_translation.CustomChannelLayer",
+        "BACKEND": "authentik.root.redis_middleware.CustomChannelLayer",
         "CONFIG": {
             "url": f"{CONFIG.y('redis.url')}",
             "prefix": "authentik_channels",
