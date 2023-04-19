@@ -6,3 +6,4 @@ dist/**
 build/**
 build_docs/**
 Dockerfile
+authentik/enterprise
