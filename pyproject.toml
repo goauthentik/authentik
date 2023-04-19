@@ -115,6 +115,7 @@ description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
 [tool.poetry.dependencies]
+argon2-cffi = "*"
 celery = "*"
 channels = { version = "*", extras = ["daphne"] }
 channels-redis = "*"
