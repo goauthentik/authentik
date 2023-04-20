@@ -313,15 +313,14 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs, use_async=False):
                     redis_kwargs.pop("port")
                 config["type"] = "sentinel"
                 config["pool_kwargs"] = pool_kwargs.copy()
-                config["sentinel_kwargs"] = sentinel_kwargs.copy()
                 config["redis_kwargs"] = redis_kwargs.copy()
                 config["service_name"] = service_name
                 config["sentinels"] = []
                 # Manually override sentinels in order to use BlockingConnectionPool
                 for hostname, port in addrs:
-                    redis_kwargs["host"] = hostname
-                    redis_kwargs["port"] = port
-                    config["sentinels"] += [redis_kwargs.copy()]
+                    sentinel_kwargs["host"] = hostname
+                    sentinel_kwargs["port"] = port
+                    config["sentinels"] += [sentinel_kwargs.copy()]
             case "cluster" | "clusters":
                 config["type"] = "cluster"
                 config["pool_kwargs"] = pool_kwargs.copy()
@@ -363,7 +362,7 @@ def get_client(config, use_async=False):
 
     match config["type"]:
         case "sentinel":
-            sentinel = sentinel_class(sentinels=[], sentinel_kwargs=config["sentinel_kwargs"], **config["redis_kwargs"])
+            sentinel = sentinel_class(sentinels=[], **config["redis_kwargs"])
             for sentinel_config in config["sentinels"]:
                 connection_pool = connection_pool_class(**config["pool_kwargs"], **sentinel_config)
                 sentinel_client = redis_class(connection_pool=connection_pool)
