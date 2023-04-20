@@ -57,7 +57,7 @@ Stores the final redirect URL that the user's browser will be sent to after the 
 
 #### `application` (Application object)
 
-When an unauthenticated user attempts to access a secured resource, they are redirected to an authentication flow. The application they attempted to access will be stored in this key.
+When an unauthenticated user attempts to access a secured resource, they are redirected to an authentication flow. The application they attempted to access will be stored in the key attached to this object. For example: `application.github`, with `application` being the key and `github` the value.
 
 #### `source` (Source object)
 
