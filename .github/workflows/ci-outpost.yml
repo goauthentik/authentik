@@ -88,7 +88,6 @@ jobs:
           tags: |
             ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}
             ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.sha }}
-            ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}
           file: ${{ matrix.type }}.Dockerfile
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
