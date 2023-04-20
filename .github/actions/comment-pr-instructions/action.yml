@@ -1,5 +1,5 @@
-name: 'Comment usage instructions on PRs'
-description: 'Comment usage instructions on PRs'
+name: "Comment usage instructions on PRs"
+description: "Comment usage instructions on PRs"
 
 inputs:
   tag:
@@ -17,7 +17,7 @@ runs:
       id: fc
       with:
         issue-number: ${{ github.event.pull_request.number }}
-        comment-author: 'github-actions[bot]'
+        comment-author: "github-actions[bot]"
         body-includes: authentik PR Installation instructions
     - name: Create or update comment
       uses: peter-evans/create-or-update-comment@v2
@@ -35,7 +35,7 @@ runs:
             ```shell
             AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
             AUTHENTIK_TAG=${{ inputs.tag }}
-            AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
+            AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:${{ inputs.tag }}
             ```
 
             For arm64, use these values:
@@ -43,7 +43,7 @@ runs:
             ```shell
             AUTHENTIK_IMAGE=ghcr.io/goauthentik/dev-server
             AUTHENTIK_TAG=${{ inputs.tag }}-arm64
-            AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
+            AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:${{ inputs.tag }}
             ```
 
             Afterwards, run the upgrade commands from the latest release notes.
@@ -56,7 +56,7 @@ runs:
             ```yaml
             authentik:
                 outposts:
-                    container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
+                    container_image_base: ghcr.io/goauthentik/dev-%(type)s:${{ inputs.tag }}
             image:
                 repository: ghcr.io/goauthentik/dev-server
                 tag: ${{ inputs.tag }}
@@ -67,7 +67,7 @@ runs:
             ```yaml
             authentik:
                 outposts:
-                    container_image_base: ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
+                    container_image_base: ghcr.io/goauthentik/dev-%(type)s:${{ inputs.tag }}
             image:
                 repository: ghcr.io/goauthentik/dev-server
                 tag: ${{ inputs.tag }}-arm64

@@ -60,8 +60,6 @@ jobs:
           - proxy
           - ldap
           - radius
-        arch:
-          - "linux/amd64"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -89,12 +87,13 @@ jobs:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
             ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}
-            ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.sha }}
+            ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.sha }}
+            ghcr.io/goauthentik/dev-${{ matrix.type }}:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}
           file: ${{ matrix.type }}.Dockerfile
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
-          platforms: ${{ matrix.arch }}
+          platforms: linux/amd64,linux/arm64
           context: .
   build-binary:
     timeout-minutes: 120
