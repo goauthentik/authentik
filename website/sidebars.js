@@ -132,6 +132,7 @@ module.exports = {
             items: [
                 "flow/layouts",
                 "flow/inspector",
+                "flow/context/index",
                 {
                     type: "category",
                     label: "Examples",

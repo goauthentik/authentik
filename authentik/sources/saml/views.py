@@ -40,11 +40,7 @@ from authentik.sources.saml.models import SAMLBindingTypes, SAMLSource
 from authentik.sources.saml.processors.metadata import MetadataProcessor
 from authentik.sources.saml.processors.request import RequestProcessor
 from authentik.sources.saml.processors.response import ResponseProcessor
-from authentik.stages.consent.stage import (
-    PLAN_CONTEXT_CONSENT_HEADER,
-    PLAN_CONTEXT_CONSENT_TITLE,
-    ConsentStageView,
-)
+from authentik.stages.consent.stage import PLAN_CONTEXT_CONSENT_HEADER, ConsentStageView
 
 LOGGER = get_logger()
 
@@ -128,7 +124,6 @@ class InitiateView(View):
         injected_stages = []
         plan_kwargs = {
             PLAN_CONTEXT_TITLE: f"Redirecting to {source.name}...",
-            PLAN_CONTEXT_CONSENT_TITLE: f"Redirecting to {source.name}...",
             PLAN_CONTEXT_ATTRS: {
                 "SAMLRequest": saml_request,
                 "RelayState": relay_state,
