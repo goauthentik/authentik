@@ -1,6 +1,5 @@
 #!/bin/bash -e
 MODE_FILE="${TMPDIR}/authentik-mode"
-WORKER_HEARTBEAT="${TMPDIR}/authentik-worker"
 
 function log {
     printf '{"event": "%s", "level": "info", "logger": "bootstrap"}\n' "$@" > /dev/stderr
@@ -38,6 +37,14 @@ function check_if_root {
     exec chpst -u authentik:$GROUP env HOME=/authentik $1
 }
 
+function run_authentik {
+    if [[ -x "$(command -v authentik)" ]]; then
+        exec authentik $@
+    else
+        exec go run -v ./cmd/server/ $@
+    fi
+}
+
 function set_mode {
     echo $1 > $MODE_FILE
     trap cleanup EXIT
@@ -56,11 +63,7 @@ if [[ "$1" == "server" ]]; then
     if [[ ! -z "${AUTHENTIK_BOOTSTRAP_PASSWORD}" || ! -z "${AUTHENTIK_BOOTSTRAP_TOKEN}" ]]; then
         python -m manage bootstrap_tasks
     fi
-    if [[ -x "$(command -v authentik)" ]]; then
-        exec authentik
-    else
-        exec go run -v ./cmd/server/
-    fi
+    run_authentik
 elif [[ "$1" == "worker" ]]; then
     wait_for_db
     set_mode "worker"
@@ -77,18 +80,7 @@ elif [[ "$1" == "test-all" ]]; then
     chown authentik:authentik /unittest.xml
     check_if_root "python -m manage test authentik"
 elif [[ "$1" == "healthcheck" ]]; then
-    mode=$(cat $MODE_FILE)
-    if [[ $mode == "server" ]]; then
-        exec curl --user-agent "goauthentik.io lifecycle Healthcheck" -I http://localhost:9000/-/health/ready/
-    elif [[ $mode == "worker" ]]; then
-        mtime=$(date -r $WORKER_HEARTBEAT +"%s")
-        time=$(date +"%s")
-        if [ "$(( $time - $mtime ))" -gt "30" ]; then
-            log "Worker hasn't updated heartbeat in 30 seconds"
-            exit 1
-        fi
-        exit 0
-    fi
+    run_authentik healthcheck $(cat $MODE_FILE)
 elif [[ "$1" == "dump_config" ]]; then
     exec python -m authentik.lib.config
 elif [[ "$1" == "debug" ]]; then
