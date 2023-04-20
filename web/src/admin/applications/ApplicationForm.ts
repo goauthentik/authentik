@@ -60,7 +60,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
             });
         }
         const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.getFormFiles()["metaIcon"];
             if (icon || this.clearIcon) {
                 await new CoreApi(DEFAULT_CONFIG).coreApplicationsSetIconCreate({
@@ -195,7 +195,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                             ${t`If checked, the launch URL will open in a new browser tab or window from the user's application library.`}
                         </p>
                     </ak-form-element-horizontal>
-                    ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.SaveMedia)
+                    ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
                         ? html`<ak-form-element-horizontal label=${t`Icon`} name="metaIcon">
                                   <input type="file" value="" class="pf-c-form-control" />
                                   ${this.instance?.metaIcon

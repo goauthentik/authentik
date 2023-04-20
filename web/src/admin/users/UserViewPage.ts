@@ -197,7 +197,7 @@ export class UserViewPage extends AKElement {
                             </ak-forms-modal>
                         </div>
                         ${rootInterface()?.config?.capabilities.includes(
-                            CapabilitiesEnum.Impersonate,
+                            CapabilitiesEnum.CanImpersonate,
                         )
                             ? html`
                                   <div class="pf-c-card__footer">

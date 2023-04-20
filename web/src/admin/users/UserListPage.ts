@@ -149,7 +149,7 @@ export class UserListPage extends TablePage<User> {
                         <i class="fas fa-edit"></i>
                     </button>
                 </ak-forms-modal>
-                ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.Impersonate)
+                ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate)
                     ? html`
                           <a
                               class="pf-c-button pf-m-tertiary"
