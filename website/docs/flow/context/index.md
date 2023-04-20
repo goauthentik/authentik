@@ -15,7 +15,7 @@ Any data can be stored in the flow context, however there are some reserved keys
 
 ## Context dictionary and reserved keys
 
-This section describes the data objects (the context) that are used in authentik, and provides a list of keys, what they are used for and when they are set.
+This section describes the data (the context) that are used in authentik, and provides a list of keys, what they are used for and when they are set.
 
 :::warning
 Keys prefixed with `goauthentik.io` are used internally by authentik and are subject to change without notice, and should not be modified in policies in most cases.
