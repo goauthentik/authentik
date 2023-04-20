@@ -53,7 +53,7 @@ Stores the final redirect URL that the user's browser will be sent to after the 
 
 If _Show matched user_ is disabled, this key will hold the user identifier entered by the user in the identification stage.
 
-Stores the final redirect that the user's browser will be sent to after the flow is finished executing successfully. This is set when an un-authenticated user attempts to access a secured application, and when a user authenticates/enrolls with an external source.
+Stores the final redirect URL that the user's browser will be sent to after the flow is finished executing successfully. This is set when an un-authenticated user attempts to access a secured application, and when a user authenticates/enrolls with an external source.
 
 #### `application` (Application object)
 
