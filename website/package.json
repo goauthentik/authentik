@@ -22,7 +22,7 @@
         "@mdx-js/react": "^1.6.22",
         "clsx": "^1.2.1",
         "disqus-react": "^1.1.5",
-        "postcss": "^8.4.22",
+        "postcss": "^8.4.23",
         "rapidoc": "^9.3.4",
         "react": "^17.0.2",
         "react-before-after-slider-component": "^1.1.8",
