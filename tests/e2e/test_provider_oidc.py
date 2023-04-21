@@ -102,6 +102,8 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
             self.driver.find_element(By.CLASS_NAME, "pf-c-title").text,
             "Redirect URI Error",
         )
+        # Test
+        raise ValueError()
 
     @retry()
     @apply_blueprint(
