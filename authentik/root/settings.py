@@ -1,7 +1,8 @@
 """root settings for authentik"""
 
+import ast
+import base64
 import importlib
-import json
 import logging
 import os
 from hashlib import sha512
@@ -190,12 +191,12 @@ CACHES = {
         "LOCATION": f"{CONFIG.y('redis.url')}",
         "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
         "OPTIONS": {
-            "REDIS_CLIENT_CLASS": "authentik.root.redis_middleware.CustomClient",
+            "CLIENT_CLASS": "authentik.root.redis_middleware_django.CustomClient",
         },
         "KEY_PREFIX": "authentik_cache",
     }
 }
-DJANGO_REDIS_CONNECTION_FACTORY = "authentik.root.redis_middleware.CustomConnectionFactory"
+DJANGO_REDIS_CONNECTION_FACTORY = "authentik.root.redis_middleware_django.CustomConnectionFactory"
 DJANGO_REDIS_SCAN_ITERSIZE = 1000
 DJANGO_REDIS_IGNORE_EXCEPTIONS = True
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = True
@@ -339,9 +340,13 @@ CELERY_BEAT_SCHEDULE = {
 }
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
-CELERY_BROKER_URL = f"{CONFIG.y('redis.broker_url')}"
-CELERY_BROKER_TRANSPORT_OPTIONS = json.loads(f"{CONFIG.y('redis.broker_transport_options', '{}')}")
-CELERY_RESULT_BACKEND = f"{CONFIG.y('redis.url')}"
+# TODO: Generate broker URL and transport options from redis.url if not specified
+CELERY_BROKER_URL = CONFIG.y("redis.broker_url")
+if CONFIG.y("redis.broker_transport_options", ""):
+    CELERY_BROKER_TRANSPORT_OPTIONS = ast.literal_eval(
+        base64.b64decode(CONFIG.y("redis.broker_transport_options", "")).decode('utf-8')
+    )
+CELERY_RESULT_BACKEND = CONFIG.y("redis.url")
 
 # Sentry integration
 env = get_env()
