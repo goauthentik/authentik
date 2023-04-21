@@ -85,7 +85,7 @@ class OutpostConsumer(AuthJsonConsumer):
             instance_uuid=self.last_uid,
         )
 
-    def receive_json(self, content: Data):
+    def receive_json(self, content: Data, **kwargs):
         msg = from_dict(WebsocketMessage, content)
         uid = msg.args.get("uuid", self.channel_name)
         self.last_uid = uid

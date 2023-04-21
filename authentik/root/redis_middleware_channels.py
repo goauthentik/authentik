@@ -1,4 +1,5 @@
 from asyncio import get_running_loop, Lock
+from copy import deepcopy
 from urllib.parse import urlparse
 
 from channels_redis.core import RedisChannelLayer
@@ -15,7 +16,9 @@ class CustomLoopLayer:
 
     def get_connection(self, index):
         if index not in self._connections:
-            self._connections[index] = get_client(self.channel_layer.config, use_async=True)
+            self._connections[index] = get_client(self.channel_layer.config[index], use_async=True)
+            if hasattr(self._connections[index], "auto_close_connection_pool"):
+                self._connections[index].auto_close_connection_pool = True
 
         return self._connections[index]
 
@@ -23,7 +26,7 @@ class CustomLoopLayer:
         async with self._lock:
             for index in list(self._connections):
                 connection = self._connections.pop(index)
-                await connection.close(close_connection_pool=True)
+                await connection.close()
 
 
 class CustomChannelLayer(RedisChannelLayer):
@@ -39,9 +42,21 @@ class CustomChannelLayer(RedisChannelLayer):
     ):
         url = urlparse(url)
         config = process_config(url, *get_redis_options(url))
-        self.config = config
-        super().__init__(config["addrs"], prefix, expiry, group_expiry, capacity, channel_capacity,
+        self.config = [config]
+        if config["type"] == "sentinel":
+            config_slave = deepcopy(config)
+            config_slave["is_slave"] = True
+            self.config.append(config_slave)
+        super().__init__([], prefix, expiry, group_expiry, capacity, channel_capacity,
                          symmetric_encryption_keys)
+
+    @property
+    def ring_size(self):
+        return len(self.config)
+
+    @ring_size.setter
+    def ring_size(self, value):
+        return
 
     def connection(self, index):
         """
