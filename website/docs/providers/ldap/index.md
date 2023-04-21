@@ -33,11 +33,6 @@ The following fields are currently sent for users:
 -   `ak-active`: "true" if the account is active, otherwise "false"
 -   `ak-superuser`: "true" if the account is part of a group with superuser permissions, otherwise "false"
 
-:::warning
-The use of the `goauthentik.io/ldap/active` and `goauthentik.io/ldap/superuser` attributes is deprecated as of authentik 2023.3. They will be removed completely in a future release.
-Use the replacements fields above instead.
-:::
-
 The following fields are current set for groups:
 
 -   `cn`: The group's name

@@ -2,7 +2,6 @@ package group
 
 import (
 	"strconv"
-	"strings"
 
 	"github.com/nmcclain/ldap"
 	"goauthentik.io/api/v3"
@@ -28,24 +27,6 @@ func (lg *LDAPGroup) Entry() *ldap.Entry {
 	}, func(value []string) []string {
 		return value
 	})
-	rawAttrs := utils.AttributesToLDAP(lg.Attributes, func(key string) string {
-		return key
-	}, func(value []string) []string {
-		return value
-	})
-	// Only append attributes that don't already exist
-	// TODO: Remove in 2023.3
-	for _, rawAttr := range rawAttrs {
-		exists := false
-		for _, attr := range attrs {
-			if strings.EqualFold(attr.Name, rawAttr.Name) {
-				exists = true
-			}
-		}
-		if !exists {
-			attrs = append(attrs, rawAttr)
-		}
-	}
 
 	objectClass := []string{constants.OCGroup, constants.OCGroupOfUniqueNames, constants.OCGroupOfNames, constants.OCAKGroup, constants.OCPosixGroup}
 	if lg.IsVirtualGroup {
@@ -53,9 +34,6 @@ func (lg *LDAPGroup) Entry() *ldap.Entry {
 	}
 
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
-		// Old fields for backwards compatibility
-		"goauthentik.io/ldap/superuser": {strconv.FormatBool(lg.IsSuperuser)},
-		// End old fields
 		"ak-superuser":   {strconv.FormatBool(lg.IsSuperuser)},
 		"objectClass":    objectClass,
 		"member":         lg.Member,

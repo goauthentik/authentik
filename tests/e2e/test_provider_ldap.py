@@ -229,12 +229,6 @@ class TestProviderLDAP(SeleniumTestCase):
                         "homeDirectory": [
                             f"/home/{o_user.username}",
                         ],
-                        # Old fields for backwards compatibility
-                        "goauthentik.io/ldap/active": ["true"],
-                        "goauthentik.io/ldap/superuser": ["false"],
-                        "goauthentik.io/user/override-ips": ["true"],
-                        "goauthentik.io/user/service-account": ["true"],
-                        # End old fields
                         "ak-active": ["true"],
                         "ak-superuser": ["false"],
                         "goauthentikio-user-override-ips": ["true"],
@@ -264,12 +258,6 @@ class TestProviderLDAP(SeleniumTestCase):
                         "homeDirectory": [
                             f"/home/{embedded_account.username}",
                         ],
-                        # Old fields for backwards compatibility
-                        "goauthentik.io/ldap/active": ["true"],
-                        "goauthentik.io/ldap/superuser": ["false"],
-                        "goauthentik.io/user/override-ips": ["true"],
-                        "goauthentik.io/user/service-account": ["true"],
-                        # End old fields
                         "ak-active": ["true"],
                         "ak-superuser": ["false"],
                         "goauthentikio-user-override-ips": ["true"],
@@ -302,10 +290,6 @@ class TestProviderLDAP(SeleniumTestCase):
                         "homeDirectory": [
                             f"/home/{self.user.username}",
                         ],
-                        # Old fields for backwards compatibility
-                        "goauthentik.io/ldap/active": ["true"],
-                        "goauthentik.io/ldap/superuser": ["true"],
-                        # End old fields
                         "ak-active": ["true"],
                         "ak-superuser": ["true"],
                         "extraAttribute": ["bar"],
