@@ -3,6 +3,7 @@ import json
 import os
 from functools import lru_cache, wraps
 from os import environ
+from sys import stderr
 from time import sleep
 from typing import Any, Callable, Optional
 
@@ -60,6 +61,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.user = create_test_admin_user()
         if specs := self.get_container_specs():
             self.container = self._start_container(specs)
+        if IS_CI:
+            print("::group::authentik Logs", file=stderr)
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
@@ -123,9 +126,11 @@ class SeleniumTestCase(StaticLiveServerTestCase):
 
     def tearDown(self):
         if IS_CI:
+            print("::endgroup::", file=stderr)
+        if IS_CI:
             print("::group::Browser logs")
         for line in self.driver.get_log("browser"):
-            self.logger.debug(line["message"], source=line["source"], level=line["level"])
+            print(line["message"])
         if IS_CI:
             print("::endgroup::")
         if self.container:
