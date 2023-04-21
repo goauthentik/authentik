@@ -14,6 +14,7 @@ from redis.asyncio.cluster import RedisCluster as AsyncRedisCluster
 from redis.asyncio.cluster import ClusterNode as AsyncClusterNode
 from redis.asyncio.sentinel import Sentinel as AsyncSentinel
 from redis.asyncio.sentinel import SentinelConnectionPool as AsyncSentinelConnectionPool
+from redis.exceptions import ConnectionError, TimeoutError
 from redis.backoff import NoBackoff, ExponentialBackoff, ConstantBackoff, DEFAULT_CAP, DEFAULT_BASE
 from redis.client import StrictRedis
 from redis.cluster import ClusterNode, RedisCluster
