@@ -25,7 +25,6 @@ var healthcheckCmd = &cobra.Command{
 			os.Exit(1)
 		}
 		mode := args[0]
-		config.Get()
 		exitCode := 1
 		log.WithField("mode", mode).Debug("checking health")
 		switch strings.ToLower(mode) {
