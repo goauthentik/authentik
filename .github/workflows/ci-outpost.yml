@@ -99,6 +99,8 @@ jobs:
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: linux/amd64,linux/arm64
           context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
   build-binary:
     timeout-minutes: 120
     needs:

@@ -220,6 +220,8 @@ jobs:
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
             VERSION=${{ steps.ev.outputs.version }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
       - name: Comment on PR
         if: github.event_name == 'pull_request'
         continue-on-error: true
@@ -266,3 +268,5 @@ jobs:
             VERSION=${{ steps.ev.outputs.version }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: linux/arm64
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
