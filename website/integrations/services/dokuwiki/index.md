@@ -16,7 +16,7 @@ DokuWiki is a wiki application licensed under GPLv2 and written in the PHP progr
 
 The following placeholders will be used:
 
--   `service.company` is the FQDN of the DokiWiki install.
+-   `dokuwiki.company` is the FQDN of the DokiWiki install.
 -   `authentik.company` is the FQDN of the authentik install.
 
 ## Service Configuration
@@ -60,11 +60,11 @@ In the _Configuration Settings_ section in the _Administration_ interface naviga
 ### Provider
 In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
 
--   Redirect URI: The _Callback URL / Redirect URI_ from _plugin»oauth»info_, usually `service.company/doku.php`
+-   Redirect URI: The _Callback URL / Redirect URI_ from _plugin»oauth»info_, usually `dokuwiki.company/doku.php`
 -   Signing Key: Select any available key
 
 Note the _client ID_ and _client secret_, then save the provider. If you need to retrieve these values, you can do so by editing the provider.
 
 ### Application
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
-Set the Launch URL to the _Callback URL / Redirect URI_ (`service.company/doku.php`).
+Set the Launch URL to the _Callback URL / Redirect URI_ (`dokuwiki.company/doku.php`).
