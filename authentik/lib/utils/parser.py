@@ -1,7 +1,9 @@
-import os
 from asyncio import PriorityQueue, LifoQueue
 from copy import deepcopy
+from os import sched_getaffinity
 from socket import timeout as SocketTimeout
+from socket import TCP_KEEPCNT, TCP_KEEPINTVL
+from sys import platform
 from typing import Tuple, Dict
 from urllib.parse import parse_qs, unquote, urlparse, ParseResultBytes
 
@@ -91,6 +93,29 @@ def parse_hostport(s, default_port=6379):
     return out[0], port
 
 
+def configure_tcp_keepalive(kwargs):
+    """Set TCP keepalive on the opened sockets for redis.
+
+    It activates after 1 second (TCP_KEEPALIVE or TCP_KEEPIDLE) of idleness,
+    then sends a keepalive ping once every minute by default (TCP_KEEPINTVL),
+    and closes the connection after 5 failed pings by default (TCP_KEEPCNT)
+    """
+    kwargs.setdefault("socket_keepalive", True)
+    if platform == "darwin":
+        from socket import TCP_KEEPALIVE
+        activate_keepalive_sec = TCP_KEEPALIVE
+    else:
+        from socket import TCP_KEEPIDLE
+        activate_keepalive_sec = TCP_KEEPIDLE
+    kwargs.setdefault("socket_keepalive_options", {
+        activate_keepalive_sec: 5 * 60,
+        TCP_KEEPINTVL: kwargs.pop("idle_check_frequency", 60),
+        TCP_KEEPCNT: kwargs.pop("idle_timeout", 5 * 60) // kwargs.pop("idle_check_frequency", 60)
+    })
+
+    return kwargs
+
+
 def get_redis_options(url: ParseResultBytes) -> Tuple[Dict, Dict, Dict]:
     pool_kwargs = {}
     redis_kwargs = {}
@@ -105,6 +130,7 @@ def get_redis_options(url: ParseResultBytes) -> Tuple[Dict, Dict, Dict]:
     elif url.username:
         redis_kwargs["password"] = unquote(url.username)
 
+    # TODO: Check if data type is correct for each option
     for name, value in parse_qs(url.query).items():
         if value and len(value) > 0 and isinstance(name, str):
             value_str = unquote(value[0])
@@ -162,6 +188,10 @@ def get_redis_options(url: ParseResultBytes) -> Tuple[Dict, Dict, Dict]:
                     pool_kwargs["max_connections"] = int(value[0])
                 case "pooltimeout":
                     pool_kwargs["timeout"] = val_to_sec(value)
+                case "idletimeout":
+                    redis_kwargs["idle_timeout"] = int(val_to_sec(value))
+                case "idlecheckfrequency":
+                    redis_kwargs["idle_check_frequency"] = int(val_to_sec(value))
                 case "maxidleconns":
                     redis_kwargs["max_connections"] = int(value[0])
                 case "sentinelmasterid" | "mastername":
@@ -179,19 +209,25 @@ def get_redis_options(url: ParseResultBytes) -> Tuple[Dict, Dict, Dict]:
                     if to_bool(value_str):
                         tls_kwargs["ssl_cert_reqs"] = "none"
                 # Later on use .readonly() on the resulting redis object!
-                case "minidleconns" | "maxredirects" | "routebylatency" | "routerandomly" | "writetimeout":
-                    # Replace with internal logging of authentik!
+                case "minidleconns" | "maxredirects" | "routebylatency" | "routerandomly":
+                    # TODO: Replace with internal logging of authentik!
                     print(
-                        "The configuration option \"" + name.lower() + "\" is currently not supported by the Python redis implementation and thereby ignored.")
+                        "The configuration option \"" + name.lower() +
+                        "\" is currently not supported by the Python redis implementation and thereby ignored."
+                    )
                 case _:
                     # Replace with internal logging of authentik!
                     raise ValueError(
-                        "Detected unknown configuration option \"" + name.lower() + "\"! Please check your configuration.")
+                        "Detected unknown configuration option \"" + name.lower() +
+                        "\"! Please check your configuration."
+                    )
 
     redis_kwargs["retry"] = retries_and_backoff
     redis_kwargs.setdefault("cluster_error_retry_attempts", 3)
-    redis_kwargs.setdefault("socket_connect_timeout", 3)
+    redis_kwargs.setdefault("socket_connect_timeout", 5)
     redis_kwargs.setdefault("socket_timeout", 3)
+
+    redis_kwargs = configure_tcp_keepalive(redis_kwargs)
 
     if url.hostname:
         host = unquote(url.netloc).split("@")
@@ -208,7 +244,7 @@ def get_redis_options(url: ParseResultBytes) -> Tuple[Dict, Dict, Dict]:
 
     try:
         # Retreive the number of cpus that can be used
-        max_connections = len(os.sched_getaffinity(0)) * 10
+        max_connections = len(sched_getaffinity(0)) * 10
     except AttributeError:
         # Use default value of BlockingConnectionPool
         max_connections = 50
@@ -369,7 +405,7 @@ def get_client(config, use_async=False):
             )
 
     config["redis_kwargs"].setdefault("retry", retry_class(ExponentialBackoff(DEFAULT_CAP, DEFAULT_BASE), 3))
-    config["redis_kwargs"].setdefault("retry_on_error", (ConnectionError, TimeoutError, SocketTimeout))
+    config["redis_kwargs"].setdefault("retry_on_error", [ConnectionError, TimeoutError, SocketTimeout])
 
     match config["type"]:
         case "sentinel":
