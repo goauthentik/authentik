@@ -21,7 +21,7 @@ runs:
         python-version: "3.11"
         cache: "poetry"
     - name: Setup node
-      uses: actions/setup-node@v3.1.0
+      uses: actions/setup-node@v3
       with:
         node-version: "20"
         cache: "npm"

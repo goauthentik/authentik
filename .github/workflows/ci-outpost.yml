@@ -30,6 +30,7 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           args: --timeout 5000s
+          skip-pkg-cache: true
   test-unittest:
     runs-on: ubuntu-latest
     steps:
