@@ -250,7 +250,7 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "authentik.root.redis_middleware.CustomChannelLayer",
+        "BACKEND": "authentik.root.redis_middleware_channels.CustomChannelLayer",
         "CONFIG": {
             "url": f"{CONFIG.y('redis.url')}",
             "prefix": "authentik_channels",
