@@ -31,6 +31,7 @@ from authentik.core.tests.utils import create_test_admin_user
 RETRIES = int(environ.get("RETRIES", "3"))
 IS_CI = "CI" in environ
 
+
 def get_docker_tag() -> str:
     """Get docker-tag based off of CI variables"""
     env_pr_branch = "GITHUB_HEAD_REF"
