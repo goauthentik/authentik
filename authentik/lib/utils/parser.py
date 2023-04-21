@@ -1,5 +1,6 @@
 import os
 from asyncio import PriorityQueue, LifoQueue
+from copy import deepcopy
 from socket import timeout as SocketTimeout
 from typing import Tuple, Dict
 from urllib.parse import parse_qs, unquote, urlparse, ParseResultBytes
@@ -88,14 +89,12 @@ def parse_hostport(s, default_port=6379):
     return out[0], port
 
 
-# TODO: Check which errors are retried in go-redis
-def get_redis_options(url: ParseResultBytes, use_async=False) -> Tuple[Dict, Dict, Dict]:
+def get_redis_options(url: ParseResultBytes) -> Tuple[Dict, Dict, Dict]:
     pool_kwargs = {}
     redis_kwargs = {}
     tls_kwargs = {}
 
     retries_and_backoff = {}
-    retry_class = AsyncRetry if use_async else Retry
 
     if url.password:
         redis_kwargs["password"] = unquote(url.password)
@@ -187,34 +186,8 @@ def get_redis_options(url: ParseResultBytes, use_async=False) -> Tuple[Dict, Dic
                     raise ValueError(
                         "Detected unknown configuration option \"" + name.lower() + "\"! Please check your configuration.")
 
-    if "retry" in retries_and_backoff:
-        if "min_backoff" in retries_and_backoff and "max_backoff" in retries_and_backoff:
-            redis_kwargs["retry"] = retry_class(
-                ExponentialBackoff(
-                    retries_and_backoff["max_backoff"],
-                    retries_and_backoff["min_backoff"]
-                ),
-                retries_and_backoff["retry"]
-            )
-        elif "min_backoff" in retries_and_backoff:
-            redis_kwargs["retry"] = retry_class(
-                ConstantBackoff(retries_and_backoff["min_backoff"]),
-                retries_and_backoff["retry"]
-            )
-        elif "max_backoff" in retries_and_backoff:
-            redis_kwargs["retry"] = retry_class(
-                ConstantBackoff(retries_and_backoff["max_backoff"]),
-                retries_and_backoff["retry"]
-            )
-        else:
-            redis_kwargs["retry"] = retry_class(
-                NoBackoff(),
-                retries_and_backoff["retry"]
-            )
-
+    redis_kwargs["retry"] = retries_and_backoff
     redis_kwargs.setdefault("cluster_error_retry_attempts", 3)
-    redis_kwargs.setdefault("retry", retry_class(ExponentialBackoff(), 3))
-    redis_kwargs.setdefault("retry_on_error", (ConnectionError, TimeoutError, SocketTimeout))
     redis_kwargs.setdefault("socket_connect_timeout", 3)
     redis_kwargs.setdefault("socket_timeout", 3)
 
@@ -259,7 +232,6 @@ def get_redis_options(url: ParseResultBytes, use_async=False) -> Tuple[Dict, Dic
 
     tls_kwargs.update(
         {
-            "connection_class": AsyncSSLConnection if use_async else SSLConnection,
             "ssl_keyfile": None,
             "ssl_certfile": None,
             "ssl_cert_reqs": "required",
@@ -278,7 +250,7 @@ def get_redis_options(url: ParseResultBytes, use_async=False) -> Tuple[Dict, Dic
     return pool_kwargs, redis_kwargs, tls_kwargs
 
 
-def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs, use_async=False):
+def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
     config = {}
 
     addrs = redis_kwargs.pop("addrs")
@@ -289,6 +261,7 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs, use_async=False):
     scheme_parts = url.scheme.split("+")
 
     if scheme_parts[0] == "rediss":
+        config["tls"] = True
         redis_kwargs |= tls_kwargs
 
     if len(scheme_parts) > 1:
@@ -297,7 +270,7 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs, use_async=False):
                 if not service_name:
                     raise ValueError("For sentinel usage a mastername has to be specified!")
                 # Update username / password for sentinel connection
-                sentinel_kwargs = redis_kwargs.copy()
+                sentinel_kwargs = deepcopy(redis_kwargs)
                 if sentinel_username:
                     sentinel_kwargs["username"] = sentinel_username
                 elif "username" in sentinel_kwargs:
@@ -312,29 +285,28 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs, use_async=False):
                 if "port" in redis_kwargs:
                     redis_kwargs.pop("port")
                 config["type"] = "sentinel"
-                config["pool_kwargs"] = pool_kwargs.copy()
-                config["redis_kwargs"] = redis_kwargs.copy()
+                config["pool_kwargs"] = deepcopy(pool_kwargs)
+                config["redis_kwargs"] = deepcopy(redis_kwargs)
                 config["service_name"] = service_name
                 config["sentinels"] = []
                 # Manually override sentinels in order to use BlockingConnectionPool
                 for hostname, port in addrs:
                     sentinel_kwargs["host"] = hostname
                     sentinel_kwargs["port"] = port
-                    config["sentinels"] += [sentinel_kwargs.copy()]
+                    config["sentinels"] += [deepcopy(sentinel_kwargs)]
             case "cluster" | "clusters":
                 config["type"] = "cluster"
-                config["pool_kwargs"] = pool_kwargs.copy()
-                config["redis_kwargs"] = redis_kwargs.copy()
+                config["pool_kwargs"] = deepcopy(pool_kwargs)
+                config["redis_kwargs"] = deepcopy(redis_kwargs)
                 config["addrs"] = addrs
                 config["cluster_error_retry_attempts"] = cluster_error_retry_attempts
             case "socket":
                 if scheme_parts[0] == "rediss":
                     raise ValueError("Redis unix socket connection does not support SSL!")
-                redis_kwargs["connection_class"] = AsyncUnixDomainSocketConnection if use_async else UnixDomainSocketConnection
                 redis_kwargs["path"] = (addrs[0][0] + ":" + str(addrs[0][1]), url.path)
                 config["type"] = "socket"
-                config["pool_kwargs"] = pool_kwargs.copy()
-                config["redis_kwargs"] = redis_kwargs.copy()
+                config["pool_kwargs"] = deepcopy(pool_kwargs)
+                config["redis_kwargs"] = deepcopy(redis_kwargs)
             case _:
                 raise ValueError("Unknown scheme found in redis connection URL: " + url.scheme)
 
@@ -345,8 +317,8 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs, use_async=False):
         redis_kwargs["host"] = addrs[0][0]
         redis_kwargs["port"] = addrs[0][1]
         config["type"] = "default"
-        config["pool_kwargs"] = pool_kwargs.copy()
-        config["redis_kwargs"] = redis_kwargs.copy()
+        config["pool_kwargs"] = deepcopy(pool_kwargs)
+        config["redis_kwargs"] = deepcopy(redis_kwargs)
 
     return config
 
@@ -359,11 +331,49 @@ def get_client(config, use_async=False):
     redis_cluster_class = AsyncRedisCluster if use_async else RedisCluster
     sentinel_class = AsyncSentinel if use_async else Sentinel
     cluster_node_class = AsyncClusterNode if use_async else ClusterNode
+    retry_class = AsyncRetry if use_async else Retry
+
+    if config.get("tls", False):
+        config["redis_kwargs"].update(
+            {"connection_class": AsyncSSLConnection if use_async else SSLConnection}
+        )
+
+    retries_and_backoff = config["redis_kwargs"].pop("retry")
+    if "retry" in retries_and_backoff:
+        if "min_backoff" in retries_and_backoff and "max_backoff" in retries_and_backoff:
+            config["redis_kwargs"]["retry"] = retry_class(
+                ExponentialBackoff(
+                    retries_and_backoff["max_backoff"],
+                    retries_and_backoff["min_backoff"]
+                ),
+                retries_and_backoff["retry"]
+            )
+        elif "min_backoff" in retries_and_backoff:
+            config["redis_kwargs"]["retry"] = retry_class(
+                ConstantBackoff(retries_and_backoff["min_backoff"]),
+                retries_and_backoff["retry"]
+            )
+        elif "max_backoff" in retries_and_backoff:
+            config["redis_kwargs"]["retry"] = retry_class(
+                ConstantBackoff(retries_and_backoff["max_backoff"]),
+                retries_and_backoff["retry"]
+            )
+        else:
+            config["redis_kwargs"]["retry"] = retry_class(
+                NoBackoff(),
+                retries_and_backoff["retry"]
+            )
+
+    config["redis_kwargs"].setdefault("retry", retry_class(ExponentialBackoff(), 3))
+    config["redis_kwargs"].setdefault("retry_on_error", (ConnectionError, TimeoutError, SocketTimeout))
 
     match config["type"]:
         case "sentinel":
             sentinel = sentinel_class(sentinels=[], **config["redis_kwargs"])
             for sentinel_config in config["sentinels"]:
+                if "connection_class" in config["redis_kwargs"]:
+                    sentinel_config["connection_class"] = config["redis_kwargs"]["connection_class"]
+                sentinel_config["retry"] = config["redis_kwargs"]["retry"]
                 connection_pool = connection_pool_class(**config["pool_kwargs"], **sentinel_config)
                 sentinel_client = redis_class(connection_pool=connection_pool)
                 if config["redis_kwargs"].get("readonly", False):
@@ -380,6 +390,7 @@ def get_client(config, use_async=False):
                 connection_pool=connection_pool
             )
         case "socket":
+            config["redis_kwargs"]["connection_class"] = AsyncUnixDomainSocketConnection if use_async else UnixDomainSocketConnection
             connection_pool = connection_pool_class(**config["pool_kwargs"], **config["redis_kwargs"])
             client = redis_class(connection_pool=connection_pool)
         case "default":
