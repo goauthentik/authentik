@@ -51,6 +51,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     user: User
 
     def setUp(self):
+        if IS_CI:
+            print("::group::authentik Logs", file=stderr)
         super().setUp()
         # pylint: disable=invalid-name
         self.maxDiff = None
@@ -62,18 +64,6 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         self.user = create_test_admin_user()
         if specs := self.get_container_specs():
             self.container = self._start_container(specs)
-
-    @classmethod
-    def setUpClass(cls) -> None:
-        if IS_CI:
-            print("::group::authentik Logs", file=stderr)
-        super().setUpClass()
-
-    @classmethod
-    def tearDownClass(cls):
-        super().tearDownClass()
-        if IS_CI:
-            print("::endgroup::", file=stderr)
 
     def get_container_image(self, base: str) -> str:
         """Try to pull docker image based on git branch, fallback to main if not found."""
@@ -136,6 +126,9 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
     def tearDown(self):
+        super().tearDown()
+        if IS_CI:
+            print("::endgroup::", file=stderr)
         if IS_CI:
             print("::group::Browser logs")
         for line in self.driver.get_log("browser"):
@@ -146,7 +139,6 @@ class SeleniumTestCase(StaticLiveServerTestCase):
             self.output_container_logs()
             self.container.kill()
         self.driver.quit()
-        super().tearDown()
 
     def wait_for_url(self, desired_url):
         """Wait until URL is `desired_url`."""
