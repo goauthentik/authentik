@@ -301,20 +301,6 @@ files = [
 ]
 
 [[package]]
-name = "asyncio"
-version = "3.4.3"
-description = "reference implementation of PEP 3156"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "asyncio-3.4.3-cp33-none-win32.whl", hash = "sha256:b62c9157d36187eca799c378e572c969f0da87cd5fc42ca372d92cdb06e7e1de"},
-    {file = "asyncio-3.4.3-cp33-none-win_amd64.whl", hash = "sha256:c46a87b48213d7464f22d9a497b9eef8c1928b68320a2fa94240f969f6fec08c"},
-    {file = "asyncio-3.4.3-py3-none-any.whl", hash = "sha256:c4d18b22701821de07bd6aea8b53d21449ec0ec5680645e5317062ea21817d2d"},
-    {file = "asyncio-3.4.3.tar.gz", hash = "sha256:83360ff8bc97980e4ff25c964c7bd3923d333d177aa4f7fb736b019f26c7cb41"},
-]
-
-[[package]]
 name = "attrs"
 version = "22.1.0"
 description = "Classes Without Boilerplate"
@@ -3422,20 +3408,19 @@ wsproto = ">=0.14"
 
 [[package]]
 name = "twilio"
-version = "8.0.0"
+version = "8.1.0"
 description = "Twilio API client and TwiML generator"
 category = "main"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "twilio-8.0.0-py2.py3-none-any.whl", hash = "sha256:40212f0e03947201e0a8f84e6c2a08acd6e61f31f0c94ec04e6b9abae109113a"},
-    {file = "twilio-8.0.0.tar.gz", hash = "sha256:ee2eaaf24df4361200f18d04e14b9937de2c31f3322dd739491590d8ff7196fc"},
+    {file = "twilio-8.1.0-py2.py3-none-any.whl", hash = "sha256:19be48f21e799b9dd10e2e0a5633962438e04842864e806409f4f2dbe446a868"},
+    {file = "twilio-8.1.0.tar.gz", hash = "sha256:a31863119655cd3643f788099f6ea3fe74eea59ce3f65600f9a4931301311c08"},
 ]
 
 [package.dependencies]
 aiohttp = ">=3.8.4"
 aiohttp-retry = ">=2.8.3"
-asyncio = ">=3.4.3"
 PyJWT = ">=2.0.0,<3.0.0"
 pytz = "*"
 requests = ">=2.0.0"
