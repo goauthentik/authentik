@@ -212,6 +212,7 @@ jobs:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
             ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}
+            ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.sha }}
             ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
@@ -253,6 +254,7 @@ jobs:
           push: ${{ steps.ev.outputs.shouldBuild == 'true' }}
           tags: |
             ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-arm64
+            ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.sha }}-arm64
             ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}-arm64
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
