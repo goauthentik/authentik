@@ -47,6 +47,8 @@ class TestFlowsEnroll(SeleniumTestCase):
         self.assertEqual(user.username, "foo")
         self.assertEqual(user.name, "some name")
         self.assertEqual(user.email, "foo@bar.baz")
+        # Test
+        raise ValueError()
 
     @retry()
     @apply_blueprint(

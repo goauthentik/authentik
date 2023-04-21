@@ -28,7 +28,7 @@ from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 
 RETRIES = int(environ.get("RETRIES", "3"))
-
+IS_CI = "CI" in environ
 
 def get_docker_tag() -> str:
     """Get docker-tag based off of CI variables"""
@@ -91,8 +91,12 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def output_container_logs(self, container: Optional[Container] = None):
         """Output the container logs to our STDOUT"""
         _container = container or self.container
+        if IS_CI:
+            print(f"::group::Container logs - {_container.image.tags[0]}")
         for log in _container.logs().decode().split("\n"):
-            self.logger.info(log, source="container", container=_container.image.tags[0])
+            print(log)
+        if IS_CI:
+            print("::endgroup::")
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         """Optionally get container specs which will launched on setup, wait for the container to
@@ -118,10 +122,12 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
     def tearDown(self):
-        self.logger.debug("--------browser logs")
+        if IS_CI:
+            print("::group::Browser logs")
         for line in self.driver.get_log("browser"):
             self.logger.debug(line["message"], source=line["source"], level=line["level"])
-        self.logger.debug("--------end browser logs")
+        if IS_CI:
+            print("::endgroup::")
         if self.container:
             self.output_container_logs()
             self.container.kill()
