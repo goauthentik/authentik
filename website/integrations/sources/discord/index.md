@@ -28,7 +28,7 @@ The following placeholders will be used:
 
 5. **Click to Reveal** the Client Secret and _save it for later_
 
-6. Click **Add Redirect** and add https://authentik.company/source/oauth/callback/discord
+6. Click **Add Redirect** and add https://authentik.company/source/oauth/callback/discord/
 
 Here is an example of a completed OAuth2 screen for Discord.
 
