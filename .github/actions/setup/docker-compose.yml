@@ -2,8 +2,7 @@ version: "3.7"
 
 services:
   postgresql:
-    container_name: postgres
-    image: library/postgres:${PSQL_TAG:-12}
+    image: docker.io/library/postgres:${PSQL_TAG:-12}
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
@@ -14,8 +13,7 @@ services:
       - 5432:5432
     restart: always
   redis:
-    container_name: redis
-    image: library/redis
+    image: docker.io/library/redis
     ports:
       - 6379:6379
     restart: always
