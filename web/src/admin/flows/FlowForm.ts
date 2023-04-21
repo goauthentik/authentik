@@ -56,7 +56,7 @@ export class FlowForm extends ModelForm<Flow, string> {
             });
         }
         const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.getFormFiles()["background"];
             if (icon || this.clearBackground) {
                 await new FlowsApi(DEFAULT_CONFIG).flowsInstancesSetBackgroundCreate({
@@ -315,7 +315,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.SaveMedia)
+                    ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
                         ? html`<ak-form-element-horizontal label=${t`Background`} name="background">
                                   <input type="file" value="" class="pf-c-form-control" />
                                   ${this.instance?.background

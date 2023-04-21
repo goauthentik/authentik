@@ -51,7 +51,7 @@ gitlab_rails['omniauth_providers'] = [
       idp_cert_fingerprint: '4E:1E:CD:67:4A:67:5A:E9:6A:D0:3C:E6:DD:7A:F2:44:2E:76:00:6A',
       idp_sso_target_url: 'https://authentik.company/application/saml/<authentik application slug>/sso/binding/redirect/',
       issuer: 'https://gitlab.company',
-      name_identifier_format: 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+      name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
       attribute_statements: {
         email: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress'],
         first_name: ['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'],

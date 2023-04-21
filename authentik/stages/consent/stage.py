@@ -19,7 +19,6 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.stages.consent.models import ConsentMode, ConsentStage, UserConsent
 
 PLAN_CONTEXT_CONSENT = "consent"
-PLAN_CONTEXT_CONSENT_TITLE = "consent_title"
 PLAN_CONTEXT_CONSENT_HEADER = "consent_header"
 PLAN_CONTEXT_CONSENT_PERMISSIONS = "consent_permissions"
 PLAN_CONTEXT_CONSENT_EXTRA_PERMISSIONS = "consent_additional_permissions"
@@ -59,8 +58,6 @@ class ConsentStageView(ChallengeStageView):
             ),
             "token": token,
         }
-        if PLAN_CONTEXT_CONSENT_TITLE in self.executor.plan.context:
-            data["title"] = self.executor.plan.context[PLAN_CONTEXT_CONSENT_TITLE]
         if PLAN_CONTEXT_CONSENT_HEADER in self.executor.plan.context:
             data["header_text"] = self.executor.plan.context[PLAN_CONTEXT_CONSENT_HEADER]
         challenge = ConsentChallenge(data=data)

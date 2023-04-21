@@ -193,7 +193,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                         // Only show debug locale if debug mode is enabled
                         if (locale.code === "debug") {
                             return rootInterface()?.config?.capabilities.includes(
-                                CapabilitiesEnum.Debug,
+                                CapabilitiesEnum.CanDebug,
                             );
                         }
                         return true;

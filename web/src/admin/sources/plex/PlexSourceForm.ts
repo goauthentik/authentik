@@ -77,7 +77,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
             });
         }
         const c = await config();
-        if (c.capabilities.includes(CapabilitiesEnum.SaveMedia)) {
+        if (c.capabilities.includes(CapabilitiesEnum.CanSaveMedia)) {
             const icon = this.getFormFiles()["icon"];
             if (icon || this.clearIcon) {
                 await new SourcesApi(DEFAULT_CONFIG).sourcesAllSetIconCreate({
@@ -267,7 +267,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
                     ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
                 </p>
             </ak-form-element-horizontal>
-            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.SaveMedia)
+            ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
                 ? html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
                           <input type="file" value="" class="pf-c-form-control" />
                           ${this.instance?.icon
