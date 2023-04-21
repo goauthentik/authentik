@@ -63,8 +63,8 @@ AUTHENTIK_EMAIL__FROM=authentik@localhost
 By default, authentik listens internally on port 9000 for HTTP and 9443 for HTTPS. To change the exposed ports to 80 and 443, you can set the following variables in `.env`:
 
 ```shell
-AUTHENTIK_PORT_HTTP=80
-AUTHENTIK_PORT_HTTPS=443
+COMPOSE_PORT_HTTP=80
+COMPOSE_PORT_HTTPS=443
 ```
 
 Be sure to run `docker-compose up -d` to rebuild with the new port numbers.
