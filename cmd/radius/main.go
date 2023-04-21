@@ -9,14 +9,13 @@ import (
 	"github.com/spf13/cobra"
 
 	"goauthentik.io/internal/common"
-	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/debug"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ak/healthcheck"
-	"goauthentik.io/internal/outpost/ldap"
+	"goauthentik.io/internal/outpost/radius"
 )
 
-const helpMessage = `authentik ldap
+const helpMessage = `authentik radius
 
 Required environment variables:
 - AUTHENTIK_HOST: URL to connect to (format "http://authentik.company")
@@ -37,14 +36,14 @@ var rootCmd = &cobra.Command{
 	},
 	Run: func(cmd *cobra.Command, args []string) {
 		debug.EnableDebugServer()
-		akURL := config.Get().AuthentikHost
-		if akURL == "" {
+		akURL, found := os.LookupEnv("AUTHENTIK_HOST")
+		if !found {
 			fmt.Println("env AUTHENTIK_HOST not set!")
 			fmt.Println(helpMessage)
 			os.Exit(1)
 		}
-		akToken := config.Get().AuthentikToken
-		if akToken == "" {
+		akToken, found := os.LookupEnv("AUTHENTIK_TOKEN")
+		if !found {
 			fmt.Println("env AUTHENTIK_TOKEN not set!")
 			fmt.Println(helpMessage)
 			os.Exit(1)
@@ -72,7 +71,7 @@ var rootCmd = &cobra.Command{
 		}
 		defer ac.Shutdown()
 
-		ac.Server = ldap.NewServer(ac)
+		ac.Server = radius.NewServer(ac)
 
 		err = ac.Start()
 		if err != nil {
@@ -82,6 +81,7 @@ var rootCmd = &cobra.Command{
 		for {
 			<-ex
 		}
+
 	},
 }
 

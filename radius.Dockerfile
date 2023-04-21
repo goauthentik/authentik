@@ -19,7 +19,7 @@ ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 COPY --from=builder /go/radius /
 
-HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "wget", "--spider", "http://localhost:9300/outpost.goauthentik.io/ping" ]
+HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/radius", "healthcheck" ]
 
 EXPOSE 1812/udp 9300
 

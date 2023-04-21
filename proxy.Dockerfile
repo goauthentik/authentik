@@ -32,7 +32,7 @@ COPY --from=web-builder /static/security.txt /web/security.txt
 COPY --from=web-builder /static/dist/ /web/dist/
 COPY --from=web-builder /static/authentik/ /web/authentik/
 
-HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "wget", "--spider", "http://localhost:9300/outpost.goauthentik.io/ping" ]
+HEALTHCHECK --interval=5s --retries=20 --start-period=3s CMD [ "/proxy", "healthcheck" ]
 
 EXPOSE 9000 9300 9443
 
