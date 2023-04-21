@@ -17,7 +17,7 @@ To disable these outbound connections, set the following in your `.env` file:
 AUTHENTIK_DISABLE_UPDATE_CHECK=true
 AUTHENTIK_ERROR_REPORTING__ENABLED=false
 AUTHENTIK_DISABLE_STARTUP_ANALYTICS=true
-AUTHENTIK_AVATARS=none
+AUTHENTIK_AVATARS=initials
 ```
 
 For a Helm-based install, set the following in your values.yaml file:
