@@ -1,5 +1,5 @@
-name: 'Prepare docker environment variables'
-description: 'Prepare docker environment variables'
+name: "Prepare docker environment variables"
+description: "Prepare docker environment variables"
 
 outputs:
   shouldBuild:

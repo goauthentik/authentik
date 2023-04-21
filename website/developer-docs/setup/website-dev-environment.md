@@ -6,11 +6,11 @@ If you want to only make changes to the website, you only need node.
 
 ### Prerequisites
 
--   Node (any recent version should work, we use 18.x to build)
+-   Node (any recent version should work, we use 20.x to build)
 -   Make (again, any recent version should work)
 
 :::info
-Depending on platform, some native dependencies might be required. On macOS, run `brew install node@18`
+Depending on platform, some native dependencies might be required. On macOS, run `brew install node@20`
 :::
 
 ### Instructions

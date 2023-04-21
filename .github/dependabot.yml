@@ -1,62 +1,62 @@
 version: 2
 updates:
-    - package-ecosystem: "github-actions"
-      directory: "/"
-      schedule:
-          interval: daily
-          time: "04:00"
-      open-pull-requests-limit: 10
-      reviewers:
-          - "@goauthentik/core"
-      commit-message:
-          prefix: "ci:"
-    - package-ecosystem: gomod
-      directory: "/"
-      schedule:
-          interval: daily
-          time: "04:00"
-      open-pull-requests-limit: 10
-      reviewers:
-          - "@goauthentik/core"
-      commit-message:
-          prefix: "core:"
-    - package-ecosystem: npm
-      directory: "/web"
-      schedule:
-          interval: daily
-          time: "04:00"
-      open-pull-requests-limit: 10
-      reviewers:
-          - "@goauthentik/core"
-      commit-message:
-          prefix: "web:"
-    - package-ecosystem: npm
-      directory: "/website"
-      schedule:
-          interval: daily
-          time: "04:00"
-      open-pull-requests-limit: 10
-      reviewers:
-          - "@goauthentik/core"
-      commit-message:
-          prefix: "website:"
-    - package-ecosystem: pip
-      directory: "/"
-      schedule:
-          interval: daily
-          time: "04:00"
-      open-pull-requests-limit: 10
-      reviewers:
-          - "@goauthentik/core"
-      commit-message:
-          prefix: "core:"
-    - package-ecosystem: docker
-      directory: "/"
-      schedule:
-          interval: daily
-          time: "04:00"
-      open-pull-requests-limit: 10
-      reviewers:
-          - "@goauthentik/core"
-      commit-message:
-          prefix: "core:"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "@goauthentik/core"
+    commit-message:
+      prefix: "ci:"
+  - package-ecosystem: gomod
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "@goauthentik/core"
+    commit-message:
+      prefix: "core:"
+  - package-ecosystem: npm
+    directory: "/web"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "@goauthentik/core"
+    commit-message:
+      prefix: "web:"
+  - package-ecosystem: npm
+    directory: "/website"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "@goauthentik/core"
+    commit-message:
+      prefix: "website:"
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "@goauthentik/core"
+    commit-message:
+      prefix: "core:"
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+      interval: daily
+      time: "04:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "@goauthentik/core"
+    commit-message:
+      prefix: "core:"

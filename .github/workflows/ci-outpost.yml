@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
         with:
-          go-version: "^1.17"
+          go-version-file: "go.mod"
       - name: Prepare and generate API
         run: |
           # Create folder structure for go embeds
@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
         with:
-          go-version: "^1.17"
+          go-version-file: "go.mod"
       - name: Generate API
         run: make gen-client-go
       - name: Go unittests
@@ -112,10 +112,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
         with:
-          go-version: "^1.17"
+          go-version-file: "go.mod"
       - uses: actions/setup-node@v3.6.0
         with:
-          node-version: "18"
+          node-version: "20"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - name: Generate API
@@ -131,7 +131,3 @@ jobs:
           export GOOS=${{ matrix.goos }}
           export GOARCH=${{ matrix.goarch }}
           go build -tags=outpost_static_embed -v -o ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}
-      - uses: actions/upload-artifact@v3
-        with:
-          name: authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}
-          path: ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }}

@@ -1,5 +1,5 @@
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/node:18 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:20 as web-builder
 
 COPY ./web /static/
 
