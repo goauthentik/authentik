@@ -1,10 +1,9 @@
 ---
 name: Question
 about: Ask a question about a feature or specific configuration
-title: ''
+title: ""
 labels: question
-assignees: ''
-
+assignees: ""
 ---
 
 **Describe your question/**
@@ -20,8 +19,9 @@ If applicable, add screenshots to help explain your problem.
 Output of docker-compose logs or kubectl logs respectively
 
 **Version and Deployment (please complete the following information):**
- - authentik version: [e.g. 2021.8.5]
- - Deployment: [e.g. docker-compose, helm]
+
+-   authentik version: [e.g. 2021.8.5]
+-   Deployment: [e.g. docker-compose, helm]
 
 **Additional context**
 Add any other context about the problem here.

@@ -17,7 +17,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
         with:
-          go-version: "^1.17"
+          go-version-file: "go.mod"
       - name: Prepare and generate API
         run: |
           # Create folder structure for go embeds
@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
         with:
-          go-version: "^1.17"
+          go-version-file: "go.mod"
       - name: Generate API
         run: make gen-client-go
       - name: Go unittests
@@ -114,10 +114,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-go@v4
         with:
-          go-version: "^1.17"
+          go-version-file: "go.mod"
       - uses: actions/setup-node@v3.6.0
         with:
-          node-version: "18"
+          node-version: "20"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - name: Generate API

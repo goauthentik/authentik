@@ -1,5 +1,5 @@
-name: 'Comment usage instructions on PRs'
-description: 'Comment usage instructions on PRs'
+name: "Comment usage instructions on PRs"
+description: "Comment usage instructions on PRs"
 
 inputs:
   tag:
@@ -17,7 +17,7 @@ runs:
       id: fc
       with:
         issue-number: ${{ github.event.pull_request.number }}
-        comment-author: 'github-actions[bot]'
+        comment-author: "github-actions[bot]"
         body-includes: authentik PR Installation instructions
     - name: Create or update comment
       uses: peter-evans/create-or-update-comment@v2
