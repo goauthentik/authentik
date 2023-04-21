@@ -7,7 +7,6 @@ import "@goauthentik/admin/property-mappings/PropertyMappingTestForm";
 import "@goauthentik/admin/property-mappings/PropertyMappingWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
@@ -55,10 +54,6 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
             search: this.search || "",
             managedIsnull: this.hideManaged ? true : undefined,
         });
-    }
-
-    groupBy(items: PropertyMapping[]): [string, PropertyMapping[]][] {
-        return groupBy(items, (mapping) => mapping.verboseNamePlural);
     }
 
     columns(): TableColumn[] {

@@ -50,9 +50,6 @@ export class FlowListPage extends TablePage<Flow> {
 
     groupBy(items: Flow[]): [string, Flow[]][] {
         return groupBy(items, (flow) => {
-            if (!flow.designation) {
-                return "";
-            }
             return DesignationToLabel(flow.designation);
         });
     }

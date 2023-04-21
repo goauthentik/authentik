@@ -21,7 +21,6 @@ import "@goauthentik/admin/stages/user_logout/UserLogoutStageForm";
 import "@goauthentik/admin/stages/user_write/UserWriteStageForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
@@ -64,10 +63,6 @@ export class StageListPage extends TablePage<Stage> {
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
         });
-    }
-
-    groupBy(items: Stage[]): [string, Stage[]][] {
-        return groupBy(items, (stage) => stage.verboseNamePlural);
     }
 
     columns(): TableColumn[] {
