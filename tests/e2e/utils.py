@@ -3,6 +3,7 @@ import json
 import os
 from functools import lru_cache, wraps
 from os import environ
+from sys import stderr
 from time import sleep
 from typing import Any, Callable, Optional
 
@@ -28,6 +29,7 @@ from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 
 RETRIES = int(environ.get("RETRIES", "3"))
+IS_CI = "CI" in environ
 
 
 def get_docker_tag() -> str:
@@ -49,6 +51,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     user: User
 
     def setUp(self):
+        if IS_CI:
+            print("::group::authentik Logs", file=stderr)
         super().setUp()
         # pylint: disable=invalid-name
         self.maxDiff = None
@@ -91,8 +95,12 @@ class SeleniumTestCase(StaticLiveServerTestCase):
     def output_container_logs(self, container: Optional[Container] = None):
         """Output the container logs to our STDOUT"""
         _container = container or self.container
+        if IS_CI:
+            print(f"::group::Container logs - {_container.image.tags[0]}")
         for log in _container.logs().decode().split("\n"):
-            self.logger.info(log, source="container", container=_container.image.tags[0])
+            print(log)
+        if IS_CI:
+            print("::endgroup::")
 
     def get_container_specs(self) -> Optional[dict[str, Any]]:
         """Optionally get container specs which will launched on setup, wait for the container to
@@ -118,15 +126,19 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         raise ValueError(f"Webdriver failed after {RETRIES}.")
 
     def tearDown(self):
-        self.logger.debug("--------browser logs")
+        super().tearDown()
+        if IS_CI:
+            print("::endgroup::", file=stderr)
+        if IS_CI:
+            print("::group::Browser logs")
         for line in self.driver.get_log("browser"):
-            self.logger.debug(line["message"], source=line["source"], level=line["level"])
-        self.logger.debug("--------end browser logs")
+            print(line["message"])
+        if IS_CI:
+            print("::endgroup::")
         if self.container:
             self.output_container_logs()
             self.container.kill()
         self.driver.quit()
-        super().tearDown()
 
     def wait_for_url(self, desired_url):
         """Wait until URL is `desired_url`."""
