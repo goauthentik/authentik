@@ -1,23 +1,21 @@
-version: '3.7'
+version: "3.7"
 
 services:
   postgresql:
-    container_name: postgres
-    image: library/postgres:${PSQL_TAG:-12}
+    image: docker.io/library/postgres:${PSQL_TAG:-12}
     volumes:
-    - db-data:/var/lib/postgresql/data
+      - db-data:/var/lib/postgresql/data
     environment:
       POSTGRES_USER: authentik
       POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
       POSTGRES_DB: authentik
     ports:
-    - 5432:5432
+      - 5432:5432
     restart: always
   redis:
-    container_name: redis
-    image: library/redis
+    image: docker.io/library/redis
     ports:
-    - 6379:6379
+      - 6379:6379
     restart: always
 
 volumes:

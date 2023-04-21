@@ -2,7 +2,7 @@ name: ghcr-retention
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # every day at midnight
+    - cron: "0 0 * * *" # every day at midnight
   workflow_dispatch:
 
 jobs:

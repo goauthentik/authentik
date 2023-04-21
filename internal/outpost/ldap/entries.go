@@ -13,33 +13,16 @@ import (
 
 func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 	dn := pi.GetUserDN(u.Username)
-	userValueMap := func(value []string) []string {
+	attrs := utils.AttributesToLDAP(u.Attributes, func(key string) string {
+		return utils.AttributeKeySanitize(key)
+	}, func(value []string) []string {
 		for i, v := range value {
 			if strings.Contains(v, "%s") {
 				value[i] = fmt.Sprintf(v, u.Username)
 			}
 		}
 		return value
-	}
-	attrs := utils.AttributesToLDAP(u.Attributes, func(key string) string {
-		return utils.AttributeKeySanitize(key)
-	}, userValueMap)
-	rawAttrs := utils.AttributesToLDAP(u.Attributes, func(key string) string {
-		return key
-	}, userValueMap)
-	// Only append attributes that don't already exist
-	// TODO: Remove in 2023.3
-	for _, rawAttr := range rawAttrs {
-		exists := false
-		for _, attr := range attrs {
-			if strings.EqualFold(attr.Name, rawAttr.Name) {
-				exists = true
-			}
-		}
-		if !exists {
-			attrs = append(attrs, rawAttr)
-		}
-	}
+	})
 
 	if u.IsActive == nil {
 		u.IsActive = api.PtrBool(false)
@@ -48,10 +31,6 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		u.Email = api.PtrString("")
 	}
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
-		// Old fields for backwards compatibility
-		"goauthentik.io/ldap/active":    {strconv.FormatBool(*u.IsActive)},
-		"goauthentik.io/ldap/superuser": {strconv.FormatBool(u.IsSuperuser)},
-		// End old fields
 		"ak-active":      {strconv.FormatBool(*u.IsActive)},
 		"ak-superuser":   {strconv.FormatBool(u.IsSuperuser)},
 		"memberOf":       pi.GroupsForUser(u),

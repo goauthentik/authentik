@@ -47,9 +47,7 @@ This data can be modified with policies. The data is also used by stages like [U
 
 Stores the final redirect URL that the user's browser will be sent to after the flow is finished executing successfully. This is set when an un-authenticated user attempts to access a secured application, and when a user authenticates/enrolls with an external source.
 
-#### Identifications tage
-
-##### `pending_user_identifier` (string)
+#### `pending_user_identifier` (string)
 
 If _Show matched user_ is disabled, this key will hold the user identifier entered by the user in the identification stage.
 
@@ -165,7 +163,7 @@ Boolean set to true after the email form the email stage has been sent.
 
 Optionally override the email address that the email will be sent to. If not set, defaults to the email of `pending_user`.
 
-#### Identifications tage
+#### Identification stage
 
 ##### `pending_user_identifier` (string)
 

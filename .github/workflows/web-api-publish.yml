@@ -1,9 +1,9 @@
 name: authentik-web-api-publish
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - 'schema.yml'
+      - "schema.yml"
   workflow_dispatch:
 jobs:
   build:
@@ -14,8 +14,8 @@ jobs:
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
       - uses: actions/setup-node@v3.6.0
         with:
-          node-version: '18'
-          registry-url: 'https://registry.npmjs.org'
+          node-version: "20"
+          registry-url: "https://registry.npmjs.org"
       - name: Generate API Client
         run: make gen-client-ts
       - name: Publish package

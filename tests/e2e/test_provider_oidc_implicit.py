@@ -6,7 +6,6 @@ from unittest.case import skipUnless
 
 from docker import DockerClient, from_env
 from docker.models.containers import Container
-from docker.types import Healthcheck
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 
@@ -41,14 +40,9 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         sleep(1)
         client: DockerClient = from_env()
         container = client.containers.run(
-            image="ghcr.io/beryju/oidc-test-client:v1",
+            image="ghcr.io/beryju/oidc-test-client:1.3",
             detach=True,
             network_mode="host",
-            healthcheck=Healthcheck(
-                test=["CMD", "wget", "--spider", "http://localhost:9009/health"],
-                interval=5 * 100 * 1000000,
-                start_period=1 * 100 * 1000000,
-            ),
             environment={
                 "OIDC_CLIENT_ID": self.client_id,
                 "OIDC_CLIENT_SECRET": self.client_secret,

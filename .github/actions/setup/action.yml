@@ -1,5 +1,5 @@
-name: 'Setup authentik testing environment'
-description: 'Setup authentik testing environment'
+name: "Setup authentik testing environment"
+description: "Setup authentik testing environment"
 
 inputs:
   postgresql_tag:
@@ -18,13 +18,13 @@ runs:
     - name: Setup python and restore poetry
       uses: actions/setup-python@v3
       with:
-        python-version: '3.11'
-        cache: 'poetry'
+        python-version: "3.11"
+        cache: "poetry"
     - name: Setup node
-      uses: actions/setup-node@v3.1.0
+      uses: actions/setup-node@v3
       with:
-        node-version: '18'
-        cache: 'npm'
+        node-version: "20"
+        cache: "npm"
         cache-dependency-path: web/package-lock.json
     - name: Setup dependencies
       shell: bash

@@ -1,12 +1,12 @@
 name: authentik-backend-translate-compile
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
-      - '/locale/'
+      - "/locale/"
   pull_request:
     paths:
-      - '/locale/'
+      - "/locale/"
   workflow_dispatch:
 
 env:
