@@ -8,7 +8,6 @@ import "@goauthentik/admin/policies/password/PasswordPolicyForm";
 import "@goauthentik/admin/policies/reputation/ReputationPolicyForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { groupBy } from "@goauthentik/common/utils";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -61,10 +60,6 @@ export class PolicyListPage extends TablePage<Policy> {
             new TableColumn(t`Type`),
             new TableColumn(t`Actions`),
         ];
-    }
-
-    groupBy(items: Policy[]): [string, Policy[]][] {
-        return groupBy(items, (policy) => policy.verboseNamePlural);
     }
 
     row(item: Policy): TemplateResult[] {
