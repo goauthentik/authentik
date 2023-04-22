@@ -116,7 +116,7 @@ def configure_tcp_keepalive(kwargs):
     return kwargs
 
 
-def get_redis_options(url: ParseResultBytes) -> Tuple[Dict, Dict, Dict]:
+def get_redis_options(url: ParseResultBytes, disable_socket_timeout=False) -> Tuple[Dict, Dict, Dict]:
     pool_kwargs = {}
     redis_kwargs = {}
     tls_kwargs = {}
@@ -187,7 +187,10 @@ def get_redis_options(url: ParseResultBytes) -> Tuple[Dict, Dict, Dict]:
                 case "poolsize":
                     pool_kwargs["max_connections"] = int(value[0])
                 case "pooltimeout":
-                    pool_kwargs["timeout"] = val_to_sec(value)
+                    pool_timeout = val_to_sec(value)
+                    if pool_timeout <= 0:
+                        pool_timeout = None
+                    pool_kwargs["timeout"] = pool_timeout
                 case "idletimeout":
                     redis_kwargs["idle_timeout"] = int(val_to_sec(value))
                 case "idlecheckfrequency":
@@ -227,6 +230,9 @@ def get_redis_options(url: ParseResultBytes) -> Tuple[Dict, Dict, Dict]:
     redis_kwargs.setdefault("socket_connect_timeout", 5)
     redis_kwargs.setdefault("socket_timeout", 3)
 
+    if disable_socket_timeout:
+        redis_kwargs["socket_timeout"] = None
+
     redis_kwargs = configure_tcp_keepalive(redis_kwargs)
 
     if url.hostname:
@@ -265,7 +271,7 @@ def get_redis_options(url: ParseResultBytes) -> Tuple[Dict, Dict, Dict]:
 
     pool_kwargs = {
         "max_connections": pool_kwargs.get("max_connections", max_connections),
-        "timeout": pool_kwargs.get("timeout", redis_kwargs["socket_timeout"] + 1)
+        "timeout": pool_kwargs.get("timeout", (redis_kwargs.get("socket_timeout") or 3) + 1)
     }
 
     tls_kwargs.update(

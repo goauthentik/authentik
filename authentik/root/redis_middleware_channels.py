@@ -1,5 +1,6 @@
 from asyncio import get_running_loop, Lock
 from copy import deepcopy
+from itertools import cycle
 from urllib.parse import urlparse
 
 from channels_redis.core import RedisChannelLayer
@@ -41,7 +42,9 @@ class CustomChannelLayer(RedisChannelLayer):
         symmetric_encryption_keys=None,
     ):
         url = urlparse(url)
-        config = process_config(url, *get_redis_options(url))
+        # Since RedisChannelLayer is using BRPOP we disable socket timeout
+        # https://github.com/redis/redis-py/issues/583
+        config = process_config(url, *get_redis_options(url, disable_socket_timeout=True))
         self.config = [config]
         if config["type"] == "sentinel":
             config_slave = deepcopy(config)
@@ -49,6 +52,8 @@ class CustomChannelLayer(RedisChannelLayer):
             self.config.append(config_slave)
         super().__init__([], prefix, expiry, group_expiry, capacity, channel_capacity,
                          symmetric_encryption_keys)
+        self._receive_index_generator = cycle(range(self.ring_size))
+        self._send_index_generator = cycle(range(self.ring_size))
 
     @property
     def ring_size(self):
