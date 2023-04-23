@@ -30,7 +30,7 @@ type RedisConfig struct {
 	Password               string `yaml:"password" env:"AUTHENTIK_REDIS__PASSWORD"`
 	TLS                    bool   `yaml:"tls" env:"AUTHENTIK_REDIS__TLS"`
 	TLSReqs                string `yaml:"tls_reqs" env:"AUTHENTIK_REDIS__TLS_REQS"`
-	DB                     int    `yaml:"cache_db" env:"AUTHENTIK_REDIS__CACHE_DB"`
+	DB                     int    `yaml:"cache_db" env:"AUTHENTIK_REDIS__DB"`
 	CacheTimeout           int    `yaml:"cache_timeout" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT"`
 	CacheTimeoutFlows      int    `yaml:"cache_timeout_flows" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_FLOWS"`
 	CacheTimeoutPolicies   int    `yaml:"cache_timeout_policies" env:"AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES"`
