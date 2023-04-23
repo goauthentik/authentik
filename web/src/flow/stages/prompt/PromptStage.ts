@@ -170,6 +170,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     prompt.choices
                         ?.map((choice) => {
                             return ` <div class="pf-c-check">
+                                    <label class="pf-c-check__label">
                                     <input
                                         type="radio"
                                         class="pf-c-check__input"
@@ -178,7 +179,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                                         required="${prompt.required}"
                                         value="${choice}"
                                     />
-                                    <label class="pf-c-check__label">${choice}</label>
+                                    ${choice}</label>
                                 </div>
                             `;
                         })
@@ -236,6 +237,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
         // Checkbox is rendered differently
         if (prompt.type === PromptTypeEnum.Checkbox) {
             return html`<div class="pf-c-check">
+                <label class="pf-c-check__label">
                 <input
                     type="checkbox"
                     class="pf-c-check__input"
@@ -243,7 +245,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     ?checked=${prompt.initialValue !== ""}
                     ?required=${prompt.required}
                 />
-                <label class="pf-c-check__label">${prompt.label}</label>
+                ${prompt.label}</label>
                 ${prompt.required
                     ? html`<p class="pf-c-form__helper-text">${t`Required.`}</p>`
                     : html``}
