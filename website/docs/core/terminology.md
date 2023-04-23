@@ -8,7 +8,7 @@ slug: /terminology
 graph LR
     source_ldap((LDAP Source)) <-->|Synchronizes| datasource_ldap["FreeIPA/
     Active Directory"]
-    datasource_oauth1(Twtitter) --> source_oauth((OAuth/SAML\nSource))
+    datasource_oauth1(Twitter) --> source_oauth((OAuth/SAML\nSource))
     datasource_oauth2(GitHub) --> source_oauth((OAuth/SAML\nSource))
     source_oauth --> authentik_db(authentik Database)
     source_ldap --> authentik_db(authentik Database)
