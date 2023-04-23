@@ -57,10 +57,6 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
             LOGGER.debug("e(trigger): attempting to prevent infinite loop", trigger=trigger)
             return
 
-    if not trigger.group:
-        LOGGER.debug("e(trigger): trigger has no group", trigger=trigger)
-        return
-
     LOGGER.debug("e(trigger): checking if trigger applies", trigger=trigger)
     try:
         user = User.objects.filter(pk=event.user.get("pk")).first() or get_anonymous_user()
@@ -75,6 +71,10 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
     policy_engine.build()
     result = policy_engine.result
     if not result.passing:
+        return
+
+    if not trigger.group:
+        LOGGER.debug("e(trigger): trigger has no group", trigger=trigger)
         return
 
     LOGGER.debug("e(trigger): event trigger matched", trigger=trigger)

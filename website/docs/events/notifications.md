@@ -31,6 +31,10 @@ After you've created the policies to match the events you want, create a "Notifi
 
 You have to select which group the generated notification should be sent to. If left empty, the rule will be disabled.
 
+:::info
+Before authentik 2023.5, when no group is selected, policies bound to the rule are not executed. Starting with authentik 2023.5, policies are executed even when no group is selected.
+:::
+
 You also have to select which transports should be used to send the notification.
 A transport with the name "default-email-transport" is created by default. This transport will use the [global email configuration](../installation/docker-compose#email-configuration-optional-but-recommended).
 
