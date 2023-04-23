@@ -95,17 +95,25 @@ export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {
         if (item.managed && item.managed.startsWith("goauthentik.io/crypto/discovered")) {
             managedSubText = t`Managed by authentik (Discovered)`;
         }
+        let color = PFColor.Green;
+        if (item.certExpiry) {
+            const now = new Date();
+            const inAMonth = new Date();
+            inAMonth.setDate(inAMonth.getDate() + 30);
+            if (item.certExpiry <= inAMonth) {
+                color = PFColor.Orange;
+            }
+            if (item.certExpiry <= now) {
+                color = PFColor.Red;
+            }
+        }
         return [
             html`<div>${item.name}</div>
                 ${item.managed ? html`<small>${managedSubText}</small>` : html``}`,
             html`<ak-label color=${item.privateKeyAvailable ? PFColor.Green : PFColor.Grey}>
                 ${item.privateKeyAvailable ? t`Yes (${item.privateKeyType?.toUpperCase()})` : t`No`}
             </ak-label>`,
-            html`<ak-label
-                color=${item.certExpiry || new Date() > new Date() ? PFColor.Green : PFColor.Orange}
-            >
-                ${item.certExpiry?.toLocaleString()}
-            </ak-label>`,
+            html`<ak-label color=${color}> ${item.certExpiry?.toLocaleString()} </ak-label>`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>
                 <span slot="header"> ${t`Update Certificate-Key Pair`} </span>
