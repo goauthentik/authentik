@@ -94,6 +94,7 @@ RUN apt-get update && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
     mkdir -p /certs /media /blueprints && \
     chown authentik:authentik /certs /media && \
+    chmod g+w /etc/ssh/ssh_config.d/ && \
     chgrp authentik /etc/ssh/ssh_config.d/
 
 COPY ./authentik/ /authentik
