@@ -1,5 +1,5 @@
 """Docker controller"""
-from subprocess import SubprocessError
+from subprocess import SubprocessError  # nosec
 from time import sleep
 from typing import Optional
 from urllib.parse import urlparse
