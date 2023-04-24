@@ -146,7 +146,6 @@ ldap3 = "*"
 lxml = "*"
 opencontainers = { extras = ["reggie"], version = "*" }
 packaging = "*"
-paramiko = "*"
 psycopg2-binary = "*"
 pycryptodome = "*"
 pyjwt = "*"

@@ -58,6 +58,7 @@ class DockerClient(UpstreamDockerClient, BaseClient):
                 super().__init__(
                     base_url=connection.url,
                     tls=tls_config,
+                    use_ssh_client=True,
                 )
             except SSHException as exc:
                 if self.ssh:
