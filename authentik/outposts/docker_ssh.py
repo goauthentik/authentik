@@ -7,8 +7,6 @@ from docker.errors import DockerException
 
 from authentik.crypto.models import CertificateKeyPair
 
-HEADER = "### Managed by authentik"
-FOOTER = "### End Managed by authentik"
 SSH_CONFIG_DIR = Path("/etc/ssh/ssh_config.d/")
 
 def opener(path, flags):
@@ -28,13 +26,12 @@ class DockerInlineSSH:
 
     key_path: str
     config_path: Path
-    header: str
 
     def __init__(self, host: str, keypair: CertificateKeyPair) -> None:
         self.host = host
         self.keypair = keypair
         self.config_path = SSH_CONFIG_DIR / Path(self.host + ".conf")
-        if self.config_path.exists():
+        if not open(self.config_path, "w").writable():
             # SSH Config file already exists and there's no header from us, meaning that it's
             # been externally mapped into the container for more complex configs
             raise SSHManagedExternallyException(
@@ -43,26 +40,25 @@ class DockerInlineSSH:
         if not self.keypair:
             raise DockerException("keypair must be set for SSH connections")
 
-    def write_config(self, key_path: str) -> bool:
+    def write_config(self, key_path: str):
         """Update the local user's ssh config file"""
         with open(self.config_path, "w", encoding="utf-8") as ssh_config:
             ssh_config.writelines(
                 [
                     f"Host {self.host}\n",
-                    f"    IdentityFile {key_path}\n",
+                    f"    IdentityFile {str(key_path)}\n",
                     "    StrictHostKeyChecking No\n",
                     "    UserKnownHostsFile /dev/null\n",
                     "\n",
                 ]
             )
-        return True
 
-    def write_key(self):
+    def write_key(self) -> Path:
         """Write keypair's private key to a temporary file"""
         path = Path(gettempdir(), f"{self.keypair.pk}_private.pem")
         with open(path, "w", encoding="utf8", opener=opener) as _file:
             _file.write(self.keypair.key_data)
-        return str(path)
+        return path
 
     def write(self):
         """Write keyfile and update ssh config"""
