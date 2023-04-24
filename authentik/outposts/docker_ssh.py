@@ -9,6 +9,7 @@ from authentik.crypto.models import CertificateKeyPair
 
 SSH_CONFIG_DIR = Path("/etc/ssh/ssh_config.d/")
 
+
 def opener(path, flags):
     """File opener to create files as 700 perms"""
     return os.open(path, flags, 0o700)
