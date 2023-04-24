@@ -3,20 +3,14 @@ import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-
-import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 
 import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFCheck);
-    }
-
     renderPromptInner(prompt: StagePrompt): string {
         switch (prompt.type) {
             // Checkbox requires slightly different rendering here due to the use of horizontal form elements
