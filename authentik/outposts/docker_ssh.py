@@ -32,12 +32,13 @@ class DockerInlineSSH:
         self.host = host
         self.keypair = keypair
         self.config_path = SSH_CONFIG_DIR / Path(self.host + ".conf")
-        if not open(self.config_path, "w").writable():
-            # SSH Config file already exists and there's no header from us, meaning that it's
-            # been externally mapped into the container for more complex configs
-            raise SSHManagedExternallyException(
-                "SSH Config exists and does not contain authentik header"
-            )
+        with open(self.config_path, "w", encoding="utf-8") as _config:
+            if not _config.writable():
+                # SSH Config file already exists and there's no header from us, meaning that it's
+                # been externally mapped into the container for more complex configs
+                raise SSHManagedExternallyException(
+                    "SSH Config exists and does not contain authentik header"
+                )
         if not self.keypair:
             raise DockerException("keypair must be set for SSH connections")
 
