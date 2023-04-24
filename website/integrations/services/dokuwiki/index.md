@@ -26,12 +26,6 @@ In DokuWiki, navigate to the _Extension Manager_ section in the _Administration_
 -   https://www.dokuwiki.org/plugin:oauth
 -   https://www.dokuwiki.org/plugin:oauthgeneric
 
-:::note
-At the time of writing _dokuwiki-plugin-oauthgeneric_ needs a patch to handle the state parameter in callback URL.
-
-https://github.com/mittelab/dokuwiki-plugin-oauthgeneric/commit/d13c9ae11cd8e21d2fe26f3884884b72a61489f2
-:::
-
 Navigate to _Configuration Settings_ section in the _Administration_ interface and change _Oauth_ and _Oauthgeneric_ options:
 
 For _Oauth_:
@@ -46,6 +40,7 @@ For  _Oauthgeneric_:
 -   plugin»oauthgeneric»userurl: https://authentik.company/application/o/userinfo/
 -   plugin»oauthgeneric»authmethod: Bearer Header
 -   plugin»oauthgeneric»scopes: email, openid, profile
+-   plugin»oauthgeneric»needs-state: checked
 -   plugin»oauthgeneric»json-user: preferred_username
 -   plugin»oauthgeneric»json-name: name
 -   plugin»oauthgeneric»json-mail: email
