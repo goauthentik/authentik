@@ -29,9 +29,10 @@ In DokuWiki, navigate to the _Extension Manager_ section in the _Administration_
 Navigate to _Configuration Settings_ section in the _Administration_ interface and change _Oauth_ and _Oauthgeneric_ options:
 
 For _Oauth_:
+
 -   Check the _plugin»oauth»register-on-auth_ option
 
-For  _Oauthgeneric_:
+For _Oauthgeneric_:
 
 -   plugin»oauthgeneric»key: The Application UID
 -   plugin»oauthgeneric»secret: The Application Secret
@@ -53,6 +54,7 @@ In the _Configuration Settings_ section in the _Administration_ interface naviga
 ## authentik Configuration
 
 ### Provider
+
 In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these settings:
 
 -   Redirect URI: The _Callback URL / Redirect URI_ from _plugin»oauth»info_, usually `dokuwiki.company/doku.php`
@@ -61,5 +63,6 @@ In authentik, under _Providers_, create an _OAuth2/OpenID Provider_ with these s
 Note the _client ID_ and _client secret_, then save the provider. If you need to retrieve these values, you can do so by editing the provider.
 
 ### Application
+
 In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
 Set the Launch URL to the _Callback URL / Redirect URI_ (`dokuwiki.company/doku.php`).
