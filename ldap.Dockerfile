@@ -3,9 +3,17 @@ FROM docker.io/golang:1.21.1-bookworm AS builder
 
 WORKDIR /go/src/goauthentik.io
 
-COPY . .
+COPY go.mod .
+COPY go.sum .
+COPY gen-go-api .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
+
 ENV CGO_ENABLED=0
-RUN go build -o /go/ldap ./cmd/ldap
+COPY . .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -o /go/ldap ./cmd/ldap
 
 # Stage 2: Run
 FROM gcr.io/distroless/static-debian11:debug

@@ -1,21 +1,34 @@
 # Stage 1: Build website
 FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as web-builder
 
-COPY ./web /static/
-
 ENV NODE_ENV=production
 WORKDIR /static
-RUN npm ci --include=dev && npm run build-proxy
+
+COPY web/package.json .
+COPY web/package-lock.json .
+RUN --mount=type=cache,target=/static/.npm \
+    npm set cache /static/.npm && \
+    npm ci --include=dev
+
+COPY web .
+RUN npm run build-proxy
 
 # Stage 2: Build
 FROM docker.io/golang:1.21.1-bookworm AS builder
 
 WORKDIR /go/src/goauthentik.io
 
-COPY . .
+COPY go.mod .
+COPY go.sum .
+COPY gen-go-api .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    go mod download
 
 ENV CGO_ENABLED=0
-RUN go build -o /go/proxy ./cmd/proxy
+COPY . .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
 FROM gcr.io/distroless/static-debian11:debug
