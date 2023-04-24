@@ -16,13 +16,12 @@ tags:
     - authentication
 hide_table_of_contents: false
 ---
->
->
->
 
 None of us in the software industry are immune to the question:
 
-> *How do we want to [re]define our repository structure?*
+> _How do we want to [re]define our repository structure?_
+
+<!--truncate-->
 
 From tiny, open source startups to behemoth companies like Microsoft, almost everyone in the software industry now uses “repos” to store, manage, and access their product’s code, docs, tooling. A repository is the heart of the company, containing virtually every artifact that comprises the end-product, and most importantly, keeping all of the constantly changing artifacts up-to-date and in-sync across the development landscape.
 
@@ -34,19 +33,18 @@ The best structure (and specifically the use of a monorepo or multiple repos) fo
 
 ### History of repo-based code
 
-In 2010, software development author Joel Spolsky [described](https://www.joelonsoftware.com/2010/03/17/distributed-version-control-is-here-to-stay-baby/) distributed version control systems  (DVCS) as "possibly the biggest advance in software development technology in the [past] ten years”.
+In 2010, software development author Joel Spolsky [described](https://www.joelonsoftware.com/2010/03/17/distributed-version-control-is-here-to-stay-baby/) distributed version control systems (DVCS) as "possibly the biggest advance in software development technology in the [past] ten years”.
 
-He wasn’t wrong. He also, in that same blog, made a great point about DVCS innovation of tracking *changes*, rather than *versions*, which is very relative to the discussion around monorepos versus multi-repos. In a bit, we’ll discuss how the frequency and amount of changes can impact your decision on how to architect your repos.
+He wasn’t wrong. He also, in that same blog, made a great point about DVCS innovation of tracking _changes_, rather than _versions_, which is very relative to the discussion around monorepos versus multi-repos. In a bit, we’ll discuss how the frequency and amount of changes can impact your decision on how to architect your repos.
 
 > 👟 **Sneakerware**: software that requires walking to another machine to manually insert a physical device containing software.
-
 
 A brief history of code management takes us from the massive UNIVAC machines to mainframe to distributed client/server architectures, and then continue down the road of distributed systems to tools like Subversion and Mercurial and now today’s über-distributed world of Git.
 
 It’s worth noting the relationship between distributed code bases and two other important software development trends that came along around the same time:
 
-- the *Agile methodology* provided a way for development teams to move quickly and efficiently, using the power of distributed code (and sophisticated tools like Git) to collaborate, build, and release ever faster.
-- the use of *microservices*; there’s a corollary (but also perhaps a non-analogy) between the repo structure and whether the software leans towards monolithic or is based on microservices (where smaller, loosely coupled services work together to create an application or platform). It’s likely that if you use microservices, you probably have multiple repos, but this doesn’t alway have to be the case. It’s a [perfectly fine solution](https://medium.com/taxfix/scaling-microservices-architecture-using-monorepo-domain-driven-design-ced48351a36d) to use a monorepo to store all of your microservices code, and thus reap the benefits of a monorepo.
+-   the _Agile methodology_ provided a way for development teams to move quickly and efficiently, using the power of distributed code (and sophisticated tools like Git) to collaborate, build, and release ever faster.
+-   the use of _microservices_; there’s a corollary (but also perhaps a non-analogy) between the repo structure and whether the software leans towards monolithic or is based on microservices (where smaller, loosely coupled services work together to create an application or platform). It’s likely that if you use microservices, you probably have multiple repos, but this doesn’t always have to be the case. It’s a [perfectly fine solution](https://medium.com/taxfix/scaling-microservices-architecture-using-monorepo-domain-driven-design-ced48351a36d) to use a monorepo to store all of your microservices code, and thus reap the benefits of a monorepo.
 
 As it always is with software, and humans, most would agree that our current state in the evolution of repos is working fairly well… but we always push for optimization and further innovation.
 
@@ -56,15 +54,15 @@ How to decide the optimum architecture for your repo[s] requires serious researc
 
 Considerations about the environment and type of code base include:
 
-- **the number of projects** (and their relationships to each other)
-- **activity level** (active development, refactoring, anything that results in commits and pull requests)
-- **community contributions** (we want it to be easy to navigate the code base)
-- **frequency of releases** (caution, possible slow build times ahead)
-- **testing processes and frequency** (automated testing across *n* repos)
-- **amount of resources for infrastructure support** (as you scale…)
-- **common dependency packages across projects** (update once, or… 6 times)
-- **highly regulated types of software/data** (GDPR, PIP)
-- **provider/deployment requirements** (i.e. typical 1:1 for Terraform module/repo)
+-   **the number of projects** (and their relationships to each other)
+-   **activity level** (active development, refactoring, anything that results in commits and pull requests)
+-   **community contributions** (we want it to be easy to navigate the code base)
+-   **frequency of releases** (caution, possible slow build times ahead)
+-   **testing processes and frequency** (automated testing across _n_ repos)
+-   **amount of resources for infrastructure support** (as you scale…)
+-   **common dependency packages across projects** (update once, or… 6 times)
+-   **highly regulated types of software/data** (GDPR, PIP)
+-   **provider/deployment requirements** (i.e. typical 1:1 for Terraform module/repo)
 
 Let’s take a look at some of the benefits and some of the challenges of both mono- and multi-repo structures, and how they relate to to specific environments.
 
@@ -72,8 +70,7 @@ Let’s take a look at some of the benefits and some of the challenges of both m
 
 One of the best [definitions](https://monorepo.tools/) out there of a monorepo comes from Nrwl:
 
-> *“A monorepo is a single repository containing multiple distinct projects, with well-defined relationships.”*
->
+> _“A monorepo is a single repository containing multiple distinct projects, with well-defined relationships.”_
 
 This definition helps us see why monorepo does not necessarily equal monolith. A well-structured monorepo still has discrete, encapsulated projects, with known and defined relationships, and is not a sprawling incoherent collection of code.
 
@@ -83,7 +80,7 @@ Monorepos help avoid siloed engineering teams; everyone working in the same code
 
 Now for the challenges presented with monorepos. Frankly, monorepos can be expensive when the size and number of projects start to scale up. Getting hundreds of merge conflicts is no one’s idea of fun. Google, Meta, Microsoft, Uber, Airbnb, and Twitter all employ very large monorepos and they have also sall have spent tremendous amounts of time and money and resources to create massive infrastructure systems built specifically to support large code bases in monorepos. The sheer volume of testing, building, maintenance, and release workflows run against such code bases simply would not scale with your typical out-of-the box Git-based system.
 
-For example, even back in 2015 Google had [45,000 commits](https://www.youtube.com/watch?v=W71BTkUbdqE) *per day* to their monorepo. Not surprisingly, they built a specialized tool for handling that scale, called Blaze. The open source version of this tool is released as Bazel.
+For example, even back in 2015 Google had [45,000 commits](https://www.youtube.com/watch?v=W71BTkUbdqE) _per day_ to their monorepo. Not surprisingly, they built a specialized tool for handling that scale, called Blaze. The open source version of this tool is released as Bazel.
 
 Similarly, in order to manage their large monorepo, Microsoft developed the [Virtual File System for Git](https://en.wikipedia.org/wiki/Virtual_File_System_for_Git). The VFS for Git system utilizes a virtual file system that downloads files to local storage only as they are needed.
 
@@ -107,7 +104,7 @@ So for us, at this stage, we benefit greatly from using a monorepo for the vast 
 
 Of course, we have our eyes open and looking towards our future.
 
-> Ironically, as our code base and feature set grows, we believe that we can best retain our focus on building and shipping new features… *by moving towards a multi-repo structure*.
+> Ironically, as our code base and feature set grows, we believe that we can best retain our focus on building and shipping new features… _by moving towards a multi-repo structure_.
 
 The reasoning is that we do not want to be forced to focus on supporting the infrastructure needed to scale a super-large monorepo, nor on lengthy build times and complicated code management processes. So for now we will continue with our monorepo, but when the Docs or Product teams start whinging about long build times, or when the infrastructure team grows faster than the dev team, we will take another look at our repo structure!
 
