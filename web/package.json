@@ -119,6 +119,6 @@
         "turnstile-types": "^1.1.2",
         "typescript": "^4.9.5",
         "webcomponent-qr-code": "^1.1.1",
-        "yaml": "^2.2.1"
+        "yaml": "^2.2.2"
     }
 }
