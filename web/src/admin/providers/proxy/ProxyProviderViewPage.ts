@@ -16,10 +16,12 @@ import "@goauthentik/elements/CodeMirror";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Markdown";
+import { Replacer } from "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
+import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
 import { t } from "@lingui/macro";
 
@@ -140,8 +142,13 @@ export class ProxyProviderViewPage extends AKElement {
                 md: MDCaddyStandalone,
             },
         ];
-        const replacers = [
+        const replacers: Replacer[] = [
             (input: string): string => {
+                // The generated config is pretty unreliable currently so
+                // put it behind a flag
+                if (!getURLParam("generatedConfig", false)) {
+                    return input;
+                }
                 if (!this.provider) {
                     return input;
                 }
