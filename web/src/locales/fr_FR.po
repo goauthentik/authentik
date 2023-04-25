@@ -7303,7 +7303,7 @@ msgstr "Base de données utilisateurs + mots de passe standards"
 
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "User details"
-msgstr "Détails de l'utilisatuer"
+msgstr "Détails de l'utilisateur"
 
 #: src/admin/users/UserViewPage.ts
 msgid "User events"
