@@ -19,7 +19,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
-
+from urllib.parse import unquote, urlencode, urlparse, parse_qs
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
 
@@ -51,7 +51,25 @@ class EmailStageView(ChallengeStageView):
             "authentik_core:if-flow",
             kwargs={"flow_slug": self.executor.flow.slug},
         )
-        relative_url = f"{base_url}?{urlencode(kwargs)}"
+
+
+        # Extract existing query parameters from the request's query string
+        parsed_url = urlparse(self.request.get_full_path())
+        existing_query_params = parse_qs(parsed_url.query)
+        query_string = existing_query_params['query'][0] 
+        flow_token = query_string.split('flow_token=')[1].split('&')[0] if 'flow_token=' in query_string else None
+        if flow_token:
+            # remove the flow_token and everything that follows it from the query string
+            query_string = query_string.split(f'flow_token={flow_token}&', 1)[1]
+        existing_query_params['query'] = [query_string]
+        # Merge existing query parameters with new query parameters
+        token = self.get_token()
+        query_params = {**existing_query_params, **kwargs}
+        # Remove any instance of 'flow_token' from the query parameters
+        query_params.pop('flow_token', None)
+        query_params = {**{QS_KEY_TOKEN: token.key}, **query_params}
+        # Build the final URL with all query parameters
+        relative_url = f"{base_url}?{urlencode(query_params, doseq=True)}"
         return self.request.build_absolute_uri(relative_url)
 
     def get_token(self) -> FlowToken:
@@ -92,6 +110,7 @@ class EmailStageView(ChallengeStageView):
             email = pending_user.email
         current_stage: EmailStage = self.executor.current_stage
         token = self.get_token()
+        link = self.get_full_url().replace('query=', '')
         # Send mail to user
         message = TemplateEmailMessage(
             subject=_(current_stage.subject),
@@ -99,7 +118,7 @@ class EmailStageView(ChallengeStageView):
             language=pending_user.locale(self.request),
             template_name=current_stage.template,
             template_context={
-                "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
+                "url": unquote(link),
                 "user": pending_user,
                 "expires": token.expires,
             },
@@ -110,6 +129,8 @@ class EmailStageView(ChallengeStageView):
         # Check if the user came back from the email link to verify
         restore_token: FlowToken = self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED, None)
         user = self.get_pending_user()
+        # if restore_token==None:
+        #     messages.error(self.request, _("Token not Valid"))
         if restore_token:
             if restore_token.user != user:
                 self.logger.warning("Flow token for non-matching user, denying request")
@@ -126,6 +147,7 @@ class EmailStageView(ChallengeStageView):
         # Check if we've already sent the initial e-mail
         if PLAN_CONTEXT_EMAIL_SENT not in self.executor.plan.context:
             self.send_email()
+            # messages.error(self.request, _("Token not Valid"))
             self.executor.plan.context[PLAN_CONTEXT_EMAIL_SENT] = True
         return super().get(request, *args, **kwargs)
 
@@ -146,6 +168,7 @@ class EmailStageView(ChallengeStageView):
             messages.error(self.request, _("No pending user."))
             return super().challenge_invalid(response)
         self.send_email()
+        messages.success(self.request, _("Email Successfully sent."))
         # We can't call stage_ok yet, as we're still waiting
         # for the user to click the link in the email
         return super().challenge_invalid(response)
