@@ -1,5 +1,5 @@
 ---
-title: "Monorepos are great!"
+title: "Monorepos are great! ... for now."
 slug: 2023-04-22-monorepos-are-great
 authors:
     - name: Jens Langhammer
