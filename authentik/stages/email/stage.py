@@ -56,11 +56,15 @@ class EmailStageView(ChallengeStageView):
         # Extract existing query parameters from the request's query string
         parsed_url = urlparse(self.request.get_full_path())
         existing_query_params = parse_qs(parsed_url.query)
-        query_string = existing_query_params['query'][0] 
-        flow_token = query_string.split('flow_token=')[1].split('&')[0] if 'flow_token=' in query_string else None
-        if flow_token:
-            # remove the flow_token and everything that follows it from the query string
-            query_string = query_string.split(f'flow_token={flow_token}&', 1)[1]
+        if 'query' in existing_query_params:
+            query_string = existing_query_params['query'][0]
+            flow_token = query_string.split('flow_token=')[1].split('&')[0] if 'flow_token=' in query_string else None
+            if flow_token:
+                # remove the flow_token and everything that follows it from the query string
+                query_string = query_string.split(f'flow_token={flow_token}&', 1)[1]
+        else:
+            query_string = None
+            flow_token = None
         existing_query_params['query'] = [query_string]
         # Merge existing query parameters with new query parameters
         token = self.get_token()
