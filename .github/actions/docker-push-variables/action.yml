@@ -51,12 +51,14 @@ runs:
         version_family = ".".join(version.split(".")[:-1])
         safe_branch_name = branch_name.replace("refs/heads/", "").replace("/", "-")
 
+        sha = os.environ["GITHUB_SHA"] if not "${{ github.event.pull_request.head.sha }}" else "${{ github.event.pull_request.head.sha }}"
+
         with open(os.environ["GITHUB_OUTPUT"], "a+", encoding="utf-8") as _output:
             print("branchName=%s" % branch_name, file=_output)
             print("branchNameContainer=%s" % safe_branch_name, file=_output)
             print("timestamp=%s" % int(time()), file=_output)
-            print("sha=%s" % os.environ["GITHUB_SHA"], file=_output)
-            print("shortHash=%s" % os.environ["GITHUB_SHA"][:7], file=_output)
+            print("sha=%s" % sha, file=_output)
+            print("shortHash=%s" % sha[:7], file=_output)
             print("shouldBuild=%s" % should_build, file=_output)
             print("version=%s" % version, file=_output)
             print("versionFamily=%s" % version_family, file=_output)
