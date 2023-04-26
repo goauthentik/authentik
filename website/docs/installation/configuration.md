@@ -40,16 +40,26 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
 
 ## Redis Settings
 
--   `AUTHENTIK_REDIS__HOST`: Hostname of your Redis Server
--   `AUTHENTIK_REDIS__PORT`: Redis port, defaults to 6379
--   `AUTHENTIK_REDIS__PASSWORD`: Password for your Redis Server
--   `AUTHENTIK_REDIS__TLS`: Use TLS to connect to Redis, defaults to false
--   `AUTHENTIK_REDIS__TLS_REQS`: Redis TLS requirements, defaults to "none"
--   `AUTHENTIK_REDIS__DB`: Database, defaults to 0
--   `AUTHENTIK_REDIS__CACHE_TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
--   `AUTHENTIK_REDIS__CACHE_TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
--   `AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
--   `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
+-   `AUTHENTIK_REDIS__URL`: Redis configuration URL
+
+
+## Cache Settings
+
+-   `AUTHENTIK_CACHE__BACKEND`: Class to use as cache backend, defaults to `django_redis.cache.RedisCache`
+-   `AUTHENTIK_CACHE__URL`: Cache configuration URL, defaults to the environment variable `AUTHENTIK_REDIS__URL`
+-   `AUTHENTIK_CACHE__TIMEOUT`: Timeout for cached data until it expires in seconds, defaults to 300
+-   `AUTHENTIK_CACHE__TIMEOUT_FLOWS`: Timeout for cached flow plans until they expire in seconds, defaults to 300
+-   `AUTHENTIK_CACHE__TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
+-   `AUTHENTIK_CACHE__TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
+
+## Channel Settings
+
+-   `AUTHENTIK_CHANNEL__BACKEND`: Class to use as channel backend, defaults to `authentik.root.redis_middleware_channels.CustomChannelLayer`
+-   `AUTHENTIK_CHANNEL__URL`: Channel configuration URL, defaults to the environment variable `AUTHENTIK_REDIS__URL`
+
+## Broker Settings
+-   `AUTHENTIK_BROKER__URL`: Broker configuration URL, defaults to the environment variable `AUTHENTIK_REDIS__URL`
+-   `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64 encoded broker transport options, is by default determined using the environment variable `AUTHENTIK_REDIS__URL`
 
 ## Listen Setting
 

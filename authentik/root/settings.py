@@ -187,9 +187,9 @@ REST_FRAMEWORK = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": f"{CONFIG.y('redis.url')}",
-        "TIMEOUT": int(CONFIG.y("redis.cache_timeout", 300)),
+        "BACKEND": CONFIG.y('cache.backend', "django_redis.cache.RedisCache"),
+        "LOCATION": CONFIG.y("cache.url", CONFIG.y("redis.url")),
+        "TIMEOUT": int(CONFIG.y("cache.timeout") or CONFIG.y("redis.cache_timeout") or 300),
         "OPTIONS": {
             "CLIENT_CLASS": "authentik.root.redis_middleware_django.CustomClient",
         },
@@ -250,9 +250,9 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "authentik.root.redis_middleware_channels.CustomChannelLayer",
+        "BACKEND": CONFIG.y("channel.backend") or "authentik.root.redis_middleware_channels.CustomChannelLayer",
         "CONFIG": {
-            "url": f"{CONFIG.y('redis.url')}",
+            "url": CONFIG.y("channel.url") or CONFIG.y("redis.url"),
             "prefix": "authentik_channels",
         },
     },
@@ -340,13 +340,12 @@ CELERY_BEAT_SCHEDULE = {
 }
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
-# TODO: Generate broker URL and transport options from redis.url if not specified
-CELERY_BROKER_URL = CONFIG.y("redis.broker_url")
-if CONFIG.y("redis.broker_transport_options", ""):
+CELERY_BROKER_URL = CONFIG.y("broker.url") or CONFIG.y("redis.broker_url") or CONFIG.y("redis.url")
+if CONFIG.y("broker.transport_options") or CONFIG.y("redis.broker_transport_options"):
     CELERY_BROKER_TRANSPORT_OPTIONS = ast.literal_eval(
-        base64.b64decode(CONFIG.y("redis.broker_transport_options", "")).decode('utf-8')
+        base64.b64decode(CONFIG.y("redis.broker_transport_options")).decode('utf-8')
     )
-CELERY_RESULT_BACKEND = CONFIG.y("redis.url")
+CELERY_RESULT_BACKEND = CONFIG.y("result_backend.url") or CONFIG.y("redis.url")
 
 # Sentry integration
 env = get_env()
