@@ -19,6 +19,15 @@ SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + 
 ENV_PREFIX = "AUTHENTIK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
 
+DEPRECATIONS = {
+    "redis.broker_url": "broker.url",
+    "redis.broker_transport_options": "broker.transport_options",
+    "redis.cache_timeout": "cache.timeout",
+    "redis.cache_timeout_flows": "cache.timeout_flows",
+    "redis.cache_timeout_policies": "cache.timeout_policies",
+    "redis.cache_timeout_reputation": "cache.timeout_reputation"
+}
+
 
 def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
     """Recursively walk through `root`, checking each part of `path` split by `sep`.
@@ -61,6 +70,12 @@ class ConfigLoader:
                         # Update config with env file
                         self.update_from_file(env_file)
         self.update_from_env()
+
+    def check_deprecations(self):
+        """Warn if any deprecated configuration options are used"""
+        for deprecation, replacement in DEPRECATIONS.items():
+            self.log("warning", f"'{deprecation}' has been deprecated in favor of '{replacement}'! Please update your "
+                                "configuration.")
 
     def log(self, level: str, message: str, **kwargs):
         """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
