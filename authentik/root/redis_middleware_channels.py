@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 from channels_redis.core import RedisChannelLayer
 from channels_redis.utils import _wrap_close
 
-from authentik.lib.utils.parser import get_client, get_redis_options, process_config
+from authentik.lib.utils.parser import get_client, get_redis_options, process_config, get_connection_pool
 
 
 class CustomLoopLayer:
@@ -17,7 +17,9 @@ class CustomLoopLayer:
 
     def get_connection(self, index):
         if index not in self._connections:
-            self._connections[index] = get_client(self.channel_layer.config[index], use_async=True)
+            pool, client_config = get_connection_pool(self.channel_layer.config[index], use_async=True)
+            self._connections[index] = get_client(client_config, pool)
+            # Redis cluster does not support auto close of connection pools
             if hasattr(self._connections[index], "auto_close_connection_pool"):
                 self._connections[index].auto_close_connection_pool = True
 

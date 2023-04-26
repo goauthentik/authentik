@@ -8,7 +8,7 @@ from django_redis.client.default import DefaultClient
 from redis.client import StrictRedis
 from redis.cluster import RedisCluster
 
-from authentik.lib.utils.parser import get_client, get_redis_options, process_config
+from authentik.lib.utils.parser import get_client, get_redis_options, process_config, get_connection_pool
 
 
 class CustomClient(DefaultClient):
@@ -38,22 +38,23 @@ class CustomClient(DefaultClient):
 class CustomConnectionFactory:
     # Store connection pool by cache backend options.
     #
-    # _client_cache is a process-global, as otherwise _client_cache is cleared every time
+    # _pool_cache is a process-global, as otherwise _pool_cache is cleared every time
     # ConnectionFactory is instantiated, as Django creates new cache client
     # (DefaultClient) instance for every request.
 
-    _client_cache: Dict[str, Union[StrictRedis, RedisCluster]] = {}
+    _pool_cache = {}
 
     def __init__(self, options):
         self.options = options
 
-    def connect(self, config: Dict) -> Union[StrictRedis, RedisCluster]:
+    def connect(self, config: Dict):
         """
         Given a basic connection parameters,
         return a new connection.
         """
         checksum = sha256(json_dumps(config, sort_keys=True).encode('utf-8')).hexdigest()
-        return self._client_cache.setdefault(checksum, get_client(config))
+        pool, client_config = self._pool_cache.setdefault(checksum, get_connection_pool(config))
+        return get_client(client_config, pool)
 
     @staticmethod
     def disconnect(connection):
