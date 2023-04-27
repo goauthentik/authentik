@@ -7,7 +7,7 @@ from json import dumps, loads
 from json.decoder import JSONDecodeError
 from sys import argv, stderr
 from time import time
-from typing import Any
+from typing import Any, MutableMapping
 from urllib.parse import urlparse
 
 import yaml
@@ -40,6 +40,10 @@ def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
     return root
 
 
+class UNSET:
+    pass
+
+
 class ConfigLoader:
     """Search through SEARCH_PATHS and load configuration. Environment variables starting with
     `ENV_PREFIX` are also applied.
@@ -70,12 +74,28 @@ class ConfigLoader:
                         # Update config with env file
                         self.update_from_file(env_file)
         self.update_from_env()
+        self.check_deprecations()
+        print(self.__config)
 
     def check_deprecations(self):
         """Warn if any deprecated configuration options are used"""
         for deprecation, replacement in DEPRECATIONS.items():
-            self.log("warning", f"'{deprecation}' has been deprecated in favor of '{replacement}'! Please update your "
-                                "configuration.")
+            if self.y(deprecation, default=UNSET) is not UNSET:
+                self.log("warning", f"'{deprecation}' has been deprecated in favor of '{replacement}'! "
+                                    "Please update your configuration.")
+
+                def pop_deprecated_key(current_obj, dot_parts, index):
+                    dot_part = dot_parts[index]
+                    if dot_part in current_obj:
+                        if index == len(dot_parts) - 1:
+                            return current_obj.pop(dot_part)
+                        value = pop_deprecated_key(current_obj[dot_part], dot_parts, index + 1)
+                        if not current_obj[dot_part]:
+                            current_obj.pop(dot_part)
+                        return value
+
+                deprecated_value = pop_deprecated_key(self.__config, deprecation.split("."), 0)
+                self.y_set(replacement, deprecated_value)
 
     def log(self, level: str, message: str, **kwargs):
         """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
@@ -136,6 +156,17 @@ class ConfigLoader:
         """Update config from dict"""
         self.__config.update(update)
 
+    @staticmethod
+    def _set_value_for_key_path(outer, path, value, sep="."):
+        # Recursively convert path from a.b.c into outer[a][b][c]
+        current_obj = outer
+        dot_parts = path.split(sep)
+        for dot_part in dot_parts[:-1]:
+            current_obj.setdefault(dot_part, {})
+            current_obj = current_obj[dot_part]
+        current_obj[dot_parts[-1]] = value
+        return outer
+
     def update_from_env(self):
         """Check environment variables"""
         outer = {}
@@ -144,19 +175,12 @@ class ConfigLoader:
             if not key.startswith(ENV_PREFIX):
                 continue
             relative_key = key.replace(f"{ENV_PREFIX}_", "", 1).replace("__", ".").lower()
-            # Recursively convert path from a.b.c into outer[a][b][c]
-            current_obj = outer
-            dot_parts = relative_key.split(".")
-            for dot_part in dot_parts[:-1]:
-                if dot_part not in current_obj:
-                    current_obj[dot_part] = {}
-                current_obj = current_obj[dot_part]
             # Check if the value is json, and try to load it
             try:
                 value = loads(value)
             except JSONDecodeError:
                 pass
-            current_obj[dot_parts[-1]] = value
+            outer = self._set_value_for_key_path(outer, relative_key, value)
             idx += 1
         if idx > 0:
             self.log("debug", "Loaded environment variables", count=idx)
@@ -188,15 +212,7 @@ class ConfigLoader:
     def y_set(self, path: str, value: Any, sep="."):
         """Set value using same syntax as y()"""
         # Walk sub_dicts before parsing path
-        root = self.raw
-        # Walk each component of the path
-        path_parts = path.split(sep)
-        for comp in path_parts[:-1]:
-            # pyright: reportGeneralTypeIssues=false
-            if comp not in root:
-                root[comp] = {}
-            root = root.get(comp, {})
-        root[path_parts[-1]] = value
+        self._set_value_for_key_path(self.raw, path, value, sep)
 
     def y_bool(self, path: str, default=False) -> bool:
         """Wrapper for y that converts value into boolean"""
