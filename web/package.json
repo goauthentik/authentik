@@ -15,43 +15,6 @@
         "tsc": "lingui compile && tsc --noEmit -p .",
         "background-image": "npx @squoosh/cli -d src/assets/images --resize '{\"enabled\":true,\"width\":2560,\"method\":\"lanczos3\",\"fitMethod\":\"contain\",\"premultiply\":true,\"linearRGB\":true}' --mozjpeg '{\"quality\":75,\"baseline\":false,\"arithmetic\":false,\"progressive\":true,\"optimize_coding\":true,\"smoothing\":0,\"color_space\":3,\"quant_table\":3,\"trellis_multipass\":false,\"trellis_opt_zero\":false,\"trellis_opt_table\":false,\"trellis_loops\":1,\"auto_subsample\":true,\"chroma_subsample\":2,\"separate_chroma_quality\":false,\"chroma_quality\":75}' src/assets/images/flow_background.jpg"
     },
-    "lingui": {
-        "sourceLocale": "en",
-        "locales": [
-            "en",
-            "pseudo-LOCALE",
-            "fr_FR",
-            "tr",
-            "es",
-            "pl",
-            "zh_TW",
-            "zh-Hans",
-            "zh-Hant",
-            "de"
-        ],
-        "formatOptions": {
-            "lineNumbers": false
-        },
-        "pseudoLocale": "pseudo-LOCALE",
-        "fallbackLocales": {
-            "pseudo-LOCALE": "en",
-            "default": "en"
-        },
-        "format": "po-gettext",
-        "compileNamespace": "ts",
-        "catalogs": [
-            {
-                "path": "src/locales/{locale}",
-                "include": [
-                    "src"
-                ],
-                "exclude": [
-                    "**/node_modules/**",
-                    "**/dist/**"
-                ]
-            }
-        ]
-    },
     "dependencies": {
         "@babel/core": "^7.21.4",
         "@babel/plugin-proposal-decorators": "^7.21.0",
@@ -70,9 +33,10 @@
         "@hcaptcha/types": "^1.0.3",
         "@jackfranklin/rollup-plugin-markdown": "^0.4.0",
         "@lingui/cli": "^4.0.0",
-        "@lingui/core": "^3.17.2",
-        "@lingui/detect-locale": "^3.17.2",
-        "@lingui/macro": "^3.17.2",
+        "@lingui/core": "^4.0.0",
+        "@lingui/detect-locale": "^4.0.0",
+        "@lingui/format-po-gettext": "^4.0.0",
+        "@lingui/macro": "^4.0.0",
         "@patternfly/patternfly": "^4.224.2",
         "@rollup/plugin-babel": "^6.0.3",
         "@rollup/plugin-commonjs": "^24.1.0",
