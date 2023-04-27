@@ -1,11 +1,10 @@
 from copy import deepcopy
 from json import dumps as json_dumps
 from hashlib import sha256
-from typing import Dict, Union
+from typing import Dict
 from urllib.parse import urlparse
 
 from django_redis.client.default import DefaultClient
-from redis.client import StrictRedis
 from redis.cluster import RedisCluster
 
 from authentik.lib.utils.parser import get_client, get_redis_options, process_config, get_connection_pool
