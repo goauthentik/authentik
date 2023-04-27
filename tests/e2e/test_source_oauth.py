@@ -147,10 +147,6 @@ class TestSourceOAuth2(SeleniumTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
-        "default/flow-default-provider-authorization-implicit-consent.yaml",
-    )
-    @apply_blueprint(
         "default/flow-default-source-authentication.yaml",
         "default/flow-default-source-enrollment.yaml",
         "default/flow-default-source-pre-authentication.yaml",
@@ -199,14 +195,6 @@ class TestSourceOAuth2(SeleniumTestCase):
         self.assert_user(User(username="foo", name="admin", email="admin@example.com"))
 
     @retry()
-    @apply_blueprint(
-        "default/flow-default-authentication-flow.yaml",
-        "default/flow-default-invalidation-flow.yaml",
-    )
-    @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
-        "default/flow-default-provider-authorization-implicit-consent.yaml",
-    )
     def test_oauth_enroll_auth(self):
         """test OAuth Source With With OIDC (enroll and authenticate again)"""
         self.test_oauth_enroll()
