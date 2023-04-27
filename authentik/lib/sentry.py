@@ -15,6 +15,7 @@ from h11 import LocalProtocolError
 from ldap3.core.exceptions import LDAPException
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import RedisError, ResponseError
+from requests_mock.exceptions import NoMockAddress
 from rest_framework.exceptions import APIException
 from sentry_sdk import HttpTransport
 from sentry_sdk import init as sentry_sdk_init
@@ -140,6 +141,8 @@ def before_send(event: dict, hint: dict) -> Optional[dict]:
         Http404,
         # AsyncIO
         CancelledError,
+        # Requests
+        NoMockAddress,
     )
     exc_value = None
     if "exc_info" in hint:

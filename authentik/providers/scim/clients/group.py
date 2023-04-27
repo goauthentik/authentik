@@ -81,12 +81,15 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
 
         users = list(obj.users.order_by("id").values_list("id", flat=True))
         connections = SCIMUser.objects.filter(provider=self.provider, user__pk__in=users)
+        members = []
         for user in connections:
-            scim_group.members.append(
+            members.append(
                 GroupMember(
                     value=user.id,
                 )
             )
+        if members:
+            scim_group.members = members
         return scim_group
 
     def _create(self, group: Group):
