@@ -15,12 +15,25 @@ listen:
 
 redis:
   url: "redis://localhost:6379/0"
-  broker_url: "redis://localhost:6379/0"
-  broker_transport_options: ""
-  cache_timeout: 300
-  cache_timeout_flows: 300
-  cache_timeout_policies: 300
-  cache_timeout_reputation: 300
+
+# broker:
+  # url: ""
+  # transport_options: ""
+
+cache:
+  # backend: ""
+  # url: ""
+  timeout: 300
+  timeout_flows: 300
+  timeout_policies: 300
+  timeout_reputation: 300
+
+# channel:
+  # backend: ""
+  # url: ""
+
+# result_backend:
+  # url: ""
 
 debug: false
 
