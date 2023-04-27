@@ -87,10 +87,10 @@ class ConfigView(APIView):
                     "traces_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.4)),
                 },
                 "capabilities": self.get_capabilities(),
-                "cache_timeout": int(CONFIG.y("redis.cache_timeout")),
-                "cache_timeout_flows": int(CONFIG.y("redis.cache_timeout_flows")),
-                "cache_timeout_policies": int(CONFIG.y("redis.cache_timeout_policies")),
-                "cache_timeout_reputation": int(CONFIG.y("redis.cache_timeout_reputation")),
+                "cache_timeout": int(CONFIG.y("cache.timeout")),
+                "cache_timeout_flows": int(CONFIG.y("cache.timeout_flows")),
+                "cache_timeout_policies": int(CONFIG.y("cache.timeout_policies")),
+                "cache_timeout_reputation": int(CONFIG.y("cache.timeout_reputation")),
             }
         )
 

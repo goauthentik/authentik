@@ -189,7 +189,7 @@ CACHES = {
     "default": {
         "BACKEND": CONFIG.y('cache.backend', "django_redis.cache.RedisCache"),
         "LOCATION": CONFIG.y("cache.url", CONFIG.y("redis.url")),
-        "TIMEOUT": int(CONFIG.y("cache.timeout") or CONFIG.y("redis.cache_timeout") or 300),
+        "TIMEOUT": int(CONFIG.y("cache.timeout") or 300),
         "OPTIONS": {
             "CLIENT_CLASS": "authentik.root.redis_middleware_django.CustomClient",
         },
