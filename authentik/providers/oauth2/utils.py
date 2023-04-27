@@ -202,5 +202,4 @@ class HttpResponseRedirectScheme(HttpResponseRedirect):
         **kwargs: Any,
     ) -> None:
         self.allowed_schemes = allowed_schemes or ["http", "https", "ftp"]
-        # pyright: reportGeneralTypeIssues=false
         super().__init__(redirect_to, *args, **kwargs)

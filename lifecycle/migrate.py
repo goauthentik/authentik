@@ -69,7 +69,6 @@ if __name__ == "__main__":
             if not spec:
                 continue
             mod = module_from_spec(spec)
-            # pyright: reportGeneralTypeIssues=false
             spec.loader.exec_module(mod)
 
             for name, sub in getmembers(mod, isclass):

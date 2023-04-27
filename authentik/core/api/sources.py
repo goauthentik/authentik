@@ -40,7 +40,6 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
 
     def get_component(self, obj: Source) -> str:
         """Get object component so that we know how to edit the object"""
-        # pyright: reportGeneralTypeIssues=false
         if obj.__class__ == Source:
             return ""
         return obj.component
@@ -139,7 +138,6 @@ class SourceViewSet(
                 component = subclass.__bases__[0]().component
             else:
                 component = subclass().component
-            # pyright: reportGeneralTypeIssues=false
             data.append(
                 {
                     "name": subclass._meta.verbose_name,

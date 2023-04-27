@@ -59,7 +59,6 @@ class AppleOAuthClient(OAuth2Client):
             "aud": "https://appleid.apple.com",
             "sub": parts[0].strip(),
         }
-        # pyright: reportGeneralTypeIssues=false
         jwt = encode(payload, self.source.consumer_secret, "ES256", {"kid": parts[2].strip()})
         LOGGER.debug("signing payload as secret key", payload=payload, jwt=jwt)
         return jwt
