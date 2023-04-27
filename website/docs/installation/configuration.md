@@ -42,6 +42,10 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
 
 -   `AUTHENTIK_REDIS__URL`: Redis configuration URL
 
+## Result Backend Settings
+
+-   `AUTHENTIK_RESULT_BACKEND__URL`: Result backend configuration URL, defaults to the environment variable `AUTHENTIK_REDIS__URL`
+
 
 ## Cache Settings
 
