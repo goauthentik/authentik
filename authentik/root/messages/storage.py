@@ -14,7 +14,6 @@ class ChannelsStorage(SessionStorage):
     """Send contrib.messages over websocket"""
 
     def __init__(self, request: HttpRequest) -> None:
-        # pyright: reportGeneralTypeIssues=false
         super().__init__(request)
         self.channel = get_channel_layer()
 

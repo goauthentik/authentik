@@ -27,7 +27,6 @@ class StageSerializer(ModelSerializer, MetaNameSerializer):
 
     def get_component(self, obj: Stage) -> str:
         """Get object type so that we know how to edit the object"""
-        # pyright: reportGeneralTypeIssues=false
         if obj.__class__ == Stage:
             return ""
         return obj.component

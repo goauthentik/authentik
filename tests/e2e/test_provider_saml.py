@@ -62,7 +62,6 @@ class TestProviderSAML(SeleniumTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
         "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
@@ -132,7 +131,6 @@ class TestProviderSAML(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-explicit-consent.yaml",
-        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
         "system/providers-saml.yaml",
@@ -216,7 +214,6 @@ class TestProviderSAML(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-explicit-consent.yaml",
-        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
         "system/providers-saml.yaml",
@@ -299,7 +296,6 @@ class TestProviderSAML(SeleniumTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
         "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
@@ -374,7 +370,6 @@ class TestProviderSAML(SeleniumTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
         "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
@@ -423,7 +418,6 @@ class TestProviderSAML(SeleniumTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
         "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(

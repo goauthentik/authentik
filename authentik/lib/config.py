@@ -177,7 +177,6 @@ class ConfigLoader:
         # Walk each component of the path
         path_parts = path.split(sep)
         for comp in path_parts[:-1]:
-            # pyright: reportGeneralTypeIssues=false
             if comp not in root:
                 root[comp] = {}
             root = root.get(comp, {})

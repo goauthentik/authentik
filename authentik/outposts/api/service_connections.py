@@ -31,7 +31,6 @@ class ServiceConnectionSerializer(ModelSerializer, MetaNameSerializer):
 
     def get_component(self, obj: OutpostServiceConnection) -> str:
         """Get object type so that we know how to edit the object"""
-        # pyright: reportGeneralTypeIssues=false
         if obj.__class__ == OutpostServiceConnection:
             return ""
         return obj.component
@@ -77,7 +76,6 @@ class ServiceConnectionViewSet(
         data = []
         for subclass in all_subclasses(self.queryset.model):
             subclass: OutpostServiceConnection
-            # pyright: reportGeneralTypeIssues=false
             data.append(
                 {
                     "name": subclass._meta.verbose_name,

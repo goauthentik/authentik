@@ -74,7 +74,6 @@ class PolicyEngine:
 
     def _check_policy_type(self, binding: PolicyBinding):
         """Check policy type, make sure it's not the root class as that has no logic implemented"""
-        # pyright: reportGeneralTypeIssues=false
         if binding.policy is not None and binding.policy.__class__ == Policy:
             raise PolicyEngineException(f"Policy '{binding.policy}' is root type")
 
