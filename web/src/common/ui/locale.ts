@@ -1,8 +1,6 @@
 import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { messages as enLocale } from "@goauthentik/locales/en";
-import { PluralCategory } from "make-plural";
-import { en } from "make-plural/plurals";
 
 import { Messages, i18n } from "@lingui/core";
 import { fromNavigator, fromUrl } from "@lingui/detect-locale";
@@ -10,7 +8,6 @@ import { t } from "@lingui/macro";
 
 interface Locale {
     locale: Messages;
-    plurals: (n: string | number, ord?: boolean | undefined) => PluralCategory;
 }
 
 export const LOCALES: {
@@ -24,7 +21,6 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: enLocale,
-                plurals: en,
             };
         },
     },
@@ -34,7 +30,6 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: (await import("@goauthentik/locales/pseudo-LOCALE")).messages,
-                plurals: en,
             };
         },
     },
@@ -44,7 +39,6 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: (await import("@goauthentik/locales/fr_FR")).messages,
-                plurals: (await import("make-plural/plurals")).fr,
             };
         },
     },
@@ -54,7 +48,6 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: (await import("@goauthentik/locales/tr")).messages,
-                plurals: (await import("make-plural/plurals")).tr,
             };
         },
     },
@@ -64,7 +57,6 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: (await import("@goauthentik/locales/es")).messages,
-                plurals: (await import("make-plural/plurals")).es,
             };
         },
     },
@@ -74,7 +66,6 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: (await import("@goauthentik/locales/pl")).messages,
-                plurals: (await import("make-plural/plurals")).pl,
             };
         },
     },
@@ -84,7 +75,6 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: (await import("@goauthentik/locales/zh_TW")).messages,
-                plurals: (await import("make-plural/plurals")).zh,
             };
         },
     },
@@ -94,7 +84,6 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: (await import("@goauthentik/locales/zh-Hans")).messages,
-                plurals: (await import("make-plural/plurals")).zh,
             };
         },
     },
@@ -104,7 +93,6 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: (await import("@goauthentik/locales/zh-Hant")).messages,
-                plurals: (await import("make-plural/plurals")).zh,
             };
         },
     },
@@ -114,7 +102,6 @@ export const LOCALES: {
         locale: async () => {
             return {
                 locale: (await import("@goauthentik/locales/de")).messages,
-                plurals: (await import("make-plural/plurals")).de,
             };
         },
     },
@@ -124,7 +111,6 @@ const DEFAULT_FALLBACK = () => "en";
 
 export function autoDetectLanguage() {
     // Always load en locale at the start so we have something and don't error
-    i18n.loadLocaleData("en", { plurals: en });
     i18n.load("en", enLocale);
     i18n.activate("en");
 
@@ -180,7 +166,6 @@ export function activateLocale(code: string) {
         if (i18n.locale === code) {
             return;
         }
-        i18n.loadLocaleData(locale.code, { plurals: localeData.plurals });
         i18n.load(locale.code, localeData.locale);
         i18n.activate(locale.code);
         window.dispatchEvent(

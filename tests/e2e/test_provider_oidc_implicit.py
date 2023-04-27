@@ -63,7 +63,6 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
         "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @reconcile_app("authentik_crypto")
@@ -109,7 +108,6 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
         "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @reconcile_app("authentik_crypto")
@@ -160,7 +158,6 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-explicit-consent.yaml",
-        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @reconcile_app("authentik_crypto")
     @apply_blueprint("system/providers-oauth2.yaml")
@@ -226,7 +223,6 @@ class TestProviderOAuth2OIDCImplicit(SeleniumTestCase):
     )
     @apply_blueprint(
         "default/flow-default-provider-authorization-explicit-consent.yaml",
-        "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @reconcile_app("authentik_crypto")
     def test_authorization_denied(self):

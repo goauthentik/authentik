@@ -19,7 +19,6 @@ class AccessDeniedResponse(TemplateResponse):
     error_message: Optional[str] = None
     policy_result: Optional[PolicyResult] = None
 
-    # pyright: reportGeneralTypeIssues=false
     def __init__(self, request: HttpRequest, template="policies/denied.html") -> None:
         super().__init__(request, template)
         self.title = _("Access denied")

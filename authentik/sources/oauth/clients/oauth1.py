@@ -66,7 +66,7 @@ class OAuthClient(BaseOAuthClient):
             response.raise_for_status()
         except RequestException as exc:
             raise OAuthSourceException(
-                response=exc.response.text if exc.response else str(exc),
+                exc.response.text if exc.response else str(exc),
             ) from exc
         return response.text
 

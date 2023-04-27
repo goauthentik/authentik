@@ -182,5 +182,4 @@ class HttpChallengeResponse(JsonResponse):
     """Subclass of JsonResponse that uses the `DataclassEncoder`"""
 
     def __init__(self, challenge, **kwargs) -> None:
-        # pyright: reportGeneralTypeIssues=false
         super().__init__(challenge.data, encoder=DataclassEncoder, **kwargs)

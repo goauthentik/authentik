@@ -40,7 +40,6 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
 
     def get_component(self, obj: Policy) -> str:  # pragma: no cover
         """Get object component so that we know how to edit the object"""
-        # pyright: reportGeneralTypeIssues=false
         if obj.__class__ == Policy:
             return ""
         return obj.component
@@ -50,7 +49,6 @@ class PolicySerializer(ModelSerializer, MetaNameSerializer):
         return obj.bindings.count() + obj.promptstage_set.count()
 
     def to_representation(self, instance: Policy):
-        # pyright: reportGeneralTypeIssues=false
         if instance.__class__ == Policy or not self._resolve_inheritance:
             return super().to_representation(instance)
         return dict(instance.serializer(instance=instance, resolve_inheritance=False).data)

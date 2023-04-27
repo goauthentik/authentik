@@ -33,7 +33,6 @@ class Command(BaseCommand):
             template_context={},
         )
         try:
-            # pyright: reportGeneralTypeIssues=false
             send_mail(message.__dict__, stage.pk)
         finally:
             if delete_stage:

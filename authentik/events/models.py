@@ -453,7 +453,6 @@ class NotificationTransport(SerializerModel):
         try:
             from authentik.stages.email.tasks import send_mail
 
-            # pyright: reportGeneralTypeIssues=false
             return send_mail(mail.__dict__)  # pylint: disable=no-value-for-parameter
         except (SMTPException, ConnectionError, OSError) as exc:
             raise NotificationTransportError(exc) from exc

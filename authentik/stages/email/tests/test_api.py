@@ -24,7 +24,6 @@ class TestEmailStageAPI(APITestCase):
     def test_validate(self):
         """Test EmailStage's validation"""
         self.assertEqual(
-            # pyright: reportGeneralTypeIssues=false
             EmailStageSerializer().validate_template(EmailTemplates.ACCOUNT_CONFIRM),
             EmailTemplates.ACCOUNT_CONFIRM,
         )

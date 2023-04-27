@@ -60,7 +60,6 @@ class TestProviderProxy(SeleniumTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
         "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
@@ -126,7 +125,6 @@ class TestProviderProxy(SeleniumTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
         "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @apply_blueprint(
@@ -203,7 +201,6 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         "default/flow-default-invalidation-flow.yaml",
     )
     @apply_blueprint(
-        "default/flow-default-provider-authorization-explicit-consent.yaml",
         "default/flow-default-provider-authorization-implicit-consent.yaml",
     )
     @reconcile_app("authentik_crypto")
@@ -244,7 +241,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
             sleep(0.5)
 
         state = outpost.state
-        self.assertTrue(len(state) >= 1)
+        self.assertEqual(len(state), 1)
 
         # Make sure to delete the outpost to remove the container
         outpost.delete()
