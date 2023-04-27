@@ -199,7 +199,7 @@ export class AuthenticatorValidateStage
                     .host=${this}
                     .challenge=${this.challenge}
                     .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                    .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
                 >
                 </ak-stage-authenticator-validate-code>`;
             case DeviceClassesEnum.Webauthn:
@@ -207,7 +207,7 @@ export class AuthenticatorValidateStage
                     .host=${this}
                     .challenge=${this.challenge}
                     .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                    .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
                 >
                 </ak-stage-authenticator-validate-webauthn>`;
             case DeviceClassesEnum.Duo:
@@ -215,7 +215,7 @@ export class AuthenticatorValidateStage
                     .host=${this}
                     .challenge=${this.challenge}
                     .deviceChallenge=${this.selectedDeviceChallenge}
-                    .showBackButton=${(this.challenge?.deviceChallenges.length || []) > 1}
+                    .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
                 >
                 </ak-stage-authenticator-validate-duo>`;
         }
