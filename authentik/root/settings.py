@@ -340,10 +340,11 @@ CELERY_BEAT_SCHEDULE = {
 }
 CELERY_TASK_CREATE_MISSING_QUEUES = True
 CELERY_TASK_DEFAULT_QUEUE = "authentik"
-CELERY_BROKER_URL = CONFIG.y("broker.url") or CONFIG.y("redis.broker_url") or CONFIG.y("redis.url")
-if CONFIG.y("broker.transport_options") or CONFIG.y("redis.broker_transport_options"):
+CELERY_BROKER_URL = CONFIG.y("broker.url") or CONFIG.y("redis.url")
+print(CONFIG.y("broker.url"))
+if CONFIG.y("broker.transport_options"):
     CELERY_BROKER_TRANSPORT_OPTIONS = ast.literal_eval(
-        base64.b64decode(CONFIG.y("redis.broker_transport_options")).decode('utf-8')
+        base64.b64decode(CONFIG.y("broker.transport_options")).decode('utf-8')
     )
 CELERY_RESULT_BACKEND = CONFIG.y("result_backend.url") or CONFIG.y("redis.url")
 
