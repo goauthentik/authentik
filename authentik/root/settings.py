@@ -6,7 +6,6 @@ import importlib
 import logging
 import os
 from hashlib import sha512
-from urllib.parse import quote_plus
 
 import structlog
 from celery.schedules import crontab

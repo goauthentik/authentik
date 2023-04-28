@@ -29,9 +29,11 @@ class CustomBackend(RedisBackend):
 
 
 class CustomCelery(Celery):
-    # While by default redis will be used as the backend, this implementation still allows different configurations.
-    # We also override the sentinel:// style URL for coherence, but this is not a supported URL scheme
-    # Use redis(s)+sentinel:// instead!
+    # While by default redis will be used as the backend,
+    # this implementation still allows different configurations.
+    # We also override the sentinel:// style URL for coherence,
+    # but this is not a supported URL scheme
+    # ==> Use redis(s)+sentinel:// instead!
     def _get_backend(self):
         loader = self.loader
         loader.override_backends = {

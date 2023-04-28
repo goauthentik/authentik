@@ -7,7 +7,7 @@ from json import dumps, loads
 from json.decoder import JSONDecodeError
 from sys import argv, stderr
 from time import time
-from typing import Any, MutableMapping
+from typing import Any
 from urllib.parse import urlparse
 
 import yaml

@@ -5,9 +5,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"goauthentik.io/internal/outpost/proxyv2/redisstore/serializer"
 	"github.com/go-redis/redis/v9"
 	"github.com/gorilla/sessions"
+	"goauthentik.io/internal/outpost/proxyv2/redisstore/serializer"
 )
 
 func newClient() redis.UniversalClient {
@@ -125,6 +125,9 @@ func TestOptions(t *testing.T) {
 	}
 
 	session, err := store.New(req, "hello")
+	if err != nil {
+		t.Fatal("failed to create redis session", err)
+	}
 	if session.Options.Path != opts.Path || session.Options.MaxAge != opts.MaxAge {
 		t.Fatal("failed to set options")
 	}

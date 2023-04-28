@@ -4,7 +4,7 @@ from os import sched_getaffinity
 from socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from socket import timeout as SocketTimeout
 from sys import platform
-from typing import Any, Dict, Tuple
+from typing import Dict, Tuple
 from urllib.parse import ParseResultBytes, parse_qs, unquote, urlparse
 
 from redis.asyncio.client import StrictRedis as AsyncStrictRedis
@@ -240,7 +240,8 @@ def get_redis_options(
                     print(
                         'The configuration option "'
                         + name.lower()
-                        + '" is currently not supported by the Python redis implementation and therefore ignored.'
+                        + '" is currently not supported by the Python'
+                        + " redis implementation and therefore ignored."
                     )
                 case _:
                     raise ValueError(
@@ -273,7 +274,7 @@ def get_redis_options(
             redis_kwargs["db"] = int(path)
 
     try:
-        # Retreive the number of cpus that can be used
+        # Retrieve the number of cpus that can be used
         max_connections = len(sched_getaffinity(0)) * 10
     except AttributeError:
         # Use default value of BlockingConnectionPool
