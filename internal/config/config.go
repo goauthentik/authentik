@@ -55,34 +55,11 @@ func getConfigPaths() []string {
 
 func Get() *Config {
 	if cfg == nil {
-		c := defaultConfig()
+		c := &Config{}
 		c.Setup(getConfigPaths()...)
 		cfg = c
 	}
 	return cfg
-}
-
-func defaultConfig() *Config {
-	return &Config{
-		Debug: false,
-		Listen: ListenConfig{
-			HTTP:    "0.0.0.0:9000",
-			HTTPS:   "0.0.0.0:9443",
-			LDAP:    "0.0.0.0:3389",
-			LDAPS:   "0.0.0.0:6636",
-			Radius:  "0.0.0.0:1812",
-			Metrics: "0.0.0.0:9300",
-			Debug:   "0.0.0.0:9900",
-		},
-		Paths: PathsConfig{
-			Media: "./media",
-		},
-		LogLevel: "info",
-		ErrorReporting: ErrorReportingConfig{
-			Enabled:    false,
-			SampleRate: 1,
-		},
-	}
 }
 
 func (c *Config) Setup(paths ...string) {
