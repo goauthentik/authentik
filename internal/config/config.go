@@ -8,8 +8,10 @@ import (
 	"path/filepath"
 	"reflect"
 	"strings"
+	"time"
 
 	env "github.com/Netflix/go-env"
+	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
@@ -53,6 +55,71 @@ func getConfigPaths() []string {
 	return computedConfigPaths
 }
 
+func WatchChanges(callback func()) (*fsnotify.Watcher, error) {
+	configPaths := getConfigPaths()
+
+	w, err := fsnotify.NewWatcher()
+	if err != nil {
+		return nil, err
+	}
+
+	// Start listening for events
+	go func() {
+		reload := false
+		for {
+			select {
+			// Read from errors
+			case err, ok := <-w.Errors:
+				if !ok {
+					// Channel was closed (i.e. Watcher.Close() was called)
+					return
+				}
+				log.WithError(err).Warning("failed to watch for file changes")
+			// Read from events
+			case ev, ok := <-w.Events:
+				if !ok {
+					// Channel was closed (i.e. Watcher.Close() was called)
+					return
+				}
+
+				// Ignores files we're not interested in
+				// We get the whole list again in case a file in a directory we're watching was created
+				// and that file is of interest
+				for _, f := range getConfigPaths() {
+					if f == ev.Name {
+						reload = true
+						log.Debugf("%s file change, setting configuration to be reloaded", ev.Name)
+					}
+				}
+			default:
+				if reload {
+					log.Infof("configuration files changed, reloading configuration")
+					Reload()
+					callback()
+					// Cooldown after configuration reloading
+					time.Sleep(14 * time.Second)
+				}
+				// Otherwise `select` fires all of the time
+				time.Sleep(1 * time.Second)
+				reload = false
+			}
+		}
+	}()
+
+	// Register the files to be watch
+	for _, p := range configPaths {
+		// Actually, watch the directory, not the files, as that's how fsnotify works
+		// We assume we're only getting valid files as getConfigPaths already handles all the necessary checks
+		err = w.Add(filepath.Dir(p))
+		log.Warningf("watching for changes for file %s in dir %s", p, filepath.Dir(p))
+		if err != nil {
+			return w, err
+		}
+	}
+
+	return w, nil
+}
+
 func Get() *Config {
 	if cfg == nil {
 		c := &Config{}
@@ -60,6 +127,12 @@ func Get() *Config {
 		cfg = c
 	}
 	return cfg
+}
+
+func Reload() {
+	c := &Config{}
+	c.Setup(getConfigPaths()...)
+	cfg = c
 }
 
 func (c *Config) Setup(paths ...string) {
