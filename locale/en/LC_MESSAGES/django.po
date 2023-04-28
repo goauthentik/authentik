@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-03-20 11:13+0000\n"
+"POT-Creation-Date: 2023-04-28 09:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -97,7 +97,7 @@ msgstr ""
 msgid "User's display name."
 msgstr ""
 
-#: authentik/core/models.py:243 authentik/providers/oauth2/models.py:282
+#: authentik/core/models.py:243 authentik/providers/oauth2/models.py:287
 msgid "User"
 msgstr ""
 
@@ -105,101 +105,107 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-#: authentik/core/models.py:256
+#: authentik/core/models.py:257
+msgid ""
+"Flow used for authentication when the associated application is accessed by "
+"an un-authenticated user."
+msgstr ""
+
+#: authentik/core/models.py:267
 msgid "Flow used when authorizing this provider."
 msgstr ""
 
-#: authentik/core/models.py:289
+#: authentik/core/models.py:300
 msgid "Application's display Name."
 msgstr ""
 
-#: authentik/core/models.py:290
+#: authentik/core/models.py:301
 msgid "Internal application name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:302
+#: authentik/core/models.py:313
 msgid "Open launch URL in a new browser tab or window."
 msgstr ""
 
-#: authentik/core/models.py:366
+#: authentik/core/models.py:377
 msgid "Application"
 msgstr ""
 
-#: authentik/core/models.py:367
+#: authentik/core/models.py:378
 msgid "Applications"
 msgstr ""
 
-#: authentik/core/models.py:373
+#: authentik/core/models.py:384
 msgid "Use the source-specific identifier"
 msgstr ""
 
-#: authentik/core/models.py:375
+#: authentik/core/models.py:386
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr ""
 
-#: authentik/core/models.py:379
+#: authentik/core/models.py:390
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
 
-#: authentik/core/models.py:382
+#: authentik/core/models.py:393
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
 msgstr ""
 
-#: authentik/core/models.py:386
+#: authentik/core/models.py:397
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr ""
 
-#: authentik/core/models.py:393
+#: authentik/core/models.py:404
 msgid "Source's display Name."
 msgstr ""
 
-#: authentik/core/models.py:394
+#: authentik/core/models.py:405
 msgid "Internal source name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:413
+#: authentik/core/models.py:424
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: authentik/core/models.py:422
+#: authentik/core/models.py:433
 msgid "Flow to use when enrolling new users."
 msgstr ""
 
-#: authentik/core/models.py:430
+#: authentik/core/models.py:441
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr ""
 
-#: authentik/core/models.py:602
+#: authentik/core/models.py:613
 msgid "Token"
 msgstr ""
 
-#: authentik/core/models.py:603
+#: authentik/core/models.py:614
 msgid "Tokens"
 msgstr ""
 
-#: authentik/core/models.py:644
+#: authentik/core/models.py:655
 msgid "Property Mapping"
 msgstr ""
 
-#: authentik/core/models.py:645
+#: authentik/core/models.py:656
 msgid "Property Mappings"
 msgstr ""
 
-#: authentik/core/models.py:680
+#: authentik/core/models.py:691
 msgid "Authenticated Session"
 msgstr ""
 
-#: authentik/core/models.py:681
+#: authentik/core/models.py:692
 msgid "Authenticated Sessions"
 msgstr ""
 
@@ -278,7 +284,7 @@ msgstr ""
 msgid "Powered by authentik"
 msgstr ""
 
-#: authentik/core/views/apps.py:50
+#: authentik/core/views/apps.py:53
 #: authentik/providers/oauth2/views/authorize.py:386
 #: authentik/providers/oauth2/views/device_init.py:70
 #: authentik/providers/saml/views/sso.py:70
@@ -308,101 +314,101 @@ msgstr ""
 msgid "Certificate-Key Pairs"
 msgstr ""
 
-#: authentik/events/models.py:286
+#: authentik/events/models.py:293
 msgid "Event"
 msgstr ""
 
-#: authentik/events/models.py:287
+#: authentik/events/models.py:294
 msgid "Events"
 msgstr ""
 
-#: authentik/events/models.py:293
+#: authentik/events/models.py:300
 msgid "authentik inbuilt notifications"
 msgstr ""
 
-#: authentik/events/models.py:294
+#: authentik/events/models.py:301
 msgid "Generic Webhook"
 msgstr ""
 
-#: authentik/events/models.py:295
+#: authentik/events/models.py:302
 msgid "Slack Webhook (Slack/Discord)"
 msgstr ""
 
-#: authentik/events/models.py:296
+#: authentik/events/models.py:303
 msgid "Email"
 msgstr ""
 
-#: authentik/events/models.py:314
+#: authentik/events/models.py:321
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:376
+#: authentik/events/models.py:383
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:381
+#: authentik/events/models.py:388
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:464
+#: authentik/events/models.py:470
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:465
+#: authentik/events/models.py:471
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:471
+#: authentik/events/models.py:477
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:472
+#: authentik/events/models.py:478
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:473
+#: authentik/events/models.py:479
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:498
+#: authentik/events/models.py:504
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:499
+#: authentik/events/models.py:505
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:509
+#: authentik/events/models.py:515
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/events/models.py:517
+#: authentik/events/models.py:523
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:522
+#: authentik/events/models.py:528
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr ""
 
-#: authentik/events/models.py:540
+#: authentik/events/models.py:546
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:541
+#: authentik/events/models.py:547
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:561
+#: authentik/events/models.py:567
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:562
+#: authentik/events/models.py:568
 msgid "Webhook Mappings"
 msgstr ""
 
@@ -542,11 +548,11 @@ msgid ""
 "will not be able to configure this stage."
 msgstr ""
 
-#: authentik/flows/models.py:296
+#: authentik/flows/models.py:305
 msgid "Flow Token"
 msgstr ""
 
-#: authentik/flows/models.py:297
+#: authentik/flows/models.py:306
 msgid "Flow Tokens"
 msgstr ""
 
@@ -555,12 +561,12 @@ msgstr ""
 msgid "%(value)s is not in the correct format of 'hours=3;minutes=1'."
 msgstr ""
 
-#: authentik/outposts/api/service_connections.py:129
+#: authentik/outposts/api/service_connections.py:127
 msgid ""
 "You can only use an empty kubeconfig when connecting to a local cluster."
 msgstr ""
 
-#: authentik/outposts/api/service_connections.py:137
+#: authentik/outposts/api/service_connections.py:135
 msgid "Invalid kubeconfig"
 msgstr ""
 
@@ -628,7 +634,7 @@ msgid ""
 "empty if authentik should not handle the deployment."
 msgstr ""
 
-#: authentik/policies/denied.py:25
+#: authentik/policies/denied.py:24
 msgid "Access denied"
 msgstr ""
 
@@ -696,49 +702,49 @@ msgstr ""
 msgid "Expression Policies"
 msgstr ""
 
-#: authentik/policies/models.py:23
+#: authentik/policies/models.py:22
 msgid "ALL, all policies must pass"
 msgstr ""
 
-#: authentik/policies/models.py:25
+#: authentik/policies/models.py:23
 msgid "ANY, any policy must pass"
 msgstr ""
 
-#: authentik/policies/models.py:48
+#: authentik/policies/models.py:46
 msgid "Policy Binding Model"
 msgstr ""
 
-#: authentik/policies/models.py:49
+#: authentik/policies/models.py:47
 msgid "Policy Binding Models"
 msgstr ""
 
-#: authentik/policies/models.py:88
+#: authentik/policies/models.py:86
 msgid "Negates the outcome of the policy. Messages are unaffected."
 msgstr ""
 
-#: authentik/policies/models.py:91
+#: authentik/policies/models.py:89
 msgid "Timeout after which Policy execution is terminated."
 msgstr ""
 
-#: authentik/policies/models.py:144
+#: authentik/policies/models.py:142
 msgid "Policy Binding"
 msgstr ""
 
-#: authentik/policies/models.py:145
+#: authentik/policies/models.py:143
 msgid "Policy Bindings"
 msgstr ""
 
-#: authentik/policies/models.py:166
+#: authentik/policies/models.py:164
 msgid ""
 "When this option is enabled, all executions of this policy will be logged. "
 "By default, only execution errors are logged."
 msgstr ""
 
-#: authentik/policies/models.py:188
+#: authentik/policies/models.py:186
 msgid "Policy"
 msgstr ""
 
-#: authentik/policies/models.py:189
+#: authentik/policies/models.py:187
 msgid "Policies"
 msgstr ""
 
@@ -876,212 +882,212 @@ msgid ""
 "this method only if you have different UPN and Mail domains."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:34
+#: authentik/providers/oauth2/models.py:39
 msgid "Confidential"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:35
+#: authentik/providers/oauth2/models.py:40
 msgid "Public"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:57
+#: authentik/providers/oauth2/models.py:62
 msgid "Same identifier is used for all providers"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:59
+#: authentik/providers/oauth2/models.py:64
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:66
+#: authentik/providers/oauth2/models.py:71
 msgid "code (Authorization Code Flow)"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:67
+#: authentik/providers/oauth2/models.py:72
 msgid "id_token (Implicit Flow)"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:68
+#: authentik/providers/oauth2/models.py:73
 msgid "id_token token (Implicit Flow)"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:69
+#: authentik/providers/oauth2/models.py:74
 msgid "code token (Hybrid Flow)"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:70
+#: authentik/providers/oauth2/models.py:75
 msgid "code id_token (Hybrid Flow)"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:71
+#: authentik/providers/oauth2/models.py:76
 msgid "code id_token token (Hybrid Flow)"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:77
+#: authentik/providers/oauth2/models.py:82
 msgid "HS256 (Symmetric Encryption)"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:78
+#: authentik/providers/oauth2/models.py:83
 msgid "RS256 (Asymmetric Encryption)"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:79
+#: authentik/providers/oauth2/models.py:84
 msgid "ES256 (Asymmetric Encryption)"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:85
+#: authentik/providers/oauth2/models.py:90
 msgid "Scope used by the client"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:89
+#: authentik/providers/oauth2/models.py:94
 msgid ""
 "Description shown to the user when consenting. If left empty, the user won't "
 "be informed."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:108
+#: authentik/providers/oauth2/models.py:113
 msgid "Scope Mapping"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:109
+#: authentik/providers/oauth2/models.py:114
 msgid "Scope Mappings"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:119
+#: authentik/providers/oauth2/models.py:124
 msgid "Client Type"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:121
+#: authentik/providers/oauth2/models.py:126
 msgid ""
 "Confidential clients are capable of maintaining the confidentiality of their "
 "credentials. Public clients are incapable"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:128
+#: authentik/providers/oauth2/models.py:133
 msgid "Client ID"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:134
+#: authentik/providers/oauth2/models.py:139
 msgid "Client Secret"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:140
+#: authentik/providers/oauth2/models.py:145
 msgid "Redirect URIs"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:141
+#: authentik/providers/oauth2/models.py:146
 msgid "Enter each URI on a new line."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:146
+#: authentik/providers/oauth2/models.py:151
 msgid "Include claims in id_token"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:148
+#: authentik/providers/oauth2/models.py:153
 msgid ""
 "Include User claims from scopes in the id_token, for applications that don't "
 "access the userinfo endpoint."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:157
+#: authentik/providers/oauth2/models.py:162
 msgid ""
 "Access codes not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:165
-#: authentik/providers/oauth2/models.py:173
+#: authentik/providers/oauth2/models.py:170
+#: authentik/providers/oauth2/models.py:178
 msgid ""
 "Tokens not valid on or after current time + this value (Format: hours=1;"
 "minutes=2;seconds=3)."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:182
+#: authentik/providers/oauth2/models.py:187
 msgid ""
 "Configure what data should be used as unique User Identifier. For most "
 "cases, the default should be fine."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:189
+#: authentik/providers/oauth2/models.py:194
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:194
+#: authentik/providers/oauth2/models.py:199
 msgid "Signing Key"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:198
+#: authentik/providers/oauth2/models.py:203
 msgid ""
 "Key used to sign the tokens. Only required when JWT Algorithm is set to "
 "RS256."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:205
+#: authentik/providers/oauth2/models.py:210
 msgid ""
 "Any JWT signed by the JWK of the selected source can be used to authenticate."
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:274
+#: authentik/providers/oauth2/models.py:279
 msgid "OAuth2/OpenID Provider"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:275
+#: authentik/providers/oauth2/models.py:280
 msgid "OAuth2/OpenID Providers"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:284
-#: authentik/providers/oauth2/models.py:416
+#: authentik/providers/oauth2/models.py:289
+#: authentik/providers/oauth2/models.py:421
 msgid "Scopes"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:303
+#: authentik/providers/oauth2/models.py:308
 msgid "Code"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:304
+#: authentik/providers/oauth2/models.py:309
 msgid "Nonce"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:305
+#: authentik/providers/oauth2/models.py:310
 msgid "Code Challenge"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:307
+#: authentik/providers/oauth2/models.py:312
 msgid "Code Challenge Method"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:327
+#: authentik/providers/oauth2/models.py:332
 msgid "Authorization Code"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:328
+#: authentik/providers/oauth2/models.py:333
 msgid "Authorization Codes"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:370
+#: authentik/providers/oauth2/models.py:375
 msgid "OAuth2 Access Token"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:371
+#: authentik/providers/oauth2/models.py:376
 msgid "OAuth2 Access Tokens"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:381
+#: authentik/providers/oauth2/models.py:386
 msgid "ID Token"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:400
+#: authentik/providers/oauth2/models.py:405
 msgid "OAuth2 Refresh Token"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:401
+#: authentik/providers/oauth2/models.py:406
 msgid "OAuth2 Refresh Tokens"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:428
+#: authentik/providers/oauth2/models.py:433
 msgid "Device Token"
 msgstr ""
 
-#: authentik/providers/oauth2/models.py:429
+#: authentik/providers/oauth2/models.py:434
 msgid "Device Tokens"
 msgstr ""
 
@@ -1188,7 +1194,7 @@ msgstr ""
 
 #: authentik/providers/radius/models.py:24
 msgid ""
-"List of CIDRs (comma-seperated) that clients can connect from. A more "
+"List of CIDRs (comma-separated) that clients can connect from. A more "
 "specific CIDR will match before a looser one. Clients connecting from a non-"
 "specified CIDR will be dropped."
 msgstr ""
@@ -1340,7 +1346,7 @@ msgstr ""
 msgid "Authentication token"
 msgstr ""
 
-#: authentik/providers/scim/models.py:27 authentik/sources/ldap/models.py:80
+#: authentik/providers/scim/models.py:27 authentik/sources/ldap/models.py:82
 msgid "Property mappings used for group creation/updating."
 msgstr ""
 
@@ -1396,79 +1402,79 @@ msgstr ""
 msgid "Used recovery-link to authenticate."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:33
+#: authentik/sources/ldap/models.py:35
 msgid "Server URI"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:41
+#: authentik/sources/ldap/models.py:43
 msgid ""
 "Optionally verify the LDAP Server's Certificate against the CA Chain in this "
 "keypair."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:45
+#: authentik/sources/ldap/models.py:47
 msgid "Bind CN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:47
+#: authentik/sources/ldap/models.py:49
 msgid "Enable Start TLS"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:49
+#: authentik/sources/ldap/models.py:51
 msgid "Base DN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:51
+#: authentik/sources/ldap/models.py:53
 msgid "Prepended to Base DN for User-queries."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:52
+#: authentik/sources/ldap/models.py:54
 msgid "Addition User DN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:56
+#: authentik/sources/ldap/models.py:58
 msgid "Prepended to Base DN for Group-queries."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:57
+#: authentik/sources/ldap/models.py:59
 msgid "Addition Group DN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:63
+#: authentik/sources/ldap/models.py:65
 msgid "Consider Objects matching this filter to be Users."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:66
+#: authentik/sources/ldap/models.py:68
 msgid "Field which contains members of a group."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:70
+#: authentik/sources/ldap/models.py:72
 msgid "Consider Objects matching this filter to be Groups."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:73
+#: authentik/sources/ldap/models.py:75
 msgid "Field which contains a unique Identifier."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:87
+#: authentik/sources/ldap/models.py:89
 msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:145
+#: authentik/sources/ldap/models.py:159
 msgid "LDAP Source"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:146
+#: authentik/sources/ldap/models.py:160
 msgid "LDAP Sources"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:168
+#: authentik/sources/ldap/models.py:182
 msgid "LDAP Property Mapping"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:169
+#: authentik/sources/ldap/models.py:183
 msgid "LDAP Property Mappings"
 msgstr ""
 
@@ -1744,19 +1750,19 @@ msgstr ""
 msgid "User SAML Source Connections"
 msgstr ""
 
-#: authentik/stages/authenticator_duo/models.py:80
+#: authentik/stages/authenticator_duo/models.py:79
 msgid "Duo Authenticator Setup Stage"
 msgstr ""
 
-#: authentik/stages/authenticator_duo/models.py:81
+#: authentik/stages/authenticator_duo/models.py:80
 msgid "Duo Authenticator Setup Stages"
 msgstr ""
 
-#: authentik/stages/authenticator_duo/models.py:104
+#: authentik/stages/authenticator_duo/models.py:103
 msgid "Duo Device"
 msgstr ""
 
-#: authentik/stages/authenticator_duo/models.py:105
+#: authentik/stages/authenticator_duo/models.py:104
 msgid "Duo Devices"
 msgstr ""
 
@@ -1826,7 +1832,7 @@ msgstr ""
 msgid "TOTP Authenticator Setup Stages"
 msgstr ""
 
-#: authentik/stages/authenticator_validate/challenge.py:124
+#: authentik/stages/authenticator_validate/challenge.py:123
 msgid "Invalid Token"
 msgstr ""
 
@@ -2186,96 +2192,103 @@ msgstr ""
 msgid "Invalid password"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:41
+#: authentik/stages/prompt/models.py:43
 msgid "Text: Simple Text input"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:43
+#: authentik/stages/prompt/models.py:45
 msgid "Text area: Multiline Text Input."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:46
+#: authentik/stages/prompt/models.py:48
 msgid "Text (read-only): Simple Text input, but cannot be edited."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:50
+#: authentik/stages/prompt/models.py:52
 msgid "Text area (read-only): Multiline Text input, but cannot be edited."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:56
+#: authentik/stages/prompt/models.py:58
 msgid ""
 "Username: Same as Text input, but checks for and prevents duplicate "
 "usernames."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:58
+#: authentik/stages/prompt/models.py:60
 msgid "Email: Text field with Email type."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:62
+#: authentik/stages/prompt/models.py:64
 msgid ""
-"Password: Masked input, password is validated against sources. Policies "
-"still have to be applied to this Stage. If two of these are used in the same "
-"stage, they are ensured to be identical."
+"Password: Masked input, multiple inputs of this type on the same prompt need "
+"to be identical."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:70
+#: authentik/stages/prompt/models.py:71
 msgid "Fixed choice field rendered as a group of radio buttons."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:72
+#: authentik/stages/prompt/models.py:73
 msgid "Fixed choice field rendered as a dropdown."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:79
+#: authentik/stages/prompt/models.py:80
 msgid ""
 "File: File upload for arbitrary files. File content will be available in "
 "flow context as data-URI"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:84
+#: authentik/stages/prompt/models.py:85
 msgid "Separator: Static Separator Line"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:85
+#: authentik/stages/prompt/models.py:86
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:86
+#: authentik/stages/prompt/models.py:87
 msgid "Static: Static value, displayed as-is."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:88
+#: authentik/stages/prompt/models.py:89
 msgid "authentik: Selection of locales authentik supports"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:115
+#: authentik/stages/prompt/models.py:116
 msgid "Name of the form field, also used to store the value"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:123
+#: authentik/stages/prompt/models.py:124
 msgid ""
-"When creating a Radio Button Group or Dropdown, enable interpreting as "
-"expression and return a list to return multiple choices."
+"Optionally provide a short hint that describes the expected input value. "
+"When creating a fixed choice field, enable interpreting as expression and "
+"return a list to return multiple choices."
 msgstr ""
 
-#: authentik/stages/prompt/models.py:256
+#: authentik/stages/prompt/models.py:132
+msgid ""
+"Optionally pre-fill the input with an initial value. When creating a fixed "
+"choice field, enable interpreting as expression and return a list to return "
+"multiple default choices."
+msgstr ""
+
+#: authentik/stages/prompt/models.py:321
 msgid "Prompt"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:257
+#: authentik/stages/prompt/models.py:322
 msgid "Prompts"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:284
+#: authentik/stages/prompt/models.py:349
 msgid "Prompt Stage"
 msgstr ""
 
-#: authentik/stages/prompt/models.py:285
+#: authentik/stages/prompt/models.py:350
 msgid "Prompt Stages"
 msgstr ""
 
-#: authentik/stages/prompt/stage.py:107
+#: authentik/stages/prompt/stage.py:108
 msgid "Passwords don't match."
 msgstr ""
 
@@ -2348,15 +2361,15 @@ msgstr ""
 msgid "User Write Stages"
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:121
+#: authentik/stages/user_write/stage.py:132
 msgid "No Pending data."
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:127
+#: authentik/stages/user_write/stage.py:138
 msgid "No user found and can't create new user."
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:154
+#: authentik/stages/user_write/stage.py:165
 msgid "Failed to save user"
 msgstr ""
 

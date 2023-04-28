@@ -17,24 +17,6 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "X-Generator: @lingui/cli\n"
 
-#~ msgid "#/identity/users/{0}"
-#~ msgstr "#/kimlik/kullanıcılar/ {0}"
-
-#: src/elements/user/SessionList.ts
-msgid "(Current session)"
-msgstr ""
-
-#~ msgid "(Format: days=-1;minutes=-2;seconds=-3)."
-#~ msgstr ""
-
-#: src/elements/utils/TimeDeltaHelp.ts
-msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
-msgstr "(Biçim: saat=-1; dakika=-2; ikincil=-3)."
-
-#: src/elements/utils/TimeDeltaHelp.ts
-msgid "(Format: hours=1;minutes=2;seconds=3)."
-msgstr "(Biçim: saat=1; dakika=2; saniye= 3)."
-
 #: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/applications/ApplicationListPage.ts
@@ -72,6 +54,85 @@ msgstr "-"
 #: src/admin/flows/FlowImportForm.ts
 msgid ".yaml files, which can be found on goauthentik.io and can be exported by authentik."
 msgstr ""
+
+#: src/elements/user/SessionList.ts
+msgid "(Current session)"
+msgstr ""
+
+#~ msgid "(Format: days=-1;minutes=-2;seconds=-3)."
+#~ msgstr ""
+
+#: src/elements/utils/TimeDeltaHelp.ts
+msgid "(Format: hours=-1;minutes=-2;seconds=-3)."
+msgstr "(Biçim: saat=-1; dakika=-2; ikincil=-3)."
+
+#: src/elements/utils/TimeDeltaHelp.ts
+msgid "(Format: hours=1;minutes=2;seconds=3)."
+msgstr "(Biçim: saat=1; dakika=2; saniye= 3)."
+
+#: src/elements/Expand.ts
+#: src/elements/Expand.ts
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
+msgid "{0}"
+msgstr "{0}"
+
+#: src/elements/table/TablePagination.ts
+msgid "{0} - {1} of {2}"
+msgstr "{2} içinden {0} - {1}"
+
+#: src/admin/stages/prompt/PromptStageForm.ts
+msgid "{0} (\"{1}\", of type {2})"
+msgstr "{0} (“{1}”, {2} türünde)"
+
+#: src/admin/stages/prompt/PromptStageForm.ts
+msgid "{0} ({1})"
+msgstr "{0} ({1})"
+
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
+msgid "{0} ({consequence})"
+msgstr "{0} ({consequence})"
+
+#: src/admin/admin-overview/cards/VersionStatusCard.ts
+msgid "{0} is available!"
+msgstr "{0} kullanılabilir!"
+
+#: src/admin/system-tasks/SystemTaskListPage.ts
+msgid "{0} seconds"
+msgstr ""
+
+#: src/elements/notifications/NotificationDrawer.ts
+msgid "{0} unread"
+msgstr "{0} okunmamış"
+
+#: src/admin/outposts/OutpostHealth.ts
+msgid "{0}, should be {1}"
+msgstr "{0}, {1} olmalıdır"
+
+#: src/elements/forms/ConfirmationForm.ts
+msgid "{0}: {1}"
+msgstr "{0}: {1}"
+
+#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
+msgid "{ago} day(s) ago"
+msgstr ""
+
+#: src/admin/admin-overview/charts/AdminModelPerDay.ts
+#: src/admin/applications/ApplicationAuthorizeChart.ts
+#: src/admin/users/UserChart.ts
+msgid "{ago} days ago"
+msgstr "{ago} gün önce"
+
+#: src/elements/charts/Chart.ts
+msgid "{ago} hour(s) ago"
+msgstr ""
+
+#: src/elements/charts/Chart.ts
+#~ msgid "{ago} hours ago"
+#~ msgstr "{ago} saat önce"
+
+#~ msgid "#/identity/users/{0}"
+#~ msgstr "#/kimlik/kullanıcılar/ {0}"
 
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "0: Too guessable: risky password. (guesses < 10^3)"
@@ -121,85 +182,17 @@ msgstr ""
 msgid "A policy used for testing. Always returns the same result as specified below after waiting a random duration."
 msgstr "Test için kullanılan bir ilke. Her zaman rastgele bir süre bekledikten sonra aşağıda belirtilen sonucu döndürür."
 
-#: src/admin/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
-msgid "ACS URL"
-msgstr "ACS URL"
-
-#: src/admin/applications/ApplicationForm.ts
-#: src/admin/flows/FlowForm.ts
-#~ msgid "ALL, all policies must match to grant access."
-#~ msgstr "TÜM, erişim vermek için tüm ilkelerin eşleşmesi gerekir."
-
-#: src/admin/flows/StageBindingForm.ts
-#~ msgid "ALL, all policies must match to include this stage access."
-#~ msgstr "TÜM, bu alanı erişimini içerecek şekilde tüm ilkelerin eşleşmesi gerekir."
-
-#: src/admin/applications/ApplicationForm.ts
-#: src/admin/flows/FlowForm.ts
-#~ msgid "ANY, any policy must match to grant access."
-#~ msgstr "HERHANGİ, erişim izni vermek için herhangi bir ilke eşleşmelidir."
-
-#: src/admin/flows/StageBindingForm.ts
-#~ msgid "ANY, any policy must match to include this stage access."
-#~ msgstr "HERHANGİ, bu aşama erişimini içerecek şekilde herhangi bir ilke"
-
-#: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
-msgid "API"
-msgstr ""
-
-#: src/admin/tokens/TokenListPage.ts
-msgid "API Access"
-msgstr "API Erişimi"
-
-#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-msgid "API Auth Username"
-msgstr "API Auth Kullanıcı Adı"
-
-#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-msgid "API Auth password"
-msgstr "API Auth parolası"
-
-#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
-msgid "API Hostname"
-msgstr "API Ana bilgisayar adı"
-
-#: src/elements/notifications/APIDrawer.ts
-msgid "API Requests"
-msgstr "API İstekleri"
-
-#: src/admin/tokens/TokenForm.ts
-msgid "API Token"
-msgstr ""
-
-#: src/admin/tokens/TokenForm.ts
-#~ msgid "API Token (can be used to access the API programmatically)"
-#~ msgstr "API Belirteci (API'ye programlı olarak erişmek için kullanılabilir)"
-
-#: src/admin/stages/captcha/CaptchaStageForm.ts
-msgid "API URL"
-msgstr ""
-
-#: src/elements/messages/Middleware.ts
-msgid "API request failed"
-msgstr "API isteği başarısız"
-
 #: src/admin/applications/ApplicationListPage.ts
 #~ msgid "About applications"
 #~ msgstr "Uygulamalar hakkında"
 
-#: src/admin/sources/oauth/OAuthSourceViewPage.ts
-msgid "Access Key"
-msgstr "Erişim Anahtarı"
-
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Access Token validity"
-msgstr ""
-
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Access code validity"
 msgstr "Erişim kodu geçerliliği"
+
+#: src/admin/sources/oauth/OAuthSourceViewPage.ts
+msgid "Access Key"
+msgstr "Erişim Anahtarı"
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "Access token URL"
@@ -208,6 +201,16 @@ msgstr "Erişim belirteci URL'si"
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "Access token validity"
 #~ msgstr "Erişim belirteci geçerliliği"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Access Token validity"
+msgstr ""
+
+#: src/admin/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
+#: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "ACS URL"
+msgstr "ACS URL"
 
 #: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
@@ -234,9 +237,9 @@ msgstr "Eylem"
 #: src/admin/policies/PolicyListPage.ts
 #: src/admin/property-mappings/PropertyMappingListPage.ts
 #: src/admin/providers/ProviderListPage.ts
-#: src/admin/stages/StageListPage.ts
 #: src/admin/stages/invitation/InvitationListPage.ts
 #: src/admin/stages/prompt/PromptListPage.ts
+#: src/admin/stages/StageListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 #: src/admin/tenants/TenantListPage.ts
 #: src/admin/tokens/TokenListPage.ts
@@ -279,14 +282,6 @@ msgstr "Etkin"
 msgid "Add"
 msgstr "Ekle"
 
-#: src/admin/groups/RelatedGroupList.ts
-msgid "Add Group"
-msgstr ""
-
-#: src/admin/users/RelatedUserList.ts
-msgid "Add User"
-msgstr ""
-
 #~ msgid ""
 #~ "Add a provider which does not support any other method. Requests will be routed\n"
 #~ "through the authentik proxy, which authenticates all requests."
@@ -311,11 +306,19 @@ msgid "Add existing user"
 msgstr ""
 
 #: src/admin/groups/RelatedGroupList.ts
+msgid "Add Group"
+msgstr ""
+
+#: src/admin/groups/RelatedGroupList.ts
 msgid "Add new group"
 msgstr ""
 
 #: src/admin/groups/RelatedGroupList.ts
 msgid "Add to existing group"
+msgstr ""
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Add User"
 msgstr ""
 
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -326,17 +329,13 @@ msgstr "Toplama Grubu DN"
 msgid "Addition User DN"
 msgstr "Ekleme Kullanıcı DN"
 
-#: src/pages/sources/oauth/OAuthSourceForm.ts
-#~ msgid "Additional Scope"
-#~ msgstr "Ek Kapsam"
-
-#: src/admin/applications/wizard/InitialApplicationWizardPage.ts
-msgid "Additional UI settings"
-msgstr ""
-
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "Additional group DN, prepended to the Base DN."
 msgstr "Ek grup DN, Base DN için eklenmiş."
+
+#: src/pages/sources/oauth/OAuthSourceForm.ts
+#~ msgid "Additional Scope"
+#~ msgstr "Ek Kapsam"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Additional scope mappings, which are passed to the proxy."
@@ -358,6 +357,10 @@ msgstr ""
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "Additional settings"
 msgstr "Ek ayarlar"
+
+#: src/admin/applications/wizard/InitialApplicationWizardPage.ts
+msgid "Additional UI settings"
+msgstr ""
 
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "Additional user DN, prepended to the Base DN."
@@ -386,6 +389,7 @@ msgstr "Gelişmiş ayarlar"
 msgid "Affected model:"
 msgstr "Etkilenen model:"
 
+#: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts
 msgid "Alert"
 msgstr "Alarm"
@@ -399,13 +403,22 @@ msgstr "Alarm"
 msgid "All policies must match to grant access"
 msgstr ""
 
-#: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "Allow IDP-initiated logins"
-msgstr "IDP tarafından başlatılan oturumlara izin ver"
+#: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
+#~ msgid "ALL, all policies must match to grant access."
+#~ msgstr "TÜM, erişim vermek için tüm ilkelerin eşleşmesi gerekir."
+
+#: src/admin/flows/StageBindingForm.ts
+#~ msgid "ALL, all policies must match to include this stage access."
+#~ msgstr "TÜM, bu alanı erişimini içerecek şekilde tüm ilkelerin eşleşmesi gerekir."
 
 #: src/admin/sources/plex/PlexSourceForm.ts
 msgid "Allow friends to authenticate via Plex, even if you don't share any servers"
 msgstr "Herhangi bir sunucu paylaşmasan bile arkadaşlarının Plex aracılığıyla kimlik doğrulamasına izin ver"
+
+#: src/admin/sources/saml/SAMLSourceForm.ts
+msgid "Allow IDP-initiated logins"
+msgstr "IDP tarafından başlatılan oturumlara izin ver"
 
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allow up to N occurrences in the HIBP database."
@@ -415,13 +428,13 @@ msgstr "HIBP veritabanında N oluşumuna kadar izin ver."
 msgid "Allow users to use Applications based on properties, enforce Password Criteria and selectively apply Stages."
 msgstr "Kullanıcıların özelliklere göre Uygulamaları kullanmasına, Parola Ölçütlerini uygulamasına ve Aşama Alanları'nı seçerek uygulamasına izin verin."
 
-#: src/admin/providers/proxy/ProxyProviderViewPage.ts
-msgid "Allowed Redirect URIs"
-msgstr "İzin Verilen Yeniden Yönlendirme URI'leri"
-
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Allowed count"
 msgstr "İzin verilen sayısı"
+
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+msgid "Allowed Redirect URIs"
+msgstr "İzin Verilen Yeniden Yönlendirme URI'leri"
 
 #: src/admin/sources/plex/PlexSourceForm.ts
 msgid "Allowed servers"
@@ -477,6 +490,55 @@ msgstr "Herhangi bir HTML kullanılabilir."
 msgid "Any policy must match to grant access"
 msgstr ""
 
+#: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
+#~ msgid "ANY, any policy must match to grant access."
+#~ msgstr "HERHANGİ, erişim izni vermek için herhangi bir ilke eşleşmelidir."
+
+#: src/admin/flows/StageBindingForm.ts
+#~ msgid "ANY, any policy must match to include this stage access."
+#~ msgstr "HERHANGİ, bu aşama erişimini içerecek şekilde herhangi bir ilke"
+
+#: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "API"
+msgstr ""
+
+#: src/admin/tokens/TokenListPage.ts
+msgid "API Access"
+msgstr "API Erişimi"
+
+#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "API Auth password"
+msgstr "API Auth parolası"
+
+#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "API Auth Username"
+msgstr "API Auth Kullanıcı Adı"
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "API Hostname"
+msgstr "API Ana bilgisayar adı"
+
+#: src/elements/messages/Middleware.ts
+msgid "API request failed"
+msgstr "API isteği başarısız"
+
+#: src/elements/notifications/APIDrawer.ts
+msgid "API Requests"
+msgstr "API İstekleri"
+
+#: src/admin/tokens/TokenForm.ts
+msgid "API Token"
+msgstr ""
+
+#: src/admin/tokens/TokenForm.ts
+#~ msgid "API Token (can be used to access the API programmatically)"
+#~ msgstr "API Belirteci (API'ye programlı olarak erişmek için kullanılabilir)"
+
+#: src/admin/stages/captcha/CaptchaStageForm.ts
+msgid "API URL"
+msgstr ""
+
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventViewPage.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
@@ -495,6 +557,10 @@ msgstr "Uygulama parolası"
 msgid "App password."
 msgstr ""
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "app1 running on app1.example.com"
+msgstr "app1 üzerinde çalışan app1.example.com"
+
 #: src/admin/flows/FlowForm.ts
 msgid "Appearance settings"
 msgstr ""
@@ -504,15 +570,6 @@ msgstr ""
 #: src/elements/user/UserConsentList.ts
 msgid "Application"
 msgstr "Uygulama"
-
-#: src/admin/applications/ApplicationListPage.ts
-#: src/user/LibraryApplication.ts
-msgid "Application Icon"
-msgstr "Uygulama Simgesi"
-
-#: src/admin/applications/wizard/link/TypeLinkApplicationWizardPage.ts
-msgid "Application Link"
-msgstr ""
 
 #: src/flow/stages/consent/ConsentStage.ts
 msgid "Application already has access to the following permissions:"
@@ -528,6 +585,15 @@ msgstr "Başvuru yetkili"
 
 #: src/admin/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Application details"
+msgstr ""
+
+#: src/admin/applications/ApplicationListPage.ts
+#: src/user/LibraryApplication.ts
+msgid "Application Icon"
+msgstr "Uygulama Simgesi"
+
+#: src/admin/applications/wizard/link/TypeLinkApplicationWizardPage.ts
+msgid "Application Link"
 msgstr ""
 
 #: src/flow/stages/consent/ConsentStage.ts
@@ -634,21 +700,21 @@ msgstr "Onaylama işlemi geçerli değil veya sonrasında"
 msgid "Assertions is empty"
 msgstr "İddeler boş"
 
-#: src/admin/providers/ProviderListPage.ts
-#: src/admin/providers/ldap/LDAPProviderViewPage.ts
-#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
-#: src/admin/providers/proxy/ProxyProviderViewPage.ts
-#: src/admin/providers/radius/RadiusProviderViewPage.ts
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
-msgid "Assigned to application"
-msgstr "Uygulamaya atanmış"
-
 #: src/admin/policies/PolicyListPage.ts
 msgid "Assigned to {0} object(s)."
 msgstr "{0} nesneye atanır."
 
 #~ msgid "Assigned to {0} objects."
 #~ msgstr "{0} nesnelerine atanır."
+
+#: src/admin/providers/ldap/LDAPProviderViewPage.ts
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/ProviderListPage.ts
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "Assigned to application"
+msgstr "Uygulamaya atanmış"
 
 #: src/admin/events/EventInfo.ts
 msgid "Attempted to log in as {0}"
@@ -691,15 +757,10 @@ msgstr "Plex ile kimlik doğrulaması..."
 msgid "Authentication"
 msgstr "Kimlik Doğrulama"
 
-#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
-msgid "Authentication Type"
-msgstr "Kimlik Doğrulama Türü"
-
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "Authentication URL"
-msgstr "Kimlik Doğrulama URL'si"
-
 #: src/admin/providers/radius/RadiusProviderForm.ts
+#: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
@@ -715,6 +776,14 @@ msgstr ""
 msgid "Authentication settings"
 msgstr ""
 
+#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+msgid "Authentication Type"
+msgstr "Kimlik Doğrulama Türü"
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Authentication URL"
+msgstr "Kimlik Doğrulama URL'si"
+
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
 msgid "Authentication without user interaction, or machine-to-machine authentication."
 msgstr ""
@@ -727,6 +796,28 @@ msgstr "Kimlik Doğrulayıcı"
 msgid "Authenticator Attachment"
 msgstr ""
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+#: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
+#: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
+#: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "Authenticator type name"
+msgstr ""
+
+#~ msgid "authentik Builtin Database"
+#~ msgstr "authentik Yerleşik Veritabanı"
+
+#~ msgid "authentik LDAP Backend"
+#~ msgstr "authentik LDAP Arka Ucu"
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "authentik running on auth.example.com"
+msgstr "auth.example.com üzerinde çalışan authentik"
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "authentik: Locale: Displays a list of locales authentik supports."
+msgstr ""
+
 #: src/admin/flows/utils.ts
 msgid "Authorization"
 msgstr "Yetkilendirme"
@@ -737,11 +828,6 @@ msgstr "Yetkilendirme"
 #~ msgid "Authorization Code(s)"
 #~ msgstr "Yetkilendirme Kodları"
 
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-#: src/admin/sources/oauth/OAuthSourceViewPage.ts
-msgid "Authorization URL"
-msgstr "Yetkilendirme URL'si"
-
 #: src/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
@@ -749,6 +835,11 @@ msgstr "Yetkilendirme URL'si"
 #: src/admin/providers/saml/SAMLProviderImportForm.ts
 msgid "Authorization flow"
 msgstr "Yetkilendirme akışı"
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+#: src/admin/sources/oauth/OAuthSourceViewPage.ts
+msgid "Authorization URL"
+msgstr "Yetkilendirme URL'si"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
 #: src/admin/applications/ApplicationAuthorizeChart.ts
@@ -788,7 +879,6 @@ msgid "Backends"
 msgstr "Arka uçlar"
 
 #: src/admin/flows/FlowForm.ts
-#: src/admin/flows/FlowForm.ts
 msgid "Background"
 msgstr "Arkaplan"
 
@@ -818,6 +908,10 @@ msgstr "Yürütme sırasında arka plan gösterilir."
 msgid "Base DN"
 msgstr "Taban DN"
 
+#: src/admin/admin-overview/cards/VersionStatusCard.ts
+msgid "Based on {0}"
+msgstr ""
+
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "Based on the Hashed User ID"
 #~ msgstr "Karma Kullanıcı Kimliğine Dayalı"
@@ -829,6 +923,10 @@ msgstr ""
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "Based on the User's Email. This is recommended over the UPN method."
 #~ msgstr "Kullanıcının E-postasına dayanır. Bu UPN yöntemi üzerinde önerilir."
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's hashed ID"
+msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Based on the User's ID"
@@ -843,20 +941,12 @@ msgstr ""
 #~ msgstr "Kullanıcının UPN'sine göre, yalnızca kullanıcı 'upn' özniteliği kümesi varsa çalışır. Bu yöntemi yalnızca farklı UPN ve Mail etki alanlarınız varsa kullanın."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Based on the User's hashed ID"
-msgstr ""
-
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Based on the User's username"
 msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "Based on the username"
 #~ msgstr "Kullanıcı adına göre"
-
-#: src/admin/admin-overview/cards/VersionStatusCard.ts
-msgid "Based on {0}"
-msgstr ""
 
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Basic Auth"
@@ -882,11 +972,6 @@ msgstr "Bağlama CN"
 msgid "Bind DN"
 msgstr "Bağlama DN"
 
-#: src/admin/providers/ldap/LDAPProviderViewPage.ts
-#: src/admin/sources/ldap/LDAPSourceForm.ts
-msgid "Bind Password"
-msgstr "Parola Bağla"
-
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Bind existing policy"
 msgstr ""
@@ -902,6 +987,11 @@ msgstr "Bağlama akışı"
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Bind mode"
 msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderViewPage.ts
+#: src/admin/sources/ldap/LDAPSourceForm.ts
+msgid "Bind Password"
+msgstr "Parola Bağla"
 
 #: src/admin/flows/BoundStagesList.ts
 msgid "Bind stage"
@@ -964,10 +1054,6 @@ msgstr "Varsayılan olarak, kaynaklar için yalnızca simgeler gösterilir. Tam 
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "CA which the endpoint's Certificate is verified against. Can be left empty for no validation."
 msgstr "Uç noktanın Sertifikası karşı doğrulanan CA. Doğrulama yapılmadan boş bırakılabilir."
-
-#: src/admin/flows/FlowForm.ts
-#~ msgid "CONTINUE will either follow the ?next parameter or redirect to the default interface."
-#~ msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Cached binding"
@@ -1111,20 +1197,12 @@ msgid "Check"
 msgstr "Kontrol"
 
 #: src/admin/applications/ApplicationViewPage.ts
-msgid "Check Application access"
-msgstr "Uygulama erişimini denetle"
-
-#: src/admin/policies/reputation/ReputationPolicyForm.ts
-msgid "Check IP"
-msgstr "IP'yi Kontrol Et"
-
-#: src/admin/policies/reputation/ReputationPolicyForm.ts
-msgid "Check Username"
-msgstr "Kullanıcı Adını Kontrol Et"
-
-#: src/admin/applications/ApplicationViewPage.ts
 msgid "Check access"
 msgstr "Erişimi kontrol"
+
+#: src/admin/applications/ApplicationViewPage.ts
+msgid "Check Application access"
+msgstr "Uygulama erişimini denetle"
 
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Check haveibeenpwned.com"
@@ -1134,6 +1212,10 @@ msgstr ""
 #~ "Check if password is on HaveIBeenPwned's list by uploading the first\n"
 #~ "5 characters of the SHA1 Hash."
 #~ msgstr ""
+
+#: src/admin/policies/reputation/ReputationPolicyForm.ts
+msgid "Check IP"
+msgstr "IP'yi Kontrol Et"
 
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 msgid "Check outposts."
@@ -1158,6 +1240,10 @@ msgstr "Kubernetes hizmetinin IP'lerini kontrol edin veya"
 #: src/admin/admin-overview/AdminOverviewPage.ts
 msgid "Check the logs"
 msgstr "Günlükleri kontrol et"
+
+#: src/admin/policies/reputation/ReputationPolicyForm.ts
+msgid "Check Username"
+msgstr "Kullanıcı Adını Kontrol Et"
 
 #~ msgid "Check your Emails for a password reset link."
 #~ msgstr "E-postalarınızda parola sıfırlama bağlantısı olup olmadığını kontrol edin."
@@ -1198,18 +1284,14 @@ msgstr ""
 msgid "Chinese (traditional)"
 msgstr ""
 
-#: src/admin/flows/FlowListPage.ts
-msgid "Clear Flow cache"
-msgstr "Akış önbelleğini temizleme"
-
-#: src/admin/policies/PolicyListPage.ts
-msgid "Clear Policy cache"
-msgstr "İlke önbelleği temizle"
-
 #: src/elements/notifications/NotificationDrawer.ts
 #: src/elements/notifications/NotificationDrawer.ts
 msgid "Clear all"
 msgstr "Hepsini temizle"
+
+#: src/admin/flows/FlowForm.ts
+msgid "Clear background"
+msgstr ""
 
 #: src/admin/flows/FlowForm.ts
 #~ msgid "Clear background image"
@@ -1222,13 +1304,20 @@ msgstr "Hepsini temizle"
 msgid "Clear cache"
 msgstr "Önbelleği temizle"
 
+#: src/admin/flows/FlowListPage.ts
+msgid "Clear Flow cache"
+msgstr "Akış önbelleğini temizleme"
+
 #: src/admin/applications/ApplicationForm.ts
-#: src/admin/flows/FlowForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Clear icon"
 msgstr "Simgeyi temizle"
+
+#: src/admin/policies/PolicyListPage.ts
+msgid "Clear Policy cache"
+msgstr "İlke önbelleği temizle"
 
 #: src/elements/table/TablePage.ts
 msgid "Clear search"
@@ -1328,9 +1417,6 @@ msgstr "Yapılandırma akışı"
 msgid "Configuration stages"
 msgstr ""
 
-#~ msgid "Configure WebAuthn"
-#~ msgstr "WebAuthn'i Yapılandır"
-
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how long access codes are valid for."
 msgstr "Erişim kodlarının ne kadar süreyle geçerli olduğunu yapılandırın."
@@ -1351,10 +1437,6 @@ msgstr ""
 msgid "Configure how long tokens are valid for."
 msgstr "Belirteçlerin ne kadar geçerli olduğunu yapılandırın."
 
-#: src/admin/providers/saml/SAMLProviderForm.ts
-msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
-msgstr "NameID değerinin nasıl oluşturulacağını yapılandırın. Boş bırakıldığında, gelen isteğin NameIDPolicy değerine saygı gösterilir."
-
 #: src/admin/flows/StageBindingForm.ts
 msgid "Configure how the flow executor should handle an invalid response to a challenge given by this bound stage."
 msgstr ""
@@ -1366,6 +1448,10 @@ msgstr ""
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "Kimlik Belirtecinin yayımcı alanının nasıl doldurulacağını yapılandırın."
+
+#: src/admin/providers/saml/SAMLProviderForm.ts
+msgid "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected."
+msgstr "NameID değerinin nasıl oluşturulacağını yapılandırın. Boş bırakıldığında, gelen isteğin NameIDPolicy değerine saygı gösterilir."
 
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Configure how the outpost authenticates requests."
@@ -1389,6 +1475,9 @@ msgstr "Bir onaylama işlemi için izin verilen maksimum zaman kaymasını yapı
 #: src/admin/tenants/TenantListPage.ts
 msgid "Configure visual settings and defaults for different domains."
 msgstr "Farklı etki alanları için görsel ayarları ve varsayılanları yapılandırın."
+
+#~ msgid "Configure WebAuthn"
+#~ msgstr "WebAuthn'i Yapılandır"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
@@ -1419,6 +1508,10 @@ msgstr "Bağlı hizmetler"
 #~ msgid "Connected."
 #~ msgstr "Bağlantılı."
 
+#: src/elements/forms/DeleteForm.ts
+msgid "connecting object will be deleted"
+msgstr "bağlantılı nesne silinecek"
+
 #: src/common/ws.ts
 msgid "Connection error, reconnecting..."
 msgstr "Bağlantı hatası, yeniden bağlanıyor..."
@@ -1427,6 +1520,10 @@ msgstr "Bağlantı hatası, yeniden bağlanıyor..."
 #: src/admin/stages/email/EmailStageForm.ts
 msgid "Connection settings"
 msgstr "Bağlantı ayarları"
+
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "connection will be deleted"
+msgstr "bağlantı silinecek"
 
 #: src/user/user-settings/UserSettingsPage.ts
 msgid "Consent"
@@ -1500,6 +1597,10 @@ msgstr "Devam Et"
 msgid "Continue flow without invitation"
 msgstr "Davetsiz akışa devam edin"
 
+#: src/admin/flows/FlowForm.ts
+#~ msgid "CONTINUE will either follow the ?next parameter or redirect to the default interface."
+#~ msgstr ""
+
 #: src/admin/property-mappings/PropertyMappingListPage.ts
 msgid "Control how authentik exposes and interprets information."
 msgstr "Auentik'in bilgiyi nasıl açığa çıkardığını ve yorumlayacağını kontrol edin."
@@ -1512,13 +1613,13 @@ msgstr "Çerez alan adı"
 msgid "Copy"
 msgstr "Kopya"
 
-#~ msgid "Copy Key"
-#~ msgstr "Anahtar Kopyala"
-
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
 msgid "Copy download URL"
 msgstr "İndirme URL'sini"
+
+#~ msgid "Copy Key"
+#~ msgstr "Anahtar Kopyala"
 
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
@@ -1554,13 +1655,13 @@ msgstr "Kurtarma bağlantısı kopyalama"
 #: src/admin/providers/RelatedApplicationButton.ts
 #: src/admin/providers/RelatedApplicationButton.ts
 #: src/admin/sources/SourceWizard.ts
+#: src/admin/stages/invitation/InvitationListPage.ts
+#: src/admin/stages/invitation/InvitationListPage.ts
+#: src/admin/stages/prompt/PromptListPage.ts
+#: src/admin/stages/prompt/PromptListPage.ts
+#: src/admin/stages/prompt/PromptStageForm.ts
+#: src/admin/stages/prompt/PromptStageForm.ts
 #: src/admin/stages/StageWizard.ts
-#: src/admin/stages/invitation/InvitationListPage.ts
-#: src/admin/stages/invitation/InvitationListPage.ts
-#: src/admin/stages/prompt/PromptListPage.ts
-#: src/admin/stages/prompt/PromptListPage.ts
-#: src/admin/stages/prompt/PromptStageForm.ts
-#: src/admin/stages/prompt/PromptStageForm.ts
 #: src/admin/tenants/TenantListPage.ts
 #: src/admin/tenants/TenantListPage.ts
 #: src/admin/tokens/TokenListPage.ts
@@ -1575,6 +1676,15 @@ msgstr "Kurtarma bağlantısı kopyalama"
 msgid "Create"
 msgstr "Oluştur"
 
+#: src/admin/outposts/ServiceConnectionWizard.ts
+#: src/admin/policies/PolicyWizard.ts
+#: src/admin/property-mappings/PropertyMappingWizard.ts
+#: src/admin/providers/ProviderWizard.ts
+#: src/admin/sources/SourceWizard.ts
+#: src/admin/stages/StageWizard.ts
+msgid "Create {0}"
+msgstr "Oluştur {0}"
+
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Create & bind Policy"
 msgstr ""
@@ -1582,101 +1692,6 @@ msgstr ""
 #: src/admin/flows/BoundStagesList.ts
 msgid "Create & bind Stage"
 msgstr ""
-
-#: src/user/user-settings/tokens/UserTokenList.ts
-#: src/user/user-settings/tokens/UserTokenList.ts
-msgid "Create App password"
-msgstr "Uygulama parolası oluştur"
-
-#: src/admin/applications/ApplicationListPage.ts
-#: src/admin/providers/RelatedApplicationButton.ts
-msgid "Create Application"
-msgstr "Uygulama Oluştur"
-
-#: src/admin/policies/BoundPoliciesList.ts
-#: src/admin/policies/BoundPoliciesList.ts
-#: src/admin/policies/BoundPoliciesList.ts
-#: src/admin/policies/PolicyWizard.ts
-#: src/admin/stages/StageWizard.ts
-msgid "Create Binding"
-msgstr "Bağlama Oluştur"
-
-#: src/admin/blueprints/BlueprintListPage.ts
-msgid "Create Blueprint Instance"
-msgstr ""
-
-#: src/admin/crypto/CertificateKeyPairListPage.ts
-msgid "Create Certificate-Key Pair"
-msgstr "Sertifika Anahtarı Çifti Oluştur"
-
-#: src/admin/flows/FlowListPage.ts
-msgid "Create Flow"
-msgstr "Akış Oluştur"
-
-#: src/admin/groups/GroupListPage.ts
-#: src/admin/groups/RelatedGroupList.ts
-msgid "Create Group"
-msgstr "Grup Oluştur"
-
-#: src/admin/stages/invitation/InvitationListPage.ts
-msgid "Create Invitation"
-msgstr "Davet Oluştur"
-
-#: src/admin/stages/invitation/InvitationListPage.ts
-msgid "Create Invitation Links to enroll Users, and optionally force specific attributes of their account."
-msgstr "Kullanıcıları kaydetmek için Davet Bağlantıları oluşturun ve isteğe bağlı olarak hesaplarının belirli özniteliklerini zorlayın."
-
-#: src/admin/events/RuleListPage.ts
-msgid "Create Notification Rule"
-msgstr "Bildirim Kuralı Oluştur"
-
-#: src/admin/events/TransportListPage.ts
-msgid "Create Notification Transport"
-msgstr "Bildirim Aktarıcı Oluştur"
-
-#: src/admin/outposts/OutpostListPage.ts
-msgid "Create Outpost"
-msgstr "Üs Oluştur"
-
-#: src/admin/policies/BoundPoliciesList.ts
-#~ msgid "Create Policy"
-#~ msgstr "İlke Oluştur"
-
-#: src/admin/stages/prompt/PromptListPage.ts
-#: src/admin/stages/prompt/PromptStageForm.ts
-msgid "Create Prompt"
-msgstr "İstemi Oluştur"
-
-#: src/admin/users/RelatedUserList.ts
-#: src/admin/users/RelatedUserList.ts
-#: src/admin/users/UserListPage.ts
-#: src/admin/users/UserListPage.ts
-msgid "Create Service account"
-msgstr "Hizmet hesabı oluştur"
-
-#: src/admin/flows/BoundStagesList.ts
-#~ msgid "Create Stage"
-#~ msgstr "Aşama Oluştur"
-
-#: src/admin/flows/BoundStagesList.ts
-#: src/admin/flows/BoundStagesList.ts
-msgid "Create Stage binding"
-msgstr "Aşama bağlama oluştur"
-
-#: src/admin/tenants/TenantListPage.ts
-msgid "Create Tenant"
-msgstr "Sakin Oluştur"
-
-#: src/admin/tokens/TokenListPage.ts
-#: src/user/user-settings/tokens/UserTokenList.ts
-#: src/user/user-settings/tokens/UserTokenList.ts
-msgid "Create Token"
-msgstr "Belirteç Oluştur"
-
-#: src/admin/users/RelatedUserList.ts
-#: src/admin/users/UserListPage.ts
-msgid "Create User"
-msgstr "Kullanıcı Oluştur"
 
 #: src/admin/admin-overview/AdminOverviewPage.ts
 msgid "Create a new application"
@@ -1714,13 +1729,77 @@ msgstr ""
 msgid "Create a new user even if a user is in the flow context."
 msgstr ""
 
+#: src/user/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
+msgid "Create App password"
+msgstr "Uygulama parolası oluştur"
+
 #: src/admin/applications/wizard/InitialApplicationWizardPage.ts
 msgid "Create application"
 msgstr ""
 
+#: src/admin/applications/ApplicationListPage.ts
+#: src/admin/providers/RelatedApplicationButton.ts
+msgid "Create Application"
+msgstr "Uygulama Oluştur"
+
+#: src/admin/policies/BoundPoliciesList.ts
+#: src/admin/policies/BoundPoliciesList.ts
+#: src/admin/policies/BoundPoliciesList.ts
+#: src/admin/policies/PolicyWizard.ts
+#: src/admin/stages/StageWizard.ts
+msgid "Create Binding"
+msgstr "Bağlama Oluştur"
+
+#: src/admin/blueprints/BlueprintListPage.ts
+msgid "Create Blueprint Instance"
+msgstr ""
+
+#: src/admin/crypto/CertificateKeyPairListPage.ts
+msgid "Create Certificate-Key Pair"
+msgstr "Sertifika Anahtarı Çifti Oluştur"
+
+#: src/admin/flows/FlowListPage.ts
+msgid "Create Flow"
+msgstr "Akış Oluştur"
+
 #: src/admin/users/ServiceAccountForm.ts
 msgid "Create group"
 msgstr "Grup oluştur"
+
+#: src/admin/groups/GroupListPage.ts
+#: src/admin/groups/RelatedGroupList.ts
+msgid "Create Group"
+msgstr "Grup Oluştur"
+
+#: src/admin/stages/invitation/InvitationListPage.ts
+msgid "Create Invitation"
+msgstr "Davet Oluştur"
+
+#: src/admin/stages/invitation/InvitationListPage.ts
+msgid "Create Invitation Links to enroll Users, and optionally force specific attributes of their account."
+msgstr "Kullanıcıları kaydetmek için Davet Bağlantıları oluşturun ve isteğe bağlı olarak hesaplarının belirli özniteliklerini zorlayın."
+
+#: src/admin/events/RuleListPage.ts
+msgid "Create Notification Rule"
+msgstr "Bildirim Kuralı Oluştur"
+
+#: src/admin/events/TransportListPage.ts
+msgid "Create Notification Transport"
+msgstr "Bildirim Aktarıcı Oluştur"
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "Create Outpost"
+msgstr "Üs Oluştur"
+
+#: src/admin/policies/BoundPoliciesList.ts
+#~ msgid "Create Policy"
+#~ msgstr "İlke Oluştur"
+
+#: src/admin/stages/prompt/PromptListPage.ts
+#: src/admin/stages/prompt/PromptStageForm.ts
+msgid "Create Prompt"
+msgstr "İstemi Oluştur"
 
 #: src/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
 #: src/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage.ts
@@ -1736,8 +1815,39 @@ msgstr ""
 
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/RelatedUserList.ts
+#: src/admin/users/UserListPage.ts
+#: src/admin/users/UserListPage.ts
+msgid "Create Service account"
+msgstr "Hizmet hesabı oluştur"
+
+#: src/admin/flows/BoundStagesList.ts
+#~ msgid "Create Stage"
+#~ msgstr "Aşama Oluştur"
+
+#: src/admin/flows/BoundStagesList.ts
+#: src/admin/flows/BoundStagesList.ts
+msgid "Create Stage binding"
+msgstr "Aşama bağlama oluştur"
+
+#: src/admin/tenants/TenantListPage.ts
+msgid "Create Tenant"
+msgstr "Sakin Oluştur"
+
+#: src/admin/tokens/TokenListPage.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
+#: src/user/user-settings/tokens/UserTokenList.ts
+msgid "Create Token"
+msgstr "Belirteç Oluştur"
+
+#: src/admin/users/RelatedUserList.ts
+#: src/admin/users/RelatedUserList.ts
 msgid "Create user"
 msgstr ""
+
+#: src/admin/users/RelatedUserList.ts
+#: src/admin/users/UserListPage.ts
+msgid "Create User"
+msgstr "Kullanıcı Oluştur"
 
 #: src/admin/stages/user_write/UserWriteStageForm.ts
 msgid "Create users as inactive"
@@ -1747,25 +1857,16 @@ msgstr "Kullanıcıları etkin olmayan olarak oluşturma"
 msgid "Create users when required"
 msgstr ""
 
-#: src/admin/outposts/ServiceConnectionWizard.ts
-#: src/admin/policies/PolicyWizard.ts
-#: src/admin/property-mappings/PropertyMappingWizard.ts
-#: src/admin/providers/ProviderWizard.ts
-#: src/admin/sources/SourceWizard.ts
-#: src/admin/stages/StageWizard.ts
-msgid "Create {0}"
-msgstr "Oluştur {0}"
-
 #: src/admin/events/EventViewPage.ts
 msgid "Created"
 msgstr ""
 
+#~ msgid "Created {0}"
+#~ msgstr "Oluşturuldu {0}"
+
 #: src/admin/stages/invitation/InvitationListPage.ts
 msgid "Created by"
 msgstr "Tarafından yaratıldı"
-
-#~ msgid "Created {0}"
-#~ msgstr "Oluşturuldu {0}"
 
 #: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
@@ -1793,14 +1894,13 @@ msgstr "Şu anda şu şekilde ayarlanmış:"
 msgid "Customisation"
 msgstr "Özelleştirme"
 
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#~ msgid "DSA-SHA1"
-#~ msgstr "DSA-SHA1"
-
 #: src/admin/AdminInterface.ts
 msgid "Dashboards"
 msgstr "Gösterge Panoları"
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Data preview"
+msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Date"
@@ -1860,9 +1960,9 @@ msgstr "E-posta veya Webhook gibi kullanıcılara bildirimlerin nasıl gönderil
 #: src/admin/property-mappings/PropertyMappingListPage.ts
 #: src/admin/providers/ProviderListPage.ts
 #: src/admin/sources/SourceListPage.ts
-#: src/admin/stages/StageListPage.ts
 #: src/admin/stages/invitation/InvitationListPage.ts
 #: src/admin/stages/prompt/PromptListPage.ts
+#: src/admin/stages/StageListPage.ts
 #: src/admin/tenants/TenantListPage.ts
 #: src/admin/tokens/TokenListPage.ts
 #: src/admin/users/UserListPage.ts
@@ -1876,6 +1976,15 @@ msgstr "E-posta veya Webhook gibi kullanıcılara bildirimlerin nasıl gönderil
 msgid "Delete"
 msgstr "Sil"
 
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
+msgid "Delete {0}"
+msgstr "{0} Sil"
+
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
+msgid "Delete account"
+msgstr "Hesabı sil"
+
 #~ msgid "Delete Authorization Code"
 #~ msgstr "Yetkilendirme Kodunu Sil"
 
@@ -1884,16 +1993,6 @@ msgstr "Sil"
 
 #~ msgid "Delete Consent"
 #~ msgstr "Onayı Sil"
-
-#~ msgid "Delete Refresh Code"
-#~ msgstr "Yenile Kodunu Sil"
-
-#~ msgid "Delete Session"
-#~ msgstr "Oturumu Sil"
-
-#: src/user/user-settings/details/stages/prompt/PromptStage.ts
-msgid "Delete account"
-msgstr "Hesabı sil"
 
 #: src/admin/flows/FlowForm.ts
 msgid "Delete currently set background image."
@@ -1906,6 +2005,12 @@ msgstr "Şu anda ayarlanmış arka plan görüntüsünü sil."
 msgid "Delete currently set icon."
 msgstr "Şu anda ayarlanan simgeyi sil."
 
+#~ msgid "Delete Refresh Code"
+#~ msgstr "Yenile Kodunu Sil"
+
+#~ msgid "Delete Session"
+#~ msgstr "Oturumu Sil"
+
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Delete temporary users after"
 msgstr "Geçici kullanıcıları sonra sil"
@@ -1917,11 +2022,6 @@ msgid ""
 msgstr ""
 "Şu anda bekleyen kullanıcıyı silin. DİKKAT, bu aşama için onay\n"
 "sormaz. Kullanıcının eylemlerinin farkında olduğundan emin olmak için bir onay aşaması kullanın."
-
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
-msgid "Delete {0}"
-msgstr "{0} Sil"
 
 #: src/admin/flows/FlowForm.ts
 msgid "Denied action"
@@ -2069,6 +2169,14 @@ msgstr ""
 msgid "Disconnect"
 msgstr "Bağlantıyı kes"
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+#: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
+#: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
+#: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
+#: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
+msgid "Display name of this authenticator, used by users when they enroll an authenticator."
+msgstr ""
+
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 msgid "Docker URL"
 msgstr "Docker URL'si"
@@ -2108,6 +2216,11 @@ msgstr "İmzalama sertifikasını indirme"
 msgid "Dropdown (fixed choice)"
 msgstr ""
 
+#: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#~ msgid "DSA-SHA1"
+#~ msgstr "DSA-SHA1"
+
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Due to protocol limitations, this certificate is only used when the outpost has a single provider, or all providers use the same certificate."
 msgstr ""
@@ -2126,22 +2239,6 @@ msgstr "Test için kullanılan kukla aşama. Basit bir devam düğmesi gösterir
 #~ msgid "Duo"
 #~ msgstr "İkili"
 
-#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
-msgid "Duo Admin API (optional)"
-msgstr ""
-
-#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
-msgid "Duo Auth API"
-msgstr ""
-
-#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "Duo Authenticators"
-msgstr "Duo Kimlik Doğrulayıcıları"
-
-#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
-msgid "Duo User ID"
-msgstr ""
-
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 msgid "Duo activation"
 msgstr "İkili aktivasyon"
@@ -2150,13 +2247,29 @@ msgstr "İkili aktivasyon"
 msgid "Duo activation QR code"
 msgstr ""
 
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Admin API (optional)"
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Duo Auth API"
+msgstr ""
+
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-msgid "Duo authenticator"
-msgstr "Duo kimlik doğrulayıcı"
+#~ msgid "Duo authenticator"
+#~ msgstr "Duo kimlik doğrulayıcı"
+
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Duo Authenticators"
+msgstr "Duo Kimlik Doğrulayıcıları"
 
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Duo push-notifications"
 msgstr "Duo push-bildirimleri"
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Duo User ID"
+msgstr ""
 
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Duration"
@@ -2265,6 +2378,10 @@ msgstr "Gömülü üs düzgün yapılandırılmamış."
 #~ msgid "Enable"
 #~ msgstr "Etkinleştir"
 
+#: src/admin/flows/FlowForm.ts
+#~ msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+#~ msgstr "Uyumluluk modunu etkinleştirin, mobil cihazlarda parola yöneticileri ile uyumluluğu artırır."
+
 #~ msgid "Enable Duo authenticator"
 #~ msgstr "Duo kimlik doğrulayıcısını etkinleştirme"
 
@@ -2280,10 +2397,6 @@ msgstr "StartTLS'yi Etkinleştir"
 
 #~ msgid "Enable TOTP"
 #~ msgstr "TOTP etkinleştir"
-
-#: src/admin/flows/FlowForm.ts
-#~ msgid "Enable compatibility mode, increases compatibility with password managers on mobile devices."
-#~ msgstr "Uyumluluk modunu etkinleştirin, mobil cihazlarda parola yöneticileri ile uyumluluğu artırır."
 
 #: src/admin/blueprints/BlueprintForm.ts
 #: src/admin/blueprints/BlueprintListPage.ts
@@ -2379,13 +2492,17 @@ msgstr ""
 msgid "Evaluate when stage is run"
 msgstr ""
 
-#: src/admin/events/EventListPage.ts
-msgid "Event Log"
-msgstr "Olay Günlüğü"
+#: src/admin/events/EventViewPage.ts
+msgid "Event {0}"
+msgstr "Olay {0}"
 
 #: src/admin/events/EventViewPage.ts
 msgid "Event info"
 msgstr "Olay bilgileri"
+
+#: src/admin/events/EventListPage.ts
+msgid "Event Log"
+msgstr "Olay Günlüğü"
 
 #~ msgid "Event matcher"
 #~ msgstr ""
@@ -2396,10 +2513,6 @@ msgstr "Olay bilgileri"
 #: src/admin/tenants/TenantForm.ts
 msgid "Event retention"
 msgstr "Etkinliği saklama"
-
-#: src/admin/events/EventViewPage.ts
-msgid "Event {0}"
-msgstr "Olay {0}"
 
 #: src/admin/AdminInterface.ts
 msgid "Events"
@@ -2538,10 +2651,6 @@ msgstr "Harici API URL'si"
 msgid "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access."
 msgstr "OAuth2 ve SAML gibi protokolleri kullanan Kimlik Sağlayıcı olarak authentik'i kullanan Harici Uygulamalar. Tüm uygulamalar burada gösterilir, erişemediğiniz uygulamalar bile."
 
-#: src/admin/providers/proxy/ProxyProviderViewPage.ts
-msgid "External Host"
-msgstr "Harici Ana Bilgisayar"
-
 #: src/admin/applications/wizard/proxy/TypeProxyApplicationWizardPage.ts
 msgid "External domain"
 msgstr ""
@@ -2555,9 +2664,21 @@ msgstr ""
 msgid "External host"
 msgstr "Harici ana bilgisayar"
 
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+msgid "External Host"
+msgstr "Harici Ana Bilgisayar"
+
 #: src/admin/admin-overview/charts/SyncStatusChart.ts
 msgid "Failed"
 msgstr ""
+
+#: src/admin/stages/password/PasswordStageForm.ts
+msgid "Failed attempts before cancel"
+msgstr "İptal edilmeden önce başarısız denemeler"
+
+#: src/admin/events/utils.ts
+msgid "Failed login"
+msgstr "Başarısız oturum açma"
 
 #: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
 #: src/admin/users/UserChart.ts
@@ -2568,17 +2689,14 @@ msgstr "Başarısız Oturum Açma"
 msgid "Failed Logins per day in the last month"
 msgstr "Geçtiğimiz ay içinde günlük başarısız oturum açma"
 
-#: src/admin/stages/password/PasswordStageForm.ts
-msgid "Failed attempts before cancel"
-msgstr "İptal edilmeden önce başarısız denemeler"
-
-#: src/admin/events/utils.ts
-msgid "Failed login"
-msgstr "Başarısız oturum açma"
-
 #: src/admin/admin-overview/charts/LDAPSyncStatusChart.ts
 #~ msgid "Failed sources"
 #~ msgstr "Başarısız kaynaklar"
+
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
+msgid "Failed to delete {0}: {1}"
+msgstr "{0} silinemedi: {1}"
 
 #: src/admin/flows/FlowListPage.ts
 msgid "Failed to delete flow cache"
@@ -2587,11 +2705,6 @@ msgstr "Akış önbelleği silinemedi"
 #: src/admin/policies/PolicyListPage.ts
 msgid "Failed to delete policy cache"
 msgstr "İlke önbelleği silinemedi"
-
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
-msgid "Failed to delete {0}: {1}"
-msgstr "{0} silinemedi: {1}"
 
 #: src/user/user-settings/sources/SourceSettingsOAuth.ts
 #: src/user/user-settings/sources/SourceSettingsPlex.ts
@@ -2664,10 +2777,6 @@ msgstr ""
 msgid "Flow"
 msgstr "Akış"
 
-#: src/admin/flows/FlowViewPage.ts
-msgid "Flow Overview"
-msgstr "Akışa Genel Bakış"
-
 #: src/admin/events/utils.ts
 msgid "Flow execution"
 msgstr "Akış yürütme"
@@ -2680,6 +2789,10 @@ msgstr "Akış denetçisi"
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "Flow is executed and session is cached in memory. Flow is executed when session expires"
 msgstr ""
+
+#: src/admin/flows/FlowViewPage.ts
+msgid "Flow Overview"
+msgstr "Akışa Genel Bakış"
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
@@ -2736,6 +2849,12 @@ msgstr "Çıkış yapmak için kullanılan akış. Boş bırakılırsa, kısa is
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderForm.ts
+msgid "Flow used when a user access this provider and is not authenticated."
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+#: src/admin/providers/saml/SAMLProviderForm.ts
 #: src/admin/providers/saml/SAMLProviderImportForm.ts
 msgid "Flow used when authorizing this provider."
 msgstr "Bu sağlayıcıyı yetkilendirirken kullanılan akış."
@@ -2783,8 +2902,6 @@ msgid "Forgot username or password?"
 msgstr "Kullanıcı adı veya parolayı mı unuttunuz?"
 
 #: src/elements/forms/ModalForm.ts
-#: src/elements/forms/ModalForm.ts
-#: src/elements/wizard/FormWizardPage.ts
 #: src/elements/wizard/FormWizardPage.ts
 msgid "Form didn't return a promise for submitting"
 msgstr "Form göndermek için bir söz vermedi"
@@ -2826,10 +2943,6 @@ msgstr "Gönderen adres"
 msgid "From number"
 msgstr "Numarasından"
 
-#: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "GID start number"
-msgstr "GID başlangıç numarası"
-
 #: src/admin/events/utils.ts
 msgid "General system exception"
 msgstr "Genel sistem hatası"
@@ -2864,6 +2977,10 @@ msgstr ""
 msgid "Get this value from https://console.twilio.com"
 msgstr "Bu değeri https://console.twilio.com adresinden alın"
 
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "GID start number"
+msgstr "GID başlangıç numarası"
+
 #~ msgid "Go to admin interface"
 #~ msgstr "Yönetici arayüzüne git"
 
@@ -2890,13 +3007,13 @@ msgid "Group"
 msgstr "Grup"
 
 #: src/admin/groups/GroupViewPage.ts
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Group {0}"
+msgstr "Grup {0}"
+
+#: src/admin/groups/GroupViewPage.ts
 msgid "Group Info"
 msgstr ""
-
-#: src/admin/providers/scim/SCIMProviderForm.ts
-#: src/admin/sources/ldap/LDAPSourceForm.ts
-msgid "Group Property Mappings"
-msgstr "Grup Özellik Eşlemeleri"
 
 #: src/admin/policies/PolicyBindingForm.ts
 msgid "Group mappings can only be checked if a user is already logged in when trying to access this source."
@@ -2910,14 +3027,14 @@ msgstr "Grup üyelik alanı"
 msgid "Group object filter"
 msgstr "Grup nesnesi filtresi"
 
+#: src/admin/providers/scim/SCIMProviderForm.ts
+#: src/admin/sources/ldap/LDAPSourceForm.ts
+msgid "Group Property Mappings"
+msgstr "Grup Özellik Eşlemeleri"
+
 #: src/admin/groups/GroupListPage.ts
 msgid "Group users together and give them permissions based on the membership."
 msgstr "Kullanıcıları birlikte gruplandırın ve üyeliğe bağlı olarak izinler verin."
-
-#: src/admin/groups/GroupViewPage.ts
-#: src/admin/policies/BoundPoliciesList.ts
-msgid "Group {0}"
-msgstr "Grup {0}"
 
 #: src/admin/groups/GroupListPage.ts
 #: src/admin/groups/RelatedGroupList.ts
@@ -2933,21 +3050,6 @@ msgstr "Gruplar"
 #: src/admin/groups/RelatedGroupList.ts
 msgid "Groups to add"
 msgstr ""
-
-#~ msgid "HS256 (Symmetric Encryption)"
-#~ msgstr "HS256 (Simetrik Şifreleme)"
-
-#: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "HTTP-Basic Password Key"
-msgstr "HTTP-Temel Parola Anahtarı"
-
-#: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "HTTP-Basic Username Key"
-msgstr "HTTP-Basic Kullanıcı Adı Anahtarı"
-
-#: src/admin/admin-overview/cards/SystemStatusCard.ts
-msgid "HTTPS is not detected correctly"
-msgstr "HTTPS doğru algılanmadı"
 
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Hash phone number"
@@ -3028,25 +3130,24 @@ msgstr "Akış iptal edilmeden önce bir kullanıcının kaç denemesi vardır. 
 msgid "How to connect"
 msgstr "Nasıl bağlanır"
 
-#: src/admin/users/RelatedUserList.ts
-#: src/admin/users/UserListPage.ts
-#: src/elements/forms/DeleteBulkForm.ts
-msgid "ID"
-msgstr "ID"
+#~ msgid "HS256 (Symmetric Encryption)"
+#~ msgstr "HS256 (Simetrik Şifreleme)"
 
-#: src/elements/oauth/UserRefreshList.ts
-msgid "ID Token"
-msgstr "Kimlik Belirteci"
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "HTTP-Basic Password Key"
+msgstr "HTTP-Temel Parola Anahtarı"
 
-#: src/admin/policies/reputation/ReputationListPage.ts
-msgid "IP"
-msgstr "İP"
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "HTTP-Basic Username Key"
+msgstr "HTTP-Basic Kullanıcı Adı Anahtarı"
 
-#~ msgid "IP Reputation"
-#~ msgstr "IP İtibar"
+#: src/admin/admin-overview/cards/SystemStatusCard.ts
+msgid "HTTPS is not detected correctly"
+msgstr "HTTPS doğru algılanmadı"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/ApplicationForm.ts
+#: src/admin/flows/FlowForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
@@ -3063,6 +3164,16 @@ msgstr "Simge kenar çubuğu/başlık ve akış yürütücüde gösterilir."
 #: src/admin/tenants/TenantForm.ts
 msgid "Icon shown in the browser tab."
 msgstr "Tarayıcı sekmesinde gösterilen simge."
+
+#: src/admin/users/RelatedUserList.ts
+#: src/admin/users/UserListPage.ts
+#: src/elements/forms/DeleteBulkForm.ts
+msgid "ID"
+msgstr "ID"
+
+#: src/elements/oauth/UserRefreshList.ts
+msgid "ID Token"
+msgstr "Kimlik Belirteci"
 
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/policies/reputation/ReputationListPage.ts
@@ -3108,15 +3219,15 @@ msgstr "Boş bırakılırsa, authentik seçili sağlayıcıya göre başlatma UR
 msgid "If multiple providers share an outpost, a self-signed certificate is used."
 msgstr "Birden çok sağlayıcı bir üssü paylaşıyorsa, otomatik olarak imzalanan bir sertifika kullanılır."
 
-#: src/flow/sources/plex/PlexLoginInit.ts
-msgid "If no Plex popup opens, click the button below."
-msgstr ""
-
 #~ msgid "If no explicit redirect URIs are specified, any redirect URI is allowed."
 #~ msgstr "Açık bir yeniden yönlendirme URI'leri belirtilmezse, herhangi bir yeniden yönlendirme URI'sine izin verilir."
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved."
+msgstr ""
+
+#: src/flow/sources/plex/PlexLoginInit.ts
+msgid "If no Plex popup opens, click the button below."
 msgstr ""
 
 #~ msgid ""
@@ -3182,11 +3293,13 @@ msgstr "Kimliğe bürünme başladı"
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/flows/FlowListPage.ts
 #: src/admin/stages/StageListPage.ts
-#: src/admin/stages/StageListPage.ts
 msgid "Import"
 msgstr "İçe Aktar"
 
-#: src/admin/stages/StageListPage.ts
+#: src/admin/crypto/CertificateKeyPairListPage.ts
+msgid "Import certificates of external providers or create certificates to sign requests with."
+msgstr "Harici sağlayıcıların sertifikalarını içe aktarın veya istekleri imzalamak için sertifikalar oluşturun."
+
 #: src/admin/stages/StageListPage.ts
 msgid "Import Duo device"
 msgstr ""
@@ -3195,17 +3308,13 @@ msgstr ""
 msgid "Import Flow"
 msgstr "Akışı İçe Aktar"
 
-#: src/admin/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
-msgid "Import SAML Metadata"
-msgstr ""
-
 #: src/admin/applications/wizard/saml/TypeSAMLImportApplicationWizardPage.ts
 msgid "Import SAML metadata"
 msgstr ""
 
-#: src/admin/crypto/CertificateKeyPairListPage.ts
-msgid "Import certificates of external providers or create certificates to sign requests with."
-msgstr "Harici sağlayıcıların sertifikalarını içe aktarın veya istekleri imzalamak için sertifikalar oluşturun."
+#: src/admin/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
+msgid "Import SAML Metadata"
+msgstr ""
 
 #: src/admin/applications/wizard/saml/TypeSAMLApplicationWizardPage.ts
 msgid "Import the metadata document of the applicaation you want to configure."
@@ -3225,15 +3334,19 @@ msgid "Inactive"
 msgstr "Etkin değil"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
-msgstr "Userinfo uç noktasına erişmeyen uygulamalar için, id_token'daki kapsamlardan Kullanıcı taleplerini dahil edin."
-
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Include claims in id_token"
 msgstr "İd_token'a hak taleplerini dahil et"
 
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
+msgstr "Userinfo uç noktasına erişmeyen uygulamalar için, id_token'daki kapsamlardan Kullanıcı taleplerini dahil edin."
+
 #: src/admin/flows/FlowForm.ts
 msgid "Increases compatibility with password managers and mobile devices."
+msgstr ""
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Initial value"
 msgstr ""
 
 #: src/admin/outposts/OutpostForm.ts
@@ -3263,10 +3376,6 @@ msgstr ""
 msgid "Internal"
 msgstr ""
 
-#: src/admin/providers/proxy/ProxyProviderViewPage.ts
-msgid "Internal Host"
-msgstr "Dahili Ana Bilgisayar"
-
 #: src/admin/applications/ApplicationForm.ts
 msgid "Internal application name, used in URLs."
 msgstr "URL'lerde kullanılan dahili uygulama adı."
@@ -3275,9 +3384,17 @@ msgstr "URL'lerde kullanılan dahili uygulama adı."
 msgid "Internal host"
 msgstr "Dahili ana bilgisayar"
 
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+msgid "Internal Host"
+msgstr "Dahili Ana Bilgisayar"
+
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Internal host SSL Validation"
 msgstr "Dahili ana bilgisayar SSL Doğrulaması"
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Interpret initial value as expression"
+msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Interpret placeholder as expression"
@@ -3326,6 +3443,13 @@ msgstr "Davetiye (ler)"
 #: src/admin/stages/invitation/InvitationListPage.ts
 msgid "Invitations"
 msgstr "Davetiyeler"
+
+#: src/admin/policies/reputation/ReputationListPage.ts
+msgid "IP"
+msgstr "İP"
+
+#~ msgid "IP Reputation"
+#~ msgstr "IP İtibar"
 
 #: src/admin/users/UserForm.ts
 msgid "Is active"
@@ -3385,36 +3509,6 @@ msgstr "Giden istekleri imzalamak için kullanılan anahtar çifti. İmzalamayı
 msgid "Kubeconfig"
 msgstr "Kubeconfig"
 
-#: src/admin/applications/wizard/TypeApplicationWizardPage.ts
-#: src/admin/outposts/OutpostForm.ts
-#: src/admin/outposts/OutpostListPage.ts
-msgid "LDAP"
-msgstr "LDAP"
-
-#~ msgid "LDAP (Technical preview)"
-#~ msgstr "LDAP (Teknik önizleme)"
-
-#: src/admin/sources/ldap/LDAPSourceForm.ts
-msgid "LDAP Attribute mapping"
-msgstr "LDAP Öznitelik eşlemesi"
-
-#: src/admin/providers/ldap/LDAPProviderForm.ts
-msgid "LDAP DN under which bind requests and search requests can be made."
-msgstr "Bağlama istekleri ve arama istekleri altında yapılabilen LDAP DN."
-
-#: src/admin/admin-overview/charts/SyncStatusChart.ts
-#: src/admin/admin-overview/charts/SyncStatusChart.ts
-msgid "LDAP Source"
-msgstr ""
-
-#: src/admin/admin-overview/AdminOverviewPage.ts
-#~ msgid "LDAP Sync status"
-#~ msgstr "LDAP Eşitleme durumu"
-
-#: src/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
-msgid "LDAP details"
-msgstr ""
-
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Label"
 msgstr "Etiket"
@@ -3423,14 +3517,14 @@ msgstr "Etiket"
 msgid "Label shown next to/above the prompt."
 msgstr "Etiket, istemin yanında veya üstünde gösterilir."
 
+#: src/admin/blueprints/BlueprintListPage.ts
+msgid "Last applied"
+msgstr ""
+
 #: src/elements/user/SessionList.ts
 #: src/elements/user/SessionList.ts
 msgid "Last IP"
 msgstr "Son IP"
-
-#: src/admin/blueprints/BlueprintListPage.ts
-msgid "Last applied"
-msgstr ""
 
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/users/RelatedUserList.ts
@@ -3473,6 +3567,35 @@ msgid "Layout"
 msgstr ""
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
+#: src/admin/outposts/OutpostForm.ts
+#: src/admin/outposts/OutpostListPage.ts
+msgid "LDAP"
+msgstr "LDAP"
+
+#~ msgid "LDAP (Technical preview)"
+#~ msgstr "LDAP (Teknik önizleme)"
+
+#: src/admin/sources/ldap/LDAPSourceForm.ts
+msgid "LDAP Attribute mapping"
+msgstr "LDAP Öznitelik eşlemesi"
+
+#: src/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage.ts
+msgid "LDAP details"
+msgstr ""
+
+#: src/admin/providers/ldap/LDAPProviderForm.ts
+msgid "LDAP DN under which bind requests and search requests can be made."
+msgstr "Bağlama istekleri ve arama istekleri altında yapılabilen LDAP DN."
+
+#: src/admin/admin-overview/charts/SyncStatusChart.ts
+msgid "LDAP Source"
+msgstr ""
+
+#: src/admin/admin-overview/AdminOverviewPage.ts
+#~ msgid "LDAP Sync status"
+#~ msgstr "LDAP Eşitleme durumu"
+
+#: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Legacy applications which don't natively support SSO."
 msgstr ""
 
@@ -3483,8 +3606,8 @@ msgstr "Kullanıcının kullanıcı adı veya E-posta adresi ile kendilerini tan
 #~ msgid "Library"
 #~ msgstr "Kitaplık"
 
-#: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 #: src/admin/applications/wizard/link/TypeLinkApplicationWizardPage.ts
+#: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "Link"
 msgstr ""
 
@@ -3526,11 +3649,9 @@ msgstr "Sunucuları yükle"
 #: src/elements/table/Table.ts
 #: src/flow/FlowExecutor.ts
 #: src/flow/FlowExecutor.ts
-#: src/flow/FlowExecutor.ts
 #: src/flow/FlowInspector.ts
 #: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/providers/oauth2/DeviceCodeFinish.ts
-#: src/flow/stages/FlowErrorStage.ts
 #: src/flow/stages/access_denied/AccessDeniedStage.ts
 #: src/flow/stages/authenticator_duo/AuthenticatorDuoStage.ts
 #: src/flow/stages/authenticator_sms/AuthenticatorSMSStage.ts
@@ -3544,15 +3665,15 @@ msgstr "Sunucuları yükle"
 #: src/flow/stages/consent/ConsentStage.ts
 #: src/flow/stages/dummy/DummyStage.ts
 #: src/flow/stages/email/EmailStage.ts
+#: src/flow/stages/FlowErrorStage.ts
 #: src/flow/stages/identification/IdentificationStage.ts
 #: src/flow/stages/password/PasswordStage.ts
 #: src/flow/stages/prompt/PromptStage.ts
 #: src/flow/stages/user_login/UserLoginStage.ts
 #: src/user/LibraryPage.ts
-#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
-#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 #: src/user/user-settings/details/stages/prompt/PromptStage.ts
-#: src/user/user-settings/mfa/MFADevicesPage.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 #: src/user/user-settings/sources/SourceSettings.ts
 msgid "Loading"
 msgstr "Yükleniyor"
@@ -3561,27 +3682,9 @@ msgstr "Yükleniyor"
 msgid "Loading options..."
 msgstr ""
 
-#: src/admin/events/RuleForm.ts
-#: src/admin/flows/StageBindingForm.ts
-#: src/admin/outposts/OutpostForm.ts
-#: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-#: src/admin/providers/proxy/ProxyProviderForm.ts
-#: src/admin/providers/proxy/ProxyProviderForm.ts
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/providers/scim/SCIMProviderForm.ts
-#: src/admin/providers/scim/SCIMProviderForm.ts
-#: src/admin/sources/ldap/LDAPSourceForm.ts
-#: src/admin/sources/ldap/LDAPSourceForm.ts
-#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-#: src/admin/stages/email/EmailStageForm.ts
-#: src/admin/stages/identification/IdentificationStageForm.ts
 #: src/admin/stages/invitation/InvitationListLink.ts
-#: src/admin/stages/prompt/PromptStageForm.ts
-#: src/admin/stages/prompt/PromptStageForm.ts
-#: src/elements/Spinner.ts
 #: src/elements/forms/SearchSelect.ts
+#: src/elements/Spinner.ts
 #: src/standalone/loading/index.ts
 #: src/standalone/loading/index.ts
 msgid "Loading..."
@@ -3674,22 +3777,6 @@ msgstr "Günlükler"
 msgid "Long-running operations which authentik executes in the background."
 msgstr "authentik'in arka planda yürüttüğü uzun süreli işlemler."
 
-#: src/admin/flows/FlowForm.ts
-#~ msgid "MESSAGE will notify the user the flow isn't applicable."
-#~ msgstr ""
-
-#: src/admin/flows/FlowForm.ts
-#~ msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
-#~ msgstr ""
-
-#: src/admin/users/UserViewPage.ts
-msgid "MFA Authenticators"
-msgstr ""
-
-#: src/user/user-settings/UserSettingsPage.ts
-msgid "MFA Devices"
-msgstr "MFA Cihazları"
-
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Machine-to-Machine authentication settings"
 msgstr ""
@@ -3735,12 +3822,12 @@ msgid "Match events created by selected application. When left empty, all applic
 msgstr "Seçilen uygulama tarafından oluşturulan olayları eşleştir. Boş bırakıldığında, tüm uygulamalar eşleştirilir."
 
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
-msgid "Matches Event's Client IP (strict matching, for network matching use an Expression Policy."
-msgstr "Olayın İstemci IP'siyle eşleşir (katı eşleştirme, ağ eşleştirme için bir İfade İlkesi kullanın."
-
-#: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 msgid "Matches an event against a set of criteria. If any of the configured values match, the policy passes."
 msgstr "Bir olayı ölçütler kümesine göre eşleştirir. Yapılandırılan değerlerden herhangi biri eşleşirse, ilke geçer."
+
+#: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
+msgid "Matches Event's Client IP (strict matching, for network matching use an Expression Policy."
+msgstr "Olayın İstemci IP'siyle eşleşir (katı eşleştirme, ağ eşleştirme için bir İfade İlkesi kullanın."
 
 #: src/admin/tenants/TenantForm.ts
 msgid "Matching is done based on domain suffix, so if you enter domain.tld, foo.domain.tld will still match."
@@ -3758,6 +3845,14 @@ msgstr "Üyeler"
 #: src/admin/events/EventInfo.ts
 msgid "Message"
 msgstr "Mesaj"
+
+#: src/admin/flows/FlowForm.ts
+#~ msgid "MESSAGE will notify the user the flow isn't applicable."
+#~ msgstr ""
+
+#: src/admin/flows/FlowForm.ts
+#~ msgid "MESSAGE_CONTINUE will follow the ?next parameter if set, otherwise show a message."
+#~ msgstr ""
 
 #: src/admin/applications/ApplicationCheckAccessForm.ts
 #: src/admin/events/EventInfo.ts
@@ -3779,6 +3874,14 @@ msgstr "Meta veriler"
 #: src/admin/applications/wizard/oauth/TypeOAuthImplicitApplicationWizardPage.ts
 msgid "Method details"
 msgstr ""
+
+#: src/admin/users/UserViewPage.ts
+msgid "MFA Authenticators"
+msgstr ""
+
+#: src/user/user-settings/UserSettingsPage.ts
+msgid "MFA Devices"
+msgstr "MFA Cihazları"
 
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Minimum amount of Digits"
@@ -3807,10 +3910,6 @@ msgstr "Minimum uzunluk"
 msgid "Mode"
 msgstr "Mod"
 
-#: src/admin/events/EventInfo.ts
-msgid "Model Name"
-msgstr "Model Adı"
-
 #: src/admin/events/utils.ts
 msgid "Model created"
 msgstr "Model oluşturuldu"
@@ -3818,6 +3917,10 @@ msgstr "Model oluşturuldu"
 #: src/admin/events/utils.ts
 msgid "Model deleted"
 msgstr "Model silindi"
+
+#: src/admin/events/EventInfo.ts
+msgid "Model Name"
+msgstr "Model Adı"
 
 #: src/admin/events/utils.ts
 msgid "Model updated"
@@ -3835,11 +3938,11 @@ msgstr ""
 #~ msgstr "Monitör"
 
 #: src/user/LibraryPage.ts
-msgid "My Applications"
+msgid "My applications"
 msgstr "Uygulamalarım"
 
 #: src/user/LibraryPage.ts
-msgid "My applications"
+msgid "My Applications"
 msgstr "Uygulamalarım"
 
 #: src/admin/applications/ApplicationForm.ts
@@ -3869,12 +3972,12 @@ msgstr "Uygulamalarım"
 #: src/admin/outposts/ServiceConnectionDockerForm.ts
 #: src/admin/outposts/ServiceConnectionKubernetesForm.ts
 #: src/admin/outposts/ServiceConnectionListPage.ts
-#: src/admin/policies/PolicyListPage.ts
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
 #: src/admin/policies/expiry/ExpiryPolicyForm.ts
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
 #: src/admin/policies/password/PasswordPolicyForm.ts
+#: src/admin/policies/PolicyListPage.ts
 #: src/admin/policies/reputation/ReputationPolicyForm.ts
 #: src/admin/property-mappings/PropertyMappingLDAPForm.ts
 #: src/admin/property-mappings/PropertyMappingListPage.ts
@@ -3882,11 +3985,11 @@ msgstr "Uygulamalarım"
 #: src/admin/property-mappings/PropertyMappingSAMLForm.ts
 #: src/admin/property-mappings/PropertyMappingSCIMForm.ts
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
-#: src/admin/providers/ProviderListPage.ts
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/ProviderListPage.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/providers/radius/RadiusProviderForm.ts
@@ -3896,7 +3999,6 @@ msgstr "Uygulamalarım"
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/providers/scim/SCIMProviderForm.ts
 #: src/admin/providers/scim/SCIMProviderViewPage.ts
-#: src/admin/sources/SourceListPage.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
@@ -3905,7 +4007,7 @@ msgstr "Uygulamalarım"
 #: src/admin/sources/plex/PlexSourceViewPage.ts
 #: src/admin/sources/saml/SAMLSourceForm.ts
 #: src/admin/sources/saml/SAMLSourceViewPage.ts
-#: src/admin/stages/StageListPage.ts
+#: src/admin/sources/SourceListPage.ts
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 #: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
@@ -3925,6 +4027,7 @@ msgstr "Uygulamalarım"
 #: src/admin/stages/prompt/PromptForm.ts
 #: src/admin/stages/prompt/PromptListPage.ts
 #: src/admin/stages/prompt/PromptStageForm.ts
+#: src/admin/stages/StageListPage.ts
 #: src/admin/stages/user_delete/UserDeleteStageForm.ts
 #: src/admin/stages/user_login/UserLoginStageForm.ts
 #: src/admin/stages/user_logout/UserLogoutStageForm.ts
@@ -3945,6 +4048,10 @@ msgstr "İsim"
 msgid "Name of the form field, also used to store the value."
 msgstr "Değeri depolamak için de kullanılan form alanının adı."
 
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "NameID attribute"
+msgstr ""
+
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "NameID Policy"
 msgstr "NameID İlkesi"
@@ -3952,10 +4059,6 @@ msgstr "NameID İlkesi"
 #: src/admin/providers/saml/SAMLProviderForm.ts
 msgid "NameID Property Mapping"
 msgstr "NameID Özellik Eşlemesi"
-
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
-msgid "NameID attribute"
-msgstr ""
 
 #: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
 msgid "Native application"
@@ -4056,24 +4159,6 @@ msgstr "Nginx (bağımsız)"
 msgid "No"
 msgstr "Hayır"
 
-#: src/user/LibraryPage.ts
-msgid "No Applications available."
-msgstr "Kullanılabilir Uygulama yok."
-
-#: src/admin/admin-overview/cards/RecentEventsCard.ts
-#: src/elements/events/ObjectChangelog.ts
-#: src/elements/events/UserEvents.ts
-msgid "No Events found."
-msgstr "Olaylar bulunamadı."
-
-#: src/admin/policies/BoundPoliciesList.ts
-msgid "No Policies bound."
-msgstr "Hiçbir ilke bağlı."
-
-#: src/admin/flows/BoundStagesList.ts
-msgid "No Stages bound"
-msgstr "Hiçbir Aşama Bağlı"
-
 #: src/admin/events/EventInfo.ts
 msgid "No additional data available."
 msgstr "Ek veri yok."
@@ -4086,9 +4171,17 @@ msgstr "Ek kurulum gerekmez."
 msgid "No application required."
 msgstr ""
 
+#: src/user/LibraryPage.ts
+msgid "No Applications available."
+msgstr "Kullanılabilir Uygulama yok."
+
+#: src/admin/admin-overview/cards/RecentEventsCard.ts
+#: src/elements/events/ObjectChangelog.ts
+#: src/elements/events/UserEvents.ts
+msgid "No Events found."
+msgstr "Olaylar bulunamadı."
+
 #: src/elements/forms/ModalForm.ts
-#: src/elements/forms/ModalForm.ts
-#: src/elements/wizard/FormWizardPage.ts
 #: src/elements/wizard/FormWizardPage.ts
 msgid "No form found"
 msgstr "Form bulunamadı"
@@ -4118,6 +4211,10 @@ msgstr "Nesne bulunamadı."
 msgid "No policies are currently bound to this object."
 msgstr "Hiçbir ilke şu anda bu nesneye bağlı değildir."
 
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "No Policies bound."
+msgstr "Hiçbir ilke bağlı."
+
 #: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
 msgid "No preference is sent"
 msgstr ""
@@ -4142,6 +4239,14 @@ msgstr ""
 #: src/admin/flows/BoundStagesList.ts
 msgid "No stages are currently bound to this flow."
 msgstr "Hiçbir aşama şu anda bu akışa bağlı değildir."
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "No Stages bound"
+msgstr "Hiçbir Aşama Bağlı"
+
+#: src/elements/Tabs.ts
+msgid "no tabs defined"
+msgstr "tanımlanmış sekme yok"
 
 #: src/admin/admin-overview/cards/WorkerStatusCard.ts
 msgid "No workers connected. Background tasks will not run."
@@ -4199,16 +4304,6 @@ msgstr "Sen değil mi?"
 msgid "Notice"
 msgstr "Uyarı"
 
-#: src/admin/AdminInterface.ts
-#: src/admin/events/RuleListPage.ts
-msgid "Notification Rules"
-msgstr "Bildirim Kuralları"
-
-#: src/admin/AdminInterface.ts
-#: src/admin/events/TransportListPage.ts
-msgid "Notification Transports"
-msgstr "Bildirim Aktarıcıları"
-
 #~ msgid "Notification rule"
 #~ msgstr "Bildirim kuralı"
 
@@ -4216,9 +4311,19 @@ msgstr "Bildirim Aktarıcıları"
 msgid "Notification rule(s)"
 msgstr "Bildirim kuralları"
 
+#: src/admin/AdminInterface.ts
+#: src/admin/events/RuleListPage.ts
+msgid "Notification Rules"
+msgstr "Bildirim Kuralları"
+
 #: src/admin/events/TransportListPage.ts
 msgid "Notification transport(s)"
 msgstr ""
+
+#: src/admin/AdminInterface.ts
+#: src/admin/events/TransportListPage.ts
+msgid "Notification Transports"
+msgstr "Bildirim Aktarıcıları"
 
 #~ msgid "Notification transports(s)"
 #~ msgstr "Bildirim aktarıcıları"
@@ -4241,6 +4346,9 @@ msgstr "Numara SMS gönderilecektir."
 #~ msgid "OAuth Authorization Codes"
 #~ msgstr "OAuth Yetkilendirme Kodları"
 
+#~ msgid "OAuth details"
+#~ msgstr ""
+
 #: src/admin/users/UserViewPage.ts
 #~ msgid "OAuth Refresh Codes"
 #~ msgstr "OAuth Yenile Kodları"
@@ -4253,43 +4361,12 @@ msgstr ""
 msgid "OAuth Source {0}"
 msgstr ""
 
-#~ msgid "OAuth details"
-#~ msgstr ""
-
 #~ msgid "OAuth/OIDC"
 #~ msgstr ""
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "OAuth2/OIDC"
 msgstr ""
-
-#: src/admin/blueprints/BlueprintForm.ts
-msgid "OCI Registry"
-msgstr ""
-
-#: src/admin/blueprints/BlueprintForm.ts
-msgid "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest."
-msgstr ""
-
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "OIDC JWKS"
-msgstr ""
-
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "OIDC JWKS URL"
-msgstr ""
-
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "OIDC Well-known URL"
-msgstr ""
-
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "OIDC well-known configuration URL. Can be used to automatically configure the URLs above."
-msgstr ""
-
-#: src/admin/admin-overview/cards/SystemStatusCard.ts
-msgid "OK"
-msgstr "OK"
 
 #: src/admin/events/EventInfo.ts
 #: src/admin/events/EventInfo.ts
@@ -4304,9 +4381,22 @@ msgstr "Nesne alanı"
 msgid "Object uniqueness field"
 msgstr "Nesne benzersizliği alanı"
 
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
+msgid "object will be DELETED"
+msgstr "nesne SILİNECEK"
+
 #: src/admin/admin-overview/charts/AdminModelPerDay.ts
 msgid "Objects created"
 msgstr "Oluşturulan nesneler"
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI Registry"
+msgstr ""
+
+#: src/admin/blueprints/BlueprintForm.ts
+msgid "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest."
+msgstr ""
 
 #: src/admin/stages/consent/ConsentStageForm.ts
 msgid "Offset after which consent expires."
@@ -4314,6 +4404,26 @@ msgstr ""
 
 #~ msgid "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
 #~ msgstr "Onay sona erdikten sonra ofset. (Biçim: saat=1; dakika=2; saniye/= 3)."
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+msgid "OIDC JWKS"
+msgstr ""
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+msgid "OIDC JWKS URL"
+msgstr ""
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+msgid "OIDC well-known configuration URL. Can be used to automatically configure the URLs above."
+msgstr ""
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+msgid "OIDC Well-known URL"
+msgstr ""
+
+#: src/admin/admin-overview/cards/SystemStatusCard.ts
+msgid "OK"
+msgstr "OK"
 
 #: src/admin/admin-overview/cards/RecentEventsCard.ts
 #: src/admin/events/EventListPage.ts
@@ -4370,14 +4480,6 @@ msgstr "OpenID Yapılandırması Yayımlayıcı"
 msgid "OpenID Configuration URL"
 msgstr "OpenID Yapılandırma URL"
 
-#: src/admin/crypto/CertificateKeyPairForm.ts
-msgid "Optional Private Key. If this is set, you can use this keypair for encryption."
-msgstr "İsteğe Bağlı Özel Anahtar. Bu ayarlanırsa, şifreleme için bu anahtar çiftini kullanabilirsiniz."
-
-#: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "Optional URL if the IDP supports Single-Logout."
-msgstr "IDP Tek Oturumu Kapat'ı destekliyorsa isteğe bağlı URL."
-
 #: src/admin/stages/invitation/InvitationForm.ts
 msgid "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON."
 msgstr "Akışın 'prompt_data' bağlam değişkenine yüklenen isteğe bağlı veriler. YAML veya JSON."
@@ -4390,9 +4492,17 @@ msgstr "Sayfanın alt kısmında bağlanan isteğe bağlı kayıt akışı."
 msgid "Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details."
 msgstr "Sayfanın alt kısmında bağlanan isteğe bağlı parolasız akış. Yapılandırıldığında, kullanıcılar herhangi bir ayrıntı girmeden WebAuthn kimlik doğrulayıcısı ile kimlik doğrulaması için bu akışı kullanabilir."
 
+#: src/admin/crypto/CertificateKeyPairForm.ts
+msgid "Optional Private Key. If this is set, you can use this keypair for encryption."
+msgstr "İsteğe Bağlı Özel Anahtar. Bu ayarlanırsa, şifreleme için bu anahtar çiftini kullanabilirsiniz."
+
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "Optional recovery flow, which is linked at the bottom of the page."
 msgstr "Sayfanın alt kısmında bağlı olan isteğe bağlı kurtarma akışı."
+
+#: src/admin/sources/saml/SAMLSourceForm.ts
+msgid "Optional URL if the IDP supports Single-Logout."
+msgstr "IDP Tek Oturumu Kapat'ı destekliyorsa isteğe bağlı URL."
 
 #: src/admin/crypto/CertificateGenerateForm.ts
 msgid "Optional, comma-separated SubjectAlt Names."
@@ -4407,9 +4517,23 @@ msgstr ""
 #~ msgstr "İsteğe bağlı olarak giriş değerini önceden doldurun"
 
 #: src/admin/stages/prompt/PromptForm.ts
+#~ msgid ""
+#~ "Optionally pre-fill the input value.\n"
+#~ "When creating a \"Radio Button Group\" or \"Dropdown\", enable interpreting as\n"
+#~ "expression and return a list to return multiple choices."
+#~ msgstr ""
+
+#: src/admin/stages/prompt/PromptForm.ts
 msgid ""
-"Optionally pre-fill the input value.\n"
-"When creating a \"Radio Button Group\" or \"Dropdown\", enable interpreting as\n"
+"Optionally pre-fill the input with an initial value.\n"
+"When creating a fixed choice field, enable interpreting as\n"
+"expression and return a list to return multiple default choices."
+msgstr ""
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid ""
+"Optionally provide a short hint that describes the expected input value.\n"
+"When creating a fixed choice field, enable interpreting as\n"
 "expression and return a list to return multiple choices."
 msgstr ""
 
@@ -4457,19 +4581,19 @@ msgstr "Eski üsler"
 msgid "Outpost Deployment Info"
 msgstr "Üs Dağıtım Bilgileri"
 
-#: src/admin/AdminInterface.ts
-msgid "Outpost Integrations"
-msgstr "Üs Entegrasyonları"
-
-#~ msgid "Outpost Service-connection"
-#~ msgstr "Outpost Servis bağlantısı"
-
 #~ msgid "Outpost integration"
 #~ msgstr "Üs entegrasyonu"
 
 #: src/admin/outposts/ServiceConnectionListPage.ts
 msgid "Outpost integration(s)"
 msgstr "Üs entegrasyonu"
+
+#: src/admin/AdminInterface.ts
+msgid "Outpost Integrations"
+msgstr "Üs Entegrasyonları"
+
+#~ msgid "Outpost Service-connection"
+#~ msgstr "Outpost Servis bağlantısı"
 
 #: src/admin/admin-overview/AdminOverviewPage.ts
 msgid "Outpost status"
@@ -4504,10 +4628,6 @@ msgstr "Outposts, ters proxy'ler gibi farklı ortamları ve protokolleri destekl
 #: src/admin/users/UserViewPage.ts
 msgid "Overview"
 msgstr "Genel Bakış"
-
-#: src/admin/crypto/CertificateKeyPairForm.ts
-msgid "PEM-encoded Certificate data."
-msgstr "PEM kodlu Sertifika verileri."
 
 #: src/admin/groups/GroupForm.ts
 #: src/admin/groups/GroupListPage.ts
@@ -4569,8 +4689,12 @@ msgstr ""
 #~ msgstr "Parola, 2FA, vb"
 
 #: src/admin/stages/prompt/PromptForm.ts
-msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
-msgstr "Parola: Maskeli giriş, parola kaynaklara karşı doğrulanır. İlkeler yine de bu Aşama'ya uygulanmalıdır. Bunlardan ikisi aynı aşamada kullanılıyorsa, aynı olmaları sağlanır."
+msgid "Password: Masked input, multiple inputs of this type on the same prompt need to be identical."
+msgstr ""
+
+#: src/admin/stages/prompt/PromptForm.ts
+#~ msgid "Password: Masked input, password is validated against sources. Policies still have to be applied to this Stage. If two of these are used in the same stage, they are ensured to be identical."
+#~ msgstr "Parola: Maskeli giriş, parola kaynaklara karşı doğrulanır. İlkeler yine de bu Aşama'ya uygulanmalıdır. Bunlardan ikisi aynı aşamada kullanılıyorsa, aynı olmaları sağlanır."
 
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "Passwordless flow"
@@ -4592,6 +4716,10 @@ msgstr ""
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Path template for users created. Use placeholders like `%(slug)s` to insert the source slug."
 msgstr ""
+
+#: src/admin/crypto/CertificateKeyPairForm.ts
+msgid "PEM-encoded Certificate data."
+msgstr "PEM kodlu Sertifika verileri."
 
 #: src/elements/user/UserConsentList.ts
 msgid "Permissions"
@@ -4622,6 +4750,10 @@ msgstr ""
 msgid "Please enter your Code"
 msgstr "Lütfen Kodunuzu girin"
 
+#: src/flow/stages/password/PasswordStage.ts
+msgid "Please enter your password"
+msgstr "Lütfen parolanızı girin"
+
 #: src/flow/stages/authenticator_sms/AuthenticatorSMSStage.ts
 msgid "Please enter your Phone number."
 msgstr "Lütfen Telefon numaranızı girin."
@@ -4629,10 +4761,6 @@ msgstr "Lütfen Telefon numaranızı girin."
 #: src/flow/stages/authenticator_totp/AuthenticatorTOTPStage.ts
 msgid "Please enter your TOTP Code"
 msgstr "Lütfen TOTP Kodunuzu girin"
-
-#: src/flow/stages/password/PasswordStage.ts
-msgid "Please enter your password"
-msgstr "Lütfen parolanızı girin"
 
 #: src/admin/AdminInterface.ts
 #: src/admin/flows/FlowListPage.ts
@@ -4644,6 +4772,10 @@ msgstr "İlkeler"
 #: src/admin/policies/PolicyBindingForm.ts
 msgid "Policy"
 msgstr "İlke"
+
+#: src/admin/policies/BoundPoliciesList.ts
+msgid "Policy {0}"
+msgstr "İlke {0}"
 
 #: src/admin/applications/ApplicationViewPage.ts
 #: src/admin/flows/FlowViewPage.ts
@@ -4659,18 +4791,18 @@ msgstr "İlke / İlkeler"
 msgid "Policy / User / Group"
 msgstr "İlke / Kullanıcı / Grup"
 
-#: src/admin/sources/oauth/OAuthSourceViewPage.ts
-#: src/admin/sources/plex/PlexSourceViewPage.ts
-#: src/admin/sources/saml/SAMLSourceViewPage.ts
-msgid "Policy Bindings"
-msgstr "İlke Bağlamaları"
-
 #~ msgid "Policy binding"
 #~ msgstr "İlke bağlama"
 
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Policy binding(s)"
 msgstr "İlke bağlama (ler)"
+
+#: src/admin/sources/oauth/OAuthSourceViewPage.ts
+#: src/admin/sources/plex/PlexSourceViewPage.ts
+#: src/admin/sources/saml/SAMLSourceViewPage.ts
+msgid "Policy Bindings"
+msgstr "İlke Bağlamaları"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/ApplicationViewPage.ts
@@ -4694,10 +4826,6 @@ msgstr "İlke yürütme"
 #~ "Policy used for debugging the PolicyEngine. Returns a fixed result,\n"
 #~ "but takes a random time to process."
 #~ msgstr ""
-
-#: src/admin/policies/BoundPoliciesList.ts
-msgid "Policy {0}"
-msgstr "İlke {0}"
 
 #: src/admin/policies/dummy/DummyPolicyForm.ts
 #: src/admin/policies/event_matcher/EventMatcherPolicyForm.ts
@@ -4741,7 +4869,12 @@ msgstr "Ön kimlik doğrulama akışı"
 
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
+#: src/admin/stages/prompt/PromptForm.ts
 msgid "Preview"
+msgstr ""
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid "Preview errors"
 msgstr ""
 
 #: src/admin/crypto/CertificateKeyPairForm.ts
@@ -4788,14 +4921,14 @@ msgstr "Özellik Eşleme hatası"
 msgid "Property Mapping(s)"
 msgstr "Özellik Eşleme (ler)"
 
+#: src/admin/providers/saml/SAMLProviderForm.ts
+msgid "Property mappings"
+msgstr "Özellik eşlemeleri"
+
 #: src/admin/AdminInterface.ts
 #: src/admin/property-mappings/PropertyMappingListPage.ts
 msgid "Property Mappings"
 msgstr "Özellik Eşleştirmeleri"
-
-#: src/admin/providers/saml/SAMLProviderForm.ts
-msgid "Property mappings"
-msgstr "Özellik eşlemeleri"
 
 #: src/admin/providers/scim/SCIMProviderForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -4810,10 +4943,6 @@ msgstr "Kullanıcı oluşturma için kullanılan özellik eşlemeleri."
 msgid "Property mappings used to user mapping."
 msgstr ""
 
-#: src/admin/providers/proxy/ProxyProviderViewPage.ts
-msgid "Protocol Settings"
-msgstr "Protokol Ayarları"
-
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/radius/RadiusProviderForm.ts
@@ -4824,6 +4953,10 @@ msgstr "Protokol Ayarları"
 #: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Protocol settings"
 msgstr "Protokol ayarları"
+
+#: src/admin/providers/proxy/ProxyProviderViewPage.ts
+msgid "Protocol Settings"
+msgstr "Protokol Ayarları"
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
@@ -4842,13 +4975,13 @@ msgstr "Atanan uygulamalara SAML ve OAuth gibi protokoller için destek sağlay�
 msgid "Provider"
 msgstr "Sağlayıcı"
 
+#~ msgid "Provider type"
+#~ msgstr "Sağlayıcı türü"
+
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 msgid "Provider Type"
 msgstr "Sağlayıcı Türü"
-
-#~ msgid "Provider type"
-#~ msgstr "Sağlayıcı türü"
 
 #: src/admin/providers/ProviderListPage.ts
 msgid "Provider(s)"
@@ -4893,52 +5026,11 @@ msgstr "Yayıncı"
 msgid "Quick actions"
 msgstr "Hızlı eylemler"
 
-#: src/pages/flows/StageBindingForm.ts
-#~ msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
-#~ msgstr "RESTART, akış bağlamını korurken akışı baştan yeniden başlatır."
-
-#: src/admin/flows/StageBindingForm.ts
-#~ msgid "RESTART restarts the flow from the beginning."
-#~ msgstr "RESTART, akışı baştan yeniden başlatır."
-
-#: src/admin/flows/StageBindingForm.ts
-#~ msgid "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context."
-#~ msgstr ""
-
-#: src/admin/flows/StageBindingForm.ts
-#~ msgid "RETRY returns the error message and a similar challenge to the executor."
-#~ msgstr "RETRY hata iletisi ve yürütücünün benzer bir meydan okuma döndürür."
-
-#~ msgid "RS256 (Asymmetric Encryption)"
-#~ msgstr "RS256 (Asimetrik Şifreleme)"
-
-#~ msgid "RSA Key"
-#~ msgstr "RSA Anahtarı"
-
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#~ msgid "RSA-SHA1"
-#~ msgstr "RSA-SHA1"
-
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#~ msgid "RSA-SHA256"
-#~ msgstr "RSA-SHA256"
-
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#~ msgid "RSA-SHA384"
-#~ msgstr "RSA-SHA384"
-
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#~ msgid "RSA-SHA512"
-#~ msgstr "RSA-SHA512"
-
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Radio Button Group (fixed choice)"
 msgstr ""
 
+#: src/admin/outposts/OutpostForm.ts
 #: src/admin/outposts/OutpostListPage.ts
 msgid "Radius"
 msgstr ""
@@ -4993,6 +5085,10 @@ msgstr "Kurtarma bağlantısı e-posta ile gönderilemez, kullanıcının e-post
 msgid "Redirect"
 msgstr "Yönlendirme"
 
+#: src/admin/sources/saml/SAMLSourceForm.ts
+msgid "Redirect binding"
+msgstr "Yeniden yönlendirme bağlama"
+
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Redirect URIs"
 msgstr "URI'leri yeniden yönlendirme"
@@ -5004,9 +5100,15 @@ msgstr "URI'leri yeniden yönlendirme"
 msgid "Redirect URIs/Origins (RegEx)"
 msgstr ""
 
-#: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "Redirect binding"
-msgstr "Yeniden yönlendirme bağlama"
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
+msgid "reference will be reset to default value"
+msgstr "referans varsayılan değere sıfırlanır"
+
+#: src/elements/forms/DeleteBulkForm.ts
+#: src/elements/forms/DeleteForm.ts
+msgid "reference will be set to an empty value"
+msgstr "referans boş bir değere ayarlanacaktır"
 
 #: src/elements/table/Table.ts
 #: src/elements/user/UserDevicesList.ts
@@ -5032,12 +5134,12 @@ msgstr ""
 msgid "Register device"
 msgstr "Aygıtı kaydet"
 
-#~ msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
-#~ msgstr "Kimlik doğrulamasının gerekli olmadığı düzenli ifadeler. Her yeni satır yeni bir Düzenli İfade olarak yorumlanır."
-
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression."
 msgstr "Kimlik doğrulamasının gerekli olmadığı düzenli ifadeler. Her yeni satır yeni bir ifade olarak yorumlanır."
+
+#~ msgid "Regular expressions for which authentication is not required. Each new line is interpreted as a new Regular Expression."
+#~ msgstr "Kimlik doğrulamasının gerekli olmadığı düzenli ifadeler. Her yeni satır yeni bir Düzenli İfade olarak yorumlanır."
 
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
@@ -5053,17 +5155,12 @@ msgid "Related actions"
 msgstr ""
 
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
 msgid "Related objects"
 msgstr "İlgili nesneler"
 
 #: src/admin/groups/RelatedGroupList.ts
 #: src/admin/users/RelatedUserList.ts
 msgid "Remove"
-msgstr ""
-
-#: src/admin/users/RelatedUserList.ts
-msgid "Remove Users(s)"
 msgstr ""
 
 #: src/admin/groups/RelatedGroupList.ts
@@ -5073,6 +5170,10 @@ msgstr ""
 #: src/admin/stages/user_logout/UserLogoutStageForm.ts
 msgid "Remove the user from the current session."
 msgstr "Kullanıcıyı geçerli oturumdan kaldırın."
+
+#: src/admin/users/RelatedUserList.ts
+msgid "Remove Users(s)"
+msgstr ""
 
 #: src/admin/policies/reputation/ReputationListPage.ts
 msgid "Reputation"
@@ -5107,13 +5208,13 @@ msgstr "İtibar puanları"
 msgid "Request"
 msgstr "Talep"
 
-#: src/flow/stages/FlowErrorStage.ts
-msgid "Request ID"
-msgstr ""
-
 #: src/flow/stages/access_denied/AccessDeniedStage.ts
 msgid "Request has been denied."
 msgstr "İstek reddedildi."
+
+#: src/flow/stages/FlowErrorStage.ts
+msgid "Request ID"
+msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 msgid "Request token URL"
@@ -5162,6 +5263,18 @@ msgstr ""
 #~ msgid "Resources"
 #~ msgstr "Kaynaklar"
 
+#: src/pages/flows/StageBindingForm.ts
+#~ msgid "RESTART restarts the flow from the beginning, while keeping the flow context."
+#~ msgstr "RESTART, akış bağlamını korurken akışı baştan yeniden başlatır."
+
+#: src/admin/flows/StageBindingForm.ts
+#~ msgid "RESTART restarts the flow from the beginning."
+#~ msgstr "RESTART, akışı baştan yeniden başlatır."
+
+#: src/admin/flows/StageBindingForm.ts
+#~ msgid "RESTART_WITH_CONTEXT restarts the flow from the beginning, while keeping the flow context."
+#~ msgstr ""
+
 #: src/admin/flows/StageBindingForm.ts
 msgid "Restarts the flow from the beginning"
 msgstr ""
@@ -5179,12 +5292,16 @@ msgstr "Sonuç"
 msgid "Retry"
 msgstr "Yeniden dene"
 
-#~ msgid "Retry Task"
-#~ msgstr "Görevi Yeniden Dene"
-
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn.ts
 msgid "Retry authentication"
 msgstr "Kimlik doğrulamayı yeniden deneyin"
+
+#: src/admin/flows/StageBindingForm.ts
+#~ msgid "RETRY returns the error message and a similar challenge to the executor."
+#~ msgstr "RETRY hata iletisi ve yürütücünün benzer bir meydan okuma döndürür."
+
+#~ msgid "Retry Task"
+#~ msgstr "Görevi Yeniden Dene"
 
 #: src/flow/FlowExecutor.ts
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
@@ -5216,10 +5333,40 @@ msgstr "İptal mi edildi?"
 msgid "Root"
 msgstr ""
 
+#~ msgid "RS256 (Asymmetric Encryption)"
+#~ msgstr "RS256 (Asimetrik Şifreleme)"
+
+#~ msgid "RSA Key"
+#~ msgstr "RSA Anahtarı"
+
+#: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#~ msgid "RSA-SHA1"
+#~ msgstr "RSA-SHA1"
+
+#: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#~ msgid "RSA-SHA256"
+#~ msgstr "RSA-SHA256"
+
+#: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#~ msgid "RSA-SHA384"
+#~ msgstr "RSA-SHA384"
+
+#: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#~ msgid "RSA-SHA512"
+#~ msgstr "RSA-SHA512"
+
 #: src/admin/providers/scim/SCIMProviderViewPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 msgid "Run sync again"
 msgstr "Eşzamanlamayı tekrar çalıştır"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Same identifier is used for all providers"
+msgstr "Aynı tanımlayıcı tüm sağlayıcılar için kullanılır"
 
 #: src/admin/applications/wizard/TypeApplicationWizardPage.ts
 msgid "SAML"
@@ -5236,10 +5383,6 @@ msgstr "SAML Öznitelik Adı"
 msgid "SAML Configuration"
 msgstr ""
 
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
-msgid "SAML Metadata"
-msgstr "SAML Meta Verileri"
-
 #: src/admin/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
 msgid "SAML details"
 msgstr ""
@@ -5247,104 +5390,25 @@ msgstr ""
 #~ msgid "SAML details (import from metadata)"
 #~ msgstr ""
 
-#: src/admin/admin-overview/charts/SyncStatusChart.ts
-#: src/admin/admin-overview/charts/SyncStatusChart.ts
-msgid "SCIM Provider"
-msgstr ""
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "SAML Metadata"
+msgstr "SAML Meta Verileri"
+
+#: src/user/user-settings/details/stages/prompt/PromptStage.ts
+msgid "Save"
+msgstr "Kaydet"
 
 #: src/admin/providers/scim/SCIMProviderForm.ts
 msgid "SCIM base url, usually ends in /v2."
 msgstr ""
 
+#: src/admin/admin-overview/charts/SyncStatusChart.ts
+msgid "SCIM Provider"
+msgstr ""
+
 #: src/admin/providers/scim/SCIMProviderViewPage.ts
 msgid "SCIM provider is in preview."
 msgstr ""
-
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#~ msgid "SHA1"
-#~ msgstr "SHA1"
-
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#~ msgid "SHA256"
-#~ msgstr "SHA256"
-
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#~ msgid "SHA384"
-#~ msgstr "SHA384"
-
-#: src/admin/providers/saml/SAMLProviderForm.ts
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#~ msgid "SHA512"
-#~ msgstr "SHA512"
-
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#: src/admin/sources/saml/SAMLSourceViewPage.ts
-msgid "SLO URL"
-msgstr "SLO URL"
-
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
-msgid "SLO URL (Post)"
-msgstr ""
-
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
-msgid "SLO URL (Redirect)"
-msgstr ""
-
-#: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
-msgid "SMS"
-msgstr "SMS"
-
-#: src/user/user-settings/mfa/MFADevicesPage.ts
-msgid "SMS authenticator"
-msgstr "SMS kimlik doğrulayıcı"
-
-#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "SMS-based Authenticators"
-msgstr "SMS Tabanlı Kimlik Doğrulayıcıları"
-
-#: src/admin/stages/email/EmailStageForm.ts
-msgid "SMTP Host"
-msgstr "SMTP Ana Bilgisayarı"
-
-#: src/admin/stages/email/EmailStageForm.ts
-msgid "SMTP Password"
-msgstr "SMTP Parolası"
-
-#: src/admin/stages/email/EmailStageForm.ts
-msgid "SMTP Port"
-msgstr "SMTP Bağlantı Noktası"
-
-#: src/admin/stages/email/EmailStageForm.ts
-msgid "SMTP Username"
-msgstr "SMTP Kullanıcı Adı"
-
-#: src/admin/sources/saml/SAMLSourceForm.ts
-#: src/admin/sources/saml/SAMLSourceViewPage.ts
-msgid "SSO URL"
-msgstr "SSO URL"
-
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
-msgid "SSO URL (IdP-initiated Login)"
-msgstr ""
-
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
-msgid "SSO URL (Post)"
-msgstr ""
-
-#: src/admin/providers/saml/SAMLProviderViewPage.ts
-msgid "SSO URL (Redirect)"
-msgstr ""
-
-#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Same identifier is used for all providers"
-msgstr "Aynı tanımlayıcı tüm sağlayıcılar için kullanılır"
-
-#: src/user/user-settings/details/stages/prompt/PromptStage.ts
-msgid "Save"
-msgstr "Kaydet"
 
 #: src/admin/property-mappings/PropertyMappingScopeForm.ts
 msgid "Scope name"
@@ -5406,8 +5470,8 @@ msgid "Secret:"
 msgstr "Sır:"
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-msgid "Security key authenticator"
-msgstr "Güvenlik anahtarı kimlik doğrulayıcısı"
+#~ msgid "Security key authenticator"
+#~ msgstr "Güvenlik anahtarı kimlik doğrulayıcısı"
 
 #: src/admin/policies/expression/ExpressionPolicyForm.ts
 #: src/admin/property-mappings/PropertyMappingLDAPForm.ts
@@ -5428,10 +5492,6 @@ msgstr ""
 
 #: src/admin/outposts/OutpostForm.ts
 msgid "See more here:"
-msgstr ""
-
-#: src/flow/stages/user_login/UserLoginStage.ts
-msgid "Select Yes to reduce the number of times you're asked to sign in."
 msgstr ""
 
 #: src/admin/applications/ApplicationForm.ts
@@ -5498,6 +5558,10 @@ msgstr "Bir kullanıcının kimlik doğrulamasına izin verilmesi için üye olm
 msgid "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI."
 msgstr "Kullanıcıyı bilgilendirmek için hangi aktarıcıların kullanılması gerektiğini seçin. Hiçbiri seçilmemişse, bildirim yalnızca authentik kullanıcı arabiriminde gösterilir."
 
+#: src/flow/stages/user_login/UserLoginStage.ts
+msgid "Select Yes to reduce the number of times you're asked to sign in."
+msgstr ""
+
 #: src/admin/stages/prompt/PromptStageForm.ts
 msgid "Selected policies are executed when the stage is submitted to validate the data."
 msgstr "Seçilen ilkeler, verileri doğrulamak için aşama gönderildiğinde yürütülür."
@@ -5513,16 +5577,16 @@ msgstr "Bir entegrasyon seçilmesi, oentik tarafından üssün yönetimini sağl
 msgid "Selection of backends to test the password against."
 msgstr "Parolayı test etmek için arka uçların seçimi."
 
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+msgid "Send a custom HTTP-Basic Authentication header based on values from authentik."
+msgstr ""
+
 #: src/flow/stages/email/EmailStage.ts
 msgid "Send Email again."
 msgstr "E-postayı tekrar gönder."
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Send HTTP-Basic Authentication"
-msgstr ""
-
-#: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "Send a custom HTTP-Basic Authentication header based on values from authentik."
 msgstr ""
 
 #: src/admin/users/RelatedUserList.ts
@@ -5555,11 +5619,6 @@ msgstr "Gruba gönderildi"
 msgid "Separator: Static Separator Line"
 msgstr "Ayırıcı: Statik Ayırıcı Hattı"
 
-#: src/admin/sources/ldap/LDAPSourceForm.ts
-#: src/admin/sources/ldap/LDAPSourceViewPage.ts
-msgid "Server URI"
-msgstr "Sunucu URI"
-
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 msgid "Server and client are further than 5 seconds apart."
 msgstr "Sunucu ve istemci arasında 5 saniyeden daha uzaktır."
@@ -5567,9 +5626,17 @@ msgstr "Sunucu ve istemci arasında 5 saniyeden daha uzaktır."
 #~ msgid "Server name for which this provider's certificate is valid for."
 #~ msgstr "Bu sağlayıcının sertifikasının geçerli olduğu sunucu adı."
 
+#: src/admin/sources/ldap/LDAPSourceForm.ts
+#: src/admin/sources/ldap/LDAPSourceViewPage.ts
+msgid "Server URI"
+msgstr "Sunucu URI"
+
 #: src/flow/stages/authenticator_webauthn/WebAuthnAuthenticatorRegisterStage.ts
 msgid "Server validation of credential failed: {err}"
 msgstr "Kimlik bilgisi sunucu doğrulaması başarısız oldu: {err}"
+
+#~ msgid "Service connection"
+#~ msgstr "Servis bağlantısı"
 
 #~ msgid "Service Connections"
 #~ msgstr "Servis Bağlantıları"
@@ -5578,19 +5645,16 @@ msgstr "Kimlik bilgisi sunucu doğrulaması başarısız oldu: {err}"
 msgid "Service Provider Binding"
 msgstr "Servis Sağlayıcı Bağlama"
 
-#~ msgid "Service connection"
-#~ msgstr "Servis bağlantısı"
-
 #~ msgid "Session"
 #~ msgstr "Oturum"
-
-#: src/flow/FlowInspector.ts
-msgid "Session ID"
-msgstr "Oturum Kimliği"
 
 #: src/admin/stages/user_login/UserLoginStageForm.ts
 msgid "Session duration"
 msgstr "Oturum süresi"
+
+#: src/flow/FlowInspector.ts
+msgid "Session ID"
+msgstr "Oturum Kimliği"
 
 #~ msgid "Session not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
 #~ msgstr "Oturum geçerli saat+bu değerden sonra geçerli değil (Biçim: hours=1; Dakika=2; ikinci=3)."
@@ -5613,10 +5677,6 @@ msgid "Sessions"
 msgstr "Oturumlar"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
-#~ msgid "Set HTTP-Basic Authentication"
-#~ msgstr "HTTP-Temel Kimlik Doğrulamasını Ayarla"
-
-#: src/admin/providers/proxy/ProxyProviderForm.ts
 #~ msgid "Set a custom HTTP-Basic Authentication header based on values from authentik."
 #~ msgstr "authentik değerlerine göre özel bir HTTP-Basic Kimlik Doğrulama başlığı ayarlayın."
 
@@ -5631,6 +5691,10 @@ msgstr "YAML veya JSON kullanarak özel nitelikleri ayarlayın."
 #: src/admin/tenants/TenantForm.ts
 msgid "Set custom attributes using YAML or JSON. Any attributes set here will be inherited by users, if the request is handled by this tenant."
 msgstr ""
+
+#: src/admin/providers/proxy/ProxyProviderForm.ts
+#~ msgid "Set HTTP-Basic Authentication"
+#~ msgstr "HTTP-Temel Kimlik Doğrulamasını Ayarla"
 
 #: src/admin/users/RelatedUserList.ts
 #: src/admin/users/UserListPage.ts
@@ -5650,6 +5714,26 @@ msgstr "Kurulum"
 #: src/admin/events/RuleListPage.ts
 msgid "Severity"
 msgstr "Önem derecesi"
+
+#: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#~ msgid "SHA1"
+#~ msgstr "SHA1"
+
+#: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#~ msgid "SHA256"
+#~ msgstr "SHA256"
+
+#: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#~ msgid "SHA384"
+#~ msgstr "SHA384"
+
+#: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#~ msgid "SHA512"
+#~ msgstr "SHA512"
 
 #: src/admin/providers/radius/RadiusProviderForm.ts
 msgid "Shared secret"
@@ -5727,6 +5811,19 @@ msgstr ""
 #~ msgid "Skip path regex"
 #~ msgstr "Yol regex atla"
 
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceViewPage.ts
+msgid "SLO URL"
+msgstr "SLO URL"
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "SLO URL (Post)"
+msgstr ""
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "SLO URL (Redirect)"
+msgstr ""
+
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/flows/FlowForm.ts
 #: src/admin/sources/ldap/LDAPSourceForm.ts
@@ -5736,12 +5833,43 @@ msgstr ""
 msgid "Slug"
 msgstr "Kısa İsim"
 
+#: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
+msgid "SMS"
+msgstr "SMS"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+#~ msgid "SMS authenticator"
+#~ msgstr "SMS kimlik doğrulayıcı"
+
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "SMS-based Authenticators"
+msgstr "SMS Tabanlı Kimlik Doğrulayıcıları"
+
+#: src/admin/stages/email/EmailStageForm.ts
+msgid "SMTP Host"
+msgstr "SMTP Ana Bilgisayarı"
+
+#: src/admin/stages/email/EmailStageForm.ts
+msgid "SMTP Password"
+msgstr "SMTP Parolası"
+
+#: src/admin/stages/email/EmailStageForm.ts
+msgid "SMTP Port"
+msgstr "SMTP Bağlantı Noktası"
+
+#: src/admin/stages/email/EmailStageForm.ts
+msgid "SMTP Username"
+msgstr "SMTP Kullanıcı Adı"
+
 #: src/flow/stages/FlowErrorStage.ts
 msgid "Something went wrong! Please try again later."
 msgstr "Bir şeyler ters gitti! Lütfen daha sonra tekrar deneyin."
 
 #~ msgid "Source"
 #~ msgstr "Kaynak"
+
+#~ msgid "Source {0}"
+#~ msgstr "Kaynak {0}"
 
 #: src/admin/events/utils.ts
 msgid "Source linked"
@@ -5753,9 +5881,6 @@ msgstr "Kaynak bağlantılı"
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "Source settings"
 msgstr ""
-
-#~ msgid "Source {0}"
-#~ msgstr "Kaynak {0}"
 
 #: src/admin/sources/SourceListPage.ts
 msgid "Source(s)"
@@ -5780,6 +5905,23 @@ msgstr ""
 msgid "Specify multiple server URIs by separating them with a comma."
 msgstr "Birden çok sunucu URI'lerini virgülle ayırarak belirtin."
 
+#: src/admin/sources/saml/SAMLSourceForm.ts
+#: src/admin/sources/saml/SAMLSourceViewPage.ts
+msgid "SSO URL"
+msgstr "SSO URL"
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (IdP-initiated Login)"
+msgstr ""
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (Post)"
+msgstr ""
+
+#: src/admin/providers/saml/SAMLProviderViewPage.ts
+msgid "SSO URL (Redirect)"
+msgstr ""
+
 #: src/admin/flows/utils.ts
 msgid "Stacked"
 msgstr ""
@@ -5789,6 +5931,13 @@ msgstr ""
 msgid "Stage"
 msgstr "Aşama"
 
+#~ msgid "Stage binding"
+#~ msgstr "Aşama bağlama"
+
+#: src/admin/flows/BoundStagesList.ts
+msgid "Stage binding(s)"
+msgstr "Aşama bağlama (ler)"
+
 #: src/admin/flows/FlowViewPage.ts
 msgid "Stage Bindings"
 msgstr "Aşama Bağlamaları"
@@ -5796,13 +5945,6 @@ msgstr "Aşama Bağlamaları"
 #: src/admin/flows/utils.ts
 msgid "Stage Configuration"
 msgstr "Aşama Konfigürasyonu"
-
-#~ msgid "Stage binding"
-#~ msgstr "Aşama bağlama"
-
-#: src/admin/flows/BoundStagesList.ts
-msgid "Stage binding(s)"
-msgstr "Aşama bağlama (ler)"
 
 #: src/flow/FlowInspector.ts
 msgid "Stage kind"
@@ -5820,8 +5962,13 @@ msgstr "Aşama nesnesi"
 msgid "Stage type"
 msgstr "Aşama türü"
 
-#~ msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
-#~ msgstr "Kullanıcının uyumlu bir aygıtı olmadığında Kimlik Doğrulayıcısı'nı yapılandırmak için kullanılan Aşama. Bu yapılandırma Stage geçtikten sonra kullanıcıya yeniden istenmez."
+#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
+msgid "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows."
+msgstr "Aşama ikili tabanlı kimlik doğrulayıcısını yapılandırmak için kullanılır. Bu aşama yapılandırma akışları için kullanılmalıdır."
+
+#: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
+msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
+msgstr "Statik kimlik doğrulayıcısını (yani statik belirteçleri) yapılandırmak için kullanılan aşama. Bu aşama yapılandırma akışları için kullanılmalıdır."
 
 #: src/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm.ts
 msgid "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator)."
@@ -5831,25 +5978,16 @@ msgstr "Bir TOTP kimlik doğrulayıcısını (Authy/Google Authenticator) yapıl
 msgid "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello)."
 msgstr "Aşama bir WebAutnn kimlik doğrulayıcısını (örn. Yubikey, FaceID/Windows Hello) yapılandırmak için kullanılır."
 
-#: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
-msgid "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows."
-msgstr "Aşama ikili tabanlı kimlik doğrulayıcısını yapılandırmak için kullanılır. Bu aşama yapılandırma akışları için kullanılmalıdır."
-
-#: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
-msgid "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows."
-msgstr "Statik kimlik doğrulayıcısını (yani statik belirteçleri) yapılandırmak için kullanılan aşama. Bu aşama yapılandırma akışları için kullanılmalıdır."
-
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
 msgid "Stage used to configure an SMS-based TOTP authenticator."
 msgstr "Aşama, SMS tabanlı bir TOTP kimlik doğrulayıcısını yapılandırmak için kullanılır."
 
+#~ msgid "Stage used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again."
+#~ msgstr "Kullanıcının uyumlu bir aygıtı olmadığında Kimlik Doğrulayıcısı'nı yapılandırmak için kullanılan Aşama. Bu yapılandırma Stage geçtikten sonra kullanıcıya yeniden istenmez."
+
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows."
 msgstr "Aşama, herhangi bir kimlik doğrulayıcıyı doğrulamak için kullanılır. Bu aşama kimlik doğrulama veya yetkilendirme akışları sırasında kullanılmalıdır."
-
-#: src/admin/stages/StageListPage.ts
-msgid "Stage(s)"
-msgstr "Aşama (lar)"
 
 #: src/admin/stages/authenticator_duo/AuthenticatorDuoStageForm.ts
 #: src/admin/stages/authenticator_sms/AuthenticatorSMSStageForm.ts
@@ -5869,10 +6007,14 @@ msgstr "Aşama (lar)"
 msgid "Stage-specific settings"
 msgstr "Aşama alanına özgü ayarlar"
 
+#: src/admin/stages/StageListPage.ts
+msgid "Stage(s)"
+msgstr "Aşama (lar)"
+
 #: src/admin/AdminInterface.ts
 #: src/admin/flows/FlowListPage.ts
-#: src/admin/stages/StageListPage.ts
 #: src/admin/stages/prompt/PromptListPage.ts
+#: src/admin/stages/StageListPage.ts
 msgid "Stages"
 msgstr "Aşamalar"
 
@@ -5892,13 +6034,9 @@ msgstr ""
 msgid "State"
 msgstr "Eyalet"
 
-#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "Static Tokens"
-msgstr "Statik Belirteçler"
-
 #: src/user/user-settings/mfa/MFADevicesPage.ts
-msgid "Static authenticator"
-msgstr "Statik kimlik doğrulayıcı"
+#~ msgid "Static authenticator"
+#~ msgstr "Statik kimlik doğrulayıcı"
 
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "Static rules"
@@ -5911,6 +6049,10 @@ msgstr "Statik belirteç"
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Static tokens"
 msgstr "Statik belirteçler"
+
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "Static Tokens"
+msgstr "Statik Belirteçler"
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Static: Static value, displayed as-is."
@@ -6135,6 +6277,10 @@ msgid "Successfully generated recovery link"
 msgstr "Kurtarma bağlantısı başarıyla oluşturuldu"
 
 #: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
+msgid "Successfully imported {0} devices."
+msgstr ""
+
+#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 msgid "Successfully imported device."
 msgstr ""
 
@@ -6146,10 +6292,6 @@ msgstr "Akış başarıyla aktarıldı."
 msgid "Successfully imported provider."
 msgstr "Sağlayıcı başarıyla içe aktarıldı."
 
-#: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
-msgid "Successfully imported {0} devices."
-msgstr ""
-
 #: src/admin/users/UserResetEmailForm.ts
 msgid "Successfully sent email."
 msgstr "Başarıyla e-posta gönderildi."
@@ -6159,6 +6301,10 @@ msgstr "Başarıyla e-posta gönderildi."
 #: src/admin/property-mappings/PropertyMappingTestForm.ts
 msgid "Successfully sent test-request."
 msgstr "Test isteği başarıyla gönderildi."
+
+#: src/admin/users/UserActiveForm.ts
+msgid "Successfully updated {0} {1}"
+msgstr "{0} {1} başarıyla güncellendi"
 
 #: src/admin/applications/ApplicationForm.ts
 msgid "Successfully updated application."
@@ -6296,10 +6442,6 @@ msgstr "Aktarıcı başarılı bir şekilde güncellendi."
 msgid "Successfully updated user."
 msgstr "Kullanıcı başarıyla güncellendi."
 
-#: src/admin/users/UserActiveForm.ts
-msgid "Successfully updated {0} {1}"
-msgstr "{0} {1} başarıyla güncellendi"
-
 #: src/admin/groups/GroupViewPage.ts
 #: src/admin/users/GroupSelectModal.ts
 #: src/admin/users/RelatedUserList.ts
@@ -6360,11 +6502,6 @@ msgstr "Sistem"
 #~ msgid "System Overview"
 #~ msgstr "Sisteme Genel Bakış"
 
-#: src/admin/AdminInterface.ts
-#: src/admin/system-tasks/SystemTaskListPage.ts
-msgid "System Tasks"
-msgstr "Sistem Görevleri"
-
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 msgid "System status"
 msgstr "Sistem durumu"
@@ -6377,32 +6514,10 @@ msgstr "Sistem görevi hatası"
 msgid "System task execution"
 msgstr "Sistem görevi yürütme"
 
-#~ msgid "TLS Authentication Certificate"
-#~ msgstr "TLS Kimlik Doğrulama Sertifikası"
-
-#: src/admin/outposts/ServiceConnectionDockerForm.ts
-msgid "TLS Authentication Certificate/SSH Keypair"
-msgstr "TLS Kimlik Doğrulama Sertifikası/SH Anahtar Eşi"
-
-#~ msgid "TLS Server name"
-#~ msgstr "TLS Sunucu adı"
-
-#: src/admin/outposts/ServiceConnectionDockerForm.ts
-#: src/admin/sources/ldap/LDAPSourceForm.ts
-msgid "TLS Verification Certificate"
-msgstr "TLS Doğrulama Sertifikası"
-
-#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
-msgid "TOTP Authenticators"
-msgstr "TOTP Kimlik Doğrulayıcıları"
-
-#: src/user/user-settings/mfa/MFADevicesPage.ts
-msgid "TOTP Device"
-msgstr "TOTP Cihazı"
-
-#: src/user/user-settings/mfa/MFADevicesPage.ts
-msgid "TOTP authenticator"
-msgstr "TOTP kimlik doğrulayıcı"
+#: src/admin/AdminInterface.ts
+#: src/admin/system-tasks/SystemTaskListPage.ts
+msgid "System Tasks"
+msgstr "Sistem Görevleri"
 
 #: src/common/ui/locale.ts
 msgid "Taiwanese Mandarin"
@@ -6473,20 +6588,12 @@ msgstr ""
 msgid "Text: Simple Text input"
 msgstr "Metin: Basit Metin girişi"
 
-#: src/admin/providers/ldap/LDAPProviderViewPage.ts
-msgid "The Host IP of the docker host"
-msgstr "Docker ana bilgisayarının Ana Bilgisayar IP'si"
-
-#: src/elements/router/Router404.ts
-msgid "The URL \"{0}\" was not found."
-msgstr "“{0}” URL'si bulunamadı."
-
 #: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
-msgid "The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur"
+msgid "The authenticator can create and store a dedicated credential, but if it doesn't that's alright too"
 msgstr ""
 
 #: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
-msgid "The authenticator can create and store a dedicated credential, but if it doesn't that's alright too"
+msgid "The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur"
 msgstr ""
 
 #: src/admin/stages/authenticator_webauthn/AuthenticateWebAuthnStageForm.ts
@@ -6515,6 +6622,10 @@ msgstr ""
 #: src/elements/forms/DeleteForm.ts
 msgid "The following objects use {objName}"
 msgstr "Aşağıdaki nesneler {objName}"
+
+#: src/admin/providers/ldap/LDAPProviderViewPage.ts
+msgid "The Host IP of the docker host"
+msgstr "Docker ana bilgisayarının Ana Bilgisayar IP'si"
 
 #: src/admin/providers/ProviderWizard.ts
 msgid "The new application wizard greatly simplifies the steps required to create applications and providers."
@@ -6554,6 +6665,10 @@ msgstr "gidNumbers'ın başlangıcı, bu sayı group.Pk öğesinden oluşturulan
 #: src/admin/providers/ldap/LDAPProviderForm.ts
 msgid "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"
 msgstr "UidNumbers'ın başlangıcında, bu sayı, POSIX kullanıcıları için sayıların çok düşük olmadığından emin olmak için user.Pk öğesine eklenir. Varsayılan 2000 yerel kullanıcılarla çarpışmadığımızdan emin olmak için uidNumber"
+
+#: src/elements/router/Router404.ts
+msgid "The URL \"{0}\" was not found."
+msgstr "“{0}” URL'si bulunamadı."
 
 #: src/admin/stages/authenticator_duo/DuoDeviceImportForm.ts
 msgid "The user ID in Duo, can be found in the URL after clicking on a user."
@@ -6674,16 +6789,31 @@ msgstr "Zaman aşımı"
 msgid "Title"
 msgstr "Başlık"
 
+#~ msgid "TLS Authentication Certificate"
+#~ msgstr "TLS Kimlik Doğrulama Sertifikası"
+
+#: src/admin/outposts/ServiceConnectionDockerForm.ts
+msgid "TLS Authentication Certificate/SSH Keypair"
+msgstr "TLS Kimlik Doğrulama Sertifikası/SH Anahtar Eşi"
+
+#~ msgid "TLS Server name"
+#~ msgstr "TLS Sunucu adı"
+
+#: src/admin/outposts/ServiceConnectionDockerForm.ts
+#: src/admin/sources/ldap/LDAPSourceForm.ts
+msgid "TLS Verification Certificate"
+msgstr "TLS Doğrulama Sertifikası"
+
 #: src/admin/events/EventInfo.ts
 msgid "To"
 msgstr "Kime"
 
-#~ msgid "To allow any redirect URI, set this value to \"*\". Be aware of the possible security implications this can have."
-#~ msgstr ""
-
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "To allow any redirect URI, set this value to \".*\". Be aware of the possible security implications this can have."
 msgstr ""
+
+#~ msgid "To allow any redirect URI, set this value to \"*\". Be aware of the possible security implications this can have."
+#~ msgstr ""
 
 #: src/admin/users/UserViewPage.ts
 msgid "To create a recovery link, the current tenant needs to have a recovery flow configured."
@@ -6705,11 +6835,6 @@ msgstr "Bunun yerine SSL kullanmak için 'ldaps: //' kullanın ve bu seçeneği 
 msgid "Token"
 msgstr "Belirteç"
 
-#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
-#: src/admin/sources/oauth/OAuthSourceViewPage.ts
-msgid "Token URL"
-msgstr "Belirteç URL'si"
-
 #: src/admin/stages/authenticator_static/AuthenticatorStaticStageForm.ts
 msgid "Token count"
 msgstr "Belirteç sayısı"
@@ -6725,6 +6850,11 @@ msgstr "Token authentik tarafından yönetilir."
 #: src/admin/providers/scim/SCIMProviderForm.ts
 msgid "Token to authenticate with. Currently only bearer authentication is supported."
 msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/sources/oauth/OAuthSourceViewPage.ts
+msgid "Token URL"
+msgstr "Belirteç URL'si"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Token validity"
@@ -6770,6 +6900,18 @@ msgstr "Belirteçler SMS ile gönderildi."
 #: src/admin/admin-overview/charts/UserCountStatusChart.ts
 #~ msgid "Total users"
 #~ msgstr "Toplam kullanıcı"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+#~ msgid "TOTP authenticator"
+#~ msgstr "TOTP kimlik doğrulayıcı"
+
+#: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
+msgid "TOTP Authenticators"
+msgstr "TOTP Kimlik Doğrulayıcıları"
+
+#: src/user/user-settings/mfa/MFADevicesPage.ts
+msgid "TOTP Device"
+msgstr "TOTP Cihazı"
 
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Traditional authenticator"
@@ -6853,57 +6995,6 @@ msgstr "UID"
 msgid "UID start number"
 msgstr "UID başlangıç numarası"
 
-#: src/admin/stages/identification/IdentificationStageForm.ts
-#: src/flow/stages/identification/IdentificationStage.ts
-msgid "UPN"
-msgstr "UPN"
-
-#: src/admin/blueprints/BlueprintForm.ts
-#: src/admin/providers/scim/SCIMProviderForm.ts
-#: src/admin/providers/scim/SCIMProviderViewPage.ts
-msgid "URL"
-msgstr ""
-
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "URL settings"
-msgstr "URL ayarları"
-
-#: src/admin/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
-msgid "URL that authentik will redirect back to after successful authentication."
-msgstr ""
-
-#: src/admin/sources/saml/SAMLSourceForm.ts
-msgid "URL that the initial Login request is sent to."
-msgstr "İlk oturum açma isteğinin gönderildiği URL."
-
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "URL the user is redirect to to consent the authorization."
-msgstr "Kullanıcının yetkilendirmeyi onaylamak için yönlendirdiği URL."
-
-#: src/admin/stages/captcha/CaptchaStageForm.ts
-msgid "URL to fetch JavaScript from, defaults to recaptcha. Can be replaced with any compatible alternative."
-msgstr ""
-
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "URL used by authentik to get user information."
-msgstr "Kullanıcı bilgilerini almak için authentik tarafından kullanılan URL."
-
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "URL used by authentik to retrieve tokens."
-msgstr "Auentik tarafından belirteçleri almak için kullanılan URL."
-
-#: src/admin/sources/oauth/OAuthSourceForm.ts
-msgid "URL used to request the initial token. This URL is only required for OAuth 1."
-msgstr "İlk belirteci istemek için kullanılan URL. Bu URL yalnızca OAuth 1 için gereklidir."
-
-#: src/admin/stages/captcha/CaptchaStageForm.ts
-msgid "URL used to validate captcha response, defaults to recaptcha. Can be replaced with any compatible alternative."
-msgstr ""
-
-#: src/admin/applications/wizard/link/TypeLinkApplicationWizardPage.ts
-msgid "URL which will be opened when a user clicks on the application."
-msgstr ""
-
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Unauthenticated Paths"
 msgstr "Kimliği Doğrulanmamış Yollar"
@@ -6958,8 +7049,8 @@ msgid "Unknown layout"
 msgstr ""
 
 #: src/admin/outposts/OutpostForm.ts
-msgid "Unknown outpost type"
-msgstr ""
+#~ msgid "Unknown outpost type"
+#~ msgstr ""
 
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 msgid "Unknown provider type"
@@ -7023,21 +7114,21 @@ msgstr "Güncel!"
 #: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/policies/PolicyListPage.ts
 #: src/admin/property-mappings/PropertyMappingListPage.ts
-#: src/admin/providers/ProviderListPage.ts
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
+#: src/admin/providers/ProviderListPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/providers/radius/RadiusProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
 #: src/admin/providers/scim/SCIMProviderViewPage.ts
-#: src/admin/sources/SourceListPage.ts
 #: src/admin/sources/ldap/LDAPSourceViewPage.ts
 #: src/admin/sources/oauth/OAuthSourceViewPage.ts
 #: src/admin/sources/plex/PlexSourceViewPage.ts
 #: src/admin/sources/saml/SAMLSourceViewPage.ts
-#: src/admin/stages/StageListPage.ts
+#: src/admin/sources/SourceListPage.ts
 #: src/admin/stages/invitation/InvitationListPage.ts
 #: src/admin/stages/prompt/PromptListPage.ts
+#: src/admin/stages/StageListPage.ts
 #: src/admin/tenants/TenantListPage.ts
 #: src/admin/tokens/TokenListPage.ts
 #: src/admin/users/RelatedUserList.ts
@@ -7049,10 +7140,26 @@ msgstr "Güncel!"
 msgid "Update"
 msgstr "Güncelleme"
 
+#: src/admin/flows/BoundStagesList.ts
+#: src/admin/outposts/ServiceConnectionListPage.ts
+#: src/admin/policies/BoundPoliciesList.ts
+#: src/admin/policies/PolicyListPage.ts
+#: src/admin/property-mappings/PropertyMappingListPage.ts
+#: src/admin/providers/ProviderListPage.ts
+#: src/admin/sources/SourceListPage.ts
+#: src/admin/stages/StageListPage.ts
+#: src/admin/users/UserActiveForm.ts
+msgid "Update {0}"
+msgstr "Güncelleme {0}"
+
 #: src/admin/applications/ApplicationListPage.ts
 #: src/admin/applications/ApplicationViewPage.ts
 msgid "Update Application"
 msgstr "Uygulamayı Güncelle"
+
+#: src/admin/events/utils.ts
+msgid "Update available"
+msgstr "Güncelleme mevcut"
 
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Update Binding"
@@ -7065,6 +7172,10 @@ msgstr ""
 #: src/admin/crypto/CertificateKeyPairListPage.ts
 msgid "Update Certificate-Key Pair"
 msgstr "Sertifika Anahtarı Çiftini Güncelleştir"
+
+#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
+msgid "Update details"
+msgstr "Ayrıntıları güncelle"
 
 #: src/user/user-settings/mfa/MFADevicesPage.ts
 msgid "Update Device"
@@ -7087,7 +7198,6 @@ msgid "Update Invitation"
 msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
-#: src/admin/providers/scim/SCIMProviderViewPage.ts
 msgid "Update LDAP Provider"
 msgstr "LDAP Sağlayıcısını Güncelle"
 
@@ -7115,6 +7225,15 @@ msgstr "OAuth2 Sağlayıcısını Güncelleştirme"
 msgid "Update Outpost"
 msgstr "Üssü Güncelle"
 
+#: src/admin/users/RelatedUserList.ts
+#: src/admin/users/RelatedUserList.ts
+#: src/admin/users/UserListPage.ts
+#: src/admin/users/UserListPage.ts
+#: src/admin/users/UserViewPage.ts
+#: src/admin/users/UserViewPage.ts
+msgid "Update password"
+msgstr "Parolayı güncelle"
+
 #: src/admin/sources/plex/PlexSourceViewPage.ts
 msgid "Update Plex Source"
 msgstr "Plex Kaynağını Güncelle"
@@ -7139,6 +7258,10 @@ msgstr "SAML Sağlayıcısını Güncelle"
 msgid "Update SAML Source"
 msgstr "SAML Kaynağını Güncelle"
 
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
+msgid "Update SCIM Provider"
+msgstr ""
+
 #: src/admin/flows/BoundStagesList.ts
 msgid "Update Stage binding"
 msgstr "Aşama bağlamasını Güncelle"
@@ -7159,50 +7282,64 @@ msgstr "Belirteç Güncelle"
 msgid "Update User"
 msgstr "Kullanıcı Güncelle"
 
-#: src/admin/events/utils.ts
-msgid "Update available"
-msgstr "Güncelleme mevcut"
-
-#: src/user/user-settings/details/UserSettingsFlowExecutor.ts
-msgid "Update details"
-msgstr "Ayrıntıları güncelle"
-
-#: src/admin/users/RelatedUserList.ts
-#: src/admin/users/RelatedUserList.ts
-#: src/admin/users/UserListPage.ts
-#: src/admin/users/UserListPage.ts
-#: src/admin/users/UserViewPage.ts
-#: src/admin/users/UserViewPage.ts
-msgid "Update password"
-msgstr "Parolayı güncelle"
-
-#: src/admin/flows/BoundStagesList.ts
-#: src/admin/outposts/ServiceConnectionListPage.ts
-#: src/admin/policies/BoundPoliciesList.ts
-#: src/admin/policies/PolicyListPage.ts
-#: src/admin/property-mappings/PropertyMappingListPage.ts
-#: src/admin/providers/ProviderListPage.ts
-#: src/admin/sources/SourceListPage.ts
-#: src/admin/stages/StageListPage.ts
-#: src/admin/users/UserActiveForm.ts
-msgid "Update {0}"
-msgstr "Güncelleme {0}"
-
 #: src/admin/policies/reputation/ReputationListPage.ts
 msgid "Updated"
 msgstr "Güncellendi"
+
+#: src/admin/stages/identification/IdentificationStageForm.ts
+#: src/flow/stages/identification/IdentificationStage.ts
+msgid "UPN"
+msgstr "UPN"
 
 #: src/admin/providers/proxy/ProxyProviderForm.ts
 msgid "Upstream host that the requests are forwarded to."
 msgstr "İsteklerin iletildiği yukarı ana bilgisayar."
 
-#: src/admin/stages/email/EmailStageForm.ts
-msgid "Use SSL"
-msgstr "SSL kullan"
+#: src/admin/blueprints/BlueprintForm.ts
+#: src/admin/providers/scim/SCIMProviderForm.ts
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
+msgid "URL"
+msgstr ""
 
-#: src/admin/stages/email/EmailStageForm.ts
-msgid "Use TLS"
-msgstr "TLS Kullan"
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+msgid "URL settings"
+msgstr "URL ayarları"
+
+#: src/admin/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage.ts
+msgid "URL that authentik will redirect back to after successful authentication."
+msgstr ""
+
+#: src/admin/sources/saml/SAMLSourceForm.ts
+msgid "URL that the initial Login request is sent to."
+msgstr "İlk oturum açma isteğinin gönderildiği URL."
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+msgid "URL the user is redirect to to consent the authorization."
+msgstr "Kullanıcının yetkilendirmeyi onaylamak için yönlendirdiği URL."
+
+#: src/admin/stages/captcha/CaptchaStageForm.ts
+msgid "URL to fetch JavaScript from, defaults to recaptcha. Can be replaced with any compatible alternative."
+msgstr ""
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+msgid "URL used by authentik to get user information."
+msgstr "Kullanıcı bilgilerini almak için authentik tarafından kullanılan URL."
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+msgid "URL used by authentik to retrieve tokens."
+msgstr "Auentik tarafından belirteçleri almak için kullanılan URL."
+
+#: src/admin/sources/oauth/OAuthSourceForm.ts
+msgid "URL used to request the initial token. This URL is only required for OAuth 1."
+msgstr "İlk belirteci istemek için kullanılan URL. Bu URL yalnızca OAuth 1 için gereklidir."
+
+#: src/admin/stages/captcha/CaptchaStageForm.ts
+msgid "URL used to validate captcha response, defaults to recaptcha. Can be replaced with any compatible alternative."
+msgstr ""
+
+#: src/admin/applications/wizard/link/TypeLinkApplicationWizardPage.ts
+msgid "URL which will be opened when a user clicks on the application."
+msgstr ""
 
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStage.ts
 msgid "Use a code-based authenticator."
@@ -7219,6 +7356,10 @@ msgstr "Kimliğinizi kanıtlamak için bir güvenlik anahtarı kullanın."
 #: src/admin/stages/email/EmailStageForm.ts
 msgid "Use global settings"
 msgstr "Genel ayarları kullan"
+
+#: src/admin/stages/email/EmailStageForm.ts
+msgid "Use SSL"
+msgstr "SSL kullan"
 
 #: src/admin/sources/oauth/utils.ts
 msgid "Use the user's email address, but deny enrollment when the email address already exists"
@@ -7254,6 +7395,10 @@ msgstr "Bu sağlayıcıyı nginx'in auth_request veya traefik'in forwardAuth ile
 msgid "Use this tenant for each domain that doesn't have a dedicated tenant."
 msgstr "Bu sakini, ayrılmış bir sakine sahip olmayan her etki alanı için kullanın."
 
+#: src/admin/stages/email/EmailStageForm.ts
+msgid "Use TLS"
+msgstr "TLS Kullan"
+
 #: src/admin/tokens/TokenForm.ts
 msgid "Used to access the API programmatically"
 msgstr ""
@@ -7283,28 +7428,18 @@ msgstr ""
 msgid "User"
 msgstr "Kullanıcı"
 
+#: src/admin/policies/BoundPoliciesList.ts
 #: src/admin/users/UserViewPage.ts
-msgid "User Info"
-msgstr "Kullanıcı Bilgileri"
-
-#: src/admin/providers/scim/SCIMProviderForm.ts
-#: src/admin/sources/ldap/LDAPSourceForm.ts
-msgid "User Property Mappings"
-msgstr "Kullanıcı Özellik Eşlemeleri"
-
-#~ msgid "User Reputation"
-#~ msgstr "Kullanıcı İtibar"
-
-#~ msgid "User Settings"
-#~ msgstr "Kullanıcı Ayarları"
-
-#: src/admin/stages/password/PasswordStageForm.ts
-msgid "User database + LDAP password"
-msgstr "Kullanıcı veritabanı+LDAP parolası"
+msgid "User {0}"
+msgstr "Kullanıcı {0}"
 
 #: src/admin/stages/password/PasswordStageForm.ts
 msgid "User database + app passwords"
 msgstr "Kullanıcı veritabanı+uygulama parolaları"
+
+#: src/admin/stages/password/PasswordStageForm.ts
+msgid "User database + LDAP password"
+msgstr "Kullanıcı veritabanı+LDAP parolası"
 
 #: src/admin/stages/password/PasswordStageForm.ts
 msgid "User database + standard password"
@@ -7329,6 +7464,10 @@ msgstr ""
 #: src/admin/users/UserListPage.ts
 msgid "User folders"
 msgstr ""
+
+#: src/admin/users/UserViewPage.ts
+msgid "User Info"
+msgstr "Kullanıcı Bilgileri"
 
 #: src/admin/AdminInterface.ts
 msgid "User interface"
@@ -7366,6 +7505,17 @@ msgstr ""
 msgid "User path template"
 msgstr ""
 
+#: src/admin/providers/scim/SCIMProviderForm.ts
+#: src/admin/sources/ldap/LDAPSourceForm.ts
+msgid "User Property Mappings"
+msgstr "Kullanıcı Özellik Eşlemeleri"
+
+#~ msgid "User Reputation"
+#~ msgstr "Kullanıcı İtibar"
+
+#~ msgid "User Settings"
+#~ msgstr "Kullanıcı Ayarları"
+
 #: src/admin/tenants/TenantForm.ts
 msgid "User settings flow"
 msgstr ""
@@ -7401,11 +7551,6 @@ msgstr "Kullanıcı doğrulaması gerçekleşmemelidir."
 #: src/admin/events/utils.ts
 msgid "User was written to"
 msgstr "Kullanıcı yazıldı"
-
-#: src/admin/policies/BoundPoliciesList.ts
-#: src/admin/users/UserViewPage.ts
-msgid "User {0}"
-msgstr "Kullanıcı {0}"
 
 #: src/flow/FormStatic.ts
 msgid "User's avatar"
@@ -7542,13 +7687,13 @@ msgstr "Sürüm"
 #~ msgid "Version: {versionString}"
 #~ msgstr "Sürüm: {versionString}"
 
-#: src/admin/outposts/OutpostListPage.ts
-msgid "View Deployment Info"
-msgstr "Dağıtım Bilgilerini Görüntüle"
-
 #: src/admin/outposts/OutpostDeploymentModal.ts
 msgid "View deployment documentation"
 msgstr "Dağıtım belgelerini görüntüleme"
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "View Deployment Info"
+msgstr "Dağıtım Bilgilerini Görüntüle"
 
 #: src/admin/flows/FlowForm.ts
 msgid "Visible in the URL."
@@ -7576,9 +7721,17 @@ msgstr ""
 msgid "Warning"
 msgstr "Uyarı"
 
+#: src/admin/users/GroupSelectModal.ts
+msgid "Warning: Adding the user to the selected group(s) will give them superuser permissions."
+msgstr ""
+
 #: src/admin/applications/ApplicationViewPage.ts
 msgid "Warning: Application is not used by any Outpost."
 msgstr "Uyarı: Uygulama herhangi bir Üs tarafından kullanılmıyor."
+
+#: src/admin/outposts/OutpostListPage.ts
+msgid "Warning: authentik Domain is not configured, authentication will not work."
+msgstr "Uyarı: authentik Domain yapılandırılmamış, kimlik doğrulama çalışmaz."
 
 #: src/admin/stages/invitation/InvitationListPage.ts
 msgid "Warning: No invitation stage is bound to any flow. Invitations will not work as expected."
@@ -7603,21 +7756,21 @@ msgstr "Uyarı: Sağlayıcı herhangi bir Üs tarafından kullanılmaz."
 msgid "Warning: Provider not assigned to any application."
 msgstr "Uyarı: Sağlayıcı herhangi bir uygulamaya atanmamış."
 
+#: src/admin/users/RelatedUserList.ts
+msgid "Warning: This group is configured with superuser access. Added users will have superuser access."
+msgstr ""
+
 #: src/admin/users/UserListPage.ts
 msgid "Warning: You're about to delete the user you're logged in as ({0}). Proceed at your own risk."
 msgstr "Uyarı: Oturum açtığınız kullanıcıyı ({0}) silmek üzeresiniz. Kendi sorumluluğunuzdadır."
 
-#: src/admin/outposts/OutpostListPage.ts
-msgid "Warning: authentik Domain is not configured, authentication will not work."
-msgstr "Uyarı: authentik Domain yapılandırılmamış, kimlik doğrulama çalışmaz."
+#: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
+msgid "Web application"
+msgstr ""
 
 #: src/admin/tenants/TenantForm.ts
 msgid "Web Certificate"
 msgstr "Web Sertifikası"
-
-#: src/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage.ts
-msgid "Web application"
-msgstr ""
 
 #: src/admin/stages/authenticator_validate/AuthenticatorValidateStageForm.ts
 msgid "WebAuthn Authenticators"
@@ -7631,12 +7784,12 @@ msgid "WebAuthn User verification"
 msgstr ""
 
 #: src/admin/events/TransportForm.ts
-msgid "Webhook (Slack/Discord)"
-msgstr "Webhook (Kayak/Uyuşmazlık)"
-
-#: src/admin/events/TransportForm.ts
 msgid "Webhook (generic)"
 msgstr "Webhook (genel)"
+
+#: src/admin/events/TransportForm.ts
+msgid "Webhook (Slack/Discord)"
+msgstr "Webhook (Kayak/Uyuşmazlık)"
 
 #: src/admin/events/TransportForm.ts
 msgid "Webhook Mapping"
@@ -7660,9 +7813,21 @@ msgstr "Geçerli bir kullanıcı adı/e-posta girildiğinde ve bu seçenek etkin
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid ""
-"When checked, the placeholder will be evaluated in the same way environment as a property mapping.\n"
-"If the evaluation failed, the placeholder itself is returned."
+"When checked, the initial value will be evaluated in the same way a property mapping is.\n"
+"If the evaluation fails, the initial value itself is returned."
 msgstr ""
+
+#: src/admin/stages/prompt/PromptForm.ts
+msgid ""
+"When checked, the placeholder will be evaluated in the same way a property mapping is.\n"
+"If the evaluation fails, the placeholder itself is returned."
+msgstr ""
+
+#: src/admin/stages/prompt/PromptForm.ts
+#~ msgid ""
+#~ "When checked, the placeholder will be evaluated in the same way environment as a property mapping.\n"
+#~ "If the evaluation failed, the placeholder itself is returned."
+#~ msgstr ""
 
 #: src/admin/sources/ldap/LDAPSourceForm.ts
 msgid "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate."
@@ -7768,6 +7933,14 @@ msgstr ""
 msgid "Windows"
 msgstr "Windows"
 
+#: src/admin/flows/FlowViewPage.ts
+msgid "with current user"
+msgstr ""
+
+#: src/admin/flows/FlowViewPage.ts
+msgid "with inspector"
+msgstr "müfettiş ile"
+
 #: src/admin/admin-overview/cards/WorkerStatusCard.ts
 msgid "Workers"
 msgstr "İşçiler"
@@ -7834,120 +8007,6 @@ msgstr "Şu anda {0} kimliğine bürünüyorsunuz. Durdurmak için tıklayın."
 msgid "You've successfully authenticated your device."
 msgstr ""
 
-#: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "app1 running on app1.example.com"
-msgstr "app1 üzerinde çalışan app1.example.com"
-
-#~ msgid "authentik Builtin Database"
-#~ msgstr "authentik Yerleşik Veritabanı"
-
-#~ msgid "authentik LDAP Backend"
-#~ msgstr "authentik LDAP Arka Ucu"
-
-#: src/admin/providers/proxy/ProxyProviderForm.ts
-msgid "authentik running on auth.example.com"
-msgstr "auth.example.com üzerinde çalışan authentik"
-
-#: src/admin/stages/prompt/PromptForm.ts
-msgid "authentik: Locale: Displays a list of locales authentik supports."
-msgstr ""
-
-#: src/elements/forms/DeleteForm.ts
-msgid "connecting object will be deleted"
-msgstr "bağlantılı nesne silinecek"
-
-#: src/elements/forms/DeleteBulkForm.ts
-msgid "connection will be deleted"
-msgstr "bağlantı silinecek"
-
-#: src/elements/Tabs.ts
-msgid "no tabs defined"
-msgstr "tanımlanmış sekme yok"
-
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
-msgid "object will be DELETED"
-msgstr "nesne SILİNECEK"
-
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
-msgid "reference will be reset to default value"
-msgstr "referans varsayılan değere sıfırlanır"
-
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
-msgid "reference will be set to an empty value"
-msgstr "referans boş bir değere ayarlanacaktır"
-
-#: src/admin/flows/FlowViewPage.ts
-msgid "with current user"
-msgstr ""
-
-#: src/admin/flows/FlowViewPage.ts
-msgid "with inspector"
-msgstr "müfettiş ile"
-
 #: src/admin/policies/password/PasswordPolicyForm.ts
 msgid "zxcvbn settings"
 msgstr ""
-
-#: src/elements/Expand.ts
-#: src/elements/Expand.ts
-#: src/user/user-settings/details/stages/prompt/PromptStage.ts
-msgid "{0}"
-msgstr "{0}"
-
-#: src/admin/stages/prompt/PromptStageForm.ts
-msgid "{0} (\"{1}\", of type {2})"
-msgstr "{0} (“{1}”, {2} türünde)"
-
-#: src/admin/stages/prompt/PromptStageForm.ts
-msgid "{0} ({1})"
-msgstr "{0} ({1})"
-
-#: src/elements/forms/DeleteBulkForm.ts
-#: src/elements/forms/DeleteForm.ts
-msgid "{0} ({consequence})"
-msgstr "{0} ({consequence})"
-
-#: src/elements/table/TablePagination.ts
-msgid "{0} - {1} of {2}"
-msgstr "{2} içinden {0} - {1}"
-
-#: src/admin/admin-overview/cards/VersionStatusCard.ts
-msgid "{0} is available!"
-msgstr "{0} kullanılabilir!"
-
-#: src/admin/system-tasks/SystemTaskListPage.ts
-msgid "{0} seconds"
-msgstr ""
-
-#: src/elements/notifications/NotificationDrawer.ts
-msgid "{0} unread"
-msgstr "{0} okunmamış"
-
-#: src/admin/outposts/OutpostHealth.ts
-msgid "{0}, should be {1}"
-msgstr "{0}, {1} olmalıdır"
-
-#: src/elements/forms/ConfirmationForm.ts
-msgid "{0}: {1}"
-msgstr "{0}: {1}"
-
-#: src/admin/admin-overview/charts/AdminLoginAuthorizeChart.ts
-msgid "{ago} day(s) ago"
-msgstr ""
-
-#: src/admin/admin-overview/charts/AdminModelPerDay.ts
-#: src/admin/applications/ApplicationAuthorizeChart.ts
-#: src/admin/users/UserChart.ts
-msgid "{ago} days ago"
-msgstr "{ago} gün önce"
-
-#: src/elements/charts/Chart.ts
-msgid "{ago} hour(s) ago"
-msgstr ""
-
-#: src/elements/charts/Chart.ts
-#~ msgid "{ago} hours ago"
-#~ msgstr "{ago} saat önce"
