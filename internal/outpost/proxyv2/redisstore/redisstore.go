@@ -126,7 +126,7 @@ func (st *RedisStore) Save(r *http.Request, w http.ResponseWriter, session *sess
 	} else {
 		// Build an alphanumeric key for the redis store.
 		if session.ID == "" {
-			var keyGenFunc = st.keyGenFunc
+			keyGenFunc := st.keyGenFunc
 			if keyGenFunc == nil {
 				keyGenFunc = GenerateRandomKey
 			}
@@ -153,7 +153,7 @@ func (st *RedisStore) Save(r *http.Request, w http.ResponseWriter, session *sess
 	return nil
 }
 
-func (st *RedisStore) Delete(r *http.Request, w http.ResponseWriter, session *sessions.Session) error { 
+func (st *RedisStore) Delete(r *http.Request, w http.ResponseWriter, session *sessions.Session) error {
 	if err := st.client.Del(context.Background(), st.keyPrefix+session.ID).Err(); err != nil {
 		return err
 	}

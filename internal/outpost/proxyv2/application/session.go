@@ -141,7 +141,7 @@ func (a *Application) Logout(sub string) error {
 			claims := c.(Claims)
 			if claims.Sub == sub {
 				a.log.WithField("key", key).Trace("deleting session")
-				err = rs.DeleteByKey(key)
+				err := rs.DeleteByKey(key)
 				if err != nil {
 					a.log.WithError(err).Warning("failed to delete key")
 					continue

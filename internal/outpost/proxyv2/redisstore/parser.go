@@ -193,7 +193,6 @@ func valToTimeDuration(vs []string) (result time.Duration) {
 		err error
 		val int
 	)
-
 	for _, v := range vs {
 		result, err = time.ParseDuration(v)
 		if err != nil {
