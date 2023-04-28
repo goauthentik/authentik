@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/url"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 
@@ -15,10 +16,47 @@ import (
 
 var cfg *Config
 
+func getConfigPaths() []string {
+	configPaths := []string{"./authentik/lib/default.yml", "/etc/authentik/config.yml", ""}
+	globConfigPaths, _ := filepath.Glob("/etc/authentik/config.d/*.yml")
+	configPaths = append(configPaths, globConfigPaths...)
+
+	environment := "local"
+	if v, ok := os.LookupEnv("AUTHENTIK_ENV"); ok {
+		environment = v
+	}
+
+	computedConfigPaths := []string{}
+
+	for _, path := range configPaths {
+		path, err := filepath.Abs(path)
+		if err != nil {
+			continue
+		}
+		if stat, err := os.Stat(path); err == nil {
+			if !stat.IsDir() {
+				computedConfigPaths = append(computedConfigPaths, path)
+			} else {
+				envPaths := []string{
+					filepath.Join(path, environment+".yml"),
+					filepath.Join(path, environment+".env.yml"),
+				}
+				for _, envPath := range envPaths {
+					if stat, err = os.Stat(envPath); err == nil && !stat.IsDir() {
+						computedConfigPaths = append(computedConfigPaths, envPath)
+					}
+				}
+			}
+		}
+	}
+
+	return computedConfigPaths
+}
+
 func Get() *Config {
 	if cfg == nil {
 		c := defaultConfig()
-		c.Setup("./authentik/lib/default.yml", "/etc/authentik/config.yml", "./local.env.yml")
+		c.Setup(getConfigPaths()...)
 		cfg = c
 	}
 	return cfg
