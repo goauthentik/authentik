@@ -4,11 +4,15 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/getsentry/sentry-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+
 	"goauthentik.io/internal/common"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
@@ -70,6 +74,21 @@ var rootCmd = &cobra.Command{
 			l.Info("shutting down gunicorn")
 			g.Kill()
 		}()
+
+		c := make(chan os.Signal, 1)
+		signal.Notify(c, syscall.SIGHUP, syscall.SIGUSR2)
+		go func() {
+			sig := <-c
+			if sig == syscall.SIGHUP {
+				log.Info("SIGHUP received, forwarding to gunicorn")
+				g.Reload()
+			}
+			if sig == syscall.SIGUSR2 {
+				log.Info("SIGUSR2 received, restarting gunicorn")
+				g.Restart()
+			}
+		}()
+
 		ws := web.NewWebServer(g)
 		g.HealthyCallback = func() {
 			if !config.Get().Outposts.DisableEmbeddedOutpost {
@@ -92,8 +111,24 @@ func attemptStartBackend(g *gounicorn.GoUnicorn) {
 		if !running {
 			return
 		}
+		g.Kill()
+		log.WithField("logger", "authentik.router").Info("starting gunicorn")
 		err := g.Start()
-		log.WithField("logger", "authentik.router").WithError(err).Warning("gunicorn process died, restarting")
+		if err != nil {
+			log.WithField("logger", "authentik.router").WithError(err).Error("gunicorn failed to start, restarting")
+			continue
+		}
+		failedChecks := 0
+		for range time.Tick(30 * time.Second) {
+			if !g.IsRunning() {
+				log.WithField("logger", "authentik.router").Warningf("gunicorn process failed healthcheck %d times", failedChecks)
+				failedChecks += 1
+			}
+			if failedChecks >= 3 {
+				log.WithField("logger", "authentik.router").WithError(err).Error("gunicorn process failed healthcheck three times, restarting")
+				break
+			}
+		}
 	}
 }
 
