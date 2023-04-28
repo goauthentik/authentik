@@ -37,20 +37,22 @@ class TestCrypto(APITestCase):
         keypair = create_test_cert()
         self.assertTrue(
             CertificateKeyPairSerializer(
+                instance=keypair,
                 data={
                     "name": keypair.name,
                     "certificate_data": keypair.certificate_data,
                     "key_data": keypair.key_data,
-                }
+                },
             ).is_valid()
         )
         self.assertFalse(
             CertificateKeyPairSerializer(
+                instance=keypair,
                 data={
                     "name": keypair.name,
                     "certificate_data": "test",
                     "key_data": "test",
-                }
+                },
             ).is_valid()
         )
 

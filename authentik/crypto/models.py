@@ -26,7 +26,7 @@ class CertificateKeyPair(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
     kp_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.TextField()
+    name = models.TextField(unique=True)
     certificate_data = models.TextField(help_text=_("PEM-encoded Certificate data"))
     key_data = models.TextField(
         help_text=_(

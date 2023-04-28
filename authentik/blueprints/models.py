@@ -57,7 +57,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
     instance_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
-    name = models.TextField()
+    name = models.TextField(unique=True)
     metadata = models.JSONField(default=dict)
     path = models.TextField(default="", blank=True)
     content = models.TextField(default="", blank=True)
