@@ -45,7 +45,7 @@ from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesCont
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
-CACHE_KEY_OUTPOST_DOWN = "outpost_teardown_%s"
+CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
 
 
 def controller_for_outpost(outpost: Outpost) -> Optional[type[BaseController]]:
@@ -148,6 +148,8 @@ def outpost_controller(
     except (ControllerException, ServiceConnectionInvalid) as exc:
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))
     else:
+        if from_cache:
+            cache.delete(CACHE_KEY_OUTPOST_DOWN % outpost_pk)
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, logs))
 
 
