@@ -97,6 +97,17 @@ var rootCmd = &cobra.Command{
 		}
 		go web.RunMetricsServer()
 		go attemptStartBackend(g)
+
+		w, err := config.WatchChanges(func() {
+			g.Restart()
+		})
+		if err != nil {
+			l.WithError(err).Warning("failed to start watching for configuration changes, no automatic update will be done")
+		}
+		if w != nil {
+			defer w.Close()
+		}
+
 		ws.Start()
 		<-ex
 		running = false
