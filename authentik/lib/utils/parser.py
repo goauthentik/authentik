@@ -1,11 +1,11 @@
-from asyncio import PriorityQueue, LifoQueue
+from asyncio import LifoQueue, PriorityQueue
 from copy import deepcopy
 from os import sched_getaffinity
 from socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from socket import timeout as SocketTimeout
 from sys import platform
-from typing import Tuple, Dict, Any
-from urllib.parse import parse_qs, unquote, urlparse, ParseResultBytes
+from typing import Any, Dict, Tuple
+from urllib.parse import ParseResultBytes, parse_qs, unquote, urlparse
 
 from redis.asyncio.client import StrictRedis as AsyncStrictRedis
 from redis.asyncio.cluster import ClusterNode as AsyncClusterNode
@@ -19,13 +19,23 @@ from redis.asyncio.sentinel import Sentinel as AsyncSentinel
 from redis.asyncio.sentinel import SentinelConnectionPool as AsyncSentinelConnectionPool
 from redis.asyncio.sentinel import SentinelManagedConnection as AsyncSentinelManagedConnection
 from redis.asyncio.sentinel import SentinelManagedSSLConnection as AsyncSentinelManagedSSLConnection
-from redis.backoff import NoBackoff, ExponentialBackoff, ConstantBackoff, DEFAULT_CAP, DEFAULT_BASE
+from redis.backoff import DEFAULT_BASE, DEFAULT_CAP, ConstantBackoff, ExponentialBackoff, NoBackoff
 from redis.client import StrictRedis
 from redis.cluster import ClusterNode, RedisCluster
-from redis.connection import Connection, SSLConnection, UnixDomainSocketConnection, BlockingConnectionPool
+from redis.connection import (
+    BlockingConnectionPool,
+    Connection,
+    SSLConnection,
+    UnixDomainSocketConnection,
+)
 from redis.exceptions import ConnectionError, TimeoutError
 from redis.retry import Retry
-from redis.sentinel import Sentinel, SentinelConnectionPool, SentinelManagedConnection, SentinelManagedSSLConnection
+from redis.sentinel import (
+    Sentinel,
+    SentinelConnectionPool,
+    SentinelManagedConnection,
+    SentinelManagedSSLConnection,
+)
 
 FALSE_STRINGS = ("0", "F", "FALSE", "N", "NO")
 
@@ -79,7 +89,7 @@ def val_to_sec(vs: list[bytes]):
 
 
 def parse_hostport(s, default_port=6379):
-    if s[-1] == ']':
+    if s[-1] == "]":
         # ipv6 literal (with no port)
         return (s, default_port)
 
@@ -106,20 +116,28 @@ def configure_tcp_keepalive(kwargs):
     kwargs.setdefault("socket_keepalive", True)
     if platform == "darwin":
         from socket import TCP_KEEPALIVE
+
         activate_keepalive_sec = TCP_KEEPALIVE
     else:
         from socket import TCP_KEEPIDLE
+
         activate_keepalive_sec = TCP_KEEPIDLE
-    kwargs.setdefault("socket_keepalive_options", {
-        activate_keepalive_sec: 5 * 60,
-        TCP_KEEPINTVL: kwargs.pop("idle_check_frequency", 60),
-        TCP_KEEPCNT: kwargs.pop("idle_timeout", 5 * 60) // kwargs.pop("idle_check_frequency", 60)
-    })
+    kwargs.setdefault(
+        "socket_keepalive_options",
+        {
+            activate_keepalive_sec: 5 * 60,
+            TCP_KEEPINTVL: kwargs.pop("idle_check_frequency", 60),
+            TCP_KEEPCNT: kwargs.pop("idle_timeout", 5 * 60)
+            // kwargs.pop("idle_check_frequency", 60),
+        },
+    )
 
     return kwargs
 
 
-def get_redis_options(url: ParseResultBytes, disable_socket_timeout=False) -> Tuple[Dict, Dict, Dict]:
+def get_redis_options(
+    url: ParseResultBytes, disable_socket_timeout=False
+) -> Tuple[Dict, Dict, Dict]:
     pool_kwargs = {}
     redis_kwargs = {}
     tls_kwargs = {}
@@ -180,7 +198,10 @@ def get_redis_options(url: ParseResultBytes, disable_socket_timeout=False) -> Tu
                     socket_timeout = val_to_sec(value)
                     if socket_timeout <= 0:
                         socket_timeout = None
-                    if "socket_timeout" not in redis_kwargs or redis_kwargs.get("socket_timeout") < socket_timeout:
+                    if (
+                        "socket_timeout" not in redis_kwargs
+                        or redis_kwargs.get("socket_timeout") < socket_timeout
+                    ):
                         redis_kwargs["socket_timeout"] = socket_timeout
                 case "poolfifo":
                     if to_bool(value[0]):
@@ -217,13 +238,15 @@ def get_redis_options(url: ParseResultBytes, disable_socket_timeout=False) -> Tu
                 # Later on use .readonly() on the resulting redis object!
                 case "minidleconns" | "maxredirects" | "routebylatency" | "routerandomly":
                     print(
-                        "The configuration option \"" + name.lower() +
-                        "\" is currently not supported by the Python redis implementation and therefore ignored."
+                        'The configuration option "'
+                        + name.lower()
+                        + '" is currently not supported by the Python redis implementation and therefore ignored.'
                     )
                 case _:
                     raise ValueError(
-                        "Detected unknown configuration option \"" + name.lower() +
-                        "\"! Please check your configuration."
+                        'Detected unknown configuration option "'
+                        + name.lower()
+                        + '"! Please check your configuration.'
                     )
 
     redis_kwargs["retry"] = retries_and_backoff
@@ -272,7 +295,7 @@ def get_redis_options(url: ParseResultBytes, disable_socket_timeout=False) -> Tu
 
     pool_kwargs = {
         "max_connections": pool_kwargs.get("max_connections", max_connections),
-        "timeout": pool_kwargs.get("timeout", (redis_kwargs.get("socket_timeout") or 3) + 1)
+        "timeout": pool_kwargs.get("timeout", (redis_kwargs.get("socket_timeout") or 3) + 1),
     }
 
     tls_kwargs.update(
@@ -301,8 +324,12 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
     addrs = redis_kwargs.pop("addrs")
     cluster_error_retry_attempts = redis_kwargs.pop("cluster_error_retry_attempts")
     service_name = redis_kwargs.pop("service_name") if "service_name" in redis_kwargs else None
-    sentinel_username = redis_kwargs.pop("sentinel_username") if "sentinel_username" in redis_kwargs else None
-    sentinel_password = redis_kwargs.pop("sentinel_password") if "sentinel_password" in redis_kwargs else None
+    sentinel_username = (
+        redis_kwargs.pop("sentinel_username") if "sentinel_username" in redis_kwargs else None
+    )
+    sentinel_password = (
+        redis_kwargs.pop("sentinel_password") if "sentinel_password" in redis_kwargs else None
+    )
     scheme_parts = url.scheme.split("+")
 
     if scheme_parts[0] == "rediss":
@@ -377,10 +404,14 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
     redis_class = AsyncStrictRedis if use_async else StrictRedis
     redis_cluster_class = AsyncRedisCluster if use_async else RedisCluster
     sentinel_class = AsyncSentinel if use_async else Sentinel
-    sentinel_connection_pool_class = AsyncSentinelConnectionPool if use_async else SentinelConnectionPool
+    sentinel_connection_pool_class = (
+        AsyncSentinelConnectionPool if use_async else SentinelConnectionPool
+    )
     cluster_node_class = AsyncClusterNode if use_async else ClusterNode
     retry_class = AsyncRetry if use_async else Retry
-    unix_domain_socket_connection_class = AsyncUnixDomainSocketConnection if use_async else UnixDomainSocketConnection
+    unix_domain_socket_connection_class = (
+        AsyncUnixDomainSocketConnection if use_async else UnixDomainSocketConnection
+    )
 
     if config.get("tls", False):
         if use_async:
@@ -405,35 +436,35 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
         if "min_backoff" in retries_and_backoff and "max_backoff" in retries_and_backoff:
             config["redis_kwargs"]["retry"] = retry_class(
                 ExponentialBackoff(
-                    retries_and_backoff["max_backoff"],
-                    retries_and_backoff["min_backoff"]
+                    retries_and_backoff["max_backoff"], retries_and_backoff["min_backoff"]
                 ),
-                retries_and_backoff["retry"]
+                retries_and_backoff["retry"],
             )
         elif "min_backoff" in retries_and_backoff:
             config["redis_kwargs"]["retry"] = retry_class(
-                ConstantBackoff(retries_and_backoff["min_backoff"]),
-                retries_and_backoff["retry"]
+                ConstantBackoff(retries_and_backoff["min_backoff"]), retries_and_backoff["retry"]
             )
         elif "max_backoff" in retries_and_backoff:
             config["redis_kwargs"]["retry"] = retry_class(
-                ConstantBackoff(retries_and_backoff["max_backoff"]),
-                retries_and_backoff["retry"]
+                ConstantBackoff(retries_and_backoff["max_backoff"]), retries_and_backoff["retry"]
             )
         else:
-            config["redis_kwargs"]["retry"] = retry_class(
-                NoBackoff(),
-                retries_and_backoff["retry"]
-            )
+            config["redis_kwargs"]["retry"] = retry_class(NoBackoff(), retries_and_backoff["retry"])
 
-    config["redis_kwargs"].setdefault("retry", retry_class(ExponentialBackoff(DEFAULT_CAP, DEFAULT_BASE), 3))
-    config["redis_kwargs"].setdefault("retry_on_error", [ConnectionError, TimeoutError, SocketTimeout])
+    config["redis_kwargs"].setdefault(
+        "retry", retry_class(ExponentialBackoff(DEFAULT_CAP, DEFAULT_BASE), 3)
+    )
+    config["redis_kwargs"].setdefault(
+        "retry_on_error", [ConnectionError, TimeoutError, SocketTimeout]
+    )
 
     match config["type"]:
         case "sentinel":
             redis_connection_class = config["redis_kwargs"].pop("connection_class")
             if callable(update_connection_class):
-                sentinel_managed_connection_class = update_connection_class(sentinel_managed_connection_class)
+                sentinel_managed_connection_class = update_connection_class(
+                    sentinel_managed_connection_class
+                )
             config["redis_kwargs"]["connection_class"] = sentinel_managed_connection_class
             sentinel = sentinel_class(sentinels=[], **config["redis_kwargs"])
             for sentinel_config in config["sentinels"]:
@@ -445,17 +476,19 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
                     sentinel_client.readonly()
                 sentinel.sentinels.append(sentinel_client)
             pool_kwargs = sentinel.connection_kwargs
-            pool_kwargs |= {
-                "is_master": not config.get("is_slave", False)
-            }
-            connection_pool = sentinel_connection_pool_class(config["service_name"], sentinel, **pool_kwargs)
+            pool_kwargs |= {"is_master": not config.get("is_slave", False)}
+            connection_pool = sentinel_connection_pool_class(
+                config["service_name"], sentinel, **pool_kwargs
+            )
             client_config["client_class"] = redis_class
         case "cluster":
-            connection_pool = connection_pool_class(**config["pool_kwargs"], **config["redis_kwargs"])
+            connection_pool = connection_pool_class(
+                **config["pool_kwargs"], **config["redis_kwargs"]
+            )
             client_config["client_kwargs"] = {
                 "startup_nodes": [cluster_node_class(*node) for node in config["addrs"]],
                 "cluster_error_retry_attempts": config["cluster_error_retry_attempts"],
-                "skip_full_coverage_check": True
+                "skip_full_coverage_check": True,
             }
             client_config["client_class"] = redis_cluster_class
         case "socket":
@@ -465,10 +498,14 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
                 )
             else:
                 config["redis_kwargs"]["connection_class"] = unix_domain_socket_connection_class
-            connection_pool = connection_pool_class(**config["pool_kwargs"], **config["redis_kwargs"])
+            connection_pool = connection_pool_class(
+                **config["pool_kwargs"], **config["redis_kwargs"]
+            )
             client_config["client_class"] = redis_class
         case "default":
-            connection_pool = connection_pool_class(**config["pool_kwargs"], **config["redis_kwargs"])
+            connection_pool = connection_pool_class(
+                **config["pool_kwargs"], **config["redis_kwargs"]
+            )
             client_config["client_class"] = redis_class
 
     if config["redis_kwargs"].get("readonly", False):

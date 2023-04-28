@@ -4,21 +4,27 @@ from urllib.parse import urlparse
 
 from kombu import Connection
 from kombu.transport import virtual
-from kombu.transport.redis import Transport, MultiChannelPoller
-from kombu.transport.redis import Channel, MutexHeld, QoS as RedisQoS
+from kombu.transport.redis import Channel, MultiChannelPoller, MutexHeld
+from kombu.transport.redis import QoS as RedisQoS
+from kombu.transport.redis import Transport
 from kombu.utils import uuid
 from kombu.utils.collections import HashedSeq
 from kombu.utils.compat import _detect_environment
-from kombu.utils.eventio import READ, ERR
+from kombu.utils.eventio import ERR, READ
 
-from authentik.lib.utils.parser import get_client, get_redis_options, process_config, get_connection_pool
+from authentik.lib.utils.parser import (
+    get_client,
+    get_connection_pool,
+    get_redis_options,
+    process_config,
+)
 
 
 # Use custom Mutex in order to support Redis Cluster: https://github.com/celery/kombu/pull/1021
 # Copied from `kombu.transport.redis` and disable pipeline transcation
 @contextmanager
 def Mutex(client, name, expire):
-    lock_id = uuid().encode('utf-8')
+    lock_id = uuid().encode("utf-8")
     acquired = client.set(name, lock_id, ex=expire, nx=True)
 
     try:
@@ -45,7 +51,7 @@ class CustomQoS(RedisQoS):
                     self.unacked_mutex_expire,
                 ):
                     env = _detect_environment()
-                    if env == 'gevent':
+                    if env == "gevent":
                         ceil = time()
 
                     visible = client.zrevrangebyscore(
@@ -54,7 +60,7 @@ class CustomQoS(RedisQoS):
                         0,
                         start=num and start,
                         num=num,
-                        withscores=True
+                        withscores=True,
                     )
 
                     for tag, score in visible or []:
@@ -64,7 +70,6 @@ class CustomQoS(RedisQoS):
 
 
 class ClusterPoller(MultiChannelPoller):
-
     def _register(self, channel, client, conn, cmd):
         ident = (channel, client, conn, cmd)
 
@@ -87,7 +92,7 @@ class ClusterPoller(MultiChannelPoller):
         conns = self._get_conns_for_channel(channel)
 
         for conn in conns:
-            ident = (channel, channel.client, conn, 'BRPOP')
+            ident = (channel, channel.client, conn, "BRPOP")
 
             if conn._sock is None or ident not in self._chan_to_sock:
                 channel._in_poll = False
@@ -101,7 +106,7 @@ class ClusterPoller(MultiChannelPoller):
             return [conn for _, _, conn, _ in self._chan_to_sock]
 
         return [
-            channel.client.connection_pool.get_connection_by_key(key, 'NOOP')
+            channel.client.connection_pool.get_connection_by_key(key, "NOOP")
             for key in channel.active_queues
         ]
 
@@ -119,7 +124,7 @@ class ClusterPoller(MultiChannelPoller):
             return
 
         if chan.qos.can_consume():
-            return chan.handlers[cmd](**{'conn': conn})
+            return chan.handlers[cmd](**{"conn": conn})
 
 
 class CustomChannel(Channel):
@@ -137,6 +142,7 @@ class CustomChannel(Channel):
             def disconnect(self):
                 super().disconnect()
                 self._on_connection_disconnect(self)
+
         return AsyncConnection
 
     def _create_client(self, asynchronous=False):
@@ -150,7 +156,7 @@ class CustomChannel(Channel):
         pool, client_config = get_connection_pool(
             self.config,
             use_async=False,
-            update_connection_class=self.inject_custom_connection_class if asynchronous else None
+            update_connection_class=self.inject_custom_connection_class if asynchronous else None,
         )
         self.client_config = client_config
         return pool
@@ -164,7 +170,7 @@ class CustomTransport(Transport):
 
         if self.client.config["type"] == "cluster":
             self.implements = virtual.Transport.implements.extend(
-                asynchronous=True, exchange_type=frozenset(['direct'])
+                asynchronous=True, exchange_type=frozenset(["direct"])
             )
             self.cycle = ClusterPoller()
 
@@ -212,7 +218,7 @@ class CustomConnection(Connection):
     @property
     def host(self):
         """The host as a host name/port pair separated by colon."""
-        return ':'.join(self.config["addrs"][0])
+        return ":".join(self.config["addrs"][0])
 
     def create_transport(self):
         return CustomTransport(client=self)

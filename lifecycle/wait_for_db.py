@@ -40,7 +40,7 @@ while True:
         CONFIG.log("info", f"PostgreSQL connection failed, retrying... ({exc})")
 CONFIG.log("info", "PostgreSQL connection successful")
 
-REDIS_URL = CONFIG.y('redis.url')
+REDIS_URL = CONFIG.y("redis.url")
 while True:
     try:
         redis = parse_url(REDIS_URL)

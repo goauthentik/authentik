@@ -1,13 +1,18 @@
 from copy import deepcopy
-from json import dumps as json_dumps
 from hashlib import sha256
+from json import dumps as json_dumps
 from typing import Dict
 from urllib.parse import urlparse
 
 from django_redis.client.default import DefaultClient
 from redis.cluster import RedisCluster
 
-from authentik.lib.utils.parser import get_client, get_redis_options, process_config, get_connection_pool
+from authentik.lib.utils.parser import (
+    get_client,
+    get_connection_pool,
+    get_redis_options,
+    process_config,
+)
 
 
 class CustomClient(DefaultClient):
@@ -51,7 +56,7 @@ class CustomConnectionFactory:
         Given a basic connection parameters,
         return a new connection.
         """
-        checksum = sha256(json_dumps(config, sort_keys=True).encode('utf-8')).hexdigest()
+        checksum = sha256(json_dumps(config, sort_keys=True).encode("utf-8")).hexdigest()
         pool, client_config = self._pool_cache.setdefault(checksum, get_connection_pool(config))
         return get_client(client_config, pool)
 

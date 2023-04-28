@@ -25,7 +25,7 @@ DEPRECATIONS = {
     "redis.cache_timeout": "cache.timeout",
     "redis.cache_timeout_flows": "cache.timeout_flows",
     "redis.cache_timeout_policies": "cache.timeout_policies",
-    "redis.cache_timeout_reputation": "cache.timeout_reputation"
+    "redis.cache_timeout_reputation": "cache.timeout_reputation",
 }
 
 
@@ -81,8 +81,11 @@ class ConfigLoader:
         """Warn if any deprecated configuration options are used"""
         for deprecation, replacement in DEPRECATIONS.items():
             if self.y(deprecation, default=UNSET) is not UNSET:
-                self.log("warning", f"'{deprecation}' has been deprecated in favor of '{replacement}'! "
-                                    "Please update your configuration.")
+                self.log(
+                    "warning",
+                    f"'{deprecation}' has been deprecated in favor of '{replacement}'! "
+                    "Please update your configuration.",
+                )
 
                 def pop_deprecated_key(current_obj, dot_parts, index):
                     dot_part = dot_parts[index]

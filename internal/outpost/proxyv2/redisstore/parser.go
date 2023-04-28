@@ -16,7 +16,7 @@ import (
 	"github.com/go-redis/redis/v9"
 )
 
-var replacer = strings.NewReplacer("_", "", "-", "")
+const replacer = strings.NewReplacer("_", "", "-", "")
 
 func GetRedisClient(url *url.URL) (redis.UniversalClient, error) {
 	var client redis.UniversalClient
@@ -189,11 +189,14 @@ func getRedisTLSOptions(uri *url.URL) *tls.Config {
 }
 
 func valToTimeDuration(vs []string) (result time.Duration) {
-	var err error
+	var (
+		err error
+		val int
+	)
+	
 	for _, v := range vs {
 		result, err = time.ParseDuration(v)
 		if err != nil {
-			var val int
 			val, err = strconv.Atoi(v)
 			result = time.Duration(val)
 		}

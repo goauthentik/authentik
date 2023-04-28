@@ -30,7 +30,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 
 	redisURL, err := url.Parse(config.Get().Redis.URL)
 
-	if err != nil {	
+	if err != nil {
 		client, err := redisstore.GetRedisClient(redisURL)
 		if err != nil {
 			panic(err)
@@ -141,7 +141,7 @@ func (a *Application) Logout(sub string) error {
 			claims := c.(Claims)
 			if claims.Sub == sub {
 				a.log.WithField("key", key).Trace("deleting session")
-				rs.DeleteByKey(key)
+				err = rs.DeleteByKey(key)
 				if err != nil {
 					a.log.WithError(err).Warning("failed to delete key")
 					continue

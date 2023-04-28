@@ -1,4 +1,4 @@
-from asyncio import get_running_loop, Lock
+from asyncio import Lock, get_running_loop
 from copy import deepcopy
 from itertools import cycle
 from urllib.parse import urlparse
@@ -6,7 +6,12 @@ from urllib.parse import urlparse
 from channels_redis.core import RedisChannelLayer
 from channels_redis.utils import _wrap_close
 
-from authentik.lib.utils.parser import get_client, get_redis_options, process_config, get_connection_pool
+from authentik.lib.utils.parser import (
+    get_client,
+    get_connection_pool,
+    get_redis_options,
+    process_config,
+)
 
 
 class CustomLoopLayer:
@@ -17,7 +22,9 @@ class CustomLoopLayer:
 
     def get_connection(self, index):
         if index not in self._connections:
-            pool, client_config = get_connection_pool(self.channel_layer.config[index], use_async=True)
+            pool, client_config = get_connection_pool(
+                self.channel_layer.config[index], use_async=True
+            )
             self._connections[index] = get_client(client_config, pool)
             # Redis cluster does not support auto close of connection pools
             if hasattr(self._connections[index], "auto_close_connection_pool"):
@@ -52,8 +59,9 @@ class CustomChannelLayer(RedisChannelLayer):
             config_slave = deepcopy(config)
             config_slave["is_slave"] = True
             self.config.append(config_slave)
-        super().__init__([], prefix, expiry, group_expiry, capacity, channel_capacity,
-                         symmetric_encryption_keys)
+        super().__init__(
+            [], prefix, expiry, group_expiry, capacity, channel_capacity, symmetric_encryption_keys
+        )
         self._receive_index_generator = cycle(range(self.ring_size))
         self._send_index_generator = cycle(range(self.ring_size))
 
@@ -73,9 +81,7 @@ class CustomChannelLayer(RedisChannelLayer):
         # Catch bad indexes
 
         if not 0 <= index < self.ring_size:
-            raise ValueError(
-                f"There are only {self.ring_size} hosts - you asked for {index}!"
-            )
+            raise ValueError(f"There are only {self.ring_size} hosts - you asked for {index}!")
 
         loop = get_running_loop()
         try:
