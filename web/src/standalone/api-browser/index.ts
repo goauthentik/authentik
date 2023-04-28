@@ -1,4 +1,5 @@
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { globalAK } from "@goauthentik/common/global";
 import { first, getCookie } from "@goauthentik/common/utils";
 import { Interface } from "@goauthentik/elements/Base";
 import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
@@ -55,6 +56,10 @@ export class APIBrowser extends Interface {
         );
     }
 
+    async getTheme(): Promise<UiThemeEnum> {
+        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+    }
+
     render(): TemplateResult {
         return html`
             <rapi-doc
@@ -77,6 +82,7 @@ export class APIBrowser extends Interface {
                 show-header="false"
                 allow-spec-url-load="false"
                 allow-spec-file-load="false"
+                show-method-in-nav-bar="as-colored-text"
                 @before-try=${(
                     e: CustomEvent<{
                         request: {
