@@ -208,7 +208,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         """Test proxy connectivity over websocket"""
         outpost_connection_discovery()  # pylint: disable=no-value-for-parameter
         proxy: ProxyProvider = ProxyProvider.objects.create(
-            name="proxy_provider",
+            name=generate_id(),
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
@@ -222,7 +222,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         Application.objects.create(name="proxy", slug="proxy", provider=proxy)
         service_connection = DockerServiceConnection.objects.get(local=True)
         outpost: Outpost = Outpost.objects.create(
-            name="proxy_outpost",
+            name=generate_id(),
             type=OutpostType.PROXY,
             service_connection=service_connection,
             _config=asdict(OutpostConfig(authentik_host=self.live_server_url, log_level="debug")),
