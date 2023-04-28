@@ -24,6 +24,19 @@ export function globalAK(): GlobalAuthentik {
         ak.tenant = CurrentTenantFromJSON(ak.tenant);
         ak.config = ConfigFromJSON(ak.config);
     }
+    if (!ak) {
+        return {
+            config: ConfigFromJSON({
+                capabilities: [],
+            }),
+            tenant: CurrentTenantFromJSON({
+                ui_footer_links: [],
+            }),
+            versionFamily: "",
+            versionSubdomain: "",
+            build: "",
+        };
+    }
     return ak;
 }
 

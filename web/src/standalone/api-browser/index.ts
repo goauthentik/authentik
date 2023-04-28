@@ -9,6 +9,7 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
+import { globalAK } from "@goauthentik/common/global";
 
 @customElement("ak-api-browser")
 export class APIBrowser extends Interface {
@@ -55,6 +56,10 @@ export class APIBrowser extends Interface {
         );
     }
 
+    async getTheme(): Promise<UiThemeEnum> {
+        return globalAK()?.tenant.uiTheme || UiThemeEnum.Automatic;
+    }
+
     render(): TemplateResult {
         return html`
             <rapi-doc
@@ -77,6 +82,7 @@ export class APIBrowser extends Interface {
                 show-header="false"
                 allow-spec-url-load="false"
                 allow-spec-file-load="false"
+                show-method-in-nav-bar="as-colored-text"
                 @before-try=${(
                     e: CustomEvent<{
                         request: {
