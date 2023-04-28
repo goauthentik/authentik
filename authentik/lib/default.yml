@@ -11,7 +11,11 @@ postgresql:
 listen:
   listen_http: 0.0.0.0:9000
   listen_https: 0.0.0.0:9443
+  listen_ldap: 0.0.0.0:3389
+  listen_ldaps: 0.0.0.0:6636
+  listen_radius: 0.0.0.0:1812
   listen_metrics: 0.0.0.0:9300
+  listen_debug: 0.0.0.0:9900
   trusted_proxy_cidrs:
     - 127.0.0.0/8
     - 10.0.0.0/8
@@ -31,6 +35,9 @@ redis:
   cache_timeout_flows: 300
   cache_timeout_policies: 300
   cache_timeout_reputation: 300
+
+paths:
+  media: ./media
 
 debug: false
 remote_debug: false
