@@ -28,6 +28,11 @@ If an API change has been made
 
 -   [ ] The API schema has been updated (`make gen-build`)
 
+If changes to the frontend have been made
+
+-   [ ] The code has been formatted (`make web`)
+-   [ ] The translation files have been updated (`make i18n-extract`)
+
 If applicable
 
 -   [ ] The documentation has been updated
