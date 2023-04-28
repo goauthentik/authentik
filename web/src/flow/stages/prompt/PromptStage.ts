@@ -13,6 +13,7 @@ import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFLogin from "@patternfly/patternfly/components/Login/login.css";
@@ -38,6 +39,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
             PFFormControl,
             PFTitle,
             PFButton,
+            PFCheck,
             css`
                 textarea {
                     min-height: 4em;
@@ -173,12 +175,15 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                                     <input
                                         type="radio"
                                         class="pf-c-check__input"
+                                        id="${prompt.fieldKey}"
                                         name="${prompt.fieldKey}"
                                         checked="${prompt.initialValue === choice}"
                                         required="${prompt.required}"
                                         value="${choice}"
                                     />
-                                    <label class="pf-c-check__label">${choice}</label>
+                                    <label class="pf-c-check__label" for="${
+                                        prompt.fieldKey
+                                    }">${choice}</label>
                                 </div>
                             `;
                         })
@@ -239,11 +244,12 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                 <input
                     type="checkbox"
                     class="pf-c-check__input"
+                    id="${prompt.fieldKey}"
                     name="${prompt.fieldKey}"
                     ?checked=${prompt.initialValue !== ""}
                     ?required=${prompt.required}
                 />
-                <label class="pf-c-check__label">${prompt.label}</label>
+                <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
                 ${prompt.required
                     ? html`<p class="pf-c-form__helper-text">${t`Required.`}</p>`
                     : html``}
