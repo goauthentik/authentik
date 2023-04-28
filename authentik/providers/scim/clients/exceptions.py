@@ -41,3 +41,8 @@ class SCIMRequestException(SentryIgnoredException):
         except ValidationError:
             pass
         return super().__str__()
+
+
+class ResourceMissing(SCIMRequestException):
+    """Error raised when the provider raises a 404, meaning that we
+    should delete our internal ID and re-create the object"""

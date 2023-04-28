@@ -8,7 +8,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_keys
 from authentik.providers.scim.clients.base import SCIMClient
-from authentik.providers.scim.clients.exceptions import StopSync
+from authentik.providers.scim.clients.exceptions import ResourceMissing, StopSync
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
 from authentik.providers.scim.models import SCIMMapping, SCIMUser
 
@@ -21,7 +21,11 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
         scim_user = SCIMUser.objects.filter(provider=self.provider, user=obj).first()
         if not scim_user:
             return self._create(obj)
-        return self._update(obj, scim_user)
+        try:
+            return self._update(obj, scim_user)
+        except ResourceMissing:
+            scim_user.delete()
+            return self._create(obj)
 
     def delete(self, obj: User):
         """Delete user"""

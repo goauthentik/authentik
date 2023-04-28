@@ -10,7 +10,7 @@ from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
 from authentik.policies.utils import delete_none_keys
 from authentik.providers.scim.clients.base import SCIMClient
-from authentik.providers.scim.clients.exceptions import StopSync
+from authentik.providers.scim.clients.exceptions import ResourceMissing, StopSync
 from authentik.providers.scim.clients.schema import Group as SCIMGroupSchema
 from authentik.providers.scim.models import SCIMGroup, SCIMMapping, SCIMUser
 
@@ -23,15 +23,11 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
         if not scim_group:
             return self._create(obj)
-        scim_group = self.to_scim(obj)
-        scim_group.id = scim_group.id
-        return self._request(
-            "PUT",
-            f"/Groups/{scim_group.id}",
-            data=scim_group.json(
-                exclude_unset=True,
-            ),
-        )
+        try:
+            return self._update(obj, scim_group)
+        except ResourceMissing:
+            scim_group.delete()
+            return self._create(obj)
 
     def delete(self, obj: Group):
         """Delete group"""
@@ -103,6 +99,18 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             ),
         )
         SCIMGroup.objects.create(provider=self.provider, group=group, id=response["id"])
+
+    def _update(self, group: Group, connection: SCIMGroup):
+        """Update existing group"""
+        scim_group = self.to_scim(group)
+        scim_group.id = connection.id
+        return self._request(
+            "PUT",
+            f"/Groups/{scim_group.id}",
+            data=scim_group.json(
+                exclude_unset=True,
+            ),
+        )
 
     def _patch(
         self,
