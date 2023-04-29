@@ -67,4 +67,7 @@ class TestBlueprintsV1API(APITestCase):
             },
         )
         self.assertEqual(res.status_code, 400)
-        self.assertJSONEqual(res.content.decode(), {"content": ["Failed to validate blueprint"]})
+        self.assertJSONEqual(
+            res.content.decode(),
+            {"content": ["Failed to validate blueprint: Invalid blueprint version"]},
+        )
