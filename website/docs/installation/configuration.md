@@ -46,7 +46,6 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
 
 -   `AUTHENTIK_RESULT_BACKEND__URL`: Result backend configuration URL, defaults to the environment variable `AUTHENTIK_REDIS__URL`
 
-
 ## Cache Settings
 
 -   `AUTHENTIK_CACHE__BACKEND`: Class to use as cache backend, defaults to `django_redis.cache.RedisCache`
@@ -62,6 +61,7 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
 -   `AUTHENTIK_CHANNEL__URL`: Channel configuration URL, defaults to the environment variable `AUTHENTIK_REDIS__URL`
 
 ## Broker Settings
+
 -   `AUTHENTIK_BROKER__URL`: Broker configuration URL, defaults to the environment variable `AUTHENTIK_REDIS__URL`
 -   `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64 encoded broker transport options, is by default determined using the environment variable `AUTHENTIK_REDIS__URL`
 
