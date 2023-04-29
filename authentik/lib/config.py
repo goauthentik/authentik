@@ -75,7 +75,6 @@ class ConfigLoader:
                         self.update_from_file(env_file)
         self.update_from_env()
         self.check_deprecations()
-        print(self.__config)
 
     def check_deprecations(self):
         """Warn if any deprecated configuration options are used"""
