@@ -85,7 +85,7 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             html`<ak-label color=${item.local ? PFColor.Grey : PFColor.Green}>
                 ${item.local ? t`Yes` : t`No`}
             </ak-label>`,
-            html`${itemState.healthy
+            html`${itemState?.healthy
                 ? html`<ak-label color=${PFColor.Green}>${ifDefined(itemState.version)}</ak-label>`
                 : html`<ak-label color=${PFColor.Red}>${t`Unhealthy`}</ak-label>`}`,
             html` <ak-forms-modal>
