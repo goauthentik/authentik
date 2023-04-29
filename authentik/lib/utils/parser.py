@@ -275,7 +275,7 @@ def get_redis_options(
     try:
         # Retrieve the number of cpus that can be used
         from os import sched_getaffinity
-        
+
         max_connections = len(sched_getaffinity(0)) * 10
     except (ImportError, AttributeError):
         # Use default value of BlockingConnectionPool
