@@ -1,6 +1,5 @@
 from asyncio import LifoQueue, PriorityQueue
 from copy import deepcopy
-from os import sched_getaffinity
 from socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from socket import timeout as SocketTimeout
 from sys import platform
@@ -275,8 +274,9 @@ def get_redis_options(
 
     try:
         # Retrieve the number of cpus that can be used
+        from os import sched_getaffinity
         max_connections = len(sched_getaffinity(0)) * 10
-    except AttributeError:
+    except (ImportError, AttributeError):
         # Use default value of BlockingConnectionPool
         max_connections = 50
         pass
