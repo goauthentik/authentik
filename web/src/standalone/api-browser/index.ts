@@ -1,3 +1,4 @@
+import { CSRFHeaderName } from "@goauthentik/common/api/middleware";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
 import { first, getCookie } from "@goauthentik/common/utils";
@@ -90,10 +91,7 @@ export class APIBrowser extends Interface {
                         };
                     }>,
                 ) => {
-                    e.detail.request.headers.append(
-                        "X-authentik-CSRF",
-                        getCookie("authentik_csrf"),
-                    );
+                    e.detail.request.headers.append(CSRFHeaderName, getCookie("authentik_csrf"));
                 }}
             >
                 <div slot="nav-logo">

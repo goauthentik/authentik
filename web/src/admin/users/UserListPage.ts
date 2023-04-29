@@ -16,7 +16,7 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
+import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -54,13 +54,21 @@ export class UserListPage extends TablePage<User> {
     order = "last_login";
 
     @property()
-    activePath = getURLParam<string>("path", "/");
+    activePath;
+
+    @state()
+    hideDeactivated = getURLParam<boolean>("hideDeactivated", false);
 
     @state()
     userPaths?: UserPath;
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDescriptionList, PFCard, PFAlert);
+    }
+
+    constructor() {
+        super();
+        this.activePath = getURLParam<string>("path", "/");
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {
@@ -70,6 +78,7 @@ export class UserListPage extends TablePage<User> {
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
             pathStartswith: getURLParam("path", ""),
+            isActive: this.hideDeactivated ? true : undefined,
         });
         this.userPaths = await new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve({
             search: this.search,
@@ -129,6 +138,37 @@ export class UserListPage extends TablePage<User> {
                 ${t`Delete`}
             </button>
         </ak-forms-delete-bulk>`;
+    }
+
+    renderToolbarAfter(): TemplateResult {
+        return html`&nbsp;
+            <div class="pf-c-toolbar__group pf-m-filter-group">
+                <div class="pf-c-toolbar__item pf-m-search-filter">
+                    <div class="pf-c-input-group">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${this.hideDeactivated}
+                                @change=${() => {
+                                    this.hideDeactivated = !this.hideDeactivated;
+                                    this.page = 1;
+                                    this.fetch();
+                                    updateURLParams({
+                                        hideDeactivated: this.hideDeactivated,
+                                    });
+                                }}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${t`Hide deactivated user`}</span>
+                        </label>
+                    </div>
+                </div>
+            </div>`;
     }
 
     row(item: User): TemplateResult[] {
