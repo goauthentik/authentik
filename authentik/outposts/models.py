@@ -128,7 +128,7 @@ class OutpostServiceConnection(models.Model):
     @property
     def state_key(self) -> str:
         """Key used to save connection state in cache"""
-        return f"outpost_service_connection_{self.pk.hex}"
+        return f"goauthentik.io/outposts/service_connection_state/{self.pk.hex}"
 
     @property
     def state(self) -> OutpostServiceConnectionState:
@@ -278,7 +278,7 @@ class Outpost(SerializerModel, ManagedModel):
     @property
     def state_cache_prefix(self) -> str:
         """Key by which the outposts status is saved"""
-        return f"goauthentik.io/outposts/{self.uuid.hex}_state"
+        return f"goauthentik.io/outposts/state/{self.uuid.hex}"
 
     @property
     def state(self) -> list["OutpostState"]:
@@ -433,19 +433,19 @@ class OutpostState:
     @staticmethod
     def for_outpost(outpost: Outpost) -> list["OutpostState"]:
         """Get all states for an outpost"""
-        keys = cache.keys(f"{outpost.state_cache_prefix}_*")
+        keys = cache.keys(f"{outpost.state_cache_prefix}/*")
         if not keys:
             return []
         states = []
         for key in keys:
-            instance_uid = key.replace(f"{outpost.state_cache_prefix}_", "")
+            instance_uid = key.replace(f"{outpost.state_cache_prefix}/", "")
             states.append(OutpostState.for_instance_uid(outpost, instance_uid))
         return states
 
     @staticmethod
     def for_instance_uid(outpost: Outpost, uid: str) -> "OutpostState":
         """Get state for a single instance"""
-        key = f"{outpost.state_cache_prefix}_{uid}"
+        key = f"{outpost.state_cache_prefix}/{uid}"
         default_data = {"uid": uid, "channel_ids": []}
         data = cache.get(key, default_data)
         if isinstance(data, str):
@@ -458,10 +458,10 @@ class OutpostState:
 
     def save(self, timeout=OUTPOST_HELLO_INTERVAL):
         """Save current state to cache"""
-        full_key = f"{self._outpost.state_cache_prefix}_{self.uid}"
+        full_key = f"{self._outpost.state_cache_prefix}/{self.uid}"
         return cache.set(full_key, asdict(self), timeout=timeout)
 
     def delete(self):
         """Manually delete from cache, used on channel disconnect"""
-        full_key = f"{self._outpost.state_cache_prefix}_{self.uid}"
+        full_key = f"{self._outpost.state_cache_prefix}/{self.uid}"
         cache.delete(full_key)

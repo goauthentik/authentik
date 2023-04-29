@@ -19,6 +19,21 @@ Please check the [Contributing guidelines](https://github.com/goauthentik/authen
 
 -   Adds breaking change which causes \<issue\>.
 
-## Additional
+## Checklist
 
-Any further notes or comments you want to make.
+-   [ ] Local tests pass (`ak test authentik/`)
+-   [ ] The code has been formatted (`make lint-fix`)
+
+If an API change has been made
+
+-   [ ] The API schema has been updated (`make gen-build`)
+
+If changes to the frontend have been made
+
+-   [ ] The code has been formatted (`make web`)
+-   [ ] The translation files have been updated (`make i18n-extract`)
+
+If applicable
+
+-   [ ] The documentation has been updated
+-   [ ] The documentation has been formatted (`make website`)

@@ -3,25 +3,18 @@ import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
-
-import PFCheck from "@patternfly/patternfly/components/Check/check.css";
 
 import { PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 
 @customElement("ak-user-stage-prompt")
 export class UserSettingsPromptStage extends PromptStage {
-    static get styles(): CSSResult[] {
-        return super.styles.concat(PFCheck);
-    }
-
-    renderPromptInner(prompt: StagePrompt): string {
+    renderPromptInner(prompt: StagePrompt): TemplateResult {
         switch (prompt.type) {
             // Checkbox requires slightly different rendering here due to the use of horizontal form elements
             case PromptTypeEnum.Checkbox:
-                return `<input
+                return html`<input
                     type="checkbox"
                     class="pf-c-check__input"
                     name="${prompt.fieldKey}"
@@ -47,14 +40,11 @@ export class UserSettingsPromptStage extends PromptStage {
                         return error.string;
                     })}
                 >
-                    ${unsafeHTML(this.renderPromptInner(prompt))}
-                    ${this.renderPromptHelpText(prompt)}
+                    ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
                 </ak-form-element-horizontal>
             `;
         }
-        return html`
-            ${unsafeHTML(this.renderPromptInner(prompt))} ${this.renderPromptHelpText(prompt)}
-        `;
+        return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)} `;
     }
 
     renderContinue(): TemplateResult {

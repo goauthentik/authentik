@@ -13,6 +13,7 @@ from authentik.core.views.interface import FlowInterfaceView, InterfaceView
 from authentik.core.views.session import EndSessionView
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.messages.consumer import MessageConsumer
+from authentik.root.middleware import ChannelsLoggingMiddleware
 
 urlpatterns = [
     path(
@@ -70,7 +71,10 @@ urlpatterns = [
 
 websocket_urlpatterns = [
     path(
-        "ws/client/", CookieMiddleware(SessionMiddleware(AuthMiddleware(MessageConsumer.as_asgi())))
+        "ws/client/",
+        ChannelsLoggingMiddleware(
+            CookieMiddleware(SessionMiddleware(AuthMiddleware(MessageConsumer.as_asgi())))
+        ),
     ),
 ]
 
