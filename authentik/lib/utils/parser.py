@@ -174,15 +174,15 @@ def get_redis_options(
                         redis_kwargs["retry"] = None
                 case "minretrybackoff":
                     min_backoff = val_to_sec(value)
-                    if min_backoff > 0:
+                    if min_backoff is not None and min_backoff > 0:
                         retries_and_backoff["min_backoff"] = min_backoff
                 case "maxretrybackoff":
                     max_backoff = val_to_sec(value)
-                    if max_backoff > 0:
+                    if max_backoff is not None and max_backoff > 0:
                         retries_and_backoff["max_backoff"] = max_backoff
                 case "timeout":
                     timeout = val_to_sec(value)
-                    if timeout <= 0:
+                    if timeout is not None and timeout <= 0:
                         timeout = None
                     if "socket_connect_timeout" not in redis_kwargs:
                         redis_kwargs["socket_connect_timeout"] = timeout
@@ -190,12 +190,12 @@ def get_redis_options(
                         redis_kwargs["socket_timeout"] = timeout
                 case "dialtimeout":
                     socket_connect_timeout = val_to_sec(value)
-                    if socket_connect_timeout <= 0:
+                    if socket_connect_timeout is not None and socket_connect_timeout <= 0:
                         socket_connect_timeout = None
                     redis_kwargs["socket_connect_timeout"] = socket_connect_timeout
                 case "readtimeout" | "writetimeout":
                     socket_timeout = val_to_sec(value)
-                    if socket_timeout <= 0:
+                    if socket_timeout is not None and socket_timeout <= 0:
                         socket_timeout = None
                     if (
                         "socket_timeout" not in redis_kwargs
@@ -211,7 +211,7 @@ def get_redis_options(
                     pool_kwargs["max_connections"] = int(value[0])
                 case "pooltimeout":
                     pool_timeout = val_to_sec(value)
-                    if pool_timeout <= 0:
+                    if pool_timeout is not None and pool_timeout <= 0:
                         pool_timeout = None
                     pool_kwargs["timeout"] = pool_timeout
                 case "idletimeout":
@@ -275,6 +275,7 @@ def get_redis_options(
     try:
         # Retrieve the number of cpus that can be used
         from os import sched_getaffinity
+        
         max_connections = len(sched_getaffinity(0)) * 10
     except (ImportError, AttributeError):
         # Use default value of BlockingConnectionPool
