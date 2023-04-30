@@ -38,7 +38,7 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
         }
     }
 
-    send = (data: RadiusProvider): Promise<RadiusProvider> => {
+    async send(data: RadiusProvider): Promise<RadiusProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersRadiusUpdate({
                 id: this.instance.pk || 0,
@@ -49,7 +49,7 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
                 radiusProviderRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

@@ -41,7 +41,7 @@ export class UserForm extends ModelForm<User, number> {
         }
     }
 
-    send = (data: User): Promise<User> => {
+    async send(data: User): Promise<User> {
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                 id: this.instance.pk,
@@ -53,7 +53,7 @@ export class UserForm extends ModelForm<User, number> {
                 userRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

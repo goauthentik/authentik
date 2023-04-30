@@ -26,7 +26,7 @@ export class UserLogoutStageForm extends ModelForm<UserLogoutStage, string> {
         }
     }
 
-    send = (data: UserLogoutStage): Promise<UserLogoutStage> => {
+    async send(data: UserLogoutStage): Promise<UserLogoutStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserLogoutUpdate({
                 stageUuid: this.instance.pk || "",
@@ -37,7 +37,7 @@ export class UserLogoutStageForm extends ModelForm<UserLogoutStage, string> {
                 userLogoutStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

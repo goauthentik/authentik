@@ -28,16 +28,14 @@ import {
 
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends ModelForm<PlexSource, string> {
-    loadInstance(pk: string): Promise<PlexSource> {
-        return new SourcesApi(DEFAULT_CONFIG)
-            .sourcesPlexRetrieve({
-                slug: pk,
-            })
-            .then((source) => {
-                this.plexToken = source.plexToken;
-                this.loadServers();
-                return source;
-            });
+    async loadInstance(pk: string): Promise<PlexSource> {
+        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
+            slug: pk,
+        });
+        this.plexToken = source.plexToken;
+        this.loadServers();
+        this.clearIcon = false;
+        return source;
     }
 
     @state()
@@ -63,7 +61,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
         }
     }
 
-    send = async (data: PlexSource): Promise<PlexSource> => {
+    async send(data: PlexSource): Promise<PlexSource> {
         data.plexToken = this.plexToken || "";
         let source: PlexSource;
         if (this.instance?.pk) {
@@ -95,7 +93,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
             });
         }
         return source;
-    };
+    }
 
     async doAuth(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");

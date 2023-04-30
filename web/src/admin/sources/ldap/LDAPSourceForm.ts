@@ -51,7 +51,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
         }
     }
 
-    send = (data: LDAPSource): Promise<LDAPSource> => {
+    async send(data: LDAPSource): Promise<LDAPSource> {
         if (this.instance) {
             return new SourcesApi(DEFAULT_CONFIG).sourcesLdapPartialUpdate({
                 slug: this.instance.slug,
@@ -62,7 +62,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                 lDAPSourceRequest: data as unknown as LDAPSourceRequest,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

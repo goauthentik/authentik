@@ -42,7 +42,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
         }
     }
 
-    send = (data: Tenant): Promise<Tenant> => {
+    async send(data: Tenant): Promise<Tenant> {
         if (this.instance?.tenantUuid) {
             return new CoreApi(DEFAULT_CONFIG).coreTenantsUpdate({
                 tenantUuid: this.instance.tenantUuid,
@@ -53,7 +53,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                 tenantRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

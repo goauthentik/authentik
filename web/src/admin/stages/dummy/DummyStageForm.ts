@@ -27,7 +27,7 @@ export class DummyStageForm extends ModelForm<DummyStage, string> {
         }
     }
 
-    send = (data: DummyStage): Promise<DummyStage> => {
+    async send(data: DummyStage): Promise<DummyStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesDummyUpdate({
                 stageUuid: this.instance.pk || "",
@@ -38,7 +38,7 @@ export class DummyStageForm extends ModelForm<DummyStage, string> {
                 dummyStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

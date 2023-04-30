@@ -37,7 +37,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return t`Successfully sent test-request.`;
     }
 
-    send = async (data: PolicyTestRequest): Promise<PropertyMappingTestResult> => {
+    async send(data: PolicyTestRequest): Promise<PropertyMappingTestResult> {
         this.request = data;
         const result = await new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsAllTestCreate({
             pmUuid: this.mapping?.pk || "",
@@ -45,7 +45,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
             formatResult: true,
         });
         return (this.result = result);
-    };
+    }
 
     renderResult(): TemplateResult {
         return html`<ak-form-element-horizontal label=${t`Result`}>

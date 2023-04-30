@@ -31,7 +31,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
         }
     }
 
-    send = (data: UserWriteStage): Promise<UserWriteStage> => {
+    async send(data: UserWriteStage): Promise<UserWriteStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserWriteUpdate({
                 stageUuid: this.instance.pk || "",
@@ -42,7 +42,7 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                 userWriteStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

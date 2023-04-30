@@ -50,7 +50,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
         }
     }
 
-    send = (data: IdentificationStage): Promise<IdentificationStage> => {
+    async send(data: IdentificationStage): Promise<IdentificationStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesIdentificationUpdate({
                 stageUuid: this.instance.pk || "",
@@ -61,7 +61,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                 identificationStageRequest: data,
             });
         }
-    };
+    }
 
     isUserFieldSelected(field: UserFieldsEnum): boolean {
         return (

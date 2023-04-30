@@ -50,7 +50,7 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
         }
     }
 
-    send = (data: AuthenticatorValidateStage): Promise<AuthenticatorValidateStage> => {
+    async send(data: AuthenticatorValidateStage): Promise<AuthenticatorValidateStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorValidateUpdate({
                 stageUuid: this.instance.pk || "",
@@ -61,7 +61,7 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                 authenticatorValidateStageRequest: data,
             });
         }
-    };
+    }
 
     isDeviceClassSelected(field: DeviceClassesEnum): boolean {
         return (

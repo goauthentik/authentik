@@ -37,7 +37,7 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
         }
     }
 
-    send = (data: AuthenticatorDuoStage): Promise<AuthenticatorDuoStage> => {
+    async send(data: AuthenticatorDuoStage): Promise<AuthenticatorDuoStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoPartialUpdate({
                 stageUuid: this.instance.pk || "",
@@ -48,7 +48,7 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                 authenticatorDuoStageRequest: data as unknown as AuthenticatorDuoStageRequest,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

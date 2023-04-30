@@ -69,7 +69,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
         }
     }
 
-    send = (data: OAuth2Provider): Promise<OAuth2Provider> => {
+    async send(data: OAuth2Provider): Promise<OAuth2Provider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Update({
                 id: this.instance.pk || 0,
@@ -80,7 +80,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                 oAuth2ProviderRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

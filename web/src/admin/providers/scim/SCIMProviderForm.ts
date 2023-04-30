@@ -48,7 +48,7 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
         }
     }
 
-    send = (data: SCIMProvider): Promise<SCIMProvider> => {
+    async send(data: SCIMProvider): Promise<SCIMProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersScimUpdate({
                 id: this.instance.pk || 0,
@@ -59,7 +59,7 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                 sCIMProviderRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

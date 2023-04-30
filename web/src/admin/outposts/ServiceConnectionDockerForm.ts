@@ -34,7 +34,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
         }
     }
 
-    send = (data: DockerServiceConnection): Promise<DockerServiceConnection> => {
+    async send(data: DockerServiceConnection): Promise<DockerServiceConnection> {
         if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsDockerUpdate({
                 uuid: this.instance.pk || "",
@@ -45,7 +45,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 dockerServiceConnectionRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

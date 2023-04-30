@@ -44,7 +44,7 @@ export class GroupForm extends ModelForm<Group, string> {
         }
     }
 
-    send = (data: Group): Promise<Group> => {
+    async send(data: Group): Promise<Group> {
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreGroupsPartialUpdate({
                 groupUuid: this.instance.pk,
@@ -56,7 +56,7 @@ export class GroupForm extends ModelForm<Group, string> {
                 groupRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

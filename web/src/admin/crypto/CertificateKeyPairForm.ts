@@ -27,7 +27,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
         }
     }
 
-    send = (data: CertificateKeyPair): Promise<CertificateKeyPair> => {
+    async send(data: CertificateKeyPair): Promise<CertificateKeyPair> {
         if (this.instance) {
             return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsPartialUpdate({
                 kpUuid: this.instance.pk || "",
@@ -38,7 +38,7 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 certificateKeyPairRequest: data as unknown as CertificateKeyPairRequest,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

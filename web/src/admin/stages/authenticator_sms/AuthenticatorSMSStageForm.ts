@@ -54,7 +54,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
         }
     }
 
-    send = (data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> => {
+    async send(data: AuthenticatorSMSStage): Promise<AuthenticatorSMSStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorSmsUpdate({
                 stageUuid: this.instance.pk || "",
@@ -65,7 +65,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
                 authenticatorSMSStageRequest: data,
             });
         }
-    };
+    }
 
     renderProviderTwillio(): TemplateResult {
         return html` <ak-form-element-horizontal

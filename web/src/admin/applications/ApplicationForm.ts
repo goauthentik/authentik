@@ -27,10 +27,12 @@ import {
 
 @customElement("ak-application-form")
 export class ApplicationForm extends ModelForm<Application, string> {
-    loadInstance(pk: string): Promise<Application> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
+    async loadInstance(pk: string): Promise<Application> {
+        const app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
             slug: pk,
         });
+        this.clearIcon = false;
+        return app;
     }
 
     @property({ attribute: false })
@@ -47,7 +49,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
         }
     }
 
-    send = async (data: Application): Promise<Application | void> => {
+    async send(data: Application): Promise<Application | void> {
         let app: Application;
         if (this.instance) {
             app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
@@ -78,7 +80,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
             });
         }
         return app;
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

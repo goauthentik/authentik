@@ -34,13 +34,13 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
         return t`Successfully imported device.`;
     }
 
-    send = (data: AuthenticatorDuoStage): Promise<void> => {
+    async send(data: AuthenticatorDuoStage): Promise<void> {
         const importData = data as unknown as AuthenticatorDuoStageManualDeviceImportRequest;
         return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorDuoImportDeviceManualCreate({
             stageUuid: this.instance?.pk || "",
             authenticatorDuoStageManualDeviceImportRequest: importData,
         });
-    };
+    }
 
     renderForm(): TemplateResult {
         return html` <form class="pf-c-form pf-m-horizontal">
