@@ -26,10 +26,12 @@ import {
 
 @customElement("ak-flow-form")
 export class FlowForm extends ModelForm<Flow, string> {
-    loadInstance(pk: string): Promise<Flow> {
-        return new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
+    async loadInstance(pk: string): Promise<Flow> {
+        const flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesRetrieve({
             slug: pk,
         });
+        this.clearBackground = false;
+        return flow;
     }
 
     getSuccessMessage(): string {

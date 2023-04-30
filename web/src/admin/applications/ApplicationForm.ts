@@ -27,10 +27,12 @@ import {
 
 @customElement("ak-application-form")
 export class ApplicationForm extends ModelForm<Application, string> {
-    loadInstance(pk: string): Promise<Application> {
-        return new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
+    async loadInstance(pk: string): Promise<Application> {
+        const app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsRetrieve({
             slug: pk,
         });
+        this.clearIcon = false;
+        return app;
     }
 
     @property({ attribute: false })
