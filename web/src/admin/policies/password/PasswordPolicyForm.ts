@@ -44,7 +44,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
         }
     }
 
-    send = (data: PasswordPolicy): Promise<PasswordPolicy> => {
+    async send(data: PasswordPolicy): Promise<PasswordPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordUpdate({
                 policyUuid: this.instance.pk || "",
@@ -55,7 +55,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                 passwordPolicyRequest: data,
             });
         }
-    };
+    }
 
     renderStaticRules(): TemplateResult {
         return html` <ak-form-group>

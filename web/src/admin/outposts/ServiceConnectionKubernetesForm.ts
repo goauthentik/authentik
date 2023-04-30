@@ -32,7 +32,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
         }
     }
 
-    send = (data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> => {
+    async send(data: KubernetesServiceConnection): Promise<KubernetesServiceConnection> {
         if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsServiceConnectionsKubernetesUpdate({
                 uuid: this.instance.pk || "",
@@ -43,7 +43,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                 kubernetesServiceConnectionRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

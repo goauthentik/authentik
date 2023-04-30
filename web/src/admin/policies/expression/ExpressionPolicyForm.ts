@@ -30,7 +30,7 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
         }
     }
 
-    send = (data: ExpressionPolicy): Promise<ExpressionPolicy> => {
+    async send(data: ExpressionPolicy): Promise<ExpressionPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesExpressionUpdate({
                 policyUuid: this.instance.pk || "",
@@ -41,7 +41,7 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
                 expressionPolicyRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

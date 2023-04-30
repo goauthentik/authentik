@@ -45,7 +45,7 @@ export class FlowForm extends ModelForm<Flow, string> {
     @property({ type: Boolean })
     clearBackground = false;
 
-    send = async (data: Flow): Promise<void | Flow> => {
+    async send(data: Flow): Promise<void | Flow> {
         let flow: Flow;
         if (this.instance) {
             flow = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesUpdate({
@@ -76,7 +76,7 @@ export class FlowForm extends ModelForm<Flow, string> {
             });
         }
         return flow;
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

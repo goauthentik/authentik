@@ -28,7 +28,7 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
         }
     }
 
-    send = (data: PasswordExpiryPolicy): Promise<PasswordExpiryPolicy> => {
+    async send(data: PasswordExpiryPolicy): Promise<PasswordExpiryPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesPasswordExpiryUpdate({
                 policyUuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
                 passwordExpiryPolicyRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

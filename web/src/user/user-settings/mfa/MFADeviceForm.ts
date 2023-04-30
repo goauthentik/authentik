@@ -15,19 +15,18 @@ export class MFADeviceForm extends ModelForm<Device, number> {
     @property()
     deviceType!: string;
 
-    loadInstance(pk: number): Promise<Device> {
-        return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList().then((devices) => {
-            return devices.filter((device) => {
-                return device.pk === pk && device.type === this.deviceType;
-            })[0];
-        });
+    async loadInstance(pk: number): Promise<Device> {
+        const devices = await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAllList();
+        return devices.filter((device) => {
+            return device.pk === pk && device.type === this.deviceType;
+        })[0];
     }
 
     getSuccessMessage(): string {
         return t`Successfully updated device.`;
     }
 
-    send = async (device: Device): Promise<Device> => {
+    async send(device: Device): Promise<Device> {
         switch (this.instance?.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
                 await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsDuoUpdate({
@@ -63,7 +62,7 @@ export class MFADeviceForm extends ModelForm<Device, number> {
                 break;
         }
         return device;
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

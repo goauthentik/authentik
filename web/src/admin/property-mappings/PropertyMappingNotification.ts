@@ -28,7 +28,7 @@ export class PropertyMappingNotification extends ModelForm<NotificationWebhookMa
         }
     }
 
-    send = (data: NotificationWebhookMapping): Promise<NotificationWebhookMapping> => {
+    async send(data: NotificationWebhookMapping): Promise<NotificationWebhookMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsNotificationUpdate({
                 pmUuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class PropertyMappingNotification extends ModelForm<NotificationWebhookMa
                 notificationWebhookMappingRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

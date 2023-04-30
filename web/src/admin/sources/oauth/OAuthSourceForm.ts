@@ -71,7 +71,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
         }
     }
 
-    send = async (data: OAuthSource): Promise<OAuthSource> => {
+    async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.slug || "") as ProviderTypeEnum;
         let source: OAuthSource;
         if (this.instance) {
@@ -103,7 +103,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
             });
         }
         return source;
-    };
+    }
 
     renderUrlOptions(): TemplateResult {
         if (!this.providerType?.urlsCustomizable) {

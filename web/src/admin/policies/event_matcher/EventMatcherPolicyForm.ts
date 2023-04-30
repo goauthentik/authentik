@@ -42,7 +42,7 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
         }
     }
 
-    send = (data: EventMatcherPolicy): Promise<EventMatcherPolicy> => {
+    async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",
@@ -53,7 +53,7 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                 eventMatcherPolicyRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

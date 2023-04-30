@@ -86,7 +86,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
         }
     }
 
-    send = (data: Outpost): Promise<Outpost> => {
+    async send(data: Outpost): Promise<Outpost> {
         if (this.instance) {
             return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUpdate({
                 uuid: this.instance.pk || "",
@@ -97,7 +97,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 outpostRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

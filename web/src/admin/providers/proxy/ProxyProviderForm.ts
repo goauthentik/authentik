@@ -90,7 +90,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
         }
     }
 
-    send = (data: ProxyProvider): Promise<ProxyProvider> => {
+    async send(data: ProxyProvider): Promise<ProxyProvider> {
         data.mode = this.mode;
         if (this.mode !== ProxyMode.ForwardDomain) {
             data.cookieDomain = "";
@@ -105,7 +105,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 proxyProviderRequest: data,
             });
         }
-    };
+    }
 
     renderHttpBasic(): TemplateResult {
         return html`<ak-form-element-horizontal

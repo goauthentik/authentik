@@ -28,7 +28,7 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
         }
     }
 
-    send = (data: DummyPolicy): Promise<DummyPolicy> => {
+    async send(data: DummyPolicy): Promise<DummyPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesDummyUpdate({
                 policyUuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
                 dummyPolicyRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

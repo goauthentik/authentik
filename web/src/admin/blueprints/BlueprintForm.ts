@@ -63,7 +63,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
         );
     }
 
-    send = (data: BlueprintInstance): Promise<BlueprintInstance> => {
+    async send(data: BlueprintInstance): Promise<BlueprintInstance> {
         if (this.instance?.pk) {
             return new ManagedApi(DEFAULT_CONFIG).managedBlueprintsUpdate({
                 instanceUuid: this.instance.pk,
@@ -74,7 +74,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 blueprintInstanceRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

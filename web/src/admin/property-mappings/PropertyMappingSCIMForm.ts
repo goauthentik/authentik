@@ -28,7 +28,7 @@ export class PropertyMappingSCIMForm extends ModelForm<SCIMMapping, string> {
         }
     }
 
-    send = (data: SCIMMapping): Promise<SCIMMapping> => {
+    async send(data: SCIMMapping): Promise<SCIMMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScimUpdate({
                 pmUuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class PropertyMappingSCIMForm extends ModelForm<SCIMMapping, string> {
                 sCIMMappingRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

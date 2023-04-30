@@ -58,7 +58,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
         }
     }
 
-    send = (data: SAMLProvider): Promise<SAMLProvider> => {
+    async send(data: SAMLProvider): Promise<SAMLProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersSamlUpdate({
                 id: this.instance.pk || 0,
@@ -69,7 +69,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 sAMLProviderRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

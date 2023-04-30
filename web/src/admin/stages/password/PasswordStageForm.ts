@@ -38,7 +38,7 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
         }
     }
 
-    send = (data: PasswordStage): Promise<PasswordStage> => {
+    async send(data: PasswordStage): Promise<PasswordStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPasswordUpdate({
                 stageUuid: this.instance.pk || "",
@@ -49,7 +49,7 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                 passwordStageRequest: data,
             });
         }
-    };
+    }
 
     isBackendSelected(field: BackendsEnum): boolean {
         if (!this.instance) {

@@ -29,7 +29,7 @@ export class TokenForm extends ModelForm<Token, string> {
         }
     }
 
-    send = (data: Token): Promise<Token> => {
+    async send(data: Token): Promise<Token> {
         if (this.instance?.identifier) {
             return new CoreApi(DEFAULT_CONFIG).coreTokensUpdate({
                 identifier: this.instance.identifier,
@@ -40,7 +40,7 @@ export class TokenForm extends ModelForm<Token, string> {
                 tokenRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

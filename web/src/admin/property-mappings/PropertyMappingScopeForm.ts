@@ -28,7 +28,7 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
         }
     }
 
-    send = (data: ScopeMapping): Promise<ScopeMapping> => {
+    async send(data: ScopeMapping): Promise<ScopeMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsScopeUpdate({
                 pmUuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
                 scopeMappingRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

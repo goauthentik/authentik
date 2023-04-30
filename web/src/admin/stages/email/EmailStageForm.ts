@@ -39,7 +39,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
         }
     }
 
-    send = (data: EmailStage): Promise<EmailStage> => {
+    async send(data: EmailStage): Promise<EmailStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesEmailPartialUpdate({
                 stageUuid: this.instance.pk || "",
@@ -50,7 +50,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                 emailStageRequest: data,
             });
         }
-    };
+    }
 
     renderConnectionSettings(): TemplateResult {
         if (!this.showConnectionSettings) {
