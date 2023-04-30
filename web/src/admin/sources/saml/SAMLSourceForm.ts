@@ -38,10 +38,12 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
     @state()
     clearIcon = false;
 
-    loadInstance(pk: string): Promise<SAMLSource> {
-        return new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
+    async loadInstance(pk: string): Promise<SAMLSource> {
+        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlRetrieve({
             slug: pk,
         });
+        this.clearIcon = false;
+        return source;
     }
 
     getSuccessMessage(): string {

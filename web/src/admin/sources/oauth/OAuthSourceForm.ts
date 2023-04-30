@@ -31,15 +31,13 @@ import {
 
 @customElement("ak-source-oauth-form")
 export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
-    loadInstance(pk: string): Promise<OAuthSource> {
-        return new SourcesApi(DEFAULT_CONFIG)
-            .sourcesOauthRetrieve({
-                slug: pk,
-            })
-            .then((source) => {
-                this.providerType = source.type;
-                return source;
-            });
+    async loadInstance(pk: string): Promise<OAuthSource> {
+        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthRetrieve({
+            slug: pk,
+        });
+        this.providerType = source.type;
+        this.clearIcon = false;
+        return source;
     }
 
     _modelName?: string;

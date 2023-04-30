@@ -28,16 +28,14 @@ import {
 
 @customElement("ak-source-plex-form")
 export class PlexSourceForm extends ModelForm<PlexSource, string> {
-    loadInstance(pk: string): Promise<PlexSource> {
-        return new SourcesApi(DEFAULT_CONFIG)
-            .sourcesPlexRetrieve({
-                slug: pk,
-            })
-            .then((source) => {
-                this.plexToken = source.plexToken;
-                this.loadServers();
-                return source;
-            });
+    async loadInstance(pk: string): Promise<PlexSource> {
+        const source = await new SourcesApi(DEFAULT_CONFIG).sourcesPlexRetrieve({
+            slug: pk,
+        });
+        this.plexToken = source.plexToken;
+        this.loadServers();
+        this.clearIcon = false;
+        return source;
     }
 
     @state()
