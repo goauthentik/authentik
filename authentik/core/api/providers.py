@@ -22,6 +22,8 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
 
     assigned_application_slug = ReadOnlyField(source="application.slug")
     assigned_application_name = ReadOnlyField(source="application.name")
+    assigned_backchannel_application_slug = ReadOnlyField(source="backchannel_application.slug")
+    assigned_backchannel_application_name = ReadOnlyField(source="backchannel_application.name")
 
     component = SerializerMethodField()
 
@@ -42,6 +44,8 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "component",
             "assigned_application_slug",
             "assigned_application_name",
+            "assigned_backchannel_application_slug",
+            "assigned_backchannel_application_name",
             "verbose_name",
             "verbose_name_plural",
             "meta_model_name",

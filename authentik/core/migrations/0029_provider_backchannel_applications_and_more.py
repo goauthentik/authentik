@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="provider",
-            name="backchannel_applications",
+            name="backchannel_application",
             field=models.ForeignKey(
                 default=None,
                 help_text="Accessed from applications; optional backchannel providers for protocols like LDAP and SCIM.",

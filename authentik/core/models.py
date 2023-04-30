@@ -270,7 +270,7 @@ class Provider(SerializerModel):
 
     property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 
-    backchannel_applications = models.ForeignKey(
+    backchannel_application = models.ForeignKey(
         "Application",
         default=None,
         null=True,
