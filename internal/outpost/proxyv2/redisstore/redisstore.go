@@ -1,3 +1,6 @@
+// SPDX-FileCopyrightText: 2020 BoxGo
+// SPDX-License-Identifier: MIT
+
 package redisstore
 
 import (
