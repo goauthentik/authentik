@@ -1,3 +1,4 @@
+import "@goauthentik/admin/applications/ProviderSelectModal";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import { rootInterface } from "@goauthentik/elements/Base";
@@ -12,7 +13,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
@@ -32,11 +33,15 @@ export class ApplicationForm extends ModelForm<Application, string> {
             slug: pk,
         });
         this.clearIcon = false;
+        this.backchannelProviders = app.backchannelProvidersObj || [];
         return app;
     }
 
     @property({ attribute: false })
     provider?: number;
+
+    @state()
+    backchannelProviders: Provider[] = [];
 
     @property({ type: Boolean })
     clearIcon = false;
@@ -51,6 +56,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
 
     async send(data: Application): Promise<Application | void> {
         let app: Application;
+        data.backchannelProviders = this.backchannelProviders.map((p) => p.pk);
         if (this.instance) {
             app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
                 slug: this.instance.slug,
@@ -143,6 +149,47 @@ export class ApplicationForm extends ModelForm<Application, string> {
                     ${t`Select a provider that this application should use.`}
                 </p>
             </ak-form-element-horizontal>
+
+            <ak-form-element-horizontal
+                label=${t`Backchannel providers`}
+                name="backchannelProviders"
+            >
+                <div class="pf-c-input-group">
+                    <ak-provider-select-table
+                        ?backchannelOnly=${true}
+                        .confirm=${(items: Provider[]) => {
+                            this.backchannelProviders = items;
+                            this.requestUpdate();
+                            return Promise.resolve();
+                        }}
+                    >
+                        <button slot="trigger" class="pf-c-button pf-m-control" type="button">
+                            <i class="fas fa-plus" aria-hidden="true"></i>
+                        </button>
+                    </ak-provider-select-table>
+                    <div class="pf-c-form-control">
+                        <ak-chip-group>
+                            ${this.backchannelProviders.map((provider) => {
+                                return html`<ak-chip
+                                    .removable=${true}
+                                    value=${ifDefined(provider.pk)}
+                                    @remove=${() => {
+                                        const idx = this.backchannelProviders.indexOf(provider);
+                                        this.backchannelProviders.splice(idx, 1);
+                                        this.requestUpdate();
+                                    }}
+                                >
+                                    ${provider.name}
+                                </ak-chip>`;
+                            })}
+                        </ak-chip-group>
+                    </div>
+                </div>
+                <p class="pf-c-form__helper-text">
+                    ${t`Select backchannel providers which augment the functionality of the main provider.`}
+                </p>
+            </ak-form-element-horizontal>
+
             <ak-form-element-horizontal
                 label=${t`Policy engine mode`}
                 ?required=${true}
