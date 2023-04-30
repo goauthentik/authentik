@@ -25,7 +25,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         return t`Successfully imported provider.`;
     }
 
-    send = (data: SAMLProvider): Promise<void> => {
+    async send(data: SAMLProvider): Promise<void> {
         const file = this.getFormFiles()["metadata"];
         if (!file) {
             throw new SentryIgnoredError("No form data");
@@ -35,7 +35,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
             name: data.name,
             authorizationFlow: data.authorizationFlow || "",
         });
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

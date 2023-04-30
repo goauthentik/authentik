@@ -46,7 +46,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
         }
     }
 
-    send = (data: LDAPProvider): Promise<LDAPProvider> => {
+    async send(data: LDAPProvider): Promise<LDAPProvider> {
         if (this.instance) {
             return new ProvidersApi(DEFAULT_CONFIG).providersLdapUpdate({
                 id: this.instance.pk || 0,
@@ -58,7 +58,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 lDAPProviderRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

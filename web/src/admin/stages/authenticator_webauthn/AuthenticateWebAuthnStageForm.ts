@@ -39,7 +39,7 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
         }
     }
 
-    send = (data: AuthenticateWebAuthnStage): Promise<AuthenticateWebAuthnStage> => {
+    async send(data: AuthenticateWebAuthnStage): Promise<AuthenticateWebAuthnStage> {
         if (data.authenticatorAttachment?.toString() === "") {
             data.authenticatorAttachment = null;
         }
@@ -53,7 +53,7 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                 authenticateWebAuthnStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

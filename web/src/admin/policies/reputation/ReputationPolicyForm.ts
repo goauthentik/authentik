@@ -28,7 +28,7 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
         }
     }
 
-    send = (data: ReputationPolicy): Promise<ReputationPolicy> => {
+    async send(data: ReputationPolicy): Promise<ReputationPolicy> {
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesReputationUpdate({
                 policyUuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
                 reputationPolicyRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

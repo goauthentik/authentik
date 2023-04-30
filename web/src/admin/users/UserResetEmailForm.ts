@@ -27,10 +27,10 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveReque
         return t`Successfully sent email.`;
     }
 
-    send = (data: CoreUsersRecoveryEmailRetrieveRequest): Promise<void> => {
+    async send(data: CoreUsersRecoveryEmailRetrieveRequest): Promise<void> {
         data.id = this.user.pk;
         return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailRetrieve(data);
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

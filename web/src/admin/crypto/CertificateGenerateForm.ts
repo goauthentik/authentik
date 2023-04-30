@@ -15,11 +15,11 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
         return t`Successfully generated certificate-key pair.`;
     }
 
-    send = (data: CertificateGenerationRequest): Promise<CertificateKeyPair> => {
+    async send(data: CertificateGenerationRequest): Promise<CertificateKeyPair> {
         return new CryptoApi(DEFAULT_CONFIG).cryptoCertificatekeypairsGenerateCreate({
             certificateGenerationRequest: data,
         });
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

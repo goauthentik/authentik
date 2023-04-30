@@ -37,7 +37,7 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
         }
     }
 
-    send = (data: AuthenticatorTOTPStage): Promise<AuthenticatorTOTPStage> => {
+    async send(data: AuthenticatorTOTPStage): Promise<AuthenticatorTOTPStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorTotpUpdate({
                 stageUuid: this.instance.pk || "",
@@ -48,7 +48,7 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
                 authenticatorTOTPStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

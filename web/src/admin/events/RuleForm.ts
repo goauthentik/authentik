@@ -44,7 +44,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
         }
     }
 
-    send = (data: NotificationRule): Promise<NotificationRule> => {
+    async send(data: NotificationRule): Promise<NotificationRule> {
         if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsRulesUpdate({
                 pbmUuid: this.instance.pk || "",
@@ -55,7 +55,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 notificationRuleRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

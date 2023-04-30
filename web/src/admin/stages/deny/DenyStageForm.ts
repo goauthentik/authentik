@@ -26,7 +26,7 @@ export class DenyStageForm extends ModelForm<DenyStage, string> {
         }
     }
 
-    send = (data: DenyStage): Promise<DenyStage> => {
+    async send(data: DenyStage): Promise<DenyStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesDenyUpdate({
                 stageUuid: this.instance.pk || "",
@@ -37,7 +37,7 @@ export class DenyStageForm extends ModelForm<DenyStage, string> {
                 denyStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

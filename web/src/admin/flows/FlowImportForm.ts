@@ -26,7 +26,7 @@ export class FlowImportForm extends Form<Flow> {
         return super.styles.concat(PFDescriptionList);
     }
 
-    send = async (): Promise<FlowImportResult> => {
+    async send(): Promise<FlowImportResult> {
         const file = this.getFormFiles()["flow"];
         if (!file) {
             throw new SentryIgnoredError("No form data");
@@ -39,7 +39,7 @@ export class FlowImportForm extends Form<Flow> {
             throw new SentryIgnoredError("Failed to import flow");
         }
         return result;
-    };
+    }
 
     renderResult(): TemplateResult {
         return html`

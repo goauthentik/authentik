@@ -29,7 +29,7 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
         }
     }
 
-    send = (data: UserLoginStage): Promise<UserLoginStage> => {
+    async send(data: UserLoginStage): Promise<UserLoginStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserLoginUpdate({
                 stageUuid: this.instance.pk || "",
@@ -40,7 +40,7 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
                 userLoginStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

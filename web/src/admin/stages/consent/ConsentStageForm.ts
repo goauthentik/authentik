@@ -36,7 +36,7 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
         }
     }
 
-    send = (data: ConsentStage): Promise<ConsentStage> => {
+    async send(data: ConsentStage): Promise<ConsentStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesConsentUpdate({
                 stageUuid: this.instance.pk || "",
@@ -47,7 +47,7 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
                 consentStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

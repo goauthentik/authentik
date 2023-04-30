@@ -44,7 +44,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
         }
     }
 
-    send = (data: NotificationTransport): Promise<NotificationTransport> => {
+    async send(data: NotificationTransport): Promise<NotificationTransport> {
         if (this.instance) {
             return new EventsApi(DEFAULT_CONFIG).eventsTransportsUpdate({
                 uuid: this.instance.pk || "",
@@ -55,7 +55,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 notificationTransportRequest: data,
             });
         }
-    };
+    }
 
     onModeChange(mode: string | undefined): void {
         if (

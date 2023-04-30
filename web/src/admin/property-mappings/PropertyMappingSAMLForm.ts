@@ -28,7 +28,7 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
         }
     }
 
-    send = (data: SAMLPropertyMapping): Promise<SAMLPropertyMapping> => {
+    async send(data: SAMLPropertyMapping): Promise<SAMLPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsSamlUpdate({
                 pmUuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
                 sAMLPropertyMappingRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

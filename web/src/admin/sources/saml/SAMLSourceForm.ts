@@ -54,7 +54,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
         }
     }
 
-    send = async (data: SAMLSource): Promise<SAMLSource> => {
+    async send(data: SAMLSource): Promise<SAMLSource> {
         let source: SAMLSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesSamlUpdate({
@@ -85,7 +85,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
             });
         }
         return source;
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

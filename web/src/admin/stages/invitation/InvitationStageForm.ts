@@ -27,7 +27,7 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
         }
     }
 
-    send = (data: InvitationStage): Promise<InvitationStage> => {
+    async send(data: InvitationStage): Promise<InvitationStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesInvitationStagesUpdate({
                 stageUuid: this.instance.pk || "",
@@ -38,7 +38,7 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
                 invitationStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

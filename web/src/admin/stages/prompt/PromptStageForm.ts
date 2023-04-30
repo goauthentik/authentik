@@ -47,7 +47,7 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
         }
     }
 
-    send = (data: PromptStage): Promise<PromptStage> => {
+    async send(data: PromptStage): Promise<PromptStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesPromptStagesUpdate({
                 stageUuid: this.instance.pk || "",
@@ -58,7 +58,7 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
                 promptStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

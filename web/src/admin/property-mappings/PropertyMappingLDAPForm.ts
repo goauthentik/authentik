@@ -28,7 +28,7 @@ export class PropertyMappingLDAPForm extends ModelForm<LDAPPropertyMapping, stri
         }
     }
 
-    send = (data: LDAPPropertyMapping): Promise<LDAPPropertyMapping> => {
+    async send(data: LDAPPropertyMapping): Promise<LDAPPropertyMapping> {
         if (this.instance) {
             return new PropertymappingsApi(DEFAULT_CONFIG).propertymappingsLdapUpdate({
                 pmUuid: this.instance.pk || "",
@@ -39,7 +39,7 @@ export class PropertyMappingLDAPForm extends ModelForm<LDAPPropertyMapping, stri
                 lDAPPropertyMappingRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

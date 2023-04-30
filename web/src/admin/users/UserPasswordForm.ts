@@ -19,12 +19,12 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
         return t`Successfully updated password.`;
     }
 
-    send = (data: UserPasswordSetRequest): Promise<void> => {
+    async send(data: UserPasswordSetRequest): Promise<void> {
         return new CoreApi(DEFAULT_CONFIG).coreUsersSetPasswordCreate({
             id: this.instancePk || 0,
             userPasswordSetRequest: data,
         });
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

@@ -26,7 +26,7 @@ export class UserDeleteStageForm extends ModelForm<UserDeleteStage, string> {
         }
     }
 
-    send = (data: UserDeleteStage): Promise<UserDeleteStage> => {
+    async send(data: UserDeleteStage): Promise<UserDeleteStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesUserDeleteUpdate({
                 stageUuid: this.instance.pk || "",
@@ -37,7 +37,7 @@ export class UserDeleteStageForm extends ModelForm<UserDeleteStage, string> {
                 userDeleteStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

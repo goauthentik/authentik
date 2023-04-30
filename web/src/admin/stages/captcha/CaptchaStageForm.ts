@@ -27,7 +27,7 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
         }
     }
 
-    send = (data: CaptchaStage): Promise<CaptchaStage> => {
+    async send(data: CaptchaStage): Promise<CaptchaStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesCaptchaPartialUpdate({
                 stageUuid: this.instance.pk || "",
@@ -38,7 +38,7 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
                 captchaStageRequest: data as unknown as CaptchaStageRequest,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

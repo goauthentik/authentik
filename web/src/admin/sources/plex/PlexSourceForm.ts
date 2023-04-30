@@ -61,7 +61,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
         }
     }
 
-    send = async (data: PlexSource): Promise<PlexSource> => {
+    async send(data: PlexSource): Promise<PlexSource> {
         data.plexToken = this.plexToken || "";
         let source: PlexSource;
         if (this.instance?.pk) {
@@ -93,7 +93,7 @@ export class PlexSourceForm extends ModelForm<PlexSource, string> {
             });
         }
         return source;
-    };
+    }
 
     async doAuth(): Promise<void> {
         const authInfo = await PlexAPIClient.getPin(this.instance?.clientId || "");

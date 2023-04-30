@@ -49,7 +49,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
         }
     }
 
-    send = async (data: Application): Promise<Application | void> => {
+    async send(data: Application): Promise<Application | void> {
         let app: Application;
         if (this.instance) {
             app = await new CoreApi(DEFAULT_CONFIG).coreApplicationsUpdate({
@@ -80,7 +80,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
             });
         }
         return app;
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

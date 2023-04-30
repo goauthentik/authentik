@@ -35,7 +35,7 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
         }
     }
 
-    send = (data: AuthenticatorStaticStage): Promise<AuthenticatorStaticStage> => {
+    async send(data: AuthenticatorStaticStage): Promise<AuthenticatorStaticStage> {
         if (this.instance) {
             return new StagesApi(DEFAULT_CONFIG).stagesAuthenticatorStaticUpdate({
                 stageUuid: this.instance.pk || "",
@@ -46,7 +46,7 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
                 authenticatorStaticStageRequest: data,
             });
         }
-    };
+    }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
