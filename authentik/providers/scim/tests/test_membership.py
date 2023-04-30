@@ -6,7 +6,7 @@ from requests_mock import Mocker
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
 from authentik.lib.generators import generate_id
-from authentik.providers.scim.clients.base import default_service_provider_config
+from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
 
@@ -39,7 +39,7 @@ class SCIMMembershipTests(TestCase):
 
     def test_member_add(self):
         """Test member add"""
-        config = default_service_provider_config()
+        config = ServiceProviderConfiguration.default()
         config.patch.supported = True
         user_scim_id = generate_id()
         group_scim_id = generate_id()
@@ -123,7 +123,7 @@ class SCIMMembershipTests(TestCase):
 
     def test_member_remove(self):
         """Test member remove"""
-        config = default_service_provider_config()
+        config = ServiceProviderConfiguration.default()
         config.patch.supported = True
         user_scim_id = generate_id()
         group_scim_id = generate_id()
