@@ -30,10 +30,13 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
 
     @property
     def is_fallback(self) -> bool:
+        """Check if this service provider config was retrieved from the API endpoint
+        or a fallback was used"""
         return self._is_fallback
 
     @staticmethod
     def default() -> "ServiceProviderConfiguration":
+        """Get default configuration, which doesn't support any optional features as fallback"""
         return ServiceProviderConfiguration(
             patch=Patch(supported=False),
             bulk=Bulk(supported=False),

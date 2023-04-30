@@ -117,7 +117,8 @@ class SCIMMembershipTests(TestCase):
                             "path": "members",
                             "value": [{"value": user_scim_id}],
                         }
-                    ]
+                    ],
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                 },
             )
 
@@ -201,7 +202,8 @@ class SCIMMembershipTests(TestCase):
                             "path": "members",
                             "value": [{"value": user_scim_id}],
                         }
-                    ]
+                    ],
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                 },
             )
 
@@ -227,6 +229,7 @@ class SCIMMembershipTests(TestCase):
                             "path": "members",
                             "value": [{"value": user_scim_id}],
                         }
-                    ]
+                    ],
+                    "schemas": ["urn:ietf:params:scim:api:messages:2.0:PatchOp"],
                 },
             )

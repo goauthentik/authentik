@@ -122,7 +122,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             # sync, send patch add requests for all the users the group currently has
             # TODO: send patch request for group name
             users = list(group.users.order_by("id").values_list("id", flat=True))
-            self._patch_add_users(group, users)
+            return self._patch_add_users(group, users)
 
     def _patch(
         self,
