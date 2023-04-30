@@ -2,36 +2,17 @@
 from typing import Generic, TypeVar
 
 from pydantic import ValidationError
-from pydanticscim.service_provider import (
-    Bulk,
-    ChangePassword,
-    Filter,
-    Patch,
-    ServiceProviderConfiguration,
-    Sort,
-)
 from requests import RequestException, Session
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_http_session
 from authentik.providers.scim.clients.exceptions import ResourceMissing, SCIMRequestException
+from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMProvider
 
 T = TypeVar("T")
 # pylint: disable=invalid-name
 SchemaType = TypeVar("SchemaType")
-
-
-def default_service_provider_config() -> ServiceProviderConfiguration:
-    """Fallback service provider configuration"""
-    return ServiceProviderConfiguration(
-        patch=Patch(supported=False),
-        bulk=Bulk(supported=False),
-        filter=Filter(supported=False),
-        changePassword=ChangePassword(supported=False),
-        sort=Sort(supported=False),
-        authenticationSchemes=[],
-    )
 
 
 class SCIMClient(Generic[T, SchemaType]):
@@ -85,7 +66,7 @@ class SCIMClient(Generic[T, SchemaType]):
 
     def get_service_provider_config(self):
         """Get Service provider config"""
-        default_config = default_service_provider_config()
+        default_config = ServiceProviderConfiguration.default()
         try:
             return ServiceProviderConfiguration.parse_obj(
                 self._request("GET", "/ServiceProviderConfig")

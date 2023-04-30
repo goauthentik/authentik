@@ -94,7 +94,8 @@ def scim_sync_users(page: int, provider_pk: int):
                     }
                 )
             )
-        except StopSync:
+        except StopSync as exc:
+            LOGGER.warning("Stopping sync", exc=exc)
             break
     return messages
 
@@ -126,7 +127,8 @@ def scim_sync_group(page: int, provider_pk: int):
                     }
                 )
             )
-        except StopSync:
+        except StopSync as exc:
+            LOGGER.warning("Stopping sync", exc=exc)
             break
     return messages
 
