@@ -43,8 +43,6 @@ def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
 class UNSET:
     """Used to test whether configuration key has not been set."""
 
-    pass
-
 
 class ConfigLoader:
     """Search through SEARCH_PATHS and load configuration. Environment variables starting with

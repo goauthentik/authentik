@@ -67,7 +67,7 @@ class CustomQoS(RedisQoS):
                         withscores=True,
                     )
 
-                    for tag, score in visible or []:
+                    for tag, _ in visible or []:
                         self.restore_by_tag(tag, client)
             except MutexHeld:
                 pass
@@ -172,14 +172,20 @@ class CustomChannel(Channel):
         self.client_config = client_config
         return pool
 
-    def exchange_bind(self, destination, source="", routing_key="", nowait=False, arguments=None):
-        super().exchange_bind(destination, source, routing_key, nowait, arguments)
+    def exchange_bind(self, *args, **kwargs):
+        raise NotImplementedError()
 
-    def exchange_unbind(self, destination, source="", routing_key="", nowait=False, arguments=None):
-        super().exchange_unbind(destination, source, routing_key, nowait, arguments)
+    def exchange_unbind(self, *args, **kwargs):
+        raise NotImplementedError()
 
     def flow(self, active=True):
-        super().flow(active)
+        """Enable/disable message flow.
+
+        Raises:
+            NotImplementedError: as flow
+                is not implemented by the base virtual implementation.
+        """
+        raise NotImplementedError("Redis channels do not support flow.")
 
 
 class CustomTransport(Transport):

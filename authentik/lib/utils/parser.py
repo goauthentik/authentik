@@ -50,26 +50,26 @@ def to_bool(value):
     return bool(value)
 
 
-def parse_duration_to_sec(s: str) -> float:
+def parse_duration_to_sec(duration_str: str) -> float:
     # This function parses a duration string into a float of seconds.
     # It supports the following units: ns, us, ms, s, m, h.
     # It returns a ValueError if the string is invalid or empty.
-    if not s:
+    if not duration_str:
         raise ValueError("empty string")
     units = {"ns": 1e-9, "us": 1e-6, "ms": 1e-3, "s": 1.0, "m": 60.0, "h": 3600.0}
     result = 0.0
     num = ""
-    for c in s:
-        if c.isdigit() or c == ".":
-            num += c
-        elif c.isalpha():
+    for duration_char in duration_str:
+        if duration_char.isdigit() or duration_char == ".":
+            num += duration_char
+        elif duration_char.isalpha():
             if num == "":
                 raise ValueError("invalid format")
-            unit = c
+            unit = duration_char
             while unit not in units:
                 if len(unit) == 2:
                     raise ValueError("unknown unit")
-                unit = c + s[s.index(c) + 1]
+                unit = duration_char + duration_str[duration_str.index(duration_char) + 1]
             result += float(num) * units[unit]
             num = ""
         else:
@@ -79,25 +79,25 @@ def parse_duration_to_sec(s: str) -> float:
     return result
 
 
-def val_to_sec(vs: list[bytes]):
+def val_to_sec(values: list[bytes]):
     """Convert a list of string bytes into a duration in seconds"""
     result = None
-    for v in vs:
+    for value in values:
         try:
-            result = parse_duration_to_sec(str(v))
+            result = parse_duration_to_sec(str(value))
             return result
         except ValueError:
-            result = int(v)
+            result = int(value)
     return result
 
 
-def parse_hostport(s, default_port=6379):
+def parse_hostport(addr_str, default_port=6379):
     """Convert string into host port"""
-    if s[-1] == "]":
+    if addr_str[-1] == "]":
         # ipv6 literal (with no port)
-        return s, default_port
+        return addr_str, default_port
 
-    out = s.rsplit(":", 1)
+    out = addr_str.rsplit(":", 1)
     if len(out) == 1:
         # No port
         port = default_port
@@ -105,7 +105,7 @@ def parse_hostport(s, default_port=6379):
         try:
             port = int(out[1])
         except ValueError:
-            raise ValueError("Invalid host:port '%s'" % s)
+            raise ValueError("Invalid host:port '%s'" % addr_str)
 
     return out[0], port
 
