@@ -240,7 +240,6 @@ def get_redis_options(
                 case "insecureskipverify":
                     if to_bool(value_str):
                         tls_kwargs["ssl_cert_reqs"] = "none"
-                # Later on use .readonly() on the resulting redis object!
                 case "minidleconns" | "maxredirects" | "routebylatency" | "routerandomly":
                     print(
                         'The configuration option "'
@@ -488,8 +487,6 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
                 sentinel_config["connection_class"] = redis_connection_class
                 connection_pool = connection_pool_class(**config["pool_kwargs"], **sentinel_config)
                 sentinel_client = redis_class(connection_pool=connection_pool)
-                if config["redis_kwargs"].get("readonly", False):
-                    sentinel_client.readonly()
                 sentinel.sentinels.append(sentinel_client)
             pool_kwargs = sentinel.connection_kwargs
             pool_kwargs |= {"is_master": not config.get("is_slave", False)}
@@ -505,6 +502,7 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
                 "startup_nodes": [cluster_node_class(*node) for node in config["addrs"]],
                 "cluster_error_retry_attempts": config["cluster_error_retry_attempts"],
                 "skip_full_coverage_check": True,
+                "read_from_replicas": config["redis_kwargs"].get("readonly", False),
             }
             client_config["client_class"] = redis_cluster_class
         case "socket":
@@ -524,9 +522,6 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
             )
             client_config["client_class"] = redis_class
 
-    if config["redis_kwargs"].get("readonly", False):
-        client_config["readonly"] = True
-
     return connection_pool, client_config
 
 
@@ -535,8 +530,6 @@ def get_client(client_config, connection_pool=None):
     if connection_pool is not None:
         client_config.setdefault("client_kwargs", {})["connection_pool"] = connection_pool
     client = client_config["client_class"](**client_config["client_kwargs"])
-    if client_config.get("readonly", False):
-        client.readyonly()
     return client
 
 
