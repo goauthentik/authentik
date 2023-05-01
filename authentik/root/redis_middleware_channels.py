@@ -51,11 +51,7 @@ class CustomChannelLayer(RedisChannelLayer):
     encryption are provided.
     """
 
-    def __init__(
-        self,
-        url=None,
-        **kwargs
-    ):
+    def __init__(self, url=None, **kwargs):
         url = urlparse(url)
         # Since RedisChannelLayer is using BRPOP we disable socket timeout
         # https://github.com/redis/redis-py/issues/583

@@ -172,12 +172,10 @@ class CustomChannel(Channel):
         self.client_config = client_config
         return pool
 
-    def exchange_bind(self, destination, source='', routing_key='',
-                      nowait=False, arguments=None):
+    def exchange_bind(self, destination, source="", routing_key="", nowait=False, arguments=None):
         super().exchange_bind(destination, source, routing_key, nowait, arguments)
 
-    def exchange_unbind(self, destination, source='', routing_key='',
-                        nowait=False, arguments=None):
+    def exchange_unbind(self, destination, source="", routing_key="", nowait=False, arguments=None):
         super().exchange_unbind(destination, source, routing_key, nowait, arguments)
 
     def flow(self, active=True):
@@ -198,7 +196,7 @@ class CustomTransport(Transport):
             )
             self.cycle = ClusterPoller()
 
-    def as_uri(self, uri: str, include_password=False, mask='**') -> str:
+    def as_uri(self, uri: str, include_password=False, mask="**") -> str:
         """Customise the display format of the URI."""
         raise NotImplementedError()
 
