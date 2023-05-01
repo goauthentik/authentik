@@ -1,7 +1,6 @@
 # flake8: noqa
-from redis_sentinel_url import connect as redis_connect
-
 from authentik.lib.config import CONFIG
+from authentik.lib.utils.parser import parse_url
 from lifecycle.migrate import BaseMigration
 
 SQL_STATEMENT = """BEGIN TRANSACTION;
@@ -107,5 +106,5 @@ class Migration(BaseMigration):
         self.cur.execute(SQL_STATEMENT)
         self.con.commit()
         # We also need to clean the cache to make sure no pickeled objects still exist
-        _, redis = redis_connect(CONFIG.y("redis.url"))
+        _, redis = parse_url(CONFIG.y("redis.url"))
         redis.flushall()

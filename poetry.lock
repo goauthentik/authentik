@@ -3090,21 +3090,6 @@ hiredis = ["hiredis (>=1.0.0)"]
 ocsp = ["cryptography (>=36.0.1)", "pyopenssl (==20.0.1)", "requests (>=2.26.0)"]
 
 [[package]]
-name = "redis-sentinel-url"
-version = "1.0.1"
-description = "A factory for redis connection that supports using Redis Sentinel"
-category = "main"
-optional = false
-python-versions = "*"
-files = [
-    {file = "Redis-Sentinel-Url-1.0.1.tar.gz", hash = "sha256:ec1854ab9379a28789423c3cd4082739fb69c7b4b11bb50ae7858697c131b13e"},
-    {file = "Redis_Sentinel_Url-1.0.1-py2.py3-none-any.whl", hash = "sha256:c6991e2000c5c7a5e2b95eb2d62fd5b0a6b02a59554caf0f9f79d18e152d9663"},
-]
-
-[package.dependencies]
-redis = ">=2.10.3"
-
-[[package]]
 name = "requests"
 version = "2.28.1"
 description = "Python HTTP for Humans."
@@ -4267,4 +4252,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "82fc267d6041997d1410a951033cdb9f6c57d91df7d48acaecdbab320daab58e"
+content-hash = "4492b0d10853556d6db2f9c045d2734768d4ff050bb323c874025128f5120e63"
