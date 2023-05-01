@@ -7,7 +7,15 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-var serializer SessionSerializer
+var (
+	serializer SessionSerializer
+	// Types not supported at top level by the Gob Encoder.
+	unsupportedValues = map[interface{}]interface{}{
+		make(chan int): func(a int) bool { return true },
+	}
+	// Data not supported for deserialization
+	unsupportedData = []byte{0xfb, 0xa5, 0x82, 0x2f, 0xca, 0x1}
+)
 
 func newSession() *sessions.Session {
 	st := sessions.NewFilesystemStore("")
@@ -58,6 +66,16 @@ func TestDeserializeJSON(t *testing.T) {
 	}
 }
 
+func TestDeserializeJSONFail(t *testing.T) {
+	serializer = JSONSerializer{}
+	b := []byte{0xfb, 0xa5, 0x82, 0x2f, 0xca, 0x1}
+	if err := serializer.Deserialize(b, &sessions.Session{}); err == nil {
+		t.Error("expected error from invalid data for deserialization")
+	} else if err.Error() != "invalid character 'û' looking for beginning of value" {
+		t.Error("expected error from invalid character; got", err)
+	}
+}
+
 func TestSerializeGob(t *testing.T) {
 	serializer = GobSerializer{}
 	_, err := serializer.Serialize(newSession())
@@ -65,11 +83,6 @@ func TestSerializeGob(t *testing.T) {
 	if err != nil {
 		t.Fatal("failed to serialize session", err)
 	}
-}
-
-// Types not supported at top level by the Gob Encoder.
-var unsupportedValues = map[interface{}]interface{}{
-	make(chan int): func(a int) bool { return true },
 }
 
 func TestSerializeGobFail(t *testing.T) {
@@ -101,5 +114,15 @@ func TestDeserializeGob(t *testing.T) {
 
 	if !reflect.DeepEqual(origSession.Values, deserealizedSession.Values) {
 		t.Fatal("deserialized session does not equal original session", err)
+	}
+}
+
+func TestDeserializeGobFail(t *testing.T) {
+	serializer = GobSerializer{}
+
+	if err := serializer.Deserialize(unsupportedData, &sessions.Session{}); err == nil {
+		t.Error("expected error from invalid data for deserialization")
+	} else if err.Error() != "invalid message length" {
+		t.Error("expected error from invalid data length; got", err)
 	}
 }
