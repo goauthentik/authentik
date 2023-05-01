@@ -20,7 +20,6 @@ func (s JSONSerializer) Serialize(sess *sessions.Session) ([]byte, error) {
 		ks, ok := k.(string)
 		if !ok {
 			err := fmt.Errorf("non-string key value, cannot serialize session to JSON: %v", k)
-			fmt.Printf("redistore.JSONSerializer.serialize() Error: %v", err)
 			return nil, err
 		}
 		m[ks] = v
@@ -33,7 +32,6 @@ func (s JSONSerializer) Deserialize(d []byte, sess *sessions.Session) error {
 	m := make(map[string]interface{})
 	err := json.Unmarshal(d, &m)
 	if err != nil {
-		fmt.Printf("redistore.JSONSerializer.deserialize() Error: %v", err)
 		return err
 	}
 	if sess.Values == nil {
