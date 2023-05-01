@@ -168,7 +168,7 @@ func (st *RedisStore) Delete(r *http.Request, w http.ResponseWriter, session *se
 }
 
 func (st *RedisStore) Keys() ([]string, error) {
-	cmd := st.client.Do(context.Background(), "KEYS", fmt.Sprintf("%s*", st.keyPrefix))
+	cmd := st.client.Do(context.Background(), "keys", fmt.Sprintf("%s*", st.keyPrefix))
 	keys, err := cmd.StringSlice()
 	return keys, err
 }
@@ -201,7 +201,7 @@ func (st *RedisStore) SetOptions(opts *sessions.Options) {
 }
 
 func (st *RedisStore) save(session *sessions.Session) error {
-	b, err := st.serializer.Serialize(session)
+	b, err := st.Serialize(session)
 	if err != nil {
 		return err
 	}
@@ -219,7 +219,7 @@ func (st *RedisStore) load(session *sessions.Session) (bool, error) {
 		return false, err
 	}
 
-	return true, st.serializer.Deserialize(b, session)
+	return true, st.Deserialize(b, session)
 }
 
 func (st *RedisStore) delete(session *sessions.Session) error {

@@ -6,6 +6,7 @@ package redisstore
 import (
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 	"time"
 
@@ -19,8 +20,6 @@ func TestNew(t *testing.T) {
 
 	store, err := NewStoreWithUniversalClient(db,
 		WithKeyPairs([]byte("test")),
-		WithKeyPrefix("amazing.gao_"),
-		WithSerializer(&serializer.JSONSerializer{}),
 	)
 	if err != nil {
 		t.Fatal("failed to create redis store", err)
@@ -40,17 +39,17 @@ func TestNew(t *testing.T) {
 	}
 }
 
-func TestSave(t *testing.T) {
+func TestSaveAndGet(t *testing.T) {
 	db, mock := redismock.NewClientMock()
 
 	store, err := NewStoreWithUniversalClient(db,
 		WithKeyPairs([]byte("test")),
-		WithKeyPrefix("amazing.gao_"),
-		WithSerializer(&serializer.JSONSerializer{}),
 	)
 	if err != nil {
 		t.Fatal("failed to create redis store", err)
 	}
+
+	store.keyGenFunc = nil
 
 	req, err := http.NewRequest("GET", "http://www.example.com", nil)
 	if err != nil {
@@ -63,7 +62,7 @@ func TestSave(t *testing.T) {
 		t.Fatal("failed to create session", err)
 	}
 
-	mock.Regexp().ExpectSet(`amazing\.gao_[A-Z0-9]{52}`, `\[[0-9 ]+\]`, time.Duration(session.Options.MaxAge) * time.Second).SetVal("OK")
+	mock.Regexp().ExpectSet(`session_[A-Z0-9]{52}`, `\[[0-9 ]+\]`, time.Duration(session.Options.MaxAge) * time.Second).SetVal("OK")
 
 	session.Values["key"] = "value"
 	err = session.Save(req, w)
@@ -71,18 +70,40 @@ func TestSave(t *testing.T) {
 		t.Fatal("failed to save: ", err)
 	}
 
+	value, err := store.Serialize(session)
+	if err != nil {
+		t.Fatal("failed to serialize session: ", err)
+	}
+
+	mock.ExpectGet(store.keyPrefix + session.ID).SetVal(string(value))
+
+	req.AddCookie(w.Result().Cookies()[0])
+	duplicateSession, err := store.New(req, "hello")
+	if err != nil {
+		t.Fatal("failed to re-create existing session", err)
+	} else if !reflect.DeepEqual(duplicateSession.Values, session.Values) {
+		t.Fatal("wrong values in re-created session")
+	}
+
+	mock.ExpectGet(store.keyPrefix + session.ID).SetVal(string(value))
+
+	duplicateSession, err = store.Get(req, "hello")
+	if err != nil {
+		t.Fatal("failed to get existing session", err)
+	} else if !reflect.DeepEqual(duplicateSession.Values, session.Values) {
+		t.Fatal("wrong values in returned session")
+	}
+
 	if err := mock.ExpectationsWereMet(); err != nil {
 		t.Error(err)
 	}
 }
 
-func TestDelete(t *testing.T) {
+func TestDeleteByKey(t *testing.T) {
 	db, mock := redismock.NewClientMock()
 
 	store, err := NewStoreWithUniversalClient(db,
 		WithKeyPairs([]byte("test")),
-		WithKeyPrefix("amazing.gao_"),
-		WithSerializer(&serializer.JSONSerializer{}),
 	)
 	if err != nil {
 		t.Fatal("failed to create redis store", err)
@@ -99,7 +120,7 @@ func TestDelete(t *testing.T) {
 		t.Fatal("failed to create session", err)
 	}
 
-	mock.Regexp().ExpectSet(`amazing\.gao_[A-Z0-9]{52}`, `\[[0-9 ]+\]`, time.Duration(session.Options.MaxAge) * time.Second).SetVal("OK")
+	mock.Regexp().ExpectSet(`session_[A-Z0-9]{52}`, `\[[0-9 ]+\]`, time.Duration(session.Options.MaxAge) * time.Second).SetVal("OK")
 
 	session.Values["key"] = "value"
 	err = session.Save(req, w)
@@ -107,12 +128,71 @@ func TestDelete(t *testing.T) {
 		t.Fatal("failed to save session: ", err)
 	}
 
-	mock.Regexp().ExpectDel(session.ID).SetVal(1)
+	mock.ExpectDel(store.keyPrefix + session.ID).SetVal(1)
+
+	err = store.DeleteByKey(store.keyPrefix + session.ID)
+	if err != nil {
+		t.Fatal("failed to delete session: ", err)
+	}
+
+	mock.ExpectDel(store.keyPrefix + session.ID).SetVal(1)
+
+	err = store.Delete(req, w, session)
+	if err != nil {
+		t.Fatal("failed to delete store: ", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Error(err)
+	}
+}
+
+func TestDeleteByMaxAge(t *testing.T) {
+	db, mock := redismock.NewClientMock()
+
+	store, err := NewStoreWithUniversalClient(db,
+		WithKeyPairs([]byte("test")),
+	)
+	if err != nil {
+		t.Fatal("failed to create redis store", err)
+	}
+
+	req, err := http.NewRequest("GET", "http://www.example.com", nil)
+	if err != nil {
+		t.Fatal("failed to create request", err)
+	}
+	w := httptest.NewRecorder()
+
+	session, err := store.New(req, "hello")
+	if err != nil {
+		t.Fatal("failed to create session", err)
+	}
+
+	mock.Regexp().ExpectSet(`session_[A-Z0-9]{52}`, `\[[0-9 ]+\]`, time.Duration(session.Options.MaxAge) * time.Second).SetVal("OK")
+
+	session.Values["key"] = "value"
+	err = session.Save(req, w)
+	if err != nil {
+		t.Fatal("failed to save session: ", err)
+	}
+
+	mock.ExpectDel(store.keyPrefix + session.ID).SetVal(1)
 
 	session.Options.MaxAge = -1
 	err = session.Save(req, w)
 	if err != nil {
 		t.Fatal("failed to delete session: ", err)
+	}
+
+	mock.ExpectDel(store.keyPrefix + session.ID).SetVal(1)
+
+	err = store.Delete(req, w, session)
+	if err != nil {
+		t.Fatal("failed to delete store: ", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err != nil {
+		t.Error(err)
 	}
 }
 
