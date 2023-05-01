@@ -36,6 +36,9 @@ func (s JSONSerializer) Deserialize(d []byte, sess *sessions.Session) error {
 		fmt.Printf("redistore.JSONSerializer.deserialize() Error: %v", err)
 		return err
 	}
+	if sess.Values == nil {
+		sess.Values = make(map[interface{}]interface{})
+	}
 	for k, v := range m {
 		sess.Values[k] = v
 	}

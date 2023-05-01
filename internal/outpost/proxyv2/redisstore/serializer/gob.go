@@ -26,6 +26,6 @@ func (s GobSerializer) Serialize(sess *sessions.Session) ([]byte, error) {
 
 // Deserialize back to map[interface{}]interface{}
 func (s GobSerializer) Deserialize(d []byte, sess *sessions.Session) error {
-	dec := gob.NewDecoder(bytes.NewBuffer(d))
+	dec := gob.NewDecoder(bytes.NewReader(d))
 	return dec.Decode(&sess.Values)
 }
