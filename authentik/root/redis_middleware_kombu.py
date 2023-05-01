@@ -74,7 +74,10 @@ class CustomQoS(RedisQoS):
 
 
 class ClusterPoller(MultiChannelPoller):
+    """Custom async I/O poller with Redis cluster support for Redis transport"""
+
     def _register(self, channel, client, conn, cmd):
+        """Register the poller and make connection"""
         ident = (channel, client, conn, cmd)
 
         if ident in self._chan_to_sock:
@@ -89,10 +92,12 @@ class ClusterPoller(MultiChannelPoller):
         self.poller.register(sock, self.eventflags)
 
     def _unregister(self, channel, client, conn, cmd):
+        """Unreegister the poller"""
         sock = self._chan_to_sock[(channel, client, conn, cmd)]
         self.poller.unregister(sock)
 
     def _register_BRPOP(self, channel):
+        """Register poller and start BRPOP"""
         conns = self._get_conns_for_channel(channel)
 
         for conn in conns:
@@ -106,6 +111,7 @@ class ClusterPoller(MultiChannelPoller):
             channel._brpop_start()
 
     def _get_conns_for_channel(self, channel):
+        """Get all connections for a specific channel"""
         if self._chan_to_sock:
             return [conn for _, _, conn, _ in self._chan_to_sock]
 
@@ -114,14 +120,18 @@ class ClusterPoller(MultiChannelPoller):
             for key in channel.active_queues
         ]
 
+    # pylint: disable=inconsistent-return-statements
     def handle_event(self, fileno, event):
+        """Handle an event"""
         if event & READ:
             return self.on_readable(fileno), self
         if event & ERR:
             chan, conn, cmd = self._fd_to_chan[fileno]
-            return chan._poll_error(cmd, conn), self
+            chan._poll_error(cmd, conn)
 
+    # pylint: disable=inconsistent-return-statements
     def on_readable(self, fileno):
+        """Handle read event"""
         try:
             chan, conn, cmd = self._fd_to_chan[fileno]
         except KeyError:
@@ -173,9 +183,21 @@ class CustomChannel(Channel):
         return pool
 
     def exchange_bind(self, *args, **kwargs):
+        """Bind an exchange to an exchange.
+
+        Raises:
+            NotImplementedError: as exchange_bind
+                is not implemented by the base virtual implementation.
+        """
         raise NotImplementedError()
 
     def exchange_unbind(self, *args, **kwargs):
+        """Unbind an exchange from an exchange.
+
+        Raises:
+            NotImplementedError: as exchange_unbind
+                is not implemented by the base virtual implementation.
+        """
         raise NotImplementedError()
 
     def flow(self, active=True):

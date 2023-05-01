@@ -24,6 +24,7 @@ class CustomLoopLayer:
         self._connections = {}
 
     def get_connection(self, index):
+        """Get Redis connection"""
         if index not in self._connections:
             pool, client_config = get_connection_pool(
                 self.channel_layer.config[index], use_async=True
@@ -36,6 +37,7 @@ class CustomLoopLayer:
         return self._connections[index]
 
     async def flush(self):
+        """Close all open connections"""
         async with self._lock:
             for index in list(self._connections):
                 connection = self._connections.pop(index)

@@ -17,7 +17,11 @@ from authentik.lib.utils.parser import (
 
 
 class CustomClient(DefaultClient):
-    # server contains the Redis configuration URL
+    """Custom client in order to use custom Redis URL parser
+
+    server contains the Redis configuration URL
+    """
+
     def __init__(self, server, params, backend):
         url = urlparse(server)
         config = process_config(url, *get_redis_options(url))
@@ -41,11 +45,12 @@ class CustomClient(DefaultClient):
 
 
 class CustomConnectionFactory:
-    # Store connection pool by cache backend options.
-    #
-    # _pool_cache is a process-global, as otherwise _pool_cache is cleared every time
-    # ConnectionFactory is instantiated, as Django creates new cache client
-    # (DefaultClient) instance for every request.
+    """Store connection pool by cache backend options.
+
+    _pool_cache is a process-global, as otherwise _pool_cache is cleared every time
+    ConnectionFactory is instantiated, as Django creates new cache client
+    (DefaultClient) instance for every request.
+    """
 
     _pool_cache = {}
 

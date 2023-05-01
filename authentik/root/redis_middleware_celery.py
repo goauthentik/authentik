@@ -15,6 +15,8 @@ from authentik.root.redis_middleware_kombu import CustomConnection
 
 
 class CustomBackend(RedisBackend):
+    """Custom Redis backend in order to use custom Redis URL parser"""
+
     def __init__(self, url=None, **kwargs):
         super().__init__(**kwargs)
         self.url = url
@@ -30,12 +32,17 @@ class CustomBackend(RedisBackend):
 
 
 class CustomCelery(Celery):
-    # While by default redis will be used as the backend,
-    # this implementation still allows different configurations.
-    # We also override the sentinel:// style URL for coherence,
-    # but this is not a supported URL scheme
-    # ==> Use redis(s)+sentinel:// instead!
+    """Inject custom Redis URL parser into Celery
+
+    While by default redis will be used as the backend,
+    this implementation still allows different configurations.
+    We also override the sentinel:// style URL for coherence,
+    but this is not a supported URL scheme
+    ==> Use redis(s)+sentinel:// instead!
+    """
+
     def _get_backend(self):
+        """Return backend based on which scheme has been specified in the URL"""
         loader = self.loader
         loader.override_backends = {
             "redis": "authentik.root.redis_middleware_celery:CustomBackend",
@@ -47,6 +54,7 @@ class CustomCelery(Celery):
         return backend(app=self, url=url)
 
     def _connection(self, url, **kwargs):
+        """Return Kombu connection based on URL scheme"""
         if url and "://" in url:
             scheme, _, _ = url.partition("://")
             if "+" in scheme:
