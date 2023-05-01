@@ -1,3 +1,4 @@
+"""Make Kombu use custom Redis connection"""
 from contextlib import contextmanager
 from time import time
 from urllib.parse import urlparse
@@ -20,10 +21,12 @@ from authentik.lib.utils.parser import (
 )
 
 
-# Use custom Mutex in order to support Redis Cluster: https://github.com/celery/kombu/pull/1021
-# Copied from `kombu.transport.redis` and disable pipeline transcation
 @contextmanager
-def Mutex(client, name, expire):
+def mutex(client, name, expire):
+    """
+    Use custom Mutex in order to support Redis Cluster: https://github.com/celery/kombu/pull/1021
+    Copied from `kombu.transport.redis` and disable pipeline transcation
+    """
     lock_id = uuid().encode("utf-8")
     acquired = client.set(name, lock_id, ex=expire, nx=True)
 
@@ -38,14 +41,15 @@ def Mutex(client, name, expire):
                 client.delete(name)
 
 
-# Copied from `kombu.transport.redis` to replace `Mutex` implementation.
 class CustomQoS(RedisQoS):
+    """Copied from `kombu.transport.redis` to replace `Mutex` implementation."""
+
     def restore_visible(self, start=0, num=10, interval=10):
         with self.channel.conn_or_acquire() as client:
             ceil = time() - self.visibility_timeout
 
             try:
-                with Mutex(
+                with mutex(
                     client,
                     self.unacked_mutex_key,
                     self.unacked_mutex_expire,
@@ -113,9 +117,9 @@ class ClusterPoller(MultiChannelPoller):
     def handle_event(self, fileno, event):
         if event & READ:
             return self.on_readable(fileno), self
-        elif event & ERR:
+        if event & ERR:
             chan, conn, cmd = self._fd_to_chan[fileno]
-            chan._poll_error(cmd, conn)
+            return chan._poll_error(cmd, conn), self
 
     def on_readable(self, fileno):
         try:
@@ -128,9 +132,12 @@ class ClusterPoller(MultiChannelPoller):
 
 
 class CustomChannel(Channel):
+    """Enable usage of any valid Redis client as Kombu channel"""
+
     QoS = RedisQoS
 
     def __init__(self, *args, **kwargs):
+        self.client_config = None
         self.config = args[0].client.config
         super().__init__(*args, **kwargs)
         if self.config["type"] == "cluster":
@@ -138,6 +145,8 @@ class CustomChannel(Channel):
         del self.Client
 
     def inject_custom_connection_class(self, connection_class):
+        """Connection injection that is required for Kombu async pools"""
+
         class AsyncConnection(connection_class):
             def disconnect(self):
                 super().disconnect()
@@ -146,6 +155,7 @@ class CustomChannel(Channel):
         return AsyncConnection
 
     def _create_client(self, asynchronous=False):
+        """Create a new Redis client using the stored connection pool"""
         if asynchronous:
             pool = self.async_pool
         else:
@@ -153,6 +163,7 @@ class CustomChannel(Channel):
         return get_client(self.client_config, pool)
 
     def _get_pool(self, asynchronous=False):
+        """Create a new connection pool using parsed Redis config"""
         pool, client_config = get_connection_pool(
             self.config,
             use_async=False,
@@ -161,8 +172,21 @@ class CustomChannel(Channel):
         self.client_config = client_config
         return pool
 
+    def exchange_bind(self, destination, source='', routing_key='',
+                      nowait=False, arguments=None):
+        super().exchange_bind(destination, source, routing_key, nowait, arguments)
+
+    def exchange_unbind(self, destination, source='', routing_key='',
+                        nowait=False, arguments=None):
+        super().exchange_unbind(destination, source, routing_key, nowait, arguments)
+
+    def flow(self, active=True):
+        super().flow(active)
+
 
 class CustomTransport(Transport):
+    """Inject custom cluster poller and custom channel for full Redis client support"""
+
     Channel = CustomChannel
 
     def __init__(self, *args, **kwargs):
@@ -174,8 +198,14 @@ class CustomTransport(Transport):
             )
             self.cycle = ClusterPoller()
 
+    def as_uri(self, uri: str, include_password=False, mask='**') -> str:
+        """Customise the display format of the URI."""
+        raise NotImplementedError()
+
 
 class CustomConnection(Connection):
+    """Used to inject custom Redis client into Kombu"""
+
     def __init__(self, url, **kwargs):
         kwargs.setdefault("hostname", None)
         kwargs["url"] = url
@@ -183,6 +213,7 @@ class CustomConnection(Connection):
         self._init_params(**kwargs)
 
     def _init_params(self, **kwargs):
+        """Parse Redis URL into config dict and store it"""
         self.url = kwargs.get("url")
         if self.url:
             url = urlparse(self.url)
@@ -203,6 +234,7 @@ class CustomConnection(Connection):
         self._init_params(url=conn_str)
 
     def info(self):
+        """Return the Redis config describing the connection"""
         return self.config
 
     def clone(self, **kwargs):
@@ -210,17 +242,20 @@ class CustomConnection(Connection):
         return self.__class__(self.url, **kwargs)
 
     def __eqhash__(self):
+        """Return hashed sequence in order to prevent hash to be called multiple times"""
         return HashedSeq(repr(self.config))
 
     def as_uri(self, **kwargs):
+        """Return Redis configuration URL"""
         return self.url
 
     @property
     def host(self):
-        """The host as a host name/port pair separated by colon."""
+        """Get host name/port pair separated by colon."""
         return ":".join(self.config["addrs"][0])
 
     def create_transport(self):
+        """Create custom transport for full Redis client support"""
         return CustomTransport(client=self)
 
     def get_transport_cls(self):
@@ -229,6 +264,7 @@ class CustomConnection(Connection):
 
     @property
     def transport(self):
+        """Cache custom transport"""
         if self._transport is None:
             self._transport = self.create_transport()
         return self._transport

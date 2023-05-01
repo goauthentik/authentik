@@ -1,3 +1,4 @@
+"""Make Celery use custom Redis backend and message queue"""
 from urllib.parse import urlparse
 
 from celery import Celery

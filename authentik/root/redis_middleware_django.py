@@ -1,3 +1,4 @@
+"""Make Django use custom Redis client"""
 from copy import deepcopy
 from hashlib import sha256
 from json import dumps as json_dumps
@@ -16,7 +17,7 @@ from authentik.lib.utils.parser import (
 
 
 class CustomClient(DefaultClient):
-    # server contains the redis configuration URL
+    # server contains the Redis configuration URL
     def __init__(self, server, params, backend):
         url = urlparse(server)
         config = process_config(url, *get_redis_options(url))
@@ -31,7 +32,7 @@ class CustomClient(DefaultClient):
 
     def connect(self, index: int = 0):
         """
-        Given a connection index, returns a new raw redis client/connection
+        Given a connection index, returns a new raw Redis client/connection
         instance. Index is used for replication setups and indicates that
         connection string should be used. In normal setups, index is 0.
         """

@@ -41,6 +41,8 @@ def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
 
 
 class UNSET:
+    """Used to test whether configuration key has not been set."""
+
     pass
 
 
@@ -78,6 +80,19 @@ class ConfigLoader:
 
     def check_deprecations(self):
         """Warn if any deprecated configuration options are used"""
+
+        def pop_deprecated_key(current_obj, dot_parts, index):
+            """Recursive function to remove deprecated keys in configuration"""
+            dot_part = dot_parts[index]
+            if dot_part in current_obj:
+                if index == len(dot_parts) - 1:
+                    return current_obj.pop(dot_part)
+                value = pop_deprecated_key(current_obj[dot_part], dot_parts, index + 1)
+                if not current_obj[dot_part]:
+                    current_obj.pop(dot_part)
+                return value
+            return None
+
         for deprecation, replacement in DEPRECATIONS.items():
             if self.y(deprecation, default=UNSET) is not UNSET:
                 self.log(
@@ -85,16 +100,6 @@ class ConfigLoader:
                     f"'{deprecation}' has been deprecated in favor of '{replacement}'! "
                     "Please update your configuration.",
                 )
-
-                def pop_deprecated_key(current_obj, dot_parts, index):
-                    dot_part = dot_parts[index]
-                    if dot_part in current_obj:
-                        if index == len(dot_parts) - 1:
-                            return current_obj.pop(dot_part)
-                        value = pop_deprecated_key(current_obj[dot_part], dot_parts, index + 1)
-                        if not current_obj[dot_part]:
-                            current_obj.pop(dot_part)
-                        return value
 
                 deprecated_value = pop_deprecated_key(self.__config, deprecation.split("."), 0)
                 self.y_set(replacement, deprecated_value)

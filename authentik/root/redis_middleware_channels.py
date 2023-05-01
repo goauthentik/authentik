@@ -1,3 +1,4 @@
+"""Make channels use custom Redis layer"""
 from asyncio import Lock, get_running_loop
 from copy import deepcopy
 from itertools import cycle
@@ -15,6 +16,8 @@ from authentik.lib.utils.parser import (
 
 
 class CustomLoopLayer:
+    """Custom Redis loop layer that creates new Redis connections"""
+
     def __init__(self, channel_layer):
         self._lock = Lock()
         self.channel_layer = channel_layer
@@ -40,15 +43,18 @@ class CustomLoopLayer:
 
 
 class CustomChannelLayer(RedisChannelLayer):
+    """
+    Custom Redis channel layer to allow for full Redis client support
+
+    It routes all messages into remote Redis server. Support for
+    sharding among different Redis installations and message
+    encryption are provided.
+    """
+
     def __init__(
         self,
         url=None,
-        prefix="asgi",
-        expiry=60,
-        group_expiry=86400,
-        capacity=100,
-        channel_capacity=None,
-        symmetric_encryption_keys=None,
+        **kwargs
     ):
         url = urlparse(url)
         # Since RedisChannelLayer is using BRPOP we disable socket timeout
@@ -59,18 +65,18 @@ class CustomChannelLayer(RedisChannelLayer):
             config_slave = deepcopy(config)
             config_slave["is_slave"] = True
             self.config.append(config_slave)
-        super().__init__(
-            [], prefix, expiry, group_expiry, capacity, channel_capacity, symmetric_encryption_keys
-        )
+        super().__init__([], **kwargs)
         self._receive_index_generator = cycle(range(self.ring_size))
         self._send_index_generator = cycle(range(self.ring_size))
 
     @property
     def ring_size(self):
+        """Return number of open connections"""
         return len(self.config)
 
     @ring_size.setter
     def ring_size(self, value):
+        """Do not allow setting number of open connections"""
         return
 
     def connection(self, index):

@@ -1,3 +1,4 @@
+"""redis URL parser"""
 from asyncio import LifoQueue, PriorityQueue
 from copy import deepcopy
 from socket import TCP_KEEPCNT, TCP_KEEPINTVL
@@ -27,7 +28,8 @@ from redis.connection import (
     SSLConnection,
     UnixDomainSocketConnection,
 )
-from redis.exceptions import ConnectionError, TimeoutError
+from redis.exceptions import ConnectionError as RedisConnectionError
+from redis.exceptions import TimeoutError as RedisTimeoutError
 from redis.retry import Retry
 from redis.sentinel import (
     Sentinel,
@@ -40,6 +42,7 @@ FALSE_STRINGS = ("0", "F", "FALSE", "N", "NO")
 
 
 def to_bool(value):
+    """Convert string to bool"""
     if value is None or value == "":
         return None
     if isinstance(value, str) and value.upper() in FALSE_STRINGS:
@@ -77,6 +80,7 @@ def parse_duration_to_sec(s: str) -> float:
 
 
 def val_to_sec(vs: list[bytes]):
+    """Convert a list of string bytes into a duration in seconds"""
     result = None
     for v in vs:
         try:
@@ -88,9 +92,10 @@ def val_to_sec(vs: list[bytes]):
 
 
 def parse_hostport(s, default_port=6379):
+    """Convert string into host port"""
     if s[-1] == "]":
         # ipv6 literal (with no port)
-        return (s, default_port)
+        return s, default_port
 
     out = s.rsplit(":", 1)
     if len(out) == 1:
@@ -137,6 +142,7 @@ def configure_tcp_keepalive(kwargs):
 def get_redis_options(
     url: ParseResultBytes, disable_socket_timeout=False
 ) -> Tuple[Dict, Dict, Dict]:
+    """Converts a parsed url into necessary dicts to create a redis client"""
     pool_kwargs = {}
     redis_kwargs = {}
     tls_kwargs = {}
@@ -321,6 +327,7 @@ def get_redis_options(
 
 
 def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
+    """Creates one dict that holds necessary config to create redis client"""
     config = {}
 
     addrs = redis_kwargs.pop("addrs")
@@ -398,22 +405,29 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
 
 
 def get_connection_pool(config, use_async=False, update_connection_class=None):
+    """Returns a connection pool given a valid redis configuration dict"""
     connection_pool = None
     client_config = {}
     config = deepcopy(config)
 
-    connection_pool_class = AsyncBlockingConnectionPool if use_async else BlockingConnectionPool
-    redis_class = AsyncStrictRedis if use_async else StrictRedis
-    redis_cluster_class = AsyncRedisCluster if use_async else RedisCluster
-    sentinel_class = AsyncSentinel if use_async else Sentinel
-    sentinel_connection_pool_class = (
-        AsyncSentinelConnectionPool if use_async else SentinelConnectionPool
-    )
-    cluster_node_class = AsyncClusterNode if use_async else ClusterNode
-    retry_class = AsyncRetry if use_async else Retry
-    unix_domain_socket_connection_class = (
-        AsyncUnixDomainSocketConnection if use_async else UnixDomainSocketConnection
-    )
+    if use_async:
+        connection_pool_class = AsyncBlockingConnectionPool
+        redis_class = AsyncStrictRedis
+        redis_cluster_class = AsyncRedisCluster
+        sentinel_class = AsyncSentinel
+        sentinel_connection_pool_class = AsyncSentinelConnectionPool
+        cluster_node_class = AsyncClusterNode
+        retry_class = AsyncRetry
+        unix_domain_socket_connection_class = AsyncUnixDomainSocketConnection
+    else:
+        connection_pool_class = BlockingConnectionPool
+        redis_class = StrictRedis
+        redis_cluster_class = RedisCluster
+        sentinel_class = Sentinel
+        sentinel_connection_pool_class = SentinelConnectionPool
+        cluster_node_class = ClusterNode
+        retry_class = Retry
+        unix_domain_socket_connection_class = UnixDomainSocketConnection
 
     if config.get("tls", False):
         if use_async:
@@ -457,7 +471,7 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
         "retry", retry_class(ExponentialBackoff(DEFAULT_CAP, DEFAULT_BASE), 3)
     )
     config["redis_kwargs"].setdefault(
-        "retry_on_error", [ConnectionError, TimeoutError, SocketTimeout]
+        "retry_on_error", [RedisConnectionError, RedisTimeoutError, SocketTimeout]
     )
 
     match config["type"]:
@@ -517,6 +531,7 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
 
 
 def get_client(client_config, connection_pool=None):
+    """Get a redis client using a valid redis config dict and a connection pool"""
     if connection_pool is not None:
         client_config.setdefault("client_kwargs", {})["connection_pool"] = connection_pool
     client = client_config["client_class"](**client_config["client_kwargs"])
@@ -526,6 +541,7 @@ def get_client(client_config, connection_pool=None):
 
 
 def parse_url(url):
+    """Parse a redis configuration URL and return a redis client"""
     url = urlparse(url)
     config = process_config(url, *get_redis_options(url))
     pool, client_config = get_connection_pool(config)
