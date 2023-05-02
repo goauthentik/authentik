@@ -35,7 +35,7 @@ def client_for_model(provider: SCIMProvider, model: Model) -> SCIMClient:
 @CELERY_APP.task()
 def scim_sync_all():
     """Run sync for all providers"""
-    for provider in SCIMProvider.objects.all():
+    for provider in SCIMProvider.objects.all(backchannel_application__isnull=False):
         scim_sync.delay(provider.pk)
 
 
@@ -96,6 +96,14 @@ def scim_sync_users(page: int, provider_pk: int):
             )
         except StopSync as exc:
             LOGGER.warning("Stopping sync", exc=exc)
+            messages.append(
+                _(
+                    "Stopping sync due to error: %(error)s"
+                    % {
+                        "error": str(exc),
+                    }
+                )
+            )
             break
     return messages
 
@@ -129,6 +137,14 @@ def scim_sync_group(page: int, provider_pk: int):
             )
         except StopSync as exc:
             LOGGER.warning("Stopping sync", exc=exc)
+            messages.append(
+                _(
+                    "Stopping sync due to error: %(error)s"
+                    % {
+                        "error": str(exc),
+                    }
+                )
+            )
             break
     return messages
 
@@ -141,7 +157,7 @@ def scim_signal_direct(model: str, pk: Any, raw_op: str):
     if not instance:
         return
     operation = PatchOp(raw_op)
-    for provider in SCIMProvider.objects.all():
+    for provider in SCIMProvider.objects.filter(backchannel_application__isnull=False):
         client = client_for_model(provider, instance)
         # Check if the object is allowed within the provider's restrictions
         queryset: Optional[QuerySet] = None
@@ -172,7 +188,7 @@ def scim_signal_m2m(group_pk: str, action: str, pk_set: list[int]):
     group = Group.objects.filter(pk=group_pk).first()
     if not group:
         return
-    for provider in SCIMProvider.objects.all():
+    for provider in SCIMProvider.objects.filter(backchannel_application__isnull=False):
         # Check if the object is allowed within the provider's restrictions
         queryset: QuerySet = provider.get_group_qs()
         # The queryset we get from the provider must include the instance we've got given

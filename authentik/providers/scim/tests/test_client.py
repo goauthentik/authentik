@@ -3,6 +3,7 @@ from django.test import TestCase
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
+from authentik.core.models import Application
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
@@ -18,6 +19,11 @@ class SCIMClientTests(TestCase):
             url="https://localhost",
             token=generate_id(),
         )
+        self.app: Application = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+        )
+        self.app.backchannel_providers.add(self.provider)
         self.provider.property_mappings.add(
             SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/user")
         )
