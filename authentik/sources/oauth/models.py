@@ -163,6 +163,15 @@ class DiscordOAuthSource(OAuthSource):
         verbose_name_plural = _("Discord OAuth Sources")
 
 
+class PatreonOAuthSource(OAuthSource):
+    """Social Login using Patreon."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Patreon OAuth Source")
+        verbose_name_plural = _("Patreon OAuth Sources")
+
+
 class GoogleOAuthSource(OAuthSource):
     """Social Login using Google or Google Workspace (GSuite)."""
 
