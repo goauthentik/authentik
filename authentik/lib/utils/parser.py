@@ -399,6 +399,14 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
                 config = _config_sentinel(config, service_name, credentials, kwargs, addrs)
             case "cluster" | "clusters":
                 config["type"] = "cluster"
+                db = redis_kwargs.pop("db")
+                if db != 0:
+                    print(
+                        "Redis cluster does only support database 0. Specified database "
+                        + str(db)
+                        + " will be ignored."
+                    )
+                redis_kwargs["db"] = 0
                 config["pool_kwargs"] = deepcopy(pool_kwargs)
                 config["redis_kwargs"] = deepcopy(redis_kwargs)
                 config["addrs"] = addrs
