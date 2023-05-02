@@ -417,7 +417,9 @@ def _connection_class(config, use_async, update_connection_class):
     redis_connection_class_path += "Connection"
     redis_connection_class = _get_class(redis_connection_class_path, use_async)
     sentinel_managed_connection_class_path += "Connection"
-    sentinel_managed_connection_class = _get_class(sentinel_managed_connection_class_path, use_async)
+    sentinel_managed_connection_class = _get_class(
+        sentinel_managed_connection_class_path, use_async
+    )
     if callable(update_connection_class):
         redis_connection_class = update_connection_class(redis_connection_class)
     config["redis_kwargs"]["connection_class"] = redis_connection_class
@@ -482,7 +484,9 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
     match config["type"]:
         case "sentinel":
             redis_connection_class = config["redis_kwargs"].pop("connection_class")
-            sentinel = _get_class("sentinel.Sentinel", use_async)(sentinels=[], **config["redis_kwargs"])
+            sentinel = _get_class("sentinel.Sentinel", use_async)(
+                sentinels=[], **config["redis_kwargs"]
+            )
             for sentinel_config in config["sentinels"]:
                 sentinel_config["retry"] = config["redis_kwargs"]["retry"]
                 sentinel_config["connection_class"] = redis_connection_class
