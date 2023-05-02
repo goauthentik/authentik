@@ -15,7 +15,7 @@ from redis.exceptions import TimeoutError as RedisTimeoutError
 FALSE_STRINGS = ("0", "F", "FALSE", "N", "NO")
 
 
-def to_bool(value):
+def _to_bool(value):
     """Convert string to bool"""
     if value is None or value == "":
         return None
@@ -24,7 +24,7 @@ def to_bool(value):
     return bool(value)
 
 
-def parse_duration_to_sec(duration_str: str) -> float:
+def _parse_duration_to_sec(duration_str: str) -> float:
     """This function parses a duration string into a float of seconds.
 
     It supports the following units: ns, us, ms, s, m, h.
@@ -55,12 +55,12 @@ def parse_duration_to_sec(duration_str: str) -> float:
     return result
 
 
-def val_to_sec(values: list[bytes]):
+def _val_to_sec(values: list[bytes]):
     """Convert a list of string bytes into a duration in seconds"""
     result = None
     for value in values:
         try:
-            result = parse_duration_to_sec(str(value))
+            result = _parse_duration_to_sec(str(value))
             return result
         except ValueError:
             result = int(value)
@@ -227,15 +227,15 @@ def get_redis_options(
                     else:
                         redis_kwargs["retry"] = None
                 case "minretrybackoff":
-                    min_backoff = val_to_sec(value)
+                    min_backoff = _val_to_sec(value)
                     if min_backoff is not None and min_backoff > 0:
                         retries_and_backoff["min_backoff"] = min_backoff
                 case "maxretrybackoff":
-                    max_backoff = val_to_sec(value)
+                    max_backoff = _val_to_sec(value)
                     if max_backoff is not None and max_backoff > 0:
                         retries_and_backoff["max_backoff"] = max_backoff
                 case "timeout":
-                    timeout = val_to_sec(value)
+                    timeout = _val_to_sec(value)
                     if timeout is not None and timeout <= 0:
                         timeout = None
                     if "socket_connect_timeout" not in redis_kwargs:
@@ -243,12 +243,12 @@ def get_redis_options(
                     if "socket_timeout" not in redis_kwargs:
                         redis_kwargs["socket_timeout"] = timeout
                 case "dialtimeout":
-                    socket_connect_timeout = val_to_sec(value)
+                    socket_connect_timeout = _val_to_sec(value)
                     if socket_connect_timeout is not None and socket_connect_timeout <= 0:
                         socket_connect_timeout = None
                     redis_kwargs["socket_connect_timeout"] = socket_connect_timeout
                 case "readtimeout" | "writetimeout":
-                    socket_timeout = val_to_sec(value)
+                    socket_timeout = _val_to_sec(value)
                     if socket_timeout is not None and socket_timeout <= 0:
                         socket_timeout = None
                     if (
@@ -257,21 +257,21 @@ def get_redis_options(
                     ):
                         redis_kwargs["socket_timeout"] = socket_timeout
                 case "poolfifo":
-                    if to_bool(value[0]):
+                    if _to_bool(value[0]):
                         pool_kwargs["queue_class"] = PriorityQueue
                     else:
                         pool_kwargs["queue_class"] = LifoQueue
                 case "poolsize":
                     pool_kwargs["max_connections"] = int(value[0])
                 case "pooltimeout":
-                    pool_timeout = val_to_sec(value)
+                    pool_timeout = _val_to_sec(value)
                     if pool_timeout is not None and pool_timeout <= 0:
                         pool_timeout = None
                     pool_kwargs["timeout"] = pool_timeout
                 case "idletimeout":
-                    redis_kwargs["idle_timeout"] = int(val_to_sec(value))
+                    redis_kwargs["idle_timeout"] = int(_val_to_sec(value))
                 case "idlecheckfrequency":
-                    redis_kwargs["idle_check_frequency"] = int(val_to_sec(value))
+                    redis_kwargs["idle_check_frequency"] = int(_val_to_sec(value))
                 case "maxidleconns":
                     redis_kwargs["max_connections"] = int(value[0])
                 case "sentinelmasterid" | "mastername":
@@ -281,12 +281,12 @@ def get_redis_options(
                 case "sentinelpassword":
                     redis_kwargs["sentinel_password"] = value_str
                 case "readonly":
-                    redis_kwargs["readonly"] = to_bool(value_str)
+                    redis_kwargs["readonly"] = _to_bool(value_str)
                 case "skipverify":
-                    if to_bool(value_str):
+                    if _to_bool(value_str):
                         tls_kwargs["ssl_cert_reqs"] = "optional"
                 case "insecureskipverify":
-                    if to_bool(value_str):
+                    if _to_bool(value_str):
                         tls_kwargs["ssl_cert_reqs"] = "none"
                 case "minidleconns" | "maxredirects" | "routebylatency" | "routerandomly":
                     print(
