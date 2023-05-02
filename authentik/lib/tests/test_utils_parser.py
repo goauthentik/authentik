@@ -7,6 +7,7 @@ from django.test import TestCase
 from authentik.lib.utils.parser import get_redis_options, process_config
 
 
+# pylint: disable=too-many-public-methods
 class TestParserUtils(TestCase):
     """Test Redis URL parser"""
 
@@ -193,7 +194,8 @@ class TestParserUtils(TestCase):
     def test_get_redis_options_sentinel_credentials(self):
         """Test Redis URL parser with sentinelusername and sentinelpassword arg"""
         url = urlparse(
-            "redis+sentinel://redis:password@myredis/0?sentinelusername=suser&sentinelpassword=spass"
+            "redis+sentinel://redis:password@myredis/0"
+            + "?sentinelusername=suser&sentinelpassword=spass"
         )
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["sentinel_username"], "suser")

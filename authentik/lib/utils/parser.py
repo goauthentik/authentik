@@ -192,6 +192,7 @@ def _get_credentials_from_url(redis_kwargs, url):
     return redis_kwargs
 
 
+# pylint: disable=too-many-locals, too-many-statements
 def get_redis_options(
     url: ParseResultBytes, disable_socket_timeout=False
 ) -> Tuple[Dict, Dict, Dict]:
@@ -204,7 +205,6 @@ def get_redis_options(
 
     redis_kwargs = _get_credentials_from_url(redis_kwargs, url)
 
-    # TODO: Check if data type is correct for each option
     for name, value in parse_qs(url.query).items():
         if value and len(value) > 0 and isinstance(name, str):
             value_str = unquote(value[0])
@@ -373,11 +373,11 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
                 config = _config_sentinel(config, service_name, credentials, kwargs, addrs)
             case "cluster" | "clusters":
                 config["type"] = "cluster"
-                db = redis_kwargs.pop("db")
-                if db != 0:
+                database = redis_kwargs.pop("db")
+                if database != 0:
                     print(
                         "Redis cluster does only support database 0. Specified database "
-                        + str(db)
+                        + str(database)
                         + " will be ignored."
                     )
                 redis_kwargs["db"] = 0
