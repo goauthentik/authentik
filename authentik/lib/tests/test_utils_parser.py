@@ -12,7 +12,7 @@ class TestParserUtils(TestCase):
     def test_process_config(self):
         """Test Redis URL parser for direct Redis connection"""
         url = urlparse("redis://myredis:5678/34")
-        _, config = process_config(url, *get_redis_options(url))
+        config = process_config(url, *get_redis_options(url))
         self.assertEqual(config["type"], "default")
         self.assertEqual(config["redis_kwargs"]["host"], "myredis")
         self.assertEqual(config["redis_kwargs"]["port"], 5678)
@@ -21,7 +21,7 @@ class TestParserUtils(TestCase):
     def test_process_config_sentinel(self):
         """Test Redis URL parser for Sentinel connection"""
         url = urlparse("redis+sentinel://mysentinel:22345/92?mastername=themaster")
-        _, config = process_config(url, *get_redis_options(url))
+        config = process_config(url, *get_redis_options(url))
         self.assertEqual(config["type"], "sentinel")
         self.assertEqual(config["sentinels"][0]["host"], "mysentinel")
         self.assertEqual(config["sentinels"][0]["port"], 22345)
@@ -30,7 +30,7 @@ class TestParserUtils(TestCase):
     def test_process_config_cluster(self):
         """Test Redis URL parser for cluster connection"""
         url = urlparse("redis+cluster://mycluster:8652/85")
-        _, config = process_config(url, *get_redis_options(url))
+        config = process_config(url, *get_redis_options(url))
         self.assertEqual(config["type"], "cluster")
-        self.assertEqual(config["client_kwargs"]["startup_nodes"][0].host, "mycluster")
-        self.assertEqual(config["client_kwargs"]["startup_nodes"][0].port, "8652")
+        self.assertEqual(config["addrs"][0][0], "mycluster")
+        self.assertEqual(config["addrs"][0][1], "8652")
