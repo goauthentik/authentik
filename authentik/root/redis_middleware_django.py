@@ -45,7 +45,7 @@ class CustomClient(DefaultClient):
 
 
 class CustomConnectionFactory:
-    """Store connection pool by cache backend options.
+    """Store connection pools by hashing backend options.
 
     _pool_cache is a process-global, as otherwise _pool_cache is cleared every time
     ConnectionFactory is instantiated, as Django creates new cache client

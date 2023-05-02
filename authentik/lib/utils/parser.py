@@ -285,7 +285,6 @@ def get_redis_options(
     except (ImportError, AttributeError):
         # Use default value of BlockingConnectionPool
         max_connections = 50
-        pass
 
     new_addrs = []
     default_port = 26379 if "sentinel" in str(url.scheme) else 6379
@@ -403,31 +402,7 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
     return config
 
 
-def get_connection_pool(config, use_async=False, update_connection_class=None):
-    """Returns a connection pool given a valid redis configuration dict"""
-    connection_pool = None
-    client_config = {}
-    config = deepcopy(config)
-
-    if use_async:
-        connection_pool_class = AsyncBlockingConnectionPool
-        redis_class = AsyncStrictRedis
-        redis_cluster_class = AsyncRedisCluster
-        sentinel_class = AsyncSentinel
-        sentinel_connection_pool_class = AsyncSentinelConnectionPool
-        cluster_node_class = AsyncClusterNode
-        retry_class = AsyncRetry
-        unix_domain_socket_connection_class = AsyncUnixDomainSocketConnection
-    else:
-        connection_pool_class = BlockingConnectionPool
-        redis_class = StrictRedis
-        redis_cluster_class = RedisCluster
-        sentinel_class = Sentinel
-        sentinel_connection_pool_class = SentinelConnectionPool
-        cluster_node_class = ClusterNode
-        retry_class = Retry
-        unix_domain_socket_connection_class = UnixDomainSocketConnection
-
+def _connection_class(config, use_async, update_connection_class):
     if config.get("tls", False):
         if use_async:
             redis_connection_class = AsyncSSLConnection
@@ -446,6 +421,17 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
         redis_connection_class = update_connection_class(redis_connection_class)
     config["redis_kwargs"]["connection_class"] = redis_connection_class
 
+    if config["type"] == "sentinel":
+        if callable(update_connection_class):
+            sentinel_managed_connection_class = update_connection_class(
+                sentinel_managed_connection_class
+            )
+        config["redis_kwargs"]["connection_class"] = sentinel_managed_connection_class
+    return config
+
+
+def _retries_and_backoff(config, retry_class):
+    """Configure retry and backoff similar to how go-redis handles it"""
     retries_and_backoff = config["redis_kwargs"].pop("retry")
     if "retry" in retries_and_backoff:
         if "min_backoff" in retries_and_backoff and "max_backoff" in retries_and_backoff:
@@ -472,15 +458,40 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
     config["redis_kwargs"].setdefault(
         "retry_on_error", [RedisConnectionError, RedisTimeoutError, SocketTimeout]
     )
+    return config
+
+
+def get_connection_pool(config, use_async=False, update_connection_class=None):
+    """Returns a connection pool given a valid redis configuration dict"""
+    connection_pool = None
+    client_config = {}
+    config = deepcopy(config)
+
+    if use_async:
+        connection_pool_class = AsyncBlockingConnectionPool
+        redis_class = AsyncStrictRedis
+        redis_cluster_class = AsyncRedisCluster
+        sentinel_class = AsyncSentinel
+        sentinel_connection_pool_class = AsyncSentinelConnectionPool
+        cluster_node_class = AsyncClusterNode
+        retry_class = AsyncRetry
+        unix_domain_socket_connection_class = AsyncUnixDomainSocketConnection
+    else:
+        connection_pool_class = BlockingConnectionPool
+        redis_class = StrictRedis
+        redis_cluster_class = RedisCluster
+        sentinel_class = Sentinel
+        sentinel_connection_pool_class = SentinelConnectionPool
+        cluster_node_class = ClusterNode
+        retry_class = Retry
+        unix_domain_socket_connection_class = UnixDomainSocketConnection
+
+    config = _connection_class(config, use_async, update_connection_class)
+    config = _retries_and_backoff(config, retry_class)
 
     match config["type"]:
         case "sentinel":
             redis_connection_class = config["redis_kwargs"].pop("connection_class")
-            if callable(update_connection_class):
-                sentinel_managed_connection_class = update_connection_class(
-                    sentinel_managed_connection_class
-                )
-            config["redis_kwargs"]["connection_class"] = sentinel_managed_connection_class
             sentinel = sentinel_class(sentinels=[], **config["redis_kwargs"])
             for sentinel_config in config["sentinels"]:
                 sentinel_config["retry"] = config["redis_kwargs"]["retry"]
