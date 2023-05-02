@@ -20,11 +20,14 @@ func uriMustGetRedisOptions(uri *url.URL) *redis.UniversalOptions {
 	return opts
 }
 
-func TestRedisUsernameOpt(t *testing.T) {
+func TestRedisCredentialsOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://redis:password@myredis/0")
 	opts := uriMustGetRedisOptions(uri)
 
 	if opts.Username != "redis" {
+		t.Fail()
+	}
+	if opts.Password != "password" {
 		t.Fail()
 	}
 }
@@ -38,21 +41,11 @@ func TestRedisUsernameArgOpt(t *testing.T) {
 	}
 }
 
-func TestRedisOnlyUsernameOpt(t *testing.T) {
+func TestOnlyRedisUsernameOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://redis:@myredis/0")
 	opts := uriMustGetRedisOptions(uri)
 
 	if opts.Username != "redis" {
-		t.Fail()
-	}
-}
-
-
-func TestRedisPasswordOpt(t *testing.T) {
-	uri, _ := url.Parse("redis://redis:password@myredis/0")
-	opts := uriMustGetRedisOptions(uri)
-
-	if opts.Password != "password" {
 		t.Fail()
 	}
 }
@@ -66,7 +59,7 @@ func TestRedisPasswordArgOpt(t *testing.T) {
 	}
 }
 
-func TestRedisOnlyPasswordOpt(t *testing.T) {
+func TestOnlyRedisPasswordOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://password@myredis/0")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -317,19 +310,13 @@ func TestTimeoutArgOptFallback(t *testing.T) {
 	}
 }
 
-func TestRedisSentinelUsernameArgOpt(t *testing.T) {
+func TestRedisSentinelCredentialsOpt(t *testing.T) {
 	uri, _ := url.Parse("redis+sentinel://redis:password@myredis/0?sentinelusername=suser&sentinelpassword=spass")
 	opts := uriMustGetRedisOptions(uri).Failover()
 
 	if opts.SentinelUsername != "suser" {
 		t.Fail()
 	}
-}
-
-func TestRedisSentinelPasswordArgOpt(t *testing.T) {
-	uri, _ := url.Parse("redis+sentinel://redis:password@myredis/0?sentinelusername=suser&sentinelpassword=spass")
-	opts := uriMustGetRedisOptions(uri).Failover()
-
 	if opts.SentinelPassword != "spass" {
 		t.Fail()
 	}
