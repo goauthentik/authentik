@@ -51,9 +51,11 @@ def to_bool(value):
 
 
 def parse_duration_to_sec(duration_str: str) -> float:
-    # This function parses a duration string into a float of seconds.
-    # It supports the following units: ns, us, ms, s, m, h.
-    # It returns a ValueError if the string is invalid or empty.
+    """This function parses a duration string into a float of seconds.
+
+    It supports the following units: ns, us, ms, s, m, h.
+    It returns a ValueError if the string is invalid or empty.
+    """
     if not duration_str:
         raise ValueError("empty string")
     units = {"ns": 1e-9, "us": 1e-6, "ms": 1e-3, "s": 1.0, "m": 60.0, "h": 3600.0}
@@ -110,7 +112,7 @@ def parse_hostport(addr_str, default_port=6379):
     return out[0], port
 
 
-def configure_tcp_keepalive(kwargs):
+def _configure_tcp_keepalive(kwargs):
     """Set TCP keepalive on the opened sockets for redis.
 
     It activates after 1 second (TCP_KEEPALIVE or TCP_KEEPIDLE) of idleness,
@@ -139,6 +141,83 @@ def configure_tcp_keepalive(kwargs):
     return kwargs
 
 
+def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
+    """Update config with default values"""
+    if url.hostname:
+        host = unquote(url.netloc).split("@")
+        if len(host) > 1:
+            host = host[-1]
+        else:
+            host = host[0]
+        redis_kwargs.setdefault("addrs", []).extend(host.split(","))
+
+    if url.path and url.scheme != "redis+socket":
+        path = unquote(url.path)[1:]
+        if path.isdigit():
+            redis_kwargs["db"] = int(path)
+
+    try:
+        # Retrieve the number of cpus that can be used
+        from os import sched_getaffinity
+
+        max_connections = len(sched_getaffinity(0)) * 10
+    except (ImportError, AttributeError):
+        # Use default value of BlockingConnectionPool
+        max_connections = 50
+
+    new_addrs = []
+    default_port = 26379 if "sentinel" in str(url.scheme) else 6379
+    for addr in redis_kwargs.get("addrs", []):
+        try:
+            new_addrs.append(parse_hostport(addr, default_port))
+        except ValueError:
+            print("Skipping due to invalid format for a hostname and port: " + addr)
+
+    if len(new_addrs) == 0:
+        new_addrs.append(("127.0.0.1", "6379"))
+
+    redis_kwargs["addrs"] = new_addrs
+
+    pool_kwargs = {
+        "max_connections": pool_kwargs.get("max_connections", max_connections),
+        "timeout": pool_kwargs.get("timeout", (redis_kwargs.get("socket_timeout") or 3) + 1),
+    }
+
+    tls_kwargs.update(
+        {
+            "ssl_keyfile": None,
+            "ssl_certfile": None,
+            "ssl_cert_reqs": "required",
+            "ssl_ca_certs": None,
+            "ssl_ca_data": None,
+            "ssl_ca_path": None,
+            "ssl_check_hostname": False,
+            "ssl_password": None,
+            "ssl_validate_ocsp": False,
+            "ssl_validate_ocsp_stapled": False,
+            "ssl_ocsp_context": None,
+            "ssl_ocsp_expected_cert": None,
+        }
+    )
+
+    redis_kwargs.setdefault("cluster_error_retry_attempts", 3)
+    redis_kwargs.setdefault("socket_connect_timeout", 5)
+    redis_kwargs.setdefault("socket_timeout", 3)
+
+    return pool_kwargs, redis_kwargs, tls_kwargs
+
+
+def _get_credentials_from_url(redis_kwargs, url):
+    """Extract username and password from URL"""
+    if url.password:
+        redis_kwargs["password"] = unquote(url.password)
+        if url.username:
+            redis_kwargs["username"] = unquote(url.username)
+    elif url.username:
+        redis_kwargs["password"] = unquote(url.username)
+    return redis_kwargs
+
+
 def get_redis_options(
     url: ParseResultBytes, disable_socket_timeout=False
 ) -> Tuple[Dict, Dict, Dict]:
@@ -149,12 +228,7 @@ def get_redis_options(
 
     retries_and_backoff = {}
 
-    if url.password:
-        redis_kwargs["password"] = unquote(url.password)
-        if url.username:
-            redis_kwargs["username"] = unquote(url.username)
-    elif url.username:
-        redis_kwargs["password"] = unquote(url.username)
+    redis_kwargs = _get_credentials_from_url(redis_kwargs, url)
 
     # TODO: Check if data type is correct for each option
     for name, value in parse_qs(url.query).items():
@@ -255,73 +329,47 @@ def get_redis_options(
                     )
 
     redis_kwargs["retry"] = retries_and_backoff
-    redis_kwargs.setdefault("cluster_error_retry_attempts", 3)
-    redis_kwargs.setdefault("socket_connect_timeout", 5)
-    redis_kwargs.setdefault("socket_timeout", 3)
 
     if disable_socket_timeout:
         redis_kwargs["socket_timeout"] = None
 
-    redis_kwargs = configure_tcp_keepalive(redis_kwargs)
+    redis_kwargs = _configure_tcp_keepalive(redis_kwargs)
 
-    if url.hostname:
-        host = unquote(url.netloc).split("@")
-        if len(host) > 1:
-            host = host[-1]
-        else:
-            host = host[0]
-        redis_kwargs.setdefault("addrs", []).extend(host.split(","))
+    return _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url)
 
-    if url.path and url.scheme != "redis+socket":
-        path = unquote(url.path)[1:]
-        if path.isdigit():
-            redis_kwargs["db"] = int(path)
 
-    try:
-        # Retrieve the number of cpus that can be used
-        from os import sched_getaffinity
-
-        max_connections = len(sched_getaffinity(0)) * 10
-    except (ImportError, AttributeError):
-        # Use default value of BlockingConnectionPool
-        max_connections = 50
-
-    new_addrs = []
-    default_port = 26379 if "sentinel" in str(url.scheme) else 6379
-    for addr in redis_kwargs.get("addrs", []):
-        try:
-            new_addrs.append(parse_hostport(addr, default_port))
-        except ValueError:
-            print("Skipping due to invalid format for a hostname and port: " + addr)
-
-    if len(new_addrs) == 0:
-        new_addrs.append(("127.0.0.1", "6379"))
-
-    redis_kwargs["addrs"] = new_addrs
-
-    pool_kwargs = {
-        "max_connections": pool_kwargs.get("max_connections", max_connections),
-        "timeout": pool_kwargs.get("timeout", (redis_kwargs.get("socket_timeout") or 3) + 1),
-    }
-
-    tls_kwargs.update(
-        {
-            "ssl_keyfile": None,
-            "ssl_certfile": None,
-            "ssl_cert_reqs": "required",
-            "ssl_ca_certs": None,
-            "ssl_ca_data": None,
-            "ssl_ca_path": None,
-            "ssl_check_hostname": False,
-            "ssl_password": None,
-            "ssl_validate_ocsp": False,
-            "ssl_validate_ocsp_stapled": False,
-            "ssl_ocsp_context": None,
-            "ssl_ocsp_expected_cert": None,
-        }
-    )
-
-    return pool_kwargs, redis_kwargs, tls_kwargs
+def _config_sentinel(config, service_name, credentials, kwargs, addrs):
+    """Configure options for Redis sentinel"""
+    if not service_name:
+        raise ValueError("For sentinel usage a mastername has to be specified!")
+    sentinel_username, sentinel_password = credentials
+    redis_kwargs, pool_kwargs = kwargs
+    # Update username / password for sentinel connection
+    sentinel_kwargs = deepcopy(redis_kwargs)
+    if sentinel_username:
+        sentinel_kwargs["username"] = sentinel_username
+    elif "username" in sentinel_kwargs:
+        sentinel_kwargs.pop("username")
+    if sentinel_password:
+        sentinel_kwargs["password"] = sentinel_password
+    elif "password" in sentinel_kwargs:
+        sentinel_kwargs.pop("password")
+    # Remove any unneeded host / port configuration
+    if "host" in redis_kwargs:
+        redis_kwargs.pop("host")
+    if "port" in redis_kwargs:
+        redis_kwargs.pop("port")
+    config["type"] = "sentinel"
+    config["pool_kwargs"] = deepcopy(pool_kwargs)
+    config["redis_kwargs"] = deepcopy(redis_kwargs)
+    config["service_name"] = service_name
+    config["sentinels"] = []
+    # Manually override sentinels in order to use BlockingConnectionPool
+    for hostname, port in addrs:
+        sentinel_kwargs["host"] = hostname
+        sentinel_kwargs["port"] = port
+        config["sentinels"] += [deepcopy(sentinel_kwargs)]
+    return config
 
 
 def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
@@ -346,33 +394,9 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
     if len(scheme_parts) > 1:
         match scheme_parts[1]:
             case "sentinel" | "sentinels":
-                if not service_name:
-                    raise ValueError("For sentinel usage a mastername has to be specified!")
-                # Update username / password for sentinel connection
-                sentinel_kwargs = deepcopy(redis_kwargs)
-                if sentinel_username:
-                    sentinel_kwargs["username"] = sentinel_username
-                elif "username" in sentinel_kwargs:
-                    sentinel_kwargs.pop("username")
-                if sentinel_password:
-                    sentinel_kwargs["password"] = sentinel_password
-                elif "password" in sentinel_kwargs:
-                    sentinel_kwargs.pop("password")
-                # Remove any unneeded host / port configuration
-                if "host" in redis_kwargs:
-                    redis_kwargs.pop("host")
-                if "port" in redis_kwargs:
-                    redis_kwargs.pop("port")
-                config["type"] = "sentinel"
-                config["pool_kwargs"] = deepcopy(pool_kwargs)
-                config["redis_kwargs"] = deepcopy(redis_kwargs)
-                config["service_name"] = service_name
-                config["sentinels"] = []
-                # Manually override sentinels in order to use BlockingConnectionPool
-                for hostname, port in addrs:
-                    sentinel_kwargs["host"] = hostname
-                    sentinel_kwargs["port"] = port
-                    config["sentinels"] += [deepcopy(sentinel_kwargs)]
+                credentials = (sentinel_username, sentinel_password)
+                kwargs = (redis_kwargs, pool_kwargs)
+                config = _config_sentinel(config, service_name, credentials, kwargs, addrs)
             case "cluster" | "clusters":
                 config["type"] = "cluster"
                 config["pool_kwargs"] = deepcopy(pool_kwargs)

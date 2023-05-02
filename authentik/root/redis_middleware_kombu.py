@@ -158,7 +158,10 @@ class CustomChannel(Channel):
         """Connection injection that is required for Kombu async pools"""
 
         class AsyncConnection(connection_class):
+            """Kombu injection for async connections"""
+
             def disconnect(self):
+                """Add Kombu method to default disconnect procedure"""
                 super().disconnect()
                 self._on_connection_disconnect(self)
 
