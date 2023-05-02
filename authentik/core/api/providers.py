@@ -82,9 +82,6 @@ class ProviderViewSet(
 
     queryset = Provider.objects.none()
     serializer_class = ProviderSerializer
-    filterset_fields = {
-        "application": ["isnull"],
-    }
     filterset_class = ProviderFilter
     search_fields = [
         "name",

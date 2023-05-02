@@ -30577,6 +30577,8 @@ components:
           type: string
         application_slug:
           type: string
+          description: Prioritise backchannel slug over direct application slug
+          readOnly: true
         search_group:
           type: string
           format: uuid
