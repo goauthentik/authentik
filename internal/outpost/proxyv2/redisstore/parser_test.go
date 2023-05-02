@@ -75,6 +75,15 @@ func TestRedisOnlyPasswordOpt(t *testing.T) {
 	}
 }
 
+func TestRedisDatabaseArgOpt(t *testing.T) {
+	uri, _ := url.Parse("redis://password@myredis?database=15")
+	opts := uriMustGetRedisOptions(uri)
+
+	if opts.DB != 15 {
+		t.Fail()
+	}
+}
+
 func TestRedisDBArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://password@myredis?db=10")
 	opts := uriMustGetRedisOptions(uri)
