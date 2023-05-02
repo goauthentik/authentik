@@ -102,7 +102,7 @@ func TestRedisAddrsArgOpt(t *testing.T) {
 	}
 }
 
-func TestRedisMaxRetriesOpt(t *testing.T) {
+func TestRedisMaxRetriesArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?maxretries=123")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -111,7 +111,7 @@ func TestRedisMaxRetriesOpt(t *testing.T) {
 	}
 }
 
-func TestRedisMinRetryBackoffOpt(t *testing.T) {
+func TestRedisMinRetryBackoffArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?minretrybackoff=100s")
 	opts := uriMustGetRedisOptions(uri)
 	expectedValue := time.Duration(100) * time.Second
@@ -121,7 +121,7 @@ func TestRedisMinRetryBackoffOpt(t *testing.T) {
 	}
 }
 
-func TestRedisMaxRetryBackoffOpt(t *testing.T) {
+func TestRedisMaxRetryBackoffArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?maxretrybackoff=100s")
 	opts := uriMustGetRedisOptions(uri)
 	expectedValue := time.Duration(100) * time.Second
@@ -131,7 +131,7 @@ func TestRedisMaxRetryBackoffOpt(t *testing.T) {
 	}
 }
 
-func TestRedisDialTimeoutOpt(t *testing.T) {
+func TestRedisDialTimeoutArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?dialtimeout=100s")
 	opts := uriMustGetRedisOptions(uri)
 	expectedValue := time.Duration(100) * time.Second
@@ -141,7 +141,7 @@ func TestRedisDialTimeoutOpt(t *testing.T) {
 	}
 }
 
-func TestRedisReadTimeoutOpt(t *testing.T) {
+func TestRedisReadTimeoutArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?readtimeout=100s")
 	opts := uriMustGetRedisOptions(uri)
 	expectedValue := time.Duration(100) * time.Second
@@ -151,7 +151,7 @@ func TestRedisReadTimeoutOpt(t *testing.T) {
 	}
 }
 
-func TestRedisWriteTimeoutOpt(t *testing.T) {
+func TestRedisWriteTimeoutArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?writetimeout=100s")
 	opts := uriMustGetRedisOptions(uri)
 	expectedValue := time.Duration(100) * time.Second
@@ -161,7 +161,7 @@ func TestRedisWriteTimeoutOpt(t *testing.T) {
 	}
 }
 
-func TestRedisPoolTimeoutOpt(t *testing.T) {
+func TestRedisPoolTimeoutArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?pooltimeout=100s")
 	opts := uriMustGetRedisOptions(uri)
 	expectedValue := time.Duration(100) * time.Second
@@ -171,7 +171,7 @@ func TestRedisPoolTimeoutOpt(t *testing.T) {
 	}
 }
 
-func TestRedisPoolFIFOOpt(t *testing.T) {
+func TestRedisPoolFIFOArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?poolfifo=true")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -180,7 +180,7 @@ func TestRedisPoolFIFOOpt(t *testing.T) {
 	}
 }
 
-func TestRedisPoolFIFOOptFallback(t *testing.T) {
+func TestRedisPoolFIFOArgOptFallback(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?poolfifo=abc")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -189,7 +189,7 @@ func TestRedisPoolFIFOOptFallback(t *testing.T) {
 	}
 }
 
-func TestRedisPoolSizeOpt(t *testing.T) {
+func TestRedisPoolSizeArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?poolsize=32")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -198,7 +198,7 @@ func TestRedisPoolSizeOpt(t *testing.T) {
 	}
 }
 
-func TestRedisReadOnlyOpt(t *testing.T) {
+func TestRedisReadOnlyArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?readonly=true")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -207,7 +207,7 @@ func TestRedisReadOnlyOpt(t *testing.T) {
 	}
 }
 
-func TestRedisRouteByLatencyOpt(t *testing.T) {
+func TestRedisRouteByLatencyArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?routebylatency=true")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -216,7 +216,7 @@ func TestRedisRouteByLatencyOpt(t *testing.T) {
 	}
 }
 
-func TestRedisRouteRandomlyOpt(t *testing.T) {
+func TestRedisRouteRandomlyArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?routerandomly=true")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -225,7 +225,7 @@ func TestRedisRouteRandomlyOpt(t *testing.T) {
 	}
 }
 
-func TestRedisSentinelMasterIDOpt(t *testing.T) {
+func TestRedisSentinelMasterIDArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?sentinelmasterid=themaster")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -234,7 +234,7 @@ func TestRedisSentinelMasterIDOpt(t *testing.T) {
 	}
 }
 
-func TestRedisMasternameOpt(t *testing.T) {
+func TestRedisMasternameArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?mastername=themaster")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -243,7 +243,7 @@ func TestRedisMasternameOpt(t *testing.T) {
 	}
 }
 
-func TestRedisMinIdleConnsOpt(t *testing.T) {
+func TestRedisMinIdleConnsArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?minidleconns=123")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -252,7 +252,7 @@ func TestRedisMinIdleConnsOpt(t *testing.T) {
 	}
 }
 
-func TestRedisMaxIdleConnsOpt(t *testing.T) {
+func TestRedisMaxIdleConnsArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?maxidleconns=52")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -261,7 +261,7 @@ func TestRedisMaxIdleConnsOpt(t *testing.T) {
 	}
 }
 
-func TestRedisMaxRedirectsOpt(t *testing.T) {
+func TestRedisMaxRedirectsArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?maxredirects=36")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -270,7 +270,7 @@ func TestRedisMaxRedirectsOpt(t *testing.T) {
 	}
 }
 
-func TestSkipVerifyOpt(t *testing.T) {
+func TestSkipVerifyArgOpt(t *testing.T) {
 	uri, _ := url.Parse("rediss://myredis/0?skipverify=true")
 	tlsConfig := getRedisTLSOptions(uri)
 
@@ -279,7 +279,7 @@ func TestSkipVerifyOpt(t *testing.T) {
 	}
 }
 
-func TestInsecureSkipVerifyOpt(t *testing.T) {
+func TestInsecureSkipVerifyArgOpt(t *testing.T) {
 	uri, _ := url.Parse("rediss://myredis/0?insecureskipverify=true")
 	tlsConfig := getRedisTLSOptions(uri)
 
@@ -288,7 +288,7 @@ func TestInsecureSkipVerifyOpt(t *testing.T) {
 	}
 }
 
-func TestTimeoutOpt(t *testing.T) {
+func TestTimeoutArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?timeout=100m")
 	opts := uriMustGetRedisOptions(uri)
 	expectedValue := time.Duration(100) * time.Minute
@@ -298,7 +298,7 @@ func TestTimeoutOpt(t *testing.T) {
 	}
 }
 
-func TestTimeoutOptFallback(t *testing.T) {
+func TestTimeoutArgOptFallback(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?timeout=1y")
 	opts := uriMustGetRedisOptions(uri)
 	expectedValue := time.Duration(0)
@@ -308,7 +308,7 @@ func TestTimeoutOptFallback(t *testing.T) {
 	}
 }
 
-func TestRedisSentinelUsernameOpt(t *testing.T) {
+func TestRedisSentinelUsernameArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis+sentinel://redis:password@myredis/0?sentinelusername=suser&sentinelpassword=spass")
 	opts := uriMustGetRedisOptions(uri).Failover()
 
@@ -317,7 +317,7 @@ func TestRedisSentinelUsernameOpt(t *testing.T) {
 	}
 }
 
-func TestRedisSentinelPasswordOpt(t *testing.T) {
+func TestRedisSentinelPasswordArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis+sentinel://redis:password@myredis/0?sentinelusername=suser&sentinelpassword=spass")
 	opts := uriMustGetRedisOptions(uri).Failover()
 
