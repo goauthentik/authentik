@@ -1,6 +1,7 @@
 import "@goauthentik/admin/providers/ldap/LDAPProviderViewPage";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
 import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
+import "@goauthentik/admin/providers/radius/RadiusProviderViewPage";
 import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
 import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
