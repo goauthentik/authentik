@@ -6806,11 +6806,11 @@ paths:
           - all
           - any
         description: |-
-          * `all` - ALL, all policies must pass
-          * `any` - ANY, any policy must pass
+          * `all` - all, all policies must pass
+          * `any` - any, any policy must pass
 
-          * `all` - ALL, all policies must pass
-          * `any` - ANY, any policy must pass
+          * `all` - all, all policies must pass
+          * `any` - any, any policy must pass
       - in: query
         name: re_evaluate_policies
         schema:
@@ -17552,11 +17552,11 @@ paths:
           - all
           - any
         description: |-
-          * `all` - ALL, all policies must pass
-          * `any` - ANY, any policy must pass
+          * `all` - all, all policies must pass
+          * `any` - any, any policy must pass
 
-          * `all` - ALL, all policies must pass
-          * `any` - ANY, any policy must pass
+          * `all` - all, all policies must pass
+          * `any` - any, any policy must pass
       - in: query
         name: profile_url
         schema:
@@ -17921,11 +17921,11 @@ paths:
           - all
           - any
         description: |-
-          * `all` - ALL, all policies must pass
-          * `any` - ANY, any policy must pass
+          * `all` - all, all policies must pass
+          * `any` - any, any policy must pass
 
-          * `all` - ALL, all policies must pass
-          * `any` - ANY, any policy must pass
+          * `all` - all, all policies must pass
+          * `any` - any, any policy must pass
       - name: search
         required: false
         in: query
@@ -18358,11 +18358,11 @@ paths:
           - all
           - any
         description: |-
-          * `all` - ALL, all policies must pass
-          * `any` - ANY, any policy must pass
+          * `all` - all, all policies must pass
+          * `any` - any, any policy must pass
 
-          * `all` - ALL, all policies must pass
-          * `any` - ANY, any policy must pass
+          * `all` - all, all policies must pass
+          * `any` - any, any policy must pass
       - in: query
         name: pre_authentication_flow
         schema:
@@ -37980,8 +37980,8 @@ components:
       - any
       type: string
       description: |-
-        * `all` - ALL, all policies must pass
-        * `any` - ANY, any policy must pass
+        * `all` - all, all policies must pass
+        * `any` - any, any policy must pass
     PolicyRequest:
       type: object
       description: Policy Serializer
@@ -38441,12 +38441,13 @@ components:
       - facebook
       - github
       - google
+      - mailcow
       - openidconnect
       - okta
+      - patreon
       - reddit
-      - twitter
-      - mailcow
       - twitch
+      - twitter
       type: string
       description: |-
         * `apple` - Apple
@@ -38455,12 +38456,13 @@ components:
         * `facebook` - Facebook
         * `github` - GitHub
         * `google` - Google
+        * `mailcow` - Mailcow
         * `openidconnect` - OpenID Connect
         * `okta` - Okta
+        * `patreon` - Patreon
         * `reddit` - reddit
-        * `twitter` - Twitter
-        * `mailcow` - Mailcow
         * `twitch` - Twitch
+        * `twitter` - Twitter
     ProxyMode:
       enum:
       - proxy

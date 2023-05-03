@@ -2347,6 +2347,14 @@ msgstr "Richtlinie bearbeiten"
 msgid "Edit Stage"
 msgstr "Stufe bearbeiten"
 
+#: src/admin/groups/GroupViewPage.ts
+msgid "Edit the notes attribute of this group to add notes here. Markdown is supported."
+msgstr ""
+
+#: src/admin/users/UserViewPage.ts
+msgid "Edit the notes attribute of this user to add notes here. Markdown is supported."
+msgstr ""
+
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Edit User"
 msgstr "Benutzer bearbeiten"
@@ -3112,6 +3120,10 @@ msgstr "Hilfetext"
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr "Versteckt: Verstecktes Feld, kann zum Einfügen von Daten in das Formular verwendet werden."
+
+#: src/admin/users/UserListPage.ts
+msgid "Hide deactivated user"
+msgstr ""
 
 #: src/admin/property-mappings/PropertyMappingListPage.ts
 msgid "Hide managed mappings"
@@ -4322,6 +4334,11 @@ msgstr "Von keinem anderen Objekt verwendet."
 #: src/flow/stages/user_login/UserLoginStage.ts
 msgid "Not you?"
 msgstr "Nicht Sie?"
+
+#: src/admin/groups/GroupViewPage.ts
+#: src/admin/users/UserViewPage.ts
+msgid "Notes"
+msgstr ""
 
 #: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts

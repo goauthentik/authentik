@@ -2323,6 +2323,14 @@ msgstr "İlkeyi Düzenle"
 msgid "Edit Stage"
 msgstr "Aşama Alanını Düzenle"
 
+#: src/admin/groups/GroupViewPage.ts
+msgid "Edit the notes attribute of this group to add notes here. Markdown is supported."
+msgstr ""
+
+#: src/admin/users/UserViewPage.ts
+msgid "Edit the notes attribute of this user to add notes here. Markdown is supported."
+msgstr ""
+
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Edit User"
 msgstr "Kullanıcı Düzenle"
@@ -3088,6 +3096,10 @@ msgstr "Yardım metni"
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr "Gizli: Gizli alan, form içine veri eklemek için kullanılabilir."
+
+#: src/admin/users/UserListPage.ts
+msgid "Hide deactivated user"
+msgstr ""
 
 #: src/admin/property-mappings/PropertyMappingListPage.ts
 msgid "Hide managed mappings"
@@ -4298,6 +4310,11 @@ msgstr "Başka bir nesne tarafından kullanılmaz."
 #: src/flow/stages/user_login/UserLoginStage.ts
 msgid "Not you?"
 msgstr "Sen değil mi?"
+
+#: src/admin/groups/GroupViewPage.ts
+#: src/admin/users/UserViewPage.ts
+msgid "Notes"
+msgstr ""
 
 #: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts

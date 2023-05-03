@@ -2355,6 +2355,14 @@ msgstr ""
 msgid "Edit Stage"
 msgstr ""
 
+#: src/admin/groups/GroupViewPage.ts
+msgid "Edit the notes attribute of this group to add notes here. Markdown is supported."
+msgstr ""
+
+#: src/admin/users/UserViewPage.ts
+msgid "Edit the notes attribute of this user to add notes here. Markdown is supported."
+msgstr ""
+
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Edit User"
 msgstr ""
@@ -3138,6 +3146,10 @@ msgstr ""
 
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Hidden: Hidden field, can be used to insert data into form."
+msgstr ""
+
+#: src/admin/users/UserListPage.ts
+msgid "Hide deactivated user"
 msgstr ""
 
 #: src/admin/property-mappings/PropertyMappingListPage.ts
@@ -4362,6 +4374,11 @@ msgstr ""
 #: src/flow/stages/password/PasswordStage.ts
 #: src/flow/stages/user_login/UserLoginStage.ts
 msgid "Not you?"
+msgstr ""
+
+#: src/admin/groups/GroupViewPage.ts
+#: src/admin/users/UserViewPage.ts
+msgid "Notes"
 msgstr ""
 
 #: src/admin/events/RuleForm.ts
