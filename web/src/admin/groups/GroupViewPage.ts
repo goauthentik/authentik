@@ -135,6 +135,20 @@ export class GroupViewPage extends AKElement {
                         </div>
                     </div>
                     <div
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                    >
+                        <div class="pf-c-card__title">${t`Notes`}</div>
+                        <div class="pf-c-card__body">
+                            ${Object.hasOwn(this.group?.attributes || {}, "notes")
+                                ? html`${this.group.attributes?.notes}`
+                                : html`
+                                      <p>
+                                          ${t`Edit the notes attribute of this group to add notes here. Markdown is supported.`}
+                                      </p>
+                                  `}
+                        </div>
+                    </div>
+                    <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                     >
                         <div class="pf-c-card__title">${t`Changelog`}</div>

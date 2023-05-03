@@ -280,7 +280,21 @@ export class UserViewPage extends AKElement {
                         </div>
                     </div>
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                    >
+                        <div class="pf-c-card__title">${t`Notes`}</div>
+                        <div class="pf-c-card__body">
+                            ${Object.hasOwn(this.user?.attributes || {}, "notes")
+                                ? html`${this.user.attributes?.notes}`
+                                : html`
+                                      <p>
+                                          ${t`Edit the notes attribute of this user to add notes here. Markdown is supported.`}
+                                      </p>
+                                  `}
+                        </div>
+                    </div>
+                    <div
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                     >
                         <div class="pf-c-card__title">${t`Changelog`}</div>
                         <div class="pf-c-card__body">
