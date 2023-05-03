@@ -6,6 +6,7 @@ from authentik.lib.generators import generate_id
 with open("local.env.yml", "w", encoding="utf-8") as _config:
     safe_dump(
         {
+            "debug": True,
             "log_level": "debug",
             "secret_key": generate_id(),
             "postgresql": {
