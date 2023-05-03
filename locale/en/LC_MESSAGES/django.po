@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-28 09:19+0000\n"
+"POT-Creation-Date: 2023-05-03 14:41+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,11 +31,12 @@ msgstr ""
 msgid "Validation Error"
 msgstr ""
 
-#: authentik/blueprints/api.py:52
-msgid "Failed to validate blueprint"
+#: authentik/blueprints/api.py:53
+#, python-format
+msgid "Failed to validate blueprint: %(logs)s"
 msgstr ""
 
-#: authentik/blueprints/api.py:57
+#: authentik/blueprints/api.py:58
 msgid "Either path or content must be set."
 msgstr ""
 
@@ -703,11 +704,11 @@ msgid "Expression Policies"
 msgstr ""
 
 #: authentik/policies/models.py:22
-msgid "ALL, all policies must pass"
+msgid "all, all policies must pass"
 msgstr ""
 
 #: authentik/policies/models.py:23
-msgid "ANY, any policy must pass"
+msgid "any, any policy must pass"
 msgstr ""
 
 #: authentik/policies/models.py:46
@@ -1385,7 +1386,7 @@ msgstr ""
 msgid "Failed to sync user due to remote error %(name)s: %(error)s"
 msgstr ""
 
-#: authentik/providers/scim/tasks.py:122
+#: authentik/providers/scim/tasks.py:123
 #, python-format
 msgid "Failed to sync group due to remote error %(name)s: %(error)s"
 msgstr ""
@@ -1580,50 +1581,58 @@ msgid "Discord OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:171
-msgid "Google OAuth Source"
+msgid "Patreon OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:172
-msgid "Google OAuth Sources"
+msgid "Patreon OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:180
-msgid "Azure AD OAuth Source"
+msgid "Google OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:181
-msgid "Azure AD OAuth Sources"
+msgid "Google OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:189
-msgid "OpenID OAuth Source"
+msgid "Azure AD OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:190
-msgid "OpenID OAuth Sources"
+msgid "Azure AD OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:198
-msgid "Apple OAuth Source"
+msgid "OpenID OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:199
-msgid "Apple OAuth Sources"
+msgid "OpenID OAuth Sources"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:207
-msgid "Okta OAuth Source"
+msgid "Apple OAuth Source"
 msgstr ""
 
 #: authentik/sources/oauth/models.py:208
+msgid "Apple OAuth Sources"
+msgstr ""
+
+#: authentik/sources/oauth/models.py:216
+msgid "Okta OAuth Source"
+msgstr ""
+
+#: authentik/sources/oauth/models.py:217
 msgid "Okta OAuth Sources"
 msgstr ""
 
-#: authentik/sources/oauth/models.py:230
+#: authentik/sources/oauth/models.py:239
 msgid "User OAuth Source Connection"
 msgstr ""
 
-#: authentik/sources/oauth/models.py:231
+#: authentik/sources/oauth/models.py:240
 msgid "User OAuth Source Connections"
 msgstr ""
 

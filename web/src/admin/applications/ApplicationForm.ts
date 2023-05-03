@@ -151,13 +151,13 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 <ak-radio
                     .options=${[
                         {
-                            label: "ANY",
+                            label: "any",
                             value: PolicyEngineMode.Any,
                             default: true,
                             description: html`${t`Any policy must match to grant access`}`,
                         },
                         {
-                            label: "ALL",
+                            label: "all",
                             value: PolicyEngineMode.All,
                             description: html`${t`All policies must match to grant access`}`,
                         },
@@ -239,7 +239,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                                         </ak-form-element-horizontal>
                                     `
                                   : html``}`
-                        : html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                        : html`<ak-form-element-horizontal label=${t`Icon`} name="metaIcon">
                               <input
                                   type="text"
                                   value="${first(this.instance?.metaIcon, "")}"

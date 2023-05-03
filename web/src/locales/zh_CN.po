@@ -2302,6 +2302,18 @@ msgstr "编辑策略"
 msgid "Edit Stage"
 msgstr "编辑阶段"
 
+#: src/admin/groups/GroupViewPage.ts
+msgid ""
+"Edit the notes attribute of this group to add notes here. Markdown is "
+"supported."
+msgstr "编辑该组的备注属性以在此处添加备注。支持 Markdown。"
+
+#: src/admin/users/UserViewPage.ts
+msgid ""
+"Edit the notes attribute of this user to add notes here. Markdown is "
+"supported."
+msgstr "编辑该用户的备注属性以在此处添加备注。支持 Markdown。"
+
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Edit User"
 msgstr "编辑用户"
@@ -3085,6 +3097,10 @@ msgstr "帮助文本"
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr "隐藏：隐藏字段，可用于将数据插入表单。"
+
+#: src/admin/users/UserListPage.ts
+msgid "Hide deactivated user"
+msgstr "隐藏未激活的用户"
 
 #: src/admin/property-mappings/PropertyMappingListPage.ts
 msgid "Hide managed mappings"
@@ -4318,6 +4334,10 @@ msgstr "不被任何其他对象使用。"
 #: src/flow/stages/user_login/UserLoginStage.ts
 msgid "Not you?"
 msgstr "不是您？"
+
+#: src/admin/groups/GroupViewPage.ts src/admin/users/UserViewPage.ts
+msgid "Notes"
+msgstr "备注"
 
 #: src/admin/events/RuleForm.ts src/admin/events/RuleListPage.ts
 msgid "Notice"

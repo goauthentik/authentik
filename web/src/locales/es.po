@@ -2323,6 +2323,14 @@ msgstr "Editar política"
 msgid "Edit Stage"
 msgstr "Editar etapa"
 
+#: src/admin/groups/GroupViewPage.ts
+msgid "Edit the notes attribute of this group to add notes here. Markdown is supported."
+msgstr ""
+
+#: src/admin/users/UserViewPage.ts
+msgid "Edit the notes attribute of this user to add notes here. Markdown is supported."
+msgstr ""
+
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Edit User"
 msgstr "Editar usuario"
@@ -3088,6 +3096,10 @@ msgstr "Texto de ayuda"
 #: src/admin/stages/prompt/PromptForm.ts
 msgid "Hidden: Hidden field, can be used to insert data into form."
 msgstr "Oculto: campo oculto, se puede utilizar para insertar datos en el formulario."
+
+#: src/admin/users/UserListPage.ts
+msgid "Hide deactivated user"
+msgstr ""
 
 #: src/admin/property-mappings/PropertyMappingListPage.ts
 msgid "Hide managed mappings"
@@ -4298,6 +4310,11 @@ msgstr "No lo usa ningún otro objeto."
 #: src/flow/stages/user_login/UserLoginStage.ts
 msgid "Not you?"
 msgstr "¿No eres tú?"
+
+#: src/admin/groups/GroupViewPage.ts
+#: src/admin/users/UserViewPage.ts
+msgid "Notes"
+msgstr ""
 
 #: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts

@@ -266,11 +266,7 @@ export class AdminInterface extends Interface {
             <ak-sidebar-item>
                 <span slot="label">${t`Directory`}</span>
                 <ak-sidebar-item
-                    path=${`/identity/users;${encodeURIComponent(
-                        JSON.stringify({
-                            path: "users",
-                        }),
-                    )}`}
+                    path="/identity/users"
                     .activeWhen=${[`^/identity/users/(?<id>${ID_REGEX})$`]}
                 >
                     <span slot="label">${t`Users`}</span>

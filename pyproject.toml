@@ -5,6 +5,9 @@ strictParameterNoneValue = true
 strictDictionaryInference = true
 strictListInference = true
 reportOptionalMemberAccess = false
+reportOptionalContextManager = false
+# rest_framework's serializer's `validated_data` is typed as optional None
+reportOptionalSubscript = false
 # Sadly pyright still has issues with enums, and they fall under general type issues
 # so we have to disable those for now
 reportGeneralTypeIssues = false

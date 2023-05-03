@@ -12,12 +12,13 @@ AUTHENTIK_SOURCES_OAUTH_TYPES = [
     "authentik.sources.oauth.types.facebook",
     "authentik.sources.oauth.types.github",
     "authentik.sources.oauth.types.google",
+    "authentik.sources.oauth.types.mailcow",
     "authentik.sources.oauth.types.oidc",
     "authentik.sources.oauth.types.okta",
+    "authentik.sources.oauth.types.patreon",
     "authentik.sources.oauth.types.reddit",
-    "authentik.sources.oauth.types.twitter",
-    "authentik.sources.oauth.types.mailcow",
     "authentik.sources.oauth.types.twitch",
+    "authentik.sources.oauth.types.twitter",
 ]
 
 

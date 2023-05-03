@@ -19,8 +19,8 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 class PolicyEngineMode(models.TextChoices):
     """Decide how results of multiple policies should be combined."""
 
-    MODE_ALL = "all", _("ALL, all policies must pass")  # type: "PolicyEngineMode"
-    MODE_ANY = "any", _("ANY, any policy must pass")  # type: "PolicyEngineMode"
+    MODE_ALL = "all", _("all, all policies must pass")  # type: "PolicyEngineMode"
+    MODE_ANY = "any", _("any, any policy must pass")  # type: "PolicyEngineMode"
 
 
 class PolicyBindingModel(models.Model):

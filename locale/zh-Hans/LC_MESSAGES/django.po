@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-28 09:19+0000\n"
+"POT-Creation-Date: 2023-05-03 14:41+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2023\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -37,11 +37,12 @@ msgstr "通用 API 错误"
 msgid "Validation Error"
 msgstr "校验错误"
 
-#: authentik/blueprints/api.py:52
-msgid "Failed to validate blueprint"
-msgstr "验证蓝图失败"
+#: authentik/blueprints/api.py:53
+#, python-format
+msgid "Failed to validate blueprint: %(logs)s"
+msgstr "验证蓝图失败：%(logs)s"
 
-#: authentik/blueprints/api.py:57
+#: authentik/blueprints/api.py:58
 msgid "Either path or content must be set."
 msgstr "必须设置路径或内容。"
 
@@ -723,12 +724,12 @@ msgid "Expression Policies"
 msgstr "表达式策略"
 
 #: authentik/policies/models.py:22
-msgid "ALL, all policies must pass"
-msgstr "ALL，必须通过所有策略"
+msgid "all, all policies must pass"
+msgstr "All，必须通过所有策略"
 
 #: authentik/policies/models.py:23
-msgid "ANY, any policy must pass"
-msgstr "ANY，必须通过任意策略"
+msgid "any, any policy must pass"
+msgstr "Any，必须通过任意策略"
 
 #: authentik/policies/models.py:46
 msgid "Policy Binding Model"
@@ -1414,7 +1415,7 @@ msgstr "正在同步群组页面 %(page)d"
 msgid "Failed to sync user due to remote error %(name)s: %(error)s"
 msgstr "由于远端错误 %(name)s，同步用户失败：%(error)s"
 
-#: authentik/providers/scim/tasks.py:122
+#: authentik/providers/scim/tasks.py:123
 #, python-format
 msgid "Failed to sync group due to remote error %(name)s: %(error)s"
 msgstr "由于远端错误 %(name)s，同步群组失败：%(error)s"
@@ -1610,50 +1611,58 @@ msgid "Discord OAuth Sources"
 msgstr "Discord OAuth 源"
 
 #: authentik/sources/oauth/models.py:171
+msgid "Patreon OAuth Source"
+msgstr "Patreon OAuth 源"
+
+#: authentik/sources/oauth/models.py:172
+msgid "Patreon OAuth Sources"
+msgstr "Patreon OAuth 源"
+
+#: authentik/sources/oauth/models.py:180
 msgid "Google OAuth Source"
 msgstr "Google OAuth 源"
 
-#: authentik/sources/oauth/models.py:172
+#: authentik/sources/oauth/models.py:181
 msgid "Google OAuth Sources"
 msgstr "Google OAuth 源"
 
-#: authentik/sources/oauth/models.py:180
+#: authentik/sources/oauth/models.py:189
 msgid "Azure AD OAuth Source"
 msgstr "Azure AD OAuth 源"
 
-#: authentik/sources/oauth/models.py:181
+#: authentik/sources/oauth/models.py:190
 msgid "Azure AD OAuth Sources"
 msgstr "Azure AD OAuth 源"
 
-#: authentik/sources/oauth/models.py:189
+#: authentik/sources/oauth/models.py:198
 msgid "OpenID OAuth Source"
 msgstr "OpenID OAuth 源"
 
-#: authentik/sources/oauth/models.py:190
+#: authentik/sources/oauth/models.py:199
 msgid "OpenID OAuth Sources"
 msgstr "OpenID OAuth 源"
 
-#: authentik/sources/oauth/models.py:198
+#: authentik/sources/oauth/models.py:207
 msgid "Apple OAuth Source"
 msgstr "Apple OAuth 源"
 
-#: authentik/sources/oauth/models.py:199
+#: authentik/sources/oauth/models.py:208
 msgid "Apple OAuth Sources"
 msgstr "Apple OAuth 源"
 
-#: authentik/sources/oauth/models.py:207
+#: authentik/sources/oauth/models.py:216
 msgid "Okta OAuth Source"
 msgstr "Okta OAuth 源"
 
-#: authentik/sources/oauth/models.py:208
+#: authentik/sources/oauth/models.py:217
 msgid "Okta OAuth Sources"
 msgstr "Okta OAuth 源"
 
-#: authentik/sources/oauth/models.py:230
+#: authentik/sources/oauth/models.py:239
 msgid "User OAuth Source Connection"
 msgstr "用户 OAuth 源连接"
 
-#: authentik/sources/oauth/models.py:231
+#: authentik/sources/oauth/models.py:240
 msgid "User OAuth Source Connections"
 msgstr "用户 OAuth 源连接"
 

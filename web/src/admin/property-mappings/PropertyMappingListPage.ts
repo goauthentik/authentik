@@ -18,7 +18,7 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import { t } from "@lingui/macro";
 
 import { TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { PropertyMapping, PropertymappingsApi } from "@goauthentik/api";
@@ -43,7 +43,7 @@ export class PropertyMappingListPage extends TablePage<PropertyMapping> {
     @property()
     order = "name";
 
-    @property({ type: Boolean })
+    @state()
     hideManaged = getURLParam<boolean>("hideManaged", true);
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<PropertyMapping>> {

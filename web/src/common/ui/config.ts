@@ -43,6 +43,9 @@ export interface UIConfig {
         type: LayoutType;
     };
     locale: string;
+    defaults: {
+        userPath: string;
+    };
 }
 
 export class DefaultUIConfig implements UIConfig {
@@ -68,6 +71,9 @@ export class DefaultUIConfig implements UIConfig {
         perPage: 20,
     };
     locale = "";
+    defaults = {
+        userPath: "users",
+    };
 
     constructor() {
         if (currentInterface() === "user") {
