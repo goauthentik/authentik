@@ -74,5 +74,6 @@ class TestConfig(TestCase):
         config.check_deprecations()
         self.assertEqual(
             config.y("redis.url"),
-            "rediss://myredis:9637/56?insecureskipverify=true&password=%22%27%25+%21.%3B.%C2%B0&username=default",
+            "rediss://myredis:9637/56?insecureskipverify=true"
+            + "&password=%22%27%25+%21.%3B.%C2%B0&username=default",
         )
