@@ -1146,14 +1146,14 @@ qrcode = ["qrcode"]
 
 [[package]]
 name = "django-prometheus"
-version = "2.2.0"
+version = "2.3.1"
 description = "Django middlewares to monitor your application with Prometheus.io."
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "django-prometheus-2.2.0.tar.gz", hash = "sha256:240378a1307c408bd5fc85614a3a57f1ce633d4a222c9e291e2bbf325173b801"},
-    {file = "django_prometheus-2.2.0-py2.py3-none-any.whl", hash = "sha256:e6616770d8820b8834762764bf1b76ec08e1b98e72a6f359d488a2e15fe3537c"},
+    {file = "django-prometheus-2.3.1.tar.gz", hash = "sha256:f9c8b6c780c9419ea01043c63a437d79db2c33353451347894408184ad9c3e1e"},
+    {file = "django_prometheus-2.3.1-py2.py3-none-any.whl", hash = "sha256:cf9b26f7ba2e4568f08f8f91480a2882023f5908579681bcf06a4d2465f12168"},
 ]
 
 [package.dependencies]
