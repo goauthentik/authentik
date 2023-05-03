@@ -9,6 +9,8 @@ import {
     ResponseContext,
 } from "@goauthentik/api";
 
+export const CSRFHeaderName = "X-authentik-CSRF";
+
 export interface RequestInfo {
     method: string;
     path: string;
@@ -32,7 +34,7 @@ export class LoggingMiddleware implements Middleware {
 export class CSRFMiddleware implements Middleware {
     pre?(context: RequestContext): Promise<FetchParams | void> {
         // @ts-ignore
-        context.init.headers["X-authentik-CSRF"] = getCookie("authentik_csrf");
+        context.init.headers[CSRFHeaderName] = getCookie("authentik_csrf");
         return Promise.resolve(context);
     }
 }
