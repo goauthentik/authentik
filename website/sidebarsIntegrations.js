@@ -71,6 +71,7 @@ module.exports = {
                         "services/pgadmin/index",
                         "services/phpipam/index",
                         "services/powerdns-admin/index",
+                        "services/proftpd/index",
                         "services/qnap-nas/index",
                         "services/skyhigh/index",
                         "services/snipe-it/index",
