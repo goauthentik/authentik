@@ -90,7 +90,7 @@ func TestRedisAddrArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?addr=newmyredis")
 	opts := uriMustGetRedisOptions(uri)
 
-	if reflect.DeepEqual(opts.Addrs, []string{"newmyredis"}) {
+	if !reflect.DeepEqual(opts.Addrs, []string{"newmyredis", "myredis"}) {
 		t.Fail()
 	}
 }
@@ -99,7 +99,7 @@ func TestRedisAddrsArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?addrs=newmyredis:1234,otherredis")
 	opts := uriMustGetRedisOptions(uri)
 
-	if reflect.DeepEqual(opts.Addrs, []string{"myredis", "newmyredis:1234", "otherredis"}) {
+	if !reflect.DeepEqual(opts.Addrs, []string{"newmyredis:1234", "otherredis", "myredis"}) {
 		t.Fail()
 	}
 }

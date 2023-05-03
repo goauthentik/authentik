@@ -42,13 +42,15 @@ class TestParserUtils(TestCase):
         """Test Redis URL parser with addr arg"""
         url = urlparse("redis://myredis:6379/0?addr=newmyredis")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["addrs"], ["newmyredis"])
+        self.assertEqual(redis_kwargs["addrs"], [("newmyredis", 6379), ("myredis", 6379)])
 
     def test_get_redis_options_addrs_arg(self):
         """Test Redis URL parser with addrs arg"""
         url = urlparse("redis://myredis:6379/0?addrs=newmyredis:1234,otherredis")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["addrs"], ["newmyredis:1234", "otherredis"])
+        self.assertEqual(
+            redis_kwargs["addrs"], [("newmyredis", 1234), ("otherredis", 6379), ("myredis", 6379)]
+        )
 
     def test_get_redis_options_redis_credentials(self):
         """Test Redis URL parser with basic auth credentials"""
@@ -210,11 +212,11 @@ class TestParserUtils(TestCase):
     def test_get_redis_options_skip_verify_arg(self):
         """Test Redis URL parser with skipverify arg"""
         url = urlparse("redis://myredis/0?skipverify=true")
-        _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["ssl_cert_reqs"], "optional")
+        _, _, tls_kwargs = get_redis_options(url)
+        self.assertEqual(tls_kwargs["ssl_cert_reqs"], "optional")
 
     def test_get_redis_options_insecure_skip_verify_arg(self):
         """Test Redis URL parser with insecureskipverify arg"""
         url = urlparse("redis://myredis/0?insecureskipverify=100s")
-        _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["ssl_cert_reqs"], "none")
+        _, _, tls_kwargs = get_redis_options(url)
+        self.assertEqual(tls_kwargs["ssl_cert_reqs"], "none")
