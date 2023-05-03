@@ -152,10 +152,8 @@ def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
 
     redis_kwargs["addrs"] = new_addrs
 
-    pool_kwargs = {
-        "max_connections": pool_kwargs.get("max_connections", max_connections),
-        "timeout": pool_kwargs.get("timeout", (redis_kwargs.get("socket_timeout") or 3) + 1),
-    }
+    pool_kwargs.setdefault("max_connections", max_connections)
+    pool_kwargs.setdefault("timeout", (redis_kwargs.get("socket_timeout") or 3) + 1)
 
     tls_kwargs.update(
         {
@@ -185,10 +183,8 @@ def _get_credentials_from_url(redis_kwargs, url):
     """Extract username and password from URL"""
     if url.password:
         redis_kwargs["password"] = unquote(url.password)
-        if url.username:
-            redis_kwargs["username"] = unquote(url.username)
-    elif url.username:
-        redis_kwargs["password"] = unquote(url.username)
+    if url.username:
+        redis_kwargs["username"] = unquote(url.username)
     return redis_kwargs
 
 

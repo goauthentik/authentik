@@ -2,6 +2,7 @@
 from asyncio import LifoQueue, PriorityQueue
 from urllib.parse import urlparse
 
+from _socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from django.test import TestCase
 
 from authentik.lib.utils.parser import get_redis_options, process_config
@@ -166,14 +167,14 @@ class TestParserUtils(TestCase):
         """Test Redis URL parser with idletimeout arg"""
         url = urlparse("redis://myredis/0?idletimeout=100s")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["idle_timeout"], 100)
+        self.assertEqual(redis_kwargs["socket_keepalive_options"][TCP_KEEPCNT], 100 // 60)
 
     # TODO: This is not supported by the Go Redis URL parser!
     def test_get_redis_options_idle_check_frequency_arg(self):
         """Test Redis URL parser with idlecheckfrequency arg"""
         url = urlparse("redis://myredis/0?idlecheckfrequency=31")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["idle_check_frequency"], 31)
+        self.assertEqual(redis_kwargs["socket_keepalive_options"][TCP_KEEPINTVL], 31)
 
     def test_get_redis_options_max_idle_conns_arg(self):
         """Test Redis URL parser with maxidleconns arg"""
@@ -217,6 +218,6 @@ class TestParserUtils(TestCase):
 
     def test_get_redis_options_insecure_skip_verify_arg(self):
         """Test Redis URL parser with insecureskipverify arg"""
-        url = urlparse("redis://myredis/0?insecureskipverify=100s")
+        url = urlparse("redis://myredis/0?insecureskipverify=true")
         _, _, tls_kwargs = get_redis_options(url)
         self.assertEqual(tls_kwargs["ssl_cert_reqs"], "none")
