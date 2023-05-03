@@ -8,7 +8,7 @@ from json.decoder import JSONDecodeError
 from sys import argv, stderr
 from time import time
 from typing import Any
-from urllib.parse import urlparse
+from urllib.parse import quote_plus, urlencode, urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
@@ -76,16 +76,44 @@ class ConfigLoader:
         self.update_from_env()
         self.check_deprecations()
 
+    def _update_redis_url_from_env(self):
+        """Build Redis URL from other env variables"""
+
+        if self.y("redis.url", UNSET) is UNSET:
+            redis_url_params = {}
+            redis_url = "rediss://" if self.y_bool("redis.tls", False) else "redis://"
+            redis_tls_reqs = self.y("redis.tls_reqs").lower()
+            match redis_tls_reqs:
+                case "none":
+                    redis_url_params["insecureskipverify"] = "true"
+                case "optional":
+                    redis_url_params["skipverify"] = "true"
+                case "required":
+                    pass
+                case _:
+                    self.log(
+                        "warning",
+                        f"Unsupported Redis TLS requirements option '{redis_tls_reqs}'! "
+                        "Using default option 'required'.",
+                    )
+            if self.y("redis.username", UNSET) is not UNSET:
+                redis_url_params["username"] = self.y("redis.username")
+            if self.y("redis.password", UNSET) is not UNSET:
+                redis_url_params["password"] = self.y("redis.password")
+            redis_url += f"{quote_plus(self.y('redis.host'))}:{int(CONFIG.y('redis.port'))}"
+            redis_url += urlencode(redis_url_params)
+            self.y_set("redis.url", redis_url)
+
     def check_deprecations(self):
         """Warn if any deprecated configuration options are used"""
 
-        def pop_deprecated_key(current_obj, dot_parts, index):
+        def _pop_deprecated_key(current_obj, dot_parts, index):
             """Recursive function to remove deprecated keys in configuration"""
             dot_part = dot_parts[index]
             if dot_part in current_obj:
                 if index == len(dot_parts) - 1:
                     return current_obj.pop(dot_part)
-                value = pop_deprecated_key(current_obj[dot_part], dot_parts, index + 1)
+                value = _pop_deprecated_key(current_obj[dot_part], dot_parts, index + 1)
                 if not current_obj[dot_part]:
                     current_obj.pop(dot_part)
                 return value
@@ -99,8 +127,10 @@ class ConfigLoader:
                     "Please update your configuration.",
                 )
 
-                deprecated_value = pop_deprecated_key(self.__config, deprecation.split("."), 0)
+                deprecated_value = _pop_deprecated_key(self.__config, deprecation.split("."), 0)
                 self.y_set(replacement, deprecated_value)
+
+        self._update_redis_url_from_env()
 
     def log(self, level: str, message: str, **kwargs):
         """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
