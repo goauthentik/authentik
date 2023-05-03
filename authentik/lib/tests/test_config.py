@@ -63,13 +63,13 @@ class TestConfig(TestCase):
     def test_update_redis_url_from_env(self):
         """Test generating Redis URL from environment"""
         config = ConfigLoader()
-        environ["AUTHENTIK_REDIS__HOST"] = "myredis"
-        environ["AUTHENTIK_REDIS__PORT"] = "9637"
-        environ["AUTHENTIK_REDIS__DB"] = "56"
-        environ["AUTHENTIK_REDIS__USERNAME"] = "default"
-        environ["AUTHENTIK_REDIS__PASSWORD"] = "\"'% !.;.°"
-        environ["AUTHENTIK_REDIS__TLS"] = "true"
-        environ["AUTHENTIK_REDIS__TLS_REQS"] = "none"
+        environ[ENV_PREFIX + "_REDIS__HOST"] = "myredis"
+        environ[ENV_PREFIX + "_REDIS__PORT"] = "9637"
+        environ[ENV_PREFIX + "_REDIS__DB"] = "56"
+        environ[ENV_PREFIX + "_REDIS__USERNAME"] = "default"
+        environ[ENV_PREFIX + "_REDIS__PASSWORD"] = "\"'% !.;.°"
+        environ[ENV_PREFIX + "_REDIS__TLS"] = "true"
+        environ[ENV_PREFIX + "_REDIS__TLS_REQS"] = "none"
         config.update_from_env()
         config.check_deprecations()
         self.assertEqual(
