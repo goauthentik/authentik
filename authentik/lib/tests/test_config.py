@@ -59,3 +59,20 @@ class TestConfig(TestCase):
         config.update_from_file(file2_name)
         unlink(file_name)
         unlink(file2_name)
+
+    def test_update_redis_url_from_env(self):
+        """Test generating Redis URL from environment"""
+        config = ConfigLoader()
+        environ["AUTHENTIK_REDIS__HOST"] = "myredis"
+        environ["AUTHENTIK_REDIS__PORT"] = "9637"
+        environ["AUTHENTIK_REDIS__DB"] = "56"
+        environ["AUTHENTIK_REDIS__USERNAME"] = "default"
+        environ["AUTHENTIK_REDIS__PASSWORD"] = "\"'% !.;.°"
+        environ["AUTHENTIK_REDIS__TLS"] = "true"
+        environ["AUTHENTIK_REDIS__TLS_REQS"] = "none"
+        config.update_from_env()
+        config.check_deprecations()
+        self.assertEqual(
+            config.y("redis.url"),
+            "rediss://myredis:9637/56?insecureskipverify=true&password=%22%27%25+%21.%3B.%C2%B0&username=default"
+        )

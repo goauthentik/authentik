@@ -82,8 +82,8 @@ class ConfigLoader:
         if self.y("redis.url", UNSET) is UNSET:
             redis_url_params = {}
             redis_url = "rediss://" if self.y_bool("redis.tls", False) else "redis://"
-            redis_tls_reqs = self.y("redis.tls_reqs").lower()
-            match redis_tls_reqs:
+            redis_tls_reqs = self.y("redis.tls_reqs", "required")
+            match redis_tls_reqs.lower():
                 case "none":
                     redis_url_params["insecureskipverify"] = "true"
                 case "optional":
@@ -100,7 +100,8 @@ class ConfigLoader:
                 redis_url_params["username"] = self.y("redis.username")
             if self.y("redis.password", UNSET) is not UNSET:
                 redis_url_params["password"] = self.y("redis.password")
-            redis_url += f"{quote_plus(self.y('redis.host'))}:{int(CONFIG.y('redis.port'))}"
+            redis_url += f"{quote_plus(self.y('redis.host', 'localhost'))}:{int(CONFIG.y('redis.port', 6379))}"
+            redis_url += f"/{int(CONFIG.y('redis.db', 0))}"
             redis_url += urlencode(redis_url_params)
             self.y_set("redis.url", redis_url)
 

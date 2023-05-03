@@ -40,7 +40,14 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
 
 ## Redis Settings
 
--   `AUTHENTIK_REDIS__URL`: Redis configuration URL
+-   `AUTHENTIK_REDIS__URL`: Redis configuration URL (overwrites all below settings)
+-   `AUTHENTIK_REDIS__HOST`: Redis server host when not using configuration URL
+-   `AUTHENTIK_REDIS__PORT`: Redis server port when not using configuration URL
+-   `AUTHENTIK_REDIS__DB`: Redis server database when not using configuration URL
+-   `AUTHENTIK_REDIS__USERNAME`: Redis server username when not using configuration URL
+-   `AUTHENTIK_REDIS__PASSWORD`: Redis server password when not using configuration URL
+-   `AUTHENTIK_REDIS__TLS`: Redis server connection using TLS when not using configuration URL
+-   `AUTHENTIK_REDIS__TLS_REQS`: Redis server TLS connection requirements when not using configuration URL
 
 ## Result Backend Settings
 

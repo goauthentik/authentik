@@ -19,6 +19,7 @@ func Get() *Config {
 	if cfg == nil {
 		c := defaultConfig()
 		c.Setup("./authentik/lib/default.yml", "/etc/authentik/config.yml", "./local.env.yml")
+		c.UpdateRedisURL()
 		cfg = c
 	}
 	return cfg
@@ -59,6 +60,44 @@ func (c *Config) Setup(paths ...string) {
 		log.WithError(err).Info("failed to load env vars")
 	}
 	c.configureLogger()
+}
+
+func (c *Config) UpdateRedisURL() {
+	if c.Redis.URL == "" {
+		redisURL := url.URL{}
+		redisURLQuery := redisURL.Query()
+		if c.Redis.TLS {
+			redisURL.Scheme = "rediss"
+		} else {
+			redisURL.Scheme = "redis"
+		}
+		switch strings.ToLower(c.Redis.TLSReqs) {
+		case "none":
+			redisURLQuery.Add("insecureskipverify", "true")
+		case "optional":
+			redisURLQuery.Add("skipverify", "true")
+		case "":
+		case "required":
+		default:
+			log.Warnf("unsupported Redis TLS requirement option '%s', fallback to 'required'", c.Redis.TLSReqs)
+		}
+		if c.Redis.Username != "" {
+			redisURLQuery.Add("username", c.Redis.Username)
+		}
+		if c.Redis.Password != "" {
+			redisURLQuery.Add("password", c.Redis.Password)
+		}
+		redisURL.RawQuery = redisURLQuery.Encode()
+		if c.Redis.Host == "" {
+			c.Redis.Host = "localhost"
+		}
+		if c.Redis.Port == 0 {
+			c.Redis.Port = 6379
+		}
+		redisURL.Host = fmt.Sprintf("%s:%d", c.Redis.Host, c.Redis.Port)
+		redisURL.Path = fmt.Sprintf("%d", c.Redis.DB)
+		c.Redis.URL = redisURL.String()
+	}
 }
 
 func (c *Config) LoadConfig(path string) error {
