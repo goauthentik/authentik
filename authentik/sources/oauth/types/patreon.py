@@ -23,16 +23,16 @@ class PatreonOAuthCallback(OAuthCallback):
     client_class: UserprofileHeaderAuthClient
 
     def get_user_id(self, info: dict[str, str]) -> str:
-        return info.get("data", {}).get('id')
+        return info.get("data", {}).get("id")
 
     def get_user_enroll_context(
         self,
         info: dict[str, Any],
     ) -> dict[str, Any]:
         return {
-            "username": info.get("data", {}).get("attributes", {}).get("full_name"),
+            "username": info.get("data", {}).get("attributes", {}).get("vanity"),
             "email": info.get("data", {}).get("attributes", {}).get("email"),
-            "name": info.get("data", {}).get("attributes", {}).get("full_name")
+            "name": info.get("data", {}).get("attributes", {}).get("full_name"),
         }
 
 
