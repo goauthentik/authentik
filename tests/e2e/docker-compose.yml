@@ -2,13 +2,13 @@ version: '3.7'
 
 services:
   chrome:
-    image: selenium/standalone-chrome:110.0
+    image: docker.io/selenium/standalone-chrome:110.0
     volumes:
       - /dev/shm:/dev/shm
     network_mode: host
     restart: always
-  mailhog:
-    image: mailhog/mailhog:v1.0.1
+  mailpit:
+    image: docker.io/axllent/mailpit:v1.6.5
     ports:
       - 1025:1025
       - 8025:8025
