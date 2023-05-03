@@ -78,13 +78,13 @@ class TestFlowsEnroll(SeleniumTestCase):
         # Wait for the success message so we know the email is sent
         wait.until(ec.presence_of_element_located((By.CSS_SELECTOR, ".pf-c-form p")))
 
-        # Open Mailhog
+        # Open Mailpit
         self.driver.get("http://localhost:8025")
 
         # Click on first message
-        self.wait.until(ec.presence_of_element_located((By.CLASS_NAME, "msglist-message")))
-        self.driver.find_element(By.CLASS_NAME, "msglist-message").click()
-        self.driver.switch_to.frame(self.driver.find_element(By.CLASS_NAME, "tab-pane"))
+        self.wait.until(ec.presence_of_element_located((By.CLASS_NAME, "message")))
+        self.driver.find_element(By.CLASS_NAME, "message").click()
+        self.driver.switch_to.frame(self.driver.find_element(By.ID, "preview-html"))
         self.driver.find_element(By.ID, "confirm").click()
         self.driver.close()
         self.driver.switch_to.window(self.driver.window_handles[0])
