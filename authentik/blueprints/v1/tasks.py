@@ -156,6 +156,8 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
         and blueprint.meta.labels.get(LABEL_AUTHENTIK_INSTANTIATE, "").lower() == "false"
     ):
         return
+    if BlueprintInstance.objects.filter(path=blueprint.path).exists():
+        return
     if not instance:
         instance = BlueprintInstance(
             name=blueprint.meta.name if blueprint.meta else str(blueprint.path),
