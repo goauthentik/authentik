@@ -239,7 +239,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                                         </ak-form-element-horizontal>
                                     `
                                   : html``}`
-                        : html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                        : html`<ak-form-element-horizontal label=${t`Icon`} name="metaIcon">
                               <input
                                   type="text"
                                   value="${first(this.instance?.metaIcon, "")}"
