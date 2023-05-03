@@ -135,6 +135,22 @@ func (ps *ProxyServer) ServeHTTPS() {
 		GetCertificate: ps.getCertificates,
 	}
 
+	// Insecure SWEET32 attack ciphers, TLS config uses a fallback
+	insecureCiphersIds := []uint16{
+		tls.TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,
+		tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
+	}
+	defaultSecureCiphers := []uint16{}
+	for _, cs := range tls.CipherSuites() {
+		csID := cs.ID
+		for _, icsId := range insecureCiphersIds {
+			if csID != icsId {
+				defaultSecureCiphers = append(defaultSecureCiphers, csID)
+			}
+		}
+	}
+	config.CipherSuites = defaultSecureCiphers
+
 	ln, err := net.Listen("tcp", listenAddress)
 	if err != nil {
 		ps.log.WithError(err).Warning("Failed to listen (TLS)")
