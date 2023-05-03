@@ -1,9 +1,9 @@
 """SCIM Provider tasks"""
-from typing import Any
+from typing import Any, Optional
 
 from celery.result import allow_join_result
 from django.core.paginator import Paginator
-from django.db.models import Model
+from django.db.models import Model, QuerySet
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from pydanticscim.responses import PatchOp
@@ -143,6 +143,20 @@ def scim_signal_direct(model: str, pk: Any, raw_op: str):
     operation = PatchOp(raw_op)
     for provider in SCIMProvider.objects.all():
         client = client_for_model(provider, instance)
+        # Check if the object is allowed within the provider's restrictions
+        queryset: Optional[QuerySet] = None
+        if isinstance(instance, User):
+            queryset = provider.get_user_qs()
+        if isinstance(instance, Group):
+            queryset = provider.get_group_qs()
+        if not queryset:
+            continue
+
+        # The queryset we get from the provider must include the instance we've got given
+        # otherwise ignore this provider
+        if not queryset.filter(pk=instance.pk).exists():
+            continue
+
         try:
             if operation == PatchOp.add:
                 client.write(instance)
@@ -159,6 +173,13 @@ def scim_signal_m2m(group_pk: str, action: str, pk_set: list[int]):
     if not group:
         return
     for provider in SCIMProvider.objects.all():
+        # Check if the object is allowed within the provider's restrictions
+        queryset: QuerySet = provider.get_group_qs()
+        # The queryset we get from the provider must include the instance we've got given
+        # otherwise ignore this provider
+        if not queryset.filter(pk=group_pk).exists():
+            continue
+
         client = SCIMGroupClient(provider)
         try:
             operation = None
