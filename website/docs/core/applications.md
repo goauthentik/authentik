@@ -3,7 +3,7 @@ title: Applications
 slug: /applications
 ---
 
-Applications in authentik are the other half of providers. They exist in a 1-to-1 relationship, each application needs a provider and every provider can be used with one application. Starting with authentik 2023.5, applications can use multiple, to augment the functionality of the main provider, see [Backchannel providers](#backchannel-providers).
+Applications in authentik are the other half of providers. They exist in a 1-to-1 relationship, each application needs a provider and every provider can be used with one application. Starting with authentik 2023.5, applications can use multiple providers, to augment the functionality of the main provider. For more information, see [Backchannel providers](#backchannel-providers).
 
 Applications are used to configure and separate the authorization / access control and the appearance in the Library page.
 
@@ -58,9 +58,9 @@ To give users direct links to applications, you can now use an URL like `https:/
 ### Backchannel providers
 
 :::info
-Requires authentik 2023.5
+Requires authentik version 2023.5 or later.
 :::
 
 Backchannel providers can augment the functionality of applications with additional protocols. The main provider of an application provides the SSO protocol used for logging into the application. Backchannel providers can be used for protocols such as [SCIM](../providers/scim/index.md) and [LDAP](../providers/ldap/index.md) to provide directory syncing.
 
-Access restrictions configured on an application apply to all its backchannel providers.
+Access restrictions that are configured on an application apply to all of its backchannel providers.
