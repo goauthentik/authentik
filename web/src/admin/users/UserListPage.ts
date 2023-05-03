@@ -6,7 +6,7 @@ import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
-import { uiConfig } from "@goauthentik/common/ui/config";
+import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { first } from "@goauthentik/common/utils";
 import { rootInterface } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
@@ -69,6 +69,11 @@ export class UserListPage extends TablePage<User> {
     constructor() {
         super();
         this.activePath = getURLParam<string>("path", "/");
+        uiConfig().then((c) => {
+            if (c.defaults.userPath !== new DefaultUIConfig().defaults.userPath) {
+                this.activePath = c.defaults.userPath;
+            }
+        });
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {
