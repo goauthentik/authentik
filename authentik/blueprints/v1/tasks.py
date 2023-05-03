@@ -101,7 +101,10 @@ def blueprints_find():
     """Find blueprints and return valid ones"""
     blueprints = []
     root = Path(CONFIG.y("blueprints_dir"))
-    for path in root.glob("**/*.yaml"):
+    for path in root.rglob("**/*.yaml"):
+        # Check if any part in the path starts with a dot and assume a hidden file
+        if any(part for part in path.parts if part.startswith(".")):
+            continue
         LOGGER.debug("found blueprint", path=str(path))
         with open(path, "r", encoding="utf-8") as blueprint_file:
             try:
