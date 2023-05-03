@@ -44,8 +44,8 @@ export interface UIConfig {
     };
     locale: string;
     defaults: {
-        userPath: string,
-    },
+        userPath: string;
+    };
 }
 
 export class DefaultUIConfig implements UIConfig {

@@ -77,7 +77,7 @@ DefaultRoot /your/ftp/storage/dir
     LDAPBindDN cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io PASSWORDOFLDAPSERVICE
     # The second parameter is optional
     #  In this case I am restricting access to the group ftpusers
-    #  Instead you could also create bind policys in your created authentik application
+    #  Instead you could also create bind policies in your created authentik application
     LDAPUsers ou=users,dc=ldap,dc=goauthentik,dc=io (&(objectClass=user)(cn=%u)(memberOf=cn=ftpusers,ou=groups,dc=ldap,dc=goauthentik,dc=io))
 
     # In this example, I am forcing the permission of all files to the system user/group 1000
