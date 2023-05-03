@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
             name="policy_engine_mode",
             field=models.TextField(
                 choices=[
-                    ("all", "ALL, all policies must pass"),
-                    ("any", "ANY, any policy must pass"),
+                    ("all", "all, all policies must pass"),
+                    ("any", "any, any policy must pass"),
                 ],
                 default="all",
             ),
@@ -27,8 +27,8 @@ class Migration(migrations.Migration):
             name="policy_engine_mode",
             field=models.TextField(
                 choices=[
-                    ("all", "ALL, all policies must pass"),
-                    ("any", "ANY, any policy must pass"),
+                    ("all", "all, all policies must pass"),
+                    ("any", "any, any policy must pass"),
                 ],
                 default="any",
             ),

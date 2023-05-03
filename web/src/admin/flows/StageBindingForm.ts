@@ -225,13 +225,13 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 <ak-radio
                     .options=${[
                         {
-                            label: "ANY",
+                            label: "any",
                             value: PolicyEngineMode.Any,
                             default: true,
                             description: html`${t`Any policy must match to grant access`}`,
                         },
                         {
-                            label: "ALL",
+                            label: "all",
                             value: PolicyEngineMode.All,
                             description: html`${t`All policies must match to grant access`}`,
                         },
