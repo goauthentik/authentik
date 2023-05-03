@@ -15,6 +15,7 @@ class SCIMMembershipTests(TestCase):
     """SCIM Membership tests"""
 
     provider: SCIMProvider
+    app: Application
 
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
