@@ -1,18 +1,16 @@
 ---
-title: proftpd
+title: ProFTPD
 ---
 
 <span class="badge badge--secondary">Support level: Community</span>
 
 ## What is ProFTPD
 
+:::note
 ProFTPD is a high-performance, open-source FTP server software designed for Unix and Linux systems. It supports various features, including IPv6, SSL/TLS encryption, virtual hosting, advanced logging, and supports various authentication methods, including LDAP and MySQL.
+:::
 
 This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](../../../docs/providers/ldap/generic_setup) for setting up the LDAP provider.
-
-:::caution
-An LDAP outpost must be deployed in authentik to use LDAP!
-:::
 
 ## Preparation
 
@@ -103,7 +101,7 @@ DefaultRoot /your/ftp/storage/dir
 </IfModule>
 ```
 
-In this example, every user shares a single folder.  If you want to have separate folders for each user, you can adapt the `LDAPGenerateHomedirPrefixNoUsername` setting.
+In this example, every user shares a single folder. If you want to have separate folders for each user, you can adapt the `LDAPGenerateHomedirPrefixNoUsername` setting.
 
 Additionally, note that each file will have Linux user and group ID `1000`. Beforehand, make sure that the respective Linux user exists (usually the first Linux user created receives ID `1000`). Check `/etc/passwd` and create a user if necessary.
 
@@ -116,5 +114,3 @@ Finally, after adding the configuration, restart ProFTPD.
 :::note
 If login fails, make sure to check the logs of the LDAP plugin: `tail -f /var/log/mod_ldap.log`.
 :::
-
-
