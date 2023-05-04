@@ -196,7 +196,7 @@ def _get_credentials_from_url(redis_kwargs, url):
         redis_kwargs["password"] = unquote(url.password)
         if url.username:
             redis_kwargs["username"] = unquote(url.username)
-    else:
+    elif url.username:
         redis_kwargs["password"] = unquote(url.username)
     return redis_kwargs
 
