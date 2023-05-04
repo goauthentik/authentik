@@ -64,11 +64,11 @@ class TestConfig(TestCase):
         """Test config key re-write for deprecated env vars"""
         config = ConfigLoader()
         environ[ENV_PREFIX + "_REDIS__BROKER_URL"] = "redis://myredis:8327/43"
-        environ[ENV_PREFIX + "_REDIS__TRANSPORT_OPTIONS"] = "bWFzdGVybmFtZT1teW1hc3Rlcg=="
-        environ[ENV_PREFIX + "_REDIS__TIMEOUT"] = "124s"
-        environ[ENV_PREFIX + "_REDIS__TIMEOUT_FLOWS"] = "32m"
-        environ[ENV_PREFIX + "_REDIS__TIMEOUT_POLICIES"] = "3920ns"
-        environ[ENV_PREFIX + "_REDIS__TIMEOUT_REPUTATION"] = "298382us"
+        environ[ENV_PREFIX + "_REDIS__BROKER_TRANSPORT_OPTIONS"] = "bWFzdGVybmFtZT1teW1hc3Rlcg=="
+        environ[ENV_PREFIX + "_REDIS__CACHE_TIMEOUT"] = "124s"
+        environ[ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_FLOWS"] = "32m"
+        environ[ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_POLICIES"] = "3920ns"
+        environ[ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_REPUTATION"] = "298382us"
         config.update_from_env()
         config.check_deprecations()
         self.assertEqual(config.y("redis.broker_url", UNSET), UNSET)

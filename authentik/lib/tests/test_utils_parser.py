@@ -1,5 +1,5 @@
 """Test Redis URL parser"""
-from asyncio import LifoQueue, PriorityQueue
+from asyncio import PriorityQueue
 from urllib.parse import urlparse
 
 from _socket import TCP_KEEPCNT, TCP_KEEPINTVL
@@ -146,10 +146,15 @@ class TestParserUtils(TestCase):
         self.assertEqual(pool_kwargs["queue_class"], PriorityQueue)
 
     def test_get_redis_options_pool_fifo_arg_fallback(self):
-        """Test Redis URL parser with bad poolfifo arg"""
+        """Test Redis URL parser with bad poolfifo arg
+
+        No queue class shall be set in this case and
+        instead the default asyncio.LifoQueue of the
+        BlockingConnectionPool is used
+        """
         url = urlparse("redis://myredis/0?poolfifo=abc")
         pool_kwargs, _, _ = get_redis_options(url)
-        self.assertEqual(pool_kwargs["queue_class"], LifoQueue)
+        self.assertTrue("queue_class" not in pool_kwargs)
 
     def test_get_redis_options_pool_size_arg(self):
         """Test Redis URL parser with poolsize arg"""

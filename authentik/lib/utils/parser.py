@@ -1,5 +1,5 @@
 """redis URL parser"""
-from asyncio import LifoQueue, PriorityQueue
+from asyncio import PriorityQueue
 from copy import deepcopy
 from socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from socket import timeout as SocketTimeout
@@ -115,6 +115,12 @@ def _configure_tcp_keepalive(kwargs):
     return kwargs
 
 
+def _set_kwargs_default(kwargs, defaults):
+    for kwarg_key, kwarg_value in defaults:
+        kwargs.setdefault(kwarg_key, kwarg_value)
+    return kwargs
+
+
 def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
     """Update config with default values"""
     if url.hostname:
@@ -150,31 +156,36 @@ def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
     if len(new_addrs) == 0:
         new_addrs.append(("127.0.0.1", "6379"))
 
-    redis_kwargs["addrs"] = new_addrs
+    pool_kwargs_defaults = {
+        "max_connections": max_connections,
+        "timeout": (redis_kwargs.get("socket_timeout") or 3) + 1,
+    }
 
-    pool_kwargs.setdefault("max_connections", max_connections)
-    pool_kwargs.setdefault("timeout", (redis_kwargs.get("socket_timeout") or 3) + 1)
+    redis_kwargs_defaults = {
+        "addrs": new_addrs,
+        "cluster_error_retry_attempts": 3,
+        "socket_connect_timeout": 5,
+        "socket_timeout": 3,
+    }
 
-    tls_kwargs.update(
-        {
-            "ssl_keyfile": None,
-            "ssl_certfile": None,
-            "ssl_cert_reqs": "required",
-            "ssl_ca_certs": None,
-            "ssl_ca_data": None,
-            "ssl_ca_path": None,
-            "ssl_check_hostname": False,
-            "ssl_password": None,
-            "ssl_validate_ocsp": False,
-            "ssl_validate_ocsp_stapled": False,
-            "ssl_ocsp_context": None,
-            "ssl_ocsp_expected_cert": None,
-        }
-    )
+    tls_kwargs_defaults = {
+        "ssl_keyfile": None,
+        "ssl_certfile": None,
+        "ssl_cert_reqs": "required",
+        "ssl_ca_certs": None,
+        "ssl_ca_data": None,
+        "ssl_ca_path": None,
+        "ssl_check_hostname": False,
+        "ssl_password": None,
+        "ssl_validate_ocsp": False,
+        "ssl_validate_ocsp_stapled": False,
+        "ssl_ocsp_context": None,
+        "ssl_ocsp_expected_cert": None,
+    }
 
-    redis_kwargs.setdefault("cluster_error_retry_attempts", 3)
-    redis_kwargs.setdefault("socket_connect_timeout", 5)
-    redis_kwargs.setdefault("socket_timeout", 3)
+    pool_kwargs = _set_kwargs_default(pool_kwargs, pool_kwargs_defaults)
+    redis_kwargs = _set_kwargs_default(redis_kwargs, redis_kwargs_defaults)
+    tls_kwargs = _set_kwargs_default(tls_kwargs, tls_kwargs_defaults)
 
     return pool_kwargs, redis_kwargs, tls_kwargs
 
@@ -183,8 +194,10 @@ def _get_credentials_from_url(redis_kwargs, url):
     """Extract username and password from URL"""
     if url.password:
         redis_kwargs["password"] = unquote(url.password)
-    if url.username:
-        redis_kwargs["username"] = unquote(url.username)
+        if url.username:
+            redis_kwargs["username"] = unquote(url.username)
+    else:
+        redis_kwargs["password"] = unquote(url.username)
     return redis_kwargs
 
 
@@ -255,8 +268,6 @@ def get_redis_options(
                 case "poolfifo":
                     if _to_bool(value[0]):
                         pool_kwargs["queue_class"] = PriorityQueue
-                    else:
-                        pool_kwargs["queue_class"] = LifoQueue
                 case "poolsize":
                     pool_kwargs["max_connections"] = int(value[0])
                 case "pooltimeout":
