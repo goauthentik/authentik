@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - main
+      - translations-comments
     paths:
       - "/locale/**"
       - "/web/src/locales/**"
