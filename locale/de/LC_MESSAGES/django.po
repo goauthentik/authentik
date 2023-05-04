@@ -870,7 +870,7 @@ msgstr ""
 
 #: authentik/providers/proxy/models.py:77
 msgid "Set HTTP-Basic Authentication"
-msgstr "HTTP-Basisauthentifizierung einstellen"
+msgstr "HTTP-Basisauthentifizierung einstellen bla bla"
 
 #: authentik/providers/proxy/models.py:79
 msgid ""
