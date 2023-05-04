@@ -17,11 +17,13 @@ FALSE_STRINGS = ("0", "F", "FALSE", "N", "NO")
 
 def _to_bool(value):
     """Convert string to bool"""
-    if value is None or value == "":
-        return None
-    if isinstance(value, str) and value.upper() in FALSE_STRINGS:
-        return False
-    return bool(value)
+    match value:
+        case "1", "t", "T", "true", "TRUE", "True":
+            return True
+        case "0", "f", "F", "false", "FALSE", "False":
+            return False
+    print("Invalid boolean value found in Redis URL query, skipping")
+    return False
 
 
 def _parse_duration_to_sec(duration_str: str) -> float:
