@@ -6,6 +6,7 @@ import (
 	"net/url"
 	"os"
 	"reflect"
+	"strconv"
 	"strings"
 
 	env "github.com/Netflix/go-env"
@@ -63,41 +64,72 @@ func (c *Config) Setup(paths ...string) {
 }
 
 func (c *Config) UpdateRedisURL() {
-	if c.Redis.URL == "" {
-		redisURL := url.URL{}
-		redisURLQuery := redisURL.Query()
-		if c.Redis.TLS {
-			redisURL.Scheme = "rediss"
-		} else {
-			redisURL.Scheme = "redis"
+	var(
+		redisURL = url.URL{Scheme: "redis"}
+		redisURLQuery = redisURL.Query()
+		redisHost = "localhost"
+		redisPort = 6379
+		redisDB = 0
+	)
+
+	if c.Redis.URL != "" {
+		redisURLOld, err := url.Parse(c.Redis.URL)
+		if err == nil {
+			redisURLQuery = redisURLOld.Query()
+			redisHost = redisURLOld.Hostname()
+			redisPort, err = strconv.Atoi(redisURLOld.Port())
+			if err != nil {
+				redisPort = 6379
+			}
+			redisDB, err = strconv.Atoi(redisURLOld.Path)
+			if err != nil {
+				redisDB = 0
+			}
+			if c.Redis.TLSReqs == "" {
+				redisURL.Scheme = redisURLOld.Scheme
+			}
 		}
-		switch strings.ToLower(c.Redis.TLSReqs) {
-		case "none":
-			redisURLQuery.Add("insecureskipverify", "true")
-		case "optional":
-			redisURLQuery.Add("skipverify", "true")
-		case "":
-		case "required":
-		default:
-			log.Warnf("unsupported Redis TLS requirement option '%s', fallback to 'required'", c.Redis.TLSReqs)
-		}
-		if c.Redis.Username != "" {
-			redisURLQuery.Add("username", c.Redis.Username)
-		}
-		if c.Redis.Password != "" {
-			redisURLQuery.Add("password", c.Redis.Password)
-		}
-		redisURL.RawQuery = redisURLQuery.Encode()
-		if c.Redis.Host == "" {
-			c.Redis.Host = "localhost"
-		}
-		if c.Redis.Port == 0 {
-			c.Redis.Port = 6379
-		}
-		redisURL.Host = fmt.Sprintf("%s:%d", c.Redis.Host, c.Redis.Port)
-		redisURL.Path = fmt.Sprintf("%d", c.Redis.DB)
-		c.Redis.URL = redisURL.String()
 	}
+	if c.Redis.TLS {
+		redisURL.Scheme = "rediss"
+	}
+	switch strings.ToLower(c.Redis.TLSReqs) {
+	case "none":
+		redisURLQuery.Del("skipverify")
+		redisURLQuery.Add("insecureskipverify", "true")
+	case "optional":
+		redisURLQuery.Del("insecureskipverify")
+		redisURLQuery.Add("skipverify", "true")
+	case "":
+	case "required":
+	default:
+		log.Warnf("unsupported Redis TLS requirement option '%s', fallback to 'required'", c.Redis.TLSReqs)
+	}
+	if c.Redis.DB != 0 {
+		redisDB = c.Redis.DB
+	}
+	if c.Redis.Host != "" {
+		redisHost = c.Redis.Host
+	}
+	if c.Redis.Port != 0 {
+		redisPort = c.Redis.Port
+	}
+	if c.Redis.Username != "" {
+		redisURLQuery["username"] = []string{c.Redis.Username}
+	}
+	if c.Redis.Password != "" {
+		redisURLQuery["password"] = []string{c.Redis.Password}
+	}
+	redisURL.RawQuery = redisURLQuery.Encode()
+	if c.Redis.Host == "" {
+		c.Redis.Host = "localhost"
+	}
+	if c.Redis.Port == 0 {
+		c.Redis.Port = 6379
+	}
+	redisURL.Host = fmt.Sprintf("%s:%d", redisHost, redisPort)
+	redisURL.Path = fmt.Sprintf("%d", redisDB)
+	c.Redis.URL = redisURL.String()
 }
 
 func (c *Config) LoadConfig(path string) error {

@@ -8,7 +8,7 @@ from json.decoder import JSONDecodeError
 from sys import argv, stderr
 from time import time
 from typing import Any
-from urllib.parse import quote_plus, urlencode, urlparse
+from urllib.parse import quote_plus, urlencode, urlparse, parse_qsl
 
 import yaml
 from django.conf import ImproperlyConfigured
@@ -75,18 +75,36 @@ class ConfigLoader:
                         self.update_from_file(env_file)
         self.update_from_env()
         self.check_deprecations()
+        self.update_redis_url_from_env()
 
-    def _update_redis_url_from_env(self):
+    def update_redis_url_from_env(self):
         """Build Redis URL from other env variables"""
 
-        if self.y("redis.url", UNSET) is UNSET:
-            redis_url_params = {}
-            redis_url = "rediss://" if self.y_bool("redis.tls", False) else "redis://"
-            redis_tls_reqs = self.y("redis.tls_reqs", "required")
+        redis_url = "redis://"
+        redis_url_params = {}
+        redis_host = "localhost"
+        redis_port = 6379
+        redis_db = 0
+
+        if self.y("redis.url", UNSET) is not UNSET:
+            redis_url_old = urlparse(self.y("redis.url"))
+            redis_url_params = dict(parse_qsl(redis_url_old.params))
+            redis_host = redis_url_old.hostname
+            redis_port = redis_url_old.port
+            if redis_url_old.path[1:].isdigit():
+                redis_db = redis_url_old.path[1:]
+            if self.y("redis.tls", UNSET) is UNSET:
+                redis_url = redis_url_old.scheme
+        if self.y_bool("redis.tls", False):
+            redis_url = "rediss://"
+        if self.y("redis.tls_reqs", UNSET) is not UNSET:
+            redis_tls_reqs = self.y("redis.tls_reqs")
             match redis_tls_reqs.lower():
                 case "none":
+                    redis_url_params.pop("skipverify", None)
                     redis_url_params["insecureskipverify"] = "true"
                 case "optional":
+                    redis_url_params.pop("insecureskipverify", None)
                     redis_url_params["skipverify"] = "true"
                 case "required":
                     pass
@@ -96,15 +114,24 @@ class ConfigLoader:
                         f"Unsupported Redis TLS requirements option '{redis_tls_reqs}'! "
                         "Using default option 'required'.",
                     )
-            if self.y("redis.username", UNSET) is not UNSET:
-                redis_url_params["username"] = self.y("redis.username")
-            if self.y("redis.password", UNSET) is not UNSET:
-                redis_url_params["password"] = self.y("redis.password")
-            redis_url += f"{quote_plus(self.y('redis.host', 'localhost'))}"
-            redis_url += f":{int(self.y('redis.port', 6379))}"
-            redis_url += f"/{int(self.y('redis.db', 0))}"
-            redis_url += urlencode(redis_url_params)
-            self.y_set("redis.url", redis_url)
+        if self.y("redis.db", UNSET) is not UNSET:
+            redis_db = int(self.y("redis.db"))
+        if self.y("redis.host", UNSET) is not UNSET:
+            redis_host = self.y("redis.host")
+        if self.y("redis.port", UNSET) is not UNSET:
+            redis_port = int(self.y("redis.port"))
+        if self.y("redis.username", UNSET) is not UNSET:
+            redis_url_params["username"] = self.y("redis.username")
+        if self.y("redis.password", UNSET) is not UNSET:
+            redis_url_params["password"] = self.y("redis.password")
+        redis_url += f"{quote_plus(redis_host)}"
+        redis_url += f":{redis_port}"
+        redis_url += f"/{redis_db}"
+        redis_url_params = dict(sorted(redis_url_params.items()))
+        redis_url_params = urlencode(redis_url_params)
+        if redis_url_params != "":
+            redis_url += f"?{redis_url_params}"
+        self.y_set("redis.url", redis_url)
 
     def check_deprecations(self):
         """Warn if any deprecated configuration options are used"""
@@ -131,8 +158,6 @@ class ConfigLoader:
 
                 deprecated_value = _pop_deprecated_key(self.__config, deprecation.split("."), 0)
                 self.y_set(replacement, deprecated_value)
-
-        self._update_redis_url_from_env()
 
     def log(self, level: str, message: str, **kwargs):
         """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
