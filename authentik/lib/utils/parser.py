@@ -147,7 +147,7 @@ def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
 
     new_addrs = []
     default_port = 26379 if "sentinel" in str(url.scheme) else 6379
-    for addr in redis_kwargs.get("addrs", []):
+    for addr in redis_kwargs.pop("addrs", []):
         try:
             new_addrs.append(parse_hostport(addr, default_port))
         except ValueError:
