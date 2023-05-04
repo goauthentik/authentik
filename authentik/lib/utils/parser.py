@@ -115,8 +115,8 @@ def _configure_tcp_keepalive(kwargs):
     return kwargs
 
 
-def _set_kwargs_default(kwargs, defaults):
-    for kwarg_key, kwarg_value in defaults:
+def _set_kwargs_default(kwargs: dict, defaults: dict):
+    for kwarg_key, kwarg_value in defaults.items():
         kwargs.setdefault(kwarg_key, kwarg_value)
     return kwargs
 
