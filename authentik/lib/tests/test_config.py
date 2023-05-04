@@ -60,6 +60,30 @@ class TestConfig(TestCase):
         unlink(file_name)
         unlink(file2_name)
 
+    def test_check_deprecations(self):
+        """Test config key re-write for deprecated env vars"""
+        config = ConfigLoader()
+        environ[ENV_PREFIX + "_REDIS__BROKER_URL"] = "redis://myredis:8327/43"
+        environ[ENV_PREFIX + "_REDIS__TRANSPORT_OPTIONS"] = "bWFzdGVybmFtZT1teW1hc3Rlcg=="
+        environ[ENV_PREFIX + "_REDIS__TIMEOUT"] = "124s"
+        environ[ENV_PREFIX + "_REDIS__TIMEOUT_FLOWS"] = "32m"
+        environ[ENV_PREFIX + "_REDIS__TIMEOUT_POLICIES"] = "3920ns"
+        environ[ENV_PREFIX + "_REDIS__TIMEOUT_REPUTATION"] = "298382us"
+        config.update_from_env()
+        config.check_deprecations()
+        self.assertEqual(config.y("redis.broker_url", UNSET), UNSET)
+        self.assertEqual(config.y("redis.broker_transport_options", UNSET), UNSET)
+        self.assertEqual(config.y("redis.cache_timeout", UNSET), UNSET)
+        self.assertEqual(config.y("redis.cache_timeout_flows", UNSET), UNSET)
+        self.assertEqual(config.y("redis.cache_timeout_policies", UNSET), UNSET)
+        self.assertEqual(config.y("redis.cache_timeout_reputation", UNSET), UNSET)
+        self.assertEqual(config.y("broker.url"), "redis://myredis:8327/43")
+        self.assertEqual(config.y("broker.transport_options"), "bWFzdGVybmFtZT1teW1hc3Rlcg==")
+        self.assertEqual(config.y("cache.timeout"), "124s")
+        self.assertEqual(config.y("cache.timeout_flows"), "32m")
+        self.assertEqual(config.y("cache.timeout_policies"), "3920ns")
+        self.assertEqual(config.y("cache.timeout_reputation"), "298382us")
+
     def test_update_redis_url_from_env(self):
         """Test generating Redis URL from environment"""
         config = ConfigLoader()
