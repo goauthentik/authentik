@@ -5,7 +5,7 @@ from tempfile import mkstemp
 from django.conf import ImproperlyConfigured
 from django.test import TestCase
 
-from authentik.lib.config import ENV_PREFIX, ConfigLoader, UNSET
+from authentik.lib.config import ENV_PREFIX, UNSET, ConfigLoader
 
 
 class TestConfig(TestCase):
@@ -87,9 +87,11 @@ class TestConfig(TestCase):
     def test_update_redis_url_from_env(self):
         """Test generating Redis URL from environment"""
         config = ConfigLoader()
-        environ[ENV_PREFIX + "_REDIS__URL"] = "redis://oldredis:2493/2" \
-                                              + "?idletimeout=20s&skipverify=true"\
-                                              + "&password=pass&username=redis"
+        environ[ENV_PREFIX + "_REDIS__URL"] = (
+            "redis://oldredis:2493/2"
+            + "?idletimeout=20s&skipverify=true"
+            + "&password=pass&username=redis"
+        )
         environ[ENV_PREFIX + "_REDIS__HOST"] = "myredis"
         environ[ENV_PREFIX + "_REDIS__PORT"] = "9637"
         environ[ENV_PREFIX + "_REDIS__DB"] = "56"

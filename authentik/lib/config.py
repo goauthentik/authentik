@@ -8,7 +8,7 @@ from json.decoder import JSONDecodeError
 from sys import argv, stderr
 from time import time
 from typing import Any
-from urllib.parse import quote_plus, urlencode, urlparse, parse_qsl
+from urllib.parse import parse_qsl, quote_plus, urlencode, urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
