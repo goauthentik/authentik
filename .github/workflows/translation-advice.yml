@@ -6,9 +6,17 @@ on:
       - main
       - translations-comments
     paths:
-      - "/locale/**"
-      - "/web/src/locales/**"
       - "!**"
+      - "locale/**"
+      - "web/src/locales/**"
+
+      #- "locale/**" # python, backend
+      #- "!authentik/**"
+      #- "!web/src/**"
+      #- "web/src/locales/**" # js, ts, frontend
+      #
+      #- "locale/**"
+      #- "!**"
 
 jobs:
   post-comment:
