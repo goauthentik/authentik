@@ -81,14 +81,14 @@ class ConfigLoader:
         """Build Redis URL from other env variables"""
 
         redis_url = "redis://"
-        redis_url_params = {}
+        redis_url_query = {}
         redis_host = "localhost"
         redis_port = 6379
         redis_db = 0
 
         if self.y("redis.url", UNSET) is not UNSET:
             redis_url_old = urlparse(self.y("redis.url"))
-            redis_url_params = dict(parse_qsl(redis_url_old.params))
+            redis_url_query = dict(parse_qsl(redis_url_old.query))
             redis_host = redis_url_old.hostname
             redis_port = redis_url_old.port
             if redis_url_old.path[1:].isdigit():
@@ -101,11 +101,11 @@ class ConfigLoader:
             redis_tls_reqs = self.y("redis.tls_reqs")
             match redis_tls_reqs.lower():
                 case "none":
-                    redis_url_params.pop("skipverify", None)
-                    redis_url_params["insecureskipverify"] = "true"
+                    redis_url_query.pop("skipverify", None)
+                    redis_url_query["insecureskipverify"] = "true"
                 case "optional":
-                    redis_url_params.pop("insecureskipverify", None)
-                    redis_url_params["skipverify"] = "true"
+                    redis_url_query.pop("insecureskipverify", None)
+                    redis_url_query["skipverify"] = "true"
                 case "required":
                     pass
                 case _:
@@ -121,16 +121,16 @@ class ConfigLoader:
         if self.y("redis.port", UNSET) is not UNSET:
             redis_port = int(self.y("redis.port"))
         if self.y("redis.username", UNSET) is not UNSET:
-            redis_url_params["username"] = self.y("redis.username")
+            redis_url_query["username"] = self.y("redis.username")
         if self.y("redis.password", UNSET) is not UNSET:
-            redis_url_params["password"] = self.y("redis.password")
+            redis_url_query["password"] = self.y("redis.password")
         redis_url += f"{quote_plus(redis_host)}"
         redis_url += f":{redis_port}"
         redis_url += f"/{redis_db}"
-        redis_url_params = dict(sorted(redis_url_params.items()))
-        redis_url_params = urlencode(redis_url_params)
-        if redis_url_params != "":
-            redis_url += f"?{redis_url_params}"
+        redis_url_query = dict(sorted(redis_url_query.items()))
+        redis_url_query = urlencode(redis_url_query)
+        if redis_url_query != "":
+            redis_url += f"?{redis_url_query}"
         self.y_set("redis.url", redis_url)
 
     def check_deprecations(self):
