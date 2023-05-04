@@ -2395,7 +2395,7 @@ msgid ""
 msgstr ""
 
 #: authentik/tenants/models.py:67
-msgid "Web Certificate used by the authentik Core webserver. blablabla"
+msgid "Web Certificate used by the authentik Core webserver. blablabla2"
 msgstr ""
 
 #: authentik/tenants/models.py:93
