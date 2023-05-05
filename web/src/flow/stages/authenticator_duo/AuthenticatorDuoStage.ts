@@ -49,7 +49,9 @@ export class AuthenticatorDuoStage extends BaseStage<
         ).stagesAuthenticatorDuoEnrollmentStatusCreate({
             stageUuid: this.challenge?.stageUuid || "",
         });
-        console.debug(`authentik/flows/duo: Enrollment status: ${status.duoResponse}`);
+        console.debug(
+            `authentik/stages/authenticator_duo: Enrollment status: ${status.duoResponse}`,
+        );
         switch (status.duoResponse) {
             case DuoResponseEnum.Success:
                 this.host?.submit({});
