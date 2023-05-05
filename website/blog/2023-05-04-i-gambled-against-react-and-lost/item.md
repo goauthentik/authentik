@@ -35,12 +35,14 @@ React was first released in 2013 and when I was building the initial open source
 In 2015, Netflix and Airbnb started using React. Reactive Native for iOS came out that same year and later, React Native for Android. By 2018, the year I made the decision, 28.3% of developers had started using React.
 
 ![image2.png](image2.png)
+_(data from 2018)_
 
 React was popular and rising but not an obvious choice – not a choice that anyone would be surprised at for not choosing. Now, of course, it’s all different.
 
 2022 StackOverflow [research](https://survey.stackoverflow.co/2022/) shows that 44.31% of developers now use React.
 
 ![image3.png](image3.png)
+_(data from 2022)_
 
 To get a sense of Lit’s popularity, in comparison, I had to narrow my search to JavaScript developers. Among JS developers, according to the [2022 State of JavaScript survey](https://stackdiary.com/front-end-frameworks/), Lit is used by only 6%.
 
@@ -124,11 +126,9 @@ If we wanted, for example, to add a new component for a table, we could have the
 
 Scroll through HackerNews and you’ll find numerous, often tense or fiery, discussions of frameworks. Some people will be diligent about costs and benefits but many will be brand-loyal; arguing on the behalf of one framework and trashing all the others.
 
-> “My fellow engineers, please stop asking ‘Is this process good or bad?’ and start asking “Is it well-suited to my situation?” - Jocelyn Goldfein, former engineering executive at Facebook and VMware
+> “My fellow engineers, please stop asking ‘Is this process good or bad?’ and start asking “Is it well-suited to my situation?” - [Jocelyn Goldfein](https://review.firstround.com/the-right-way-to-ship-software)), former engineering executive at Facebook and VMware
 
 The lesson I learned from choosing between Lit and React – and living with the consequences – is that these decisions are tradeoffs all the way down.
-
-Jocelyn Goldfein, a former engineering executive at Facebook and VMware, [frames it well](https://review.firstround.com/the-right-way-to-ship-software): “My fellow engineers, please stop asking ‘Is this process good or bad?’ and start asking “Is it well-suited to my situation?”
 
 The tricky part of this question is that identifying your situation is harder than it seems. Scale-ups and enterprises can rely on better pattern-matching than true, early startups can. Each startup, like [unhappy families](https://www.goodreads.com/quotes/7142-all-happy-families-are-alike-each-unhappy-family-is-unhappy), is unhappy in its own way.
 
