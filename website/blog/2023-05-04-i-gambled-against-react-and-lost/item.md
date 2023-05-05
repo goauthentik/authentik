@@ -42,7 +42,7 @@ React was popular and rising but not an obvious choice – not a choice that any
 
 ![image3.png](image3.png)
 
-To get a sense of Lit’s popularity, in comparison, I had to narrow my research to JavaScript developers. Among JS developers, according to the [2022 State of JavaScript survey](https://stackdiary.com/front-end-frameworks/), Lit is used by only 6%.
+To get a sense of Lit’s popularity, in comparison, I had to narrow my search to JavaScript developers. Among JS developers, according to the [2022 State of JavaScript survey](https://stackdiary.com/front-end-frameworks/), Lit is used by only 6%.
 
 ![image1.png](image1.png)
 
@@ -52,7 +52,7 @@ It’s not a sheer popularity difference:
 -   React has over [1600 contributors](https://github.com/facebook/react) (Lit has [149](https://github.com/lit/lit)).
 -   React has over [14,000,000 users](https://github.com/facebook/react). (Lit has over [26,000](https://github.com/lit/lit)).
 
-I won’t say this success was impossible to predict but it also wasn’t easy.
+I won’t say this success was impossible to predict but it also wasn’t obvious.
 
 These dynamics follow virtuous cycles: The more popular React became, the more developers wanted to try it; the more developers tried it, the more developers became proficient with it and the more they built with it; the more things built with React, the more companies demanded React skills and as demand rose, so did supply.
 
@@ -92,11 +92,11 @@ In the beginning, the project was entirely rendered server-side. With Django, I 
 
 But a few features emerged on the roadmap that soon made this setup feel less simple. I wanted to give users the ability to refresh data with a button press and complete searches without reloading the page, for example.
 
-In late 2020, I started actually migrating to Lit, already knowing a lot of work was ahead of myself. At that point it would often happen that when new features were introduced, they would be in the UI but not in the API, often due to forgetfulness. This turned things into a constant cat and mouse game to keep the API updated without knowing what endpoints were actually required.
+In late 2020, I started migrating to Lit, already knowing a lot of work was ahead. At that point it would often happen that when new features were introduced, they would be in the UI but not in the API, often due to forgetfulness. This turned things into a constant cat and mouse game to keep the API updated without knowing what endpoints were actually required.
 
-Then, toward the end of 2022, with support from Open Core Ventures, [authentik became Authentik Security](https://goauthentik.io/blog/2022-11-02-the-next-step-for-authentik). And once again, the product roadmap made some demands.
+Then, toward the end of 2022, with support from [Open Core Ventures](https://opencoreventures.com/), [authentik became Authentik Security](https://goauthentik.io/blog/2022-11-02-the-next-step-for-authentik). And once again, the product roadmap made some demands.
 
-Inflexibility was an early Authentik flaw. Because we relied on server-side rendering, we also relied – and made our users rely – on browsers. But we had always wanted to go beyond that, to get to a point where there was a dynamic back-and-forth between the client and the server.
+Inflexibility was an early flaw in authentik. Because we relied on server-side rendering, we also relied – and made our users rely – on browsers. But we had always wanted to go beyond that, to get to a point where there was a dynamic back-and-forth between the client and the server.
 
 Flexibility, then, was the primary goal and that’s the primary lens through which I evaluated the libraries and frameworks available at the time.
 
