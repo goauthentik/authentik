@@ -18,6 +18,7 @@ import (
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2/application"
 	"goauthentik.io/internal/outpost/proxyv2/metrics"
+	"goauthentik.io/internal/utils"
 	sentryutils "goauthentik.io/internal/utils/sentry"
 	"goauthentik.io/internal/utils/web"
 )
@@ -129,11 +130,8 @@ func (ps *ProxyServer) ServeHTTP() {
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
 func (ps *ProxyServer) ServeHTTPS() {
 	listenAddress := config.Get().Listen.HTTPS
-	config := &tls.Config{
-		MinVersion:     tls.VersionTLS12,
-		MaxVersion:     tls.VersionTLS12,
-		GetCertificate: ps.getCertificates,
-	}
+	tlsConfig := utils.GetTLSConfig()
+	tlsConfig.GetCertificate = ps.getCertificates
 
 	ln, err := net.Listen("tcp", listenAddress)
 	if err != nil {
@@ -143,7 +141,7 @@ func (ps *ProxyServer) ServeHTTPS() {
 	proxyListener := &proxyproto.Listener{Listener: web.TCPKeepAliveListener{TCPListener: ln.(*net.TCPListener)}}
 	defer proxyListener.Close()
 
-	tlsListener := tls.NewListener(proxyListener, config)
+	tlsListener := tls.NewListener(proxyListener, tlsConfig)
 	ps.log.WithField("listen", listenAddress).Info("Starting HTTPS server")
 	ps.serve(tlsListener)
 	ps.log.WithField("listen", listenAddress).Info("Stopping HTTPS server")
