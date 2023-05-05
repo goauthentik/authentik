@@ -1,6 +1,7 @@
 import { CSRFHeaderName } from "@goauthentik/common/api/middleware";
 import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
+import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { first, getCookie } from "@goauthentik/common/utils";
 import { Interface } from "@goauthentik/elements/Base";
 import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
@@ -11,6 +12,8 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
+
+autoDetectLanguage();
 
 @customElement("ak-api-browser")
 export class APIBrowser extends Interface {

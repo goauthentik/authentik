@@ -1,4 +1,5 @@
 import { globalAK } from "@goauthentik/common/global";
+import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { Interface } from "@goauthentik/elements/Base";
 
 import { t } from "@lingui/macro";
@@ -12,6 +13,8 @@ import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { UiThemeEnum } from "@goauthentik/api";
+
+autoDetectLanguage();
 
 @customElement("ak-loading")
 export class Loading extends Interface {
