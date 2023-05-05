@@ -7,6 +7,7 @@ import (
 	"github.com/pires/go-proxyproto"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/crypto"
+	"goauthentik.io/internal/utils"
 	"goauthentik.io/internal/utils/web"
 )
 
@@ -35,27 +36,8 @@ func (ws *WebServer) GetCertificate() func(ch *tls.ClientHelloInfo) (*tls.Certif
 
 // ServeHTTPS constructs a net.Listener and starts handling HTTPS requests
 func (ws *WebServer) listenTLS() {
-	tlsConfig := &tls.Config{
-		MinVersion:     tls.VersionTLS12,
-		MaxVersion:     tls.VersionTLS12,
-		GetCertificate: ws.GetCertificate(),
-	}
-
-	// Insecure SWEET32 attack ciphers, TLS config uses a fallback
-	insecureCiphersIds := []uint16{
-		tls.TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,
-		tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
-	}
-	defaultSecureCiphers := []uint16{}
-	for _, cs := range tls.CipherSuites() {
-		csID := cs.ID
-		for _, icsId := range insecureCiphersIds {
-			if csID != icsId {
-				defaultSecureCiphers = append(defaultSecureCiphers, csID)
-			}
-		}
-	}
-	tlsConfig.CipherSuites = defaultSecureCiphers
+	tlsConfig := utils.GetTLSConfig()
+	tlsConfig.GetCertificate = ws.GetCertificate()
 
 	ln, err := net.Listen("tcp", config.Get().Listen.HTTPS)
 	if err != nil {

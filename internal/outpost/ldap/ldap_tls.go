@@ -6,6 +6,7 @@ import (
 
 	"github.com/pires/go-proxyproto"
 	"goauthentik.io/internal/config"
+	"goauthentik.io/internal/utils"
 )
 
 func (ls *LDAPServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certificate, error) {
@@ -38,27 +39,8 @@ func (ls *LDAPServer) getCertificates(info *tls.ClientHelloInfo) (*tls.Certifica
 
 func (ls *LDAPServer) StartLDAPTLSServer() error {
 	listen := config.Get().Listen.LDAPS
-	tlsConfig := &tls.Config{
-		MinVersion:     tls.VersionTLS12,
-		MaxVersion:     tls.VersionTLS12,
-		GetCertificate: ls.getCertificates,
-	}
-
-	// Insecure SWEET32 attack ciphers, TLS config uses a fallback
-	insecureCiphersIds := []uint16{
-		tls.TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA,
-		tls.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
-	}
-	defaultSecureCiphers := []uint16{}
-	for _, cs := range tls.CipherSuites() {
-		csID := cs.ID
-		for _, icsId := range insecureCiphersIds {
-			if csID != icsId {
-				defaultSecureCiphers = append(defaultSecureCiphers, csID)
-			}
-		}
-	}
-	tlsConfig.CipherSuites = defaultSecureCiphers
+	tlsConfig := utils.GetTLSConfig()
+	tlsConfig.GetCertificate = ls.getCertificates
 
 	ln, err := net.Listen("tcp", listen)
 	if err != nil {
