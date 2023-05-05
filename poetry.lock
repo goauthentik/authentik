@@ -3764,22 +3764,22 @@ files = [
 
 [[package]]
 name = "webauthn"
-version = "1.8.0"
+version = "1.8.1"
 description = "Pythonic WebAuthn"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "webauthn-1.8.0-py3-none-any.whl", hash = "sha256:1b87d55acd86234475591e2f60163232ba98d91685f235803f258fc891ebb6c0"},
-    {file = "webauthn-1.8.0.tar.gz", hash = "sha256:0c981eb2575d66fa0a6586c2bfb24d9812dff8e158009a9030bc867717727709"},
+    {file = "webauthn-1.8.1-py3-none-any.whl", hash = "sha256:53914b8529df3e70bec0e41438eea8d99442ad3e54e32b86ce1ba83513bcf30e"},
+    {file = "webauthn-1.8.1.tar.gz", hash = "sha256:caca3cc62045923c542819169c22122bdb81efa0246c9d5208d073942d806bf3"},
 ]
 
 [package.dependencies]
 asn1crypto = ">=1.4.0"
 cbor2 = ">=5.4.2.post1"
-cryptography = ">=36.0.1"
+cryptography = ">=39.0.1"
 pydantic = ">=1.9.0"
-pyOpenSSL = ">=22.0.0"
+pyOpenSSL = ">=23.0.0"
 
 [[package]]
 name = "websocket-client"
