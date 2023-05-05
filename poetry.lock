@@ -1313,14 +1313,14 @@ files = [
 
 [[package]]
 name = "duo-client"
-version = "5.0.0"
+version = "5.0.1"
 description = "Reference client for Duo Security APIs"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "duo_client-5.0.0-py2.py3-none-any.whl", hash = "sha256:653ac3bc91fea4b7a11da5904e17da24131a3b814a5734f28ada100b5cf0c679"},
-    {file = "duo_client-5.0.0.tar.gz", hash = "sha256:a6428581634cd2a54497b731e83764220242c716dccb359f5037f1d489464ba1"},
+    {file = "duo_client-5.0.1-py2.py3-none-any.whl", hash = "sha256:8159b93a516979ae18e985bbca46ba3bf8ec27cd7ff6db464b37fa667d49c9b5"},
+    {file = "duo_client-5.0.1.tar.gz", hash = "sha256:a13c47b0cb91e3a0d33b2f99271a0a6c2de17f92dd0ad4c649a366a0533db0c7"},
 ]
 
 [package.dependencies]
