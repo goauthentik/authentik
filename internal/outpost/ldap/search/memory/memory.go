@@ -1,6 +1,7 @@
 package memory
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
@@ -16,6 +17,7 @@ import (
 	"goauthentik.io/internal/outpost/ldap/search"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
+	"goauthentik.io/internal/outpost/ldap/utils/paginator"
 )
 
 type MemorySearcher struct {
@@ -32,8 +34,8 @@ func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 		log: log.WithField("logger", "authentik.outpost.ldap.searcher.memory"),
 	}
 	ms.log.Debug("initialised memory searcher")
-	ms.users = ms.FetchUsers()
-	ms.groups = ms.FetchGroups()
+	ms.users = paginator.FetchUsers(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()))
+	ms.groups = paginator.FetchGroups(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()))
 	return ms
 }
 
