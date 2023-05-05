@@ -1365,8 +1365,12 @@ msgid "Confidential"
 msgstr "机密"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
-msgstr "机密客户能够对其凭据进行保密。公共客户端无此能力。"
+msgid "Confidential clients are capable of maintaining the confidentiality of their credentials such as client secrets"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
+#~ msgstr "机密客户能够对其凭据进行保密。公共客户端无此能力。"
 
 #: src/admin/outposts/OutpostForm.ts
 msgid "Configuration"
@@ -4975,6 +4979,10 @@ msgstr "代理详情"
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
 msgstr "公开"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE."
+msgstr ""
 
 #: src/admin/stages/captcha/CaptchaStageForm.ts
 msgid "Public Key"

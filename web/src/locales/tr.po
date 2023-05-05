@@ -1391,8 +1391,12 @@ msgid "Confidential"
 msgstr "Gizli"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
-msgstr "Gizli müşteriler kimlik bilgilerinin gizliliğini koruyabilir. Kamu müşterileri aciz."
+msgid "Confidential clients are capable of maintaining the confidentiality of their credentials such as client secrets"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
+#~ msgstr "Gizli müşteriler kimlik bilgilerinin gizliliğini koruyabilir. Kamu müşterileri aciz."
 
 #: src/admin/outposts/OutpostForm.ts
 msgid "Configuration"
@@ -5025,6 +5029,10 @@ msgstr ""
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
 msgstr "Kamu"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE."
+msgstr ""
 
 #: src/admin/stages/captcha/CaptchaStageForm.ts
 msgid "Public Key"

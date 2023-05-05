@@ -1397,8 +1397,12 @@ msgid "Confidential"
 msgstr "Poufny"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
-msgstr "Poufni klienci są w stanie zachować poufność swoich danych uwierzytelniających. Klienci publiczni są niezdolni."
+msgid "Confidential clients are capable of maintaining the confidentiality of their credentials such as client secrets"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
+#~ msgstr "Poufni klienci są w stanie zachować poufność swoich danych uwierzytelniających. Klienci publiczni są niezdolni."
 
 #: src/admin/outposts/OutpostForm.ts
 msgid "Configuration"
@@ -5035,6 +5039,10 @@ msgstr "Dane proxy"
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
 msgstr "Publiczny"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE."
+msgstr ""
 
 #: src/admin/stages/captcha/CaptchaStageForm.ts
 msgid "Public Key"
