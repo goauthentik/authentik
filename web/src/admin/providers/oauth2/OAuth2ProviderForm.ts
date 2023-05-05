@@ -167,34 +167,30 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         ?required=${true}
                         name="clientType"
                     >
-                        <select
-                            class="pf-c-form-control"
-                            @change=${(ev: Event) => {
-                                const target = ev.target as HTMLSelectElement;
-                                if (target.selectedOptions[0].value === ClientTypeEnum.Public) {
+                        <ak-radio
+                            @change=${(ev: CustomEvent<ClientTypeEnum>) => {
+                                if (ev.detail === ClientTypeEnum.Public) {
                                     this.showClientSecret = false;
                                 } else {
                                     this.showClientSecret = true;
                                 }
                             }}
+                            .options=${[
+                                {
+                                    label: t`Confidential`,
+                                    value: ClientTypeEnum.Confidential,
+                                    default: true,
+                                    description: html`${t`Confidential clients are capable of maintaining the confidentiality of their credentials such as client secrets`}`,
+                                },
+                                {
+                                    label: t`Public`,
+                                    value: ClientTypeEnum.Public,
+                                    description: html`${t`Public clients are incapable of maintaining the confidentiality and should use methods like PKCE. `}`,
+                                },
+                            ]}
+                            .value=${this.instance?.clientType}
                         >
-                            <option
-                                value=${ClientTypeEnum.Confidential}
-                                ?selected=${this.instance?.clientType ===
-                                ClientTypeEnum.Confidential}
-                            >
-                                ${t`Confidential`}
-                            </option>
-                            <option
-                                value=${ClientTypeEnum.Public}
-                                ?selected=${this.instance?.clientType === ClientTypeEnum.Public}
-                            >
-                                ${t`Public`}
-                            </option>
-                        </select>
-                        <p class="pf-c-form__helper-text">
-                            ${t`Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable.`}
-                        </p>
+                        </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Client ID`}
