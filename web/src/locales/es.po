@@ -879,6 +879,7 @@ msgid "Backends"
 msgstr "Backends"
 
 #: src/admin/flows/FlowForm.ts
+#: src/admin/flows/FlowForm.ts
 msgid "Background"
 msgstr "Fondo"
 
@@ -3159,7 +3160,6 @@ msgstr "HTTPS no se detecta correctamente"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/ApplicationForm.ts
-#: src/admin/flows/FlowForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
@@ -3660,7 +3660,6 @@ msgstr "Cargar servidores"
 #: src/admin/events/EventViewPage.ts
 #: src/elements/table/Table.ts
 #: src/flow/FlowExecutor.ts
-#: src/flow/FlowExecutor.ts
 #: src/flow/FlowInspector.ts
 #: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/providers/oauth2/DeviceCodeFinish.ts
@@ -3681,6 +3680,7 @@ msgstr "Cargar servidores"
 #: src/flow/stages/identification/IdentificationStage.ts
 #: src/flow/stages/password/PasswordStage.ts
 #: src/flow/stages/prompt/PromptStage.ts
+#: src/flow/stages/RedirectStage.ts
 #: src/flow/stages/user_login/UserLoginStage.ts
 #: src/user/LibraryPage.ts
 #: src/user/user-settings/details/stages/prompt/PromptStage.ts
@@ -8011,6 +8011,10 @@ msgstr ""
 #: src/admin/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."
 msgstr "Solo puede seleccionar proveedores que coincidan con el tipo de puesto avanzado."
+
+#: src/flow/stages/RedirectStage.ts
+msgid "You may close this page now."
+msgstr ""
 
 #: src/flow/stages/RedirectStage.ts
 msgid "You're about to be redirect to the following URL."
