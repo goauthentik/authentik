@@ -140,11 +140,11 @@ When I defined our situation, three factors came to the top:
 
 Remember, at the very beginning, it was me alone working on an open source hobby project when I had time outside of a full-time job. Especially considering the work I had already done and my lack of frontend engineering skills, it was clear that it was more important to build and ship than to restart.
 
-Here, the tradeoff was that I was able to build Authentik faster and deliver it to users sooner, but now I’m missing out on the advantages that being involved with a thriving community like React would offer.
+Here, the tradeoff was that I was able to build authentik faster and deliver it to users sooner, but now I’m missing out on the advantages that being involved with a thriving community like React would offer.
 
 With Lit, we could migrate more easily and more practically, migrating more and more over time rather than either rebuilding or migrating all at once. Looking back, I don’t know if I could have completed such a major shift in how we were rendering and if I could have, I don’t know if it would even be done by now.
 
-Here, the tradeoff is that finding and hiring developers with Lit experience is much harder than finding and hiring developers with React experience. Hiring developers is already notoriously hard and we made it harder. There is however the advantage that due to the smaller userbase of Lit, that in the rare case we do find a Lit developer, they tend to be very passionate about the same reasons why we chose Lit.
+So Yes, finding and hiring developers with Lit experience is much harder than finding and hiring developers with React experience. Hiring developers is already notoriously hard and we made it harder. There is however the advantage that due to the smaller user-base of Lit, that in the rare case we do find a Lit developer, they tend to be very passionate about the same reasons why we chose Lit.
 
 That said, there’s a tradeoff to the tradeoff: React is so popular and so approachable that you have to be careful about finding really good developers. Lit, because it’s less popular, has a better signal-to-noise ratio.
 
