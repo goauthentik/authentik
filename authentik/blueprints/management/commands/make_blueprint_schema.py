@@ -5,7 +5,7 @@ from typing import Any
 from django.core.management.base import BaseCommand, no_translations
 from django.db.models import Model
 from drf_jsonschema_serializer.convert import field_to_converter
-from rest_framework.fields import JSONField, UUIDField, Field
+from rest_framework.fields import Field, JSONField, UUIDField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
