@@ -160,6 +160,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
             "managed",
         ]
         extra_kwargs = {
+            "managed": {"read_only": True},
             "key_data": {"write_only": True},
             "certificate_data": {"write_only": True},
         }

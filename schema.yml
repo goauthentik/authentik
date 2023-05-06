@@ -27912,6 +27912,7 @@ components:
           readOnly: true
         managed:
           type: string
+          readOnly: true
           nullable: true
           title: Managed by authentik
           description: Objects which are managed by authentik. These objects are created
@@ -27924,6 +27925,7 @@ components:
       - certificate_download_url
       - fingerprint_sha1
       - fingerprint_sha256
+      - managed
       - name
       - pk
       - private_key_available
@@ -27946,15 +27948,6 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
-        managed:
-          type: string
-          nullable: true
-          minLength: 1
-          title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
       required:
       - certificate_data
       - name
@@ -35649,15 +35642,6 @@ components:
           writeOnly: true
           description: Optional Private Key. If this is set, you can use this keypair
             for encryption.
-        managed:
-          type: string
-          nullable: true
-          minLength: 1
-          title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
     PatchedConsentStageRequest:
       type: object
       description: ConsentStage Serializer
