@@ -38,7 +38,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         ];
     }
 
-    renderURL(): string {
+    getURL(): string {
         if (!this.challenge.to.includes("://")) {
             return window.location.origin + this.challenge.to;
         }
@@ -58,7 +58,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     }
 
     renderLoading(): TemplateResult {
-        const url = new URL(this.challenge.to);
+        const url = new URL(this.getURL());
         // If the protocol isn't http or https assume a custom protocol, that has an OS-level
         // handler, which the browser will show a popup for.
         // As this wouldn't really be a redirect, show a message that the page can be closed
@@ -87,7 +87,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                 <form class="pf-c-form">
                     <div class="pf-c-form__group">
                         <p>${t`You're about to be redirect to the following URL.`}</p>
-                        <code>${this.renderURL()}</code>
+                        <code>${this.getURL()}</code>
                     </div>
                     <div class="pf-c-form__group pf-m-action">
                         <a
