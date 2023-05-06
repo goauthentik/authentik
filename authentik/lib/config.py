@@ -127,6 +127,7 @@ class ConfigLoader:
         redis_url += f"{quote_plus(redis_host)}"
         redis_url += f":{redis_port}"
         redis_url += f"/{redis_db}"
+        # Sort query to have similar tests between Go and Python implementation
         redis_url_query = dict(sorted(redis_url_query.items()))
         redis_url_query = urlencode(redis_url_query)
         if redis_url_query != "":

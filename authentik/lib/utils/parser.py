@@ -296,7 +296,9 @@ def get_redis_options(
                 case "readonly":
                     redis_kwargs["readonly"] = _to_bool(value_str)
                 case "skipverify":
-                    if _to_bool(value_str):
+                    # Always let most radical option take precedence
+                    # The Go implementation always uses ssl_cert_reqs = "none"
+                    if _to_bool(value_str) and tls_kwargs.get("ssl_cert_reqs") != "none":
                         tls_kwargs["ssl_cert_reqs"] = "optional"
                 case "insecureskipverify":
                     if _to_bool(value_str):

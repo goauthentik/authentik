@@ -85,7 +85,7 @@ class TestConfig(TestCase):
         self.assertEqual(config.y("cache.timeout_reputation"), "298382us")
 
     def test_update_redis_url_from_env(self):
-        """Test generating Redis URL from environment"""
+        """Test updating Redis URL from environment"""
         config = ConfigLoader()
         environ[ENV_PREFIX + "_REDIS__URL"] = (
             "redis://oldredis:2493/2"
