@@ -3,10 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - "/locale/"
-  pull_request:
-    paths:
-      - "/locale/"
+      - "locale/**"
   workflow_dispatch:
 
 env:
@@ -24,7 +21,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run compile
-        run: poetry run ./manage.py compilemessages
+        run: poetry run ak compilemessages
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v5
         id: cpr
