@@ -106,3 +106,19 @@ class TestConfig(TestCase):
             "rediss://myredis:9637/56?idletimeout=20s&insecureskipverify=true"
             + "&password=%22%27%25+%21.%3B.%C2%B0&username=default",
         )
+
+    def test_update_redis_url_from_env_tls_reqs(self):
+        """Test updating Redis URL from environment with new TLS reqs"""
+        config = ConfigLoader()
+        environ[ENV_PREFIX + "_REDIS__URL"] = (
+            "redis://myredis:5132/8"
+            + "?insecureskipverify=notvalid"
+        )
+        environ[ENV_PREFIX + "_REDIS__TLS"] = "true"
+        environ[ENV_PREFIX + "_REDIS__TLS_REQS"] = "optional"
+        config.update_from_env()
+        config.update_redis_url_from_env()
+        self.assertEqual(
+            config.y("redis.url"),
+            "rediss://myredis:5132/8?skipverify=true",
+        )
