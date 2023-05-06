@@ -111,8 +111,7 @@ class TestConfig(TestCase):
         """Test updating Redis URL from environment with new TLS reqs"""
         config = ConfigLoader()
         environ[ENV_PREFIX + "_REDIS__URL"] = (
-            "redis://myredis:5132/8"
-            + "?insecureskipverify=notvalid"
+            "redis://myredis:5132/8" + "?insecureskipverify=notvalid"
         )
         environ[ENV_PREFIX + "_REDIS__TLS"] = "true"
         environ[ENV_PREFIX + "_REDIS__TLS_REQS"] = "optional"
