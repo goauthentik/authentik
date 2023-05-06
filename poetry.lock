@@ -1313,14 +1313,14 @@ files = [
 
 [[package]]
 name = "duo-client"
-version = "5.0.0"
+version = "5.0.1"
 description = "Reference client for Duo Security APIs"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "duo_client-5.0.0-py2.py3-none-any.whl", hash = "sha256:653ac3bc91fea4b7a11da5904e17da24131a3b814a5734f28ada100b5cf0c679"},
-    {file = "duo_client-5.0.0.tar.gz", hash = "sha256:a6428581634cd2a54497b731e83764220242c716dccb359f5037f1d489464ba1"},
+    {file = "duo_client-5.0.1-py2.py3-none-any.whl", hash = "sha256:8159b93a516979ae18e985bbca46ba3bf8ec27cd7ff6db464b37fa667d49c9b5"},
+    {file = "duo_client-5.0.1.tar.gz", hash = "sha256:a13c47b0cb91e3a0d33b2f99271a0a6c2de17f92dd0ad4c649a366a0533db0c7"},
 ]
 
 [package.dependencies]
@@ -2925,14 +2925,14 @@ testing = ["Django", "django-configurations (>=2.0)"]
 
 [[package]]
 name = "pytest-github-actions-annotate-failures"
-version = "0.1.8"
+version = "0.2.0"
 description = "pytest plugin to annotate failed tests with a workflow command for GitHub Actions"
 category = "dev"
 optional = false
-python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*"
+python-versions = ">=3.7"
 files = [
-    {file = "pytest-github-actions-annotate-failures-0.1.8.tar.gz", hash = "sha256:2d6e6cb5f8d0aae4a27a20cc4e20fabd3199a121c57f44bc48fe28e372e0be23"},
-    {file = "pytest_github_actions_annotate_failures-0.1.8-py2.py3-none-any.whl", hash = "sha256:6a882ff21672fa79deae8d917eb965a6bde2b25191e7632e1adfc23ffac008ab"},
+    {file = "pytest-github-actions-annotate-failures-0.2.0.tar.gz", hash = "sha256:844ab626d389496e44f960b42f0a72cce29ae06d363426d17ea9ae1b4bef2288"},
+    {file = "pytest_github_actions_annotate_failures-0.2.0-py3-none-any.whl", hash = "sha256:8bcef65fed503faaa0524b59cfeccc8995130972dd7b008d64193cc41b9cde85"},
 ]
 
 [package.dependencies]
@@ -3513,14 +3513,14 @@ wsproto = ">=0.14"
 
 [[package]]
 name = "twilio"
-version = "8.1.0"
+version = "8.2.0"
 description = "Twilio API client and TwiML generator"
 category = "main"
 optional = false
 python-versions = ">=3.7.0"
 files = [
-    {file = "twilio-8.1.0-py2.py3-none-any.whl", hash = "sha256:19be48f21e799b9dd10e2e0a5633962438e04842864e806409f4f2dbe446a868"},
-    {file = "twilio-8.1.0.tar.gz", hash = "sha256:a31863119655cd3643f788099f6ea3fe74eea59ce3f65600f9a4931301311c08"},
+    {file = "twilio-8.2.0-py2.py3-none-any.whl", hash = "sha256:23eceaec183995fc827e3bfad229cca6e1944bfd9604e57e2712e625b6e01223"},
+    {file = "twilio-8.2.0.tar.gz", hash = "sha256:0c19eb6a5b84dbcd15658e23a142df026297236e4d72ad9304fd95e7dbff2662"},
 ]
 
 [package.dependencies]
@@ -3864,22 +3864,22 @@ files = [
 
 [[package]]
 name = "webauthn"
-version = "1.8.0"
+version = "1.8.1"
 description = "Pythonic WebAuthn"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "webauthn-1.8.0-py3-none-any.whl", hash = "sha256:1b87d55acd86234475591e2f60163232ba98d91685f235803f258fc891ebb6c0"},
-    {file = "webauthn-1.8.0.tar.gz", hash = "sha256:0c981eb2575d66fa0a6586c2bfb24d9812dff8e158009a9030bc867717727709"},
+    {file = "webauthn-1.8.1-py3-none-any.whl", hash = "sha256:53914b8529df3e70bec0e41438eea8d99442ad3e54e32b86ce1ba83513bcf30e"},
+    {file = "webauthn-1.8.1.tar.gz", hash = "sha256:caca3cc62045923c542819169c22122bdb81efa0246c9d5208d073942d806bf3"},
 ]
 
 [package.dependencies]
 asn1crypto = ">=1.4.0"
 cbor2 = ">=5.4.2.post1"
-cryptography = ">=36.0.1"
+cryptography = ">=39.0.1"
 pydantic = ">=1.9.0"
-pyOpenSSL = ">=22.0.0"
+pyOpenSSL = ">=23.0.0"
 
 [[package]]
 name = "websocket-client"

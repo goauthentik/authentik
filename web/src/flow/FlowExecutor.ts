@@ -37,7 +37,6 @@ import {
     FlowErrorChallenge,
     FlowsApi,
     LayoutEnum,
-    RedirectChallenge,
     ResponseError,
     ShellChallenge,
     UiThemeEnum,
@@ -52,18 +51,6 @@ export class FlowExecutor extends Interface implements StageHost {
     @property({ attribute: false })
     set challenge(value: ChallengeTypes | undefined) {
         this._challenge = value;
-        // Assign the location as soon as we get the challenge and *not* in the render function
-        // as the render function might be called multiple times, which will navigate multiple
-        // times and can invalidate oauth codes
-        // Also only auto-redirect when the inspector is open, so that a user can inspect the
-        // redirect in the inspector
-        if (value?.type === ChallengeChoices.Redirect && !this.inspectorOpen) {
-            console.debug(
-                "authentik/flows: redirecting to url from server",
-                (value as RedirectChallenge).to,
-            );
-            window.location.assign((value as RedirectChallenge).to);
-        }
         if (value?.flowInfo?.title) {
             document.title = `${value.flowInfo?.title} - ${this.tenant?.brandingTitle}`;
         } else {
@@ -407,15 +394,12 @@ export class FlowExecutor extends Interface implements StageHost {
         }
         switch (this.challenge.type) {
             case ChallengeChoices.Redirect:
-                if (this.inspectorOpen) {
-                    return html`<ak-stage-redirect
-                        .host=${this as StageHost}
-                        .challenge=${this.challenge}
-                    >
-                    </ak-stage-redirect>`;
-                }
-                return html`<ak-empty-state ?loading=${true} header=${t`Loading`}>
-                </ak-empty-state>`;
+                return html`<ak-stage-redirect
+                    .host=${this as StageHost}
+                    .challenge=${this.challenge}
+                    ?promptUser=${this.inspectorOpen}
+                >
+                </ak-stage-redirect>`;
             case ChallengeChoices.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
             case ChallengeChoices.Native:

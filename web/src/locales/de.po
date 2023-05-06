@@ -901,6 +901,7 @@ msgid "Backends"
 msgstr "Backends"
 
 #: src/admin/flows/FlowForm.ts
+#: src/admin/flows/FlowForm.ts
 msgid "Background"
 msgstr "Hintergrund"
 
@@ -1414,8 +1415,12 @@ msgid "Confidential"
 msgstr "Vertraulich"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
-msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
-msgstr "Vertrauenswürde Clients sind in der Lage, die Vertraulichkeit ihrer Anmeldedaten zu wahren. Öffentliche Clients sind dazu nicht in der Lage."
+msgid "Confidential clients are capable of maintaining the confidentiality of their credentials such as client secrets"
+msgstr ""
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+#~ msgid "Confidential clients are capable of maintaining the confidentiality of their credentials. Public clients are incapable."
+#~ msgstr "Vertrauenswürde Clients sind in der Lage, die Vertraulichkeit ihrer Anmeldedaten zu wahren. Öffentliche Clients sind dazu nicht in der Lage."
 
 #: src/admin/outposts/OutpostForm.ts
 msgid "Configuration"
@@ -3183,7 +3188,6 @@ msgstr "HTTPS wird nicht korrekt erkannt"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/ApplicationForm.ts
-#: src/admin/flows/FlowForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/oauth/OAuthSourceForm.ts
 #: src/admin/sources/plex/PlexSourceForm.ts
@@ -3684,7 +3688,6 @@ msgstr "Server laden"
 #: src/admin/events/EventViewPage.ts
 #: src/elements/table/Table.ts
 #: src/flow/FlowExecutor.ts
-#: src/flow/FlowExecutor.ts
 #: src/flow/FlowInspector.ts
 #: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/providers/oauth2/DeviceCodeFinish.ts
@@ -3705,6 +3708,7 @@ msgstr "Server laden"
 #: src/flow/stages/identification/IdentificationStage.ts
 #: src/flow/stages/password/PasswordStage.ts
 #: src/flow/stages/prompt/PromptStage.ts
+#: src/flow/stages/RedirectStage.ts
 #: src/flow/stages/user_login/UserLoginStage.ts
 #: src/user/LibraryPage.ts
 #: src/user/user-settings/details/stages/prompt/PromptStage.ts
@@ -5049,6 +5053,10 @@ msgstr "Proxy-Details"
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Public"
 msgstr "Öffentlich"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE."
+msgstr ""
 
 #: src/admin/stages/captcha/CaptchaStageForm.ts
 msgid "Public Key"
@@ -8035,6 +8043,10 @@ msgstr ""
 #: src/admin/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."
 msgstr "Sie können nur Anbieter auswählen, die zum Typ des Outposts passen."
+
+#: src/flow/stages/RedirectStage.ts
+msgid "You may close this page now."
+msgstr ""
 
 #: src/flow/stages/RedirectStage.ts
 msgid "You're about to be redirect to the following URL."

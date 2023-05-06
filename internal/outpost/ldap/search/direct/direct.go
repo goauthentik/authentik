@@ -18,6 +18,7 @@ import (
 	"goauthentik.io/internal/outpost/ldap/search"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
+	"goauthentik.io/internal/outpost/ldap/utils/paginator"
 )
 
 type DirectSearcher struct {
@@ -124,15 +125,10 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 					return nil
 				}
 
-				u, _, err := searchReq.Execute()
+				u := paginator.FetchUsers(searchReq)
 				uapisp.Finish()
 
-				if err != nil {
-					req.Log().WithError(err).Warning("failed to get users")
-					return err
-				}
-
-				users = &u.Results
+				users = &u
 			} else {
 				if flags.UserInfo == nil {
 					uapisp := sentry.StartSpan(errCtx, "authentik.providers.ldap.search.api_user")
@@ -170,29 +166,24 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 				searchReq = searchReq.MembersByPk([]int32{flags.UserPk})
 			}
 
-			g, _, err := searchReq.Execute()
+			g := paginator.FetchGroups(searchReq)
 			gapisp.Finish()
-			if err != nil {
-				req.Log().WithError(err).Warning("failed to get groups")
-				return err
-			}
-			req.Log().WithField("count", len(g.Results)).Trace("Got results from API")
+			req.Log().WithField("count", len(g)).Trace("Got results from API")
 
 			if !flags.CanSearch {
-				for i, results := range g.Results {
+				for i, results := range g {
 					// If they can't search, remove any users from the group results except the one we're looking for.
-					g.Results[i].Users = []int32{flags.UserPk}
+					g[i].Users = []int32{flags.UserPk}
 					for _, u := range results.UsersObj {
 						if u.Pk == flags.UserPk {
-							g.Results[i].UsersObj = []api.GroupMember{u}
+							g[i].UsersObj = []api.GroupMember{u}
 							break
 						}
 					}
 				}
 			}
 
-			groups = &g.Results
-
+			groups = &g
 			return nil
 		})
 	}

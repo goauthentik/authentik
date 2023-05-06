@@ -110,7 +110,7 @@ export class SearchSelect<T> extends AKElement {
         this.isFetchingData = true;
         this.fetchObjects(this.query).then((objects) => {
             objects.forEach((obj) => {
-                if (this.selected && this.selected(obj, this.objects || [])) {
+                if (this.selected && this.selected(obj, objects || [])) {
                     this.selectedObject = obj;
                 }
             });
