@@ -3,26 +3,23 @@
     "tasks": [
         {
             "label": "authentik[core]: format & test",
-            "command": "poetry",
-            "args": [
-                "run",
-                "make"
-            ],
+            "command": "make",
             "group": "build",
         },
         {
             "label": "authentik[core]: run",
-            "command": "poetry",
+            "command": "ak",
             "args": [
-                "run",
-                "make",
-                "run",
+                "server",
             ],
             "group": "build",
             "presentation": {
                 "panel": "dedicated",
                 "group": "running"
             },
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
         },
         {
             "label": "authentik[web]: format",
@@ -39,6 +36,9 @@
                 "panel": "dedicated",
                 "group": "running"
             },
+            "runOptions": {
+                "runOn": "folderOpen"
+            }
         },
         {
             "label": "authentik: install",

@@ -2,7 +2,7 @@
     "name": "authentik",
     "dockerComposeFile": "docker-compose.yml",
     "service": "app",
-    "workspaceFolder": "/authentik",
+    "workspaceFolder": "/app-root",
     "features": {
         "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
         "ghcr.io/devcontainers/features/go:1": {},

@@ -84,7 +84,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends libxmlsec1-openssl libmaxminddb0 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
-    pip install --no-cache-dir -r /requirements.txt && \
+    pip install --no-cache-dir -r /app-root/requirements.txt && \
     apt-get remove --purge -y build-essential pkg-config libxmlsec1-dev && \
     apt-get autoremove --purge -y && \
     apt-get clean && \
@@ -111,7 +111,7 @@ USER 1000
 
 ENV TMPDIR /dev/shm/
 ENV PYTHONUNBUFFERED 1
-ENV PATH "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/lifecycle"
+ENV PATH "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/app-root/lifecycle"
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
 

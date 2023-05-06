@@ -6,8 +6,13 @@ services:
       context: ..
       dockerfile: .devcontainer/Dockerfile
     volumes:
-      - ../:/authentik:cached
+      - ../:/app-root:cached
     command: debug
+    environment:
+      AUTHENTIK_POSTGRESQL__USER: postgres
+      AUTHENTIK_POSTGRESQL__PASSWORD: postgres
+      AUTHENTIK_BOOTSTRAP_PASSWORD: akadmin
+      AUTHENTIK_BOOTSTRAP_TOKEN: akadmin
   db:
     image: docker.io/library/postgres:15
     restart: unless-stopped
@@ -16,7 +21,7 @@ services:
     network_mode: service:app
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_DB: postgres
+      POSTGRES_DB: authentik
       POSTGRES_PASSWORD: postgres
   redis:
     image: docker.io/redis/redis-stack-server
