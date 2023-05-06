@@ -64,9 +64,6 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         // As this wouldn't really be a redirect, show a message that the page can be closed
         // and try to close it ourselves
         if (!url.protocol.startsWith("http")) {
-            setTimeout(() => {
-                window.close();
-            }, 500);
             return html`<ak-empty-state
                 icon="fas fa-check"
                 header=${t`You may close this page now.`}
