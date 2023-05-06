@@ -5,7 +5,7 @@ from typing import Any
 from django.core.management.base import BaseCommand, no_translations
 from django.db.models import Model
 from drf_jsonschema_serializer.convert import field_to_converter
-from rest_framework.fields import JSONField, UUIDField
+from rest_framework.fields import JSONField, UUIDField, Field
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
@@ -60,15 +60,16 @@ class Command(BaseCommand):
     @no_translations
     def handle(self, *args, **options):
         """Generate JSON Schema for blueprints"""
-        self.build_models()
-        self.stdout.write(dumps(self.schema, indent=4, default=Command.default))
+        self.build()
+        self.stdout.write(dumps(self.schema, indent=4, default=Command.json_default))
 
     @staticmethod
-    def default(value: Any) -> Any:
+    def json_default(value: Any) -> Any:
         """Helper that handles gettext_lazy strings that JSON doesn't handle"""
         return str(value)
 
-    def build_models(self):
+    def build(self):
+        """Build all models into the schema"""
         for model in registry.get_models():
             if model._meta.abstract:
                 continue
@@ -84,7 +85,9 @@ class Command(BaseCommand):
             )
 
     def template_entry(self, model_path: str, serializer: Serializer) -> dict:
+        """Template entry for a single model"""
         model_schema = self.to_jsonschema(serializer)
+        model_schema["required"] = []
         def_name = f"model_{model_path}"
         def_path = f"#/$defs/{def_name}"
         self.schema["$defs"][def_name] = model_schema
@@ -105,7 +108,8 @@ class Command(BaseCommand):
             },
         }
 
-    def field_to_jsonschema(self, field):
+    def field_to_jsonschema(self, field: Field) -> dict:
+        """Convert a single field to json schema"""
         if isinstance(field, Serializer):
             result = self.to_jsonschema(field)
         else:
@@ -133,7 +137,8 @@ class Command(BaseCommand):
                 result[key] = self.clean_result(value)
         return result
 
-    def to_jsonschema(self, serializer):
+    def to_jsonschema(self, serializer: Serializer) -> dict:
+        """Convert serializer to json schema"""
         properties = {}
         required = []
         for name, field in serializer.fields.items():

@@ -2583,10 +2583,7 @@
                     "description": "Optional Private Key. If this is set, you can use this keypair for encryption."
                 }
             },
-            "required": [
-                "name",
-                "certificate_data"
-            ]
+            "required": []
         },
         "model_authentik_events.event": {
             "type": "object",
@@ -2658,10 +2655,7 @@
                     "title": "Tenant"
                 }
             },
-            "required": [
-                "action",
-                "app"
-            ]
+            "required": []
         },
         "model_authentik_events.notificationtransport": {
             "type": "object",
@@ -2695,9 +2689,7 @@
                     "description": "Only send notification once, for example when sending a webhook into a chat channel."
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_events.notification": {
             "type": "object",
@@ -2782,7 +2774,8 @@
                     "type": "boolean",
                     "title": "Seen"
                 }
-            }
+            },
+            "required": []
         },
         "model_authentik_events.notificationrule": {
             "type": "object",
@@ -2817,9 +2810,7 @@
                     "description": "Define which group of users this notification should be sent and shown to. If left empty, Notification won't ben sent."
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_events.notificationwebhookmapping": {
             "type": "object",
@@ -2835,10 +2826,7 @@
                     "title": "Expression"
                 }
             },
-            "required": [
-                "name",
-                "expression"
-            ]
+            "required": []
         },
         "model_authentik_flows.flow": {
             "type": "object",
@@ -2922,12 +2910,7 @@
                     "description": "Required level of authentication and authorization to access a flow."
                 }
             },
-            "required": [
-                "name",
-                "slug",
-                "title",
-                "designation"
-            ]
+            "required": []
         },
         "model_authentik_flows.flowstagebinding": {
             "type": "object",
@@ -2975,11 +2958,7 @@
                     "description": "Configure how the flow executor should handle an invalid response to a challenge. RETRY returns the error message and a similar challenge to the executor. RESTART restarts the flow from the beginning, and RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
                 }
             },
-            "required": [
-                "target",
-                "stage",
-                "order"
-            ]
+            "required": []
         },
         "model_authentik_outposts.dockerserviceconnection": {
             "type": "object",
@@ -3011,10 +2990,7 @@
                     "description": "Certificate/Key used for authentication. Can be left empty for no authentication."
                 }
             },
-            "required": [
-                "name",
-                "url"
-            ]
+            "required": []
         },
         "model_authentik_outposts.kubernetesserviceconnection": {
             "type": "object",
@@ -3041,9 +3017,7 @@
                     "description": "Verify SSL Certificates of the Kubernetes API endpoint"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_outposts.outpost": {
             "type": "object",
@@ -3089,12 +3063,7 @@
                     "description": "Objects which are managed by authentik. These objects are created and updated automatically. This is flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
                 }
             },
-            "required": [
-                "name",
-                "type",
-                "providers",
-                "config"
-            ]
+            "required": []
         },
         "model_authentik_policies_dummy.dummypolicy": {
             "type": "object",
@@ -3126,9 +3095,7 @@
                     "title": "Wait max"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_policies_event_matcher.eventmatcherpolicy": {
             "type": "object",
@@ -3240,9 +3207,7 @@
                     "description": "Match events created by selected application. When left empty, all applications are matched."
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_policies_expiry.passwordexpirypolicy": {
             "type": "object",
@@ -3268,10 +3233,7 @@
                     "title": "Deny only"
                 }
             },
-            "required": [
-                "name",
-                "days"
-            ]
+            "required": []
         },
         "model_authentik_policies_expression.expressionpolicy": {
             "type": "object",
@@ -3292,10 +3254,7 @@
                     "title": "Expression"
                 }
             },
-            "required": [
-                "name",
-                "expression"
-            ]
+            "required": []
         },
         "model_authentik_policies_password.passwordpolicy": {
             "type": "object",
@@ -3382,9 +3341,7 @@
                     "description": "If the zxcvbn score is equal or less than this value, the policy will fail."
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_policies_reputation.reputationpolicy": {
             "type": "object",
@@ -3414,9 +3371,7 @@
                     "title": "Threshold"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_policies_reputation.reputation": {
             "type": "object",
@@ -3448,10 +3403,7 @@
                     "title": "Score"
                 }
             },
-            "required": [
-                "identifier",
-                "ip"
-            ]
+            "required": []
         },
         "model_authentik_policies.policybinding": {
             "type": "object",
@@ -3495,10 +3447,7 @@
                     "description": "Timeout after which Policy execution is terminated."
                 }
             },
-            "required": [
-                "target",
-                "order"
-            ]
+            "required": []
         },
         "model_authentik_providers_ldap.ldapprovider": {
             "type": "object",
@@ -3575,10 +3524,7 @@
                     "title": "Bind mode"
                 }
             },
-            "required": [
-                "name",
-                "authorization_flow"
-            ]
+            "required": []
         },
         "model_authentik_providers_oauth2.scopemapping": {
             "type": "object",
@@ -3614,11 +3560,7 @@
                     "description": "Description shown to the user when consenting. If left empty, the user won't be informed."
                 }
             },
-            "required": [
-                "name",
-                "expression",
-                "scope_name"
-            ]
+            "required": []
         },
         "model_authentik_providers_oauth2.oauth2provider": {
             "type": "object",
@@ -3728,10 +3670,7 @@
                     "title": "Any JWT signed by the JWK of the selected source can be used to authenticate."
                 }
             },
-            "required": [
-                "name",
-                "authorization_flow"
-            ]
+            "required": []
         },
         "model_authentik_providers_oauth2.authorizationcode": {
             "type": "object",
@@ -3922,11 +3861,7 @@
                     "title": "Scope"
                 }
             },
-            "required": [
-                "provider",
-                "user",
-                "scope"
-            ]
+            "required": []
         },
         "model_authentik_providers_oauth2.accesstoken": {
             "type": "object",
@@ -4121,11 +4056,7 @@
                     "title": "Revoked"
                 }
             },
-            "required": [
-                "provider",
-                "user",
-                "scope"
-            ]
+            "required": []
         },
         "model_authentik_providers_oauth2.refreshtoken": {
             "type": "object",
@@ -4320,11 +4251,7 @@
                     "title": "Revoked"
                 }
             },
-            "required": [
-                "provider",
-                "user",
-                "scope"
-            ]
+            "required": []
         },
         "model_authentik_providers_proxy.proxyprovider": {
             "type": "object",
@@ -4429,11 +4356,7 @@
                     "description": "Tokens not valid on or after current time + this value (Format: hours=1;minutes=2;seconds=3)."
                 }
             },
-            "required": [
-                "name",
-                "authorization_flow",
-                "external_host"
-            ]
+            "required": []
         },
         "model_authentik_providers_radius.radiusprovider": {
             "type": "object",
@@ -4473,10 +4396,7 @@
                     "description": "Shared secret between clients and server to hash packets."
                 }
             },
-            "required": [
-                "name",
-                "authorization_flow"
-            ]
+            "required": []
         },
         "model_authentik_providers_saml.samlprovider": {
             "type": "object",
@@ -4585,11 +4505,7 @@
                     "description": "This determines how authentik sends the response back to the Service Provider."
                 }
             },
-            "required": [
-                "name",
-                "authorization_flow",
-                "acs_url"
-            ]
+            "required": []
         },
         "model_authentik_providers_saml.samlpropertymapping": {
             "type": "object",
@@ -4626,11 +4542,7 @@
                     "title": "Friendly name"
                 }
             },
-            "required": [
-                "name",
-                "expression",
-                "saml_name"
-            ]
+            "required": []
         },
         "model_authentik_providers_scim.scimprovider": {
             "type": "object",
@@ -4677,11 +4589,7 @@
                     "title": "Filter group"
                 }
             },
-            "required": [
-                "name",
-                "url",
-                "token"
-            ]
+            "required": []
         },
         "model_authentik_providers_scim.scimmapping": {
             "type": "object",
@@ -4706,10 +4614,7 @@
                     "title": "Expression"
                 }
             },
-            "required": [
-                "name",
-                "expression"
-            ]
+            "required": []
         },
         "model_authentik_sources_ldap.ldapsource": {
             "type": "object",
@@ -4862,12 +4767,7 @@
                     "description": "Property mappings used for group creation/updating."
                 }
             },
-            "required": [
-                "name",
-                "slug",
-                "server_uri",
-                "base_dn"
-            ]
+            "required": []
         },
         "model_authentik_sources_ldap.ldappropertymapping": {
             "type": "object",
@@ -4897,11 +4797,7 @@
                     "title": "Object field"
                 }
             },
-            "required": [
-                "name",
-                "expression",
-                "object_field"
-            ]
+            "required": []
         },
         "model_authentik_sources_oauth.oauthsource": {
             "type": "object",
@@ -5046,13 +4942,7 @@
                     "title": "Oidc jwks"
                 }
             },
-            "required": [
-                "name",
-                "slug",
-                "provider_type",
-                "consumer_key",
-                "consumer_secret"
-            ]
+            "required": []
         },
         "model_authentik_sources_oauth.useroauthsourceconnection": {
             "type": "object",
@@ -5075,10 +4965,7 @@
                     "title": "Access token"
                 }
             },
-            "required": [
-                "user",
-                "identifier"
-            ]
+            "required": []
         },
         "model_authentik_sources_plex.plexsource": {
             "type": "object",
@@ -5164,11 +5051,7 @@
                     "description": "Plex token used to check friends"
                 }
             },
-            "required": [
-                "name",
-                "slug",
-                "plex_token"
-            ]
+            "required": []
         },
         "model_authentik_sources_plex.plexsourceconnection": {
             "type": "object",
@@ -5184,10 +5067,7 @@
                     "title": "Plex token"
                 }
             },
-            "required": [
-                "identifier",
-                "plex_token"
-            ]
+            "required": []
         },
         "model_authentik_sources_saml.samlsource": {
             "type": "object",
@@ -5332,12 +5212,7 @@
                     "description": "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually. (Format: hours=1;minutes=2;seconds=3)."
                 }
             },
-            "required": [
-                "name",
-                "slug",
-                "pre_authentication_flow",
-                "sso_url"
-            ]
+            "required": []
         },
         "model_authentik_sources_saml.usersamlsourceconnection": {
             "type": "object",
@@ -5352,10 +5227,7 @@
                     "title": "Identifier"
                 }
             },
-            "required": [
-                "user",
-                "identifier"
-            ]
+            "required": []
         },
         "model_authentik_stages_authenticator_duo.authenticatorduostage": {
             "type": "object",
@@ -5484,12 +5356,7 @@
                     "title": "Admin secret key"
                 }
             },
-            "required": [
-                "name",
-                "client_id",
-                "client_secret",
-                "api_hostname"
-            ]
+            "required": []
         },
         "model_authentik_stages_authenticator_duo.duodevice": {
             "type": "object",
@@ -5502,9 +5369,7 @@
                     "description": "The human-readable name of this device."
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_authenticator_sms.authenticatorsmsstage": {
             "type": "object",
@@ -5655,13 +5520,7 @@
                     "description": "Optionally modify the payload being sent to custom providers."
                 }
             },
-            "required": [
-                "name",
-                "provider",
-                "from_number",
-                "account_sid",
-                "auth"
-            ]
+            "required": []
         },
         "model_authentik_stages_authenticator_sms.smsdevice": {
             "type": "object",
@@ -5674,9 +5533,7 @@
                     "description": "The human-readable name of this device."
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_authenticator_static.authenticatorstaticstage": {
             "type": "object",
@@ -5788,9 +5645,7 @@
                     "title": "Token count"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_authenticator_totp.authenticatortotpstage": {
             "type": "object",
@@ -5904,10 +5759,7 @@
                     "title": "Digits"
                 }
             },
-            "required": [
-                "name",
-                "digits"
-            ]
+            "required": []
         },
         "model_authentik_stages_authenticator_validate.authenticatorvalidatestage": {
             "type": "object",
@@ -6050,9 +5902,7 @@
                     "description": "Enforce user verification for WebAuthn devices."
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_authenticator_webauthn.authenticatewebauthnstage": {
             "type": "object",
@@ -6188,9 +6038,7 @@
                     "title": "Resident key requirement"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_authenticator_webauthn.webauthndevice": {
             "type": "object",
@@ -6202,9 +6050,7 @@
                     "title": "Name"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_captcha.captchastage": {
             "type": "object",
@@ -6319,11 +6165,7 @@
                     "title": "Api url"
                 }
             },
-            "required": [
-                "name",
-                "public_key",
-                "private_key"
-            ]
+            "required": []
         },
         "model_authentik_stages_consent.consentstage": {
             "type": "object",
@@ -6431,9 +6273,7 @@
                     "description": "Offset after which consent expires. (Format: hours=1;minutes=2;seconds=3)."
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_consent.userconsent": {
             "type": "object",
@@ -6564,10 +6404,7 @@
                     "title": "Permissions"
                 }
             },
-            "required": [
-                "user",
-                "application"
-            ]
+            "required": []
         },
         "model_authentik_stages_deny.denystage": {
             "type": "object",
@@ -6660,9 +6497,7 @@
                     "title": "Flow set"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_dummy.dummystage": {
             "type": "object",
@@ -6759,9 +6594,7 @@
                     "title": "Throw error"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_email.emailstage": {
             "type": "object",
@@ -6921,9 +6754,7 @@
                     "description": "Activate users upon completion of stage."
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_identification.identificationstage": {
             "type": "object",
@@ -7073,9 +6904,7 @@
                     "title": "Show source labels"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_invitation.invitationstage": {
             "type": "object",
@@ -7173,9 +7002,7 @@
                     "description": "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given."
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_invitation.invitation": {
             "type": "object",
@@ -7306,10 +7133,7 @@
                     "title": "Permissions"
                 }
             },
-            "required": [
-                "user",
-                "application"
-            ]
+            "required": []
         },
         "model_authentik_stages_password.passwordstage": {
             "type": "object",
@@ -7428,10 +7252,7 @@
                     "description": "How many attempts a user has before the flow is canceled. To lock the user out, use a reputation policy and a user_write stage."
                 }
             },
-            "required": [
-                "name",
-                "backends"
-            ]
+            "required": []
         },
         "model_authentik_stages_prompt.prompt": {
             "type": "object",
@@ -7608,12 +7429,7 @@
                     "title": "Initial value expression"
                 }
             },
-            "required": [
-                "name",
-                "field_key",
-                "label",
-                "type"
-            ]
+            "required": []
         },
         "model_authentik_stages_prompt.promptstage": {
             "type": "object",
@@ -7720,10 +7536,7 @@
                     "title": "Validation policies"
                 }
             },
-            "required": [
-                "name",
-                "fields"
-            ]
+            "required": []
         },
         "model_authentik_stages_user_delete.userdeletestage": {
             "type": "object",
@@ -7816,9 +7629,7 @@
                     "title": "Flow set"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_user_login.userloginstage": {
             "type": "object",
@@ -7928,9 +7739,7 @@
                     "description": "Offset the session will be extended by when the user picks the remember me option. Default of 0 means that the remember me option will not be shown. (Format: hours=-1;minutes=-2;seconds=-3)"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_user_logout.userlogoutstage": {
             "type": "object",
@@ -8023,9 +7832,7 @@
                     "title": "Flow set"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_stages_user_write.userwritestage": {
             "type": "object",
@@ -8141,9 +7948,7 @@
                     "title": "User path template"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_tenants.tenant": {
             "type": "object",
@@ -8214,9 +8019,7 @@
                     "title": "Attributes"
                 }
             },
-            "required": [
-                "domain"
-            ]
+            "required": []
         },
         "model_authentik_blueprints.blueprintinstance": {
             "type": "object",
@@ -8244,9 +8047,7 @@
                     "title": "Content"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_core.group": {
             "type": "object",
@@ -8279,9 +8080,7 @@
                     "title": "Attributes"
                 }
             },
-            "required": [
-                "name"
-            ]
+            "required": []
         },
         "model_authentik_core.user": {
             "type": "object",
@@ -8334,11 +8133,7 @@
                     "title": "Path"
                 }
             },
-            "required": [
-                "username",
-                "name",
-                "groups"
-            ]
+            "required": []
         },
         "model_authentik_core.application": {
             "type": "object",
@@ -8391,10 +8186,7 @@
                     "title": "Group"
                 }
             },
-            "required": [
-                "name",
-                "slug"
-            ]
+            "required": []
         },
         "model_authentik_core.token": {
             "type": "object",
@@ -8443,9 +8235,7 @@
                     "title": "Expiring"
                 }
             },
-            "required": [
-                "identifier"
-            ]
+            "required": []
         }
     }
 }
