@@ -1,0 +1,139 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/system: "true"
+  name: System - Interfaces
+entries:
+  - model: authentik_interfaces.interface
+    identifiers:
+      url_name: user
+      type: user
+    attrs:
+      template: |
+        {% extends "base/skeleton.html" %}
+
+        {% load static %}
+        {% load i18n %}
+
+        {% block head %}
+        <script src="{% static 'dist/user/UserInterface.js' %}?version={{ version }}" type="module"></script>
+        <meta name="theme-color" content="#151515" media="(prefers-color-scheme: light)">
+        <meta name="theme-color" content="#151515" media="(prefers-color-scheme: dark)">
+        <link rel="icon" href="{{ tenant.branding_favicon }}">
+        <link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
+        {% include "base/header_js.html" %}
+        {% endblock %}
+
+        {% block body %}
+        <ak-message-container></ak-message-container>
+        <ak-interface-user>
+            <section class="ak-static-page pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl">
+                <div class="pf-c-empty-state" style="height: 100vh;">
+                    <div class="pf-c-empty-state__content">
+                        <span class="pf-c-spinner pf-m-xl pf-c-empty-state__icon" role="progressbar" aria-valuetext="{% trans 'Loading...' %}">
+                            <span class="pf-c-spinner__clipper"></span>
+                            <span class="pf-c-spinner__lead-ball"></span>
+                            <span class="pf-c-spinner__tail-ball"></span>
+                        </span>
+                        <h1 class="pf-c-title pf-m-lg">
+                            {% trans "Loading..." %}
+                        </h1>
+                    </div>
+                </div>
+            </section>
+        </ak-interface-user>
+        {% endblock %}
+  - model: authentik_interfaces.interface
+    identifiers:
+      url_name: admin
+      type: admin
+    attrs:
+      template: |
+        {% extends "base/skeleton.html" %}
+
+        {% load static %}
+        {% load i18n %}
+
+        {% block head %}
+        <script src="{% static 'dist/admin/AdminInterface.js' %}?version={{ version }}" type="module"></script>
+        <meta name="theme-color" content="#18191a" media="(prefers-color-scheme: dark)">
+        <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+        <link rel="icon" href="{{ tenant.branding_favicon }}">
+        <link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
+        {% include "base/header_js.html" %}
+        {% endblock %}
+
+        {% block body %}
+        <ak-message-container></ak-message-container>
+        <ak-interface-admin>
+            <section class="ak-static-page pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl">
+                <div class="pf-c-empty-state" style="height: 100vh;">
+                    <div class="pf-c-empty-state__content">
+                        <span class="pf-c-spinner pf-m-xl pf-c-empty-state__icon" role="progressbar" aria-valuetext="{% trans 'Loading...' %}">
+                            <span class="pf-c-spinner__clipper"></span>
+                            <span class="pf-c-spinner__lead-ball"></span>
+                            <span class="pf-c-spinner__tail-ball"></span>
+                        </span>
+                        <h1 class="pf-c-title pf-m-lg">
+                            {% trans "Loading..." %}
+                        </h1>
+                    </div>
+                </div>
+            </section>
+        </ak-interface-admin>
+        {% endblock %}
+  - model: authentik_interfaces.interface
+    identifiers:
+      url_name: flow
+      type: flow
+    attrs:
+      template: |
+        {% extends "base/skeleton.html" %}
+
+        {% load static %}
+        {% load i18n %}
+
+        {% block head_before %}
+        {{ block.super }}
+        <link rel="prefetch" href="{{ flow.background_url }}" />
+        <link rel="icon" href="{{ tenant.branding_favicon }}">
+        <link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
+        {% if flow.compatibility_mode and not inspector %}
+        <script>ShadyDOM = { force: !navigator.webdriver };</script>
+        {% endif %}
+        {% include "base/header_js.html" %}
+        <script>
+        window.authentik.flow = {
+            "layout": "{{ flow.layout }}",
+        };
+        </script>
+        {% endblock %}
+
+        {% block head %}
+        <script src="{% static 'dist/flow/FlowInterface.js' %}?version={{ version }}" type="module"></script>
+        <style>
+        :root {
+            --ak-flow-background: url("{{ flow.background_url }}");
+        }
+        </style>
+        {% endblock %}
+
+        {% block body %}
+        <ak-message-container></ak-message-container>
+        <ak-flow-executor>
+            <section class="ak-static-page pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl">
+                <div class="pf-c-empty-state" style="height: 100vh;">
+                    <div class="pf-c-empty-state__content">
+                        <span class="pf-c-spinner pf-m-xl pf-c-empty-state__icon" role="progressbar" aria-valuetext="{% trans 'Loading...' %}">
+                            <span class="pf-c-spinner__clipper"></span>
+                            <span class="pf-c-spinner__lead-ball"></span>
+                            <span class="pf-c-spinner__tail-ball"></span>
+                        </span>
+                        <h1 class="pf-c-title pf-m-lg">
+                            {% trans "Loading..." %}
+                        </h1>
+                    </div>
+                </div>
+            </section>
+        </ak-flow-executor>
+        {% endblock %}

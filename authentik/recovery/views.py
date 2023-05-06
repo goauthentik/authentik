@@ -22,4 +22,4 @@ class UseTokenView(View):
         login(request, token.user, backend=BACKEND_INBUILT)
         token.delete()
         messages.warning(request, _("Used recovery-link to authenticate."))
-        return redirect("authentik_core:if-user")
+        return redirect("authentik_core:root-redirect")

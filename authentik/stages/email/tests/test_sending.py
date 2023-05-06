@@ -7,6 +7,7 @@ from django.core.mail.backends.locmem import EmailBackend
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
+from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.events.models import Event, EventAction
 from authentik.flows.markers import StageMarker
@@ -29,6 +30,7 @@ class TestEmailStageSending(APITestCase):
         )
         self.binding = FlowStageBinding.objects.create(target=self.flow, stage=self.stage, order=2)
 
+    @apply_blueprint("system/interfaces.yaml")
     def test_pending_user(self):
         """Test with pending user"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
@@ -54,6 +56,7 @@ class TestEmailStageSending(APITestCase):
             self.assertEqual(event.context["to_email"], [self.user.email])
             self.assertEqual(event.context["from_email"], "system@authentik.local")
 
+    @apply_blueprint("system/interfaces.yaml")
     def test_send_error(self):
         """Test error during sending (sending will be retried)"""
         plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])

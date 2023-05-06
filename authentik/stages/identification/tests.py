@@ -5,6 +5,8 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.tests import reverse_interface
 from authentik.sources.oauth.models import OAuthSource
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
@@ -166,9 +168,9 @@ class TestIdentificationStage(FlowTestCase):
             component="ak-stage-identification",
             user_fields=["email"],
             password_fields=False,
-            enroll_url=reverse(
-                "authentik_core:if-flow",
-                kwargs={"flow_slug": flow.slug},
+            enroll_url=reverse_interface(
+                InterfaceType.FLOW,
+                flow_slug=flow.slug,
             ),
             show_source_labels=False,
             primary_action="Log in",
@@ -204,9 +206,9 @@ class TestIdentificationStage(FlowTestCase):
             component="ak-stage-identification",
             user_fields=["email"],
             password_fields=False,
-            recovery_url=reverse(
-                "authentik_core:if-flow",
-                kwargs={"flow_slug": flow.slug},
+            recovery_url=reverse_interface(
+                InterfaceType.FLOW,
+                flow_slug=flow.slug,
             ),
             show_source_labels=False,
             primary_action="Log in",

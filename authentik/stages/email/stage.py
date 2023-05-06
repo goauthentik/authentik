@@ -3,7 +3,6 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
-from django.urls import reverse
 from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -16,6 +15,8 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import reverse_interface
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -47,9 +48,10 @@ class EmailStageView(ChallengeStageView):
 
     def get_full_url(self, **kwargs) -> str:
         """Get full URL to be used in template"""
-        base_url = reverse(
-            "authentik_core:if-flow",
-            kwargs={"flow_slug": self.executor.flow.slug},
+        base_url = reverse_interface(
+            self.request,
+            InterfaceType.FLOW,
+            flow_slug=self.executor.flow.slug,
         )
         relative_url = f"{base_url}?{urlencode(kwargs)}"
         return self.request.build_absolute_uri(relative_url)

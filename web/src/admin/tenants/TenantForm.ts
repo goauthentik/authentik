@@ -23,6 +23,10 @@ import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
+    Interface,
+    InterfacesApi,
+    InterfacesListRequest,
+    InterfacesListTypeEnum,
     Tenant,
 } from "@goauthentik/api";
 
@@ -365,6 +369,107 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <p class="pf-c-form__helper-text">
                             ${t`If set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code.`}
                         </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+            <ak-form-group>
+                <span slot="header"> ${t`Interfaces`} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${t`User Interface`} name="interfaceUser">
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Interface[]> => {
+                                const args: InterfacesListRequest = {
+                                    ordering: "url_name",
+                                    type: InterfacesListTypeEnum.User,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new InterfacesApi(
+                                    DEFAULT_CONFIG,
+                                ).interfacesList(args);
+                                return flows.results;
+                            }}
+                            .renderElement=${(iface: Interface): string => {
+                                return iface.urlName;
+                            }}
+                            .renderDescription=${(iface: Interface): TemplateResult => {
+                                return html`${iface.type}`;
+                            }}
+                            .value=${(iface: Interface | undefined): string | undefined => {
+                                return iface?.interfaceUuid;
+                            }}
+                            .selected=${(iface: Interface): boolean => {
+                                return this.instance?.interfaceUser === iface.interfaceUuid;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">${t`.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Flow Interface`} name="interfaceFlow">
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Interface[]> => {
+                                const args: InterfacesListRequest = {
+                                    ordering: "url_name",
+                                    type: InterfacesListTypeEnum.Flow,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new InterfacesApi(
+                                    DEFAULT_CONFIG,
+                                ).interfacesList(args);
+                                return flows.results;
+                            }}
+                            .renderElement=${(iface: Interface): string => {
+                                return iface.urlName;
+                            }}
+                            .renderDescription=${(iface: Interface): TemplateResult => {
+                                return html`${iface.type}`;
+                            }}
+                            .value=${(iface: Interface | undefined): string | undefined => {
+                                return iface?.interfaceUuid;
+                            }}
+                            .selected=${(iface: Interface): boolean => {
+                                return this.instance?.interfaceFlow === iface.interfaceUuid;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">${t`.`}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${t`Admin Interface`} name="interfaceAdmin">
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<Interface[]> => {
+                                const args: InterfacesListRequest = {
+                                    ordering: "url_name",
+                                    type: InterfacesListTypeEnum.Admin,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const flows = await new InterfacesApi(
+                                    DEFAULT_CONFIG,
+                                ).interfacesList(args);
+                                return flows.results;
+                            }}
+                            .renderElement=${(iface: Interface): string => {
+                                return iface.urlName;
+                            }}
+                            .renderDescription=${(iface: Interface): TemplateResult => {
+                                return html`${iface.type}`;
+                            }}
+                            .value=${(iface: Interface | undefined): string | undefined => {
+                                return iface?.interfaceUuid;
+                            }}
+                            .selected=${(iface: Interface): boolean => {
+                                return this.instance?.interfaceAdmin === iface.interfaceUuid;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">${t`.`}</p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>

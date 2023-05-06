@@ -25,7 +25,8 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
-from authentik.lib.utils.urls import redirect_with_qs
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import redirect_to_default_interface
 from authentik.lib.views import bad_request_message
 from authentik.policies.denied import AccessDeniedResponse
 from authentik.policies.utils import delete_none_keys
@@ -226,7 +227,7 @@ class SourceFlowManager:
         # Ensure redirect is carried through when user was trying to
         # authorize application
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-user"
+            NEXT_ARG_NAME, "authentik_core:root-redirect"
         )
         kwargs.update(
             {
@@ -253,9 +254,9 @@ class SourceFlowManager:
             for stage in stages:
                 plan.append_stage(stage)
         self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
+        return redirect_to_default_interface(
+            self.request,
+            InterfaceType.FLOW,
             flow_slug=flow.slug,
         )
 
@@ -299,8 +300,9 @@ class SourceFlowManager:
             _("Successfully linked %(source)s!" % {"source": self.source.name}),
         )
         return redirect(
+            # Not ideal that we don't directly redirect to the configured user interface
             reverse(
-                "authentik_core:if-user",
+                "authentik_core:root-redirect",
             )
             + f"#/settings;page-{self.source.slug}"
         )

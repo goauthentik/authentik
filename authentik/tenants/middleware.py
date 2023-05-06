@@ -6,7 +6,7 @@ from django.http.response import HttpResponse
 from django.utils.translation import activate
 from sentry_sdk.api import set_tag
 
-from authentik.tenants.utils import get_tenant_for_request
+from authentik.tenants.utils import lookup_tenant_for_request
 
 
 class TenantMiddleware:
@@ -19,7 +19,7 @@ class TenantMiddleware:
 
     def __call__(self, request: HttpRequest) -> HttpResponse:
         if not hasattr(request, "tenant"):
-            tenant = get_tenant_for_request(request)
+            tenant = lookup_tenant_for_request(request)
             setattr(request, "tenant", tenant)
             set_tag("authentik.tenant_uuid", tenant.tenant_uuid.hex)
             set_tag("authentik.tenant_domain", tenant.domain)

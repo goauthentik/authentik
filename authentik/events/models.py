@@ -41,8 +41,7 @@ from authentik.lib.utils.http import get_client_ip, get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
 from authentik.stages.email.utils import TemplateEmailMessage
-from authentik.tenants.models import Tenant
-from authentik.tenants.utils import DEFAULT_TENANT
+from authentik.tenants.utils import get_fallback_tenant, get_tenant
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
@@ -57,7 +56,7 @@ def default_event_duration():
 
 def default_tenant():
     """Get a default value for tenant"""
-    return sanitize_dict(model_to_dict(DEFAULT_TENANT))
+    return sanitize_dict(model_to_dict(get_fallback_tenant()))
 
 
 class NotificationTransportError(SentryIgnoredException):
@@ -227,7 +226,7 @@ class Event(SerializerModel, ExpiringModel):
                 wrapped = self.context["http_request"]["args"][QS_QUERY]
                 self.context["http_request"]["args"] = QueryDict(wrapped)
         if hasattr(request, "tenant"):
-            tenant: Tenant = request.tenant
+            tenant = get_tenant(request)
             # Because self.created only gets set on save, we can't use it's value here
             # hence we set self.created to now and then use it
             self.created = now()

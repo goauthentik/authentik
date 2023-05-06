@@ -17,6 +17,7 @@ from authentik.flows.challenge import (
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER
+from authentik.tenants.utils import get_tenant
 
 SESSION_TOTP_DEVICE = "totp_device"
 
@@ -57,7 +58,7 @@ class AuthenticatorTOTPStageView(ChallengeStageView):
             data={
                 "type": ChallengeTypes.NATIVE.value,
                 "config_url": device.config_url.replace(
-                    OTP_TOTP_ISSUER, quote(self.request.tenant.branding_title)
+                    OTP_TOTP_ISSUER, quote(get_tenant(self.request).branding_title)
                 ),
             }
         )

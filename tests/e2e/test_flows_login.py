@@ -15,7 +15,8 @@ class TestFlowsLogin(SeleniumTestCase):
         """test default login flow"""
         self.driver.get(
             self.url(
-                "authentik_core:if-flow",
+                "authentik_interfaces:if",
+                if_name="flow",
                 flow_slug="default-authentication-flow",
             )
         )

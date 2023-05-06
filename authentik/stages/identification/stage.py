@@ -26,8 +26,9 @@ from authentik.flows.models import FlowDesignation
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, ChallengeStageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE, SESSION_KEY_GET
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import reverse_interface
 from authentik.lib.utils.http import get_client_ip
-from authentik.lib.utils.urls import reverse_with_qs
 from authentik.sources.oauth.types.apple import AppleLoginChallenge
 from authentik.sources.plex.models import PlexAuthenticationChallenge
 from authentik.stages.identification.models import IdentificationStage
@@ -205,22 +206,25 @@ class IdentificationStageView(ChallengeStageView):
         get_qs = self.request.session.get(SESSION_KEY_GET, self.request.GET)
         # Check for related enrollment and recovery flow, add URL to view
         if current_stage.enrollment_flow:
-            challenge.initial_data["enroll_url"] = reverse_with_qs(
-                "authentik_core:if-flow",
+            challenge.initial_data["enroll_url"] = reverse_interface(
+                self.request,
+                InterfaceType.FLOW,
                 query=get_qs,
-                kwargs={"flow_slug": current_stage.enrollment_flow.slug},
+                flow_slug=current_stage.enrollment_flow.slug,
             )
         if current_stage.recovery_flow:
-            challenge.initial_data["recovery_url"] = reverse_with_qs(
-                "authentik_core:if-flow",
+            challenge.initial_data["recovery_url"] = reverse_interface(
+                self.request,
+                InterfaceType.FLOW,
                 query=get_qs,
-                kwargs={"flow_slug": current_stage.recovery_flow.slug},
+                flow_slug=current_stage.recovery_flow.slug,
             )
         if current_stage.passwordless_flow:
-            challenge.initial_data["passwordless_url"] = reverse_with_qs(
-                "authentik_core:if-flow",
+            challenge.initial_data["passwordless_url"] = reverse_interface(
+                self.request,
+                InterfaceType.FLOW,
                 query=get_qs,
-                kwargs={"flow_slug": current_stage.passwordless_flow.slug},
+                flow_slug=current_stage.passwordless_flow.slug,
             )
 
         # Check all enabled source, add them if they have a UI Login button.

@@ -12,6 +12,7 @@ from authentik.lib.utils.http import get_http_session
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
+from authentik.tenants.utils import get_tenant
 
 LOGGER = get_logger()
 RE_LOWER = re.compile("[a-z]")
@@ -143,7 +144,8 @@ class PasswordPolicy(Policy):
             user_inputs.append(request.user.name)
             user_inputs.append(request.user.email)
         if request.http_request:
-            user_inputs.append(request.http_request.tenant.branding_title)
+            tenant = get_tenant(request.http_request)
+            user_inputs.append(tenant.branding_title)
         # Only calculate result for the first 100 characters, as with over 100 char
         # long passwords we can be reasonably sure that they'll surpass the score anyways
         # See https://github.com/dropbox/zxcvbn#runtime-latency

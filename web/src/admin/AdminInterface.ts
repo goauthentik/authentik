@@ -295,6 +295,9 @@ export class AdminInterface extends Interface {
                 <ak-sidebar-item path="/core/tenants">
                     <span slot="label">${t`Tenants`}</span>
                 </ak-sidebar-item>
+                <ak-sidebar-item path="/interfaces">
+                    <span slot="label">${t`Interfaces`}</span>
+                </ak-sidebar-item>
                 <ak-sidebar-item path="/crypto/certificates">
                     <span slot="label">${t`Certificates`}</span>
                 </ak-sidebar-item>

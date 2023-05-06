@@ -32,7 +32,8 @@ from authentik.flows.planner import (
 )
 from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSION_KEY_PLAN
-from authentik.lib.utils.urls import redirect_with_qs
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import redirect_to_default_interface
 from authentik.lib.views import bad_request_message
 from authentik.providers.saml.utils.encoding import nice64
 from authentik.sources.saml.exceptions import MissingSAMLResponse, UnsupportedNameIDFormat
@@ -72,7 +73,7 @@ class InitiateView(View):
         # Ensure redirect is carried through when user was trying to
         # authorize application
         final_redirect = self.request.session.get(SESSION_KEY_GET, {}).get(
-            NEXT_ARG_NAME, "authentik_core:if-user"
+            NEXT_ARG_NAME, "authentik_core:root-redirect"
         )
         kwargs.update(
             {
@@ -91,9 +92,9 @@ class InitiateView(View):
         for stage in stages_to_append:
             plan.append_stage(stage)
         self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
+        return redirect_to_default_interface(
+            self.request,
+            InterfaceType.FLOW,
             flow_slug=source.pre_authentication_flow.slug,
         )
 

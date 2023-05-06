@@ -33,6 +33,7 @@ from authentik.flows.api.flows import FlowViewSet
 from authentik.flows.api.stages import StageViewSet
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.flows.views.inspector import FlowInspectorView
+from authentik.interfaces.api import InterfaceViewSet
 from authentik.outposts.api.outposts import OutpostViewSet
 from authentik.outposts.api.service_connections import (
     DockerServiceConnectionViewSet,
@@ -122,6 +123,8 @@ router.register("core/users", UserViewSet)
 router.register("core/user_consent", UserConsentViewSet)
 router.register("core/tokens", TokenViewSet)
 router.register("core/tenants", TenantViewSet)
+
+router.register("interfaces", InterfaceViewSet)
 
 router.register("outposts/instances", OutpostViewSet)
 router.register("outposts/service_connections/all", ServiceConnectionViewSet)

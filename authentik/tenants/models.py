@@ -7,7 +7,6 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.crypto.models import CertificateKeyPair
-from authentik.flows.models import Flow
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
@@ -33,22 +32,59 @@ class Tenant(SerializerModel):
     branding_favicon = models.TextField(default="/static/dist/assets/icons/icon.png")
 
     flow_authentication = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_authentication"
+        "authentik_flows.Flow",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="tenant_authentication",
     )
     flow_invalidation = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_invalidation"
+        "authentik_flows.Flow",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="tenant_invalidation",
     )
     flow_recovery = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_recovery"
+        "authentik_flows.Flow", null=True, on_delete=models.SET_NULL, related_name="tenant_recovery"
     )
     flow_unenrollment = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_unenrollment"
+        "authentik_flows.Flow",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="tenant_unenrollment",
     )
     flow_user_settings = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_user_settings"
+        "authentik_flows.Flow",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="tenant_user_settings",
     )
     flow_device_code = models.ForeignKey(
-        Flow, null=True, on_delete=models.SET_NULL, related_name="tenant_device_code"
+        "authentik_flows.Flow",
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="tenant_device_code",
+    )
+
+    interface_flow = models.ForeignKey(
+        "authentik_interfaces.Interface",
+        default=None,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="tenant_flow",
+    )
+    interface_user = models.ForeignKey(
+        "authentik_interfaces.Interface",
+        default=None,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="tenant_user",
+    )
+    interface_admin = models.ForeignKey(
+        "authentik_interfaces.Interface",
+        default=None,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="tenant_admin",
     )
 
     event_retention = models.TextField(

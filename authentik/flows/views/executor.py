@@ -53,12 +53,14 @@ from authentik.flows.planner import (
     FlowPlanner,
 )
 from authentik.flows.stage import AccessDeniedChallengeView, StageView
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import redirect_to_default_interface
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import all_subclasses, class_to_path
 from authentik.lib.utils.urls import is_url_absolute, redirect_with_qs
 from authentik.policies.engine import PolicyEngine
-from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_tenant
 
 LOGGER = get_logger()
 # Argument used to redirect user after login
@@ -479,7 +481,7 @@ class ToDefaultFlow(View):
 
     def get_flow(self) -> Flow:
         """Get a flow for the selected designation"""
-        tenant: Tenant = self.request.tenant
+        tenant = get_tenant(self.request)
         flow = None
         # First, attempt to get default flow from tenant
         if self.designation == FlowDesignation.AUTHENTICATION:
@@ -512,7 +514,7 @@ class ToDefaultFlow(View):
                     flow_slug=flow.slug,
                 )
                 del self.request.session[SESSION_KEY_PLAN]
-        return redirect_with_qs("authentik_core:if-flow", request.GET, flow_slug=flow.slug)
+        return redirect_to_default_interface(request, InterfaceType.FLOW, flow_slug=flow.slug)
 
 
 def to_stage_response(request: HttpRequest, source: HttpResponse) -> HttpResponse:
@@ -583,8 +585,8 @@ class ConfigureFlowInitView(LoginRequiredMixin, View):
             LOGGER.warning("Flow not applicable to user")
             raise Http404
         request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
+        return redirect_to_default_interface(
+            self.request,
+            InterfaceType.FLOW,
             flow_slug=stage.configure_flow.slug,
         )

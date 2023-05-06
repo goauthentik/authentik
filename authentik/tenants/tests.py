@@ -75,7 +75,7 @@ class TestTenants(APITestCase):
         )
         factory = RequestFactory()
         request = factory.get("/")
-        request.tenant = tenant
+        setattr(request, "tenant", tenant)
         event = Event.new(action=EventAction.SYSTEM_EXCEPTION, message="test").from_http(request)
         self.assertEqual(event.expires.day, (event.created + timedelta_from_string("weeks=3")).day)
         self.assertEqual(

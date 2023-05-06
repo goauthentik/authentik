@@ -29,8 +29,9 @@ from authentik.flows.models import in_memory_stage
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_SSO, FlowPlanner
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_PLAN
+from authentik.interfaces.models import InterfaceType
+from authentik.interfaces.views import redirect_to_default_interface
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
@@ -404,9 +405,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
         plan.append_stage(in_memory_stage(OAuthFulfillmentStage))
 
         self.request.session[SESSION_KEY_PLAN] = plan
-        return redirect_with_qs(
-            "authentik_core:if-flow",
-            self.request.GET,
+        return redirect_to_default_interface(
+            self.request,
+            InterfaceType.FLOW,
             flow_slug=self.provider.authorization_flow.slug,
         )
 

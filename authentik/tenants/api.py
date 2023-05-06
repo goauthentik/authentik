@@ -18,6 +18,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.config import CONFIG
 from authentik.tenants.models import Tenant
+from authentik.tenants.utils import get_tenant
 
 
 class FooterLinkSerializer(PassiveSerializer):
@@ -54,6 +55,9 @@ class TenantSerializer(ModelSerializer):
             "flow_unenrollment",
             "flow_user_settings",
             "flow_device_code",
+            "interface_admin",
+            "interface_user",
+            "interface_flow",
             "event_retention",
             "web_certificate",
             "attributes",
@@ -120,6 +124,9 @@ class TenantViewSet(UsedByMixin, ModelViewSet):
         "flow_unenrollment",
         "flow_user_settings",
         "flow_device_code",
+        "interface_admin",
+        "interface_user",
+        "interface_flow",
         "event_retention",
         "web_certificate",
     ]
@@ -133,5 +140,4 @@ class TenantViewSet(UsedByMixin, ModelViewSet):
     @action(methods=["GET"], detail=False, permission_classes=[AllowAny])
     def current(self, request: Request) -> Response:
         """Get current tenant"""
-        tenant: Tenant = request._request.tenant
-        return Response(CurrentTenantSerializer(tenant).data)
+        return Response(CurrentTenantSerializer(get_tenant(request)).data)

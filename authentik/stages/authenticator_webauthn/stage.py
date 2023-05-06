@@ -29,6 +29,7 @@ from authentik.flows.challenge import (
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_webauthn.models import AuthenticateWebAuthnStage, WebAuthnDevice
 from authentik.stages.authenticator_webauthn.utils import get_origin, get_rp_id
+from authentik.tenants.utils import get_tenant
 
 SESSION_KEY_WEBAUTHN_CHALLENGE = "authentik/stages/authenticator_webauthn/challenge"
 
@@ -92,7 +93,7 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
 
         registration_options: PublicKeyCredentialCreationOptions = generate_registration_options(
             rp_id=get_rp_id(self.request),
-            rp_name=self.request.tenant.branding_title,
+            rp_name=get_tenant(self.request).branding_title,
             user_id=user.uid,
             user_name=user.username,
             user_display_name=user.name,
