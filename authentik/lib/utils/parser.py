@@ -200,7 +200,7 @@ def _get_credentials_from_url(redis_kwargs, url):
             redis_kwargs["username"] = unquote(url.username)
     elif url.username:
         username = unquote(url.username)
-        if username[-1] == ":":
+        if url.netloc.split("@")[0][-1] == ":":
             redis_kwargs["username"] = username
         else:
             redis_kwargs["password"] = username
