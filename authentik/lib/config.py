@@ -13,6 +13,8 @@ from urllib.parse import parse_qsl, quote_plus, urlencode, urlparse
 import yaml
 from django.conf import ImproperlyConfigured
 
+from authentik.lib.utils.parser import get_addrs_from_url, get_credentials_from_url
+
 SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
 )
@@ -80,23 +82,30 @@ class ConfigLoader:
     def update_redis_url_from_env(self):
         """Build Redis URL from other env variables"""
 
-        redis_url = "redis://"
+        redis_url = "redis"
         redis_url_query = {}
         redis_host = "localhost"
         redis_port = 6379
         redis_db = 0
+        redis_credentials = {}
 
         if self.y("redis.url", UNSET) is not UNSET:
             redis_url_old = urlparse(self.y("redis.url"))
             redis_url_query = dict(parse_qsl(redis_url_old.query))
-            redis_host = redis_url_old.hostname
-            redis_port = redis_url_old.port
+            redis_addrs = get_addrs_from_url(redis_url_old)
+            redis_addr = redis_addrs[0].rsplit(":", 1)
+            redis_host = redis_addr[0]
+            if len(redis_addr) > 1:
+                redis_port = redis_addr[1]
+            redis_credentials = get_credentials_from_url({}, redis_url_old)
+            if len(redis_addrs) > 1:
+                redis_url_query["addrs"] = ",".join(redis_addrs[1:])
             if redis_url_old.path[1:].isdigit():
                 redis_db = redis_url_old.path[1:]
             if self.y("redis.tls", UNSET) is UNSET:
                 redis_url = redis_url_old.scheme
         if self.y_bool("redis.tls", False):
-            redis_url = "rediss://"
+            redis_url = "rediss"
         if self.y("redis.tls_reqs", UNSET) is not UNSET:
             redis_tls_reqs = self.y("redis.tls_reqs")
             match redis_tls_reqs.lower():
@@ -117,17 +126,21 @@ class ConfigLoader:
         if self.y("redis.db", UNSET) is not UNSET:
             redis_db = int(self.y("redis.db"))
         if self.y("redis.host", UNSET) is not UNSET:
-            redis_host = self.y("redis.host")
+            redis_host = quote_plus(self.y("redis.host"))
         if self.y("redis.port", UNSET) is not UNSET:
             redis_port = int(self.y("redis.port"))
         if self.y("redis.username", UNSET) is not UNSET:
-            redis_url_query["username"] = self.y("redis.username")
+            redis_url_query["username"] = quote_plus(self.y("redis.username"))
+        elif "username" in redis_credentials:
+            redis_url_query["username"] = quote_plus(redis_credentials["username"])
         if self.y("redis.password", UNSET) is not UNSET:
-            redis_url_query["password"] = self.y("redis.password")
-        redis_url += f"{quote_plus(redis_host)}"
+            redis_url_query["password"] = quote_plus(self.y("redis.password"))
+        elif "password" in redis_credentials:
+            redis_url_query["password"] = quote_plus(redis_credentials["password"])
+        redis_url += f"://{quote_plus(redis_host)}"
         redis_url += f":{redis_port}"
         redis_url += f"/{redis_db}"
-        # Sort query to have similar tests between Go and Python implementation
+        # Sort query in order to have similar tests between Go and Python implementation
         redis_url_query = dict(sorted(redis_url_query.items()))
         redis_url_query = urlencode(redis_url_query)
         if redis_url_query != "":

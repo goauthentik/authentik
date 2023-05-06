@@ -123,15 +123,20 @@ def _set_kwargs_default(kwargs: dict, defaults: dict):
     return kwargs
 
 
-def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
-    """Update config with default values"""
+def get_addrs_from_url(url):
     if url.hostname:
         host = unquote(url.netloc).split("@")
         if len(host) > 1:
             host = host[-1]
         else:
             host = host[0]
-        redis_kwargs.setdefault("addrs", []).extend(host.split(","))
+        return host.split(",")
+    return []
+
+
+def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
+    """Update config with default values"""
+    redis_kwargs.setdefault("addrs", []).extend(get_addrs_from_url(url))
 
     if url.path and url.scheme != "redis+socket":
         path = unquote(url.path)[1:]
@@ -192,7 +197,7 @@ def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
     return pool_kwargs, redis_kwargs, tls_kwargs
 
 
-def _get_credentials_from_url(redis_kwargs, url):
+def get_credentials_from_url(redis_kwargs, url):
     """Extract username and password from URL"""
     if url.password:
         redis_kwargs["password"] = unquote(url.password)
@@ -218,7 +223,7 @@ def get_redis_options(
 
     retries_and_backoff = {}
 
-    redis_kwargs = _get_credentials_from_url(redis_kwargs, url)
+    redis_kwargs = get_credentials_from_url(redis_kwargs, url)
 
     for name, value in parse_qs(url.query).items():
         if value and len(value) > 0 and isinstance(name, str):
@@ -389,13 +394,8 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
             case "cluster" | "clusters":
                 config["type"] = "cluster"
                 database = redis_kwargs.pop("db")
-                if database != 0:
-                    print(
-                        "Redis cluster does only support database 0. Specified database "
-                        + str(database)
-                        + " will be ignored."
-                    )
-                redis_kwargs["db"] = 0
+                if database:
+                    print("Redis cluster does not support the db option, skipping")
                 config["pool_kwargs"] = deepcopy(pool_kwargs)
                 config["redis_kwargs"] = deepcopy(redis_kwargs)
                 config["addrs"] = addrs
@@ -424,27 +424,28 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
 
 
 def _connection_class(config, use_async, update_connection_class):
-    redis_connection_class_path = "connection."
-    sentinel_managed_connection_class_path = "sentinel.SentinelManaged"
-    if config.get("tls", False):
-        redis_connection_class_path += "SSL"
-        sentinel_managed_connection_class_path += "SSL"
-    redis_connection_class_path += "Connection"
-    redis_connection_class = _get_class(redis_connection_class_path, use_async)
-    sentinel_managed_connection_class_path += "Connection"
-    sentinel_managed_connection_class = _get_class(
-        sentinel_managed_connection_class_path, use_async
-    )
-    if callable(update_connection_class):
-        redis_connection_class = update_connection_class(redis_connection_class)
-    config["redis_kwargs"]["connection_class"] = redis_connection_class
-
-    if config["type"] == "sentinel":
+    if config["type"] != "cluster":
+        redis_connection_class_path = "connection."
+        sentinel_managed_connection_class_path = "sentinel.SentinelManaged"
+        if config.get("tls", False):
+            redis_connection_class_path += "SSL"
+            sentinel_managed_connection_class_path += "SSL"
+        redis_connection_class_path += "Connection"
+        redis_connection_class = _get_class(redis_connection_class_path, use_async)
+        sentinel_managed_connection_class_path += "Connection"
+        sentinel_managed_connection_class = _get_class(
+            sentinel_managed_connection_class_path, use_async
+        )
         if callable(update_connection_class):
-            sentinel_managed_connection_class = update_connection_class(
-                sentinel_managed_connection_class
-            )
-        config["redis_kwargs"]["connection_class"] = sentinel_managed_connection_class
+            redis_connection_class = update_connection_class(redis_connection_class)
+        config["redis_kwargs"]["connection_class"] = redis_connection_class
+
+        if config["type"] == "sentinel":
+            if callable(update_connection_class):
+                sentinel_managed_connection_class = update_connection_class(
+                    sentinel_managed_connection_class
+                )
+            config["redis_kwargs"]["connection_class"] = sentinel_managed_connection_class
     return config
 
 
@@ -519,16 +520,13 @@ def get_connection_pool(config, use_async=False, update_connection_class=None):
             )
             client_config["client_class"] = _get_class("client.StrictRedis", use_async)
         case "cluster":
-            connection_pool = _get_class("connection.BlockingConnectionPool", use_async)(
-                **config["pool_kwargs"], **config["redis_kwargs"]
-            )
             client_config["client_kwargs"] = {
                 "startup_nodes": [
                     _get_class("cluster.ClusterNode", use_async)(*node) for node in config["addrs"]
                 ],
                 "cluster_error_retry_attempts": config["cluster_error_retry_attempts"],
-                "skip_full_coverage_check": True,
                 "read_from_replicas": config["redis_kwargs"].get("readonly", False),
+                **config["redis_kwargs"],
             }
             client_config["client_class"] = _get_class("cluster.RedisCluster", use_async)
         case "socket":
