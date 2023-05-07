@@ -219,13 +219,13 @@ class Event(SerializerModel, ExpiringModel):
             self.context["http_request"] = {
                 "path": request.path,
                 "method": request.method,
-                "args": QueryDict(request.META.get("QUERY_STRING", "")),
+                "args": cleanse_dict(QueryDict(request.META.get("QUERY_STRING", ""))),
             }
             # Special case for events created during flow execution
             # since they keep the http query within a wrapped query
             if QS_QUERY in self.context["http_request"]["args"]:
                 wrapped = self.context["http_request"]["args"][QS_QUERY]
-                self.context["http_request"]["args"] = QueryDict(wrapped)
+                self.context["http_request"]["args"] = cleanse_dict(QueryDict(wrapped))
         if hasattr(request, "tenant"):
             tenant: Tenant = request.tenant
             # Because self.created only gets set on save, we can't use it's value here
