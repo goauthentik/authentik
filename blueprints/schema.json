@@ -25,7 +25,10 @@
                     "type": "string"
                 },
                 "labels": {
-                    "type": "object"
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
                 }
             }
         },
