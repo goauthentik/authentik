@@ -5,6 +5,7 @@ Blueprints are YAML files, which can use some additional tags to ease blueprint 
 ## Structure
 
 ```yaml
+# yaml-language-server: $schema=https://goauthentik.io/blueprints/schema.json
 # The version of this blueprint, currently 1
 version: 1
 # Optional block of metadata, name is required if metadata is set
