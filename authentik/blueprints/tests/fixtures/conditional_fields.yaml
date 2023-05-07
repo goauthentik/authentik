@@ -1,0 +1,41 @@
+version: 1
+metadata:
+  name: test conditional fields
+  labels:
+    blueprints.goauthentik.io/description: |
+      Some models have conditional fields that are only allowed in blueprint contexts
+      - Token (key)
+      - Application (icon)
+      - Source (icon)
+      - Flow (background)
+entries:
+  - model: authentik_core.token
+    identifiers:
+      identifier: %(uid)s-token
+    attrs:
+      key: %(uid)s
+      user: %(user)s
+      intent: api
+  - model: authentik_core.application
+    identifiers:
+      slug: %(uid)s-app
+    attrs:
+      name: %(uid)s-app
+      icon: https://goauthentik.io/img/icon.png
+  - model: authentik_sources_oauth.oauthsource
+    identifiers:
+      slug: %(uid)s-source
+    attrs:
+      name: %(uid)s-source
+      provider_type: azuread
+      consumer_key: %(uid)s
+      consumer_secret: %(uid)s
+      icon: https://goauthentik.io/img/icon.png
+  - model: authentik_flows.flow
+    identifiers:
+      slug: %(uid)s-flow
+    attrs:
+      name: %(uid)s-flow
+      title: %(uid)s-flow
+      designation: authentication
+      background: https://goauthentik.io/img/icon.png
