@@ -13,6 +13,7 @@ from rest_framework.serializers import BaseSerializer
 from structlog.stdlib import get_logger
 
 from authentik.flows.models import Stage
+from authentik.lib.config import CONFIG
 
 LOGGER = get_logger()
 
@@ -104,7 +105,15 @@ class EmailStage(Stage):
     def backend(self) -> BaseEmailBackend:
         """Get fully configured Email Backend instance"""
         if self.use_global_settings:
-            return self.backend_class()
+            return self.backend_class(
+                host=CONFIG.y("email.host"),
+                port=int(CONFIG.y("email.port")),
+                username=CONFIG.y("email.username"),
+                password= CONFIG.y("email.password"),
+                use_tls=CONFIG.y_bool("email.use_tls", False),
+                use_ssl=CONFIG.y_bool("email.use_ssl", False),
+                timeout=int(CONFIG.y("email.timeout")),
+            )
         return self.backend_class(
             host=self.host,
             port=self.port,

@@ -290,6 +290,9 @@ if CONFIG.y_bool("postgresql.use_pgbouncer", False):
     DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
 
 # Email
+# These values should never actually be used, emails are only sent from email stages, which
+# loads the config directly from CONFIG
+# See authentik/stages/email/models.py, line 105
 EMAIL_HOST = CONFIG.y("email.host")
 EMAIL_PORT = int(CONFIG.y("email.port"))
 EMAIL_HOST_USER = CONFIG.y("email.username")
