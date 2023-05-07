@@ -114,9 +114,10 @@ class EmailStageView(ChallengeStageView):
                 user.is_active = True
                 user.save()
             return self.executor.stage_ok()
-        if PLAN_CONTEXT_PENDING_USER not in self.executor.plan.context:
-            self.logger.debug("No pending user")
-            messages.error(self.request, _("No pending user."))
+        if not user.is_authenticated:
+            # We'll only get here if there's no user in the flow plan context
+            # and no authenticated user either
+            self.logger.debug("Unauthenticated user", user=user)
             return self.executor.stage_invalid()
         # Check if we've already sent the initial e-mail
         if PLAN_CONTEXT_EMAIL_SENT not in self.executor.plan.context:
