@@ -180,6 +180,7 @@ bump2version = "*"
 colorama = "*"
 coverage = { extras = ["toml"], version = "*" }
 django-silk = "*"
+drf-jsonschema-serializer = "*"
 importlib-metadata = "*"
 pylint = "*"
 pylint-django = "*"
