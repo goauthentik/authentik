@@ -270,7 +270,7 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     "default": {
-        "ENGINE": "django_prometheus.db.backends.postgresql",
+        "ENGINE": "authentik.root.db",
         "HOST": CONFIG.y("postgresql.host"),
         "NAME": CONFIG.y("postgresql.name"),
         "USER": CONFIG.y("postgresql.user"),
