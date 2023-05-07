@@ -40,7 +40,10 @@ class Command(BaseCommand):
                     "$id": "#/properties/metadata",
                     "type": "object",
                     "required": ["name"],
-                    "properties": {"name": {"type": "string"}, "labels": {"type": "object"}},
+                    "properties": {
+                        "name": {"type": "string"},
+                        "labels": {"type": "object", "additionalProperties": {"type": "string"}},
+                    },
                 },
                 "context": {
                     "$id": "#/properties/context",
