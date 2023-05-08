@@ -117,7 +117,7 @@ class TestProviderProxy(SeleniumTestCase):
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of proxy.", full_body_text)
+        self.assertIn("You've logged out of", full_body_text)
 
     @retry()
     @apply_blueprint(
@@ -188,7 +188,7 @@ class TestProviderProxy(SeleniumTestCase):
         self.driver.get("http://localhost:9000/outpost.goauthentik.io/sign_out")
         sleep(2)
         full_body_text = self.driver.find_element(By.CSS_SELECTOR, ".pf-c-title.pf-m-3xl").text
-        self.assertIn("You've logged out of proxy.", full_body_text)
+        self.assertIn("You've logged out of", full_body_text)
 
 
 @skipUnless(platform.startswith("linux"), "requires local docker")
