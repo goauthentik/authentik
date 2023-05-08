@@ -143,7 +143,7 @@ export class GroupViewPage extends AKElement {
                                 ? html`${this.group.attributes?.notes}`
                                 : html`
                                       <p>
-                                          ${t`Edit the notes attribute of this group to add notes here. Markdown is supported.`}
+                                          ${t`Edit the notes attribute of this group to add notes here.`}
                                       </p>
                                   `}
                         </div>

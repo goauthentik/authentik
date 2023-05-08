@@ -2332,12 +2332,20 @@ msgid "Edit Stage"
 msgstr "Éditer l'étap"
 
 #: src/admin/groups/GroupViewPage.ts
-msgid "Edit the notes attribute of this group to add notes here. Markdown is supported."
+msgid "Edit the notes attribute of this group to add notes here."
+msgstr ""
+
+#: src/admin/groups/GroupViewPage.ts
+#~ msgid "Edit the notes attribute of this group to add notes here. Markdown is supported."
+#~ msgstr ""
+
+#: src/admin/users/UserViewPage.ts
+msgid "Edit the notes attribute of this user to add notes here."
 msgstr ""
 
 #: src/admin/users/UserViewPage.ts
-msgid "Edit the notes attribute of this user to add notes here. Markdown is supported."
-msgstr ""
+#~ msgid "Edit the notes attribute of this user to add notes here. Markdown is supported."
+#~ msgstr ""
 
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Edit User"
@@ -8002,13 +8010,14 @@ msgid "Yes ({0})"
 msgstr "Oui ({0})"
 
 #: src/flow/providers/oauth2/DeviceCodeFinish.ts
-msgid "You can close this tab now."
-msgstr ""
+#~ msgid "You can close this tab now."
+#~ msgstr ""
 
 #: src/admin/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."
 msgstr "Vous pouvez uniquement sélectionner des fournisseurs qui correspondent au type d'avant-poste."
 
+#: src/flow/providers/oauth2/DeviceCodeFinish.ts
 #: src/flow/stages/RedirectStage.ts
 msgid "You may close this page now."
 msgstr ""
