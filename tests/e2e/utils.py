@@ -54,8 +54,6 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         if IS_CI:
             print("::group::authentik Logs", file=stderr)
         super().setUp()
-        # pylint: disable=invalid-name
-        self.maxDiff = None
         self.wait_timeout = 60
         self.driver = self._get_driver()
         self.driver.implicitly_wait(30)

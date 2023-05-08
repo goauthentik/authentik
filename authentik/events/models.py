@@ -391,6 +391,14 @@ class NotificationTransport(SerializerModel):
             },
         ]
         if notification.event:
+            if notification.event.user:
+                fields.append(
+                    {
+                        "title": _("Event user"),
+                        "value": str(notification.event.user.get("username")),
+                        "short": True,
+                    },
+                )
             for key, value in notification.event.context.items():
                 if not isinstance(value, str):
                     continue

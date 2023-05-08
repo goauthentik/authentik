@@ -107,6 +107,7 @@ class TestEventTransports(TestCase):
                                     "value": self.user.username,
                                     "short": True,
                                 },
+                                {"short": True, "title": "Event user", "value": self.user.username},
                                 {"title": "foo", "value": "bar,"},
                             ],
                             "footer": f"authentik {get_full_version()}",
