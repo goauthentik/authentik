@@ -49,6 +49,7 @@ module.exports = {
         },
         footer: mainConfig.themeConfig.footer,
         colorMode: mainConfig.themeConfig.colorMode,
+        tableOfContents: mainConfig.themeConfig.tableOfContents,
     },
     presets: [
         [

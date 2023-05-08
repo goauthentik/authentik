@@ -100,7 +100,7 @@ class Command(BaseCommand):
         self.schema["$defs"][def_name] = model_schema
         return {
             "type": "object",
-            "required": ["model", "attrs"],
+            "required": ["model", "identifiers"],
             "properties": {
                 "model": {"const": model_path},
                 "id": {"type": "string"},

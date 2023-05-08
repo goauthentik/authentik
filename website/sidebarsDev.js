@@ -16,8 +16,15 @@ module.exports = {
                 "blueprints/v1/structure",
                 "blueprints/v1/tags",
                 "blueprints/v1/example",
-                "blueprints/v1/models",
-                "blueprints/v1/meta",
+                {
+                    type: "category",
+                    label: "Models",
+                    link: {
+                        type: "doc",
+                        id: "blueprints/v1/models",
+                    },
+                    items: ["blueprints/v1/meta"],
+                },
             ],
         },
         {
