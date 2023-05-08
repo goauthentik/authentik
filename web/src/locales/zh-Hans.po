@@ -2288,12 +2288,20 @@ msgid "Edit Stage"
 msgstr "编辑阶段"
 
 #: src/admin/groups/GroupViewPage.ts
-msgid "Edit the notes attribute of this group to add notes here. Markdown is supported."
-msgstr "编辑该组的备注属性以在此处添加备注。支持 Markdown。"
+msgid "Edit the notes attribute of this group to add notes here."
+msgstr ""
+
+#: src/admin/groups/GroupViewPage.ts
+#~ msgid "Edit the notes attribute of this group to add notes here. Markdown is supported."
+#~ msgstr "编辑该组的备注属性以在此处添加备注。支持 Markdown。"
 
 #: src/admin/users/UserViewPage.ts
-msgid "Edit the notes attribute of this user to add notes here. Markdown is supported."
-msgstr "编辑该用户的备注属性以在此处添加备注。支持 Markdown。"
+msgid "Edit the notes attribute of this user to add notes here."
+msgstr ""
+
+#: src/admin/users/UserViewPage.ts
+#~ msgid "Edit the notes attribute of this user to add notes here. Markdown is supported."
+#~ msgstr "编辑该用户的备注属性以在此处添加备注。支持 Markdown。"
 
 #: src/admin/policies/BoundPoliciesList.ts
 msgid "Edit User"
@@ -7918,13 +7926,14 @@ msgid "Yes ({0})"
 msgstr "是（{0}）"
 
 #: src/flow/providers/oauth2/DeviceCodeFinish.ts
-msgid "You can close this tab now."
-msgstr "您可以关闭此标签页了。"
+#~ msgid "You can close this tab now."
+#~ msgstr "您可以关闭此标签页了。"
 
 #: src/admin/outposts/OutpostForm.ts
 msgid "You can only select providers that match the type of the outpost."
 msgstr "您只能选择与前哨类型匹配的提供程序。"
 
+#: src/flow/providers/oauth2/DeviceCodeFinish.ts
 #: src/flow/stages/RedirectStage.ts
 msgid "You may close this page now."
 msgstr ""

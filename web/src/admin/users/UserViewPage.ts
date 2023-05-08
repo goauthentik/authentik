@@ -288,7 +288,7 @@ export class UserViewPage extends AKElement {
                                 ? html`${this.user.attributes?.notes}`
                                 : html`
                                       <p>
-                                          ${t`Edit the notes attribute of this user to add notes here. Markdown is supported.`}
+                                          ${t`Edit the notes attribute of this user to add notes here.`}
                                       </p>
                                   `}
                         </div>
