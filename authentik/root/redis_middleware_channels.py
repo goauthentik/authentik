@@ -112,7 +112,7 @@ class CustomChannelLayer(RedisChannelLayer):
         # of the main message queue in the proper order; BRPOP must *not* be called
         # because that would deadlock the server
         backed_up = await connection.zrange(backup_queue, 0, -1, withscores=True)
-        for i in range(len(backed_up) - 1, 0, -2):
+        for i in range(len(backed_up) - 1, -1, -2):
             await connection.zadd(channel, {backed_up[i - 1]: float(backed_up[i])})
         await connection.delete(backup_queue)
         result = await connection.bzpopmin(channel, timeout=timeout)
@@ -146,7 +146,8 @@ class CustomChannelLayer(RedisChannelLayer):
         """
         Sends a message to the entire group.
         """
-        assert self.valid_group_name(group), "Group name not valid"
+        if not self.valid_group_name(group):
+            raise Exception("Group name not valid")
         # Retrieve list of all channel names
         key = self._group_key(group)
         connection = self.connection(self.consistent_hash(group))
@@ -172,7 +173,7 @@ class CustomChannelLayer(RedisChannelLayer):
             connection = self.connection(connection_index)
 
             channels_over_capacity = 0
-            for i, key in enumerate(channel_redis_keys):
+            for key in channel_redis_keys:
                 if await connection.zcount(key, "-inf", "inf") < channel_keys_to_capacity[key]:
                     await connection.zadd(key, time.time(), channel_keys_to_message[key])
                     await connection.expire(key, self.expiry)

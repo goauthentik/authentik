@@ -79,6 +79,7 @@ class ConfigLoader:
         self.check_deprecations()
         self.update_redis_url_from_env()
 
+    # pylint: disable=too-many-statements
     def update_redis_url_from_env(self):
         """Build Redis URL from other env variables"""
 
@@ -137,12 +138,9 @@ class ConfigLoader:
             redis_url_query["password"] = quote_plus(self.y("redis.password"))
         elif "password" in redis_credentials:
             redis_url_query["password"] = quote_plus(redis_credentials["password"])
-        redis_url += f"://{quote_plus(redis_host)}"
-        redis_url += f":{redis_port}"
-        redis_url += f"/{redis_db}"
+        redis_url += f"://{quote_plus(redis_host)}:{redis_port}/{redis_db}"
         # Sort query in order to have similar tests between Go and Python implementation
-        redis_url_query = dict(sorted(redis_url_query.items()))
-        redis_url_query = urlencode(redis_url_query)
+        redis_url_query = urlencode(dict(sorted(redis_url_query.items())))
         if redis_url_query != "":
             redis_url += f"?{redis_url_query}"
         self.y_set("redis.url", redis_url)
