@@ -195,7 +195,7 @@ class TestProviderProxy(SeleniumTestCase):
 class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     """Test Proxy connectivity over websockets"""
 
-    @retry()
+    @retry(exceptions=[AssertionError])
     @apply_blueprint(
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
