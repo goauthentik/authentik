@@ -52,6 +52,8 @@ class TestEventTransports(TestCase):
                     "severity": "alert",
                     "user_email": self.user.email,
                     "user_username": self.user.username,
+                    "event_user_email": self.user.email,
+                    "event_user_username": self.user.username,
                 },
             )
 

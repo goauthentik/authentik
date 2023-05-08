@@ -12,8 +12,12 @@ This will send a POST request to the given URL with the following contents:
 {
     "body": "body of the notification message",
     "severity": "severity level as configured in the trigger",
-    "user_email": "user's email",
-    "user_username": "user's username"
+    // User that the notification was created for, i.e. a member of the group selected in the rule
+    "user_email": "notification user's email",
+    "user_username": "notification user's username",
+    // User that created the event
+    "event_user_email": "event user's email",
+    "event_user_username": "event user's username"
 }
 ```
 
