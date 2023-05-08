@@ -82,9 +82,11 @@ class UserInfoView(View):
             except PropertyMappingExpressionException as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    message=f"Failed to evaluate property-mapping: '{scope.name}'",
+                    provider=provider,
                     mapping=scope,
                 ).from_http(self.request)
+                LOGGER.warning("Failed to evaluate property mapping", exc=exc)
             if value is None:
                 continue
             if not isinstance(value, dict):

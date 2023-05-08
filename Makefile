@@ -206,6 +206,8 @@ install: web-install website-install
 
 dev-reset:
 	dropdb -U postgres -h localhost authentik
+	# Also remove the test-db if it exists
+	dropdb -U postgres -h localhost test_authentik || true
 	createdb -U postgres -h localhost authentik
 	redis-cli -n 0 flushall
 	make migrate

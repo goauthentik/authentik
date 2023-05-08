@@ -108,7 +108,8 @@ class BaseLDAPSynchronizer:
             except PropertyMappingExpressionException as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    message=f"Failed to evaluate property-mapping: '{mapping.name}'",
+                    source=self._source,
                     mapping=mapping,
                 ).save()
                 self._logger.warning("Mapping failed to evaluate", exc=exc, mapping=mapping)
