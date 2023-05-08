@@ -6405,6 +6405,13 @@
                             "type": "integer",
                             "title": "Provider"
                         },
+                        "backchannel_providers": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            },
+                            "title": "Backchannel providers"
+                        },
                         "open_in_new_tab": {
                             "type": "boolean",
                             "title": "Open in new tab",
@@ -7133,6 +7140,13 @@
                         "provider": {
                             "type": "integer",
                             "title": "Provider"
+                        },
+                        "backchannel_providers": {
+                            "type": "array",
+                            "items": {
+                                "type": "integer"
+                            },
+                            "title": "Backchannel providers"
                         },
                         "open_in_new_tab": {
                             "type": "boolean",
@@ -8198,6 +8212,13 @@
                 "provider": {
                     "type": "integer",
                     "title": "Provider"
+                },
+                "backchannel_providers": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Backchannel providers"
                 },
                 "open_in_new_tab": {
                     "type": "boolean",
