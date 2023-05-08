@@ -25,3 +25,65 @@ For example:
       user: !KeyOf my-user
       intent: api
 ```
+
+### `authentik_core.application`
+
+:::info
+Requires authentik 2023.5
+:::
+
+Application icons can be directly set to URLs with the `icon` field.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_core.application
+  identifiers:
+      slug: my-app
+  attrs:
+      name: My App
+      icon: https://goauthentik.io/img/icon.png
+```
+
+### `authentik_sources_oauth.oauthsource`, `authentik_sources_saml.samlsource`, `authentik_sources_plex.plexsource`
+
+:::info
+Requires authentik 2023.5
+:::
+
+Source icons can be directly set to URLs with the `icon` field.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_sources_oauth.oauthsource
+  identifiers:
+      slug: my-source
+  attrs:
+      name: My source
+      icon: https://goauthentik.io/img/icon.png
+```
+
+### `authentik_flows.flow`
+
+:::info
+Requires authentik 2023.5
+:::
+
+Flow backgrounds can be directly set to URLs with the `background` field.
+
+For example:
+
+```yaml
+# [...]
+- model: authentik_flows.flow
+  identifiers:
+      slug: my-flow
+  attrs:
+      name: my-flow
+      title: My flow
+      designation: authentication
+      background: https://goauthentik.io/img/icon.png
+```

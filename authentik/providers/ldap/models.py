@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Group, Provider
+from authentik.core.models import BackchannelProvider, Group
 from authentik.crypto.models import CertificateKeyPair
 from authentik.outposts.models import OutpostModel
 
@@ -17,7 +17,7 @@ class APIAccessMode(models.TextChoices):
     CACHED = "cached"
 
 
-class LDAPProvider(OutpostModel, Provider):
+class LDAPProvider(OutpostModel, BackchannelProvider):
     """Allow applications to authenticate against authentik's users using LDAP."""
 
     base_dn = models.TextField(

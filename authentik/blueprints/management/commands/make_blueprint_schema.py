@@ -9,7 +9,7 @@ from rest_framework.fields import Field, JSONField, UUIDField
 from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
-from authentik.blueprints.v1.importer import is_model_allowed
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, is_model_allowed
 from authentik.blueprints.v1.meta.registry import registry
 from authentik.lib.models import SerializerModel
 
@@ -81,7 +81,11 @@ class Command(BaseCommand):
             model_instance: Model = model()
             if not isinstance(model_instance, SerializerModel):
                 continue
-            serializer = model_instance.serializer()
+            serializer = model_instance.serializer(
+                context={
+                    SERIALIZER_CONTEXT_BLUEPRINT: False,
+                }
+            )
             model_path = f"{model._meta.app_label}.{model._meta.model_name}"
             self.schema["properties"]["entries"]["items"]["oneOf"].append(
                 self.template_entry(model_path, serializer)
@@ -96,7 +100,7 @@ class Command(BaseCommand):
         self.schema["$defs"][def_name] = model_schema
         return {
             "type": "object",
-            "required": ["model", "attrs"],
+            "required": ["model", "identifiers"],
             "properties": {
                 "model": {"const": model_path},
                 "id": {"type": "string"},

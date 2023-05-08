@@ -25,7 +25,6 @@ class OAuthTestCase(TestCase):
     def setUpClass(cls) -> None:
         cls.keypair = create_test_cert()
         super().setUpClass()
-        cls.maxDiff = None
 
     def assert_non_none_or_unset(self, container: dict, key: str):
         """Check that a key, if set, is not none"""

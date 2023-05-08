@@ -7,7 +7,7 @@ from jsonschema import validate
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Group, User
+from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
 from authentik.providers.scim.tasks import scim_sync
@@ -28,6 +28,11 @@ class SCIMUserTests(TestCase):
             token=generate_id(),
             exclude_users_service_account=True,
         )
+        self.app: Application = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+        )
+        self.app.backchannel_providers.add(self.provider)
         self.provider.property_mappings.add(
             SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/user")
         )

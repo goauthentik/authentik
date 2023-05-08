@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-05 20:11+0000\n"
+"POT-Creation-Date: 2023-05-08 14:23+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,11 +70,11 @@ msgstr ""
 msgid "Successfully imported %(count)d files."
 msgstr ""
 
-#: authentik/core/api/providers.py:91
+#: authentik/core/api/providers.py:113
 msgid "SAML Provider from Metadata"
 msgstr ""
 
-#: authentik/core/api/providers.py:92
+#: authentik/core/api/providers.py:114
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
@@ -116,97 +116,103 @@ msgstr ""
 msgid "Flow used when authorizing this provider."
 msgstr ""
 
-#: authentik/core/models.py:300
+#: authentik/core/models.py:279
+msgid ""
+"Accessed from applications; optional backchannel providers for protocols "
+"like LDAP and SCIM."
+msgstr ""
+
+#: authentik/core/models.py:334
 msgid "Application's display Name."
 msgstr ""
 
-#: authentik/core/models.py:301
+#: authentik/core/models.py:335
 msgid "Internal application name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:313
+#: authentik/core/models.py:347
 msgid "Open launch URL in a new browser tab or window."
 msgstr ""
 
-#: authentik/core/models.py:377
+#: authentik/core/models.py:411
 msgid "Application"
 msgstr ""
 
-#: authentik/core/models.py:378
+#: authentik/core/models.py:412
 msgid "Applications"
 msgstr ""
 
-#: authentik/core/models.py:384
+#: authentik/core/models.py:418
 msgid "Use the source-specific identifier"
 msgstr ""
 
-#: authentik/core/models.py:386
+#: authentik/core/models.py:420
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr ""
 
-#: authentik/core/models.py:390
+#: authentik/core/models.py:424
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
 
-#: authentik/core/models.py:393
+#: authentik/core/models.py:427
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
 msgstr ""
 
-#: authentik/core/models.py:397
+#: authentik/core/models.py:431
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr ""
 
-#: authentik/core/models.py:404
+#: authentik/core/models.py:438
 msgid "Source's display Name."
 msgstr ""
 
-#: authentik/core/models.py:405
+#: authentik/core/models.py:439
 msgid "Internal source name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:424
+#: authentik/core/models.py:458
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: authentik/core/models.py:433
+#: authentik/core/models.py:467
 msgid "Flow to use when enrolling new users."
 msgstr ""
 
-#: authentik/core/models.py:441
+#: authentik/core/models.py:475
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr ""
 
-#: authentik/core/models.py:613
+#: authentik/core/models.py:647
 msgid "Token"
 msgstr ""
 
-#: authentik/core/models.py:614
+#: authentik/core/models.py:648
 msgid "Tokens"
 msgstr ""
 
-#: authentik/core/models.py:655
+#: authentik/core/models.py:689
 msgid "Property Mapping"
 msgstr ""
 
-#: authentik/core/models.py:656
+#: authentik/core/models.py:690
 msgid "Property Mappings"
 msgstr ""
 
-#: authentik/core/models.py:691
+#: authentik/core/models.py:725
 msgid "Authenticated Session"
 msgstr ""
 
-#: authentik/core/models.py:692
+#: authentik/core/models.py:726
 msgid "Authenticated Sessions"
 msgstr ""
 
@@ -293,7 +299,7 @@ msgstr ""
 msgid "You're about to sign into %(application)s."
 msgstr ""
 
-#: authentik/crypto/api.py:178
+#: authentik/crypto/api.py:179
 msgid "Subject-alt name"
 msgstr ""
 
@@ -345,71 +351,75 @@ msgid ""
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:383
+#: authentik/events/models.py:386
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:388
+#: authentik/events/models.py:391
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:470
+#: authentik/events/models.py:400
+msgid "Event user"
+msgstr ""
+
+#: authentik/events/models.py:487
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:471
+#: authentik/events/models.py:488
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:477
+#: authentik/events/models.py:494
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:478
+#: authentik/events/models.py:495
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:479
+#: authentik/events/models.py:496
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:504
+#: authentik/events/models.py:521
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:505
+#: authentik/events/models.py:522
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:515
+#: authentik/events/models.py:532
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/events/models.py:523
+#: authentik/events/models.py:540
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:528
+#: authentik/events/models.py:545
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr ""
 
-#: authentik/events/models.py:546
+#: authentik/events/models.py:563
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:547
+#: authentik/events/models.py:564
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:567
+#: authentik/events/models.py:584
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:568
+#: authentik/events/models.py:585
 msgid "Webhook Mappings"
 msgstr ""
 
@@ -417,7 +427,7 @@ msgstr ""
 msgid "Task has not been run yet."
 msgstr ""
 
-#: authentik/flows/api/flows.py:290
+#: authentik/flows/api/flows.py:295
 #, python-format
 msgid "Flow not applicable to current user/request: %(messages)s"
 msgstr ""
@@ -1339,31 +1349,31 @@ msgstr ""
 msgid "SAML Property Mappings"
 msgstr ""
 
-#: authentik/providers/scim/models.py:20
+#: authentik/providers/scim/models.py:26
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr ""
 
-#: authentik/providers/scim/models.py:21
+#: authentik/providers/scim/models.py:27
 msgid "Authentication token"
 msgstr ""
 
-#: authentik/providers/scim/models.py:27 authentik/sources/ldap/models.py:82
+#: authentik/providers/scim/models.py:33 authentik/sources/ldap/models.py:82
 msgid "Property mappings used for group creation/updating."
 msgstr ""
 
-#: authentik/providers/scim/models.py:69
+#: authentik/providers/scim/models.py:75
 msgid "SCIM Provider"
 msgstr ""
 
-#: authentik/providers/scim/models.py:70
+#: authentik/providers/scim/models.py:76
 msgid "SCIM Providers"
 msgstr ""
 
-#: authentik/providers/scim/models.py:90
+#: authentik/providers/scim/models.py:96
 msgid "SCIM Mapping"
 msgstr ""
 
-#: authentik/providers/scim/models.py:91
+#: authentik/providers/scim/models.py:97
 msgid "SCIM Mappings"
 msgstr ""
 
@@ -1386,7 +1396,12 @@ msgstr ""
 msgid "Failed to sync user due to remote error %(name)s: %(error)s"
 msgstr ""
 
-#: authentik/providers/scim/tasks.py:123
+#: authentik/providers/scim/tasks.py:101 authentik/providers/scim/tasks.py:142
+#, python-format
+msgid "Stopping sync due to error: %(error)s"
+msgstr ""
+
+#: authentik/providers/scim/tasks.py:131
 #, python-format
 msgid "Failed to sync group due to remote error %(name)s: %(error)s"
 msgstr ""

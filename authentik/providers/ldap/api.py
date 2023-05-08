@@ -1,5 +1,5 @@
 """LDAPProvider API Views"""
-from rest_framework.fields import CharField, ListField
+from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
@@ -54,8 +54,14 @@ class LDAPProviderViewSet(UsedByMixin, ModelViewSet):
 class LDAPOutpostConfigSerializer(ModelSerializer):
     """LDAPProvider Serializer"""
 
-    application_slug = CharField(source="application.slug")
+    application_slug = SerializerMethodField()
     bind_flow_slug = CharField(source="authorization_flow.slug")
+
+    def get_application_slug(self, instance: LDAPProvider) -> str:
+        """Prioritise backchannel slug over direct application slug"""
+        if instance.backchannel_application:
+            return instance.backchannel_application.slug
+        return instance.application.slug
 
     class Meta:
         model = LDAPProvider

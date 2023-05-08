@@ -1,5 +1,7 @@
 """Provider API Views"""
 from django.utils.translation import gettext_lazy as _
+from django_filters.filters import BooleanFilter
+from django_filters.filterset import FilterSet
 from drf_spectacular.utils import extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
@@ -20,6 +22,8 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
 
     assigned_application_slug = ReadOnlyField(source="application.slug")
     assigned_application_name = ReadOnlyField(source="application.name")
+    assigned_backchannel_application_slug = ReadOnlyField(source="backchannel_application.slug")
+    assigned_backchannel_application_name = ReadOnlyField(source="backchannel_application.name")
 
     component = SerializerMethodField()
 
@@ -40,6 +44,8 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "component",
             "assigned_application_slug",
             "assigned_application_name",
+            "assigned_backchannel_application_slug",
+            "assigned_backchannel_application_name",
             "verbose_name",
             "verbose_name_plural",
             "meta_model_name",
@@ -47,6 +53,22 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
         extra_kwargs = {
             "authorization_flow": {"required": True, "allow_null": False},
         }
+
+
+class ProviderFilter(FilterSet):
+    """Filter for groups"""
+
+    application__isnull = BooleanFilter(
+        field_name="application",
+        lookup_expr="isnull",
+    )
+    backchannel_only = BooleanFilter(
+        method="filter_backchannel_only",
+    )
+
+    def filter_backchannel_only(self, queryset, name, value):
+        """Only return backchannel providers"""
+        return queryset.filter(is_backchannel=value)
 
 
 class ProviderViewSet(
@@ -60,9 +82,7 @@ class ProviderViewSet(
 
     queryset = Provider.objects.none()
     serializer_class = ProviderSerializer
-    filterset_fields = {
-        "application": ["isnull"],
-    }
+    filterset_class = ProviderFilter
     search_fields = [
         "name",
         "application__name",
@@ -78,6 +98,8 @@ class ProviderViewSet(
         data = []
         for subclass in all_subclasses(self.queryset.model):
             subclass: Provider
+            if subclass._meta.abstract:
+                continue
             data.append(
                 {
                     "name": subclass._meta.verbose_name,

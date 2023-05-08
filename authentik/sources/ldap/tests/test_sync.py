@@ -56,7 +56,7 @@ class LDAPSyncTests(TestCase):
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
         events = Event.objects.filter(
             action=EventAction.CONFIGURATION_ERROR,
-            context__message="Failed to evaluate property-mapping: name 'q' is not defined",
+            context__message="Failed to evaluate property-mapping: 'name'",
         )
         self.assertTrue(events.exists())
 

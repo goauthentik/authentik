@@ -1,6 +1,6 @@
 # Meta models
 
-Since blueprints have a pretty strict mapping of each entry mapping to an instance of a model in the database, _meta models_ have been added to trigger other actions within authentik that don't directly map to a model.
+Since blueprints have a pretty strict mapping of each entry mapping to an instance of a model in the database, _meta models_ exist to trigger other actions within authentik that don't directly map to a model.
 
 ### `authentik_blueprints.metaapplyblueprint`
 

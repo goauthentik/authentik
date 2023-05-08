@@ -1,6 +1,5 @@
 ---
 title: Flow Context
-toc_max_heading_level: 5
 ---
 
 Each flow execution has an independent _context_. This context holds all of the arbitrary data about that specific flow, data which can then be used and transformed by stages and policies.

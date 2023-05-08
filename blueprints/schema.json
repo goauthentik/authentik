@@ -45,7 +45,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -81,7 +81,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -117,7 +117,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -153,7 +153,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -189,7 +189,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -225,7 +225,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -261,7 +261,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -297,7 +297,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -333,7 +333,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -369,7 +369,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -405,7 +405,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -441,7 +441,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -477,7 +477,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -513,7 +513,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -549,7 +549,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -585,7 +585,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -621,7 +621,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -657,7 +657,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -693,7 +693,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -729,7 +729,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -765,7 +765,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -801,7 +801,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -837,7 +837,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -873,7 +873,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -909,7 +909,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -945,7 +945,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -981,7 +981,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1017,7 +1017,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1053,7 +1053,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1089,7 +1089,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1125,7 +1125,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1161,7 +1161,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1197,7 +1197,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1233,7 +1233,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1269,7 +1269,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1305,7 +1305,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1341,7 +1341,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1377,7 +1377,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1413,7 +1413,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1449,7 +1449,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1485,7 +1485,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1521,7 +1521,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1557,7 +1557,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1593,7 +1593,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1629,7 +1629,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1665,7 +1665,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1701,7 +1701,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1737,7 +1737,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1773,7 +1773,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1809,7 +1809,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1845,7 +1845,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1881,7 +1881,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1917,7 +1917,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1953,7 +1953,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -1989,7 +1989,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2025,7 +2025,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2061,7 +2061,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2097,7 +2097,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2133,7 +2133,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2169,7 +2169,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2205,7 +2205,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2241,7 +2241,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2277,7 +2277,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2313,7 +2313,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2349,7 +2349,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2385,7 +2385,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2421,7 +2421,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2457,7 +2457,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2493,7 +2493,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2529,7 +2529,7 @@
                         "type": "object",
                         "required": [
                             "model",
-                            "attrs"
+                            "identifiers"
                         ],
                         "properties": {
                             "model": {
@@ -2866,6 +2866,11 @@
                     ],
                     "title": "Designation",
                     "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                },
+                "background": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Background"
                 },
                 "policy_engine_mode": {
                     "type": "string",
@@ -4675,6 +4680,11 @@
                     "minLength": 1,
                     "title": "User path template"
                 },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                },
                 "server_uri": {
                     "type": "string",
                     "minLength": 1,
@@ -4858,6 +4868,11 @@
                     "minLength": 1,
                     "title": "User path template"
                 },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                },
                 "provider_type": {
                     "type": "string",
                     "enum": [
@@ -4966,6 +4981,11 @@
                         "null"
                     ],
                     "title": "Access token"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
                 }
             },
             "required": []
@@ -5026,6 +5046,11 @@
                     "minLength": 1,
                     "title": "User path template"
                 },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
+                },
                 "client_id": {
                     "type": "string",
                     "minLength": 1,
@@ -5068,6 +5093,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Plex token"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
                 }
             },
             "required": []
@@ -5127,6 +5157,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "User path template"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
                 },
                 "pre_authentication_flow": {
                     "type": "integer",
@@ -5228,6 +5263,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Identifier"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
                 }
             },
             "required": []
@@ -8187,6 +8227,11 @@
                 "group": {
                     "type": "string",
                     "title": "Group"
+                },
+                "icon": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Icon"
                 }
             },
             "required": []
@@ -8236,6 +8281,11 @@
                 "expiring": {
                     "type": "boolean",
                     "title": "Expiring"
+                },
+                "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Key"
                 }
             },
             "required": []

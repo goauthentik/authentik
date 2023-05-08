@@ -5,16 +5,18 @@ from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework import mixins
 from rest_framework.decorators import action
+from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ModelSerializer, ReadOnlyField, SerializerMethodField
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 from structlog.stdlib import get_logger
 
 from authentik.api.authorization import OwnerFilter, OwnerSuperuserPermissions
 from authentik.api.decorators import permission_required
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Source, UserSourceConnection
@@ -43,6 +45,11 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
         if obj.__class__ == Source:
             return ""
         return obj.component
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self.fields["icon"] = CharField(required=False)
 
     class Meta:
         model = Source

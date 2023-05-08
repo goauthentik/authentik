@@ -6,7 +6,7 @@ from django.utils.translation import gettext as _
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, DictField, ListField, ReadOnlyField
+from rest_framework.fields import BooleanField, CharField, DictField, ListField, ReadOnlyField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -16,7 +16,7 @@ from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.exporter import FlowExporter
-from authentik.blueprints.v1.importer import Importer
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, Importer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import CacheSerializer, LinkSerializer, PassiveSerializer
 from authentik.events.utils import sanitize_dict
@@ -51,6 +51,11 @@ class FlowSerializer(ModelSerializer):
     def get_export_url(self, flow: Flow) -> str:
         """Get export URL for flow"""
         return reverse("authentik_api:flow-export", kwargs={"slug": flow.slug})
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self.fields["background"] = CharField(required=False)
 
     class Meta:
         model = Flow

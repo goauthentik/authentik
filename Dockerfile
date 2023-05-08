@@ -47,11 +47,12 @@ COPY ./go.sum /work/go.sum
 RUN go build -o /work/authentik ./cmd/server/
 
 # Stage 5: MaxMind GeoIP
-FROM docker.io/maxmindinc/geoipupdate:v5.0 as geoip
+FROM ghcr.io/maxmind/geoipupdate:v5.1 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City"
 ENV GEOIPUPDATE_VERBOSE="true"
 
+USER root
 RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     --mount=type=secret,id=GEOIPUPDATE_LICENSE_KEY \
     mkdir -p /usr/share/GeoIP && \

@@ -64,6 +64,61 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         </ak-form-element-horizontal>`;
     }
 
+    renderExampleButtons(): TemplateResult {
+        const header = html`<p>${t`Example context data`}</p>`;
+        switch (this.mapping?.metaModelName) {
+            case "authentik_sources_ldap.ldappropertymapping":
+                return html`${header}${this.renderExampleLDAP()}`;
+            default:
+                return html``;
+        }
+    }
+
+    renderExampleLDAP(): TemplateResult {
+        return html`
+            <button
+                class="pf-c-button pf-m-secondary"
+                role="button"
+                @click=${() => {
+                    this.request = {
+                        user: this.request?.user || 0,
+                        context: {
+                            ldap: {
+                                name: "test-user",
+                                objectSid: "S-1-5-21-2611707862-2219215769-354220275-1137",
+                                objectClass: "person",
+                                displayName: "authentik test user",
+                                sAMAccountName: "sAMAccountName",
+                                distinguishedName: "cn=user,ou=users,dc=goauthentik,dc=io",
+                            },
+                        },
+                    };
+                }}
+            >
+                ${t`Active Directory User`}
+            </button>
+            <button
+                class="pf-c-button pf-m-secondary"
+                role="button"
+                @click=${() => {
+                    this.request = {
+                        user: this.request?.user || 0,
+                        context: {
+                            ldap: {
+                                name: "test-group",
+                                objectSid: "S-1-5-21-2611707862-2219215769-354220275-1137",
+                                objectClass: "group",
+                                distinguishedName: "cn=group,ou=groups,dc=goauthentik,dc=io",
+                            },
+                        },
+                    };
+                }}
+            >
+                ${t`Active Directory Group`}
+            </button>
+        `;
+    }
+
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${t`User`} ?required=${true} name="user">
@@ -94,9 +149,12 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Context`} name="context">
-                <ak-codemirror mode="yaml" value=${YAML.stringify(first(this.request?.context, {}))}
-                    >>
+                <ak-codemirror
+                    mode="yaml"
+                    value=${YAML.stringify(first(this.request?.context, {}))}
+                >
                 </ak-codemirror>
+                <p class="pf-c-form__helper-text">${this.renderExampleButtons()}</p>
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult() : html``}
         </form>`;

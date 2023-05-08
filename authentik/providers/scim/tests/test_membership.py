@@ -4,7 +4,7 @@ from guardian.shortcuts import get_anonymous_user
 from requests_mock import Mocker
 
 from authentik.blueprints.tests import apply_blueprint
-from authentik.core.models import Group, User
+from authentik.core.models import Application, Group, User
 from authentik.lib.generators import generate_id
 from authentik.providers.scim.clients.schema import ServiceProviderConfiguration
 from authentik.providers.scim.models import SCIMMapping, SCIMProvider
@@ -15,6 +15,7 @@ class SCIMMembershipTests(TestCase):
     """SCIM Membership tests"""
 
     provider: SCIMProvider
+    app: Application
 
     def setUp(self) -> None:
         # Delete all users and groups as the mocked HTTP responses only return one ID
@@ -30,6 +31,11 @@ class SCIMMembershipTests(TestCase):
             url="https://localhost",
             token=generate_id(),
         )
+        self.app: Application = Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+        )
+        self.app.backchannel_providers.add(self.provider)
         self.provider.property_mappings.set(
             [SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/user")]
         )

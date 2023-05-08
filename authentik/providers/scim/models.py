@@ -5,10 +5,16 @@ from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import USER_ATTRIBUTE_SA, Group, PropertyMapping, Provider, User
+from authentik.core.models import (
+    USER_ATTRIBUTE_SA,
+    BackchannelProvider,
+    Group,
+    PropertyMapping,
+    User,
+)
 
 
-class SCIMProvider(Provider):
+class SCIMProvider(BackchannelProvider):
     """SCIM 2.0 provider to create users and groups in external applications"""
 
     exclude_users_service_account = models.BooleanField(default=False)

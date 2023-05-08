@@ -117,6 +117,9 @@ module.exports = {
             ],
             copyright: `Copyright © ${new Date().getFullYear()} Authentik Security Inc. Built with Docusaurus.`,
         },
+        tableOfContents: {
+            maxHeadingLevel: 5,
+        },
         colorMode: {
             respectPrefersColorScheme: true,
         },

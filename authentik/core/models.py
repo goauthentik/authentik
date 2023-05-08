@@ -270,6 +270,20 @@ class Provider(SerializerModel):
 
     property_mappings = models.ManyToManyField("PropertyMapping", default=None, blank=True)
 
+    backchannel_application = models.ForeignKey(
+        "Application",
+        default=None,
+        null=True,
+        on_delete=models.CASCADE,
+        help_text=_(
+            "Accessed from applications; optional backchannel providers for protocols "
+            "like LDAP and SCIM."
+        ),
+        related_name="backchannel_providers",
+    )
+
+    is_backchannel = models.BooleanField(default=False)
+
     objects = InheritanceManager()
 
     @property
@@ -290,6 +304,26 @@ class Provider(SerializerModel):
 
     def __str__(self):
         return str(self.name)
+
+
+class BackchannelProvider(Provider):
+    """Base class for providers that augment other providers, for example LDAP and SCIM.
+    Multiple of these providers can be configured per application, they may not use the application
+    slug in URLs as an application may have multiple instances of the same
+    type of Backchannel provider
+
+    They can use the application's policies and metadata"""
+
+    @property
+    def component(self) -> str:
+        raise NotImplementedError
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        raise NotImplementedError
+
+    class Meta:
+        abstract = True
 
 
 class Application(SerializerModel, PolicyBindingModel):
