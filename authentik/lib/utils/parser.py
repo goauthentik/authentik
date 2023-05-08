@@ -118,12 +118,14 @@ def _configure_tcp_keepalive(kwargs):
 
 
 def _set_kwargs_default(kwargs: dict, defaults: dict):
+    """Set multiple default values for a dictionary at once"""
     for kwarg_key, kwarg_value in defaults.items():
         kwargs.setdefault(kwarg_key, kwarg_value)
     return kwargs
 
 
 def get_addrs_from_url(url):
+    """Extract Redis addresses from configuration URL"""
     if url.hostname:
         host = unquote(url.netloc).split("@")
         if len(host) > 1:
