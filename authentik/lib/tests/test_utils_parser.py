@@ -37,7 +37,7 @@ class TestParserUtils(TestCase):
         self.assertEqual(config["type"], "cluster")
         self.assertEqual(config["addrs"][0][0], "mycluster")
         self.assertEqual(config["addrs"][0][1], 8652)
-        self.assertEqual(config["redis_kwargs"]["db"], 0)
+        self.assertTrue("db" not in config["redis_kwargs"])
 
     def test_get_redis_options_addr_arg(self):
         """Test Redis URL parser with addr arg"""
