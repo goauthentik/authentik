@@ -74,7 +74,7 @@ class TestProviderProxy(SeleniumTestCase):
         self.user.save()
 
         proxy: ProxyProvider = ProxyProvider.objects.create(
-            name="proxy_provider",
+            name=generate_id(),
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
@@ -85,9 +85,9 @@ class TestProviderProxy(SeleniumTestCase):
         proxy.set_oauth_defaults()
         proxy.save()
         # we need to create an application to actually access the proxy
-        Application.objects.create(name="proxy", slug="proxy", provider=proxy)
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=proxy)
         outpost: Outpost = Outpost.objects.create(
-            name="proxy_outpost",
+            name=generate_id(),
             type=OutpostType.PROXY,
         )
         outpost.providers.add(proxy)
@@ -141,7 +141,7 @@ class TestProviderProxy(SeleniumTestCase):
         self.user.save()
 
         proxy: ProxyProvider = ProxyProvider.objects.create(
-            name="proxy_provider",
+            name=generate_id(),
             authorization_flow=Flow.objects.get(
                 slug="default-provider-authorization-implicit-consent"
             ),
@@ -155,9 +155,9 @@ class TestProviderProxy(SeleniumTestCase):
         proxy.set_oauth_defaults()
         proxy.save()
         # we need to create an application to actually access the proxy
-        Application.objects.create(name="proxy", slug="proxy", provider=proxy)
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=proxy)
         outpost: Outpost = Outpost.objects.create(
-            name="proxy_outpost",
+            name=generate_id(),
             type=OutpostType.PROXY,
         )
         outpost.providers.add(proxy)
@@ -219,7 +219,7 @@ class TestProviderProxyConnect(ChannelsLiveServerTestCase):
         proxy.set_oauth_defaults()
         proxy.save()
         # we need to create an application to actually access the proxy
-        Application.objects.create(name="proxy", slug="proxy", provider=proxy)
+        Application.objects.create(name=generate_id(), slug=generate_id(), provider=proxy)
         service_connection = DockerServiceConnection.objects.get(local=True)
         outpost: Outpost = Outpost.objects.create(
             name=generate_id(),
