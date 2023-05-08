@@ -11,7 +11,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import ReadOnlyField, SerializerMethodField
+from rest_framework.fields import CharField, ReadOnlyField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -23,6 +23,7 @@ from structlog.testing import capture_logs
 
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import Application, User
@@ -60,6 +61,11 @@ class ApplicationSerializer(ModelSerializer):
         if "request" in self.context:
             user = self.context["request"].user
         return app.get_launch_url(user)
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self.fields["icon"] = CharField(source="meta_icon", required=False)
 
     class Meta:
         model = Application
