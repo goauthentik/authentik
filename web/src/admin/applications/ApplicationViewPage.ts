@@ -21,6 +21,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -65,7 +66,17 @@ export class ApplicationViewPage extends AKElement {
     missingOutpost = false;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFBanner, PFPage, PFContent, PFButton, PFDescriptionList, PFGrid, PFCard];
+        return [
+            PFBase,
+            PFList,
+            PFBanner,
+            PFPage,
+            PFContent,
+            PFButton,
+            PFDescriptionList,
+            PFGrid,
+            PFCard,
+        ];
     }
 
     render(): TemplateResult {
@@ -117,6 +128,35 @@ export class ApplicationViewPage extends AKElement {
                                                       ${this.application.providerObj?.name}
                                                       (${this.application.providerObj?.verboseName})
                                                   </a>
+                                              </div>
+                                          </dd>
+                                      </div>`
+                                    : html``}
+                                ${(this.application.backchannelProvidersObj || []).length > 0
+                                    ? html`<div class="pf-c-description-list__group">
+                                          <dt class="pf-c-description-list__term">
+                                              <span class="pf-c-description-list__text"
+                                                  >${t`Backchannel Providers`}</span
+                                              >
+                                          </dt>
+                                          <dd class="pf-c-description-list__description">
+                                              <div class="pf-c-description-list__text">
+                                                  <ul class="pf-c-list">
+                                                      ${this.application.backchannelProvidersObj.map(
+                                                          (provider) => {
+                                                              return html`
+                                                                  <li>
+                                                                      <a
+                                                                          href="#/core/providers/${provider.pk}"
+                                                                      >
+                                                                          ${provider.name}
+                                                                          (${provider.verboseName})
+                                                                      </a>
+                                                                  </li>
+                                                              `;
+                                                          },
+                                                      )}
+                                                  </ul>
                                               </div>
                                           </dd>
                                       </div>`

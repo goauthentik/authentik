@@ -82,24 +82,29 @@ export class ProviderListPage extends TablePage<Provider> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Provider): TemplateResult[] {
-        let app = html``;
-        if (item.component === "ak-provider-scim-form") {
-            app = html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
-                ${t`No application required.`}`;
-        } else if (!item.assignedApplicationName) {
-            app = html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
-                ${t`Warning: Provider not assigned to any application.`}`;
-        } else {
-            app = html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
+    rowApp(item: Provider): TemplateResult {
+        if (item.assignedApplicationName) {
+            return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
                 ${t`Assigned to application `}
                 <a href="#/core/applications/${item.assignedApplicationSlug}"
                     >${item.assignedApplicationName}</a
                 >`;
         }
+        if (item.assignedBackchannelApplicationName) {
+            return html`<i class="pf-icon pf-icon-ok pf-m-success"></i>
+                ${t`Assigned to application (backchannel) `}
+                <a href="#/core/applications/${item.assignedBackchannelApplicationSlug}"
+                    >${item.assignedBackchannelApplicationName}</a
+                >`;
+        }
+        return html`<i class="pf-icon pf-icon-warning-triangle pf-m-warning"></i>
+            ${t`Warning: Provider not assigned to any application.`}`;
+    }
+
+    row(item: Provider): TemplateResult[] {
         return [
             html`<a href="#/core/providers/${item.pk}"> ${item.name} </a>`,
-            app,
+            this.rowApp(item),
             html`${item.verboseName}`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${t`Update`} </span>

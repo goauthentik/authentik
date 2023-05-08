@@ -14293,6 +14293,10 @@ paths:
         name: application__isnull
         schema:
           type: boolean
+      - in: query
+        name: backchannel_only
+        schema:
+          type: boolean
       - name: ordering
         required: false
         in: query
@@ -15832,6 +15836,11 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: backchannel_application
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: digest_algorithm
         schema:
           type: string
@@ -15850,6 +15859,10 @@ paths:
           * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
           * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
           * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
+      - in: query
+        name: is_backchannel
+        schema:
+          type: boolean
       - in: query
         name: issuer
         schema:
@@ -26466,6 +26479,15 @@ components:
           allOf:
           - $ref: '#/components/schemas/Provider'
           readOnly: true
+        backchannel_providers:
+          type: array
+          items:
+            type: integer
+        backchannel_providers_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Provider'
+          readOnly: true
         launch_url:
           type: string
           nullable: true
@@ -26493,6 +26515,7 @@ components:
         group:
           type: string
       required:
+      - backchannel_providers_obj
       - launch_url
       - meta_icon
       - name
@@ -26516,6 +26539,10 @@ components:
         provider:
           type: integer
           nullable: true
+        backchannel_providers:
+          type: array
+          items:
+            type: integer
         open_in_new_tab:
           type: boolean
           description: Open launch URL in a new browser tab or window.
@@ -30550,6 +30577,8 @@ components:
           type: string
         application_slug:
           type: string
+          description: Prioritise backchannel slug over direct application slug
+          readOnly: true
         search_group:
           type: string
           format: uuid
@@ -30697,6 +30726,14 @@ components:
           type: string
           description: Application's display Name.
           readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -30751,6 +30788,8 @@ components:
       required:
       - assigned_application_name
       - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
       - authorization_flow
       - component
       - meta_model_name
@@ -31441,6 +31480,14 @@ components:
           type: string
           description: Application's display Name.
           readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -31522,6 +31569,8 @@ components:
       required:
       - assigned_application_name
       - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
       - authorization_flow
       - component
       - meta_model_name
@@ -35366,6 +35415,10 @@ components:
         provider:
           type: integer
           nullable: true
+        backchannel_providers:
+          type: array
+          items:
+            type: integer
         open_in_new_tab:
           type: boolean
           description: Open launch URL in a new browser tab or window.
@@ -38362,6 +38415,14 @@ components:
           type: string
           description: Application's display Name.
           readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -38377,6 +38438,8 @@ components:
       required:
       - assigned_application_name
       - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
       - authorization_flow
       - component
       - meta_model_name
@@ -38594,6 +38657,14 @@ components:
           type: string
           description: Application's display Name.
           readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -38683,6 +38754,8 @@ components:
       required:
       - assigned_application_name
       - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
       - authorization_flow
       - client_id
       - component
@@ -38850,6 +38923,14 @@ components:
           type: string
           description: Application's display Name.
           readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -38873,6 +38954,8 @@ components:
       required:
       - assigned_application_name
       - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
       - authorization_flow
       - component
       - meta_model_name
@@ -39177,6 +39260,14 @@ components:
           type: string
           description: Application's display Name.
           readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
         verbose_name:
           type: string
           description: Return object's verbose_name
@@ -39274,6 +39365,8 @@ components:
       - acs_url
       - assigned_application_name
       - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
       - authorization_flow
       - component
       - meta_model_name
