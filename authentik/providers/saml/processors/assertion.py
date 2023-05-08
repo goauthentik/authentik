@@ -108,9 +108,11 @@ class AssertionProcessor:
                 # Value error can be raised when assigning invalid data to an attribute
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    message=f"Failed to evaluate property-mapping: '{mapping.name}'",
+                    provider=self.provider,
                     mapping=mapping,
                 ).from_http(self.http_request)
+                LOGGER.warning("Failed to evaluate property mapping", exc=exc)
                 continue
         return attribute_statement
 
@@ -185,9 +187,14 @@ class AssertionProcessor:
             except PropertyMappingExpressionException as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
-                    message=f"Failed to evaluate property-mapping: {str(exc)}",
+                    message=(
+                        "Failed to evaluate property-mapping: "
+                        f"'{self.provider.name_id_mapping.name}'",
+                    ),
+                    provider=self.provider,
                     mapping=self.provider.name_id_mapping,
                 ).from_http(self.http_request)
+                LOGGER.warning("Failed to evaluate property mapping", exc=exc)
                 return name_id
         if name_id.attrib["Format"] == SAML_NAME_ID_FORMAT_EMAIL:
             name_id.text = self.http_request.user.email

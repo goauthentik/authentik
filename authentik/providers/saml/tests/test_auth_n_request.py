@@ -261,5 +261,5 @@ class TestAuthNRequest(TestCase):
         self.assertTrue(events.exists())
         self.assertEqual(
             events.first().context["message"],
-            "Failed to evaluate property-mapping: name 'q' is not defined",
+            "Failed to evaluate property-mapping: 'test'",
         )
