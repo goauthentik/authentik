@@ -47,7 +47,7 @@ func checkServer() int {
 	h := &http.Client{
 		Transport: web.NewUserAgentTransport("goauthentik.io/healthcheck", http.DefaultTransport),
 	}
-	url := fmt.Sprintf("http://%s/-/health/ready/", config.Get().Listen.HTTP)
+	url := fmt.Sprintf("http://%s/-/health/live/", config.Get().Listen.HTTP)
 	res, err := h.Head(url)
 	if err != nil {
 		log.WithError(err).Warning("failed to send healthcheck request")
