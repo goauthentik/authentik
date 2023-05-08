@@ -8,6 +8,7 @@ from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
 from tests.e2e.utils import get_docker_tag
 
+# globally set maxDiff to none to show full assert error
 TestCase.maxDiff = None
 
 

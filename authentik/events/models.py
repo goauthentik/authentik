@@ -353,6 +353,9 @@ class NotificationTransport(SerializerModel):
             "user_email": notification.user.email,
             "user_username": notification.user.username,
         }
+        if notification.event and notification.event.user:
+            default_body["event_user_email"] = notification.event.user.get("email", None)
+            default_body["event_user_username"] = notification.event.user.get("username", None)
         if self.webhook_mapping:
             default_body = sanitize_item(
                 self.webhook_mapping.evaluate(
@@ -391,6 +394,14 @@ class NotificationTransport(SerializerModel):
             },
         ]
         if notification.event:
+            if notification.event.user:
+                fields.append(
+                    {
+                        "title": _("Event user"),
+                        "value": str(notification.event.user.get("username")),
+                        "short": True,
+                    },
+                )
             for key, value in notification.event.context.items():
                 if not isinstance(value, str):
                     continue
@@ -429,7 +440,13 @@ class NotificationTransport(SerializerModel):
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
         subject = "authentik Notification: "
-        key_value = {}
+        key_value = {
+            "user_email": notification.user.email,
+            "user_username": notification.user.username,
+        }
+        if notification.event and notification.event.user:
+            key_value["event_user_email"] = notification.event.user.get("email", None)
+            key_value["event_user_username"] = notification.event.user.get("username", None)
         if notification.event:
             subject += notification.event.action
             for key, value in notification.event.context.items():
