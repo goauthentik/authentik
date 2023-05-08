@@ -280,6 +280,15 @@ msgstr "Activer l'utilisateur en attente en cas de réussite"
 msgid "Active"
 msgstr "Actif"
 
+#: src/admin/property-mappings/PropertyMappingTestForm.ts
+msgid "Active Directory Group"
+msgstr ""
+
+#: src/admin/property-mappings/PropertyMappingTestForm.ts
+msgid "Active Directory User"
+msgstr ""
+
+#: src/admin/applications/ProviderSelectModal.ts
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/groups/RelatedGroupList.ts
 #: src/admin/users/GroupSelectModal.ts
@@ -721,6 +730,10 @@ msgstr ""
 msgid "Assigned to application"
 msgstr "Assigné à l'application"
 
+#: src/admin/providers/ProviderListPage.ts
+msgid "Assigned to application (backchannel)"
+msgstr ""
+
 #: src/admin/events/EventInfo.ts
 msgid "Attempted to log in as {0}"
 msgstr "Tentative d'ouvrir une session en tant que {0}"
@@ -878,6 +891,14 @@ msgstr "Image d'avatar"
 #: src/elements/wizard/Wizard.ts
 msgid "Back"
 msgstr "Retour"
+
+#: src/admin/applications/ApplicationForm.ts
+msgid "Backchannel providers"
+msgstr ""
+
+#: src/admin/applications/ApplicationViewPage.ts
+msgid "Backchannel Providers"
+msgstr ""
 
 #: src/admin/stages/password/PasswordStageForm.ts
 msgid "Backends"
@@ -1108,6 +1129,7 @@ msgstr ""
 #~ msgid "Can create users"
 #~ msgstr ""
 
+#: src/admin/applications/ProviderSelectModal.ts
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/users/GroupSelectModal.ts
 #: src/admin/users/UserActiveForm.ts
@@ -2546,6 +2568,10 @@ msgstr "Évènements"
 msgid "Everything is ok."
 msgstr "Tout va bien."
 
+#: src/admin/property-mappings/PropertyMappingTestForm.ts
+msgid "Example context data"
+msgstr ""
+
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Example JWT payload (for currently authenticated user)"
 msgstr ""
@@ -3972,6 +3998,7 @@ msgstr "Mes Applications"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/ApplicationListPage.ts
+#: src/admin/applications/ProviderSelectModal.ts
 #: src/admin/applications/wizard/InitialApplicationWizardPage.ts
 #: src/admin/blueprints/BlueprintForm.ts
 #: src/admin/blueprints/BlueprintListPage.ts
@@ -4193,8 +4220,8 @@ msgid "No additional setup is required."
 msgstr ""
 
 #: src/admin/providers/ProviderListPage.ts
-msgid "No application required."
-msgstr ""
+#~ msgid "No application required."
+#~ msgstr ""
 
 #: src/user/LibraryPage.ts
 msgid "No Applications available."
@@ -5555,6 +5582,10 @@ msgstr "Sélectionnez un flux d'inscription"
 msgid "Select an object."
 msgstr "Sélectionner un objet."
 
+#: src/admin/applications/ApplicationForm.ts
+msgid "Select backchannel providers which augment the functionality of the main provider."
+msgstr ""
+
 #: src/admin/users/GroupSelectModal.ts
 msgid "Select groups to add user to"
 msgstr "Sélectionnez les groupes à ajouter à l'utilisateur"
@@ -5562,6 +5593,10 @@ msgstr "Sélectionnez les groupes à ajouter à l'utilisateur"
 #: src/flow/stages/identification/IdentificationStage.ts
 msgid "Select one of the sources below to login."
 msgstr "Sélectionnez l'une des sources ci-dessous pour se connecter."
+
+#: src/admin/applications/ProviderSelectModal.ts
+msgid "Select providers to add to application"
+msgstr ""
 
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
@@ -6990,6 +7025,7 @@ msgstr ""
 msgid "Twilio Auth Token"
 msgstr ""
 
+#: src/admin/applications/ProviderSelectModal.ts
 #: src/admin/flows/BoundStagesList.ts
 #: src/admin/outposts/OutpostForm.ts
 #: src/admin/outposts/OutpostListPage.ts

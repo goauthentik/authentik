@@ -277,6 +277,15 @@ msgstr "成功时启用待处理用户"
 msgid "Active"
 msgstr "激活"
 
+#: src/admin/property-mappings/PropertyMappingTestForm.ts
+msgid "Active Directory Group"
+msgstr ""
+
+#: src/admin/property-mappings/PropertyMappingTestForm.ts
+msgid "Active Directory User"
+msgstr ""
+
+#: src/admin/applications/ProviderSelectModal.ts
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/groups/RelatedGroupList.ts
 #: src/admin/users/GroupSelectModal.ts
@@ -722,6 +731,10 @@ msgstr "已分配给 {0} 个对象。"
 msgid "Assigned to application"
 msgstr "分配给应用程序"
 
+#: src/admin/providers/ProviderListPage.ts
+msgid "Assigned to application (backchannel)"
+msgstr ""
+
 #: src/admin/events/EventInfo.ts
 msgid "Attempted to log in as {0}"
 msgstr "已尝试以 {0} 身份登入"
@@ -879,6 +892,14 @@ msgstr "Avatar image"
 #: src/elements/wizard/Wizard.ts
 msgid "Back"
 msgstr "返回"
+
+#: src/admin/applications/ApplicationForm.ts
+msgid "Backchannel providers"
+msgstr ""
+
+#: src/admin/applications/ApplicationViewPage.ts
+msgid "Backchannel Providers"
+msgstr ""
 
 #: src/admin/stages/password/PasswordStageForm.ts
 msgid "Backends"
@@ -1109,6 +1130,7 @@ msgstr "连接到本地 docker 守护进程时可以采用 'unix: //' 的格式�
 #~ msgid "Can create users"
 #~ msgstr ""
 
+#: src/admin/applications/ProviderSelectModal.ts
 #: src/admin/groups/MemberSelectModal.ts
 #: src/admin/users/GroupSelectModal.ts
 #: src/admin/users/UserActiveForm.ts
@@ -2551,6 +2573,10 @@ msgstr "事件"
 msgid "Everything is ok."
 msgstr "一切正常。"
 
+#: src/admin/property-mappings/PropertyMappingTestForm.ts
+msgid "Example context data"
+msgstr ""
+
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "Example JWT payload (for currently authenticated user)"
 msgstr ""
@@ -3979,6 +4005,7 @@ msgstr "我的应用"
 
 #: src/admin/applications/ApplicationForm.ts
 #: src/admin/applications/ApplicationListPage.ts
+#: src/admin/applications/ProviderSelectModal.ts
 #: src/admin/applications/wizard/InitialApplicationWizardPage.ts
 #: src/admin/blueprints/BlueprintForm.ts
 #: src/admin/blueprints/BlueprintListPage.ts
@@ -4200,8 +4227,8 @@ msgid "No additional setup is required."
 msgstr "无需进行其他设置。"
 
 #: src/admin/providers/ProviderListPage.ts
-msgid "No application required."
-msgstr ""
+#~ msgid "No application required."
+#~ msgstr ""
 
 #: src/user/LibraryPage.ts
 msgid "No Applications available."
@@ -5562,6 +5589,10 @@ msgstr "选择注册流程"
 msgid "Select an object."
 msgstr "选择一个对象。"
 
+#: src/admin/applications/ApplicationForm.ts
+msgid "Select backchannel providers which augment the functionality of the main provider."
+msgstr ""
+
 #: src/admin/users/GroupSelectModal.ts
 msgid "Select groups to add user to"
 msgstr "选择要向其添加用户的组"
@@ -5569,6 +5600,10 @@ msgstr "选择要向其添加用户的组"
 #: src/flow/stages/identification/IdentificationStage.ts
 msgid "Select one of the sources below to login."
 msgstr "选择以下源之一进行登入。"
+
+#: src/admin/applications/ProviderSelectModal.ts
+msgid "Select providers to add to application"
+msgstr ""
 
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
@@ -7007,6 +7042,7 @@ msgstr "Twilio 账户 SID"
 msgid "Twilio Auth Token"
 msgstr "Twilio 身份验证令牌"
 
+#: src/admin/applications/ProviderSelectModal.ts
 #: src/admin/flows/BoundStagesList.ts
 #: src/admin/outposts/OutpostForm.ts
 #: src/admin/outposts/OutpostListPage.ts
