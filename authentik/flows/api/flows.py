@@ -55,7 +55,7 @@ class FlowSerializer(ModelSerializer):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            self.fields["background"] = CharField()
+            self.fields["background"] = CharField(required=False)
 
     class Meta:
         model = Flow

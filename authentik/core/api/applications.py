@@ -65,7 +65,7 @@ class ApplicationSerializer(ModelSerializer):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            self.fields["icon"] = CharField(source="meta_icon")
+            self.fields["icon"] = CharField(source="meta_icon", required=False)
 
     class Meta:
         model = Application

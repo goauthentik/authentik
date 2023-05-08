@@ -49,7 +49,7 @@ class SourceSerializer(ModelSerializer, MetaNameSerializer):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            self.fields["icon"] = CharField()
+            self.fields["icon"] = CharField(required=False)
 
     class Meta:
         model = Source
