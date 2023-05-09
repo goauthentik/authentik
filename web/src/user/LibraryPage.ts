@@ -238,7 +238,7 @@ export class LibraryPage extends AKElement {
             <section class="pf-c-page__main-section">
                 ${loading(
                     this.apps,
-                    html`${this.filteredApps.length > 0
+                    html`${this.filterApps(this.filteredApps).length > 0
                         ? this.renderApps()
                         : this.renderEmptyState()}`,
                 )}
