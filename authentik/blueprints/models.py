@@ -22,7 +22,7 @@ class BlueprintRetrievalFailed(SentryIgnoredException):
 
 
 class ManagedModel(models.Model):
-    """Model which can be managed by authentik exclusively"""
+    """Model that can be managed by authentik exclusively"""
 
     managed = models.TextField(
         default=None,
