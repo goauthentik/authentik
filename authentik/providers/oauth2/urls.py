@@ -2,6 +2,13 @@
 from django.urls import path
 from django.views.generic.base import RedirectView
 
+from authentik.providers.oauth2.api.providers import OAuth2ProviderViewSet
+from authentik.providers.oauth2.api.scopes import ScopeMappingViewSet
+from authentik.providers.oauth2.api.tokens import (
+    AccessTokenViewSet,
+    AuthorizationCodeViewSet,
+    RefreshTokenViewSet,
+)
 from authentik.providers.oauth2.views.authorize import AuthorizationFlowInitView
 from authentik.providers.oauth2.views.device_backchannel import DeviceView
 from authentik.providers.oauth2.views.introspection import TokenIntrospectionView
@@ -50,4 +57,12 @@ urlpatterns = [
         ProviderInfoView.as_view(),
         name="provider-info",
     ),
+]
+
+api_urlpatterns = [
+    ("providers/oauth2", OAuth2ProviderViewSet),
+    ("propertymappings/scope", ScopeMappingViewSet),
+    ("oauth2/authorization_codes", AuthorizationCodeViewSet),
+    ("oauth2/refresh_tokens", RefreshTokenViewSet),
+    ("oauth2/access_tokens", AccessTokenViewSet),
 ]
