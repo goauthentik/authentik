@@ -3,7 +3,7 @@ from typing import Any
 
 from requests.auth import HTTPBasicAuth
 
-from authentik.sources.oauth.clients.oauth2 import OAuth2Client
+from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.types.registry import SourceType, registry
 from authentik.sources.oauth.views.callback import OAuthCallback
 from authentik.sources.oauth.views.redirect import OAuthRedirect
@@ -14,12 +14,12 @@ class RedditOAuthRedirect(OAuthRedirect):
 
     def get_additional_parameters(self, source):  # pragma: no cover
         return {
-            "scope": ["identity"],
+            "scope": "identity",
             "duration": "permanent",
         }
 
 
-class RedditOAuth2Client(OAuth2Client):
+class RedditOAuth2Client(UserprofileHeaderAuthClient):
     """Reddit OAuth2 Client"""
 
     def get_access_token(self, **request_kwargs):
@@ -37,6 +37,7 @@ class RedditOAuth2Callback(OAuthCallback):
         self,
         info: dict[str, Any],
     ) -> dict[str, Any]:
+        print(info)
         return {
             "username": info.get("name"),
             "email": None,
@@ -51,9 +52,9 @@ class RedditType(SourceType):
 
     callback_view = RedditOAuth2Callback
     redirect_view = RedditOAuthRedirect
-    name = "reddit"
+    name = "Reddit"
     slug = "reddit"
 
-    authorization_url = "https://accounts.google.com/o/oauth2/auth"
-    access_token_url = "https://accounts.google.com/o/oauth2/token"  # nosec
-    profile_url = "https://www.googleapis.com/oauth2/v1/userinfo"
+    authorization_url = "https://www.reddit.com/api/v1/authorize"
+    access_token_url = "https://www.reddit.com/api/v1/access_token"  # nosec
+    profile_url = "https://oauth.reddit.com/api/v1/me"
