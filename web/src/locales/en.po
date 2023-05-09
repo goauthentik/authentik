@@ -981,6 +981,10 @@ msgid "Based on the User's username"
 msgstr "Based on the User's username"
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's UUID"
+msgstr "Based on the User's UUID"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #~ msgid "Based on the username"
 #~ msgstr "Based on the username"
 
