@@ -22,7 +22,7 @@ type Request struct {
 
 func NewRequest(bindDN string, bindPW string, conn net.Conn) (*Request, *sentry.Span) {
 	span := sentry.StartSpan(context.TODO(), "authentik.providers.ldap.bind",
-		sentry.TransactionName("authentik.providers.ldap.bind"))
+		sentry.WithTransactionName("authentik.providers.ldap.bind"))
 	span.Description = bindDN
 	rid := uuid.New().String()
 	span.SetTag("request_uid", rid)
