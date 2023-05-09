@@ -24,7 +24,6 @@ class AuthentikOutpostConfig(ManagedAppConfig):
     label = "authentik_outposts"
     verbose_name = "authentik Outpost"
     default = True
-    ws_mountpoint = "authentik.outposts.urls"
 
     def reconcile_load_outposts_signals(self):
         """Load outposts signals"""
