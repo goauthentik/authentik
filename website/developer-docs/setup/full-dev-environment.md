@@ -19,7 +19,7 @@ You can also use a native install, if you prefer.
 ## Backend Setup
 
 :::info
-Depending on platform, some native dependencies might be required. On macOS, run `brew install libxmlsec1 libpq`, and for the CLI tools `brew install postgresql redis node@20`
+Depending on your platform, some native dependencies might be required. On macOS, run `brew install libxmlsec1 libpq`, and for the CLI tools `brew install postgresql redis node@20`
 :::
 
 :::info
