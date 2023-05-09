@@ -7,6 +7,15 @@ from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import RedirectView
 
+from authentik.core.api.applications import ApplicationViewSet
+from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
+from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
+from authentik.core.api.groups import GroupViewSet
+from authentik.core.api.propertymappings import PropertyMappingViewSet
+from authentik.core.api.providers import ProviderViewSet
+from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSet
+from authentik.core.api.tokens import TokenViewSet
+from authentik.core.api.users import UserViewSet
 from authentik.core.views import apps, impersonate
 from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.interface import FlowInterfaceView, InterfaceView
@@ -66,6 +75,24 @@ urlpatterns = [
     path(
         "ws/client/",
         InterfaceView.as_view(template_name="if/admin.html"),
+    ),
+]
+
+api_urlpatterns = [
+    ("core/authenticated_sessions", AuthenticatedSessionViewSet),
+    ("core/applications", ApplicationViewSet),
+    ("core/groups", GroupViewSet),
+    ("core/users", UserViewSet),
+    ("core/tokens", TokenViewSet),
+    ("sources/all", SourceViewSet),
+    ("sources/user_connections/all", UserSourceConnectionViewSet),
+    ("providers/all", ProviderViewSet),
+    ("propertymappings/all", PropertyMappingViewSet),
+    ("authenticators/all", DeviceViewSet, "device"),
+    (
+        "authenticators/admin/all",
+        AdminDeviceViewSet,
+        "admin-device",
     ),
 ]
 
