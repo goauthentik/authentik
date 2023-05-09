@@ -5527,6 +5527,271 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /enterprise/license/:
+    get:
+      operationId: enterprise_license_list
+      description: License Viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLicenseList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: enterprise_license_create
+      description: License Viewset
+      tags:
+      - enterprise
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicenseRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /enterprise/license/{license_uuid}/:
+    get:
+      operationId: enterprise_license_retrieve
+      description: License Viewset
+      parameters:
+      - in: path
+        name: license_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: enterprise_license_update
+      description: License Viewset
+      parameters:
+      - in: path
+        name: license_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - enterprise
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicenseRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: enterprise_license_partial_update
+      description: License Viewset
+      parameters:
+      - in: path
+        name: license_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - enterprise
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLicenseRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: enterprise_license_destroy
+      description: License Viewset
+      parameters:
+      - in: path
+        name: license_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /enterprise/license/{license_uuid}/used_by/:
+    get:
+      operationId: enterprise_license_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: license_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /events/events/:
     get:
       operationId: events_events_list
@@ -27740,6 +28005,7 @@ components:
       - can_impersonate
       - can_debug
       - is_enterprise
+      - is_enterprise_licensed
       type: string
       description: |-
         * `can_save_media` - Can Save Media
@@ -27747,6 +28013,7 @@ components:
         * `can_impersonate` - Can Impersonate
         * `can_debug` - Can Debug
         * `is_enterprise` - Is Enterprise
+        * `is_enterprise_licensed` - Is Enterprise Licensed
     CaptchaChallenge:
       type: object
       description: Site public key
@@ -31336,6 +31603,44 @@ components:
         * `content_right` - CONTENT_RIGHT
         * `sidebar_left` - SIDEBAR_LEFT
         * `sidebar_right` - SIDEBAR_RIGHT
+    License:
+      type: object
+      description: License Serializer
+      properties:
+        license_uuid:
+          type: string
+          format: uuid
+        name:
+          type: string
+          readOnly: true
+        key:
+          type: string
+        expiry:
+          type: string
+          format: date-time
+          readOnly: true
+        users:
+          type: integer
+          readOnly: true
+      required:
+      - expiry
+      - key
+      - license_uuid
+      - name
+      - users
+    LicenseRequest:
+      type: object
+      description: License Serializer
+      properties:
+        license_uuid:
+          type: string
+          format: uuid
+        key:
+          type: string
+          minLength: 1
+      required:
+      - key
+      - license_uuid
     Link:
       type: object
       description: Returns a single link
@@ -33683,6 +33988,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LDAPSource'
+      required:
+      - pagination
+      - results
+    PaginatedLicenseList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/License'
       required:
       - pagination
       - results
@@ -36850,6 +37190,16 @@ components:
             type: string
             format: uuid
           description: Property mappings used for group creation/updating.
+    PatchedLicenseRequest:
+      type: object
+      description: License Serializer
+      properties:
+        license_uuid:
+          type: string
+          format: uuid
+        key:
+          type: string
+          minLength: 1
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
