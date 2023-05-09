@@ -230,7 +230,8 @@ def retry(max_retires=RETRIES, exceptions=None):
                     raise exc
                 logger.debug("Retrying on error", exc=exc, test=self)
                 self.tearDown()
-                self._post_teardown()  # noqa
+                self._post_teardown()
+                self._pre_setup()
                 self.setUp()
                 return wrapper(self, *args, **kwargs)
 
