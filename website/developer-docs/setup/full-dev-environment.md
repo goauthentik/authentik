@@ -23,7 +23,7 @@ Depending on your platform, some native dependencies might be required. On macOS
 :::
 
 :::info
-While [this issue](https://github.com/xmlsec/python-xmlsec/issues/252) is open, a workaround is required to install a compatible version of `libxmlsec1` with brew, see [this comment](https://github.com/xmlsec/python-xmlsec/issues/254#issuecomment-1511135314).
+As long as [this issue](https://github.com/xmlsec/python-xmlsec/issues/252) is open, a workaround is required to install a compatible version of `libxmlsec1` with brew, see [this comment](https://github.com/xmlsec/python-xmlsec/issues/254#issuecomment-1511135314).
 :::
 
 ```shell
