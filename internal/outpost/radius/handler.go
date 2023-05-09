@@ -35,7 +35,7 @@ func (r *RadiusRequest) ID() string {
 
 func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) {
 	span := sentry.StartSpan(r.Context(), "authentik.providers.radius.connect",
-		sentry.TransactionName("authentik.providers.radius.connect"))
+		sentry.WithTransactionName("authentik.providers.radius.connect"))
 	rid := uuid.New().String()
 	span.SetTag("request_uid", rid)
 	rl := rs.log.WithField("code", r.Code.String()).WithField("request", rid)
