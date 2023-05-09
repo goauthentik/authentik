@@ -217,6 +217,15 @@ class OktaOAuthSource(OAuthSource):
         verbose_name_plural = _("Okta OAuth Sources")
 
 
+class RedditOAuthSource(OAuthSource):
+    """Social Login using reddit.com."""
+
+    class Meta:
+        abstract = True
+        verbose_name = _("Reddit OAuth Source")
+        verbose_name_plural = _("Reddit OAuth Sources")
+
+
 class UserOAuthSourceConnection(UserSourceConnection):
     """Authorized remote OAuth provider."""
 

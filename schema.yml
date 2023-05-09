@@ -38507,7 +38507,7 @@ components:
         * `openidconnect` - OpenID Connect
         * `okta` - Okta
         * `patreon` - Patreon
-        * `reddit` - reddit
+        * `reddit` - Reddit
         * `twitch` - Twitch
         * `twitter` - Twitter
     ProxyMode:
