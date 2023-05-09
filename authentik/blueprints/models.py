@@ -17,7 +17,7 @@ LOGGER = get_logger()
 
 
 class BlueprintRetrievalFailed(SentryIgnoredException):
-    """Error raised when we're unable to fetch the blueprint contents, whether it be HTTP files
+    """Error raised when we are unable to fetch the blueprint contents, whether it be HTTP files
     not being accessible or local files not being readable"""
 
 
