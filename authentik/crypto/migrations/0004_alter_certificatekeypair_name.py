@@ -17,4 +17,15 @@ class Migration(migrations.Migration):
             name="name",
             field=models.TextField(unique=True),
         ),
+        migrations.AlterField(
+            model_name="certificatekeypair",
+            name="managed",
+            field=models.TextField(
+                default=None,
+                help_text="Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.",
+                null=True,
+                unique=True,
+                verbose_name="Managed by authentik",
+            ),
+        ),
     ]

@@ -22,15 +22,15 @@ class BlueprintRetrievalFailed(SentryIgnoredException):
 
 
 class ManagedModel(models.Model):
-    """Model which can be managed by authentik exclusively"""
+    """Model that can be managed by authentik exclusively"""
 
     managed = models.TextField(
         default=None,
         null=True,
         verbose_name=_("Managed by authentik"),
         help_text=_(
-            "Objects which are managed by authentik. These objects are created and updated "
-            "automatically. This is flag only indicates that an object can be overwritten by "
+            "Objects that are managed by authentik. These objects are created and updated "
+            "automatically. This flag only indicates that an object can be overwritten by "
             "migrations. You can still modify the objects via the API, but expect changes "
             "to be overwritten in a later update."
         ),
