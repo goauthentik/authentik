@@ -3653,6 +3653,7 @@
                     "enum": [
                         "hashed_user_id",
                         "user_id",
+                        "user_uuid",
                         "user_username",
                         "user_email",
                         "user_upn"
@@ -3766,6 +3767,7 @@
                             "enum": [
                                 "hashed_user_id",
                                 "user_id",
+                                "user_uuid",
                                 "user_username",
                                 "user_email",
                                 "user_upn"
@@ -3957,6 +3959,7 @@
                             "enum": [
                                 "hashed_user_id",
                                 "user_id",
+                                "user_uuid",
                                 "user_username",
                                 "user_email",
                                 "user_upn"
@@ -4152,6 +4155,7 @@
                             "enum": [
                                 "hashed_user_id",
                                 "user_id",
+                                "user_uuid",
                                 "user_username",
                                 "user_email",
                                 "user_upn"
