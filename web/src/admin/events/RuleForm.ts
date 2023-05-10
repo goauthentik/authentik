@@ -1,3 +1,4 @@
+import { SeverityToLabel } from "@goauthentik/admin/events/RuleListPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -91,6 +92,9 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     ?blankable=${true}
                 >
                 </ak-search-select>
+                <p class="pf-c-form__helper-text">
+                    ${t`Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.`}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Transports`} ?required=${true} name="transports">
                 <select class="pf-c-form-control" multiple>
@@ -114,16 +118,16 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 <ak-radio
                     .options=${[
                         {
-                            label: t`Alert`,
+                            label: SeverityToLabel(SeverityEnum.Alert),
                             value: SeverityEnum.Alert,
                             default: true,
                         },
                         {
-                            label: t`Warning`,
+                            label: SeverityToLabel(SeverityEnum.Warning),
                             value: SeverityEnum.Warning,
                         },
                         {
-                            label: t`Notice`,
+                            label: SeverityToLabel(SeverityEnum.Notice),
                             value: SeverityEnum.Notice,
                         },
                     ]}

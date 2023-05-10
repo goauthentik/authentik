@@ -404,7 +404,6 @@ msgstr "高级设置"
 msgid "Affected model:"
 msgstr "受影响的模型："
 
-#: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts
 msgid "Alert"
 msgstr "注意"
@@ -4367,7 +4366,6 @@ msgstr "不是你？"
 msgid "Notes"
 msgstr ""
 
-#: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts
 msgid "Notice"
 msgstr "注意"
@@ -5612,6 +5610,10 @@ msgstr ""
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 msgstr "应显示选择的源以供用户进行身份验证。这只会影响基于 Web 的源，而不影响 LDAP。"
+
+#: src/admin/events/RuleForm.ts
+msgid "Select the group of users which the alerts are sent to. If no group is selected the rule is disabled."
+msgstr ""
 
 #: src/admin/outposts/ServiceConnectionWizard.ts
 #: src/admin/policies/PolicyWizard.ts
@@ -7796,7 +7798,6 @@ msgstr ""
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/blueprints/BlueprintListPage.ts
-#: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"

@@ -398,7 +398,6 @@ msgstr "Gelişmiş ayarlar"
 msgid "Affected model:"
 msgstr "Etkilenen model:"
 
-#: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts
 msgid "Alert"
 msgstr "Alarm"
@@ -4359,7 +4358,6 @@ msgstr "Sen değil mi?"
 msgid "Notes"
 msgstr ""
 
-#: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts
 msgid "Notice"
 msgstr "Uyarı"
@@ -5604,6 +5602,10 @@ msgstr ""
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 msgstr "Kullanıcıların kimlik doğrulaması için belirli kaynaklar gösterilmelidir. Bu, LDAP'yi değil, yalnızca web tabanlı kaynakları etkiler."
+
+#: src/admin/events/RuleForm.ts
+msgid "Select the group of users which the alerts are sent to. If no group is selected the rule is disabled."
+msgstr ""
 
 #: src/admin/outposts/ServiceConnectionWizard.ts
 #: src/admin/policies/PolicyWizard.ts
@@ -7788,7 +7790,6 @@ msgstr ""
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/blueprints/BlueprintListPage.ts
-#: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
