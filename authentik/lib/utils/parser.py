@@ -231,7 +231,7 @@ def get_redis_options(
             value_str = value[0]
             match name.lower():
                 case "addr":
-                    redis_kwargs.setdefault("addrs", []).extend([addr for addr in value])
+                    redis_kwargs.setdefault("addrs", []).extend(value)
                 case "addrs":
                     redis_kwargs.setdefault("addrs", []).extend(value_str.split(","))
                 case "username":

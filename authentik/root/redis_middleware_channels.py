@@ -147,7 +147,7 @@ class CustomChannelLayer(RedisChannelLayer):
         Sends a message to the entire group.
         """
         if not self.valid_group_name(group):
-            raise Exception("Group name not valid")
+            raise ValueError("Group name not valid")
         # Retrieve list of all channel names
         key = self._group_key(group)
         connection = self.connection(self.consistent_hash(group))
