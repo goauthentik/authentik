@@ -379,6 +379,10 @@ ${this.instance?.redirectUris}</textarea
                                     value: SubModeEnum.UserId,
                                 },
                                 {
+                                    label: t`Based on the User's UUID`,
+                                    value: SubModeEnum.UserUuid,
+                                },
+                                {
                                     label: t`Based on the User's username`,
                                     value: SubModeEnum.UserUsername,
                                 },
