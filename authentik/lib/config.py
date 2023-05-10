@@ -127,17 +127,17 @@ class ConfigLoader:
         if self.y("redis.db", UNSET) is not UNSET:
             redis_db = int(self.y("redis.db"))
         if self.y("redis.host", UNSET) is not UNSET:
-            redis_host = quote_plus(self.y("redis.host"))
+            redis_host = self.y("redis.host")
         if self.y("redis.port", UNSET) is not UNSET:
             redis_port = int(self.y("redis.port"))
         if self.y("redis.username", UNSET) is not UNSET:
-            redis_url_query["username"] = quote_plus(self.y("redis.username"))
+            redis_url_query["username"] = self.y("redis.username")
         elif "username" in redis_credentials:
-            redis_url_query["username"] = quote_plus(redis_credentials["username"])
+            redis_url_query["username"] = redis_credentials["username"]
         if self.y("redis.password", UNSET) is not UNSET:
-            redis_url_query["password"] = quote_plus(self.y("redis.password"))
+            redis_url_query["password"] = self.y("redis.password")
         elif "password" in redis_credentials:
-            redis_url_query["password"] = quote_plus(redis_credentials["password"])
+            redis_url_query["password"] = redis_credentials["password"]
         redis_url += f"://{quote_plus(redis_host)}:{redis_port}/{redis_db}"
         # Sort query in order to have similar tests between Go and Python implementation
         redis_url_query = urlencode(dict(sorted(redis_url_query.items())))

@@ -5,7 +5,7 @@ from socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from socket import timeout as SocketTimeout
 from sys import platform
 from typing import Any, Dict, Tuple
-from urllib.parse import ParseResultBytes, parse_qs, unquote, urlparse
+from urllib.parse import ParseResultBytes, parse_qs, unquote, unquote_plus, urlparse
 
 from django.utils.module_loading import import_string
 from redis.backoff import DEFAULT_BASE, DEFAULT_CAP, ConstantBackoff, ExponentialBackoff, NoBackoff
@@ -127,7 +127,7 @@ def _set_kwargs_default(kwargs: dict, defaults: dict):
 def get_addrs_from_url(url):
     """Extract Redis addresses from configuration URL"""
     if url.hostname:
-        host = unquote(url.netloc).split("@")
+        host = unquote_plus(url.netloc).split("@")
         if len(host) > 1:
             host = host[-1]
         else:
@@ -202,15 +202,14 @@ def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
 def get_credentials_from_url(redis_kwargs, url):
     """Extract username and password from URL"""
     if url.password:
-        redis_kwargs["password"] = unquote(url.password)
+        redis_kwargs["password"] = url.password
         if url.username:
-            redis_kwargs["username"] = unquote(url.username)
+            redis_kwargs["username"] = url.username
     elif url.username:
-        username = unquote(url.username)
         if url.netloc.split("@")[0][-1] == ":":
-            redis_kwargs["username"] = username
+            redis_kwargs["username"] = url.username
         else:
-            redis_kwargs["password"] = username
+            redis_kwargs["password"] = url.username
     return redis_kwargs
 
 
@@ -229,10 +228,10 @@ def get_redis_options(
 
     for name, value in parse_qs(url.query).items():
         if value and len(value) > 0 and isinstance(name, str):
-            value_str = unquote(value[0])
+            value_str = value[0]
             match name.lower():
                 case "addr":
-                    redis_kwargs.setdefault("addrs", []).extend([unquote(addr) for addr in value])
+                    redis_kwargs.setdefault("addrs", []).extend([addr for addr in value])
                 case "addrs":
                     redis_kwargs.setdefault("addrs", []).extend(value_str.split(","))
                 case "username":
