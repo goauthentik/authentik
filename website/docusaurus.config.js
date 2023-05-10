@@ -1,8 +1,11 @@
+const fs = require("fs");
 const sidebar = require("./sidebars.js");
 
 const releases = sidebar.docs
     .filter((doc) => doc.link?.slug === "releases")[0]
     .items.filter((release) => typeof release === "string");
+
+const footerEmail = fs.readFileSync("src/footer.html", { encoding: "utf-8" });
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
@@ -81,6 +84,14 @@ module.exports = {
         },
         footer: {
             links: [
+                {
+                    title: "Subscribe to authentik News",
+                    items: [
+                        {
+                            html: footerEmail,
+                        },
+                    ],
+                },
                 {
                     title: "Documentation",
                     items: [
