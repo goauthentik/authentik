@@ -74,9 +74,9 @@ class TestParserUtils(TestCase):
 
     def test_get_redis_options_redis_password_arg(self):
         """Test Redis URL parser with password arg"""
-        url = urlparse("redis://redis:password@myredis/0?password=newpassword")
+        url = urlparse("redis://redis:password@myredis/0?password=%22%27%25+%21.%3B.%C2%B0")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["password"], "newpassword")
+        self.assertEqual(redis_kwargs["password"], "\"'% !.;.°")
 
     def test_get_redis_options_only_redis_password(self):
         """Test Redis URL parser with only password in basic auth"""
