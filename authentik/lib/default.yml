@@ -77,8 +77,8 @@ geoip: "/geoip/GeoLite2-City.mmdb"
 footer_links: []
 
 default_user_change_name: true
-default_user_change_email: true
-default_user_change_username: true
+default_user_change_email: false
+default_user_change_username: false
 
 gdpr_compliance: true
 cert_discovery_dir: /certs
