@@ -35,7 +35,7 @@ def client_for_model(provider: SCIMProvider, model: Model) -> SCIMClient:
 @CELERY_APP.task()
 def scim_sync_all():
     """Run sync for all providers"""
-    for provider in SCIMProvider.objects.all(backchannel_application__isnull=False):
+    for provider in SCIMProvider.objects.filter(backchannel_application__isnull=False):
         scim_sync.delay(provider.pk)
 
 

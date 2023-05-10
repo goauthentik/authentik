@@ -117,20 +117,25 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                     exclude_unset=True,
                 ),
             )
+        except ResourceMissing:
+            # Resource missing is handled by self.write, which will re-create the group
+            raise
         except SCIMRequestException:
             # Some providers don't support PUT on groups, so this is mainly a fix for the initial
             # sync, send patch add requests for all the users the group currently has
-            # TODO: send patch request for group name
             users = list(group.users.order_by("id").values_list("id", flat=True))
-            return self._patch_add_users(group, users)
-
-    def _patch(
-        self,
-        group_id: str,
-        *ops: PatchOperation,
-    ):
-        req = PatchRequest(Operations=ops)
-        self._request("PATCH", f"/Groups/{group_id}", data=req.json())
+            self._patch_add_users(group, users)
+            # Also update the group name
+            return self._patch(
+                scim_group.id,
+                PatchOperation(
+                    op=PatchOp.replace,
+                    value={
+                        "id": connection.id,
+                        "displayName": group.name,
+                    },
+                ),
+            )
 
     def update_group(self, group: Group, action: PatchOp, users_set: set[int]):
         """Update a group, either using PUT to replace it or PATCH if supported"""
@@ -150,6 +155,14 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                 if action == PatchOp.remove:
                     return self._patch_remove_users(group, users_set)
             raise exc
+
+    def _patch(
+        self,
+        group_id: str,
+        *ops: PatchOperation,
+    ):
+        req = PatchRequest(Operations=ops)
+        self._request("PATCH", f"/Groups/{group_id}", data=req.json())
 
     def _patch_add_users(self, group: Group, users_set: set[int]):
         """Add users in users_set to group"""

@@ -46,4 +46,37 @@ class Migration(migrations.Migration):
             field=models.BooleanField(default=False),
         ),
         migrations.RunPython(backport_is_backchannel),
+        migrations.AlterField(
+            model_name="propertymapping",
+            name="managed",
+            field=models.TextField(
+                default=None,
+                help_text="Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.",
+                null=True,
+                unique=True,
+                verbose_name="Managed by authentik",
+            ),
+        ),
+        migrations.AlterField(
+            model_name="source",
+            name="managed",
+            field=models.TextField(
+                default=None,
+                help_text="Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.",
+                null=True,
+                unique=True,
+                verbose_name="Managed by authentik",
+            ),
+        ),
+        migrations.AlterField(
+            model_name="token",
+            name="managed",
+            field=models.TextField(
+                default=None,
+                help_text="Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update.",
+                null=True,
+                unique=True,
+                verbose_name="Managed by authentik",
+            ),
+        ),
     ]

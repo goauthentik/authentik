@@ -1487,21 +1487,20 @@ files = [
 
 [[package]]
 name = "geoip2"
-version = "4.6.0"
+version = "4.7.0"
 description = "MaxMind GeoIP2 API"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "geoip2-4.6.0-py2.py3-none-any.whl", hash = "sha256:745e2d7a665072690056f9566774727da89216c7858793f89804f6945f969714"},
-    {file = "geoip2-4.6.0.tar.gz", hash = "sha256:f0e80bce80b06bb38bd08bf4877d5a84e354e932095e6ccfb4d27bb598fa4f83"},
+    {file = "geoip2-4.7.0-py2.py3-none-any.whl", hash = "sha256:078fcd4cce26ea029b1e3252a0f0ec20a1f42e7ab0f19b7be3864f20f4db2b51"},
+    {file = "geoip2-4.7.0.tar.gz", hash = "sha256:3bdde4994f6bc917eafab5b51e772d737b2ae00037a5b85001fb06dc68f779df"},
 ]
 
 [package.dependencies]
 aiohttp = ">=3.6.2,<4.0.0"
-maxminddb = ">=2.2.0,<3.0.0"
+maxminddb = ">=2.3.0,<3.0.0"
 requests = ">=2.24.0,<3.0.0"
-urllib3 = ">=1.25.2,<2.0.0"
 
 [[package]]
 name = "gitdb"
@@ -2118,13 +2117,13 @@ testing = ["coverage", "pytest", "pytest-cov", "pytest-regressions"]
 
 [[package]]
 name = "maxminddb"
-version = "2.2.0"
+version = "2.3.0"
 description = "Reader for the MaxMind DB format"
 category = "main"
 optional = false
-python-versions = ">=3.6"
+python-versions = ">=3.7"
 files = [
-    {file = "maxminddb-2.2.0.tar.gz", hash = "sha256:e37707ec4fab115804670e0fb7aedb4b57075a8b6f80052bdc648d3c005184e5"},
+    {file = "maxminddb-2.3.0.tar.gz", hash = "sha256:120920dddd955f32ae48c207c6cef6fd5dc8874a889ba94b0f2c1f736ecdf308"},
 ]
 
 [[package]]
@@ -2724,14 +2723,14 @@ plugins = ["importlib-metadata"]
 
 [[package]]
 name = "pyjwt"
-version = "2.6.0"
+version = "2.7.0"
 description = "JSON Web Token implementation in Python"
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "PyJWT-2.6.0-py3-none-any.whl", hash = "sha256:d83c3d892a77bbb74d3e1a2cfa90afaadb60945205d1095d9221f04466f64c14"},
-    {file = "PyJWT-2.6.0.tar.gz", hash = "sha256:69285c7e31fc44f68a1feb309e948e0df53259d579295e6cfe2b1792329f05fd"},
+    {file = "PyJWT-2.7.0-py3-none-any.whl", hash = "sha256:ba2b425b15ad5ef12f200dc67dd56af4e26de2331f965c5439994dad075876e1"},
+    {file = "PyJWT-2.7.0.tar.gz", hash = "sha256:bd6ca4a3c4285c1a2d4349e5a035fdf8fb94e04ccd0fcbe6ba289dae9cc3e074"},
 ]
 
 [package.extras]
@@ -3237,32 +3236,32 @@ files = [
 
 [[package]]
 name = "selenium"
-version = "4.9.0"
+version = "4.9.1"
 description = ""
 category = "dev"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "selenium-4.9.0-py3-none-any.whl", hash = "sha256:4c19e6aac202719373108d53a5a8e9336ba8d2b25822ca32ae6ff37acbabbdbe"},
-    {file = "selenium-4.9.0.tar.gz", hash = "sha256:478fae77cdfaec32adb1e68d59632c8c191f920535282abcaa2d1a3d98655624"},
+    {file = "selenium-4.9.1-py3-none-any.whl", hash = "sha256:82aedaa85d55bc861f4c89ff9609e82f6c958e2e1e3da3ffcc36703f21d3ee16"},
+    {file = "selenium-4.9.1.tar.gz", hash = "sha256:3444f4376321530c36ce8355b6b357d8cf4a7d588ce5cf772183465930bbed0e"},
 ]
 
 [package.dependencies]
 certifi = ">=2021.10.8"
 trio = ">=0.17,<1.0"
 trio-websocket = ">=0.9,<1.0"
-urllib3 = {version = ">=1.26,<2.0", extras = ["socks"]}
+urllib3 = {version = ">=1.26,<3", extras = ["socks"]}
 
 [[package]]
 name = "sentry-sdk"
-version = "1.22.1"
+version = "1.22.2"
 description = "Python client for Sentry (https://sentry.io)"
 category = "main"
 optional = false
 python-versions = "*"
 files = [
-    {file = "sentry-sdk-1.22.1.tar.gz", hash = "sha256:052dff5069c6f0d836ee014323576824a9b40836fc003fb12489a1f19c60a3c9"},
-    {file = "sentry_sdk-1.22.1-py2.py3-none-any.whl", hash = "sha256:c6c6946f8c927adb00af1c5ab6921df38775b2199b9003816d5935a1310352d5"},
+    {file = "sentry-sdk-1.22.2.tar.gz", hash = "sha256:5932c092c6e6035584eb74d77064e4bce3b7935dfc4a331349719a40db265840"},
+    {file = "sentry_sdk-1.22.2-py2.py3-none-any.whl", hash = "sha256:cf89a5063ef84278d186aceaed6fb595bfe67d099298e537634a323664265669"},
 ]
 
 [package.dependencies]

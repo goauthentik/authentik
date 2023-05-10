@@ -77,6 +77,7 @@ class TestTokenAPI(APITestCase):
 
     def test_list(self):
         """Test Token List (Test normal authentication)"""
+        Token.objects.all().delete()
         token_should: Token = Token.objects.create(
             identifier="test", expiring=False, user=self.user
         )
@@ -88,6 +89,7 @@ class TestTokenAPI(APITestCase):
 
     def test_list_admin(self):
         """Test Token List (Test with admin auth)"""
+        Token.objects.all().delete()
         self.client.force_login(self.admin)
         token_should: Token = Token.objects.create(
             identifier="test", expiring=False, user=self.user

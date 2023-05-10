@@ -5,7 +5,7 @@ go 1.20
 require (
 	github.com/Netflix/go-env v0.0.0-20210215222557-e437a7e7f9fb
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/getsentry/sentry-go v0.19.0
+	github.com/getsentry/sentry-go v0.21.0
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.4
 	github.com/go-openapi/runtime v0.26.0
@@ -27,9 +27,9 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
-	goauthentik.io/api/v3 v3.2023041.7
+	goauthentik.io/api/v3 v3.2023041.11
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
-	golang.org/x/oauth2 v0.7.0
+	golang.org/x/oauth2 v0.8.0
 	golang.org/x/sync v0.2.0
 	gopkg.in/yaml.v2 v2.4.0
 	layeh.com/radius v0.0.0-20210819152912-ad72663a72ab
@@ -75,8 +75,8 @@ require (
 	go.opentelemetry.io/otel v1.14.0 // indirect
 	go.opentelemetry.io/otel/trace v1.14.0 // indirect
 	golang.org/x/crypto v0.7.0 // indirect
-	golang.org/x/net v0.9.0 // indirect
-	golang.org/x/sys v0.7.0 // indirect
+	golang.org/x/net v0.10.0 // indirect
+	golang.org/x/sys v0.8.0 // indirect
 	golang.org/x/text v0.9.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.30.0 // indirect

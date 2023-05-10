@@ -27942,10 +27942,10 @@ components:
           readOnly: true
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
       required:
       - cert_expiry
       - cert_subject
@@ -30628,10 +30628,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
         expression:
@@ -30672,10 +30672,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
           minLength: 1
@@ -30920,10 +30920,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
           readOnly: true
         user_path_template:
           type: string
@@ -31826,10 +31826,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
           readOnly: true
         user_path_template:
           type: string
@@ -32076,10 +32076,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
       required:
       - config
       - name
@@ -32164,10 +32164,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
       required:
       - config
       - name
@@ -36225,10 +36225,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
           minLength: 1
@@ -36677,10 +36677,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
     PatchedPasswordExpiryPolicyRequest:
       type: object
       description: Password Expiry Policy Serializer
@@ -37097,10 +37097,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
           minLength: 1
@@ -37302,10 +37302,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
           minLength: 1
@@ -37362,10 +37362,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
           minLength: 1
@@ -37463,10 +37463,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         identifier:
           type: string
           minLength: 1
@@ -37726,10 +37726,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
           readOnly: true
         user_path_template:
           type: string
@@ -38322,10 +38322,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
         expression:
@@ -38507,7 +38507,7 @@ components:
         * `openidconnect` - OpenID Connect
         * `okta` - Okta
         * `patreon` - Patreon
-        * `reddit` - reddit
+        * `reddit` - Reddit
         * `twitch` - Twitch
         * `twitter` - Twitter
     ProxyMode:
@@ -39156,10 +39156,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
         expression:
@@ -39203,10 +39203,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
           minLength: 1
@@ -39548,10 +39548,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
           readOnly: true
         user_path_template:
           type: string
@@ -39740,10 +39740,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
         expression:
@@ -39781,10 +39781,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
           minLength: 1
@@ -39941,10 +39941,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
         expression:
@@ -39990,10 +39990,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         name:
           type: string
           minLength: 1
@@ -40214,10 +40214,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
           readOnly: true
         user_path_template:
           type: string
@@ -40740,10 +40740,10 @@ components:
           type: string
           nullable: true
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         identifier:
           type: string
           maxLength: 255
@@ -40812,10 +40812,10 @@ components:
           nullable: true
           minLength: 1
           title: Managed by authentik
-          description: Objects which are managed by authentik. These objects are created
-            and updated automatically. This is flag only indicates that an object
-            can be overwritten by migrations. You can still modify the objects via
-            the API, but expect changes to be overwritten in a later update.
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
         identifier:
           type: string
           minLength: 1

@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-03 14:41+0000\n"
+"POT-Creation-Date: 2023-05-08 14:23+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2023\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -73,16 +73,16 @@ msgstr "蓝图实例"
 msgid "authentik Export - %(date)s"
 msgstr "authentik 导出 - %(date)s"
 
-#: authentik/blueprints/v1/tasks.py:146 authentik/crypto/tasks.py:93
+#: authentik/blueprints/v1/tasks.py:149 authentik/crypto/tasks.py:93
 #, python-format
 msgid "Successfully imported %(count)d files."
 msgstr "已成功导入 %(count)d 个文件。"
 
-#: authentik/core/api/providers.py:91
+#: authentik/core/api/providers.py:113
 msgid "SAML Provider from Metadata"
 msgstr "来自元数据的 SAML 提供程序"
 
-#: authentik/core/api/providers.py:92
+#: authentik/core/api/providers.py:114
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr "通过导入元数据来创建 SAML 提供程序。"
 
@@ -124,97 +124,103 @@ msgstr "当关联应用程序被未验证身份的用户访问时，用于身份
 msgid "Flow used when authorizing this provider."
 msgstr "授权此提供程序时使用的流程。"
 
-#: authentik/core/models.py:300
+#: authentik/core/models.py:279
+msgid ""
+"Accessed from applications; optional backchannel providers for protocols "
+"like LDAP and SCIM."
+msgstr "从应用程序访问；为类似 LDAP 和 SCIM 的协议提供的可选反向通道提供程序。"
+
+#: authentik/core/models.py:334
 msgid "Application's display Name."
 msgstr "应用的显示名称。"
 
-#: authentik/core/models.py:301
+#: authentik/core/models.py:335
 msgid "Internal application name, used in URLs."
 msgstr "应用的内部名称，在 URL 中使用。"
 
-#: authentik/core/models.py:313
+#: authentik/core/models.py:347
 msgid "Open launch URL in a new browser tab or window."
 msgstr "在新浏览器标签页或窗口中打开启动 URL。"
 
-#: authentik/core/models.py:377
+#: authentik/core/models.py:411
 msgid "Application"
 msgstr "应用程序"
 
-#: authentik/core/models.py:378
+#: authentik/core/models.py:412
 msgid "Applications"
 msgstr "应用程序"
 
-#: authentik/core/models.py:384
+#: authentik/core/models.py:418
 msgid "Use the source-specific identifier"
 msgstr "使用源特定的标识符"
 
-#: authentik/core/models.py:386
+#: authentik/core/models.py:420
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr "链接到电子邮件地址相同的用户。当源不验证电子邮件地址时，可能会有安全隐患。"
 
-#: authentik/core/models.py:390
+#: authentik/core/models.py:424
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr "使用用户的电子邮件地址，但在电子邮件地址已存在时拒绝注册。"
 
-#: authentik/core/models.py:393
+#: authentik/core/models.py:427
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
 msgstr "链接到用户名相同的用户。当其他源使用相同用户名时，可能会有安全隐患。"
 
-#: authentik/core/models.py:397
+#: authentik/core/models.py:431
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr "使用用户的用户名，但在用户名已存在时拒绝注册。"
 
-#: authentik/core/models.py:404
+#: authentik/core/models.py:438
 msgid "Source's display Name."
 msgstr "源的显示名称。"
 
-#: authentik/core/models.py:405
+#: authentik/core/models.py:439
 msgid "Internal source name, used in URLs."
 msgstr "源的内部名称，在 URL 中使用。"
 
-#: authentik/core/models.py:424
+#: authentik/core/models.py:458
 msgid "Flow to use when authenticating existing users."
 msgstr "认证已存在用户时所使用的流程。"
 
-#: authentik/core/models.py:433
+#: authentik/core/models.py:467
 msgid "Flow to use when enrolling new users."
 msgstr "新用户注册的流程。"
 
-#: authentik/core/models.py:441
+#: authentik/core/models.py:475
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr "源怎样确定应该验证已有用户的身份还是注册新用户。"
 
-#: authentik/core/models.py:613
+#: authentik/core/models.py:647
 msgid "Token"
 msgstr "令牌"
 
-#: authentik/core/models.py:614
+#: authentik/core/models.py:648
 msgid "Tokens"
 msgstr "令牌"
 
-#: authentik/core/models.py:655
+#: authentik/core/models.py:689
 msgid "Property Mapping"
 msgstr "属性映射"
 
-#: authentik/core/models.py:656
+#: authentik/core/models.py:690
 msgid "Property Mappings"
 msgstr "属性映射"
 
-#: authentik/core/models.py:691
+#: authentik/core/models.py:725
 msgid "Authenticated Session"
 msgstr "已认证会话"
 
-#: authentik/core/models.py:692
+#: authentik/core/models.py:726
 msgid "Authenticated Sessions"
 msgstr "已认证会话"
 
@@ -309,7 +315,7 @@ msgstr "由 authentik 强力驱动"
 msgid "You're about to sign into %(application)s."
 msgstr "您即将登录 %(application)s。"
 
-#: authentik/crypto/api.py:178
+#: authentik/crypto/api.py:179
 msgid "Subject-alt name"
 msgstr "替代名称"
 
@@ -361,71 +367,75 @@ msgid ""
 "channel."
 msgstr "仅发送一次通知，例如在向聊天频道发送 Webhook 时。"
 
-#: authentik/events/models.py:383
+#: authentik/events/models.py:386
 msgid "Severity"
 msgstr "严重程度"
 
-#: authentik/events/models.py:388
+#: authentik/events/models.py:391
 msgid "Dispatched for user"
 msgstr "为用户分派"
 
-#: authentik/events/models.py:470
+#: authentik/events/models.py:400
+msgid "Event user"
+msgstr "事件用户"
+
+#: authentik/events/models.py:487
 msgid "Notification Transport"
 msgstr "通知传输"
 
-#: authentik/events/models.py:471
+#: authentik/events/models.py:488
 msgid "Notification Transports"
 msgstr "通知传输"
 
-#: authentik/events/models.py:477
+#: authentik/events/models.py:494
 msgid "Notice"
 msgstr "通知"
 
-#: authentik/events/models.py:478
+#: authentik/events/models.py:495
 msgid "Warning"
 msgstr "警告"
 
-#: authentik/events/models.py:479
+#: authentik/events/models.py:496
 msgid "Alert"
 msgstr "注意"
 
-#: authentik/events/models.py:504
+#: authentik/events/models.py:521
 msgid "Notification"
 msgstr "通知"
 
-#: authentik/events/models.py:505
+#: authentik/events/models.py:522
 msgid "Notifications"
 msgstr "通知"
 
-#: authentik/events/models.py:515
+#: authentik/events/models.py:532
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr "选择应使用哪些传输方式来通知用户。如果未选择任何内容，则通知将仅显示在 authentik UI 中。"
 
-#: authentik/events/models.py:523
+#: authentik/events/models.py:540
 msgid "Controls which severity level the created notifications will have."
 msgstr "控制被创建的通知的严重性级别。"
 
-#: authentik/events/models.py:528
+#: authentik/events/models.py:545
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr "定义此通知应该发送到哪些用户组。如果留空，则不会发送通知。"
 
-#: authentik/events/models.py:546
+#: authentik/events/models.py:563
 msgid "Notification Rule"
 msgstr "通知规则"
 
-#: authentik/events/models.py:547
+#: authentik/events/models.py:564
 msgid "Notification Rules"
 msgstr "通知规则"
 
-#: authentik/events/models.py:567
+#: authentik/events/models.py:584
 msgid "Webhook Mapping"
 msgstr "Webhook 映射"
 
-#: authentik/events/models.py:568
+#: authentik/events/models.py:585
 msgid "Webhook Mappings"
 msgstr "Webhook 映射"
 
@@ -433,7 +443,7 @@ msgstr "Webhook 映射"
 msgid "Task has not been run yet."
 msgstr "任务尚未运行。"
 
-#: authentik/flows/api/flows.py:290
+#: authentik/flows/api/flows.py:295
 #, python-format
 msgid "Flow not applicable to current user/request: %(messages)s"
 msgstr "流程不适用于当前用户/请求：%(messages)s"
@@ -1368,31 +1378,31 @@ msgstr "SAML 属性映射"
 msgid "SAML Property Mappings"
 msgstr "SAML 属性映射"
 
-#: authentik/providers/scim/models.py:20
+#: authentik/providers/scim/models.py:26
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "SCIM 请求的基础 URL，通常以 /v2 结尾"
 
-#: authentik/providers/scim/models.py:21
+#: authentik/providers/scim/models.py:27
 msgid "Authentication token"
 msgstr "身份验证令牌"
 
-#: authentik/providers/scim/models.py:27 authentik/sources/ldap/models.py:82
+#: authentik/providers/scim/models.py:33 authentik/sources/ldap/models.py:82
 msgid "Property mappings used for group creation/updating."
 msgstr "用于创建/更新组的属性映射。"
 
-#: authentik/providers/scim/models.py:69
+#: authentik/providers/scim/models.py:75
 msgid "SCIM Provider"
 msgstr "SCIM 提供程序"
 
-#: authentik/providers/scim/models.py:70
+#: authentik/providers/scim/models.py:76
 msgid "SCIM Providers"
 msgstr "SCIM 提供程序"
 
-#: authentik/providers/scim/models.py:90
+#: authentik/providers/scim/models.py:96
 msgid "SCIM Mapping"
 msgstr "SCIM 映射"
 
-#: authentik/providers/scim/models.py:91
+#: authentik/providers/scim/models.py:97
 msgid "SCIM Mappings"
 msgstr "SCIM 映射"
 
@@ -1415,7 +1425,12 @@ msgstr "正在同步群组页面 %(page)d"
 msgid "Failed to sync user due to remote error %(name)s: %(error)s"
 msgstr "由于远端错误 %(name)s，同步用户失败：%(error)s"
 
-#: authentik/providers/scim/tasks.py:123
+#: authentik/providers/scim/tasks.py:101 authentik/providers/scim/tasks.py:142
+#, python-format
+msgid "Stopping sync due to error: %(error)s"
+msgstr "由于以下错误，同步停止：%(error)s"
+
+#: authentik/providers/scim/tasks.py:131
 #, python-format
 msgid "Failed to sync group due to remote error %(name)s: %(error)s"
 msgstr "由于远端错误 %(name)s，同步群组失败：%(error)s"
