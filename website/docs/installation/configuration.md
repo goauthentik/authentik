@@ -214,7 +214,7 @@ Enable the ability for users to change their name, defaults to `true`.
 Requires authentik 2021.12.1
 :::
 
-Enable the ability for users to change their Email address, defaults to `true`.
+Enable the ability for users to change their Email address, defaults to `false`.
 
 ### `AUTHENTIK_DEFAULT_USER_CHANGE_USERNAME`
 
@@ -222,7 +222,7 @@ Enable the ability for users to change their Email address, defaults to `true`.
 Requires authentik 2021.12.1
 :::
 
-Enable the ability for users to change their Usernames, defaults to `true`.
+Enable the ability for users to change their Usernames, defaults to `false`.
 
 ### `AUTHENTIK_GDPR_COMPLIANCE`
 
