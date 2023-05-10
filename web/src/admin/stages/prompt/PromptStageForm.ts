@@ -95,14 +95,20 @@ export class PromptStageForm extends ModelForm<PromptStage, string> {
                         <p class="pf-c-form__helper-text">
                             ${t`Hold control/command to select multiple items.`}
                         </p>
-                        <ak-forms-modal>
-                            <span slot="submit"> ${t`Create`} </span>
-                            <span slot="header"> ${t`Create Prompt`} </span>
-                            <ak-prompt-form slot="form"> </ak-prompt-form>
-                            <button type="button" slot="trigger" class="pf-c-button pf-m-primary">
-                                ${t`Create`}
-                            </button>
-                        </ak-forms-modal>
+                        ${this.instance
+                            ? html`<ak-forms-modal>
+                                  <span slot="submit"> ${t`Create`} </span>
+                                  <span slot="header"> ${t`Create Prompt`} </span>
+                                  <ak-prompt-form slot="form"> </ak-prompt-form>
+                                  <button
+                                      type="button"
+                                      slot="trigger"
+                                      class="pf-c-button pf-m-primary"
+                                  >
+                                      ${t`Create`}
+                                  </button>
+                              </ak-forms-modal>`
+                            : html``}
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${t`Validation Policies`}
