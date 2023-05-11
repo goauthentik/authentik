@@ -4,7 +4,7 @@
 Please check the [Contributing guidelines](https://github.com/goauthentik/authentik/blob/main/CONTRIBUTING.md#how-can-i-contribute).
 -->
 
-# Details
+## Details
 
 -   **Does this resolve an issue?**
     Resolves #

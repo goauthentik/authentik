@@ -1,11 +1,14 @@
 """identification tests"""
 from django.urls import reverse
+from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.challenge import ChallengeTypes
 from authentik.flows.models import FlowDesignation, FlowStageBinding
 from authentik.flows.tests import FlowTestCase
+from authentik.lib.generators import generate_id
 from authentik.sources.oauth.models import OAuthSource
+from authentik.stages.identification.api import IdentificationStageSerializer
 from authentik.stages.identification.models import IdentificationStage, UserFields
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.models import PasswordStage
@@ -222,3 +225,22 @@ class TestIdentificationStage(FlowTestCase):
                 }
             ],
         )
+
+    def test_api_validate(self):
+        """Test API validation"""
+        self.assertTrue(
+            IdentificationStageSerializer(
+                data={
+                    "name": generate_id(),
+                    "user_fields": [UserFields.E_MAIL, UserFields.USERNAME],
+                }
+            ).is_valid(raise_exception=True)
+        )
+        with self.assertRaises(ValidationError):
+            IdentificationStageSerializer(
+                data={
+                    "name": generate_id(),
+                    "user_fields": [],
+                    "sources": [],
+                }
+            ).is_valid(raise_exception=True)

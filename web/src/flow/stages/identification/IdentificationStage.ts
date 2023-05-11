@@ -66,6 +66,23 @@ export class IdentificationStage extends BaseStage<
     }
 
     firstUpdated(): void {
+        this.autoRedirect();
+        this.createHelperForm();
+    }
+
+    autoRedirect(): void {
+        if (!this.challenge) return;
+        // we only want to auto-redirect to a source if there's only one source
+        if (this.challenge.sources?.length !== 1) return;
+        // and we also only do an auto-redirect if no user fields are select
+        // meaning that without the auto-redirect the user would only have the option
+        // to manually click on the source button
+        if ((this.challenge.userFields || []).length !== 0) return;
+        const source = this.challenge.sources[0];
+        this.host.challenge = source.challenge;
+    }
+
+    createHelperForm(): void {
         this.form = document.createElement("form");
         document.documentElement.appendChild(this.form);
         // Only add the additional username input if we're in a shadow dom
@@ -206,7 +223,6 @@ export class IdentificationStage extends BaseStage<
                 class="pf-c-form__group"
                 .errors=${(this.challenge.responseErrors || {})["uid_field"]}
             >
-                <!-- @ts-ignore -->
                 <input
                     type=${type}
                     name="uidField"

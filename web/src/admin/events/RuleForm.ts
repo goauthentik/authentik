@@ -1,4 +1,4 @@
-import { SeverityToLabel } from "@goauthentik/admin/events/RuleListPage";
+import { SeverityToLabel } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
