@@ -6,8 +6,6 @@ updates:
       interval: daily
       time: "04:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "@goauthentik/core"
     commit-message:
       prefix: "ci:"
   - package-ecosystem: gomod
@@ -16,8 +14,6 @@ updates:
       interval: daily
       time: "04:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "@goauthentik/core"
     commit-message:
       prefix: "core:"
   - package-ecosystem: npm
@@ -26,8 +22,6 @@ updates:
       interval: daily
       time: "04:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "@goauthentik/core"
     commit-message:
       prefix: "web:"
   - package-ecosystem: npm
@@ -36,8 +30,6 @@ updates:
       interval: daily
       time: "04:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "@goauthentik/core"
     commit-message:
       prefix: "website:"
   - package-ecosystem: pip
@@ -46,8 +38,6 @@ updates:
       interval: daily
       time: "04:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "@goauthentik/core"
     commit-message:
       prefix: "core:"
   - package-ecosystem: docker
@@ -56,7 +46,5 @@ updates:
       interval: daily
       time: "04:00"
     open-pull-requests-limit: 10
-    reviewers:
-      - "@goauthentik/core"
     commit-message:
       prefix: "core:"
