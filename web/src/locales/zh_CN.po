@@ -385,7 +385,7 @@ msgstr "高级设置"
 msgid "Affected model:"
 msgstr "受影响的模型："
 
-#: src/admin/events/RuleForm.ts src/admin/events/RuleListPage.ts
+#: src/admin/events/RuleListPage.ts
 msgid "Alert"
 msgstr "注意"
 
@@ -950,6 +950,10 @@ msgstr "基于用户 UPN"
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 msgid "Based on the User's username"
 msgstr "基于用户名"
+
+#: src/admin/providers/oauth2/OAuth2ProviderForm.ts
+msgid "Based on the User's UUID"
+msgstr "基于用户 UUID"
 
 #~ msgid "Based on the username"
 #~ msgstr "基于用户名"
@@ -4376,7 +4380,7 @@ msgstr "不是您？"
 msgid "Notes"
 msgstr "备注"
 
-#: src/admin/events/RuleForm.ts src/admin/events/RuleListPage.ts
+#: src/admin/events/RuleListPage.ts
 msgid "Notice"
 msgstr "通知"
 
@@ -5648,6 +5652,12 @@ msgid ""
 "Select sources should be shown for users to authenticate with. This only "
 "affects web-based sources, not LDAP."
 msgstr "选择的源应显示给用户进行身份验证。这只会影响基于 Web 的源，而不影响 LDAP。"
+
+#: src/admin/events/RuleForm.ts
+msgid ""
+"Select the group of users which the alerts are sent to. If no group is "
+"selected the rule is disabled."
+msgstr "选择一组用于发送警告的用户。如果未选择组，则此规则被禁用。"
 
 #: src/admin/outposts/ServiceConnectionWizard.ts
 #: src/admin/policies/PolicyWizard.ts
@@ -7899,8 +7909,7 @@ msgstr "正在等待身份验证…"
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
-#: src/admin/blueprints/BlueprintListPage.ts src/admin/events/RuleForm.ts
-#: src/admin/events/RuleListPage.ts
+#: src/admin/blueprints/BlueprintListPage.ts src/admin/events/RuleListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr "警告"
