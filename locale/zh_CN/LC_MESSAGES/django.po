@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-08 14:23+0000\n"
+"POT-Creation-Date: 2023-05-10 17:31+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -52,10 +52,10 @@ msgstr "由 authentik 管理"
 
 #: authentik/blueprints/models.py:32
 msgid ""
-"Objects which are managed by authentik. These objects are created and "
-"updated automatically. This is flag only indicates that an object can be "
-"overwritten by migrations. You can still modify the objects via the API, but"
-" expect changes to be overwritten in a later update."
+"Objects that are managed by authentik. These objects are created and updated"
+" automatically. This flag only indicates that an object can be overwritten "
+"by migrations. You can still modify the objects via the API, but expect "
+"changes to be overwritten in a later update."
 msgstr ""
 "由 authentik 管理的对象。这些对象会自动创建和更新。此标记仅仅表明对象可以被 Migration 覆盖。您仍然可以通过 API "
 "修改对象，但这些修改可能会在之后的更新中被覆盖。"
@@ -907,14 +907,18 @@ msgid "Based on user ID"
 msgstr "基于用户 ID"
 
 #: authentik/providers/oauth2/id_token.py:29
+msgid "Based on user UUID"
+msgstr "基于用户 UUID"
+
+#: authentik/providers/oauth2/id_token.py:30
 msgid "Based on the username"
 msgstr "基于用户名"
 
-#: authentik/providers/oauth2/id_token.py:32
+#: authentik/providers/oauth2/id_token.py:33
 msgid "Based on the User's Email. This is recommended over the UPN method."
 msgstr "基于用户的电子邮箱。建议在 UPN 方法上使用。"
 
-#: authentik/providers/oauth2/id_token.py:37
+#: authentik/providers/oauth2/id_token.py:38
 msgid ""
 "Based on the User's UPN, only works if user has a 'upn' attribute set. Use "
 "this method only if you have different UPN and Mail domains."
@@ -1673,11 +1677,19 @@ msgstr "Okta OAuth 源"
 msgid "Okta OAuth Sources"
 msgstr "Okta OAuth 源"
 
-#: authentik/sources/oauth/models.py:239
+#: authentik/sources/oauth/models.py:225
+msgid "Reddit OAuth Source"
+msgstr "Reddit OAuth 源"
+
+#: authentik/sources/oauth/models.py:226
+msgid "Reddit OAuth Sources"
+msgstr "Reddit OAuth 源"
+
+#: authentik/sources/oauth/models.py:248
 msgid "User OAuth Source Connection"
 msgstr "用户 OAuth 源连接"
 
-#: authentik/sources/oauth/models.py:240
+#: authentik/sources/oauth/models.py:249
 msgid "User OAuth Source Connections"
 msgstr "用户 OAuth 源连接"
 
