@@ -35,9 +35,9 @@ Humans prefer, inherently, to rely on our own instincts and analyses. When we fe
 > *Indeed, HR organizations are realizing that [strict work hours are a deterrent](https://www.capterra.com/resources/flexible-work-time/), and that the vast majority of employees will reject jobs that require a very specific start and end time.*
 >
 
-Finishing a big project is rewarding, and when that goal is accomplished, we are rewarded with a sense of accomplishment and self-approval (and hopefully recognition from your team and leadership). That feeling of success is what keeps us motivated; we value outcomes, the actual deliverables, but we do not derive enjoyment from the actual time it took to complete the task. That is, we don’t celebrate the hours and weeks of work, but rather the outcome.
+Finishing a big project is rewarding, and when that goal is achieved, we are rewarded with a sense of accomplishment and self-approval (and hopefully recognition from your team and leadership). That feeling of success is what keeps us motivated; we value outcomes, the tangible deliverables, but we do not derive enjoyment from the actual time it took to complete the task. That is, we don’t celebrate the hours and weeks of work, but rather the outcome.
 
-So since we know that employees are happier and feel more valued when their managers measure performance based on outcomes, instead of the amount of time spent on a project or task, it makes sense that so many companies are promoting a policy flexible working hours.
+We know that employees are happier and feel more valued when their managers measure performance based on outcomes, instead of the amount of time spent on a project or task, so it makes sense that so many companies are promoting a policy flexible working hours.
 
 ### Efficiency of cognitive optimization
 
@@ -48,9 +48,9 @@ Software developers, and many others in this field, rely on brain-power, brain-f
 
 However, that dynamism can be harnessed and used to optimize our cognitive work. Being aware of what state our brains are in at the moment allows us to select tasks that are appropriate for the current cognitive “mood”. Feeling super-alert and deeply technical? Go ahead and dive deep to pump out a chunk of code for a new feature, or script a test plan, or refactor to solve a longstanding bug. Or, if you are feeling mentally exhausted but have excess energy, use that energy to do rote tasks that don’t require much brain work. Or, as is sometimes the case with work that demands highly functioning cognitive effort, perhaps you are simply burnt out and unable to focus at all. Take a long walk, play a quick game, step away from your work and brew a second cup of coffee… log in late, log off early, and get back to it when your brain is ready.
 
-While this might seem to be verging on irresponsible, using a flexible work schedule to your advantage can be a huge benefit, for both employee and employer. By playing into, and working collaboratively, with our brains we can actually increase productivity, creativity, and innovation.
+While this might seem to be verging on irresponsible, using a flexible work schedule to your advantage can be a huge benefit, for both employee and employer. By playing into, and working collaboratively, with our own brains we can actually increase productivity, creativity, and innovation.
 
-This skill of optimizing when you work on what type of tasks can be considered as the antidote to the downsides and churn of intense multi-tasking. Recent studies have shown that doing too much multitasking at work can be counter-productive, because of the high “[switching costs](https://www.apa.org/topics/research/multitasking)”. If, instead of forcing our brains to frequently switch contexts and start the next task on the list, we first assess the current cognitive “mood” of our brains and then work on the types of tasks that align well with that mood, we can increase our productivity (and happiness).
+This skill of optimizing for when you work on what type of tasks can be considered as the antidote to the downsides and churn of intense multi-tasking. Recent studies have shown that doing too much multitasking at work can be counter-productive, because of the high “[switching costs](https://www.apa.org/topics/research/multitasking)”. If, instead of forcing our brains to frequently switch contexts and start the next task on the list, we first assess the current cognitive “mood” of our brains and then work on the types of tasks that align well with that mood, we can increase our productivity (and happiness).
 
 ### Reality of life
 
@@ -63,8 +63,8 @@ Life isn’t neat. There are school obligations, family needs, personal care, do
 
 ### Global team distribution
 
-Here at Authentik Security, we are globally distributed with three different time zones in the US and two in Europe. Many companies, including large international companies, have worked with even more extreme time zone spread, for decades, so this model is proven.
+Here at [Authentik Security](https://goauthentik.io/), we are globally distributed with three different time zones in the US and two in Europe. Many companies, including large international companies, have worked with even more extreme time zone spread, for decades, so this model is proven.
 
-This model of wide-spread working hours across teams is yet another pragmatic reason for implementing flexible working hours. Allowing European-based team members flexibility in choosing to start their work day later in order to collaborate with US-based colleagues means that the European employees can have calm mornings focused on family or personal needs, while the US-based employees can start earlier and log off mid-afternoon. Or, implementing “split hours” where an employee works some hours in the morning, and some later in the day, with a longer break in the middle.
+This model of wide-spread working hours across teams is yet another pragmatic reason for implementing flexible working hours. Allowing European-based team members flexibility in choosing to start their work-day later in order to collaborate with US-based colleagues means that the European employees can have calm mornings focused on family or personal needs, while the US-based employees can start earlier and log off mid-afternoon. Or another alternative is implementing “split hours” where an employee works some hours in the morning, and some later in the day, with a longer break in the middle.
 
 Ultimately, the ability of the employee to choose how best to get their work done, and when to work on what tasks, is both a luxurious perk and a pragmatic necessity, at least in the somewhat privileged world of software.
