@@ -87,9 +87,9 @@ class TaskInfo:
         except TypeError:
             duration = 0
         GAUGE_TASKS.labels(
-            task_name=self.task_name,
+            task_name=self.task_name.split(":")[0],
             task_uid=self.result.uid or "",
-            status=self.result.status,
+            status=self.result.status.value,
         ).set(duration)
 
     def save(self, timeout_hours=6):
