@@ -1,5 +1,5 @@
 ---
-title: Fixed working hours are an outdated concept: 71% of HR leaders agree
+title: "Fixed working hours are an outdated concept: 71% of HR leaders agree"
 slug: 2023-05-12-fixed-working-hours-are-outdated
 authors:
     - name: Jens Langhammer
