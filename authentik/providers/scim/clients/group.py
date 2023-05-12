@@ -130,10 +130,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
                 scim_group.id,
                 PatchOperation(
                     op=PatchOp.replace,
-                    value={
-                        "id": connection.id,
-                        "displayName": group.name,
-                    },
+                    path="displayName",
+                    value=scim_group.displayName,
                 ),
             )
 
