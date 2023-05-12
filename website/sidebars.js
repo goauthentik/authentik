@@ -9,11 +9,8 @@ module.exports = {
             label: "Installation",
             collapsed: false,
             link: {
-                type: "generated-index",
-                title: "Installation",
-                slug: "installation",
-                description:
-                    "Everything you need to get authentik up and running!",
+                type: "doc",
+                id: "installation/index",
             },
             items: [
                 "installation/docker-compose",
