@@ -16,6 +16,7 @@ tags:
     - job perks
 hide_table_of_contents: false
 ---
+
 Face it, it is difficult to write about high tech, IT-based, computer-centric jobs without feeling that a bit of privilege exists in this space. Many of us in the software industry have employers who are sympathetic to, or even promote, the concept of “flex-time” and other enticing perks.
 
 It is a major perk, even a luxury, to not have to clock in at a specific hour and then somehow miraculously wrap up your work and clock out in exactly eight hours. An act as simple as stopping at a pastry shop before work, or taking an extra long morning walk, without fretting about the exact minutes on your watch, is a privilege… but one that IT workers are increasingly insisted on having.
