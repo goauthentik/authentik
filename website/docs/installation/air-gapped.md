@@ -9,7 +9,7 @@ By default, authentik creates outbound connections to the following URLs:
 -   https://version.goauthentik.io: Periodic update check
 -   https://goauthentik.io: Anonymous analytics on startup
 -   https://secure.gravatar.com: Avatars for users
--   https://o4504163616882688.ingest.sentry.io: Error reporting
+-   https://authentik.error-reporting.a7k.io: Error reporting
 
 To disable these outbound connections, set the following in your `.env` file:
 

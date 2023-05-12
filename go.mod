@@ -26,7 +26,7 @@ require (
 	github.com/sirupsen/logrus v1.9.0
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.2
-	goauthentik.io/api/v3 v3.2023041.11
+	goauthentik.io/api/v3 v3.2023041.12
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.8.0
 	golang.org/x/sync v0.2.0

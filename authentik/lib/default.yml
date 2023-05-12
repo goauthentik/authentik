@@ -31,7 +31,7 @@ log_level: info
 
 error_reporting:
   enabled: false
-  sentry_dsn: https://151ba72610234c4c97c5bcff4e1cffd8@o4504163616882688.ingest.sentry.io/4504163677503489
+  sentry_dsn: https://151ba72610234c4c97c5bcff4e1cffd8@authentik.error-reporting.a7k.io/4504163677503489
   environment: customer
   send_pii: false
   sample_rate: 0.1
@@ -77,8 +77,8 @@ geoip: "/geoip/GeoLite2-City.mmdb"
 footer_links: []
 
 default_user_change_name: true
-default_user_change_email: true
-default_user_change_username: true
+default_user_change_email: false
+default_user_change_username: false
 
 gdpr_compliance: true
 cert_discovery_dir: /certs

@@ -5,6 +5,7 @@ from contextlib import contextmanager
 from glob import glob
 from json import dumps, loads
 from json.decoder import JSONDecodeError
+from pathlib import Path
 from sys import argv, stderr
 from time import time
 from typing import Any
@@ -42,22 +43,25 @@ class ConfigLoader:
     def __init__(self):
         super().__init__()
         self.__config = {}
-        base_dir = os.path.realpath(os.path.join(os.path.dirname(__file__), "../.."))
-        for path in SEARCH_PATHS:
+        base_dir = Path(__file__).parent.joinpath(Path("../..")).resolve()
+        for _path in SEARCH_PATHS:
+            path = Path(_path)
             # Check if path is relative, and if so join with base_dir
-            if not os.path.isabs(path):
-                path = os.path.join(base_dir, path)
-            if os.path.isfile(path) and os.path.exists(path):
+            if not path.is_absolute():
+                path = base_dir / path
+            if path.is_file() and path.exists():
                 # Path is an existing file, so we just read it and update our config with it
                 self.update_from_file(path)
-            elif os.path.isdir(path) and os.path.exists(path):
+            elif path.is_dir() and path.exists():
                 # Path is an existing dir, so we try to read the env config from it
                 env_paths = [
-                    os.path.join(path, ENVIRONMENT + ".yml"),
-                    os.path.join(path, ENVIRONMENT + ".env.yml"),
+                    path / Path(ENVIRONMENT + ".yml"),
+                    path / Path(ENVIRONMENT + ".env.yml"),
+                    path / Path(ENVIRONMENT + ".yaml"),
+                    path / Path(ENVIRONMENT + ".env.yaml"),
                 ]
                 for env_file in env_paths:
-                    if os.path.isfile(env_file) and os.path.exists(env_file):
+                    if env_file.is_file() and env_file.exists():
                         # Update config with env file
                         self.update_from_file(env_file)
         self.update_from_env()
@@ -99,13 +103,13 @@ class ConfigLoader:
                 value = url.query
         return value
 
-    def update_from_file(self, path: str):
+    def update_from_file(self, path: Path):
         """Update config from file contents"""
         try:
             with open(path, encoding="utf8") as file:
                 try:
                     self.update(self.__config, yaml.safe_load(file))
-                    self.log("debug", "Loaded config", file=path)
+                    self.log("debug", "Loaded config", file=str(path))
                     self.loaded_file.append(path)
                 except yaml.YAMLError as exc:
                     raise ImproperlyConfigured from exc

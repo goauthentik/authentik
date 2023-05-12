@@ -94,6 +94,10 @@ func (a *Application) Logout(sub string) error {
 				a.log.WithError(err).Trace("failed to decode session")
 				continue
 			}
+			rc, ok := s.Values[constants.SessionClaims]
+			if !ok || rc == nil {
+				continue
+			}
 			claims := s.Values[constants.SessionClaims].(Claims)
 			if claims.Sub == sub {
 				a.log.WithField("path", fullPath).Trace("deleting session")

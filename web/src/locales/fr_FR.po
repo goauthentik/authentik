@@ -403,7 +403,6 @@ msgstr "Paramètres avancés"
 msgid "Affected model:"
 msgstr "Modèle affecté :"
 
-#: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts
 msgid "Alert"
 msgstr "Alerte"
@@ -4360,7 +4359,6 @@ msgstr "Pas vous ?"
 msgid "Notes"
 msgstr ""
 
-#: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts
 msgid "Notice"
 msgstr "Note"
@@ -5605,6 +5603,10 @@ msgstr ""
 #: src/admin/stages/identification/IdentificationStageForm.ts
 msgid "Select sources should be shown for users to authenticate with. This only affects web-based sources, not LDAP."
 msgstr "Sélectionnez les sources à afficher aux utilisateurs pour s'authentifier. Cela affecte uniquement les sources web, pas LDAP."
+
+#: src/admin/events/RuleForm.ts
+msgid "Select the group of users which the alerts are sent to. If no group is selected the rule is disabled."
+msgstr ""
 
 #: src/admin/outposts/ServiceConnectionWizard.ts
 #: src/admin/policies/PolicyWizard.ts
@@ -7779,7 +7781,6 @@ msgstr ""
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/blueprints/BlueprintListPage.ts
-#: src/admin/events/RuleForm.ts
 #: src/admin/events/RuleListPage.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"

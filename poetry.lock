@@ -1128,18 +1128,18 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-otp"
-version = "1.1.6"
+version = "1.2.0"
 description = "A pluggable framework for adding two-factor authentication to Django using one-time passwords."
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7"
 files = [
-    {file = "django-otp-1.1.6.tar.gz", hash = "sha256:eac8e06041efe90e0687faea997fc0b3340f5bc74476f20aca0f6a96978f4253"},
-    {file = "django_otp-1.1.6-py3-none-any.whl", hash = "sha256:8a431a934afdd4359ab838551d02d68d3cd90c974aa9e7337cbcbb6d45db621b"},
+    {file = "django_otp-1.2.0-py3-none-any.whl", hash = "sha256:aa14ace751bede7c6c385f2ea3589f6aa3565a31e455fa0ee69801b79761e3b0"},
+    {file = "django_otp-1.2.0.tar.gz", hash = "sha256:2baa30237f46549446d8d17a790b962f9065168bad38968dd208cdeb85901ede"},
 ]
 
 [package.dependencies]
-django = ">=2.2"
+django = ">=3.2"
 
 [package.extras]
 qrcode = ["qrcode"]
@@ -1252,14 +1252,14 @@ wmi = ["wmi (>=1.5.1,<2.0.0)"]
 
 [[package]]
 name = "docker"
-version = "6.1.1"
+version = "6.1.2"
 description = "A Python library for the Docker Engine API."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "docker-6.1.1-py3-none-any.whl", hash = "sha256:8308b23d3d0982c74f7aa0a3abd774898c0c4fba006e9c3bde4f68354e470fe2"},
-    {file = "docker-6.1.1.tar.gz", hash = "sha256:5ec18b9c49d48ee145a5b5824bb126dc32fc77931e18444783fc07a7724badc0"},
+    {file = "docker-6.1.2-py3-none-any.whl", hash = "sha256:134cd828f84543cbf8e594ff81ca90c38288df3c0a559794c12f2e4b634ea19e"},
+    {file = "docker-6.1.2.tar.gz", hash = "sha256:dcc088adc2ec4e7cfc594e275d8bd2c9738c56c808de97476939ef67db5af8c2"},
 ]
 
 [package.dependencies]

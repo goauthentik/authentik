@@ -4,6 +4,7 @@ import importlib
 import logging
 import os
 from hashlib import sha512
+from pathlib import Path
 from urllib.parse import quote_plus
 
 import structlog
@@ -19,11 +20,9 @@ from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BAC
 
 LOGGER = structlog.get_logger()
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-STATIC_ROOT = BASE_DIR + "/static"
-STATICFILES_DIRS = [BASE_DIR + "/web"]
-MEDIA_ROOT = BASE_DIR + "/media"
+BASE_DIR = Path(__file__).absolute().parent.parent.parent
+STATICFILES_DIRS = [BASE_DIR / Path("web")]
+MEDIA_ROOT = BASE_DIR / Path("media")
 
 DEBUG = CONFIG.y_bool("debug")
 SECRET_KEY = CONFIG.y("secret_key")

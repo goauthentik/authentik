@@ -1,4 +1,5 @@
 import "@goauthentik/admin/events/RuleForm";
+import { SeverityToLabel } from "@goauthentik/admin/events/utils";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -14,20 +15,7 @@ import { t } from "@lingui/macro";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { EventsApi, NotificationRule, SeverityEnum } from "@goauthentik/api";
-
-export function SeverityToLabel(severity: SeverityEnum | null | undefined): string {
-    if (!severity) return t`Unknown severity`;
-    switch (severity) {
-        case SeverityEnum.Alert:
-            return t`Alert`;
-        case SeverityEnum.Notice:
-            return t`Notice`;
-        case SeverityEnum.Warning:
-            return t`Warning`;
-    }
-    return t`Unknown severity`;
-}
+import { EventsApi, NotificationRule } from "@goauthentik/api";
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
