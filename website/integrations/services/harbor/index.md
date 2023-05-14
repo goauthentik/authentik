@@ -24,6 +24,7 @@ Create an OAuth2/OpenID provider with the following parameters:
 -   Client Type: `Confidential`
 -   Redirect URIs: `https://harbor.company/c/oidc/callback`
 -   Scopes: OpenID, Email and Profile
+-   Signing Key: Select any available key
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above.
 
