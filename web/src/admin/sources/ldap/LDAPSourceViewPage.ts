@@ -152,6 +152,11 @@ export class LDAPSourceViewPage extends AKElement {
                                                   <ul class="pf-c-list">
                                                       <li>${header}</li>
                                                       ${task.messages.map((m) => {
+                                                          if (
+                                                              task.status === TaskStatusEnum.Error
+                                                          ) {
+                                                              return html`<li><pre>${m}</pre></li>`;
+                                                          }
                                                           return html`<li>${m}</li>`;
                                                       })}
                                                   </ul>

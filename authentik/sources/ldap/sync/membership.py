@@ -1,6 +1,7 @@
 """Sync LDAP Users and groups into authentik"""
 from typing import Any, Generator, Optional
 
+from django.db import transaction
 from django.db.models import Q
 from ldap3 import SUBTREE
 
@@ -51,20 +52,31 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
                 # If memberships are based on the posixGroup's 'memberUid'
                 # attribute we use the RDN instead of the FDN to lookup members.
                 membership_mapping_attribute = LDAP_UNIQUENESS
-
-            users = User.objects.filter(
-                Q(**{f"attributes__{membership_mapping_attribute}__in": members})
-                | Q(
-                    **{
-                        f"attributes__{membership_mapping_attribute}__isnull": True,
-                        "ak_groups__in": [ak_group],
-                    }
+            with transaction.atomic():
+                users = User.objects.filter(
+                    # Add all users that are in the group based on LDAP
+                    Q(**{f"attributes__{membership_mapping_attribute}__in": members})
+                    # Also add all users that are already in the group
+                    | Q(
+                        **{
+                            "ak_groups__in": [ak_group],
+                        }
+                    )
+                ).exclude(
+                    # Exclude users that are in the group
+                    Q(
+                        **{
+                            "ak_groups__in": [ak_group],
+                        }
+                    )
+                    # but should not be included based on LDAP
+                    # & ANDs the two Q() calls together and ~Q() negates this second one
+                    # effectively switching the __in to a __not_in
+                    & ~Q(**{f"attributes__{membership_mapping_attribute}__in": members})
                 )
-            )
-            membership_count += 1
-            membership_count += users.count()
-            ak_group.users.set(users)
-            ak_group.save()
+                membership_count += 1
+                membership_count += users.count()
+                ak_group.users.set(users)
         self._logger.debug("Successfully updated group membership")
         return membership_count
 
