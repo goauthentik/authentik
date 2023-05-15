@@ -3,6 +3,7 @@ from typing import Optional
 
 from pydanticscim.group import Group as BaseGroup
 from pydanticscim.responses import PatchRequest as BasePatchRequest
+from pydanticscim.responses import SCIMError as BaseSCIMError
 from pydanticscim.service_provider import Bulk, ChangePassword, Filter, Patch
 from pydanticscim.service_provider import (
     ServiceProviderConfiguration as BaseServiceProviderConfiguration,
@@ -52,3 +53,9 @@ class PatchRequest(BasePatchRequest):
     """PatchRequest which correctly sets schemas"""
 
     schemas: tuple[str] = ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
+
+
+class SCIMError(BaseSCIMError):
+    """SCIM error with optional status code"""
+
+    status: Optional[int]

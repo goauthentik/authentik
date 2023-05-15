@@ -51,7 +51,7 @@ class SCIMClient(Generic[T, SchemaType]):
                 },
             )
         except RequestException as exc:
-            raise SCIMRequestException(None) from exc
+            raise SCIMRequestException(message="Failed to send request") from exc
         self.logger.debug("scim request", path=path, method=method, **kwargs)
         if response.status_code >= 400:
             if response.status_code == 404:
