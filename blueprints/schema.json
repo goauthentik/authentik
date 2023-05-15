@@ -2560,6 +2560,42 @@
                                 "$ref": "#/$defs/model_authentik_core.token"
                             }
                         }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_blueprints.metaapplyblueprint"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_blueprints.metaapplyblueprint"
+                            }
+                        }
                     }
                 ]
             }
@@ -8311,6 +8347,21 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Key"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_blueprints.metaapplyblueprint": {
+            "type": "object",
+            "properties": {
+                "identifiers": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Identifiers"
+                },
+                "required": {
+                    "type": "boolean",
+                    "title": "Required"
                 }
             },
             "required": []
