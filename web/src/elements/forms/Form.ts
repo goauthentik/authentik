@@ -142,6 +142,10 @@ export abstract class Form<T> extends AKElement {
             if (element.hidden || !inputElement) {
                 return;
             }
+            // Skip elements that are writeOnly where the user hasn't clicked on the value
+            if (element.writeOnly && !element.writeOnlyActivated) {
+                return;
+            }
             if (
                 inputElement.tagName.toLowerCase() === "select" &&
                 "multiple" in inputElement.attributes
