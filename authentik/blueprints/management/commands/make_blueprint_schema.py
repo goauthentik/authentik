@@ -10,7 +10,7 @@ from rest_framework.serializers import Serializer
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, is_model_allowed
-from authentik.blueprints.v1.meta.registry import registry
+from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.lib.models import SerializerModel
 
 LOGGER = get_logger()
@@ -74,14 +74,18 @@ class Command(BaseCommand):
     def build(self):
         """Build all models into the schema"""
         for model in registry.get_models():
-            if model._meta.abstract:
-                continue
-            if not is_model_allowed(model):
-                continue
-            model_instance: Model = model()
-            if not isinstance(model_instance, SerializerModel):
-                continue
-            serializer = model_instance.serializer(
+            if issubclass(model, BaseMetaModel):
+                serializer_class = model.serializer()
+            else:
+                if model._meta.abstract:
+                    continue
+                if not is_model_allowed(model):
+                    continue
+                model_instance: Model = model()
+                if not isinstance(model_instance, SerializerModel):
+                    continue
+                serializer_class = model_instance.serializer
+            serializer = serializer_class(
                 context={
                     SERIALIZER_CONTEXT_BLUEPRINT: False,
                 }

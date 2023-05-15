@@ -87,10 +87,10 @@ def scim_sync_users(page: int, provider_pk: int):
             LOGGER.warning("failed to sync user", exc=exc, user=user)
             messages.append(
                 _(
-                    "Failed to sync user due to remote error %(name)s: %(error)s"
+                    "Failed to sync user %(user_name)s due to remote error: %(error)s"
                     % {
-                        "name": user.username,
-                        "error": str(exc),
+                        "user_name": user.username,
+                        "error": exc.detail(),
                     }
                 )
             )
@@ -100,7 +100,7 @@ def scim_sync_users(page: int, provider_pk: int):
                 _(
                     "Stopping sync due to error: %(error)s"
                     % {
-                        "error": str(exc),
+                        "error": exc.detail(),
                     }
                 )
             )
@@ -128,10 +128,10 @@ def scim_sync_group(page: int, provider_pk: int):
             LOGGER.warning("failed to sync group", exc=exc, group=group)
             messages.append(
                 _(
-                    "Failed to sync group due to remote error %(name)s: %(error)s"
+                    "Failed to sync group %(group_name)s due to remote error: %(error)s"
                     % {
-                        "name": group.name,
-                        "error": str(exc),
+                        "group_name": group.name,
+                        "error": exc.detail(),
                     }
                 )
             )
@@ -141,7 +141,7 @@ def scim_sync_group(page: int, provider_pk: int):
                 _(
                     "Stopping sync due to error: %(error)s"
                     % {
-                        "error": str(exc),
+                        "error": exc.detail(),
                     }
                 )
             )
