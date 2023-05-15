@@ -23,17 +23,15 @@ It is a major perk, even a luxury, to not have to clock in at a specific hour an
 
 <!--truncate-->
 
-> ****71% of HR leaders believe the Monday-Friday, 9-to-5 workweek is outdated, according to a 2022 [survey](https://www.capterra.com/resources/flexible-work-time/).**
->
+> \***\*71% of HR leaders believe the Monday-Friday, 9-to-5 workweek is outdated, according to a 2022 [survey](https://www.capterra.com/resources/flexible-work-time/).**
 
 It’s true that software companies in some countries are less amenable to flexible schedules and other relatively recents practices such as remote work or job-sharing, but the fact is that flexible working hours are still happening, a lot, even at the hard-core, old-school, corporate-style companies. And there’s a reason for this; being human.
 
 ### “I’ve got this!”
 
-Humans prefer, inherently, to rely on our own instincts and analyses. When we feel empowered and trusted to work in the way that we feel is the most pragmatic, we tend to embrace the tasks in front of us with more enthusiasm and confidence (resulting in higher productivity). The opposite sensation, one of micro-management and lack of trust, freezes us in our tracks… and reduces productivity. Understandably, being dictated to about exactly *when* one must do ones' various tasks implies a lack of trust.
+Humans prefer, inherently, to rely on our own instincts and analyses. When we feel empowered and trusted to work in the way that we feel is the most pragmatic, we tend to embrace the tasks in front of us with more enthusiasm and confidence (resulting in higher productivity). The opposite sensation, one of micro-management and lack of trust, freezes us in our tracks… and reduces productivity. Understandably, being dictated to about exactly _when_ one must do ones' various tasks implies a lack of trust.
 
-> *Indeed, HR organizations are realizing that [strict work hours are a deterrent](https://www.capterra.com/resources/flexible-work-time/), and that the vast majority of employees will reject jobs that require a very specific start and end time.*
->
+> _Indeed, HR organizations are realizing that [strict work hours are a deterrent](https://www.capterra.com/resources/flexible-work-time/), and that the vast majority of employees will reject jobs that require a very specific start and end time._
 
 Finishing a big project is rewarding, and when that goal is achieved, we are rewarded with a sense of accomplishment and self-approval (and hopefully recognition from your team and leadership). That feeling of success is what keeps us motivated; we value outcomes, the tangible deliverables, but we do not derive enjoyment from the actual time it took to complete the task. That is, we don’t celebrate the hours and weeks of work, but rather the outcome.
 
@@ -43,8 +41,7 @@ We know that employees are happier and feel more valued when their managers meas
 
 Software developers, and many others in this field, rely on brain-power, brain-fitness, brain-agility, and frankly, on the willingness of our brains to cooperate with the task at hand. In reality, we are mostly at the mercy of our brains, and what they feel up to working on at any given moment.
 
-> “*[Cognition is dynamic.](https://pubmed.ncbi.nlm.nih.gov/30266263/)*”
->
+> “_[Cognition is dynamic.](https://pubmed.ncbi.nlm.nih.gov/30266263/)_”
 
 However, that dynamism can be harnessed and used to optimize our cognitive work. Being aware of what state our brains are in at the moment allows us to select tasks that are appropriate for the current cognitive “mood”. Feeling super-alert and deeply technical? Go ahead and dive deep to pump out a chunk of code for a new feature, or script a test plan, or refactor to solve a longstanding bug. Or, if you are feeling mentally exhausted but have excess energy, use that energy to do rote tasks that don’t require much brain work. Or, as is sometimes the case with work that demands highly functioning cognitive effort, perhaps you are simply burnt out and unable to focus at all. Take a long walk, play a quick game, step away from your work and brew a second cup of coffee… log in late, log off early, and get back to it when your brain is ready.
 
@@ -56,8 +53,7 @@ This skill of optimizing for when you work on what type of tasks can be consider
 
 It’s a welcome cliche nowadays to acknowledge that everyone has, at some point or another, “something stressful going on in their life”. This awareness of the reality of life challenges is yet another reason why flexible work schedules are considered humane perks, and why employers are wise to pragmatically acknowledge this and adjust their expectations.
 
-> *“Peak productivity doesn’t always align with traditional business hours.” ([source](https://www.capterra.com/resources/flexible-work-time/))*
->
+> _“Peak productivity doesn’t always align with traditional business hours.” ([source](https://www.capterra.com/resources/flexible-work-time/))_
 
 Life isn’t neat. There are school obligations, family needs, personal care, doctor’s appointments, and the list goes on. The reality of office hours, and daylight hours, is inflexible. Work hours, however can be flexible.
 
