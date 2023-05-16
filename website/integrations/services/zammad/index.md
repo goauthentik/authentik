@@ -47,7 +47,7 @@ In authentik, create a SAML Provider (under _Applications/Providers_) with these
 -   ACS URL: `https://zammad.company/auth/saml/callback`
 -   Issuer: `https://zammad.company/auth/saml/metadata`
 -   Service Provider Binding: Post
--   Audience: https://zammad.company/auth/saml/metadata
+-   Audience: `https://zammad.company/auth/saml/metadata`
 -   Property mappings: Zammad SAML Mapping: name & Zammad SAML Mapping: email
 -   NameID Property Mapping: Zammad SAML Mapping: name
 
@@ -64,7 +64,7 @@ In authentik, create an application (under _Resources/Applications_) with these 
 Configure Zammad SAML settings by going to settings (the gear icon), and selecting `Security -> Third-party Applications` and activate `Authentication via SAML` and change the following fields:
 
 -   Display name: authentik
--   IDP SSO target URL: https://authentik.company/application/saml/ticketsystem-seatable/sso/binding/init/
+-   IDP SSO target URL: https://authentik.company/application/saml/zammad/sso/binding/init/
 -   IDP certificate: ----BEGIN CERTIFICATE---- …
 -   IDP certificate fingerprint: empty
 -   Name Identifier Format: empty
