@@ -99,7 +99,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
             "From": self.from_number,
             "To": device.phone_number,
             "Body": token,
-            "Message": self.get_message(token),
+            "Message": str(self.get_message(token)),
         }
 
         if self.mapping:
