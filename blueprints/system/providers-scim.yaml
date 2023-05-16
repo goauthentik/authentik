@@ -25,9 +25,9 @@ entries:
         if "://" in avatar:
             photos = [{"value": avatar, "type": "photo"}]
 
-        locale = None
-        if locale != "":
-            locale = request.user.locale()
+        locale = request.user.locale()
+        if locale == "":
+            locale = None
 
         emails = []
         if request.user.email != "":
