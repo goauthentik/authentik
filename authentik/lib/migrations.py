@@ -19,7 +19,15 @@ def fallback_names(app: str, model: str, field: str):
             if value not in seen_names:
                 seen_names.append(value)
                 continue
-            new_value = value + "_2"
+            separator = "_"
+            suffix_index = 2
+            while (
+                klass.objects.using(db_alias)
+                .filter(**{field: f"{value}{separator}{suffix_index}"})
+                .exists()
+            ):
+                suffix_index += 1
+            new_value = f"{value}{separator}{suffix_index}"
             setattr(obj, field, new_value)
             obj.save()
 
