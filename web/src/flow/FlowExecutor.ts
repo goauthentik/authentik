@@ -525,8 +525,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                 ${this.flowInfo?.background?.startsWith("/static")
                                                     ? html`
                                                           <li>
-                                                              <a
-                                                                  href="https://unsplash.com/@clarissemeyer"
+                                                              <a href="https://unsplash.com/@joshnh"
                                                                   >${t`Background image`}</a
                                                               >
                                                           </li>
