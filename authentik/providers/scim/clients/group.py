@@ -8,7 +8,7 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
-from authentik.policies.utils import delete_none_keys
+from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import (
     ResourceMissing,
@@ -74,7 +74,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         if not raw_scim_group:
             raise StopSync(ValueError("No group mappings configured"), obj)
         try:
-            scim_group = SCIMGroupSchema.parse_obj(delete_none_keys(raw_scim_group))
+            scim_group = SCIMGroupSchema.parse_obj(delete_none_values(raw_scim_group))
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
         if not scim_group.externalId:

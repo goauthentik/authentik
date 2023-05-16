@@ -6,7 +6,7 @@ from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
 from authentik.lib.utils.errors import exception_to_string
-from authentik.policies.utils import delete_none_keys
+from authentik.policies.utils import delete_none_values
 from authentik.providers.scim.clients.base import SCIMClient
 from authentik.providers.scim.clients.exceptions import ResourceMissing, StopSync
 from authentik.providers.scim.clients.schema import User as SCIMUserSchema
@@ -64,7 +64,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
         if not raw_scim_user:
             raise StopSync(ValueError("No user mappings configured"), obj)
         try:
-            scim_user = SCIMUserSchema.parse_obj(delete_none_keys(raw_scim_user))
+            scim_user = SCIMUserSchema.parse_obj(delete_none_values(raw_scim_user))
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
         if not scim_user.externalId:

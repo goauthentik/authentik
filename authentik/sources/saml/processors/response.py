@@ -21,7 +21,7 @@ from authentik.core.models import (
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.policies.utils import delete_none_keys
+from authentik.policies.utils import delete_none_values
 from authentik.sources.saml.exceptions import (
     InvalidSignature,
     MismatchedRequestID,
@@ -160,7 +160,7 @@ class ResponseProcessor:
             self._source,
             self._http_request,
             name_id,
-            delete_none_keys(self.get_attributes()),
+            delete_none_values(self.get_attributes()),
         )
 
     def _get_name_id(self) -> "Element":
@@ -237,7 +237,7 @@ class ResponseProcessor:
             self._source,
             self._http_request,
             name_id.text,
-            delete_none_keys(self.get_attributes()),
+            delete_none_values(self.get_attributes()),
         )
 
 

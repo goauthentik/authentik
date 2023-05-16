@@ -21,7 +21,7 @@ entries:
 
         # photos supports URLs to images, however authentik might return data URIs
         avatar = request.user.avatar
-        photos = []
+        photos = None
         if "://" in avatar:
             photos = [{"value": avatar, "type": "photo"}]
 
@@ -31,11 +31,11 @@ entries:
 
         emails = []
         if request.user.email != "":
-            emails.append({
+            emails = [{
                 "value": request.user.email,
                 "type": "other",
                 "primary": True,
-            })
+            }]
         return {
             "userName": request.user.username,
             "name": {
