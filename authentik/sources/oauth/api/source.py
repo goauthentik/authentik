@@ -70,7 +70,7 @@ class OAuthSourceSerializer(SourceSerializer):
                 attrs["profile_url"] = config["userinfo_endpoint"]
                 attrs["oidc_jwks_url"] = config["jwks_uri"]
             except (IndexError, KeyError) as exc:
-                raise ValidationError(f"Invalid well-known configuration: {exc}")
+                raise ValidationError(f"Invalid well-known configuration: {exc.args[0]} not found")
 
         jwks_url = attrs.get("oidc_jwks_url")
         if jwks_url and jwks_url != "":

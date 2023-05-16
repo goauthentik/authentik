@@ -72,7 +72,7 @@ class OutpostSerializer(ModelSerializer):
         try:
             from_dict(OutpostConfig, config)
         except DaciteError as exc:
-            raise ValidationError(f"Failed to validate config: {str(exc)}") from exc
+            raise ValidationError(f"Failed to validate config: {str(exc.args[0])}") from exc
         return config
 
     class Meta:

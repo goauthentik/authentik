@@ -145,7 +145,7 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 raise ValidationError("Failed to authenticate.")
             self.pre_user = user
         except PermissionDenied as exc:
-            raise ValidationError(str(exc)) from exc
+            raise ValidationError(str(exc.args[0])) from exc
         return attrs
 
 
