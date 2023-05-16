@@ -21,21 +21,21 @@ entries:
 
         # photos supports URLs to images, however authentik might return data URIs
         avatar = request.user.avatar
-        photos = []
+        photos = None
         if "://" in avatar:
             photos = [{"value": avatar, "type": "photo"}]
 
-        locale = request.user.locale()
-        if locale == "":
-            locale = None
+        locale = None
+        if locale != "":
+            locale = request.user.locale()
 
         emails = []
         if request.user.email != "":
-            emails.append({
+            emails = [{
                 "value": request.user.email,
                 "type": "other",
                 "primary": True,
-            })
+            }]
         return {
             "userName": request.user.username,
             "name": {
