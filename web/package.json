@@ -32,7 +32,7 @@
         "@lingui/macro": "^4.1.0",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^7.52.1",
-        "@sentry/tracing": "^7.51.2",
+        "@sentry/tracing": "^7.52.1",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "chart.js": "^4.3.0",
