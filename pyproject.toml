@@ -113,7 +113,7 @@ filterwarnings = [
 
 [tool.poetry]
 name = "authentik"
-version = "2023.4.1"
+version = "2023.5.0"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
