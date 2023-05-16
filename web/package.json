@@ -29,7 +29,7 @@
         "@lingui/core": "^4.0.0",
         "@lingui/detect-locale": "^4.0.0",
         "@lingui/format-po-gettext": "^4.0.0",
-        "@lingui/macro": "^4.0.0",
+        "@lingui/macro": "^4.1.0",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^7.51.2",
         "@sentry/tracing": "^7.51.2",
