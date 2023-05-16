@@ -238,13 +238,14 @@ module.exports = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
+                "releases/2023/v2023.5",
                 "releases/2023/v2023.4",
                 "releases/2023/v2023.3",
-                "releases/2023/v2023.2",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2023/v2023.2",
                         "releases/2023/v2023.1",
                         "releases/2022/v2022.12",
                         "releases/2022/v2022.11",
