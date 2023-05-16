@@ -54,7 +54,7 @@ export class AuthenticatorValidateStage
 
     set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
         //Do nothing if value is undefined or is casted to boolean false
-        if (typeof value === 'undefined') return;
+        if (typeof value === "undefined") return;
         if (!value) return;
         this._selectedDeviceChallenge = value;
         // We don't use this.submit here, as we don't want to advance the flow.
