@@ -63,3 +63,7 @@ To format the frontend code, run `make web`.
 ## Running authentik
 
 Now that the backend and frontend have been setup and built, you can start authentik by running `ak server`. authentik should now be accessible at `http://localhost:9000`.
+
+:::info
+If you need to define a password for the default admin (called **akadmin**), you can manually enter the `/if/flow/initial-setup/` path in the browser address bar to launch the initial flow.
+Example: http://localhost:9000/if/flow/initial-setup/

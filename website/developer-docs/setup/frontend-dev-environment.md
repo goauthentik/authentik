@@ -6,7 +6,7 @@ If you want to only make changes on the UI, you don't need a backend running fro
 
 ### Prerequisites
 
--   Node.js (any recent version should work, we use 20.x to build)
+-   Node.js (any recent version should work; we use 20.x to build)
 -   Make (again, any recent version should work)
 -   Docker and Docker Compose
 
