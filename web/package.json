@@ -31,7 +31,7 @@
         "@lingui/format-po-gettext": "^4.1.0",
         "@lingui/macro": "^4.1.0",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^7.51.2",
+        "@sentry/browser": "^7.52.1",
         "@sentry/tracing": "^7.51.2",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
