@@ -84,7 +84,7 @@ export class LibraryPage extends AKElement {
 
     running() {
         return html`<ak-library-impl
-            ?isAdmin=${this.isAdmin}
+            ?isadmin=${this.isAdmin}
             .apps=${this.apps}
             .uiConfig=${this.uiConfig}
         ></ak-library-impl>`;

@@ -35,10 +35,12 @@ import type { AppGroupList, PageUIConfig } from "./types";
 
 @customElement("ak-library-impl")
 export class LibraryPage extends AKElement {
+    static styles = styles;
+
     @property()
     apps!: PaginatedResponse<Application>;
 
-    @property()
+    @property({ attribute: "isadmin", type: Boolean })
     isAdmin = false;
 
     @property()
@@ -49,8 +51,6 @@ export class LibraryPage extends AKElement {
 
     @state()
     filteredApps: Application[] = [];
-
-    static styles = styles;
 
     constructor() {
         super();
@@ -105,7 +105,9 @@ export class LibraryPage extends AKElement {
     }
 
     renderEmptyState() {
-        return html`<ak-library-application-empty-list></ak-library-application-empty-list>`;
+        return html`<ak-library-application-empty-list
+            ?isadmin=${this.isAdmin}
+        ></ak-library-application-empty-list>`;
     }
 
     renderApps() {

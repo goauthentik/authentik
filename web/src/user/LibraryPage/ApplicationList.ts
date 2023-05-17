@@ -31,28 +31,34 @@ const LAYOUTS = new Map<string, [string, string]>([
     ],
 ]);
 
+const styles = [
+    PFBase,
+    PFEmptyState,
+    PFContent,
+    PFGrid,
+    css`
+        .app-group-header {
+            margin-bottom: 1em;
+            margin-top: 1.2em;
+        }
+    `,
+];
+
 @customElement("ak-library-application-list")
 export class LibraryPageApplicationList extends AKElement {
-    static styles = [
-        PFBase,
-        PFEmptyState,
-        PFContent,
-        PFGrid,
-        css`
-            .app-group-header {
-                margin-bottom: 1em;
-                margin-top: 1.2em;
-            }
-        `,
-    ];
+    static styles = styles;
 
-    @property({ attribute: true }) layout = "row" as LayoutType;
+    @property({ attribute: true })
+    layout = "row" as LayoutType;
 
-    @property({ attribute: true }) background: string | undefined = undefined;
+    @property({ attribute: true })
+    background: string | undefined = undefined;
 
-    @property({ attribute: true }) selected = "";
+    @property({ attribute: true })
+    selected = "";
 
-    @property() apps: AppGroupList = [];
+    @property()
+    apps: AppGroupList = [];
 
     get currentLayout(): Pair {
         const layout = LAYOUTS.get(this.layout);

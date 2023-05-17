@@ -1,18 +1,15 @@
-import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
 import { t } from "@lingui/macro";
 
 import { css, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
-
-import { SessionUser } from "@goauthentik/api";
 
 /**
  * Library Page Application List Empty
@@ -21,32 +18,28 @@ import { SessionUser } from "@goauthentik/api";
  * administrator, provide a link to the "Create a new application" page.
  */
 
+const styles = [
+    PFBase,
+    PFEmptyState,
+    PFContent,
+    PFSpacing,
+    css`
+        .cta {
+            display: inline-block;
+            font-weight: bold;
+            color: black;
+            border: 3px solid var(--pf-c-empty-state__icon--Color);
+            padding: var(--pf-global--spacer--sm);
+        }
+    `,
+];
+
 @customElement("ak-library-application-empty-list")
 export class LibraryPageApplicationEmptyList extends AKElement {
-    static styles = [
-        PFBase,
-        PFEmptyState,
-        PFContent,
-        PFSpacing,
-        css`
-            .cta {
-                display: inline-block;
-                font-weight: bold;
-                color: black;
-                border: 3px solid var(--pf-c-empty-state__icon--Color);
-                padding: var(--pf-global--spacer--sm);
-            }
-        `,
-    ];
+    static styles = styles;
 
-    @state() isSuperUser = false;
-
-    connectedCallback() {
-        super.connectedCallback();
-        me().then((me: SessionUser) => {
-            this.isSuperUser = me.user.isSuperuser;
-        });
-    }
+    @property({ attribute: "isadmin", type: Boolean })
+    isAdmin = false;
 
     renderNewAppButton() {
         const href = paramURL("/core/applications", {
@@ -74,7 +67,7 @@ export class LibraryPageApplicationEmptyList extends AKElement {
                 <div class="pf-c-empty-state__body">
                     ${t`Either no applications are defined, or you don’t have access to any.`}
                 </div>
-                ${this.isSuperUser ? this.renderNewAppButton() : html``}
+                ${this.isAdmin ? this.renderNewAppButton() : html``}
             </div>
         </div>`;
     }

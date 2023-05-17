@@ -22,14 +22,16 @@ function fuseToApps(apps: Fuse.FuseResult<Application>[]): Application[] {
 
 @customElement("ak-library-list-search")
 export class LibraryPageApplicationList extends AKElement {
-    static style = [PFBase, PFDisplay];
+    static styles = [PFBase, PFDisplay];
 
-    @property() apps: Application[] = [];
+    @property()
+    apps: Application[] = [];
 
     @property()
     query = getURLParam<string | undefined>("search", undefined);
 
-    @query("input") searchInput?: HTMLInputElement;
+    @query("input")
+    searchInput?: HTMLInputElement;
 
     fuse: Fuse<Application>;
 
