@@ -28,7 +28,7 @@
         "@lingui/cli": "^4.1.0",
         "@lingui/core": "^4.1.0",
         "@lingui/detect-locale": "^4.1.0",
-        "@lingui/format-po-gettext": "^4.1.0",
+        "@lingui/format-po-gettext": "^4.1.2",
         "@lingui/macro": "^4.1.0",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^7.52.1",
