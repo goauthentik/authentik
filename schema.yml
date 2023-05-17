@@ -39824,11 +39824,11 @@ components:
           type: string
           description: Get object component so that we know how to edit the object
           readOnly: true
-        assigned_application_slug:
+        assigned_backchannel_application_slug:
           type: string
           description: Internal application name, used in URLs.
           readOnly: true
-        assigned_application_name:
+        assigned_backchannel_application_name:
           type: string
           description: Application's display Name.
           readOnly: true
@@ -39857,8 +39857,8 @@ components:
           format: uuid
           nullable: true
       required:
-      - assigned_application_name
-      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
       - component
       - meta_model_name
       - name

@@ -42,7 +42,9 @@ def scim_sync_all():
 @CELERY_APP.task(bind=True, base=MonitoredTask)
 def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
     """Run SCIM full sync for provider"""
-    provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
+    provider: SCIMProvider = SCIMProvider.objects.filter(
+        pk=provider_pk, backchannel_application__isnull=False
+    ).first()
     if not provider:
         return
     self.set_uid(slugify(provider.name))

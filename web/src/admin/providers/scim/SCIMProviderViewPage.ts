@@ -121,9 +121,14 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html` <div slot="header" class="pf-c-banner pf-m-info">
+        return html`<div slot="header" class="pf-c-banner pf-m-info">
                 ${t`SCIM provider is in preview.`}
             </div>
+            ${!this.provider?.assignedBackchannelApplicationName
+                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                      ${t`Warning: Provider is not assigned to an application as backchannel provider.`}
+                  </div>`
+                : html``}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
                 <div class="pf-l-grid__item pf-m-7-col pf-l-stack pf-m-gutter">
                     <div class="pf-c-card pf-m-12-col pf-l-stack__item">
