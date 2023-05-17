@@ -79,11 +79,11 @@ export class RadiusProviderViewPage extends AKElement {
                 data-tab-title="${t`Overview`}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
-            ${this.provider?.outpostSet.length < 1
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${t`Warning: Provider is not used by any Outpost.`}
-                  </div>`
-                : html``}
+                ${this.provider?.outpostSet.length < 1
+                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                          ${t`Warning: Provider is not used by any Outpost.`}
+                      </div>`
+                    : html``}
                 <div class="pf-u-display-flex pf-u-justify-content-center">
                     <div class="pf-u-w-75">
                         <div class="pf-c-card">
