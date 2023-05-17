@@ -55,17 +55,23 @@ export class LibraryPage extends AKElement {
             searchEnabled: uiConfig.enabledFeatures.search,
         };
 
-        Promise.allSettled([applicationListFetch, meFetch]).then(([applicationListStatus, meStatus]) => {
-            if (meStatus.status === "rejected") {
-                throw new Error(`Could not determine status of user. Reason: ${meStatus.reason}`);
-            }
-            if (applicationListStatus.status === "rejected") {
-                throw new Error(`Could not retrieve list of applications. Reason: ${applicationListStatus.reason}`);
-            }
-            this.isAdmin = meStatus.value.user.isSuperuser;
-            this.apps = applicationListStatus.value;
-            this.ready = true;
-        });
+        Promise.allSettled([applicationListFetch, meFetch]).then(
+            ([applicationListStatus, meStatus]) => {
+                if (meStatus.status === "rejected") {
+                    throw new Error(
+                        `Could not determine status of user. Reason: ${meStatus.reason}`,
+                    );
+                }
+                if (applicationListStatus.status === "rejected") {
+                    throw new Error(
+                        `Could not retrieve list of applications. Reason: ${applicationListStatus.reason}`,
+                    );
+                }
+                this.isAdmin = meStatus.value.user.isSuperuser;
+                this.apps = applicationListStatus.value;
+                this.ready = true;
+            },
+        );
     }
 
     pageTitle(): string {

@@ -67,7 +67,9 @@ export class LibraryPage extends AKElement {
         super.connectedCallback();
         this.filteredApps = this.apps?.results;
         if (this.filteredApps === undefined) {
-            throw new Error("Application.results should never be undefined when passed to the Library Page.");
+            throw new Error(
+                "Application.results should never be undefined when passed to the Library Page.",
+            );
         }
         this.addEventListener(SEARCH_UPDATED, this.searchUpdated);
         this.addEventListener(SEARCH_ITEM_SELECTED, this.launchRequest);
@@ -134,7 +136,9 @@ export class LibraryPage extends AKElement {
             <section class="pf-c-page__main-section">
                 ${loading(
                     this.apps,
-                    html`${this.filteredApps.find(appHasLaunchUrl) ? this.renderApps() : this.renderEmptyState()}`
+                    html`${this.filteredApps.find(appHasLaunchUrl)
+                        ? this.renderApps()
+                        : this.renderEmptyState()}`,
                 )}
             </section>
         </main>`;
