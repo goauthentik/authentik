@@ -135,9 +135,9 @@ class BaseLDAPSynchronizer:
             if key == "attributes":
                 continue
             setattr(instance, key, value)
-        final_atttributes = {}
-        MERGE_LIST_UNIQUE.merge(final_atttributes, instance.attributes)
-        MERGE_LIST_UNIQUE.merge(final_atttributes, data.get("attributes", {}))
-        instance.attributes = final_atttributes
+        final_attributes = {}
+        MERGE_LIST_UNIQUE.merge(final_attributes, instance.attributes)
+        MERGE_LIST_UNIQUE.merge(final_attributes, data.get("attributes", {}))
+        instance.attributes = final_attributes
         instance.save()
         return (instance, False)
