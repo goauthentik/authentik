@@ -27,7 +27,7 @@
         "@goauthentik/api": "^2023.5.0-1684241627",
         "@lingui/cli": "^4.1.0",
         "@lingui/core": "^4.1.0",
-        "@lingui/detect-locale": "^4.1.0",
+        "@lingui/detect-locale": "^4.1.2",
         "@lingui/format-po-gettext": "^4.1.0",
         "@lingui/macro": "^4.1.0",
         "@patternfly/patternfly": "^4.224.2",
