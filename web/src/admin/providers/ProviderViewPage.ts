@@ -61,6 +61,10 @@ export class ProviderViewPage extends AKElement {
                 return html`<ak-provider-scim-view
                     providerID=${ifDefined(this.provider.pk)}
                 ></ak-provider-scim-view>`;
+            case "ak-provider-radius-form":
+                return html`<ak-provider-radius-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-radius-view>`;
             default:
                 return html`<p>Invalid provider type ${this.provider?.component}</p>`;
         }
