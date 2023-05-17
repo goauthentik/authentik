@@ -38956,6 +38956,11 @@ components:
         shared_secret:
           type: string
           description: Shared secret between clients and server to hash packets.
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -38965,6 +38970,7 @@ components:
       - component
       - meta_model_name
       - name
+      - outpost_set
       - pk
       - verbose_name
       - verbose_name_plural
