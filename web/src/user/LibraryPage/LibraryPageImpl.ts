@@ -1,4 +1,3 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -12,7 +11,7 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import styles from "./LibraryPageImpl.css";
 
-import { Application, CoreApi } from "@goauthentik/api";
+import type { Application } from "@goauthentik/api";
 
 import "./ApplicationEmptyState";
 import "./ApplicationList";
