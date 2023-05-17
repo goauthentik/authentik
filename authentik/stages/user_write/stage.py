@@ -6,6 +6,7 @@ from django.db import transaction
 from django.db.utils import IntegrityError, InternalError
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _
+from rest_framework.exceptions import ValidationError
 
 from authentik.core.middleware import SESSION_KEY_IMPERSONATE_USER
 from authentik.core.models import USER_ATTRIBUTE_SOURCES, User, UserSourceConnection
@@ -148,7 +149,11 @@ class UserWriteStageView(StageView):
             and SESSION_KEY_IMPERSONATE_USER not in self.request.session
         ):
             should_update_session = True
-        self.update_user(user)
+        try:
+            self.update_user(user)
+        except ValidationError as exc:
+            self.logger.warning("failed to update user", exc=exc)
+            return self.executor.stage_invalid(_("Failed to update user. Please try again later."))
         # Extra check to prevent flows from saving a user with a blank username
         if user.username == "":
             self.logger.warning("Aborting write to empty username", user=user)
@@ -162,7 +167,7 @@ class UserWriteStageView(StageView):
                     user.ak_groups.add(*self.executor.plan.context[PLAN_CONTEXT_GROUPS])
         except (IntegrityError, ValueError, TypeError, InternalError) as exc:
             self.logger.warning("Failed to save user", exc=exc)
-            return self.executor.stage_invalid(_("Failed to save user"))
+            return self.executor.stage_invalid(_("Failed to update user. Please try again later."))
         user_write.send(sender=self, request=request, user=user, data=data, created=user_created)
         # Check if the password has been updated, and update the session auth hash
         if should_update_session:

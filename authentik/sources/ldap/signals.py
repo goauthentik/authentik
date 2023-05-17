@@ -69,7 +69,10 @@ def ldap_sync_password(sender, user: User, password: str, **_):
     except LDAPOperationResult as exc:
         Event.new(
             EventAction.CONFIGURATION_ERROR,
-            message=f"Result: {exc.result}, Description {exc.description}",
+            message=(
+                "Failed to change password in LDAP source due to remote error: "
+                f"{exc.result}, {exc.message}, {exc.description}"
+            ),
             source=source,
         ).set_user(user).save()
         raise ValidationError("Failed to set password") from exc
