@@ -36,6 +36,7 @@ class SCIMMembershipTests(TestCase):
             slug=generate_id(),
         )
         self.app.backchannel_providers.add(self.provider)
+        self.provider.save()
         self.provider.property_mappings.set(
             [SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/user")]
         )
