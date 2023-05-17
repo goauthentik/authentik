@@ -34,7 +34,7 @@ First, you need to create an isolated Python environment. To create the environm
 
 ```shell
 poetry shell # Creates a python virtualenv, and activates it in a new shell
-make install # Install all required dependencies, including development dependencies
+make install # Install all required dependencies  for Python and Javascript, including development dependencies
 ```
 
 :::info
