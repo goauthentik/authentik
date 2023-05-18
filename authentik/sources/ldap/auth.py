@@ -55,7 +55,7 @@ class LDAPBackend(InbuiltBackend):
         """Attempt authentication by binding to the LDAP server as `user`. This
         method should be avoided as its slow to do the bind."""
         # Try to bind as new user
-        LOGGER.debug("Attempting Binding as user", user=user)
+        LOGGER.debug("Attempting to bind as user", user=user)
         try:
             temp_connection = source.connection(
                 connection_kwargs={
@@ -65,8 +65,8 @@ class LDAPBackend(InbuiltBackend):
             )
             temp_connection.bind()
             return user
-        except LDAPInvalidCredentialsResult as exception:
-            LOGGER.debug("LDAPInvalidCredentialsResult", user=user, error=exception)
-        except LDAPException as exception:
-            LOGGER.warning(exception)
+        except LDAPInvalidCredentialsResult as exc:
+            LOGGER.debug("invalid LDAP credentials", user=user, exc=exc)
+        except LDAPException as exc:
+            LOGGER.warning("failed to bind to LDAP", exc=exc)
         return None
