@@ -87,30 +87,30 @@ return user.username
 
 ## Preparation
 
-The following placeholders will be used:
+The following placeholders are used:
 
 -   `authentik.company` is the FQDN of the authentik install.
 
 Additional Preparation:
 
 -   A certificate to sign SAML assertions is required. You can use authentik's default certificate, or provide/generate one yourself.
--   You may pre-create an AWS application
+-   You may pre-create an AWS application.
 
-## Procedure
+## How to integrate with AWS
 
 In AWS:
 
--   In AWS Navigate to: `IAM Identity Center -> Settings -> Identity Source (tab)`
--   On the right hand side click `Actions -> Change identity source`
+-   In AWS navigate to: `IAM Identity Center -> Settings -> Identity Source (tab)`
+-   On the right side click `Actions -> Change identity source`
 -   Select `External Identity Provider`
--   Under `Service Provider metadata` it'll allow you to download a metadata file. Download this file.
+-   Under `Service Provider metadata` download the metadata file. 
 
 Now go to your authentik instance, and perform the following steps.
 
 -   Under _Providers_ create a new _SAML Provider from metadata_. Give it a name, and upload the metadata file AWS gave you.
--   Click _Next_. Give it a name, and close.
--   If you haven't done so yet, create an application for AWS and connect the Provider to it.
--   Navigate to the provider you've just created, select _Edit_
+-   Click _Next_. Give it a name, and close the file.
+-   If you haven't done so yet, create an application for AWS and connect the provider to it.
+-   Navigate to the provider you've just created, and then select _Edit_
 -   Copy the _Issuer URL_ to the _Audience_ field.
 -   Under _Advanced Protocol Settings_ set a _Signing Certificate_
 -   Save and Close.
@@ -118,38 +118,38 @@ Now go to your authentik instance, and perform the following steps.
 
 Now go back to your AWS instance
 
--   Under `Identity provider metadata` upload both the the `Metadata file` and `Signing Certificate` authentik gave you.
--   Choose `Next`.
--   In your settings pane, under the tab `Identity Source` click `Actions -> Manage Authentication`
--   Take note of the `AWS access portal sign-in URL` (this is especially important if you've changed it from the default)
+-   Under `Identity provider metadata` upload both the the `Metadata` file and `Signing Certificate` that authentik gave you.
+-   Click `Next`.
+-   In your settings pane, under the tab `Identity Source`, click `Actions -> Manage Authentication`.
+-   Take note of the `AWS access portal sign-in URL` (this is especially important if you changed it from the default).
 
 Now go back to your authentik instance.
 
--   Navigate to the Application you've created for AWS and click _Edit_.
+-   Navigate to the Application that you created for AWS and click _Edit_.
 -   Under _UI Settings_ make sure the _Start URL_ matches the _AWS access portal sign-in URL_
 
 ## Caveats and Troubleshooting
 
--   Users need to exist in AWS in order to use them through authentik. AWS will throw an error if it doesn't recognise the user.
+-   Users need to already exist in AWS in order to use them through authentik. AWS will throw an error if it doesn't recognise the user.
 -   In case you're stuck, you can see the SSO logs in Amazon CloudTrail -> Event History. Look for `ExtenalIdPDirectoryLogin`
 
 Note:
 
-## Optional: Auto provisioning with SCIM
+## Optional: Automated provisioning with SCIM
 
-Some people may opt for the automatic provisioning feature called SCIM.
-SCIM allows you to synchronise (part of) your directory to AWS's IAM. Saving you the hassle of having to create users by hand.
-In order to do so, go to your AWS Identity Center
+Some people may opt TO USE the automatic provisioning feature called SCIM (System for Cross-domain Identity Management).
+SCIM allows you to synchronize (part of) your directory to AWS's IAM, saving you the hassle of having to create users by hand.
+In order to do so, take the following steps in your AWS Identity Center:
 
--   In your `Settings` pane, locate the `Automatic Provisioning` Info box. Click `Enable`
--   AWS will give you an `SCIM Endpoint` and a `Access Token`. Take note of these
+-   In your `Settings` pane, locate the `Automatic Provisioning` Info box. Click `Enable`.
+-   AWS will give you an `SCIM Endpoint` and a `Access Token`. Take note of these values.
 
 Go back to your authentik instance
 
 -   Navigate to _Providers_ -> _Create_
 -   Select _SCIM Provider_
--   Give it a name, under _URL_ enter the _SCIM Endpoint_ and under _Token_ enter the _Access Token_ AWS provided you with.
--   In case you wish, change the user filtering settings to your liking. Click _Finish_
+-   Give it a name, under _URL_ enter the _SCIM Endpoint_, and then under _Token_ enter the _Access Token_ AWS provided you with.
+-   Optionally, change the user filtering settings to your liking. Click _Finish_
 
 -   Go to _Customization -> Property Mappings_
 -   Click _Create -> SCIM Mapping_
@@ -157,7 +157,7 @@ Go back to your authentik instance
 -   As the expression, enter:
 
 ```python
-# The only thing this does, is strip the default mapping from it's 'photos' attribute,
+# This expression strips the default mapping from its 'photos' attribute,
 # which is a forbidden property in AWS IAM.
 return {
     "photos": None,
@@ -165,11 +165,11 @@ return {
 ```
 
 -   Click _Save_. Navigate back to your SCIM provider, click _Edit_
--   Under _User Property Mappings_ select the default mapping and the mapping you've just created.
+-   Under _User Property Mappings_ select the default mapping and the mapping that you just created.
 -   Click _Update_
 
 -   Navigate to your application, click _Edit_.
--   Under _Backchannel providers_ add the SCIM provider you've created.
+-   Under _Backchannel providers_ add the SCIM provider that you created.
 -   Click _Update_
 
-The SCIM provider should sync automatically whenever you create/alter/remove anything. You can manually sync by going to your SCIM provider and click the _Run sync again_ button. Once it synced, you should see the users and groups in your AWS IAM center.
+The SCIM provider should sync automatically whenever you create/alter/remove anything. You can manually sync by going to your SCIM provider and click the _Run sync again_ button. Once the SCIM provider has synced, you should see the users and groups in your AWS IAM center.
