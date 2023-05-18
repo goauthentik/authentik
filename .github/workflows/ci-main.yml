@@ -112,7 +112,7 @@ jobs:
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: Create k8s Kind Cluster
-        uses: helm/kind-action@v1.6.0
+        uses: helm/kind-action@v1.7.0
       - name: run integration
         run: |
           poetry run coverage run manage.py test tests/integration
