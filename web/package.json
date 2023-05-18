@@ -82,7 +82,7 @@
         "rollup-plugin-minify-html-literals": "^1.2.6",
         "rollup-plugin-terser": "^7.0.2",
         "ts-lit-plugin": "^1.2.1",
-        "tslib": "^2.5.0",
+        "tslib": "^2.5.1",
         "turnstile-types": "^1.1.2",
         "typescript": "^5.0.4"
     }
