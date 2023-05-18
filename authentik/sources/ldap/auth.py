@@ -66,7 +66,7 @@ class LDAPBackend(InbuiltBackend):
             temp_connection.bind()
             return user
         except LDAPInvalidCredentialsResult as exc:
-            LOGGER.debug("invalid ldap credentials", user=user, exc=exc)
+            LOGGER.debug("invalid LDAP credentials", user=user, exc=exc)
         except LDAPException as exc:
-            LOGGER.warning("failed to bind to ldap", exc=exc)
+            LOGGER.warning("failed to bind to LDAP", exc=exc)
         return None
