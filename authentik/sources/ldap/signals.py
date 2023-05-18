@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 from ldap3.core.exceptions import LDAPOperationResult
 from rest_framework.serializers import ValidationError
+from structlog.stdlib import get_logger
 
 from authentik.core.models import User
 from authentik.core.signals import password_changed
@@ -19,6 +20,8 @@ from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
 from authentik.sources.ldap.tasks import ldap_sync
 from authentik.stages.prompt.signals import password_validate
+
+LOGGER = get_logger()
 
 
 @receiver(post_save, sender=LDAPSource)
@@ -67,6 +70,7 @@ def ldap_sync_password(sender, user: User, password: str, **_):
     try:
         changer.change_password(user, password)
     except LDAPOperationResult as exc:
+        LOGGER.warning("failed to set LDAP password", exc=exc)
         Event.new(
             EventAction.CONFIGURATION_ERROR,
             message=(
