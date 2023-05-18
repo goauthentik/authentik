@@ -6,7 +6,7 @@ const releases = sidebar.docs
     .items.filter((release) => typeof release === "string");
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
-async function createConfig() {
+module.exports = async function () {
     const remarkGithub = (await import("remark-github")).default;
     const footerEmail = await fs.readFile("src/footer.html", {
         encoding: "utf-8",
@@ -228,6 +228,4 @@ async function createConfig() {
             },
         ],
     };
-}
-
-module.exports = createConfig;
+};

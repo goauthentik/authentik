@@ -1,6 +1,6 @@
 const config = require("./docusaurus.config");
 
-async function createConfig() {
+module.exports = async function () {
     const remarkGithub = (await import("remark-github")).default;
     const mainConfig = await config();
     return {
@@ -124,5 +124,4 @@ async function createConfig() {
             ],
         ],
     };
-}
-module.exports = createConfig;
+};
