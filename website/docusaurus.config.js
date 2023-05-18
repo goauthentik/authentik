@@ -1,15 +1,16 @@
-const fs = require("fs");
+const fs = require("fs").promises;
 const sidebar = require("./sidebars.js");
 
 const releases = sidebar.docs
     .filter((doc) => doc.link?.slug === "releases")[0]
     .items.filter((release) => typeof release === "string");
 
-const footerEmail = fs.readFileSync("src/footer.html", { encoding: "utf-8" });
-
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 async function createConfig() {
     const remarkGithub = (await import("remark-github")).default;
+    const footerEmail = await fs.readFile("src/footer.html", {
+        encoding: "utf-8",
+    });
     return {
         title: "authentik",
         tagline: "Making authentication simple.",
