@@ -397,7 +397,7 @@ msgstr ""
 msgid "Affected model:"
 msgstr ""
 
-#: src/admin/events/RuleListPage.ts
+#: src/admin/events/utils.ts
 msgid "Alert"
 msgstr ""
 
@@ -766,6 +766,10 @@ msgstr ""
 #: src/admin/flows/utils.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Authentication"
+msgstr ""
+
+#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Authentication code"
 msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
@@ -1408,7 +1412,6 @@ msgstr ""
 #: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flow/stages/authenticator_totp/AuthenticatorTOTPStage.ts
-#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Code"
 msgstr ""
 
@@ -4423,7 +4426,7 @@ msgstr ""
 msgid "Notes"
 msgstr ""
 
-#: src/admin/events/RuleListPage.ts
+#: src/admin/events/utils.ts
 msgid "Notice"
 msgstr ""
 
@@ -4601,6 +4604,10 @@ msgstr ""
 
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Open settings"
+msgstr ""
+
+#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Open your two-factor authenticator app to view your authentication code."
 msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
@@ -7276,8 +7283,8 @@ msgstr ""
 msgid "Unknown proxy mode"
 msgstr ""
 
-#: src/admin/events/RuleListPage.ts
-#: src/admin/events/RuleListPage.ts
+#: src/admin/events/utils.ts
+#: src/admin/events/utils.ts
 msgid "Unknown severity"
 msgstr ""
 
@@ -7938,7 +7945,7 @@ msgstr ""
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/blueprints/BlueprintListPage.ts
-#: src/admin/events/RuleListPage.ts
+#: src/admin/events/utils.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr ""
@@ -7963,6 +7970,10 @@ msgstr ""
 msgid "Warning: Policy is not assigned."
 msgstr ""
 
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
+msgid "Warning: Provider is not assigned to an application as backchannel provider."
+msgstr ""
+
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
@@ -7971,6 +7982,7 @@ msgstr ""
 
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
 msgid "Warning: Provider is not used by any Outpost."
 msgstr ""
 
