@@ -4757,8 +4757,11 @@ msgstr "规划历史记录"
 msgid "Please enter the code you received via SMS"
 msgstr "请输入您通过短信收到的验证码"
 
-#: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Please enter your code"
+msgstr ""
+
+#: src/flow/providers/oauth2/DeviceCode.ts
 msgid "Please enter your Code"
 msgstr "请输入您的验证码"
 

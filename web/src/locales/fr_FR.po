@@ -4811,8 +4811,11 @@ msgstr "Historique du plan"
 msgid "Please enter the code you received via SMS"
 msgstr ""
 
-#: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Please enter your code"
+msgstr ""
+
+#: src/flow/providers/oauth2/DeviceCode.ts
 msgid "Please enter your Code"
 msgstr "Entrez votre code"
 

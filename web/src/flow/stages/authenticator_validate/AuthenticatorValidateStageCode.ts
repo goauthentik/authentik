@@ -112,7 +112,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                             DeviceClassesEnum.Static
                                 ? "[0-9a-zA-Z]*"
                                 : "[0-9]*"}"
-                            placeholder="${t`Please enter your Code`}"
+                            placeholder="${t`Please enter your code`}"
                             autofocus=""
                             autocomplete="one-time-code"
                             class="pf-c-form-control"
