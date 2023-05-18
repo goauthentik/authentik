@@ -103,7 +103,7 @@ In AWS:
 -   In AWS navigate to: `IAM Identity Center -> Settings -> Identity Source (tab)`
 -   On the right side click `Actions -> Change identity source`
 -   Select `External Identity Provider`
--   Under `Service Provider metadata` download the metadata file. 
+-   Under `Service Provider metadata` download the metadata file.
 
 Now go to your authentik instance, and perform the following steps.
 
