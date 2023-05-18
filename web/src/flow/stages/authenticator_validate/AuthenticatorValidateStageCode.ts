@@ -7,7 +7,7 @@ import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/
 
 import { t } from "@lingui/macro";
 
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -37,7 +37,24 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
     showBackButton = false;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFLogin, PFForm, PFFormControl, PFTitle, PFButton];
+        return [
+            PFBase,
+            PFLogin,
+            PFForm,
+            PFFormControl,
+            PFTitle,
+            PFButton,
+            css`
+                .icon-description {
+                    display: flex;
+                }
+                .icon-description i {
+                    font-size: 2em;
+                    padding: 0.25em;
+                    padding-right: 0.5em;
+                }
+            `,
+        ];
     }
 
     render(): TemplateResult {
@@ -62,13 +79,23 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
-                        ? html`<p>${t`A code has been sent to you via SMS.`}</p>`
-                        : html``}
+                    <div class="icon-description">
+                        <i
+                            class="fa ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
+                                ? "fa-key"
+                                : "fa-mobile-alt"}"
+                            aria-hidden="true"
+                        ></i>
+                        ${this.deviceChallenge?.deviceClass == DeviceClassesEnum.Sms
+                            ? html`<p>${t`A code has been sent to you via SMS.`}</p>`
+                            : html`<p>
+                                  ${t`Open your two-factor authenticator app to view your authentication code.`}
+                              </p>`}
+                    </div>
                     <ak-form-element
                         label="${this.deviceChallenge?.deviceClass === DeviceClassesEnum.Static
                             ? t`Static token`
-                            : t`Code`}"
+                            : t`Authentication code`}"
                         ?required="${true}"
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["code"]}
@@ -85,7 +112,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                             DeviceClassesEnum.Static
                                 ? "[0-9a-zA-Z]*"
                                 : "[0-9]*"}"
-                            placeholder="${t`Please enter your Code`}"
+                            placeholder="${t`Please enter your code`}"
                             autofocus=""
                             autocomplete="one-time-code"
                             class="pf-c-form-control"

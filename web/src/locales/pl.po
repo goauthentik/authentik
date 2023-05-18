@@ -402,7 +402,7 @@ msgstr "Zaawansowane ustawienia"
 msgid "Affected model:"
 msgstr "Model, którego dotyczy problem:"
 
-#: src/admin/events/RuleListPage.ts
+#: src/admin/events/utils.ts
 msgid "Alert"
 msgstr "Alert"
 
@@ -772,6 +772,10 @@ msgstr "Uwierzytelnianie z Plex..."
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 msgid "Authentication"
 msgstr "Uwierzytelnianie"
+
+#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Authentication code"
+msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderForm.ts
 #: src/admin/providers/proxy/ProxyProviderForm.ts
@@ -1405,7 +1409,6 @@ msgstr "Zamknij"
 #: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/stages/authenticator_sms/AuthenticatorSMSStage.ts
 #: src/flow/stages/authenticator_totp/AuthenticatorTOTPStage.ts
-#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
 msgid "Code"
 msgstr "Kod"
 
@@ -4366,7 +4369,7 @@ msgstr "Nie ty?"
 msgid "Notes"
 msgstr ""
 
-#: src/admin/events/RuleListPage.ts
+#: src/admin/events/utils.ts
 msgid "Notice"
 msgstr "Uwaga"
 
@@ -4537,6 +4540,10 @@ msgstr ""
 #: src/user/user-settings/details/UserSettingsFlowExecutor.ts
 msgid "Open settings"
 msgstr "Otwórz ustawienia"
+
+#: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Open your two-factor authenticator app to view your authentication code."
+msgstr ""
 
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 msgid "OpenID Configuration Issuer"
@@ -4811,8 +4818,11 @@ msgstr "Historia planu"
 msgid "Please enter the code you received via SMS"
 msgstr ""
 
-#: src/flow/providers/oauth2/DeviceCode.ts
 #: src/flow/stages/authenticator_validate/AuthenticatorValidateStageCode.ts
+msgid "Please enter your code"
+msgstr ""
+
+#: src/flow/providers/oauth2/DeviceCode.ts
 msgid "Please enter your Code"
 msgstr "Wprowadź swój kod"
 
@@ -7146,8 +7156,8 @@ msgstr ""
 msgid "Unknown proxy mode"
 msgstr ""
 
-#: src/admin/events/RuleListPage.ts
-#: src/admin/events/RuleListPage.ts
+#: src/admin/events/utils.ts
+#: src/admin/events/utils.ts
 msgid "Unknown severity"
 msgstr ""
 
@@ -7800,7 +7810,7 @@ msgstr ""
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/admin-overview/cards/SystemStatusCard.ts
 #: src/admin/blueprints/BlueprintListPage.ts
-#: src/admin/events/RuleListPage.ts
+#: src/admin/events/utils.ts
 #: src/admin/system-tasks/SystemTaskListPage.ts
 msgid "Warning"
 msgstr "Ostrzeżenie"
@@ -7825,6 +7835,10 @@ msgstr "Ostrzeżenie: żaden etap zaproszenia nie jest powiązany z żadnym prze
 msgid "Warning: Policy is not assigned."
 msgstr "Ostrzeżenie: zasada nie jest przypisana."
 
+#: src/admin/providers/scim/SCIMProviderViewPage.ts
+msgid "Warning: Provider is not assigned to an application as backchannel provider."
+msgstr ""
+
 #: src/admin/providers/oauth2/OAuth2ProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
 #: src/admin/providers/saml/SAMLProviderViewPage.ts
@@ -7833,6 +7847,7 @@ msgstr "Ostrzeżenie: Dostawca nie jest używany przez aplikację."
 
 #: src/admin/providers/ldap/LDAPProviderViewPage.ts
 #: src/admin/providers/proxy/ProxyProviderViewPage.ts
+#: src/admin/providers/radius/RadiusProviderViewPage.ts
 msgid "Warning: Provider is not used by any Outpost."
 msgstr "Ostrzeżenie: Dostawca nie jest używany przez żadną placówkę."
 

@@ -48,5 +48,10 @@
             "ignoreCase": false
         }
     ],
-    "go.testFlags": ["-count=1"]
+    "go.testFlags": [
+        "-count=1"
+    ],
+    "github-actions.workflows.pinned.workflows": [
+        ".github/workflows/ci-main.yml"
+    ]
 }
