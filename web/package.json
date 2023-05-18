@@ -24,7 +24,7 @@
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.2.2",
         "@fortawesome/fontawesome-free": "^6.4.0",
-        "@goauthentik/api": "^2023.5.0-1684333401",
+        "@goauthentik/api": "^2023.5.1-1684442760",
         "@lingui/cli": "^4.1.2",
         "@lingui/core": "^4.1.2",
         "@lingui/detect-locale": "^4.1.2",
