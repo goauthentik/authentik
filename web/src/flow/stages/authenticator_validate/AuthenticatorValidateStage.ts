@@ -135,7 +135,7 @@ export class AuthenticatorValidateStage
                         <small>${t`In case you can't access any other method.`}</small>
                     </div>`;
             case DeviceClassesEnum.Sms:
-                return html`<i class="fas fa-mobile"></i>
+                return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
                         <p>${t`SMS`}</p>
                         <small>${t`Tokens sent via SMS.`}</small>
