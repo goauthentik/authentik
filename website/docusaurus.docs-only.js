@@ -1,7 +1,8 @@
-const mainConfig = require("./docusaurus.config");
+const config = require("./docusaurus.config");
 
 async function createConfig() {
     const remarkGithub = (await import("remark-github")).default;
+    const mainConfig = await config();
     return {
         title: "authentik",
         tagline: "Making authentication simple.",
