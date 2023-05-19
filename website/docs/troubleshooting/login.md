@@ -1,5 +1,5 @@
 ---
-title: I can't login to authentik
+title: I can't log in to authentik
 ---
 
 In case you can't login anymore, perhaps due to an incorrectly configured stage or a failed flow import, you can create a recovery key.
