@@ -5257,10 +5257,15 @@
                     ],
                     "title": "Binding type"
                 },
+                "verification_kp": {
+                    "type": "integer",
+                    "title": "Verification Certificate",
+                    "description": "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
+                },
                 "signing_kp": {
                     "type": "integer",
                     "title": "Signing Keypair",
-                    "description": "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
+                    "description": "Keypair used to sign outgoing Responses going to the Identity Provider."
                 },
                 "digest_algorithm": {
                     "type": "string",

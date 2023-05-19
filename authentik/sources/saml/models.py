@@ -121,16 +121,27 @@ class SAMLSource(Source):
         ),
     )
 
+    verification_kp = models.ForeignKey(
+        CertificateKeyPair,
+        default=None,
+        null=True,
+        blank=True,
+        help_text=_(
+            "When selected, incoming assertion's Signatures will be validated against this "
+            "certificate. To allow unsigned Requests, leave on default."
+        ),
+        on_delete=models.SET_NULL,
+        verbose_name=_("Verification Certificate"),
+        related_name="+",
+    )
     signing_kp = models.ForeignKey(
         CertificateKeyPair,
         default=None,
-        blank=True,
         null=True,
+        blank=True,
+        help_text=_("Keypair used to sign outgoing Responses going to the Identity Provider."),
+        on_delete=models.SET_NULL,
         verbose_name=_("Signing Keypair"),
-        help_text=_(
-            "Keypair which is used to sign outgoing requests. Leave empty to disable signing."
-        ),
-        on_delete=models.SET_DEFAULT,
     )
 
     digest_algorithm = models.CharField(
