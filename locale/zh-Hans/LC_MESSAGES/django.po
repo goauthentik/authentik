@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-10 17:31+0000\n"
+"POT-Creation-Date: 2023-05-18 14:21+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2023\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -1410,34 +1410,34 @@ msgstr "SCIM 映射"
 msgid "SCIM Mappings"
 msgstr "SCIM 映射"
 
-#: authentik/providers/scim/tasks.py:50
+#: authentik/providers/scim/tasks.py:52
 msgid "Starting full SCIM sync"
 msgstr "开始全量 SCIM 同步"
 
-#: authentik/providers/scim/tasks.py:57
+#: authentik/providers/scim/tasks.py:59
 #, python-format
 msgid "Syncing page %(page)d of users"
 msgstr "正在同步用户页面 %(page)d"
 
-#: authentik/providers/scim/tasks.py:61
+#: authentik/providers/scim/tasks.py:63
 #, python-format
 msgid "Syncing page %(page)d of groups"
 msgstr "正在同步群组页面 %(page)d"
 
-#: authentik/providers/scim/tasks.py:90
+#: authentik/providers/scim/tasks.py:92
 #, python-format
-msgid "Failed to sync user due to remote error %(name)s: %(error)s"
-msgstr "由于远端错误 %(name)s，同步用户失败：%(error)s"
+msgid "Failed to sync user %(user_name)s due to remote error: %(error)s"
+msgstr "由于远端错误，同步用户 %(user_name)s 失败：%(error)s"
 
-#: authentik/providers/scim/tasks.py:101 authentik/providers/scim/tasks.py:142
+#: authentik/providers/scim/tasks.py:103 authentik/providers/scim/tasks.py:144
 #, python-format
 msgid "Stopping sync due to error: %(error)s"
 msgstr "由于以下错误，同步停止：%(error)s"
 
-#: authentik/providers/scim/tasks.py:131
+#: authentik/providers/scim/tasks.py:133
 #, python-format
-msgid "Failed to sync group due to remote error %(name)s: %(error)s"
-msgstr "由于远端错误 %(name)s，同步群组失败：%(error)s"
+msgid "Failed to sync group %(group_name)s due to remote error: %(error)s"
+msgstr "由于远端错误，同步组 %(group_name)s 失败：%(error)s"
 
 #: authentik/recovery/management/commands/create_admin_group.py:11
 msgid "Create admin group if the default group gets deleted."
@@ -2150,6 +2150,10 @@ msgstr ""
 "                    这是一封测试电子邮件，用于通知您已成功配置 authentik 电子邮件。\n"
 "                    "
 
+#: authentik/stages/identification/api.py:20
+msgid "When no user fields are selected, at least one source must be selected"
+msgstr "如果未选择用户字段，则至少要选择一个源"
+
 #: authentik/stages/identification/models.py:29
 msgid ""
 "Fields of the user object to match against. (Hold shift to select multiple "
@@ -2443,17 +2447,18 @@ msgstr "用户写入阶段"
 msgid "User Write Stages"
 msgstr "用户写入阶段"
 
-#: authentik/stages/user_write/stage.py:132
+#: authentik/stages/user_write/stage.py:133
 msgid "No Pending data."
 msgstr "没有待处理的数据。"
 
-#: authentik/stages/user_write/stage.py:138
+#: authentik/stages/user_write/stage.py:139
 msgid "No user found and can't create new user."
 msgstr "未找到用户并且无法创建新用户。"
 
-#: authentik/stages/user_write/stage.py:165
-msgid "Failed to save user"
-msgstr "保存用户失败"
+#: authentik/stages/user_write/stage.py:156
+#: authentik/stages/user_write/stage.py:170
+msgid "Failed to update user. Please try again later."
+msgstr "更新用户失败。请稍后重试。"
 
 #: authentik/tenants/models.py:23
 msgid ""
