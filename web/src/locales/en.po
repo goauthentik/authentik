@@ -7930,6 +7930,7 @@ msgid "Verification"
 msgstr "Verification"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Verification Certificate"
 msgstr "Verification Certificate"
 
@@ -8164,6 +8165,7 @@ msgid "When selected, a password field is shown on the same page instead of a se
 msgstr "When selected, a password field is shown on the same page instead of a separate page. This prevents username enumeration attacks."
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 
