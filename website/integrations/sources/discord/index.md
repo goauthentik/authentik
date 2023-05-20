@@ -108,6 +108,7 @@ Create a new 'Expression Policy' with the content below, adjusting the variables
 # Right-click on the server/guild title and select "Copy ID" to get the guild ID.
 # Right-click on the server/guild title and select server settings > roles, right click on the role and click
 # "Copy ID" to get the role ID.
+
 ACCEPTED_ROLE_ID = "123456789123456789"
 ACCEPTED_GUILD_ID = "123456789123456789"
 GUILD_NAME_STRING = "The desired server/guild name in the error message."
