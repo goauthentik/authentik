@@ -124,14 +124,12 @@ if context['source'].provider_type != "discord":
 connection = context['goauthentik.io/sources/connection']
 access_token = connection.access_token
 
-
 guild_member_object = requests.get(
     GUILD_API_URL,
     headers= {
         "Authorization": "Bearer " + access_token,
     }
 ).json()
-
 
 user_matched = False
 user_matched = any(ACCEPTED_ROLE_ID == g for g in guild_member_object["roles"])
