@@ -4,7 +4,6 @@ from typing import Optional
 
 from django.db import models
 from jwt import decode
-from authentik.core.models import User
 
 
 @lru_cache()
@@ -15,7 +14,8 @@ def get_licensing_key() -> str:
 
 def is_licensed() -> Optional["License"]:
     """"""
-    license = License.objects.filter
+    # license = License.objects.filter
+
 
 class License(models.Model):
     """An authentik enterprise license"""
