@@ -68,11 +68,11 @@ Create a new 'Expression Policy' with the content below, adjusting the variables
 ACCEPTED_GUILD_ID = "123456789123456789"
 GUILD_NAME_STRING = "The desired server/guild name in the error message."
 
+# Only change below here if you know what you are doing.
+
 # Ensure flow is only run during OAuth logins via Discord
 if context['source'].provider_type != "discord":
     return True
-
-# Only change below here if you know what you are doing.
 
 # Get the user-source connection object from the context, and get the access token
 connection = context['goauthentik.io/sources/connection']
