@@ -31,7 +31,7 @@ The following placeholders will be used:
 -   `vcenter.company` is the FQDN of the vCenter server.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Since vCenter only allows OpenID-Connect in combination with Active Directory, it is recommended to have authentik sync with the same Active Directory.
+Since vCenter only allows OpenID-Connect in combination with Active Directory/LDAP, it is recommended to have authentik sync with the same Active Directory. You also have the option of connecting to an authentik managed LDAP outpost for user management.
 
 ### Step 1
 
@@ -40,6 +40,25 @@ Under _Customization_ -> _Property Mappings_, create a _Scope Mapping_. Give it 
 ```python
 return {
   "domain": "<your active directory domain>",
+}
+```
+
+If you are using an authentik managed LDAP outpost you can use the following expression in your property mapping. This will correctly return the `groups` claim as a list of LDAP DNs instead of their names.
+
+```python
+ldap_base_dn = "DC=ldap,DC=goauthentik,DC=io"
+groups = []
+for group in request.user.ak_groups.all():
+    group_dn = f"CN={group.name},dc=groups,{ldap_base_dn}"
+    groups.append(group_dn)
+return {
+    "name": request.user.name,
+    "email": request.user.email,
+    "given_name": request.user.name,
+    "preferred_username": request.user.username,
+    "nickname": request.user.username,
+    "groups": groups,
+    "domain": "ldap.goauthentik.io"
 }
 ```
 
@@ -56,7 +75,7 @@ Under _Sources_, click _Edit_ and ensure that "authentik default Active Director
 Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
 -   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
--   Sub Mode: If your Email address Schema matches your UPN, select "Based on the User's Email...", otherwise select "Based on the User's UPN...".
+-   Sub Mode: If your Email address Schema matches your UPN, select "Based on the User's Email...", otherwise select "Based on the User's UPN...". If you are using authentik's managed LDAP outpost, chose "Based on the User's username"
 -   Scopes: Select the Scope Mapping you've created in Step 1
 -   Signing Key: Select any available key
 
