@@ -7,7 +7,6 @@ from smtplib import SMTPException
 from typing import TYPE_CHECKING, Optional
 from uuid import uuid4
 
-from django.conf import settings
 from django.db import models
 from django.db.models import Count, ExpressionWrapper, F
 from django.db.models.fields import DurationField
@@ -207,9 +206,7 @@ class Event(SerializerModel, ExpiringModel):
         self.user = get_user(user)
         return self
 
-    def from_http(
-        self, request: HttpRequest, user: Optional[settings.AUTH_USER_MODEL] = None
-    ) -> "Event":
+    def from_http(self, request: HttpRequest, user: Optional[User] = None) -> "Event":
         """Add data from a Django-HttpRequest, allowing the creation of
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""
