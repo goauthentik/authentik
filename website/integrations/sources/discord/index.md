@@ -144,7 +144,7 @@ if "code" in guild_member_object:
     else:
         ak_message(f"Error, check https://discord.com/developers/docs/topics/opcodes-and-status-codes#json for error code {guild_member_object['code']}.")
     # Policy does not match if there is any error.
-    return false
+    return False
 
 user_matched = any(ACCEPTED_ROLE_ID == g for g in guild_member_object["roles"])
 if not user_matched:
