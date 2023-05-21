@@ -41003,7 +41003,6 @@ components:
           type: string
       required:
       - avatar
-      - groups
       - groups_obj
       - is_superuser
       - name
@@ -41461,7 +41460,6 @@ components:
           type: string
           minLength: 1
       required:
-      - groups
       - name
       - username
     UserSAMLSourceConnection:

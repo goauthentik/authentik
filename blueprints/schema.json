@@ -3888,8 +3888,7 @@
                     },
                     "required": [
                         "username",
-                        "name",
-                        "groups"
+                        "name"
                     ],
                     "title": "User"
                 },
@@ -4080,8 +4079,7 @@
                     },
                     "required": [
                         "username",
-                        "name",
-                        "groups"
+                        "name"
                     ],
                     "title": "User"
                 },
@@ -4276,8 +4274,7 @@
                     },
                     "required": [
                         "username",
-                        "name",
-                        "groups"
+                        "name"
                     ],
                     "title": "User"
                 },
@@ -6424,8 +6421,7 @@
                     },
                     "required": [
                         "username",
-                        "name",
-                        "groups"
+                        "name"
                     ],
                     "title": "User"
                 },
@@ -7160,8 +7156,7 @@
                     },
                     "required": [
                         "username",
-                        "name",
-                        "groups"
+                        "name"
                     ],
                     "title": "User"
                 },
