@@ -135,6 +135,17 @@ guild_member_object = requests.get(
     }
 ).json()
 
+# The response for JSON errors is held within guild_member_object['code']
+# See: https://discord.com/developers/docs/topics/opcodes-and-status-codes#json
+# If the user isn't in the queried guild, it gives the somewhat misleading code = 10004.
+if "code" in guild_member_object:
+    if guild_member_object['code'] == 10004:
+        ak_message(f"User is not a member of {GUILD_NAME_STRING}.")
+    else:
+        ak_message(f"Error, check https://discord.com/developers/docs/topics/opcodes-and-status-codes#json for error code {guild_member_object['code']}.")
+    # Policy does not match if there is any error.
+    return false
+
 user_matched = any(ACCEPTED_ROLE_ID == g for g in guild_member_object["roles"])
 if not user_matched:
     ak_message(f"User is not a member of the {ROLE_NAME_STRING} role in {GUILD_NAME_STRING}.")
