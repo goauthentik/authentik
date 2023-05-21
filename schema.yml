@@ -18450,6 +18450,11 @@ paths:
           * `email_deny` - Use the user's email address, but deny enrollment when the email address already exists.
           * `username_link` - Link to a user with identical username. Can have security implications when a username is used with another source.
           * `username_deny` - Use the user's username, but deny enrollment when the username already exists.
+      - in: query
+        name: verification_kp
+        schema:
+          type: string
+          format: uuid
       tags:
       - sources
       security:
@@ -37280,13 +37285,20 @@ components:
             * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
+        verification_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Verification Certificate
+          description: When selected, incoming assertion's Signatures will be validated
+            against this certificate. To allow unsigned Requests, leave on default.
         signing_kp:
           type: string
           format: uuid
           nullable: true
           title: Signing Keypair
-          description: Keypair which is used to sign outgoing requests. Leave empty
-            to disable signing.
+          description: Keypair used to sign outgoing Responses going to the Identity
+            Provider.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -39608,13 +39620,20 @@ components:
             * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
+        verification_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Verification Certificate
+          description: When selected, incoming assertion's Signatures will be validated
+            against this certificate. To allow unsigned Requests, leave on default.
         signing_kp:
           type: string
           format: uuid
           nullable: true
           title: Signing Keypair
-          description: Keypair which is used to sign outgoing requests. Leave empty
-            to disable signing.
+          description: Keypair used to sign outgoing Responses going to the Identity
+            Provider.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:
@@ -39715,13 +39734,20 @@ components:
             * `urn:oasis:names:tc:SAML:2.0:nameid-format:transient` - Transient
         binding_type:
           $ref: '#/components/schemas/BindingTypeEnum'
+        verification_kp:
+          type: string
+          format: uuid
+          nullable: true
+          title: Verification Certificate
+          description: When selected, incoming assertion's Signatures will be validated
+            against this certificate. To allow unsigned Requests, leave on default.
         signing_kp:
           type: string
           format: uuid
           nullable: true
           title: Signing Keypair
-          description: Keypair which is used to sign outgoing requests. Leave empty
-            to disable signing.
+          description: Keypair used to sign outgoing Responses going to the Identity
+            Provider.
         digest_algorithm:
           $ref: '#/components/schemas/DigestAlgorithmEnum'
         signature_algorithm:

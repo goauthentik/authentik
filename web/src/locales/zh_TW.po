@@ -7750,6 +7750,7 @@ msgid "Verification"
 msgstr "验证"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "Verification Certificate"
 msgstr "验证证书"
 
@@ -7977,6 +7978,7 @@ msgid "When selected, a password field is shown on the same page instead of a se
 msgstr "选中后，密码字段将显示在同一页面上，而不是单独的页面上。这样可以防止用户名枚举攻击。"
 
 #: src/admin/providers/saml/SAMLProviderForm.ts
+#: src/admin/sources/saml/SAMLSourceForm.ts
 msgid "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default."
 msgstr "选中后，传入声明的签名将根据此证书进行验证。要允许未签名的请求，请保留默认值。"
 
