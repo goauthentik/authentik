@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-19 22:00+0000\n"
+"POT-Creation-Date: 2023-05-21 21:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,12 +31,16 @@ msgstr ""
 msgid "Validation Error"
 msgstr ""
 
-#: authentik/blueprints/api.py:53
+#: authentik/blueprints/api.py:43
+msgid "Blueprint file does not exist"
+msgstr ""
+
+#: authentik/blueprints/api.py:54
 #, python-format
 msgid "Failed to validate blueprint: %(logs)s"
 msgstr ""
 
-#: authentik/blueprints/api.py:58
+#: authentik/blueprints/api.py:59
 msgid "Either path or content must be set."
 msgstr ""
 
@@ -321,105 +325,105 @@ msgstr ""
 msgid "Certificate-Key Pairs"
 msgstr ""
 
-#: authentik/events/models.py:293
+#: authentik/events/models.py:290
 msgid "Event"
 msgstr ""
 
-#: authentik/events/models.py:294
+#: authentik/events/models.py:291
 msgid "Events"
 msgstr ""
 
-#: authentik/events/models.py:300
+#: authentik/events/models.py:297
 msgid "authentik inbuilt notifications"
 msgstr ""
 
-#: authentik/events/models.py:301
+#: authentik/events/models.py:298
 msgid "Generic Webhook"
 msgstr ""
 
-#: authentik/events/models.py:302
+#: authentik/events/models.py:299
 msgid "Slack Webhook (Slack/Discord)"
 msgstr ""
 
-#: authentik/events/models.py:303
+#: authentik/events/models.py:300
 msgid "Email"
 msgstr ""
 
-#: authentik/events/models.py:321
+#: authentik/events/models.py:318
 msgid ""
 "Only send notification once, for example when sending a webhook into a chat "
 "channel."
 msgstr ""
 
-#: authentik/events/models.py:386
+#: authentik/events/models.py:383
 msgid "Severity"
 msgstr ""
 
-#: authentik/events/models.py:391
+#: authentik/events/models.py:388
 msgid "Dispatched for user"
 msgstr ""
 
-#: authentik/events/models.py:400
+#: authentik/events/models.py:397
 msgid "Event user"
 msgstr ""
 
-#: authentik/events/models.py:487
+#: authentik/events/models.py:484
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:488
+#: authentik/events/models.py:485
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:494
+#: authentik/events/models.py:491
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:495
+#: authentik/events/models.py:492
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:496
+#: authentik/events/models.py:493
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:521
+#: authentik/events/models.py:518
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:522
+#: authentik/events/models.py:519
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:532
+#: authentik/events/models.py:529
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/events/models.py:540
+#: authentik/events/models.py:537
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:545
+#: authentik/events/models.py:542
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr ""
 
-#: authentik/events/models.py:563
+#: authentik/events/models.py:560
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:564
+#: authentik/events/models.py:561
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:584
+#: authentik/events/models.py:581
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:585
+#: authentik/events/models.py:582
 msgid "Webhook Mappings"
 msgstr ""
 
