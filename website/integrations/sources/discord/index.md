@@ -75,17 +75,18 @@ if context['source'].provider_type != "discord":
     return True
 
 # Get the user-source connection object from the context, and get the access token
-connection = context['goauthentik.io/sources/connection']
+connection = context.get("goauthentik.io/sources/connection")
+if not connection:
+  return False
 access_token = connection.access_token
 
 guilds = requests.get(
     "https://discord.com/api/users/@me/guilds",
     headers= {
-        "Authorization": "Bearer " + access_token,
+        "Authorization": f"Bearer {access_token}",
     }
 ).json()
 
-user_matched = False
 user_matched = any(ACCEPTED_GUILD_ID == g["id"] for g in guilds)
 if not user_matched:
     ak_message(f"User is not a member of {GUILD_NAME_STRING}.")
@@ -115,24 +116,25 @@ GUILD_NAME_STRING = "The desired server/guild name in the error message."
 ROLE_NAME_STRING = "The desired role name in the error message."
 
 # Only change below here if you know what you are doing.
-GUILD_API_URL = "https://discord.com/api/users/@me/guilds/" + ACCEPTED_GUILD_ID + "/member"
+GUILD_API_URL = f"https://discord.com/api/users/@me/guilds/{ACCEPTED_GUILD_ID}/member"
 
 # Ensure flow is only run during OAuth logins via Discord
 if context['source'].provider_type != "discord":
     return True
 
 # Get the user-source connection object from the context, and get the access token
-connection = context['goauthentik.io/sources/connection']
+connection = context.get("goauthentik.io/sources/connection")
+if not connection:
+  return False
 access_token = connection.access_token
 
 guild_member_object = requests.get(
     GUILD_API_URL,
     headers= {
-        "Authorization": "Bearer " + access_token,
+        "Authorization": f"Bearer {access_token}",
     }
 ).json()
 
-user_matched = False
 user_matched = any(ACCEPTED_ROLE_ID == g for g in guild_member_object["roles"])
 if not user_matched:
     ak_message(f"User is not a member of the {ROLE_NAME_STRING} role in {GUILD_NAME_STRING}.")
