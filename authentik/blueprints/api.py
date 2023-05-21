@@ -11,7 +11,7 @@ from rest_framework.serializers import ListSerializer, ModelSerializer
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.decorators import permission_required
-from authentik.blueprints.models import BlueprintInstance, BlueprintRetrievalFailed
+from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
@@ -35,11 +35,12 @@ class BlueprintInstanceSerializer(ModelSerializer):
     """Info about a single blueprint instance file"""
 
     def validate_path(self, path: str) -> str:
-        """Ensure the path specified is retrievable"""
-        try:
-            BlueprintInstance(path=path).retrieve()
-        except BlueprintRetrievalFailed as exc:
-            raise ValidationError(exc) from exc
+        """Ensure the path (if set) specified is retrievable"""
+        if path == "":
+            return path
+        files: list[dict] = blueprints_find_dict.delay().get()
+        if path not in [file["path"] for file in files]:
+            raise ValidationError(_("Blueprint file does not exist"))
         return path
 
     def validate_content(self, content: str) -> str:
