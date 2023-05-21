@@ -31,7 +31,7 @@ The following placeholders will be used:
 -   `vcenter.company` is the FQDN of the vCenter server.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Since vCenter only allows OpenID-Connect in combination with Active Directory, it is recommended to have authentik sync with the same Active Directory. You also have the option of connecting to an Authentik managed LDAP outpost for user management.
+Since vCenter only allows OpenID-Connect in combination with Active Directory/LDAP, it is recommended to have authentik sync with the same Active Directory. You also have the option of connecting to an authentik managed LDAP outpost for user management.
 
 ### Step 1
 
@@ -42,9 +42,10 @@ return {
   "domain": "<your active directory domain>",
 }
 ```
-If you are using an Authentik managed LDAP outpost you can use the following expression in your property mapping.
 
-```
+If you are using an authentik managed LDAP outpost you can use the following expression in your property mapping. This will correctly return the `groups` claim as a list of LDAP DNs instead of their names.
+
+```python
 ldap_base_dn = "DC=ldap,DC=goauthentik,DC=io"
 groups = []
 for group in request.user.ak_groups.all():
@@ -74,7 +75,7 @@ Under _Sources_, click _Edit_ and ensure that "authentik default Active Director
 Under _Providers_, create an OAuth2/OpenID provider with these settings:
 
 -   Redirect URI: `https://vcenter.company/ui/login/oauth2/authcode`
--   Sub Mode: If your Email address Schema matches your UPN, select "Based on the User's Email...", otherwise select "Based on the User's UPN...". If you are using Authentik's managed LDAP outpost you can chose "Based on the User's username" 
+-   Sub Mode: If your Email address Schema matches your UPN, select "Based on the User's Email...", otherwise select "Based on the User's UPN...". If you are using authentik's managed LDAP outpost, chose "Based on the User's username"
 -   Scopes: Select the Scope Mapping you've created in Step 1
 -   Signing Key: Select any available key
 
