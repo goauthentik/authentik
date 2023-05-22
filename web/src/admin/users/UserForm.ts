@@ -83,16 +83,19 @@ export class UserForm extends ModelForm<User, number> {
                             label: "Default",
                             value: UserTypeEnum.Default,
                             default: true,
+                            // TODO: Add copy
                             description: html`${msg("TODO Copy")}`,
                         },
                         {
                             label: "External",
                             value: UserTypeEnum.External,
+                            // TODO: Add copy
                             description: html`${msg("TODO Copy")}`,
                         },
                         {
                             label: "Service account",
                             value: UserTypeEnum.ServiceAccount,
+                            // TODO: Add copy
                             description: html`${msg("TODO Copy")}`,
                         },
                     ]}

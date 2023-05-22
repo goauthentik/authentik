@@ -136,4 +136,8 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/DebugPage");
         return html`<ak-admin-debug-page></ak-admin-debug-page>`;
     }),
+    new Route(new RegExp("^/enterprise/licenses$"), async () => {
+        await import("@goauthentik/admin/enterprise/EnterpriseLicenseListPage");
+        return html`<ak-enterprise-license-list></ak-enterprise-license-list>`;
+    }),
 ];
