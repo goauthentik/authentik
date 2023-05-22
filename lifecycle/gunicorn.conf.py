@@ -15,6 +15,7 @@ from authentik import get_full_version
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
+from authentik.root.install_id import get_install_id
 from lifecycle.worker import DjangoUvicornWorker
 
 if TYPE_CHECKING:
@@ -148,9 +149,7 @@ if not CONFIG.y_bool("disable_startup_analytics", False):
                     ),
                 },
                 headers={
-                    "User-Agent": sha512(str(CONFIG.y("secret_key")).encode("ascii")).hexdigest()[
-                        :16
-                    ],
+                    "User-Agent": sha512(get_install_id().encode("ascii")).hexdigest()[:16],
                     "Content-Type": "application/json",
                 },
                 timeout=5,

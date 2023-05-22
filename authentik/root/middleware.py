@@ -1,4 +1,5 @@
 """Dynamically set SameSite depending if the upstream connection is TLS or not"""
+from functools import lru_cache
 from hashlib import sha512
 from time import time
 from timeit import default_timer
@@ -16,10 +17,16 @@ from jwt import PyJWTError, decode, encode
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_client_ip
+from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
-SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
+
+
+@lru_cache
+def get_signing_hash():
+    """Get cookie JWT signing hash"""
+    return sha512(get_install_id().encode()).hexdigest()
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):
@@ -47,7 +54,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
         # for testing setups, where the session is directly set
         session_key = key if settings.TEST else None
         try:
-            session_payload = decode(key, SIGNING_HASH, algorithms=["HS256"])
+            session_payload = decode(key, get_signing_hash(), algorithms=["HS256"])
             session_key = session_payload["sid"]
         except (KeyError, PyJWTError):
             pass
@@ -114,7 +121,7 @@ class SessionMiddleware(UpstreamSessionMiddleware):
                     }
                     if request.user.is_authenticated:
                         payload["sub"] = request.user.uid
-                    value = encode(payload=payload, key=SIGNING_HASH)
+                    value = encode(payload=payload, key=get_signing_hash())
                     if settings.TEST:
                         value = request.session.session_key
                     response.set_cookie(
