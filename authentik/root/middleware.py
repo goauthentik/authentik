@@ -22,6 +22,7 @@ from authentik.root.install_id import get_install_id
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
 
+
 @lru_cache
 def get_signing_hash():
     """Get cookie JWT signing hash"""
