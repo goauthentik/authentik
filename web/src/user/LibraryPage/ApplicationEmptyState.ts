@@ -46,7 +46,10 @@ export class LibraryPageApplicationEmptyList extends AKElement {
         });
         return html`
             <div class="pf-u-pt-lg">
-                <a aria-disabled="false" class="cta pf-c-button pf-m-secondary" href="/if/admin/${href}"
+                <a
+                    aria-disabled="false"
+                    class="cta pf-c-button pf-m-secondary"
+                    href="/if/admin/${href}"
                     >${t`Define a new application`}</a
                 >
             </div>

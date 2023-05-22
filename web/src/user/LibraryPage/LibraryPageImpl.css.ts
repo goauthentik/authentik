@@ -7,15 +7,14 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
 export const styles = [PFBase, PFDisplay, PFEmptyState, PFPage, PFContent].concat(css`
-    :host,
-    main {
+    :host {
+        display: block;
         padding: 3% 5%;
     }
     .header {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        margin-left: var(--pf-global--spacer--lg);
     }
     .header input {
         width: 30ch;
