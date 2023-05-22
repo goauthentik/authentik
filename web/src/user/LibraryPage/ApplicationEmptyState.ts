@@ -51,12 +51,12 @@ export class LibraryPageApplicationEmptyList extends AKElement {
                     aria-disabled="false"
                     class="cta pf-c-button pf-m-secondary"
                     href="/if/admin/${href}"
-                    >${t`Define a new application`}</a
+                    >${t`Create a new application`}</a
                 >
             </div>
             <div class="pf-c-empty-state__body">
                 <a href="${docLink("/docs/applications")}" target="_blank"
-                    >${t`Read the documentation on how to define new applications.`}</a
+                    >${t`Refer to documentation`}</a
                 >
             </div>
         `;
