@@ -16,10 +16,11 @@ from jwt import PyJWTError, decode, encode
 from structlog.stdlib import get_logger
 
 from authentik.lib.utils.http import get_client_ip
+from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger("authentik.asgi")
 ACR_AUTHENTIK_SESSION = "goauthentik.io/core/default"
-SIGNING_HASH = sha512(settings.SECRET_KEY.encode()).hexdigest()
+SIGNING_HASH = sha512(get_install_id().encode()).hexdigest()
 
 
 class SessionMiddleware(UpstreamSessionMiddleware):

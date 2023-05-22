@@ -5,7 +5,6 @@ from typing import Any, Optional
 from uuid import uuid4
 
 from deepmerge import always_merger
-from django.conf import settings
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
@@ -33,6 +32,7 @@ from authentik.lib.models import (
 )
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import PolicyBindingModel
+from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
@@ -217,7 +217,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     @property
     def uid(self) -> str:
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
-        return sha256(f"{self.id}-{settings.SECRET_KEY}".encode("ascii")).hexdigest()
+        return sha256(f"{self.id}-{get_install_id()}".encode("ascii")).hexdigest()
 
     def locale(self, request: Optional[HttpRequest] = None) -> str:
         """Get the locale the user has configured"""
