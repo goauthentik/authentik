@@ -142,7 +142,7 @@ if "code" in guild_member_object:
     if guild_member_object['code'] == 10004:
         ak_message(f"User is not a member of {GUILD_NAME_STRING}.")
     else:
-        ak_create_event("discord_error", source=context['source'], code= guild_member_object['code']})
+        ak_create_event("discord_error", source=context['source'], code=guild_member_object['code'])
         ak_message("Discord API error, try again later.")
     # Policy does not match if there is any error.
     return False
