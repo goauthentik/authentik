@@ -6,6 +6,7 @@ import { t } from "@lingui/macro";
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -21,15 +22,13 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 const styles = [
     PFBase,
     PFEmptyState,
+    PFButton,
     PFContent,
     PFSpacing,
     css`
         .cta {
             display: inline-block;
             font-weight: bold;
-            color: black;
-            border: 3px solid var(--pf-c-empty-state__icon--Color);
-            padding: var(--pf-global--spacer--sm);
         }
     `,
 ];
@@ -47,7 +46,7 @@ export class LibraryPageApplicationEmptyList extends AKElement {
         });
         return html`
             <div class="pf-u-pt-lg">
-                <a aria-disabled="false" class="cta pf-m-secondary" href="/if/admin/${href}"
+                <a aria-disabled="false" class="cta pf-c-button pf-m-secondary" href="/if/admin/${href}"
                     >${t`Define a new application`}</a
                 >
             </div>
