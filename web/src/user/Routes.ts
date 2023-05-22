@@ -1,5 +1,5 @@
 import { Route } from "@goauthentik/elements/router/Route";
-import "@goauthentik/user/LibraryPage";
+import "@goauthentik/user/LibraryPage/LibraryPage";
 
 import { html } from "lit";
 
