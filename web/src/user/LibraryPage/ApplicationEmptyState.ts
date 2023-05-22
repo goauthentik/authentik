@@ -1,3 +1,4 @@
+import { docLink } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
@@ -54,7 +55,7 @@ export class LibraryPageApplicationEmptyList extends AKElement {
                 >
             </div>
             <div class="pf-c-empty-state__body">
-                <a href="https://goauthentik.io/docs/applications"
+                <a href="${docLink("/docs/applications")}"
                     >${t`Read the documentation on how to define new applications.`}</a
                 >
             </div>
