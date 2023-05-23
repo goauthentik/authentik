@@ -3,6 +3,13 @@ title: Developer documentation
 slug: /
 ---
 
+This documentation is separated into two main sections:
+
+-   _Developing with authentik_, which has documentation for building integrations and other projects on top of authentik's API and using its existing features
+-   _Developing authentik_, which has documentation on making changes to authentik itself, adding new features, make general changes or fixing bugs.
+
+## Contributing
+
 :+1::tada: Thanks for taking the time to contribute! :tada::+1:
 
 The following is a set of guidelines for contributing to authentik and its components, which are hosted in the [goauthentik Organization](https://github.com/goauthentik) on GitHub. These are mostly guidelines, not rules. Use your best judgment, and feel free to propose changes to this document in a pull request.

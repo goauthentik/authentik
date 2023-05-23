@@ -6,61 +6,82 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Blueprints",
+            label: "Developing with authentik",
+            collapsed: false,
             link: {
-                type: "doc",
-                id: "blueprints/index",
+                type: "generated-index",
+                title: "Developing with authentik",
+                slug: "with-authentik",
+                description:
+                    "Build integrations, automations and tools based on authentik's APIs and interfaces.",
             },
             items: [
-                "blueprints/export",
-                "blueprints/v1/structure",
-                "blueprints/v1/tags",
-                "blueprints/v1/example",
                 {
                     type: "category",
-                    label: "Models",
+                    label: "Blueprints",
                     link: {
                         type: "doc",
-                        id: "blueprints/v1/models",
+                        id: "blueprints/index",
                     },
-                    items: ["blueprints/v1/meta"],
+                    items: [
+                        "blueprints/export",
+                        "blueprints/v1/structure",
+                        "blueprints/v1/tags",
+                        "blueprints/v1/example",
+                        "blueprints/v1/models",
+                        "blueprints/v1/meta",
+                    ],
+                },
+                {
+                    type: "category",
+                    label: "API",
+                    link: {
+                        type: "doc",
+                        id: "api/api",
+                    },
+                    items: [
+                        "api/flow-executor",
+                        "api/making-schema-changes",
+                        "api/websocket",
+                        "api/browser",
+                    ],
                 },
             ],
         },
         {
             type: "category",
-            label: "API",
+            label: "Developing authentik",
+            collapsed: false,
             link: {
-                type: "doc",
-                id: "api/api",
+                type: "generated-index",
+                title: "Developing authentik",
+                slug: "on-authentik",
+                description:
+                    "Make changes to authentik, add features or fix bugs.",
             },
             items: [
-                "api/flow-executor",
-                "api/making-schema-changes",
-                "api/websocket",
-                "api/browser",
+                {
+                    type: "category",
+                    label: "Setup",
+                    items: [
+                        "setup/full-dev-environment",
+                        "setup/frontend-dev-environment",
+                        "setup/website-dev-environment",
+                    ],
+                },
+                {
+                    type: "doc",
+                    id: "translation",
+                },
+                {
+                    type: "doc",
+                    id: "docs/writing-documentation",
+                },
+                {
+                    type: "doc",
+                    id: "releases/index",
+                },
             ],
-        },
-        {
-            type: "category",
-            label: "Setup",
-            items: [
-                "setup/full-dev-environment",
-                "setup/frontend-dev-environment",
-                "setup/website-dev-environment",
-            ],
-        },
-        {
-            type: "doc",
-            id: "translation",
-        },
-        {
-            type: "doc",
-            id: "docs/writing-documentation",
-        },
-        {
-            type: "doc",
-            id: "releases/index",
         },
     ],
 };
