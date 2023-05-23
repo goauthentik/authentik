@@ -154,7 +154,7 @@ class BaseEvaluator:
         if "request" in context and isinstance(context["request"], PolicyRequest):
             policy_request: PolicyRequest = context["request"]
             if policy_request.http_request:
-                event.from_http(policy_request)
+                event.from_http(policy_request.http_request)
                 return
         event.save()
 
