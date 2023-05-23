@@ -39,11 +39,16 @@ class BlueprintOCIClient:
         self.logger = get_logger().bind(url=self.sanitized_url)
 
         self.ref = "latest"
+        # Remove the leading slash of the path to convert it to an image name
         path = self.url.path[1:]
-        if ":" in self.url.path:
+        if ":" in path:
+            # if there's a colon in the path, use everything after it as a ref
             path, _, self.ref = path.partition(":")
+        base_url = f"https://{self.url.hostname}"
+        if self.url.port:
+            base_url += f":{self.url.port}"
         self.client = NewClient(
-            f"https://{self.url.hostname}",
+            base_url,
             WithUserAgent(authentik_user_agent()),
             WithUsernamePassword(self.url.username, self.url.password),
             WithDefaultName(path),
