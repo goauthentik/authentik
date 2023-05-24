@@ -85,4 +85,4 @@ Friday will be wrap-up, final polishing, and signups for demos Friday afternoon/
 
 And back to the swag and fame… after the demos on Saturday, we’ll either do a real-time vote amongst all participants to select the “most impactful” contributions, or conduct an online vote, with all votes due by the following Tuesday.
 
-We are looking forward to hearing your thoughts, and to seeing you at the hackathon this summer. Reach out to us at [hackathon@goauthentik.io](mailto:hackathon@goauthentik.io) with any suggestions or questions!
+We are looking forward to hearing your thoughts, and to seeing you at the hackathon this summer. Reach out to us at [hackathon@goauthentik.io](mailto:hackathon@goauthentik.io) and join us on our **#hackathon23** [Discord channel](https://discord.com/channels/809154715984199690/1110948434552299673) with any suggestions or questions!
