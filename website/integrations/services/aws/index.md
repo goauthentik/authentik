@@ -141,7 +141,7 @@ Some people may opt TO USE the automatic provisioning feature called SCIM (Syste
 SCIM allows you to synchronize (part of) your directory to AWS's IAM, saving you the hassle of having to create users by hand.
 In order to do so, take the following steps in your AWS Identity Center:
 
--   In your _Settings_ pane, locate the _Automatic Provisioning_ Info box. Click _Enable_.
+-   In your _Settings_ pane, locate the _Automatic Provisioning_ information box. Click _Enable_.
 -   AWS will give you an _SCIM Endpoint_ and a _Access Token_. Take note of these values.
 
 Go back to your authentik instance
@@ -172,4 +172,4 @@ return {
 -   Under _Backchannel providers_ add the SCIM provider that you created.
 -   Click _Update_
 
-The SCIM provider syncs automatically whenever you create/update/remove users, groups or group membership . You can manually sync by going to your SCIM provider and click the _Run sync again_ button. Once the SCIM provider has synced, you should see the users and groups in your AWS IAM center.
+The SCIM provider syncs automatically whenever you create/update/remove users, groups, or group membership. You can manually sync by going to your SCIM provider and clicking _Run sync again_. After the SCIM provider has synced, you should see the users and groups in your AWS IAM center.
