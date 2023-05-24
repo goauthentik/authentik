@@ -5675,6 +5675,18 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Activate</source>
         <target>启用</target>
       </trans-unit>
+<trans-unit id="s1024166475850a65">
+  <source>Use Server URI for SNI verification</source>
+</trans-unit>
+<trans-unit id="se65beb94fffc3c4b">
+  <source>Required for servers using TLS 1.3+</source>
+</trans-unit>
+<trans-unit id="scbb9da5594cac46e">
+  <source>Client TLS Authentication Certificate</source>
+</trans-unit>
+<trans-unit id="s5506b35a1bceb141">
+  <source>Client certificate keypair to authenticate against the LDAP Server's Certificate.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

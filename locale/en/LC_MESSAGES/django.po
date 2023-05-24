@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-05-21 21:59+0000\n"
+"POT-Creation-Date: 2023-06-04 02:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -31,16 +31,16 @@ msgstr ""
 msgid "Validation Error"
 msgstr ""
 
-#: authentik/blueprints/api.py:43
+#: authentik/blueprints/api.py:44
 msgid "Blueprint file does not exist"
 msgstr ""
 
-#: authentik/blueprints/api.py:54
+#: authentik/blueprints/api.py:55
 #, python-format
 msgid "Failed to validate blueprint: %(logs)s"
 msgstr ""
 
-#: authentik/blueprints/api.py:59
+#: authentik/blueprints/api.py:60
 msgid "Either path or content must be set."
 msgstr ""
 
@@ -69,24 +69,24 @@ msgstr ""
 msgid "authentik Export - %(date)s"
 msgstr ""
 
-#: authentik/blueprints/v1/tasks.py:149 authentik/crypto/tasks.py:93
+#: authentik/blueprints/v1/tasks.py:150 authentik/crypto/tasks.py:93
 #, python-format
 msgid "Successfully imported %(count)d files."
 msgstr ""
 
-#: authentik/core/api/providers.py:113
+#: authentik/core/api/providers.py:120
 msgid "SAML Provider from Metadata"
 msgstr ""
 
-#: authentik/core/api/providers.py:114
+#: authentik/core/api/providers.py:121
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
-#: authentik/core/api/users.py:118
+#: authentik/core/api/users.py:143
 msgid "No leading or trailing slashes allowed."
 msgstr ""
 
-#: authentik/core/api/users.py:121
+#: authentik/core/api/users.py:146
 msgid "No empty segments in user path allowed."
 msgstr ""
 
@@ -1365,7 +1365,7 @@ msgstr ""
 msgid "Authentication token"
 msgstr ""
 
-#: authentik/providers/scim/models.py:33 authentik/sources/ldap/models.py:82
+#: authentik/providers/scim/models.py:33 authentik/sources/ldap/models.py:96
 msgid "Property mappings used for group creation/updating."
 msgstr ""
 
@@ -1426,79 +1426,88 @@ msgstr ""
 msgid "Used recovery-link to authenticate."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:35
+#: authentik/sources/ldap/models.py:36
 msgid "Server URI"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:43
+#: authentik/sources/ldap/models.py:45
 msgid ""
 "Optionally verify the LDAP Server's Certificate against the CA Chain in this "
 "keypair."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:47
+#: authentik/sources/ldap/models.py:55
+msgid ""
+"Client certificate to authenticate against the LDAP Server's Certificate."
+msgstr ""
+
+#: authentik/sources/ldap/models.py:60
 msgid "Bind CN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:49
+#: authentik/sources/ldap/models.py:62
 msgid "Enable Start TLS"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:51
-msgid "Base DN"
-msgstr ""
-
-#: authentik/sources/ldap/models.py:53
-msgid "Prepended to Base DN for User-queries."
-msgstr ""
-
-#: authentik/sources/ldap/models.py:54
-msgid "Addition User DN"
-msgstr ""
-
-#: authentik/sources/ldap/models.py:58
-msgid "Prepended to Base DN for Group-queries."
-msgstr ""
-
-#: authentik/sources/ldap/models.py:59
-msgid "Addition Group DN"
+#: authentik/sources/ldap/models.py:63
+msgid "Use Server URI for SNI verification"
 msgstr ""
 
 #: authentik/sources/ldap/models.py:65
-msgid "Consider Objects matching this filter to be Users."
+msgid "Base DN"
+msgstr ""
+
+#: authentik/sources/ldap/models.py:67
+msgid "Prepended to Base DN for User-queries."
 msgstr ""
 
 #: authentik/sources/ldap/models.py:68
-msgid "Field which contains members of a group."
+msgid "Addition User DN"
 msgstr ""
 
 #: authentik/sources/ldap/models.py:72
+msgid "Prepended to Base DN for Group-queries."
+msgstr ""
+
+#: authentik/sources/ldap/models.py:73
+msgid "Addition Group DN"
+msgstr ""
+
+#: authentik/sources/ldap/models.py:79
+msgid "Consider Objects matching this filter to be Users."
+msgstr ""
+
+#: authentik/sources/ldap/models.py:82
+msgid "Field which contains members of a group."
+msgstr ""
+
+#: authentik/sources/ldap/models.py:86
 msgid "Consider Objects matching this filter to be Groups."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:75
+#: authentik/sources/ldap/models.py:89
 msgid "Field which contains a unique Identifier."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:89
+#: authentik/sources/ldap/models.py:103
 msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:159
+#: authentik/sources/ldap/models.py:187
 msgid "LDAP Source"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:160
+#: authentik/sources/ldap/models.py:188
 msgid "LDAP Sources"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:182
+#: authentik/sources/ldap/models.py:210
 msgid "LDAP Property Mapping"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:183
+#: authentik/sources/ldap/models.py:211
 msgid "LDAP Property Mappings"
 msgstr ""
 
