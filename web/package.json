@@ -46,7 +46,7 @@
         "mermaid": "^10.1.0",
         "rapidoc": "^9.3.4",
         "webcomponent-qr-code": "^1.1.1",
-        "yaml": "^2.2.2"
+        "yaml": "^2.3.0"
     },
     "devDependencies": {
         "@babel/core": "^7.21.8",
