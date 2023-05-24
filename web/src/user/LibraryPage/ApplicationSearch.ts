@@ -16,10 +16,6 @@ import type { Application } from "@goauthentik/api";
 import { SEARCH_ITEM_SELECTED, SEARCH_UPDATED } from "./constants";
 import { customEvent } from "./helpers";
 
-function fuseToApps(apps: Fuse.FuseResult<Application>[]): Application[] {
-    return apps.map((item) => item.item);
-}
-
 @customElement("ak-library-list-search")
 export class LibraryPageApplicationList extends AKElement {
     static styles = [PFBase, PFDisplay];
@@ -55,16 +51,15 @@ export class LibraryPageApplicationList extends AKElement {
     }
 
     onSelected(apps: Fuse.FuseResult<Application>[]) {
-        const items = fuseToApps(apps);
         this.dispatchEvent(
             customEvent(SEARCH_UPDATED, {
-                selectedApp: items[0],
-                filteredApps: items,
+                apps: apps.map((app) => app.item),
             }),
         );
     }
 
     connectedCallback() {
+        super.connectedCallback();
         this.fuse.setCollection(this.apps);
         if (!this.query) {
             return;

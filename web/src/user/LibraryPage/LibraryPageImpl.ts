@@ -85,8 +85,13 @@ export class LibraryPage extends AKElement {
             throw new Error("ak-library-search-updated must send a custom event.");
         }
         event.stopPropagation();
-        this.selectedApp = event.detail.apps[0];
-        this.filteredApps = event.detail.apps;
+        const apps = event.detail.apps;
+        this.selectedApp = undefined;
+        this.filteredApps = this.apps.results;
+        if (apps.length > 0) {
+            this.selectedApp = apps[0];
+            this.filteredApps = event.detail.apps;
+        }
     }
 
     launchRequest(event: Event) {
@@ -125,7 +130,7 @@ export class LibraryPage extends AKElement {
     }
 
     renderSearch() {
-        return html`<ak-library-list-search .apps="{this.apps.results}"></ak-library-list-search>`;
+        return html`<ak-library-list-search .apps=${this.apps.results}></ak-library-list-search>`;
     }
 
     render() {
