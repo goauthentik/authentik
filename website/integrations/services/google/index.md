@@ -32,7 +32,7 @@ Create a SAML provider with the following parameters:
 
 Under _Advanced protocol settings_, set the option _NameID Property Mapping_ to the default E-mail property mapping called _authentik default SAML Mapping: Email_. Also make sure a _Signing Certificate_ is selected in the same section.
 
-Copy the values of _SSO URL (Redirect)_ and _SLO URL (Redirect)_ fields from the provider page. 
+Copy the values of _SSO URL (Redirect)_ and _SLO URL (Redirect)_ fields from the provider page.
 
 Click the _Download_ button next to the _Download signing certificate_ label.
 
