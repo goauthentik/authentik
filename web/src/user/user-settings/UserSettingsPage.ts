@@ -75,9 +75,9 @@ export class UserSettingsPage extends AKElement {
     }
 
     render(): TemplateResult {
-        const pwStage = this.userSettings?.filter(
-            (stage) => stage.component === "ak-user-settings-password",
-        );
+        const pwStage =
+            this.userSettings?.filter((stage) => stage.component === "ak-user-settings-password") ||
+            [];
         return html`<div class="pf-c-page">
             <main role="main" class="pf-c-page__main" tabindex="-1">
                 <ak-tabs ?vertical="${true}">
@@ -91,7 +91,7 @@ export class UserSettingsPage extends AKElement {
                                 <ak-user-settings-flow-executor></ak-user-settings-flow-executor>
                             </div>
                             <div class="pf-l-stack__item">
-                                ${pwStage
+                                ${pwStage.length > 0
                                     ? html`<ak-user-settings-password
                                           configureUrl=${ifDefined(pwStage[0].configureUrl)}
                                       ></ak-user-settings-password>`
