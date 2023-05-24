@@ -4,7 +4,7 @@ import Fuse from "fuse.js";
 
 import { t } from "@lingui/macro";
 
-import { html } from "lit";
+import { css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -18,7 +18,24 @@ import { customEvent } from "./helpers";
 
 @customElement("ak-library-list-search")
 export class LibraryPageApplicationList extends AKElement {
-    static styles = [PFBase, PFDisplay];
+    static styles = [
+        PFBase,
+        PFDisplay,
+        css`
+            input {
+                width: 30ch;
+                box-sizing: border-box;
+                border: 0;
+                border-bottom: 1px solid;
+                border-bottom-color: var(--ak-accent);
+                background-color: transparent;
+                font-size: 1.5rem;
+            }
+            input:focus {
+                outline: 0;
+            }
+        `,
+    ];
 
     @property()
     apps: Application[] = [];
