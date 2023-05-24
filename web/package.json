@@ -75,7 +75,7 @@
         "eslint-plugin-custom-elements": "0.0.8",
         "eslint-plugin-lit": "^1.8.3",
         "prettier": "^2.8.8",
-        "pyright": "^1.1.308",
+        "pyright": "^1.1.310",
         "rollup": "^2.79.1",
         "rollup-plugin-copy": "^3.4.0",
         "rollup-plugin-cssimport": "^1.0.3",
