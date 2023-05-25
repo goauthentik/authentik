@@ -10,21 +10,32 @@ export const sourceLocale = `en`;
  * The other locale codes that this application is localized into. Sorted
  * lexicographically.
  */
-export const targetLocales = [`de`, `en`, `es`, `fr`, `pl`, `pseudo-LOCALE`, `tr`, `zh_TW`, `zh-CN`, `zh-HK`] as const;
+export const targetLocales = [
+  `de`,
+  `en`,
+  `es`,
+  `fr`,
+  `pl`,
+  `pseudo-LOCALE`,
+  `tr`,
+  `zh_TW`,
+  `zh-CN`,
+  `zh-HK`,
+] as const;
 
 /**
  * All valid project locale codes. Sorted lexicographically.
  */
 export const allLocales = [
-    `de`,
-    `en`,
-    `en`,
-    `es`,
-    `fr`,
-    `pl`,
-    `pseudo-LOCALE`,
-    `tr`,
-    `zh_TW`,
-    `zh-CN`,
-    `zh-HK`,
+  `de`,
+  `en`,
+  `en`,
+  `es`,
+  `fr`,
+  `pl`,
+  `pseudo-LOCALE`,
+  `tr`,
+  `zh_TW`,
+  `zh-CN`,
+  `zh-HK`,
 ] as const;
