@@ -43,6 +43,12 @@ Be sure to run the formatter before committing changes.
 
     -   DO: "The Applications page displays."
 
+-   Phrasing should never blame the user, and should be subjective:
+
+    -   DON'T: "Never modify the default file."
+
+    -   DO: "We recommend not modifying the default file."
+
 -   When referring to UI text or UI components in authentik, use **bold** text.
 -   When referring to other objects in authentik code or functionality, use _cursive_ text, and link to the corresponding documentation if possible.
 -   When referring to external tools, give an example how to use the tools or explain how the user can use them.
