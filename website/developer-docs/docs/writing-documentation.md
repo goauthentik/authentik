@@ -9,33 +9,43 @@ the documentation is easy to read and uses similar phrasing.
 
 Requirements:
 
--   Node 16 (or greater)
+-   Node.js 16 (or greater)
 
 The documentation site is situated in the `/website` folder of the authentik GitHub repository.
 
 The site is built using npm, below are some useful make commands:
 
--   Install: `make website-install` (Needed for any of the other tasks)
--   Formatting: `make website-lint-fix` or `make website` (Run this before committing)
--   Live editing: `make website-watch` (For real time viewing of changes)
+-   **Installation**: `make website-install`
 
+    This command is rquired before running any of the following commands, and after upgrading any dependencies.
+
+-   **Formatting**: `make website` or `make website-lint-fix`
+
+    Run this command before committing, otherwise the build will fail with an error about linting.
+
+-   **Live editing**: `make website-watch`
+
+    For real time viewing of changes, as you make them. This is a great way to verify that page formatting looks good.
+
+:::info
 Be sure to run the formatter before committing changes.
+:::
 
 ## General guidelines
 
--   authentik should always be stylized as `authentik` (with a lower-case a and ending with a k)
--   Documentation should use American english
--   Feel free to use Docusaurus-specific features, see [here](https://docusaurus.io/docs/next/markdown-features)
--   Use abbreviations where it makes sense (for commonly used terms like SAML and OAuth)
--   Phrasing should never blame the user, and should be subjective, i.e
+-   The product name authentik should always be stylized as `authentik` (with a lower-case "a" and ending with a "k").
+-   Documentation should use American English.
+-   Feel free to use [Docusaurus-specific features](https://docusaurus.io/docs/next/markdown-features)
+-   Use abbreviations where it makes sense (for commonly used terms like SAML and OAuth) for common terms. If an abbreciation is less-known, spell it out in parentheses after the first use.
+-   Phrasing should almost always be in present tense and active voice:
+    DON'T: "The Applications page will be loaded."
+    DO: "The Applications page loads."
 
-    -   **DON'T** `You may never click x.`
-    -   **DO** `x should never be clicked.`
-
--   When referring to other objects in authentik, use _cursive_ text, and link to the corresponding documentation if possible.
+-   When referring to UI text or UI components in authentik, use **bold** text.
+-   When referring to other objects in authentik code or functionality, use _cursive_ text, and link to the corresponding documentation if possible.
 -   When referring to external tools, give an example how to use the tools or explain how the user can use them.
 -   Make sure to add the documentation to add to the sidebar, if adding a new page.
--   Test how the documentation renders using the Netlify Preview, especially when using Docusaurus-specific features.
+-   Test how the documentation renders using the Netlify Deploy Preview, especially when using Docusaurus-specific features.
 
 If you find any documentation that doesn't match these guidelines, feel free to either open an Issue or a PR so they can be fixed.
 
