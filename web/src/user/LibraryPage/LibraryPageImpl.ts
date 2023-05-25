@@ -8,6 +8,7 @@ import { t } from "@lingui/macro";
 
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import styles from "./LibraryPageImpl.css";
 
@@ -123,8 +124,8 @@ export class LibraryPage extends AKElement {
 
         return html`<ak-library-application-list
             layout="${layout}"
-            background="${background}"
-            selected="${selected}"
+            background="${ifDefined(background)}"
+            selected="${ifDefined(selected)}"
             .apps=${apps}
         ></ak-library-application-list>`;
     }
