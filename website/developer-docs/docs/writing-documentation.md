@@ -35,11 +35,13 @@ Be sure to run the formatter before committing changes.
 
 -   The product name authentik should always be stylized as `authentik` (with a lower-case "a" and ending with a "k").
 -   Documentation should use American English.
--   Feel free to use [Docusaurus-specific features](https://docusaurus.io/docs/next/markdown-features)
+-   You can use standard [Docusaurus-specific features](https://docusaurus.io/docs/next/markdown-features), which include MDX elements such as tabs and admonitions.
 -   Use abbreviations where it makes sense (for commonly used terms like SAML and OAuth) for common terms. If an abbreciation is less-known, spell it out in parentheses after the first use.
 -   Phrasing should almost always be in present tense and active voice:
-    DON'T: "The Applications page will be loaded."
-    DO: "The Applications page loads."
+
+    -   DON'T: "The Applications page will be loaded."
+
+    -   DO: "The Applications page displays."
 
 -   When referring to UI text or UI components in authentik, use **bold** text.
 -   When referring to other objects in authentik code or functionality, use _cursive_ text, and link to the corresponding documentation if possible.
@@ -47,7 +49,7 @@ Be sure to run the formatter before committing changes.
 -   Make sure to add the documentation to add to the sidebar, if adding a new page.
 -   Test how the documentation renders using the Netlify Deploy Preview, especially when using Docusaurus-specific features.
 
-If you find any documentation that doesn't match these guidelines, feel free to either open an Issue or a PR so they can be fixed.
+If you find any documentation that doesn't match these guidelines, feel free to either open an [Issue](https://github.com/goauthentik/authentik/issues) or a [PR](https://github.com/goauthentik/authentik/pulls) so they can be fixed.
 
 ## Integration guidelines
 
@@ -55,14 +57,13 @@ These guidelines apply in addition to the ones above.
 
 See the template in `/website/integrations/_template/service.md`.
 
--   For placeholders, use angle brackets (`<placeholder-name>`).
+-   For placeholders, use angle brackets and italicize the text inside the brackets, to indicate that it is a variable (_`<placeholder-name>`_).
 
-    Make sure to also define if the placeholder is something the user needs to define, something another system defines, or randomly generated.
+    Make sure to also define if the placeholder is something the user needs to define, is something another system defines, or is randomly generated.
 
-    If you're adding configuration snippets to the documentation, and the snippet is in a language that supports comments,
-    other placeholders may be used, for example comments referencing an earlier step.
+    If you're adding configuration snippets to the documentation, and the snippet is in a language that supports comments, other placeholders may be used, for example comments referencing an earlier step.
 
--   For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application you are writing documentation for.
+-   For placeholder domains, use `authentik.company` and `app-name.company`, where `app-name` is the name of the application that you are writing documentation for.
 -   Try to order the documentation in the order that makes it easiest for the user to configure.
 
 -   Make sure to add the service to a fitting category in `/website/sidebarsIntegrations.js`
