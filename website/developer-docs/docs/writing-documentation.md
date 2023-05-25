@@ -21,11 +21,11 @@ The site is built using npm, below are some useful make commands:
 
 -   **Formatting**: `make website` or `make website-lint-fix`
 
-    Run this command before committing, otherwise the build will fail with an error about linting.
+    Run this command before committing, to ensure consistent syntax, clean formatting, and verify links. Note that if the formatting command is not run, the build will fail with an error about linting.
 
 -   **Live editing**: `make website-watch`
 
-    For real time viewing of changes, as you make them. This is a great way to verify that page formatting looks good.
+    For real time viewing of changes, as you make them.
 
 :::info
 Be sure to run the formatter before committing changes.
