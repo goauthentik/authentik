@@ -382,7 +382,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
 class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
     """OAuth2 Refresh Token, opaque"""
 
-    token = models.TextField(default=generate_client_secret)
+    token = models.TextField(default=generate_key)
     _id_token = models.TextField(verbose_name=_("ID Token"))
 
     @property
