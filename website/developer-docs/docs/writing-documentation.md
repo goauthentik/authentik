@@ -17,7 +17,7 @@ The site is built using npm, below are some useful make commands:
 
 -   **Installation**: `make website-install`
 
-    This command is rquired before running any of the following commands, and after upgrading any dependencies.
+    This command is required before running any of the following commands, and after upgrading any dependencies.
 
 -   **Formatting**: `make website` or `make website-lint-fix`
 
