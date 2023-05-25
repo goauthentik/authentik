@@ -2,10 +2,10 @@
 title: Beta versions
 ---
 
-You can test upcoming authentik versions by switching to the _next_ images. It is recommended to upgrade to the latest stable release before upgrading to beta images. It is always possible to upgrade from the beta to the next stable release.
+You can test upcoming authentik versions by switching to the _next_ images. It is recommended to upgrade to the latest stable release before upgrading to Beta images. It is always possible to upgrade from the Beta to the next stable release.
 
 :::warning
-Downgrading from the Beta is not supported. It is recommended to take a backup before upgrading, or test beta versions on a separate install.
+Downgrading from the Beta is not supported. It is recommended to take a backup before upgrading, or test Beta versions on a separate install.
 :::
 
 import Tabs from "@theme/Tabs";
@@ -26,9 +26,9 @@ AUTHENTIK_TAG=gh-next
 AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s
 ```
 
-The beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name.
+The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
 
-Afterwards, run the upgrade commands from the latest release notes.
+Next, run the upgrade commands from the latest [Release Notes](../releases).
 
   </TabItem>
   <TabItem value="kubernetes">
@@ -45,9 +45,9 @@ image:
     pullPolicy: Always
 ```
 
-The beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name.
+The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
 
-Afterwards, run the upgrade commands from the latest release notes.
+Next, run the upgrade commands from the latest [Release Notes](../releases).
 
   </TabItem>
 </Tabs>
