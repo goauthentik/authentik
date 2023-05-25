@@ -57,7 +57,7 @@ These guidelines apply in addition to the ones above.
 
 See the template in `/website/integrations/_template/service.md`.
 
--   For placeholders, use angle brackets and italicize the text inside the brackets, to indicate that it is a variable (_`<placeholder-name>`_).
+-   For placeholders, use angle brackets and italicize the text inside the brackets, to indicate that it is a variable (`_<placeholder-name>_`).
 
     Make sure to also define if the placeholder is something the user needs to define, is something another system defines, or is randomly generated.
 
