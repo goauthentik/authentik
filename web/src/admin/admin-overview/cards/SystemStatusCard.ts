@@ -4,8 +4,7 @@ import {
 } from "@goauthentik/admin/admin-overview/cards/AdminStatusCard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -52,37 +51,37 @@ export class SystemStatusCard extends AdminStatusCard<System> {
 
     getStatus(value: System): Promise<AdminStatus> {
         if (value.embeddedOutpostHost === "") {
-            this.statusSummary = t`Warning`;
+            this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${t`Embedded outpost is not configured correctly.`}
-                    <a href="#/outpost/outposts">${t`Check outposts.`}</a>`,
+                message: html`${msg("Embedded outpost is not configured correctly.")}
+                    <a href="#/outpost/outposts">${msg("Check outposts.")}</a>`,
             });
         }
         if (!value.httpIsSecure && document.location.protocol === "https:") {
-            this.statusSummary = t`Warning`;
+            this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${t`HTTPS is not detected correctly`}`,
+                message: html`${msg("HTTPS is not detected correctly")}`,
             });
         }
         const timeDiff = value.serverTime.getTime() - (this.now || new Date()).getTime();
         if (timeDiff > 5000 || timeDiff < -5000) {
-            this.statusSummary = t`Warning`;
+            this.statusSummary = msg("Warning");
             return Promise.resolve<AdminStatus>({
                 icon: "fa fa-exclamation-triangle pf-m-warning",
-                message: html`${t`Server and client are further than 5 seconds apart.`}`,
+                message: html`${msg("Server and client are further than 5 seconds apart.")}`,
             });
         }
-        this.statusSummary = t`OK`;
+        this.statusSummary = msg("OK");
         return Promise.resolve<AdminStatus>({
             icon: "fa fa-check-circle pf-m-success",
-            message: html`${t`Everything is ok.`}`,
+            message: html`${msg("Everything is ok.")}`,
         });
     }
 
     renderHeader(): TemplateResult {
-        return html`${t`System status`}`;
+        return html`${msg("System status")}`;
     }
 
     renderValue(): TemplateResult {

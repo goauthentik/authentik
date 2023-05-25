@@ -6,8 +6,7 @@ import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 import "webcomponent-qr-code";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -49,7 +48,8 @@ export class AuthenticatorTOTPStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -68,7 +68,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
                     >
                         <div slot="link">
                             <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${t`Not you?`}</a
+                                >${msg("Not you?")}</a
                             >
                         </div>
                     </ak-form-static>
@@ -94,7 +94,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                         .then(() => {
                                             showMessage({
                                                 level: MessageLevel.success,
-                                                message: t`Successfully copied TOTP Config.`,
+                                                message: msg("Successfully copied TOTP Config."),
                                             });
                                         });
                                 }}
@@ -102,12 +102,12 @@ export class AuthenticatorTOTPStage extends BaseStage<
                                 <span class="pf-c-button__progress"
                                     ><i class="fas fa-copy"></i
                                 ></span>
-                                ${t`Copy`}
+                                ${msg("Copy")}
                             </button>
                         </div>
                     </ak-form-element>
                     <ak-form-element
-                        label="${t`Code`}"
+                        label="${msg("Code")}"
                         ?required="${true}"
                         class="pf-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["code"]}
@@ -118,7 +118,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
                             name="code"
                             inputmode="numeric"
                             pattern="[0-9]*"
-                            placeholder="${t`Please enter your TOTP Code`}"
+                            placeholder="${msg("Please enter your TOTP Code")}"
                             autofocus=""
                             autocomplete="one-time-code"
                             class="pf-c-form-control"
@@ -128,7 +128,7 @@ export class AuthenticatorTOTPStage extends BaseStage<
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${t`Continue`}
+                            ${msg("Continue")}
                         </button>
                     </div>
                 </form>

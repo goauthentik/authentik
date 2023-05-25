@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -22,9 +21,9 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated policy.`;
+            return msg("Successfully updated policy.");
         } else {
-            return t`Successfully created policy.`;
+            return msg("Successfully created policy.");
         }
     }
 
@@ -44,9 +43,11 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Checks if the request's user's password has been changed in the last x days, and denys based on settings.`}
+                ${msg(
+                    "Checks if the request's user's password has been changed in the last x days, and denys based on settings.",
+                )}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -66,17 +67,19 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Execution logging`}</span>
+                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                    ${msg(
+                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Policy-specific settings`} </span>
+                <span slot="header"> ${msg("Policy-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Maximum age (in days)`}
+                        label=${msg("Maximum age (in days)")}
                         ?required=${true}
                         name="days"
                     >
@@ -100,7 +103,9 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
                                 </span>
                             </span>
                             <span class="pf-c-switch__label"
-                                >${t`Only fail the policy, don't invalidate user's password`}</span
+                                >${msg(
+                                    "Only fail the policy, don't invalidate user's password",
+                                )}</span
                             >
                         </label>
                     </ak-form-element-horizontal>

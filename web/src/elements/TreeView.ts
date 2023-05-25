@@ -2,8 +2,7 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import { setURLParams } from "@goauthentik/elements/router/RouteMatch";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -180,7 +179,7 @@ export class TreeView extends AKElement {
     parse(data: string[]): TreeViewItem {
         const rootItem: TreeViewItem = {
             id: undefined,
-            label: t`Root`,
+            label: msg("Root"),
             childItems: [],
             level: -1,
         };

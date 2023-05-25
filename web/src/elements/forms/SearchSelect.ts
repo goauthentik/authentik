@@ -3,8 +3,7 @@ import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/commo
 import { AKElement } from "@goauthentik/elements/Base";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/Form";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html, render } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -35,7 +34,7 @@ export class SearchSelect<T> extends AKElement {
     blankable = false;
 
     @property()
-    placeholder: string = t`Select an object.`;
+    placeholder: string = msg("Select an object.");
 
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFFormControl, PFSelect];
@@ -94,7 +93,7 @@ export class SearchSelect<T> extends AKElement {
 
     toForm(): unknown {
         if (!this.objects) {
-            throw new PreventFormSubmit(t`Loading options...`);
+            throw new PreventFormSubmit(msg("Loading options..."));
         }
         return this.value(this.selectedObject) || "";
     }
@@ -258,7 +257,7 @@ export class SearchSelect<T> extends AKElement {
         this.renderMenu();
         let value = "";
         if (!this.objects) {
-            value = t`Loading...`;
+            value = msg("Loading...");
         } else if (this.selectedObject) {
             value = this.renderElement(this.selectedObject);
         } else if (this.blankable) {

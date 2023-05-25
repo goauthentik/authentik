@@ -3,8 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/cards/AggregatePromiseCard";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -42,14 +41,14 @@ export class DashboardUserPage extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<ak-page-header icon="pf-icon pf-icon-user" header=${t`User statistics`}>
+        return html`<ak-page-header icon="pf-icon pf-icon-user" header=${msg("User statistics")}>
             </ak-page-header>
             <section class="pf-c-page__main-section">
                 <div class="pf-l-grid pf-m-gutter">
                     <div
                         class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl big-graph-container"
                     >
-                        <ak-aggregate-card header=${t`Users created per day in the last month`}>
+                        <ak-aggregate-card header=${msg("Users created per day in the last month")}>
                             <ak-charts-admin-model-per-day
                                 .query=${{
                                     context__model__app: "authentik_core",
@@ -66,7 +65,7 @@ export class DashboardUserPage extends AKElement {
                     <div
                         class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl big-graph-container"
                     >
-                        <ak-aggregate-card header=${t`Logins per day in the last month`}>
+                        <ak-aggregate-card header=${msg("Logins per day in the last month")}>
                             <ak-charts-admin-model-per-day action=${EventActions.Login}>
                             </ak-charts-admin-model-per-day>
                         </ak-aggregate-card>
@@ -74,7 +73,7 @@ export class DashboardUserPage extends AKElement {
                     <div
                         class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-6-col-on-2xl big-graph-container"
                     >
-                        <ak-aggregate-card header=${t`Failed Logins per day in the last month`}>
+                        <ak-aggregate-card header=${msg("Failed Logins per day in the last month")}>
                             <ak-charts-admin-model-per-day action=${EventActions.LoginFailed}>
                             </ak-charts-admin-model-per-day>
                         </ak-aggregate-card>

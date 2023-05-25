@@ -18,8 +18,7 @@ import { ArcElement, BarElement } from "chart.js";
 import { LinearScale, TimeScale } from "chart.js";
 import "chartjs-adapter-moment";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
@@ -152,7 +151,7 @@ export abstract class AKChart<T> extends AKElement {
         const valueStamp = ticks[index];
         const delta = Date.now() - valueStamp.value;
         const ago = Math.round(delta / 1000 / 3600);
-        return t`${ago} hour(s) ago`;
+        return msg(str`${ago} hour(s) ago`);
     }
 
     getOptions(): ChartOptions {

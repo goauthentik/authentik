@@ -1,8 +1,7 @@
 import "@goauthentik/elements/EmptyState";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -54,7 +53,7 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
 
     render(): TemplateResult {
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${t`Authenticating with Apple...`}</h1>
+                <h1 class="pf-c-title pf-m-3xl">${msg("Authenticating with Apple...")}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
@@ -66,7 +65,7 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
                                   AppleID.auth.signIn();
                               }}
                           >
-                              ${t`Retry`}
+                              ${msg("Retry")}
                           </button>`
                         : html``}
                 </form>

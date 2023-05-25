@@ -4,8 +4,7 @@ import { PFColor } from "@goauthentik/elements/Label";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -19,7 +18,7 @@ export class FlowImportForm extends Form<Flow> {
     result?: FlowImportResult;
 
     getSuccessMessage(): string {
-        return t`Successfully imported flow.`;
+        return msg("Successfully imported flow.");
     }
 
     static get styles(): CSSResult[] {
@@ -43,18 +42,18 @@ export class FlowImportForm extends Form<Flow> {
 
     renderResult(): TemplateResult {
         return html`
-            <ak-form-element-horizontal label=${t`Successful`}>
+            <ak-form-element-horizontal label=${msg("Successful")}>
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <span class="pf-c-form__label-text">
                             <ak-label color=${this.result?.success ? PFColor.Green : PFColor.Red}>
-                                ${this.result?.success ? t`Yes` : t`No`}
+                                ${this.result?.success ? msg("Yes") : msg("No")}
                             </ak-label>
                         </span>
                     </div>
                 </div>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Log messages`}>
+            <ak-form-element-horizontal label=${msg("Log messages")}>
                 <div class="pf-c-form__group-label">
                     <div class="c-form__horizontal-group">
                         <dl class="pf-c-description-list pf-m-horizontal">
@@ -76,7 +75,7 @@ export class FlowImportForm extends Form<Flow> {
                                 : html`<div class="pf-c-description-list__group">
                                       <dt class="pf-c-description-list__term">
                                           <span class="pf-c-description-list__text"
-                                              >${t`No log messages.`}</span
+                                              >${msg("No log messages.")}</span
                                           >
                                       </dt>
                                   </div>`}
@@ -89,10 +88,12 @@ export class FlowImportForm extends Form<Flow> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Flow`} name="flow">
+            <ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">
-                    ${t`.yaml files, which can be found on goauthentik.io and can be exported by authentik.`}
+                    ${msg(
+                        ".yaml files, which can be found on goauthentik.io and can be exported by authentik.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult() : html``}

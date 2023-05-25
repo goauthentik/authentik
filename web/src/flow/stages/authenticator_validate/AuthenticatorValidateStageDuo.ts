@@ -4,8 +4,7 @@ import "@goauthentik/flow/FormStatic";
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -46,7 +45,8 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         const errors = this.challenge.responseErrors?.duo || [];
         return html`<div class="pf-c-login__main-body">
@@ -63,7 +63,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
                     >
                         <div slot="link">
                             <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${t`Not you?`}</a
+                                >${msg("Not you?")}</a
                             >
                         </div>
                     </ak-form-static>
@@ -78,7 +78,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
                               }
                               return html`<p>${err.string}</p>`;
                           })
-                        : html`${t`Sending Duo push notification`}`}
+                        : html`${msg("Sending Duo push notification")}`}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
@@ -94,7 +94,7 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
                                       ).selectedDeviceChallenge = undefined;
                                   }}
                               >
-                                  ${t`Return to device picker`}
+                                  ${msg("Return to device picker")}
                               </button>
                           </li>`
                         : html``}

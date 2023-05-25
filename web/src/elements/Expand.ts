@@ -1,7 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -14,10 +13,10 @@ export class Expand extends AKElement {
     expanded = false;
 
     @property()
-    textOpen = t`Show less`;
+    textOpen = msg("Show less");
 
     @property()
-    textClosed = t`Show more`;
+    textClosed = msg("Show more");
 
     static get styles(): CSSResult[] {
         return [PFBase, PFExpandableSection];
@@ -41,7 +40,7 @@ export class Expand extends AKElement {
                     <i class="fas fa-angle-right" aria-hidden="true"></i>
                 </span>
                 <span class="pf-c-expandable-section__toggle-text"
-                    >${this.expanded ? t`${this.textOpen}` : t`${this.textClosed}`}</span
+                    >${this.expanded ? this.textOpen : this.textClosed}</span
                 >
             </button>
             <div class="pf-c-expandable-section__content" ?hidden=${!this.expanded}>

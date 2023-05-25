@@ -2,8 +2,7 @@ import { docLink } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -51,12 +50,12 @@ export class LibraryPageApplicationEmptyList extends AKElement {
                     aria-disabled="false"
                     class="cta pf-c-button pf-m-secondary"
                     href="/if/admin/${href}"
-                    >${t`Create a new application`}</a
+                    >${msg("Create a new application")}</a
                 >
             </div>
             <div class="pf-c-empty-state__body">
                 <a href="${docLink("/docs/applications")}" target="_blank"
-                    >${t`Refer to documentation`}</a
+                    >${msg("Refer to documentation")}</a
                 >
             </div>
         `;
@@ -66,9 +65,9 @@ export class LibraryPageApplicationEmptyList extends AKElement {
         return html` <div class="pf-c-empty-state pf-m-full-height">
             <div class="pf-c-empty-state__content">
                 <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
-                <h1 class="pf-c-title pf-m-lg">${t`No Applications available.`}</h1>
+                <h1 class="pf-c-title pf-m-lg">${msg("No Applications available.")}</h1>
                 <div class="pf-c-empty-state__body">
-                    ${t`Either no applications are defined, or you don’t have access to any.`}
+                    ${msg("Either no applications are defined, or you don’t have access to any.")}
                 </div>
                 ${this.isAdmin ? this.renderNewAppButton() : html``}
             </div>

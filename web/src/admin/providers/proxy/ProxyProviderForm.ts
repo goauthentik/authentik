@@ -7,8 +7,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
@@ -84,9 +83,9 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated provider.`;
+            return msg("Successfully updated provider.");
         } else {
-            return t`Successfully created provider.`;
+            return msg("Successfully created provider.");
         }
     }
 
@@ -109,7 +108,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
     renderHttpBasic(): TemplateResult {
         return html`<ak-form-element-horizontal
-                label=${t`HTTP-Basic Username Key`}
+                label=${msg("HTTP-Basic Username Key")}
                 name="basicAuthUserAttribute"
             >
                 <input
@@ -118,11 +117,13 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.`}
+                    ${msg(
+                        "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`HTTP-Basic Password Key`}
+                label=${msg("HTTP-Basic Password Key")}
                 name="basicAuthPasswordAttribute"
             >
                 <input
@@ -131,7 +132,9 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`User/Group Attribute used for the password part of the HTTP-Basic Header.`}
+                    ${msg(
+                        "User/Group Attribute used for the password part of the HTTP-Basic Header.",
+                    )}
                 </p>
             </ak-form-element-horizontal>`;
     }
@@ -147,7 +150,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         this.mode = ProxyMode.Proxy;
                     }}
                 >
-                    <span class="pf-c-toggle-group__text">${t`Proxy`}</span>
+                    <span class="pf-c-toggle-group__text">${msg("Proxy")}</span>
                 </button>
             </div>
             <div class="pf-c-divider pf-m-vertical" role="separator"></div>
@@ -162,7 +165,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     }}
                 >
                     <span class="pf-c-toggle-group__text"
-                        >${t`Forward auth (single application)`}</span
+                        >${msg("Forward auth (single application)")}</span
                     >
                 </button>
             </div>
@@ -177,7 +180,9 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         this.mode = ProxyMode.ForwardDomain;
                     }}
                 >
-                    <span class="pf-c-toggle-group__text">${t`Forward auth (domain level)`}</span>
+                    <span class="pf-c-toggle-group__text"
+                        >${msg("Forward auth (domain level)")}</span
+                    >
                 </button>
             </div>`;
     }
@@ -186,10 +191,12 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
         switch (this.mode) {
             case ProxyMode.Proxy:
                 return html`<p class="pf-u-mb-xl">
-                        ${t`This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well.`}
+                        ${msg(
+                            "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well.",
+                        )}
                     </p>
                     <ak-form-element-horizontal
-                        label=${t`External host`}
+                        label=${msg("External host")}
                         ?required=${true}
                         name="externalHost"
                     >
@@ -200,11 +207,13 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`The external URL you'll access the application at. Include any non-standard port.`}
+                            ${msg(
+                                "The external URL you'll access the application at. Include any non-standard port.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Internal host`}
+                        label=${msg("Internal host")}
                         ?required=${true}
                         name="internalHost"
                     >
@@ -215,7 +224,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Upstream host that the requests are forwarded to.`}
+                            ${msg("Upstream host that the requests are forwarded to.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="internalHostSslValidation">
@@ -231,19 +240,21 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                                 </span>
                             </span>
                             <span class="pf-c-switch__label"
-                                >${t`Internal host SSL Validation`}</span
+                                >${msg("Internal host SSL Validation")}</span
                             >
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`Validate SSL Certificates of upstream servers.`}
+                            ${msg("Validate SSL Certificates of upstream servers.")}
                         </p>
                     </ak-form-element-horizontal>`;
             case ProxyMode.ForwardSingle:
                 return html`<p class="pf-u-mb-xl">
-                        ${t`Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you).`}
+                        ${msg(
+                            "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you).",
+                        )}
                     </p>
                     <ak-form-element-horizontal
-                        label=${t`External host`}
+                        label=${msg("External host")}
                         ?required=${true}
                         name="externalHost"
                     >
@@ -254,23 +265,29 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`The external URL you'll access the application at. Include any non-standard port.`}
+                            ${msg(
+                                "The external URL you'll access the application at. Include any non-standard port.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>`;
             case ProxyMode.ForwardDomain:
                 return html`<p class="pf-u-mb-xl">
-                        ${t`Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.`}
+                        ${msg(
+                            "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.",
+                        )}
                     </p>
                     <div class="pf-u-mb-xl">
-                        ${t`An example setup can look like this:`}
+                        ${msg("An example setup can look like this:")}
                         <ul class="pf-c-list">
-                            <li>${t`authentik running on auth.example.com`}</li>
-                            <li>${t`app1 running on app1.example.com`}</li>
+                            <li>${msg("authentik running on auth.example.com")}</li>
+                            <li>${msg("app1 running on app1.example.com")}</li>
                         </ul>
-                        ${t`In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com.`}
+                        ${msg(
+                            "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com.",
+                        )}
                     </div>
                     <ak-form-element-horizontal
-                        label=${t`Authentication URL`}
+                        label=${msg("Authentication URL")}
                         ?required=${true}
                         name="externalHost"
                     >
@@ -281,11 +298,13 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`The external URL you'll authenticate at. The authentik core server should be reachable under this URL.`}
+                            ${msg(
+                                "The external URL you'll authenticate at. The authentik core server should be reachable under this URL.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Cookie domain`}
+                        label=${msg("Cookie domain")}
                         name="cookieDomain"
                         ?required=${true}
                     >
@@ -296,17 +315,19 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.`}
+                            ${msg(
+                                "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>`;
             case ProxyMode.UnknownDefaultOpenApi:
-                return html`<p>${t`Unknown proxy mode`}</p>`;
+                return html`<p>${msg("Unknown proxy mode")}</p>`;
         }
     }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -315,7 +336,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Authentication flow`}
+                label=${msg("Authentication flow")}
                 ?required=${false}
                 name="authenticationFlow"
             >
@@ -346,11 +367,11 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Flow used when a user access this provider and is not authenticated.`}
+                    ${msg("Flow used when a user access this provider and is not authenticated.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Authorization flow`}
+                label=${msg("Authorization flow")}
                 ?required=${true}
                 name="authorizationFlow"
             >
@@ -381,7 +402,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Flow used when authorizing this provider.`}
+                    ${msg("Flow used when authorizing this provider.")}
                 </p>
             </ak-form-element-horizontal>
 
@@ -391,20 +412,22 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 </div>
                 <div class="pf-c-card__footer">${this.renderSettings()}</div>
             </div>
-            <ak-form-element-horizontal label=${t`Token validity`} name="accessTokenValidity">
+            <ak-form-element-horizontal label=${msg("Token validity")} name="accessTokenValidity">
                 <input
                     type="text"
                     value="${first(this.instance?.accessTokenValidity, "hours=24")}"
                     class="pf-c-form-control"
                 />
-                <p class="pf-c-form__helper-text">${t`Configure how long tokens are valid for.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Configure how long tokens are valid for.")}
+                </p>
                 <ak-utils-time-delta-help></ak-utils-time-delta-help>
             </ak-form-element-horizontal>
 
             <ak-form-group>
-                <span slot="header">${t`Advanced protocol settings`}</span>
+                <span slot="header">${msg("Advanced protocol settings")}</span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Certificate`} name="certificate">
+                    <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                         <ak-search-select
                             .fetchObjects=${async (
                                 query?: string,
@@ -436,7 +459,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         </ak-search-select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Additional scopes`}
+                        label=${msg("Additional scopes")}
                         name="propertyMappings"
                     >
                         <select class="pf-c-form-control" multiple>
@@ -459,33 +482,37 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                                 })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Additional scope mappings, which are passed to the proxy.`}
+                            ${msg("Additional scope mappings, which are passed to the proxy.")}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
                         label="${this.mode === ProxyMode.ForwardDomain
-                            ? t`Unauthenticated URLs`
-                            : t`Unauthenticated Paths`}"
+                            ? msg("Unauthenticated URLs")
+                            : msg("Unauthenticated Paths")}"
                         name="skipPathRegex"
                     >
                         <textarea class="pf-c-form-control">
 ${this.instance?.skipPathRegex}</textarea
                         >
                         <p class="pf-c-form__helper-text">
-                            ${t`Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.`}
+                            ${msg(
+                                "Regular expressions for which authentication is not required. Each new line is interpreted as a new expression.",
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions.`}
+                            ${msg(
+                                "When using proxy or forward auth (single application) mode, the requested URL Path is checked against the regular expressions. When using forward auth (domain mode), the full requested URL including scheme and host is matched against the regular expressions.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header">${t`Authentication settings`}</span>
+                <span slot="header">${msg("Authentication settings")}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="interceptHeaderAuth">
                         <label class="pf-c-switch">
@@ -500,11 +527,13 @@ ${this.instance?.skipPathRegex}</textarea
                                 </span>
                             </span>
                             <span class="pf-c-switch__label"
-                                >${t`Intercept header authentication`}</span
+                                >${msg("Intercept header authentication")}</span
                             >
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`When enabled, authentik will intercept the Authorization header to authenticate the request.`}
+                            ${msg(
+                                "When enabled, authentik will intercept the Authorization header to authenticate the request.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="basicAuthEnabled">
@@ -524,15 +553,20 @@ ${this.instance?.skipPathRegex}</textarea
                                 </span>
                             </span>
                             <span class="pf-c-switch__label"
-                                >${t`Send HTTP-Basic Authentication`}</span
+                                >${msg("Send HTTP-Basic Authentication")}</span
                             >
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`Send a custom HTTP-Basic Authentication header based on values from authentik.`}
+                            ${msg(
+                                "Send a custom HTTP-Basic Authentication header based on values from authentik.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     ${this.showHttpBasic ? this.renderHttpBasic() : html``}
-                    <ak-form-element-horizontal label=${t`Trusted OIDC Sources`} name="jwksSources">
+                    <ak-form-element-horizontal
+                        label=${msg("Trusted OIDC Sources")}
+                        name="jwksSources"
+                    >
                         <select class="pf-c-form-control" multiple>
                             ${this.oauthSources?.results.map((source) => {
                                 const selected = (this.instance?.jwksSources || []).some((su) => {
@@ -544,10 +578,12 @@ ${this.instance?.skipPathRegex}</textarea
                             })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.`}
+                            ${msg(
+                                "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

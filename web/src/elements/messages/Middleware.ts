@@ -1,7 +1,7 @@
 import { MessageLevel } from "@goauthentik/common/messages";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
-import { t } from "@lingui/macro";
+import { msg } from "@lit/localize";
 
 import { Middleware, ResponseContext } from "@goauthentik/api";
 
@@ -10,7 +10,7 @@ export class MessageMiddleware implements Middleware {
         if (context.response.status >= 500) {
             showMessage({
                 level: MessageLevel.error,
-                message: t`API request failed`,
+                message: msg("API request failed"),
                 description: `${context.init.method} ${context.url}: ${context.response.status}`,
             });
         }

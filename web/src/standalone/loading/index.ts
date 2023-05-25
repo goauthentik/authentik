@@ -2,8 +2,7 @@ import { globalAK } from "@goauthentik/common/global";
 import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { Interface } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -45,13 +44,13 @@ export class Loading extends Interface {
                     <span
                         class="pf-c-spinner pf-m-xl"
                         role="progressbar"
-                        aria-valuetext="${t`Loading...`}"
+                        aria-valuetext="${msg("Loading...")}"
                     >
                         <span class="pf-c-spinner__clipper"></span>
                         <span class="pf-c-spinner__lead-ball"></span>
                         <span class="pf-c-spinner__tail-ball"></span>
                     </span>
-                    <h1 class="pf-c-title pf-m-lg">${t`Loading...`}</h1>
+                    <h1 class="pf-c-title pf-m-lg">${msg("Loading...")}</h1>
                 </div>
             </div>
         </section>`;

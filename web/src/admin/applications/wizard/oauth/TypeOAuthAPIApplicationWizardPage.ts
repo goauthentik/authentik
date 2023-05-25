@@ -1,8 +1,7 @@
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 
@@ -17,15 +16,19 @@ export class TypeOAuthAPIApplicationWizardPage extends WizardPage {
         return [PFBase, PFButton, PFForm, PFRadio];
     }
 
-    sidebarLabel = () => t`Method details`;
+    sidebarLabel = () => msg("Method details");
 
     render(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <p>
-                ${t`This configuration can be used to authenticate to authentik with other APIs other otherwise programmatically.`}
+                ${msg(
+                    "This configuration can be used to authenticate to authentik with other APIs other otherwise programmatically.",
+                )}
             </p>
             <p>
-                ${t`By default, all service accounts can authenticate as this application, as long as they have a valid token of the type app-password.`}
+                ${msg(
+                    "By default, all service accounts can authenticate as this application, as long as they have a valid token of the type app-password.",
+                )}
             </p>
         </form> `;
     }

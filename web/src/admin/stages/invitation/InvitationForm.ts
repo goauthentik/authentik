@@ -7,8 +7,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -31,9 +30,9 @@ export class InvitationForm extends ModelForm<Invitation, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated invitation.`;
+            return msg("Successfully updated invitation.");
         } else {
-            return t`Successfully created invitation.`;
+            return msg("Successfully created invitation.");
         }
     }
 
@@ -54,7 +53,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
                 ?slugMode=${true}
-                label=${t`Name`}
+                label=${msg("Name")}
                 ?required=${true}
                 name="name"
             >
@@ -66,7 +65,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     data-ak-slug="true"
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Expires`} ?required=${true} name="expires">
+            <ak-form-element-horizontal label=${msg("Expires")} ?required=${true} name="expires">
                 <input
                     type="datetime-local"
                     data-type="datetime-local"
@@ -75,7 +74,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Flow`} ?required=${true} name="flow">
+            <ak-form-element-horizontal label=${msg("Flow")} ?required=${true} name="flow">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                         const args: FlowsInstancesListRequest = {
@@ -104,17 +103,21 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.`}
+                    ${msg(
+                        "When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Attributes`} name="fixedData">
+            <ak-form-element-horizontal label=${msg("Attributes")} name="fixedData">
                 <ak-codemirror
                     mode="yaml"
                     value="${YAML.stringify(first(this.instance?.fixedData, {}))}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.`}
+                    ${msg(
+                        "Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="singleUse">
@@ -129,10 +132,10 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Single use`}</span>
+                    <span class="pf-c-switch__label">${msg("Single use")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`When enabled, the invitation will be deleted after usage.`}
+                    ${msg("When enabled, the invitation will be deleted after usage.")}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

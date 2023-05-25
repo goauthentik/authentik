@@ -7,8 +7,7 @@ import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/user/user-settings/details/stages/prompt/PromptStage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -160,9 +159,9 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
                 this.globalRefresh();
                 showMessage({
                     level: MessageLevel.success,
-                    message: t`Successfully updated details`,
+                    message: msg("Successfully updated details"),
                 });
-                return html`<ak-empty-state ?loading=${true} header=${t`Loading`}>
+                return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
                 </ak-empty-state>`;
             case ChallengeChoices.Shell:
                 return html`${unsafeHTML((this.challenge as ShellChallenge).body)}`;
@@ -179,7 +178,7 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
                         );
                         return html`
                             <a href="/if/flow/${this.flowSlug}" class="pf-c-button pf-m-primary">
-                                ${t`Open settings`}
+                                ${msg("Open settings")}
                             </a>
                         `;
                 }
@@ -192,17 +191,18 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
 
     renderChallengeWrapper(): TemplateResult {
         if (!this.flowSlug) {
-            return html`<p>${t`No settings flow configured.`}</p> `;
+            return html`<p>${msg("No settings flow configured.")}</p> `;
         }
         if (!this.challenge || this.loading) {
-            return html`<ak-empty-state ?loading=${true} header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html` ${this.renderChallenge()} `;
     }
 
     render(): TemplateResult {
         return html` <div class="pf-c-card">
-            <div class="pf-c-card__title">${t`Update details`}</div>
+            <div class="pf-c-card__title">${msg("Update details")}</div>
             <div class="pf-c-card__body">${this.renderChallengeWrapper()}</div>
         </div>`;
     }

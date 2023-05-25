@@ -7,8 +7,7 @@ import "@goauthentik/flow/FormStatic";
 import "@goauthentik/flow/stages/access_denied/AccessDeniedStage";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -125,7 +124,8 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -139,7 +139,7 @@ export class CaptchaStage extends BaseStage<CaptchaChallenge, CaptchaChallengeRe
                     >
                         <div slot="link">
                             <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${t`Not you?`}</a
+                                >${msg("Not you?")}</a
                             >
                         </div>
                     </ak-form-static>

@@ -2,8 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -20,9 +19,9 @@ export class UserLogoutStageForm extends ModelForm<UserLogoutStage, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -41,8 +40,8 @@ export class UserLogoutStageForm extends ModelForm<UserLogoutStage, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">${t`Remove the user from the current session.`}</div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <div class="form-help-text">${msg("Remove the user from the current session.")}</div>
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"

@@ -8,8 +8,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -40,9 +39,9 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated provider.`;
+            return msg("Successfully updated provider.");
         } else {
-            return t`Successfully created provider.`;
+            return msg("Successfully created provider.");
         }
     }
 
@@ -62,7 +61,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -71,7 +70,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Bind flow`}
+                label=${msg("Bind flow")}
                 ?required=${true}
                 name="authorizationFlow"
             >
@@ -105,9 +104,9 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                     }}
                 >
                 </ak-search-select>
-                <p class="pf-c-form__helper-text">${t`Flow used for users to authenticate.`}</p>
+                <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Search group`} name="searchGroup">
+            <ak-form-element-horizontal label=${msg("Search group")} name="searchGroup">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
@@ -132,57 +131,71 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.`}
+                    ${msg(
+                        "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Bind mode`} name="bindMode">
+            <ak-form-element-horizontal label=${msg("Bind mode")} name="bindMode">
                 <ak-radio
                     .options=${[
                         {
-                            label: t`Cached binding`,
+                            label: msg("Cached binding"),
                             value: LDAPAPIAccessMode.Cached,
                             default: true,
-                            description: html`${t`Flow is executed and session is cached in memory. Flow is executed when session expires`}`,
+                            description: html`${msg(
+                                "Flow is executed and session is cached in memory. Flow is executed when session expires",
+                            )}`,
                         },
                         {
-                            label: t`Direct binding`,
+                            label: msg("Direct binding"),
                             value: LDAPAPIAccessMode.Direct,
-                            description: html`${t`Always execute the configured bind flow to authenticate the user`}`,
+                            description: html`${msg(
+                                "Always execute the configured bind flow to authenticate the user",
+                            )}`,
                         },
                     ]}
                     .value=${this.instance?.bindMode}
                 >
                 </ak-radio>
                 <p class="pf-c-form__helper-text">
-                    ${t`Configure how the outpost authenticates requests.`}
+                    ${msg("Configure how the outpost authenticates requests.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Search mode`} name="searchMode">
+            <ak-form-element-horizontal label=${msg("Search mode")} name="searchMode">
                 <ak-radio
                     .options=${[
                         {
-                            label: t`Cached querying`,
+                            label: msg("Cached querying"),
                             value: LDAPAPIAccessMode.Cached,
                             default: true,
-                            description: html`${t`The outpost holds all users and groups in-memory and will refresh every 5 Minutes`}`,
+                            description: html`${msg(
+                                "The outpost holds all users and groups in-memory and will refresh every 5 Minutes",
+                            )}`,
                         },
                         {
-                            label: t`Direct querying`,
+                            label: msg("Direct querying"),
                             value: LDAPAPIAccessMode.Direct,
-                            description: html`${t`Always returns the latest data, but slower than cached querying`}`,
+                            description: html`${msg(
+                                "Always returns the latest data, but slower than cached querying",
+                            )}`,
                         },
                     ]}
                     .value=${this.instance?.searchMode}
                 >
                 </ak-radio>
                 <p class="pf-c-form__helper-text">
-                    ${t`Configure how the outpost queries the core authentik server's users.`}
+                    ${msg("Configure how the outpost queries the core authentik server's users.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Protocol settings`} </span>
+                <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Base DN`} ?required=${true} name="baseDn">
+                    <ak-form-element-horizontal
+                        label=${msg("Base DN")}
+                        ?required=${true}
+                        name="baseDn"
+                    >
                         <input
                             type="text"
                             value="${first(this.instance?.baseDn, "DC=ldap,DC=goauthentik,DC=io")}"
@@ -190,10 +203,12 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`LDAP DN under which bind requests and search requests can be made.`}
+                            ${msg(
+                                "LDAP DN under which bind requests and search requests can be made.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Certificate`} name="certificate">
+                    <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
                         <ak-search-select
                             .fetchObjects=${async (
                                 query?: string,
@@ -224,14 +239,18 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Due to protocol limitations, this certificate is only used when the outpost has a single provider, or all providers use the same certificate.`}
+                            ${msg(
+                                "Due to protocol limitations, this certificate is only used when the outpost has a single provider, or all providers use the same certificate.",
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`If multiple providers share an outpost, a self-signed certificate is used.`}
+                            ${msg(
+                                "If multiple providers share an outpost, a self-signed certificate is used.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`UID start number`}
+                        label=${msg("UID start number")}
                         ?required=${true}
                         name="uidStartNumber"
                     >
@@ -242,11 +261,13 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber`}
+                            ${msg(
+                                "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`GID start number`}
+                        label=${msg("GID start number")}
                         ?required=${true}
                         name="gidStartNumber"
                     >
@@ -257,7 +278,9 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber`}
+                            ${msg(
+                                "The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

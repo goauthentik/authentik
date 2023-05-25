@@ -1,7 +1,6 @@
 import "@goauthentik/elements/EmptyState";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import type { TemplateResult } from "lit";
 
@@ -20,4 +19,6 @@ export const isCustomEvent = (v: any): v is CustomEvent =>
     v instanceof CustomEvent && "detail" in v;
 
 export const loading = <T>(v: T, actual: TemplateResult) =>
-    v ? actual : html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+    v
+        ? actual
+        : html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;

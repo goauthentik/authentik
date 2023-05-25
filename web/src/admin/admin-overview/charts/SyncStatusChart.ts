@@ -3,8 +3,7 @@ import { AKChart } from "@goauthentik/elements/charts/Chart";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import { ChartData, ChartOptions } from "chart.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 import { ProvidersApi, SourcesApi, TaskStatusEnum } from "@goauthentik/api";
@@ -74,7 +73,7 @@ export class LDAPSyncStatusChart extends AKChart<SyncStatus[]> {
             failed: metrics.failed,
             unsynced: sources.pagination.count === 0 ? 1 : metrics.unsynced,
             total: sources.pagination.count,
-            label: t`LDAP Source`,
+            label: msg("LDAP Source"),
         };
     }
 
@@ -114,7 +113,7 @@ export class LDAPSyncStatusChart extends AKChart<SyncStatus[]> {
             failed: metrics.failed,
             unsynced: providers.pagination.count === 0 ? 1 : metrics.unsynced,
             total: providers.pagination.count,
-            label: t`SCIM Provider`,
+            label: msg("SCIM Provider"),
         };
     }
 
@@ -127,7 +126,7 @@ export class LDAPSyncStatusChart extends AKChart<SyncStatus[]> {
 
     getChartData(data: SyncStatus[]): ChartData {
         return {
-            labels: [t`Healthy`, t`Failed`, t`Unsynced / N/A`],
+            labels: [msg("Healthy"), msg("Failed"), msg("Unsynced / N/A")],
             datasets: data.map((d) => {
                 return {
                     backgroundColor: ["#3e8635", "#C9190B", "#2b9af3"],

@@ -1,8 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Tooltip";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -23,13 +22,13 @@ export class TimeDeltaHelp extends AKElement {
         return html` <ak-tooltip>
             <p class="pf-c-form__helper-text" slot="trigger">
                 ${this.negative
-                    ? t`(Format: hours=-1;minutes=-2;seconds=-3).`
-                    : t`(Format: hours=1;minutes=2;seconds=3).`}
+                    ? msg("(Format: hours=-1;minutes=-2;seconds=-3).")
+                    : msg("(Format: hours=1;minutes=2;seconds=3).")}
                 <i class="pf-icon fa fa-question-circle" aria-hidden="true"></i>
             </p>
 
             <div slot="tooltip">
-                ${t`The following keywords are supported:`}
+                ${msg("The following keywords are supported:")}
                 <ul class="pf-c-list">
                     <li><pre>microseconds</pre></li>
                     <li><pre>milliseconds</pre></li>

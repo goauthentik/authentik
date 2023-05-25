@@ -4,8 +4,7 @@ import { AKChart } from "@goauthentik/elements/charts/Chart";
 import "@goauthentik/elements/forms/ConfirmationForm";
 import { ChartData, ChartOptions } from "chart.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "lit/decorators.js";
 
 import { OutpostsApi } from "@goauthentik/api";
@@ -62,7 +61,7 @@ export class OutpostStatusChart extends AKChart<SyncStatus[]> {
 
     getChartData(data: SyncStatus[]): ChartData {
         return {
-            labels: [t`Healthy outposts`, t`Outdated outposts`, t`Unhealthy outposts`],
+            labels: [msg("Healthy outposts"), msg("Outdated outposts"), msg("Unhealthy outposts")],
             datasets: data.map((d) => {
                 return {
                     backgroundColor: ["#3e8635", "#C9190B", "#2b9af3"],

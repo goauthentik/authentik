@@ -1,3 +1,4 @@
+import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
@@ -5,8 +6,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -45,9 +45,9 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated source.`;
+            return msg("Successfully updated source.");
         } else {
-            return t`Successfully created source.`;
+            return msg("Successfully created source.");
         }
     }
 
@@ -66,7 +66,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -74,7 +74,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Slug`} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -94,7 +94,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Enabled`}</span>
+                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsers">
@@ -109,7 +109,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Sync users`}</span>
+                    <span class="pf-c-switch__label">${msg("Sync users")}</span>
                 </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncUsersPassword">
@@ -124,10 +124,12 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`User password writeback`}</span>
+                    <span class="pf-c-switch__label">${msg("User password writeback")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP.`}
+                    ${msg(
+                        "Login password is synced from LDAP into authentik automatically. Enable this option only to write password changes in authentik back to LDAP.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="syncGroups">
@@ -142,14 +144,14 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Sync groups`}</span>
+                    <span class="pf-c-switch__label">${msg("Sync groups")}</span>
                 </label>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Connection settings`} </span>
+                <span slot="header"> ${msg("Connection settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Server URI`}
+                        label=${msg("Server URI")}
                         ?required=${true}
                         name="serverUri"
                     >
@@ -161,7 +163,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Specify multiple server URIs by separating them with a comma.`}
+                            ${msg("Specify multiple server URIs by separating them with a comma.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="startTls">
@@ -176,14 +178,14 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${t`Enable StartTLS`}</span>
+                            <span class="pf-c-switch__label">${msg("Enable StartTLS")}</span>
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`To use SSL instead, use 'ldaps://' and disable this option.`}
+                            ${msg("To use SSL instead, use 'ldaps://' and disable this option.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`TLS Verification Certificate`}
+                        label=${msg("TLS Verification Certificate")}
                         name="peerCertificate"
                     >
                         <ak-search-select
@@ -215,10 +217,12 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.`}
+                            ${msg(
+                                "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Bind CN`} name="bindCn">
+                    <ak-form-element-horizontal label=${msg("Bind CN")} name="bindCn">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.bindCn)}"
@@ -226,13 +230,17 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Bind Password`}
+                        label=${msg("Bind Password")}
                         ?writeOnly=${this.instance !== undefined}
                         name="bindPassword"
                     >
                         <input type="text" value="" class="pf-c-form-control" />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Base DN`} ?required=${true} name="baseDn">
+                    <ak-form-element-horizontal
+                        label=${msg("Base DN")}
+                        ?required=${true}
+                        name="baseDn"
+                    >
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.baseDn)}"
@@ -243,10 +251,10 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                 </div>
             </ak-form-group>
             <ak-form-group ?expanded=${true}>
-                <span slot="header"> ${t`LDAP Attribute mapping`} </span>
+                <span slot="header"> ${msg("LDAP Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`User Property Mappings`}
+                        label=${msg("User Property Mappings")}
                         ?required=${true}
                         name="propertyMappings"
                     >
@@ -278,14 +286,14 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Property mappings used to user creation.`}
+                            ${msg("Property mappings used to user creation.")}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Group Property Mappings`}
+                        label=${msg("Group Property Mappings")}
                         ?required=${true}
                         name="propertyMappingsGroup"
                     >
@@ -312,18 +320,18 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Property mappings used to group creation.`}
+                            ${msg("Property mappings used to group creation.")}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header"> ${t`Additional settings`} </span>
+                <span slot="header"> ${msg("Additional settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Group`} name="syncParentGroup">
+                    <ak-form-element-horizontal label=${msg("Group")} name="syncParentGroup">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
@@ -350,10 +358,10 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Parent group for all the groups imported from LDAP.`}
+                            ${msg("Parent group for all the groups imported from LDAP.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`User path`} name="userPathTemplate">
+                    <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
                             value="${first(
@@ -362,12 +370,10 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             )}"
                             class="pf-c-form-control"
                         />
-                        <p class="pf-c-form__helper-text">
-                            ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
-                        </p>
+                        <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Addition User DN`}
+                        label=${msg("Addition User DN")}
                         name="additionalUserDn"
                     >
                         <input
@@ -376,11 +382,11 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Additional user DN, prepended to the Base DN.`}
+                            ${msg("Additional user DN, prepended to the Base DN.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Addition Group DN`}
+                        label=${msg("Addition Group DN")}
                         name="additionalGroupDn"
                     >
                         <input
@@ -389,11 +395,11 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Additional group DN, prepended to the Base DN.`}
+                            ${msg("Additional group DN, prepended to the Base DN.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`User object filter`}
+                        label=${msg("User object filter")}
                         ?required=${true}
                         name="userObjectFilter"
                     >
@@ -404,11 +410,11 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Consider Objects matching this filter to be Users.`}
+                            ${msg("Consider Objects matching this filter to be Users.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Group object filter`}
+                        label=${msg("Group object filter")}
                         ?required=${true}
                         name="groupObjectFilter"
                     >
@@ -419,11 +425,11 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Consider Objects matching this filter to be Groups.`}
+                            ${msg("Consider Objects matching this filter to be Groups.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Group membership field`}
+                        label=${msg("Group membership field")}
                         ?required=${true}
                         name="groupMembershipField"
                     >
@@ -434,11 +440,13 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'`}
+                            ${msg(
+                                "Field which contains members of a group. Note that if using the \"memberUid\" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Object uniqueness field`}
+                        label=${msg("Object uniqueness field")}
                         ?required=${true}
                         name="objectUniquenessField"
                     >
@@ -449,7 +457,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Field which contains a unique Identifier.`}
+                            ${msg("Field which contains a unique Identifier.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
