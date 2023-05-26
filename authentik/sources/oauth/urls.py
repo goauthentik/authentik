@@ -2,8 +2,8 @@
 
 from django.urls import path
 
-from authentik.sources.oauth.api.source import OAuthSourceViewSet
-from authentik.sources.oauth.api.source_connection import UserOAuthSourceConnectionViewSet
+from authentik.sources.oauth.api.sources import OAuthSourceViewSet
+from authentik.sources.oauth.api.source_connections import UserOAuthSourceConnectionViewSet
 from authentik.sources.oauth.types.registry import RequestKind
 from authentik.sources.oauth.views.dispatcher import DispatcherView
 

@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 from requests_mock import Mocker
 
-from authentik.sources.oauth.api.source import OAuthSourceSerializer
+from authentik.sources.oauth.api.sources import OAuthSourceSerializer
 from authentik.sources.oauth.models import OAuthSource
 
 

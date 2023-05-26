@@ -68,7 +68,7 @@ class OAuthSource(Source):
     # we're using Type[] instead of type[] here since type[] interferes with the property above
     @property
     def serializer(self) -> Type[Serializer]:
-        from authentik.sources.oauth.api.source import OAuthSourceSerializer
+        from authentik.sources.oauth.api.sources import OAuthSourceSerializer
 
         return OAuthSourceSerializer
 
@@ -234,7 +234,7 @@ class UserOAuthSourceConnection(UserSourceConnection):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.sources.oauth.api.source_connection import (
+        from authentik.sources.oauth.api.source_connections import (
             UserOAuthSourceConnectionSerializer,
         )
 
