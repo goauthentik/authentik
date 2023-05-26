@@ -40,9 +40,10 @@
 # Container registry
 [[redirects]]
   from = "/v2"
-  to = "/.netlify/functions/oci-proxy"
+  to = "https://oci-proxy.goauthentik.io/v2"
   status = 200
   force = true
+  headers = { X-OCIProxy-From = "goauthentik.io" }
 
 [[redirects]]
   from = "/v2/*"
