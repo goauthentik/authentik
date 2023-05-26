@@ -15,11 +15,9 @@ This release does not introduce any new requirements.
 
 Download the docker-compose file for xxxx.x from [here](https://goauthentik.io/version/xxxx.x/docker-compose.yml). Afterwards, run `docker-compose up -d`.
 
-:::info
-To download the latest `docker-compose.yml` file you can use the `wget` command followed by the file's location URL.
+To download the latest `docker-compose.yml` file you can use the `wget` command followed by the file's location URL. The `-O` flag retains the downloaded file's name, overwriting any existing local file with the same name.
 
 Example: `wget -O docker-compose.yml https://goauthentik.io/docker-compose.yml`
-:::
 
 ### Kubernetes
 
