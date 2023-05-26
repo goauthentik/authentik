@@ -32,10 +32,11 @@
 # ?go-get=1 downloads
 [[redirects]]
   from = "/*"
-  to = "/.netlify/functions/go-get"
+  to = "https://go-get.goauthentik.io/:splat"
   status = 200
   force = true
   query = {go-get = "1"}
+  headers = { X-GoGet-From = "goauthentik.io" }
 
 # Container registry
 [[redirects]]
