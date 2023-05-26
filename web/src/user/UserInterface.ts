@@ -6,7 +6,7 @@ import {
 } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UserDisplay } from "@goauthentik/common/ui/config";
-import { autoDetectLanguage, getLocale } from "@goauthentik/common/ui/locale";
+import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
@@ -122,7 +122,6 @@ export class UserInterface extends Interface {
 
     async firstUpdated(): Promise<void> {
         this.me = await me();
-        console.log("SANITY CHECK", getLocale());
         const notifications = await new EventsApi(DEFAULT_CONFIG).eventsNotificationsList({
             seen: false,
             ordering: "-created",

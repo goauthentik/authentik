@@ -192,28 +192,29 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                         <label class="pf-c-check__label" for=${id}>${choice}</label>
                     </div> `;
                 })}`;
-            case PromptTypeEnum.AkLocale:
+            case PromptTypeEnum.AkLocale: {
+                const inDebug = rootInterface()?.config?.capabilities.includes(
+                    CapabilitiesEnum.CanDebug,
+                );
+                const locales = inDebug
+                    ? LOCALES
+                    : LOCALES.filter((locale) => locale.code !== "debug");
+                const options = locales.map(
+                    (locale) => html`<option
+                        value=${locale.code}
+                        ?selected=${locale.code === prompt.initialValue}
+                    >
+                        ${locale.code.toUpperCase()} - ${locale.label()}
+                    </option> `,
+                );
+
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
-                    <option value="" ${prompt.initialValue === "" ? "selected" : ""}>
+                    <option value="" ?selected=${prompt.initialValue === ""}>
                         ${msg("Auto-detect (based on your browser)")}
                     </option>
-                    ${LOCALES.filter((locale) => {
-                        // Only show debug locale if debug mode is enabled
-                        if (locale.code === "debug") {
-                            return rootInterface()?.config?.capabilities.includes(
-                                CapabilitiesEnum.CanDebug,
-                            );
-                        }
-                        return true;
-                    }).map((locale) => {
-                        return html`<option
-                            value=${locale.code}
-                            ${prompt.initialValue === locale.code ? "selected" : ""}
-                        >
-                            ${locale.code.toUpperCase()} - ${locale.label}
-                        </option>`;
-                    })}
+                    ${options}
                 </select>`;
+            }
             default:
                 return html`<p>invalid type '${prompt.type}'</p>`;
         }

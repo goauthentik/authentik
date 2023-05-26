@@ -41,7 +41,6 @@ export class LibraryPage extends AKElement {
     uiConfig: PageUIConfig;
 
     constructor() {
-        console.log("HEY", navigator.language);
         super();
         const applicationListFetch = new CoreApi(DEFAULT_CONFIG).coreApplicationsList({});
         const meFetch = me();

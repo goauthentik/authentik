@@ -6,10 +6,6 @@
         <source>English</source>
         <target>Englisch</target>
       </trans-unit>
-      <trans-unit id="s96d2f1dc180a46d8">
-        <source>Debug</source>
-        <target>Debuggen</target>
-      </trans-unit>
       <trans-unit id="s75a27f43413e02c5">
         <source>French</source>
         <target>Französisch</target>
@@ -167,10 +163,9 @@
         <target>Quelle verwenden</target>
       </trans-unit>
       <trans-unit id="s14622ee6de586485">
-        <source>Attempted to log in as 
-        <x id="0" equiv-text="${this.event.context.username}"></x></source>
+        <source>Attempted to log in as <x id="0" equiv-text="${this.event.context.username}"/></source>
         <target>Loginversuch als 
-        <x id="0" equiv-text="${this.event.context.username}"></x></target>
+        <x id="0" equiv-text="${this.event.context.username}"/></target>
       </trans-unit>
       <trans-unit id="sb07bf992e3d00664">
         <source>No additional data available.</source>
@@ -317,14 +312,11 @@
         <target>Keine Registerkarten definiert</target>
       </trans-unit>
       <trans-unit id="s04c5a637328c9b67">
-        <source>
-        <x id="0" equiv-text="${this.pages?.startIndex}"></x>- 
-        <x id="1" equiv-text="${this.pages?.endIndex}"></x>of 
-        <x id="2" equiv-text="${this.pages?.count}"></x></source>
+        <source><x id="0" equiv-text="${this.pages?.startIndex}"/> - <x id="1" equiv-text="${this.pages?.endIndex}"/> of <x id="2" equiv-text="${this.pages?.count}"/></source>
         <target>
-        <x id="0" equiv-text="${this.pages?.startIndex}"></x>- 
-        <x id="1" equiv-text="${this.pages?.endIndex}"></x>von 
-        <x id="2" equiv-text="${this.pages?.count}"></x></target>
+        <x id="0" equiv-text="${this.pages?.startIndex}"/>- 
+        <x id="1" equiv-text="${this.pages?.endIndex}"/>von 
+        <x id="2" equiv-text="${this.pages?.count}"/></target>
       </trans-unit>
       <trans-unit id="s6a89bb10338369b4">
         <source>Go to previous page</source>
@@ -379,10 +371,9 @@
         
       </trans-unit>
       <trans-unit id="sc35581d9c1cd67ff">
-        <source>On behalf of 
-        <x id="0" equiv-text="${item.user.on_behalf_of.username}"></x></source>
+        <source>On behalf of <x id="0" equiv-text="${item.user.on_behalf_of.username}"/></source>
         <target>Im Namen von 
-        <x id="0" equiv-text="${item.user.on_behalf_of.username}"></x></target>
+        <x id="0" equiv-text="${item.user.on_behalf_of.username}"/></target>
       </trans-unit>
       <trans-unit id="saf63a04c86018698">
         <source>-</source>
@@ -425,15 +416,13 @@
         <target>Systemzustand</target>
       </trans-unit>
       <trans-unit id="scefe482c547fb3f3">
-        <source>Based on 
-        <x id="0" equiv-text="${value.versionCurrent}"></x></source>
+        <source>Based on <x id="0" equiv-text="${value.versionCurrent}"/></source>
         
       </trans-unit>
       <trans-unit id="s68a50b1ee6efee7b">
-        <source>
-        <x id="0" equiv-text="${value.versionLatest}"></x>is available!</source>
+        <source><x id="0" equiv-text="${value.versionLatest}"/> is available!</source>
         <target>
-        <x id="0" equiv-text="${value.versionLatest}"></x>ist verfügbar!</target>
+        <x id="0" equiv-text="${value.versionLatest}"/>ist verfügbar!</target>
       </trans-unit>
       <trans-unit id="s713d147e1761d0f0">
         <source>Up-to-date!</source>
@@ -452,13 +441,11 @@
         <target>Keine Worker verbunden. Hintergrundaufgaben werden nicht ausgeführt.</target>
       </trans-unit>
       <trans-unit id="s2ed8eb02525a920a">
-        <source>
-        <x id="0" equiv-text="${ago}"></x>hour(s) ago</source>
+        <source><x id="0" equiv-text="${ago}"/> hour(s) ago</source>
         
       </trans-unit>
       <trans-unit id="s1f1c857c0c4250e4">
-        <source>
-        <x id="0" equiv-text="${ago}"></x>day(s) ago</source>
+        <source><x id="0" equiv-text="${ago}"/> day(s) ago</source>
         
       </trans-unit>
       <trans-unit id="s11bc220e8fa9d797">
@@ -474,12 +461,10 @@
         <target>Erfolgreiche Anmeldungen</target>
       </trans-unit>
       <trans-unit id="s0382d73823585617">
-        <source>
-        <x id="0" equiv-text="${this.errorMessage}"></x>: 
-        <x id="1" equiv-text="${e.toString()}"></x></source>
+        <source><x id="0" equiv-text="${this.errorMessage}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
         <target>
-        <x id="0" equiv-text="${this.errorMessage}"></x>: 
-        <x id="1" equiv-text="${e.toString()}"></x></target>
+        <x id="0" equiv-text="${this.errorMessage}"/>: 
+        <x id="1" equiv-text="${e.toString()}"/></target>
       </trans-unit>
       <trans-unit id="s2ceb11be2290bb1b">
         <source>Cancel</source>
@@ -510,10 +495,9 @@
         <target>Nicht gefunden</target>
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL " 
-        <x id="0" equiv-text="${this.url}"></x>" was not found.</source>
+        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
         <target>Die URL " 
-        <x id="0" equiv-text="${this.url}"></x>" wurde nicht gefunden.</target>
+        <x id="0" equiv-text="${this.url}"/>" wurde nicht gefunden.</target>
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
         <source>Return home</source>
@@ -524,10 +508,9 @@
         <target>Allgemeiner Systemzustand</target>
       </trans-unit>
       <trans-unit id="s6dfd15978586d05f">
-        <source>Welcome, 
-        <x id="0" equiv-text="${name}"></x>.</source>
+        <source>Welcome, <x id="0" equiv-text="${name}"/>.</source>
         <target>Willkommen, 
-        <x id="0" equiv-text="${name}"></x>!</target>
+        <x id="0" equiv-text="${name}"/>!</target>
       </trans-unit>
       <trans-unit id="sc381422c585b867f">
         <source>Quick actions</source>
@@ -570,10 +553,9 @@
         <target>Meistgenutzte Apps</target>
       </trans-unit>
       <trans-unit id="sda5e1499f93146ad">
-        <source>
-        <x id="0" equiv-text="${ago}"></x>days ago</source>
+        <source><x id="0" equiv-text="${ago}"/> days ago</source>
         <target>vor 
-        <x id="0" equiv-text="${ago}"></x>Tagen</target>
+        <x id="0" equiv-text="${ago}"/>Tagen</target>
       </trans-unit>
       <trans-unit id="s51ea3a244c781b1f">
         <source>Objects created</source>
@@ -644,8 +626,7 @@
         
       </trans-unit>
       <trans-unit id="se7e1ababbc4868b8">
-        <source>
-        <x id="0" equiv-text="${item.taskDuration.toFixed(2)}"></x>seconds</source>
+        <source><x id="0" equiv-text="${item.taskDuration.toFixed(2)}"/> seconds</source>
         
       </trans-unit>
       <trans-unit id="sc25edca57df81461">
@@ -861,7 +842,7 @@
         <target>Öffentlich</target>
       </trans-unit>
       <trans-unit id="s51c6b8403c2dc5d9">
-        <source>Public clients are incapable of maintaining the confidentiality and should use methods like PKCE.</source>
+        <source>Public clients are incapable of maintaining the confidentiality and should use methods like PKCE. </source>
         
       </trans-unit>
       <trans-unit id="s4d00e5de1c8213b7">
@@ -1317,10 +1298,9 @@
         <target>Neuen Anbieter erstellen.</target>
       </trans-unit>
       <trans-unit id="s5d6af4c100ad321b">
-        <source>Create 
-        <x id="0" equiv-text="${type.name}"></x></source>
+        <source>Create <x id="0" equiv-text="${type.name}"/></source>
         <target>
-        <x id="0" equiv-text="${type.name}"></x>erstellen</target>
+        <x id="0" equiv-text="${type.name}"/>erstellen</target>
       </trans-unit>
       <trans-unit id="sb95baab425322600">
         <source>Shared secret</source>
@@ -1331,7 +1311,9 @@
         
       </trans-unit>
       <trans-unit id="s7f2dcf01f7a8c0b7">
-        <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific CIDR will match before a looser one. Clients connecting from a non-specified CIDR will be dropped.</source>
+        <source>List of CIDRs (comma-seperated) that clients can connect from. A more specific
+                            CIDR will match before a looser one. Clients connecting from a non-specified CIDR
+                            will be dropped.</source>
       </trans-unit>
       <trans-unit id="s61eacb19db252f5e">
         <source>URL</source>
@@ -1406,38 +1388,31 @@
         <target>Referenz wird auf einen leeren Wert gesetzt</target>
       </trans-unit>
       <trans-unit id="s55fa598b754cc3cc">
-        <source>
-        <x id="0" equiv-text="${ub.name}"></x>( 
-        <x id="1" equiv-text="${consequence}"></x>)</source>
+        <source><x id="0" equiv-text="${ub.name}"/> (<x id="1" equiv-text="${consequence}"/>)</source>
         <target>
-        <x id="0" equiv-text="${ub.name}"></x>( 
-        <x id="1" equiv-text="${consequence}"></x>)</target>
+        <x id="0" equiv-text="${ub.name}"/>( 
+        <x id="1" equiv-text="${consequence}"/>)</target>
       </trans-unit>
       <trans-unit id="s09240e07b5b8d640">
         <source>ID</source>
         <target>ID</target>
       </trans-unit>
       <trans-unit id="se33b158a1ec02a09">
-        <source>Successfully deleted 
-        <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"></x></source>
+        <source>Successfully deleted <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/></source>
       </trans-unit>
       <trans-unit id="sf6eb148db23d19de">
-        <source>Failed to delete 
-        <x id="0" equiv-text="${this.objectLabel}"></x>: 
-        <x id="1" equiv-text="${e.toString()}"></x></source>
+        <source>Failed to delete <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
         <target>Löschen von 
-        <x id="0" equiv-text="${this.objectLabel}"></x>fehlgeschlagen: 
-        <x id="1" equiv-text="${e.toString()}"></x></target>
+        <x id="0" equiv-text="${this.objectLabel}"/>fehlgeschlagen: 
+        <x id="1" equiv-text="${e.toString()}"/></target>
       </trans-unit>
       <trans-unit id="s039b6434e8a75560">
-        <source>Delete 
-        <x id="0" equiv-text="${this.objectLabel}"></x></source>
+        <source>Delete <x id="0" equiv-text="${this.objectLabel}"/></source>
         <target>
-        <x id="0" equiv-text="${this.objectLabel}"></x>löschen</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>löschen</target>
       </trans-unit>
       <trans-unit id="s5819a49638f6d7cb">
-        <source>Are you sure you want to delete 
-        <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"></x>?</source>
+        <source>Are you sure you want to delete <x id="0" equiv-text="${this.objects.length} ${this.objectLabel}"/>?</source>
       </trans-unit>
       <trans-unit id="sdc673e73b5c13aea">
         <source>Delete</source>
@@ -1460,11 +1435,11 @@
         <target>Anbieter</target>
       </trans-unit>
       <trans-unit id="sb2b3b281954752c4">
-        <source>Assigned to application</source>
+        <source>Assigned to application </source>
         <target>Zugewiesen an Anwendung</target>
       </trans-unit>
       <trans-unit id="sa6c0ba4910c7ad7f">
-        <source>Assigned to application (backchannel)</source>
+        <source>Assigned to application (backchannel) </source>
         
       </trans-unit>
       <trans-unit id="s97f5e0c138eae172">
@@ -1476,10 +1451,9 @@
         <target>Aktualisieren</target>
       </trans-unit>
       <trans-unit id="sc9175cb129fdc306">
-        <source>Update 
-        <x id="0" equiv-text="${item.verboseName}"></x></source>
+        <source>Update <x id="0" equiv-text="${item.verboseName}"/></source>
         <target>Aktualisiere 
-        <x id="0" equiv-text="${item.verboseName}"></x></target>
+        <x id="0" equiv-text="${item.verboseName}"/></target>
       </trans-unit>
       <trans-unit id="s398f6ba74ba8943a">
         <source>Select providers to add to application</source>
@@ -2326,10 +2300,12 @@
         <target>Erlaubt/verweigert Anfragen auf der Grundlage der Reputation der Nutzer und/oder der IPs.</target>
       </trans-unit>
       <trans-unit id="scf4afecb0f1e69b2">
-        <source>Invalid login attempts will decrease the score for the client's IP, and the username they are attempting to login as, by one.</source>
+        <source>Invalid login attempts will decrease the score for the client's IP, and the
+username they are attempting to login as, by one.</source>
       </trans-unit>
       <trans-unit id="s8323a9af28e10502">
-        <source>The policy passes when the reputation score is below the threshold, and doesn't pass when either or both of the selected options are equal or above the threshold.</source>
+        <source>The policy passes when the reputation score is below the threshold, and
+doesn't pass when either or both of the selected options are equal or above the threshold.</source>
       </trans-unit>
       <trans-unit id="s1828fbfc2c56379c">
         <source>Check IP</source>
@@ -2412,22 +2388,19 @@
         <target>Richtlinie / Benutzer / Gruppe</target>
       </trans-unit>
       <trans-unit id="s030ac0829bb50a49">
-        <source>Policy 
-        <x id="0" equiv-text="${item.policyObj?.name}"></x></source>
+        <source>Policy <x id="0" equiv-text="${item.policyObj?.name}"/></source>
         <target>Richtlinie 
-        <x id="0" equiv-text="${item.policyObj?.name}"></x></target>
+        <x id="0" equiv-text="${item.policyObj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s2a64d2dca3da9b0e">
-        <source>Group 
-        <x id="0" equiv-text="${item.groupObj?.name}"></x></source>
+        <source>Group <x id="0" equiv-text="${item.groupObj?.name}"/></source>
         <target>Gruppe 
-        <x id="0" equiv-text="${item.groupObj?.name}"></x></target>
+        <x id="0" equiv-text="${item.groupObj?.name}"/></target>
       </trans-unit>
       <trans-unit id="se5dc026819a32ff8">
-        <source>User 
-        <x id="0" equiv-text="${item.userObj?.name}"></x></source>
+        <source>User <x id="0" equiv-text="${item.userObj?.name}"/></source>
         <target>Benutzer 
-        <x id="0" equiv-text="${item.userObj?.name}"></x></target>
+        <x id="0" equiv-text="${item.userObj?.name}"/></target>
       </trans-unit>
       <trans-unit id="s50c312bea93b6925">
         <source>Edit Policy</source>
@@ -2834,7 +2807,7 @@
         <target>Schlüsselpaar, das zum Signieren ausgehender Anfragen verwendet wird. Leer lassen, um das Signieren zu deaktivieren.</target>
       </trans-unit>
       <trans-unit id="s39c8c0bf4d927c9f">
-        <source>Allow IDP-initiated logins</source>
+        <source> Allow IDP-initiated logins</source>
         <target>IDP-initiierte Anmeldungen zulassen</target>
       </trans-unit>
       <trans-unit id="s65d507f1513c2f03">
@@ -2926,14 +2899,12 @@
         <target>Aufgabe mit Fehlern beendet</target>
       </trans-unit>
       <trans-unit id="sbedb77365a066648">
-        <source>Last sync: 
-        <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"></x></source>
+        <source>Last sync: <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"/></source>
         <target>Letzte Synchronisierung: 
-        <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"></x></target>
+        <x id="0" equiv-text="${task.taskFinishTimestamp.toLocaleString()}"/></target>
       </trans-unit>
       <trans-unit id="sf3fec8353106ac2f">
-        <source>OAuth Source 
-        <x id="0" equiv-text="${this.source.name}"></x></source>
+        <source>OAuth Source <x id="0" equiv-text="${this.source.name}"/></source>
         
       </trans-unit>
       <trans-unit id="se09d055771f3a11d">
@@ -2969,7 +2940,8 @@
         <target>Regelwerk Bindungen</target>
       </trans-unit>
       <trans-unit id="s2feae323f46479f8">
-        <source>These bindings control which users can access this source. You can only use policies here as access is checked before the user is authenticated.</source>
+        <source>These bindings control which users can access this source.
+            You can only use policies here as access is checked before the user is authenticated.</source>
       </trans-unit>
       <trans-unit id="se17fcb1f159ee382">
         <source>Update Plex Source</source>
@@ -3320,10 +3292,9 @@
         <target>Erlauben Sie Benutzern die Verwendung von Anwendungen auf der Grundlage von Eigenschaften, erzwingen Sie Passwortkriterien und wende ausgewählte Stages an.</target>
       </trans-unit>
       <trans-unit id="se16ac750b81fa93d">
-        <source>Assigned to 
-        <x id="0" equiv-text="${item.boundTo}"></x>object(s).</source>
+        <source>Assigned to <x id="0" equiv-text="${item.boundTo}"/> object(s).</source>
         <target>Zugewiesen zu 
-        <x id="0" equiv-text="${item.boundTo}"></x>Objekt(en).</target>
+        <x id="0" equiv-text="${item.boundTo}"/>Objekt(en).</target>
       </trans-unit>
       <trans-unit id="s5a48d5171e1a1522">
         <source>Warning: Policy is not assigned.</source>
@@ -3421,34 +3392,28 @@
         <target>Gültig für 360 Tage, danach rotiert das Passwort automatisch. Sie können das Passwort aus der Token-Liste kopieren.</target>
       </trans-unit>
       <trans-unit id="s4414164d120de61a">
-        <source>The following objects use 
-        <x id="0" equiv-text="${objName}"></x></source>
+        <source>The following objects use <x id="0" equiv-text="${objName}"/></source>
         <target>Die folgenden Objekte verwenden 
-        <x id="0" equiv-text="${objName}"></x></target>
+        <x id="0" equiv-text="${objName}"/></target>
       </trans-unit>
       <trans-unit id="s92e241c9f3c101a2">
         <source>connecting object will be deleted</source>
         <target>Verbindungsobjekt wird gelöscht</target>
       </trans-unit>
       <trans-unit id="se6a13beff646557b">
-        <source>Successfully updated 
-        <x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"></x></source>
+        <source>Successfully updated <x id="0" equiv-text="${this.objectLabel} ${this.obj?.name}"/></source>
       </trans-unit>
       <trans-unit id="s14401ff4a0cba208">
-        <source>Failed to update 
-        <x id="0" equiv-text="${this.objectLabel}"></x>: 
-        <x id="1" equiv-text="${e.toString()}"></x></source>
+        <source>Failed to update <x id="0" equiv-text="${this.objectLabel}"/>: <x id="1" equiv-text="${e.toString()}"/></source>
         <target>Aktualisieren von 
-        <x id="0" equiv-text="${this.objectLabel}"></x>fehlgeschlagen: 
-        <x id="1" equiv-text="${e.toString()}"></x></target>
+        <x id="0" equiv-text="${this.objectLabel}"/>fehlgeschlagen: 
+        <x id="1" equiv-text="${e.toString()}"/></target>
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update 
-        <x id="0" equiv-text="${this.objectLabel}"></x>" 
-        <x id="1" equiv-text="${this.obj?.name}"></x>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
         <target>Sind Sie sicher, dass Sie 
-        <x id="0" equiv-text="${this.objectLabel}"></x>" 
-        <x id="1" equiv-text="${this.obj?.name}"></x>" aktualisieren wollen?</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>" 
+        <x id="1" equiv-text="${this.obj?.name}"/>" aktualisieren wollen?</target>
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
         <source>Successfully updated password.</source>
@@ -3479,8 +3444,7 @@
         
       </trans-unit>
       <trans-unit id="s5d7748b1d2363478">
-        <source>Are you sure you want to remove the selected users from the group 
-        <x id="0" equiv-text="${this.targetGroup?.name}"></x>?</source>
+        <source>Are you sure you want to remove the selected users from the group <x id="0" equiv-text="${this.targetGroup?.name}"/>?</source>
         
       </trans-unit>
       <trans-unit id="sea4f08110bb8f15d">
@@ -3592,10 +3556,9 @@
         
       </trans-unit>
       <trans-unit id="s3616cc78631f5893">
-        <source>Warning: You're about to delete the user you're logged in as ( 
-        <x id="0" equiv-text="${shouldShowWarning.username}"></x>). Proceed at your own risk.</source>
+        <source>Warning: You're about to delete the user you're logged in as (<x id="0" equiv-text="${shouldShowWarning.username}"/>). Proceed at your own risk.</source>
         <target>Warnung: Sie sind im Begriff, den Benutzer zu löschen, als den Sie angemeldet sind ( 
-        <x id="0" equiv-text="${shouldShowWarning.username}"></x>). Fahren Sie auf eigene Gefahr fort.</target>
+        <x id="0" equiv-text="${shouldShowWarning.username}"/>). Fahren Sie auf eigene Gefahr fort.</target>
       </trans-unit>
       <trans-unit id="s510c7add9e24c306">
         <source>Hide deactivated user</source>
@@ -3618,8 +3581,7 @@
         
       </trans-unit>
       <trans-unit id="sb4c9ed2a487b238f">
-        <source>Are you sure you want to remove user 
-        <x id="0" equiv-text="${this.targetUser?.username}"></x>from the following groups?</source>
+        <source>Are you sure you want to remove user <x id="0" equiv-text="${this.targetUser?.username}"/> from the following groups?</source>
         
       </trans-unit>
       <trans-unit id="s964f6725aeb7662f">
@@ -3947,28 +3909,34 @@
         <target>Platzhalter aus Ausdruck interpretieren</target>
       </trans-unit>
       <trans-unit id="s4a953e6234cb4808">
-        <source>When checked, the placeholder will be evaluated in the same way a property mapping is. If the evaluation fails, the placeholder itself is returned.</source>
+        <source>When checked, the placeholder will be evaluated in the same way a property mapping is.
+            If the evaluation fails, the placeholder itself is returned.</source>
       </trans-unit>
       <trans-unit id="sf90be97cb08f3d5a">
         <source>Placeholder</source>
         <target>Platzhalter</target>
       </trans-unit>
       <trans-unit id="sf76ead4c4708dd06">
-        <source>Optionally provide a short hint that describes the expected input value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple choices.</source>
+        <source>Optionally provide a short hint that describes the expected input value.
+            When creating a fixed choice field, enable interpreting as expression and return a
+        list to return multiple choices.</source>
       </trans-unit>
       <trans-unit id="saa7ba2057bd524a1">
         <source>Interpret initial value as expression</source>
         
       </trans-unit>
       <trans-unit id="sd60415c7666859f0">
-        <source>When checked, the initial value will be evaluated in the same way a property mapping is. If the evaluation fails, the initial value itself is returned.</source>
+        <source>When checked, the initial value will be evaluated in the same way a property mapping is.
+            If the evaluation fails, the initial value itself is returned.</source>
       </trans-unit>
       <trans-unit id="sa9c7044d9fd1f3e6">
         <source>Initial value</source>
         
       </trans-unit>
       <trans-unit id="seab35681cbf36755">
-        <source>Optionally pre-fill the input with an initial value. When creating a fixed choice field, enable interpreting as expression and return a list to return multiple default choices.</source>
+        <source>Optionally pre-fill the input with an initial value.
+            When creating a fixed choice field, enable interpreting as expression and
+        return a list to return multiple default choices.</source>
       </trans-unit>
       <trans-unit id="s72c1c17a9bdc76ad">
         <source>Help text</source>
@@ -4091,7 +4059,8 @@
         
       </trans-unit>
       <trans-unit id="s7f13f4a2d0370cf6">
-        <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created. This will allow authentik to import devices automatically.</source>
+        <source>When using a Duo MFA, Access or Beyond plan, an Admin API application can be created.
+            This will allow authentik to import devices automatically.</source>
       </trans-unit>
       <trans-unit id="s9a34d1520e320465">
         <source>Stage-specific settings</source>
@@ -4602,14 +4571,11 @@
         <target>Felder</target>
       </trans-unit>
       <trans-unit id="s2d5f69929bb7221d">
-        <source>
-        <x id="0" equiv-text="${prompt.name}"></x>(" 
-        <x id="1" equiv-text="${prompt.fieldKey}"></x>", of type 
-        <x id="2" equiv-text="${prompt.type}"></x>)</source>
+        <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
         <target>
-        <x id="0" equiv-text="${prompt.name}"></x>(" 
-        <x id="1" equiv-text="${prompt.fieldKey}"></x>", vom Typ 
-        <x id="2" equiv-text="${prompt.type}"></x>)</target>
+        <x id="0" equiv-text="${prompt.name}"/>(" 
+        <x id="1" equiv-text="${prompt.fieldKey}"/>", vom Typ 
+        <x id="2" equiv-text="${prompt.type}"/>)</target>
       </trans-unit>
       <trans-unit id="s3b7b519444181264">
         <source>Validation Policies</source>
@@ -4663,7 +4629,8 @@
         <target>Entfernen Sie den Benutzer aus der aktuellen Sitzung.</target>
       </trans-unit>
       <trans-unit id="s927398c400970760">
-        <source>Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user is pending, a new user is created, and data is written to them.</source>
+        <source>Write any data from the flow's context's 'prompt_data' to the currently pending user. If no user
+        is pending, a new user is created, and data is written to them.</source>
       </trans-unit>
       <trans-unit id="sb379d861cbed0b47">
         <source>Never create users</source>
@@ -4738,8 +4705,7 @@
         
       </trans-unit>
       <trans-unit id="s77299a9d3dd932cd">
-        <source>Successfully imported 
-        <x id="0" equiv-text="${res.count}"></x>devices.</source>
+        <source>Successfully imported <x id="0" equiv-text="${res.count}"/> devices.</source>
         
       </trans-unit>
       <trans-unit id="s6a615f6165ef01c9">
@@ -4911,7 +4877,8 @@
         <target>Flow-Cache löschen</target>
       </trans-unit>
       <trans-unit id="sf12d588a76ba7e51">
-        <source>Are you sure you want to clear the flow cache? This will cause all flows to be re-evaluated on their next usage.</source>
+        <source>Are you sure you want to clear the flow cache?
+            This will cause all flows to be re-evaluated on their next usage.</source>
       </trans-unit>
       <trans-unit id="sbe47a5bdeec19ab0">
         <source>Stage binding(s)</source>
@@ -5002,10 +4969,9 @@
         <target>Ereignisprotokoll</target>
       </trans-unit>
       <trans-unit id="s65d67612999165e9">
-        <source>Event 
-        <x id="0" equiv-text="${this.event.pk}"></x></source>
+        <source>Event <x id="0" equiv-text="${this.event.pk}"/></source>
         <target>Ereignis 
-        <x id="0" equiv-text="${this.event.pk}"></x></target>
+        <x id="0" equiv-text="${this.event.pk}"/></target>
       </trans-unit>
       <trans-unit id="s455de2f740b073fd">
         <source>Event info</source>
@@ -5124,7 +5090,8 @@
         <target>Benachrichtigungsregel erstellen</target>
       </trans-unit>
       <trans-unit id="s5795b310ab271d20">
-        <source>These bindings control upon which events this rule triggers. Bindings to groups/users are checked against the user of the event.</source>
+        <source>These bindings control upon which events this rule triggers.
+Bindings to groups/users are checked against the user of the event.</source>
       </trans-unit>
       <trans-unit id="s90c3b62194fe8508">
         <source>Outpost Deployment Info</source>
@@ -5187,12 +5154,10 @@
         
       </trans-unit>
       <trans-unit id="s1ac2653a6492b435">
-        <source>
-        <x id="0" equiv-text="${this.outpostHealth.version}"></x>, should be 
-        <x id="1" equiv-text="${this.outpostHealth.versionShould}"></x></source>
+        <source><x id="0" equiv-text="${this.outpostHealth.version}"/>, should be <x id="1" equiv-text="${this.outpostHealth.versionShould}"/></source>
         <target>" 
-        <x id="0" equiv-text="${this.outpostHealth.version}"></x>", sollte " 
-        <x id="1" equiv-text="${this.outpostHealth.versionShould}"></x>" sein</target>
+        <x id="0" equiv-text="${this.outpostHealth.version}"/>", sollte " 
+        <x id="1" equiv-text="${this.outpostHealth.versionShould}"/>" sein</target>
       </trans-unit>
       <trans-unit id="s1e176e35c828318c">
         <source>Hostname</source>
@@ -5203,10 +5168,9 @@
         <target>Nicht verfügbar</target>
       </trans-unit>
       <trans-unit id="s02b632a9ac24a824">
-        <source>Last seen: 
-        <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"></x></source>
+        <source>Last seen: <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></source>
         <target>Überprüft: 
-        <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"></x></target>
+        <x id="0" equiv-text="${this.outpostHealth.lastSeen?.toLocaleTimeString()}"/></target>
       </trans-unit>
       <trans-unit id="sa43153d53ae65063">
         <source>Unknown type</source>
@@ -5229,10 +5193,9 @@
         <target>Warnung: authentik-Domain ist nicht konfiguriert. Authentifizierungen werden nicht funktionieren.</target>
       </trans-unit>
       <trans-unit id="sbf5f4c5ba679e847">
-        <source>Logging in via 
-        <x id="0" equiv-text="${item.config.authentik_host}"></x>.</source>
+        <source>Logging in via <x id="0" equiv-text="${item.config.authentik_host}"/>.</source>
         <target>Anmelden über 
-        <x id="0" equiv-text="${item.config.authentik_host}"></x>.</target>
+        <x id="0" equiv-text="${item.config.authentik_host}"/>.</target>
       </trans-unit>
       <trans-unit id="s59b6028f19d15cda">
         <source>No integration active</source>
@@ -5387,10 +5350,9 @@
         <target>Verwaltet von authentik (Discovered)</target>
       </trans-unit>
       <trans-unit id="sef50d248448e0df1">
-        <source>Yes ( 
-        <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"></x>)</source>
+        <source>Yes (<x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</source>
         <target>Ja ( 
-        <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"></x>)</target>
+        <x id="0" equiv-text="${item.privateKeyType?.toUpperCase()}"/>)</target>
       </trans-unit>
       <trans-unit id="s09205907b5b56cda">
         <source>No</source>
@@ -5513,10 +5475,9 @@
         <target>Benachrichtigungen</target>
       </trans-unit>
       <trans-unit id="sa3438c7bb4e9cce8">
-        <source>
-        <x id="0" equiv-text="${this.unread}"></x>unread</source>
+        <source><x id="0" equiv-text="${this.unread}"/> unread</source>
         <target>
-        <x id="0" equiv-text="${this.unread}"></x>ungelesen</target>
+        <x id="0" equiv-text="${this.unread}"/>ungelesen</target>
       </trans-unit>
       <trans-unit id="s6e6e737601f44b2c">
         <source>Successfully cleared notifications</source>
@@ -5531,10 +5492,9 @@
         <target>Eine neuere Version des Frontends ist verfügbar.</target>
       </trans-unit>
       <trans-unit id="s96b3cddf33e1c853">
-        <source>You're currently impersonating 
-        <x id="0" equiv-text="${this.user.user.username}"></x>. Click to stop.</source>
+        <source>You're currently impersonating <x id="0" equiv-text="${this.user.user.username}"/>. Click to stop.</source>
         <target>Sie geben sich gerade als 
-        <x id="0" equiv-text="${this.user.user.username}"></x>aus. Klicken Sie zum Stoppen.</target>
+        <x id="0" equiv-text="${this.user.user.username}"/>aus. Klicken Sie zum Stoppen.</target>
       </trans-unit>
       <trans-unit id="s7031e6928c44cedd">
         <source>User interface</source>
@@ -5641,10 +5601,9 @@
         <target>Verwenden Sie einen Sicherheitsschlüssel</target>
       </trans-unit>
       <trans-unit id="s670ad066cc0e50a3">
-        <source>Login to continue to 
-        <x id="0" equiv-text="${this.challenge.applicationPre}"></x>.</source>
+        <source>Login to continue to <x id="0" equiv-text="${this.challenge.applicationPre}"/>.</source>
         <target>Anmelden um mit 
-        <x id="0" equiv-text="${this.challenge.applicationPre}"></x>fortzufahren.</target>
+        <x id="0" equiv-text="${this.challenge.applicationPre}"/>fortzufahren.</target>
       </trans-unit>
       <trans-unit id="scf5ce91bfba10a61">
         <source>Please enter your password</source>
@@ -5755,16 +5714,14 @@
         <target>SAML Assertion ist leer</target>
       </trans-unit>
       <trans-unit id="sbbb7318812d64e51">
-        <source>Error when creating credential: 
-        <x id="0" equiv-text="${err}"></x></source>
+        <source>Error when creating credential: <x id="0" equiv-text="${err}"/></source>
         <target>Fehler beim Erstellen der Anmeldedaten: 
-        <x id="0" equiv-text="${err}"></x></target>
+        <x id="0" equiv-text="${err}"/></target>
       </trans-unit>
       <trans-unit id="sfe199b2564b66054">
-        <source>Error when validating assertion on server: 
-        <x id="0" equiv-text="${err}"></x></source>
+        <source>Error when validating assertion on server: <x id="0" equiv-text="${err}"/></source>
         <target>Fehler beim Validieren der Assertion auf dem Server: 
-        <x id="0" equiv-text="${err}"></x></target>
+        <x id="0" equiv-text="${err}"/></target>
       </trans-unit>
       <trans-unit id="se409d01b52c4e12f">
         <source>Retry authentication</source>
@@ -5903,16 +5860,14 @@
         <target>Hintergrundbild</target>
       </trans-unit>
       <trans-unit id="s7fa4e5e409d43573">
-        <source>Error creating credential: 
-        <x id="0" equiv-text="${err}"></x></source>
+        <source>Error creating credential: <x id="0" equiv-text="${err}"/></source>
         <target>Fehler beim Erstellen der Anmeldedaten: 
-        <x id="0" equiv-text="${err}"></x></target>
+        <x id="0" equiv-text="${err}"/></target>
       </trans-unit>
       <trans-unit id="s9d95f09deb601f34">
-        <source>Server validation of credential failed: 
-        <x id="0" equiv-text="${err}"></x></source>
+        <source>Server validation of credential failed: <x id="0" equiv-text="${err}"/></source>
         <target>Servervalidierung der Anmeldedaten fehlgeschlagen: 
-        <x id="0" equiv-text="${err}"></x></target>
+        <x id="0" equiv-text="${err}"/></target>
       </trans-unit>
       <trans-unit id="s6c8f05e3be04f62a">
         <source>Register device</source>
@@ -5945,11 +5900,9 @@
         <target>Password ändern</target>
       </trans-unit>
       <trans-unit id="saf63d34c8601dd41">
-        <source>
-          <x id="0" equiv-text="${prompt.label}"></x>
-        </source>
+        <source><x id="0" equiv-text="${prompt.label}"/></source>
         <target>
-          <x id="0" equiv-text="${prompt.label}"></x>
+          <x id="0" equiv-text="${prompt.label}"/>
         </target>
       </trans-unit>
       <trans-unit id="s33f85f24c0f5f008">
@@ -5981,10 +5934,9 @@
         <target>Quelle erfolgreich getrennt</target>
       </trans-unit>
       <trans-unit id="s67dedada007d4067">
-        <source>Failed to disconnected source: 
-        <x id="0" equiv-text="${exc}"></x></source>
+        <source>Failed to disconnected source: <x id="0" equiv-text="${exc}"/></source>
         <target>Quelle konnte nicht getrennt werden: 
-        <x id="0" equiv-text="${exc}"></x></target>
+        <x id="0" equiv-text="${exc}"/></target>
       </trans-unit>
       <trans-unit id="sd2208cd1a767644b">
         <source>Disconnect</source>
@@ -5995,10 +5947,9 @@
         <target>Verbinden</target>
       </trans-unit>
       <trans-unit id="sababff57115130a0">
-        <source>Error: unsupported source settings: 
-        <x id="0" equiv-text="${source.component}"></x></source>
+        <source>Error: unsupported source settings: <x id="0" equiv-text="${source.component}"/></source>
         <target>Fehler: nicht unterstützte Quelleinstellungen: 
-        <x id="0" equiv-text="${source.component}"></x></target>
+        <x id="0" equiv-text="${source.component}"/></target>
       </trans-unit>
       <trans-unit id="sd1031bddc66dc495">
         <source>Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials.</source>
@@ -6048,6 +5999,30 @@
         <source>Avatar image</source>
         <target>Profilbild</target>
       </trans-unit>
+<trans-unit id="sbf9c5c5a8e5efad4">
+  <source>Failed</source>
+</trans-unit>
+<trans-unit id="se4cd073c125382af">
+  <source>Unsynced / N/A</source>
+</trans-unit>
+<trans-unit id="s21b3058faf874368">
+  <source>Outdated outposts</source>
+</trans-unit>
+<trans-unit id="s51f92b6fa76656ca">
+  <source>Unhealthy outposts</source>
+</trans-unit>
+<trans-unit id="s0fbf6dc6a1966408">
+  <source>Next</source>
+</trans-unit>
+<trans-unit id="s4409ada9c5c2a7f8">
+  <source>Inactive</source>
+</trans-unit>
+<trans-unit id="s7ec7036b249f4f22">
+  <source>Regular user</source>
+</trans-unit>
+<trans-unit id="s27976e94b05c6970">
+  <source>Activate</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

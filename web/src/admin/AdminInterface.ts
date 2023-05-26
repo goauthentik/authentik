@@ -22,7 +22,6 @@ import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
 import { msg, str } from "@lit/localize";
-import { configureLocalization } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -32,6 +31,8 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { AdminApi, SessionUser, Version } from "@goauthentik/api";
+
+autoDetectLanguage();
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends Interface {
@@ -114,7 +115,9 @@ export class AdminInterface extends Interface {
 
     render(): TemplateResult {
         return html` <div class="pf-c-page">
-            <ak-sidebar class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
+            <ak-sidebar
+                class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}"
+            >
                 ${this.renderSidebarItems()}
             </ak-sidebar>
             <div class="pf-c-page__drawer">
@@ -146,7 +149,9 @@ export class AdminInterface extends Interface {
                             ?hidden=${!this.notificationDrawerOpen}
                         ></ak-notification-drawer>
                         <ak-api-drawer
-                            class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen ? "" : "display-none"}"
+                            class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
+                                ? ""
+                                : "display-none"}"
                             ?hidden=${!this.apiDrawerOpen}
                         ></ak-api-drawer>
                     </div>
@@ -160,7 +165,9 @@ export class AdminInterface extends Interface {
             ${this.version && this.version.versionCurrent !== VERSION
                 ? html`
                       <ak-sidebar-item ?highlight=${true}>
-                          <span slot="label">${msg("A newer version of the frontend is available.")}</span>
+                          <span slot="label"
+                              >${msg("A newer version of the frontend is available.")}</span
+                          >
                       </ak-sidebar-item>
                   `
                 : html``}
@@ -169,11 +176,13 @@ export class AdminInterface extends Interface {
                       ?highlight=${true}
                       ?isAbsoluteLink=${true}
                       path=${`/-/impersonation/end/?back=${encodeURIComponent(
-                          `${window.location.pathname}#${window.location.hash}`
+                          `${window.location.pathname}#${window.location.hash}`,
                       )}`}
                   >
                       <span slot="label"
-                          >${msg(str`You're currently impersonating ${this.user.user.username}. Click to stop.`)}</span
+                          >${msg(
+                              str`You're currently impersonating ${this.user.user.username}. Click to stop.`,
+                          )}</span
                       >
                   </ak-sidebar-item>`
                 : html``}
@@ -200,7 +209,10 @@ export class AdminInterface extends Interface {
                 >
                     <span slot="label">${msg("Applications")}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/core/providers" .activeWhen=${[`^/core/providers/(?<id>${ID_REGEX})$`]}>
+                <ak-sidebar-item
+                    path="/core/providers"
+                    .activeWhen=${[`^/core/providers/(?<id>${ID_REGEX})$`]}
+                >
                     <span slot="label">${msg("Providers")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/outpost/outposts">
@@ -209,7 +221,10 @@ export class AdminInterface extends Interface {
             </ak-sidebar-item>
             <ak-sidebar-item>
                 <span slot="label">${msg("Events")}</span>
-                <ak-sidebar-item path="/events/log" .activeWhen=${[`^/events/log/(?<id>${UUID_REGEX})$`]}>
+                <ak-sidebar-item
+                    path="/events/log"
+                    .activeWhen=${[`^/events/log/(?<id>${UUID_REGEX})$`]}
+                >
                     <span slot="label">${msg("Logs")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/events/rules">
@@ -236,7 +251,10 @@ export class AdminInterface extends Interface {
             </ak-sidebar-item>
             <ak-sidebar-item>
                 <span slot="label">${msg("Flows & Stages")}</span>
-                <ak-sidebar-item path="/flow/flows" .activeWhen=${[`^/flow/flows/(?<slug>${SLUG_REGEX})$`]}>
+                <ak-sidebar-item
+                    path="/flow/flows"
+                    .activeWhen=${[`^/flow/flows/(?<slug>${SLUG_REGEX})$`]}
+                >
                     <span slot="label">${msg("Flows")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/flow/stages">
@@ -248,13 +266,22 @@ export class AdminInterface extends Interface {
             </ak-sidebar-item>
             <ak-sidebar-item>
                 <span slot="label">${msg("Directory")}</span>
-                <ak-sidebar-item path="/identity/users" .activeWhen=${[`^/identity/users/(?<id>${ID_REGEX})$`]}>
+                <ak-sidebar-item
+                    path="/identity/users"
+                    .activeWhen=${[`^/identity/users/(?<id>${ID_REGEX})$`]}
+                >
                     <span slot="label">${msg("Users")}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/identity/groups" .activeWhen=${[`^/identity/groups/(?<id>${UUID_REGEX})$`]}>
+                <ak-sidebar-item
+                    path="/identity/groups"
+                    .activeWhen=${[`^/identity/groups/(?<id>${UUID_REGEX})$`]}
+                >
                     <span slot="label">${msg("Groups")}</span>
                 </ak-sidebar-item>
-                <ak-sidebar-item path="/core/sources" .activeWhen=${[`^/core/sources/(?<slug>${SLUG_REGEX})$`]}>
+                <ak-sidebar-item
+                    path="/core/sources"
+                    .activeWhen=${[`^/core/sources/(?<slug>${SLUG_REGEX})$`]}
+                >
                     <span slot="label">${msg("Federation & Social login")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/core/tokens">
