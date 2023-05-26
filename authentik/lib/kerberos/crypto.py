@@ -5,6 +5,11 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 from authentik.lib.kerberos import iana
+from authentik.lib.kerberos.exceptions import KerberosException
+
+
+class KerberosCryptoValueError(ValueError, KerberosException):
+    pass
 
 
 def nfold(data: bytes, size: int) -> bytes:
@@ -39,7 +44,9 @@ def nfold(data: bytes, size: int) -> bytes:
         One's complement addition (with end-around carry).
         """
         if len(lhs) != len(rhs):
-            raise ValueError("Cannot one's complement add two numbers of different size")
+            raise KerberosCryptoValueError(
+                "Cannot one's complement add two numbers of different size"
+            )
         size = len(lhs)
 
         result = [l + r for l, r in zip(lhs, rhs)]
@@ -52,7 +59,7 @@ def nfold(data: bytes, size: int) -> bytes:
     #     One's complement addition (without end-around carry).
     #     """
     #     if len(add1) != len(add2):
-    #         raise ValueError("Cannot one's complement add two numbers of different size")
+    #         raise KerberosCryptoValueError("Cannot one's complement add two numbers of different size")
     #     size = len(add1)
     #     mod = 1 << (size * 8)
     #     result = int.from_bytes(add1, byteorder="big") + int.from_bytes(add2, byteorder="big")
@@ -199,7 +206,7 @@ class Rfc3962(Rfc3961):
         if params is None:
             params = cls.DEFAULT_STRING_TO_KEY_PARAMS
         if len(params) != 8:
-            raise ValueError("Invalid params length")
+            raise KerberosCryptoValueError("Invalid params length")
         iterations = int(params, base=16)
 
         kdf = PBKDF2HMAC(
@@ -294,7 +301,7 @@ class Rfc8009(EncryptionType):
         if params is None:
             params = cls.DEFAULT_STRING_TO_KEY_PARAMS
         if len(params) != 8:
-            raise ValueError("Invalid params length")
+            raise KerberosCryptoValueError("Invalid params length")
         iterations = int(params, base=16)
 
         salt = cls.ENC_NAME.encode() + bytes([0]) + salt
