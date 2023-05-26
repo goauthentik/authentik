@@ -107,7 +107,7 @@ class EncryptionType:
         raise NotImplemented
 
     @classmethod
-    def string_to_key(cls, password: bytes, salt: bytes, params: str | None) -> bytes:
+    def string_to_key(cls, password: bytes, salt: bytes, params: str | None = None) -> bytes:
         raise NotImplemented
 
     @classmethod
@@ -190,7 +190,7 @@ class Rfc3962(Rfc3961):
     """
 
     @classmethod
-    def string_to_key(cls, password: bytes, salt: bytes, params: str | None) -> bytes:
+    def string_to_key(cls, password: bytes, salt: bytes, params: str | None = None) -> bytes:
         """
         Derive a protocol key from a password and a salt as defined in RFC 3962.
 
@@ -285,7 +285,7 @@ class Rfc8009(EncryptionType):
         return cls.random_to_key(cls._kdc_hmac_sha2(key, usage, bytes(), size))
 
     @classmethod
-    def string_to_key(cls, password: bytes, salt: bytes, params: str | None) -> bytes:
+    def string_to_key(cls, password: bytes, salt: bytes, params: str | None = None) -> bytes:
         """
         Derive a protocol key from a password and a salt as defined in RFC 8009.
 
