@@ -39,13 +39,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
     }
 
     getURL(): string {
-        var urlPattern = /^((http|https):\/\/)/;
-
-        if(!urlPattern.test(this.challenge.to)) {
-            return window.location.origin + this.challenge.to;
-        }
-
-        return this.challenge.to;
+        return new URL(this.challenge.to, document.baseURI).toString();
     }
 
     firstUpdated(): void {
