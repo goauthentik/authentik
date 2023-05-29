@@ -65,6 +65,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /admin/models/:
+    get:
+      operationId: admin_models_list
+      description: Read-only view list all installed models
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/App'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /admin/system/:
     get:
       operationId: admin_system_retrieve
@@ -10973,6 +11002,10 @@ paths:
         schema:
           type: string
           format: date-time
+      - in: query
+        name: model
+        schema:
+          type: string
       - in: query
         name: name
         schema:
@@ -29155,6 +29188,82 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          description: |-
+            Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+            * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+            * `authentik_flows.flow` - Flow
+            * `authentik_flows.flowstagebinding` - Flow Stage Binding
+            * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
+            * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
+            * `authentik_outposts.outpost` - outpost
+            * `authentik_policies_dummy.dummypolicy` - Dummy Policy
+            * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
+            * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+            * `authentik_policies_expression.expressionpolicy` - Expression Policy
+            * `authentik_policies_password.passwordpolicy` - Password Policy
+            * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
+            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies.policybinding` - Policy Binding
+            * `authentik_providers_ldap.ldapprovider` - LDAP Provider
+            * `authentik_providers_oauth2.scopemapping` - Scope Mapping
+            * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
+            * `authentik_providers_oauth2.authorizationcode` - Authorization Code
+            * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
+            * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
+            * `authentik_providers_proxy.proxyprovider` - Proxy Provider
+            * `authentik_providers_radius.radiusprovider` - Radius Provider
+            * `authentik_providers_saml.samlprovider` - SAML Provider
+            * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
+            * `authentik_providers_scim.scimprovider` - SCIM Provider
+            * `authentik_providers_scim.scimmapping` - SCIM Mapping
+            * `authentik_sources_ldap.ldapsource` - LDAP Source
+            * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
+            * `authentik_sources_oauth.oauthsource` - OAuth Source
+            * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
+            * `authentik_sources_plex.plexsource` - Plex Source
+            * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
+            * `authentik_sources_saml.samlsource` - SAML Source
+            * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+            * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
+            * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+            * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
+            * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
+            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+            * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
+            * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
+            * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
+            * `authentik_stages_captcha.captchastage` - Captcha Stage
+            * `authentik_stages_consent.consentstage` - Consent Stage
+            * `authentik_stages_consent.userconsent` - User Consent
+            * `authentik_stages_deny.denystage` - Deny Stage
+            * `authentik_stages_dummy.dummystage` - Dummy Stage
+            * `authentik_stages_email.emailstage` - Email Stage
+            * `authentik_stages_identification.identificationstage` - Identification Stage
+            * `authentik_stages_invitation.invitationstage` - Invitation Stage
+            * `authentik_stages_invitation.invitation` - Invitation
+            * `authentik_stages_password.passwordstage` - Password Stage
+            * `authentik_stages_prompt.prompt` - Prompt
+            * `authentik_stages_prompt.promptstage` - Prompt Stage
+            * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
+            * `authentik_stages_user_login.userloginstage` - User Login Stage
+            * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
+            * `authentik_stages_user_write.userwritestage` - User Write Stage
+            * `authentik_tenants.tenant` - Tenant
+            * `authentik_blueprints.blueprintinstance` - Blueprint Instance
+            * `authentik_core.group` - group
+            * `authentik_core.user` - User
+            * `authentik_core.application` - Application
+            * `authentik_core.token` - Token
       required:
       - bound_to
       - component
@@ -29265,6 +29374,82 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          description: |-
+            Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+            * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+            * `authentik_flows.flow` - Flow
+            * `authentik_flows.flowstagebinding` - Flow Stage Binding
+            * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
+            * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
+            * `authentik_outposts.outpost` - outpost
+            * `authentik_policies_dummy.dummypolicy` - Dummy Policy
+            * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
+            * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+            * `authentik_policies_expression.expressionpolicy` - Expression Policy
+            * `authentik_policies_password.passwordpolicy` - Password Policy
+            * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
+            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies.policybinding` - Policy Binding
+            * `authentik_providers_ldap.ldapprovider` - LDAP Provider
+            * `authentik_providers_oauth2.scopemapping` - Scope Mapping
+            * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
+            * `authentik_providers_oauth2.authorizationcode` - Authorization Code
+            * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
+            * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
+            * `authentik_providers_proxy.proxyprovider` - Proxy Provider
+            * `authentik_providers_radius.radiusprovider` - Radius Provider
+            * `authentik_providers_saml.samlprovider` - SAML Provider
+            * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
+            * `authentik_providers_scim.scimprovider` - SCIM Provider
+            * `authentik_providers_scim.scimmapping` - SCIM Mapping
+            * `authentik_sources_ldap.ldapsource` - LDAP Source
+            * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
+            * `authentik_sources_oauth.oauthsource` - OAuth Source
+            * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
+            * `authentik_sources_plex.plexsource` - Plex Source
+            * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
+            * `authentik_sources_saml.samlsource` - SAML Source
+            * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+            * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
+            * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+            * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
+            * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
+            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+            * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
+            * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
+            * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
+            * `authentik_stages_captcha.captchastage` - Captcha Stage
+            * `authentik_stages_consent.consentstage` - Consent Stage
+            * `authentik_stages_consent.userconsent` - User Consent
+            * `authentik_stages_deny.denystage` - Deny Stage
+            * `authentik_stages_dummy.dummystage` - Dummy Stage
+            * `authentik_stages_email.emailstage` - Email Stage
+            * `authentik_stages_identification.identificationstage` - Identification Stage
+            * `authentik_stages_invitation.invitationstage` - Invitation Stage
+            * `authentik_stages_invitation.invitation` - Invitation
+            * `authentik_stages_password.passwordstage` - Password Stage
+            * `authentik_stages_prompt.prompt` - Prompt
+            * `authentik_stages_prompt.promptstage` - Prompt Stage
+            * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
+            * `authentik_stages_user_login.userloginstage` - User Login Stage
+            * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
+            * `authentik_stages_user_write.userwritestage` - User Write Stage
+            * `authentik_tenants.tenant` - Tenant
+            * `authentik_blueprints.blueprintinstance` - Blueprint Instance
+            * `authentik_core.group` - group
+            * `authentik_core.user` - User
+            * `authentik_core.application` - Application
+            * `authentik_core.token` - Token
       required:
       - name
     EventRequest:
@@ -31236,6 +31421,150 @@ components:
       required:
       - labels
       - name
+    ModelEnum:
+      enum:
+      - authentik_crypto.certificatekeypair
+      - authentik_events.event
+      - authentik_events.notificationtransport
+      - authentik_events.notification
+      - authentik_events.notificationrule
+      - authentik_events.notificationwebhookmapping
+      - authentik_flows.flow
+      - authentik_flows.flowstagebinding
+      - authentik_outposts.dockerserviceconnection
+      - authentik_outposts.kubernetesserviceconnection
+      - authentik_outposts.outpost
+      - authentik_policies_dummy.dummypolicy
+      - authentik_policies_event_matcher.eventmatcherpolicy
+      - authentik_policies_expiry.passwordexpirypolicy
+      - authentik_policies_expression.expressionpolicy
+      - authentik_policies_password.passwordpolicy
+      - authentik_policies_reputation.reputationpolicy
+      - authentik_policies_reputation.reputation
+      - authentik_policies.policybinding
+      - authentik_providers_ldap.ldapprovider
+      - authentik_providers_oauth2.scopemapping
+      - authentik_providers_oauth2.oauth2provider
+      - authentik_providers_oauth2.authorizationcode
+      - authentik_providers_oauth2.accesstoken
+      - authentik_providers_oauth2.refreshtoken
+      - authentik_providers_proxy.proxyprovider
+      - authentik_providers_radius.radiusprovider
+      - authentik_providers_saml.samlprovider
+      - authentik_providers_saml.samlpropertymapping
+      - authentik_providers_scim.scimprovider
+      - authentik_providers_scim.scimmapping
+      - authentik_sources_ldap.ldapsource
+      - authentik_sources_ldap.ldappropertymapping
+      - authentik_sources_oauth.oauthsource
+      - authentik_sources_oauth.useroauthsourceconnection
+      - authentik_sources_plex.plexsource
+      - authentik_sources_plex.plexsourceconnection
+      - authentik_sources_saml.samlsource
+      - authentik_sources_saml.usersamlsourceconnection
+      - authentik_stages_authenticator_duo.authenticatorduostage
+      - authentik_stages_authenticator_duo.duodevice
+      - authentik_stages_authenticator_sms.authenticatorsmsstage
+      - authentik_stages_authenticator_sms.smsdevice
+      - authentik_stages_authenticator_static.authenticatorstaticstage
+      - authentik_stages_authenticator_totp.authenticatortotpstage
+      - authentik_stages_authenticator_validate.authenticatorvalidatestage
+      - authentik_stages_authenticator_webauthn.authenticatewebauthnstage
+      - authentik_stages_authenticator_webauthn.webauthndevice
+      - authentik_stages_captcha.captchastage
+      - authentik_stages_consent.consentstage
+      - authentik_stages_consent.userconsent
+      - authentik_stages_deny.denystage
+      - authentik_stages_dummy.dummystage
+      - authentik_stages_email.emailstage
+      - authentik_stages_identification.identificationstage
+      - authentik_stages_invitation.invitationstage
+      - authentik_stages_invitation.invitation
+      - authentik_stages_password.passwordstage
+      - authentik_stages_prompt.prompt
+      - authentik_stages_prompt.promptstage
+      - authentik_stages_user_delete.userdeletestage
+      - authentik_stages_user_login.userloginstage
+      - authentik_stages_user_logout.userlogoutstage
+      - authentik_stages_user_write.userwritestage
+      - authentik_tenants.tenant
+      - authentik_blueprints.blueprintinstance
+      - authentik_core.group
+      - authentik_core.user
+      - authentik_core.application
+      - authentik_core.token
+      type: string
+      description: |-
+        * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
+        * `authentik_events.event` - Event
+        * `authentik_events.notificationtransport` - Notification Transport
+        * `authentik_events.notification` - Notification
+        * `authentik_events.notificationrule` - Notification Rule
+        * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+        * `authentik_flows.flow` - Flow
+        * `authentik_flows.flowstagebinding` - Flow Stage Binding
+        * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
+        * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
+        * `authentik_outposts.outpost` - outpost
+        * `authentik_policies_dummy.dummypolicy` - Dummy Policy
+        * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
+        * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+        * `authentik_policies_expression.expressionpolicy` - Expression Policy
+        * `authentik_policies_password.passwordpolicy` - Password Policy
+        * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
+        * `authentik_policies_reputation.reputation` - reputation
+        * `authentik_policies.policybinding` - Policy Binding
+        * `authentik_providers_ldap.ldapprovider` - LDAP Provider
+        * `authentik_providers_oauth2.scopemapping` - Scope Mapping
+        * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
+        * `authentik_providers_oauth2.authorizationcode` - Authorization Code
+        * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
+        * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
+        * `authentik_providers_proxy.proxyprovider` - Proxy Provider
+        * `authentik_providers_radius.radiusprovider` - Radius Provider
+        * `authentik_providers_saml.samlprovider` - SAML Provider
+        * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
+        * `authentik_providers_scim.scimprovider` - SCIM Provider
+        * `authentik_providers_scim.scimmapping` - SCIM Mapping
+        * `authentik_sources_ldap.ldapsource` - LDAP Source
+        * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
+        * `authentik_sources_oauth.oauthsource` - OAuth Source
+        * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
+        * `authentik_sources_plex.plexsource` - Plex Source
+        * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
+        * `authentik_sources_saml.samlsource` - SAML Source
+        * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+        * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
+        * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+        * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
+        * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
+        * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+        * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+        * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
+        * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
+        * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
+        * `authentik_stages_captcha.captchastage` - Captcha Stage
+        * `authentik_stages_consent.consentstage` - Consent Stage
+        * `authentik_stages_consent.userconsent` - User Consent
+        * `authentik_stages_deny.denystage` - Deny Stage
+        * `authentik_stages_dummy.dummystage` - Dummy Stage
+        * `authentik_stages_email.emailstage` - Email Stage
+        * `authentik_stages_identification.identificationstage` - Identification Stage
+        * `authentik_stages_invitation.invitationstage` - Invitation Stage
+        * `authentik_stages_invitation.invitation` - Invitation
+        * `authentik_stages_password.passwordstage` - Password Stage
+        * `authentik_stages_prompt.prompt` - Prompt
+        * `authentik_stages_prompt.promptstage` - Prompt Stage
+        * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
+        * `authentik_stages_user_login.userloginstage` - User Login Stage
+        * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
+        * `authentik_stages_user_write.userwritestage` - User Write Stage
+        * `authentik_tenants.tenant` - Tenant
+        * `authentik_blueprints.blueprintinstance` - Blueprint Instance
+        * `authentik_core.group` - group
+        * `authentik_core.user` - User
+        * `authentik_core.application` - Application
+        * `authentik_core.token` - Token
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -35988,6 +36317,82 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          description: |-
+            Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+            * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+            * `authentik_flows.flow` - Flow
+            * `authentik_flows.flowstagebinding` - Flow Stage Binding
+            * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
+            * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
+            * `authentik_outposts.outpost` - outpost
+            * `authentik_policies_dummy.dummypolicy` - Dummy Policy
+            * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
+            * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+            * `authentik_policies_expression.expressionpolicy` - Expression Policy
+            * `authentik_policies_password.passwordpolicy` - Password Policy
+            * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
+            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies.policybinding` - Policy Binding
+            * `authentik_providers_ldap.ldapprovider` - LDAP Provider
+            * `authentik_providers_oauth2.scopemapping` - Scope Mapping
+            * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
+            * `authentik_providers_oauth2.authorizationcode` - Authorization Code
+            * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
+            * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
+            * `authentik_providers_proxy.proxyprovider` - Proxy Provider
+            * `authentik_providers_radius.radiusprovider` - Radius Provider
+            * `authentik_providers_saml.samlprovider` - SAML Provider
+            * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
+            * `authentik_providers_scim.scimprovider` - SCIM Provider
+            * `authentik_providers_scim.scimmapping` - SCIM Mapping
+            * `authentik_sources_ldap.ldapsource` - LDAP Source
+            * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
+            * `authentik_sources_oauth.oauthsource` - OAuth Source
+            * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
+            * `authentik_sources_plex.plexsource` - Plex Source
+            * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
+            * `authentik_sources_saml.samlsource` - SAML Source
+            * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+            * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
+            * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+            * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
+            * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
+            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+            * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
+            * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
+            * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
+            * `authentik_stages_captcha.captchastage` - Captcha Stage
+            * `authentik_stages_consent.consentstage` - Consent Stage
+            * `authentik_stages_consent.userconsent` - User Consent
+            * `authentik_stages_deny.denystage` - Deny Stage
+            * `authentik_stages_dummy.dummystage` - Dummy Stage
+            * `authentik_stages_email.emailstage` - Email Stage
+            * `authentik_stages_identification.identificationstage` - Identification Stage
+            * `authentik_stages_invitation.invitationstage` - Invitation Stage
+            * `authentik_stages_invitation.invitation` - Invitation
+            * `authentik_stages_password.passwordstage` - Password Stage
+            * `authentik_stages_prompt.prompt` - Prompt
+            * `authentik_stages_prompt.promptstage` - Prompt Stage
+            * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
+            * `authentik_stages_user_login.userloginstage` - User Login Stage
+            * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
+            * `authentik_stages_user_write.userwritestage` - User Write Stage
+            * `authentik_tenants.tenant` - Tenant
+            * `authentik_blueprints.blueprintinstance` - Blueprint Instance
+            * `authentik_core.group` - group
+            * `authentik_core.user` - User
+            * `authentik_core.application` - Application
+            * `authentik_core.token` - Token
     PatchedEventRequest:
       type: object
       description: Event Serializer
