@@ -51,7 +51,7 @@
     "devDependencies": {
         "@babel/core": "^7.21.8",
         "@babel/plugin-proposal-decorators": "^7.21.0",
-        "@babel/plugin-transform-runtime": "^7.21.4",
+        "@babel/plugin-transform-runtime": "^7.22.2",
         "@babel/preset-env": "^7.21.5",
         "@babel/preset-typescript": "^7.21.5",
         "@hcaptcha/types": "^1.0.3",
