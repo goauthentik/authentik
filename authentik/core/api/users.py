@@ -51,6 +51,7 @@ from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import (
@@ -111,6 +112,30 @@ class UserSerializer(ModelSerializer):
     groups_obj = ListSerializer(child=UserGroupSerializer(), read_only=True, source="ak_groups")
     uid = CharField(read_only=True)
     username = CharField(max_length=150, validators=[UniqueValidator(queryset=User.objects.all())])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self.fields["password"] = CharField(required=False)
+
+    def create(self, validated_data: dict) -> User:
+        """If this serializer is used in the blueprint context, we allow for
+        directly setting a password. However should be done via the `set_password`
+        method instead of directly setting it like rest_framework."""
+        instance: User = super().create(validated_data)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and "password" in validated_data:
+            instance.set_password(validated_data["password"])
+            instance.save()
+        return instance
+
+    def update(self, instance: User, validated_data: dict) -> User:
+        """Same as `create` above, set the password directly if we're in a blueprint
+        context"""
+        instance = super().update(instance, validated_data)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and "password" in validated_data:
+            instance.set_password(validated_data["password"])
+            instance.save()
+        return instance
 
     def validate_path(self, path: str) -> str:
         """Validate path"""
