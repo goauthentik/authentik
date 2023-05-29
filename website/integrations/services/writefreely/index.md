@@ -88,6 +88,10 @@ map_email          = email
 
 Restart writefreely.service
 
+### Account-Linking
+
+Afterwards and especially when your username in authentik (e. g. your E-Mail-address) and your WriteFreely-username may differ, you need to link your account to authentik's authentication mechanism once-only. This can be done after logging in with local credentials and choosing "Customize" in the menu and "Account settings" afterwards. Amongst the option "Linked Accounts", one click on "authentik" finally connects both authentication layers!
+
 ## Additional Resources
 
 -   https://writefreely.org/docs/latest/admin/config
