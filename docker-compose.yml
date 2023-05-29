@@ -49,6 +49,9 @@ services:
     ports:
       - "${COMPOSE_PORT_HTTP:-9000}:9000"
       - "${COMPOSE_PORT_HTTPS:-9443}:9443"
+    depends_on:
+      - postgresql
+      - redis
   worker:
     image: ${AUTHENTIK_IMAGE:-ghcr.io/goauthentik/server}:${AUTHENTIK_TAG:-2023.5.2}
     restart: unless-stopped
@@ -73,6 +76,9 @@ services:
       - ./custom-templates:/templates
     env_file:
       - .env
+    depends_on:
+      - postgresql
+      - redis
 
 volumes:
   database:
