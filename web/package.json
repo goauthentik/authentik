@@ -49,7 +49,7 @@
         "yaml": "^2.3.0"
     },
     "devDependencies": {
-        "@babel/core": "^7.21.8",
+        "@babel/core": "^7.22.1",
         "@babel/plugin-proposal-decorators": "^7.21.0",
         "@babel/plugin-transform-runtime": "^7.21.4",
         "@babel/preset-env": "^7.21.5",
