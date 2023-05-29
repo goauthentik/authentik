@@ -28,7 +28,7 @@ The following placeholders will be used:
 
 Create a OAuth2/OpenID Provider (under _Applications/Providers_) with these settings:
 
--   Name : writefreely
+-   Name: writefreely
 -   Redirect URI: `https://writefreely.company/oauth/callback/generic`
 
 ### Step 3 - Application
@@ -88,9 +88,11 @@ map_email          = email
 
 Restart writefreely.service
 
-### Account-Linking
+## Account linking
 
-Afterwards and especially when your username in authentik (e. g. your E-Mail-address) and your WriteFreely-username may differ, you need to link your account to authentik's authentication mechanism once-only. This can be done after logging in with local credentials and choosing "Customize" in the menu and "Account settings" afterwards. Amongst the option "Linked Accounts", one click on "authentik" finally connects both authentication layers!
+If your username in authentik and your WriteFreely username differ, you may need to link your accounts before being able to use SSO.
+
+This can be done after logging into Writefreely with local credentials, navigating to "Customize" in the menu and "Account settings" afterwards. Amongst the option "Linked Accounts", click on "authentik", and your accounts will be linked.
 
 ## Additional Resources
 
