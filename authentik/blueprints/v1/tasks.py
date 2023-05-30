@@ -184,9 +184,9 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
     instance: Optional[BlueprintInstance] = None
     try:
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
-        self.set_uid(slugify(instance.name))
         if not instance or not instance.enabled:
             return
+        self.set_uid(slugify(instance.name))
         blueprint_content = instance.retrieve()
         file_hash = sha512(blueprint_content.encode()).hexdigest()
         importer = Importer(blueprint_content, instance.context)

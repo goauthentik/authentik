@@ -8,7 +8,7 @@ from authentik.flows.models import Stage
 
 
 class DenyStage(Stage):
-    """Cancells the current flow."""
+    """Cancels the current flow."""
 
     @property
     def serializer(self) -> type[BaseSerializer]:

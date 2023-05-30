@@ -8228,6 +8228,11 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Path"
+                },
+                "password": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Password"
                 }
             },
             "required": []

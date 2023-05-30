@@ -32,6 +32,29 @@ class TestBlueprintOCI(TransactionTestCase):
                 "foo",
             )
 
+    def test_successful_port(self):
+        """Successful retrieval with custom port"""
+        with Mocker() as mocker:
+            mocker.get(
+                "https://ghcr.io:1234/v2/goauthentik/blueprints/test/manifests/latest",
+                json={
+                    "layers": [
+                        {
+                            "mediaType": OCI_MEDIA_TYPE,
+                            "digest": "foo",
+                        }
+                    ]
+                },
+            )
+            mocker.get("https://ghcr.io:1234/v2/goauthentik/blueprints/test/blobs/foo", text="foo")
+
+            self.assertEqual(
+                BlueprintInstance(
+                    path="oci://ghcr.io:1234/goauthentik/blueprints/test:latest"
+                ).retrieve(),
+                "foo",
+            )
+
     def test_manifests_error(self):
         """Test manifests request erroring"""
         with Mocker() as mocker:

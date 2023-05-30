@@ -3,7 +3,8 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import Fuse from "fuse.js";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { html, css } from "lit";
+
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -15,13 +16,26 @@ import type { Application } from "@goauthentik/api";
 import { SEARCH_ITEM_SELECTED, SEARCH_UPDATED } from "./constants";
 import { customEvent } from "./helpers";
 
-function fuseToApps(apps: Fuse.FuseResult<Application>[]): Application[] {
-    return apps.map((item) => item.item);
-}
-
 @customElement("ak-library-list-search")
 export class LibraryPageApplicationList extends AKElement {
-    static styles = [PFBase, PFDisplay];
+    static styles = [
+        PFBase,
+        PFDisplay,
+        css`
+            input {
+                width: 30ch;
+                box-sizing: border-box;
+                border: 0;
+                border-bottom: 1px solid;
+                border-bottom-color: var(--ak-accent);
+                background-color: transparent;
+                font-size: 1.5rem;
+            }
+            input:focus {
+                outline: 0;
+            }
+        `,
+    ];
 
     @property()
     apps: Application[] = [];
@@ -54,16 +68,15 @@ export class LibraryPageApplicationList extends AKElement {
     }
 
     onSelected(apps: Fuse.FuseResult<Application>[]) {
-        const items = fuseToApps(apps);
         this.dispatchEvent(
             customEvent(SEARCH_UPDATED, {
-                selectedApp: items[0],
-                filteredApps: items,
-            }),
+                apps: apps.map((app) => app.item),
+            })
         );
     }
 
     connectedCallback() {
+        super.connectedCallback();
         this.fuse.setCollection(this.apps);
         if (!this.query) {
             return;

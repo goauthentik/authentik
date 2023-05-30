@@ -12,6 +12,7 @@ export const DEFAULT_FALLBACK = "en";
 // - Text Label
 // - Locale loader.
 
+// prettier-ignore
 const LOCALE_TABLE: LocaleRow[] = [
     ["en", () => msg("English"), async () => await import("@goauthentik/locales/en")],
     ["es", () => msg("Spanish"), async () => await import("@goauthentik/locales/es")],
@@ -19,21 +20,9 @@ const LOCALE_TABLE: LocaleRow[] = [
     ["fr_FR", () => msg("French"), async () => await import("@goauthentik/locales/fr_FR")],
     ["pl", () => msg("Polish"), async () => await import("@goauthentik/locales/pl")],
     ["tr", () => msg("Turkish"), async () => await import("@goauthentik/locales/tr")],
-    [
-        "zh-CN",
-        () => msg("Chinese (simplified)"),
-        async () => await import("@goauthentik/locales/zh-Hans"),
-    ],
-    [
-        "zh_TW",
-        () => msg("Taiwanese Mandarin"),
-        async () => await import("@goauthentik/locales/zh_TW"),
-    ],
-    [
-        "zh-HK",
-        () => msg("Chinese (traditional)"),
-        async () => await import("@goauthentik/locales/zh-Hant"),
-    ],
+    ["zh-CN", () => msg("Chinese (simplified)"), async () => await import("@goauthentik/locales/zh-Hans")],
+    [ "zh_TW", () => msg("Taiwanese Mandarin"), async () => await import("@goauthentik/locales/zh_TW")],
+    [ "zh-HK", () => msg("Chinese (traditional)"), async () => await import("@goauthentik/locales/zh-Hant")],
 ];
 
 export const LOCALES: AkLocale[] = LOCALE_TABLE.map(([code, label, locale]) => ({

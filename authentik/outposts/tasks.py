@@ -42,12 +42,15 @@ from authentik.providers.ldap.controllers.docker import LDAPDockerController
 from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
 from authentik.providers.proxy.controllers.docker import ProxyDockerController
 from authentik.providers.proxy.controllers.kubernetes import ProxyKubernetesController
+from authentik.providers.radius.controllers.docker import RadiusDockerController
+from authentik.providers.radius.controllers.kubernetes import RadiusKubernetesController
 from authentik.root.celery import CELERY_APP
 
 LOGGER = get_logger()
 CACHE_KEY_OUTPOST_DOWN = "goauthentik.io/outposts/teardown/%s"
 
 
+# pylint: disable=too-many-return-statements
 def controller_for_outpost(outpost: Outpost) -> Optional[type[BaseController]]:
     """Get a controller for the outpost, when a service connection is defined"""
     if not outpost.service_connection:
@@ -63,6 +66,11 @@ def controller_for_outpost(outpost: Outpost) -> Optional[type[BaseController]]:
             return LDAPDockerController
         if isinstance(service_connection, KubernetesServiceConnection):
             return LDAPKubernetesController
+    if outpost.type == OutpostType.RADIUS:
+        if isinstance(service_connection, DockerServiceConnection):
+            return RadiusDockerController
+        if isinstance(service_connection, KubernetesServiceConnection):
+            return RadiusKubernetesController
     return None
 
 

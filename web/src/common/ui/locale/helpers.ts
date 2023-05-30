@@ -7,11 +7,11 @@ import { LOCALES as RAW_LOCALES } from "./definitions";
 // application is first instantiated.
 
 export const LOCALES = RAW_LOCALES.map((locale) =>
-    locale.code === "en" ? { ...locale, locale: async () => enLocale } : locale,
+    locale.code === "en" ? { ...locale, locale: async () => enLocale } : locale
 );
 
 // First attempt a precise match, then see if there's a precise match on the requested locale's
-// prefix, then find the *first* locale for which that prefix matches the requested locale's prefix.
+// prefix, then find the *first* locale for which that locale's prefix matches the requested prefix.
 
 export function getBestMatchLocale(locale: string) {
     const getPref = (l: string) => l.split(/[_-]/)[0];
