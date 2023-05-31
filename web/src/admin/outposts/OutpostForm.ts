@@ -191,8 +191,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         const selected = Array.from(this.instance?.providers || []).some((sp) => {
                             return sp == provider.pk;
                         });
+                        let appName = provider.assignedApplicationName;
+                        if (provider.assignedBackchannelApplicationName) {
+                            appName = provider.assignedBackchannelApplicationName;
+                        }
                         return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>
-                            ${provider.assignedApplicationName} (${provider.name})
+                            ${appName} (${provider.name})
                         </option>`;
                     })}
                 </select>
