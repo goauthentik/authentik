@@ -31629,6 +31629,7 @@ components:
         license_uuid:
           type: string
           format: uuid
+          readOnly: true
         name:
           type: string
           readOnly: true
@@ -31655,15 +31656,11 @@ components:
       type: object
       description: License Serializer
       properties:
-        license_uuid:
-          type: string
-          format: uuid
         key:
           type: string
           minLength: 1
       required:
       - key
-      - license_uuid
     Link:
       type: object
       description: Returns a single link
@@ -37217,9 +37214,6 @@ components:
       type: object
       description: License Serializer
       properties:
-        license_uuid:
-          type: string
-          format: uuid
         key:
           type: string
           minLength: 1

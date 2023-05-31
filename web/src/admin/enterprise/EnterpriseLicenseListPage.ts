@@ -8,8 +8,8 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
-import { t } from "@lingui/macro";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -25,11 +25,11 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         return true;
     }
     pageTitle(): string {
-        return t`Licenses`;
+        return msg("Licenses");
     }
     pageDescription(): string {
         // TODO: add copy text
-        return t`TODO Copy`;
+        return msg("TODO Copy");
     }
     pageIcon(): string {
         // TODO: update icon
@@ -54,22 +54,22 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Users`),
-            new TableColumn(t`Expiry date`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Users")),
+            new TableColumn(msg("Expiry date")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`License(s)`}
+            objectLabel=${msg("License(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: License) => {
                 return [
-                    { key: t`Name`, value: item.name },
-                    { key: t`Expiry`, value: item.expiry?.toLocaleString() },
+                    { key: msg("Name"), value: item.name },
+                    { key: msg("Expiry"), value: item.expiry?.toLocaleString() },
                 ];
             }}
             .usedBy=${(item: License) => {
@@ -84,7 +84,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -110,8 +110,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
             </div>`,
             html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
             html`<ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update License`} </span>
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg("Update License")} </span>
                 <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
                 </ak-enterprise-license-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -124,10 +124,10 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create License`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create License")} </span>
                 <ak-enterprise-license-form slot="form"> </ak-enterprise-license-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
     }
