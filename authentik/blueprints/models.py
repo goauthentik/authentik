@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 from structlog import get_logger
 
-from authentik.blueprints.v1.oci import BlueprintOCIClient, OCIException
+from authentik.blueprints.v1.oci import OCI_PREFIX, BlueprintOCIClient, OCIException
 from authentik.lib.config import CONFIG
 from authentik.lib.models import CreatedUpdatedModel, SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
@@ -72,7 +72,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
     def retrieve_oci(self) -> str:
         """Get blueprint from an OCI registry"""
-        client = BlueprintOCIClient(self.path.replace("oci://", "https://"))
+        client = BlueprintOCIClient(self.path.replace(OCI_PREFIX, "https://"))
         try:
             manifests = client.fetch_manifests()
             return client.fetch_blobs(manifests)
@@ -90,7 +90,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
 
     def retrieve(self) -> str:
         """Retrieve blueprint contents"""
-        if self.path.startswith("oci://"):
+        if self.path.startswith(OCI_PREFIX):
             return self.retrieve_oci()
         if self.path != "":
             return self.retrieve_file()
