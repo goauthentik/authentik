@@ -9,9 +9,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ steps.generate_token.outputs.token }}
       - uses: actions/setup-node@v3.6.0
         with:
           node-version: "20"
@@ -33,7 +38,7 @@ jobs:
       - uses: peter-evans/create-pull-request@v5
         id: cpr
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ steps.generate_token.outputs.token }}
           branch: update-web-api-client
           commit-message: "web: bump API Client version"
           title: "web: bump API Client version"
@@ -44,6 +49,6 @@ jobs:
           author: authentik bot <github-bot@goauthentik.io>
       - uses: peter-evans/enable-pull-request-automerge@v3
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ steps.generate_token.outputs.token }}
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
           merge-method: squash
