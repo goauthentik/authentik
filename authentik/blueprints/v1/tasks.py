@@ -28,6 +28,7 @@ from authentik.blueprints.models import (
 from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, EntryInvalidError
 from authentik.blueprints.v1.importer import Importer
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
+from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.events.monitored_tasks import (
     MonitoredTask,
     TaskResult,
@@ -228,7 +229,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
 def clear_failed_blueprints():
     """Remove blueprints which couldn't be fetched"""
     # Exclude OCI blueprints as those might be temporarily unavailable
-    for blueprint in BlueprintInstance.objects.exclude(path__startswith="oci://"):
+    for blueprint in BlueprintInstance.objects.exclude(path__startswith=OCI_PREFIX):
         try:
             blueprint.retrieve()
         except BlueprintRetrievalFailed:

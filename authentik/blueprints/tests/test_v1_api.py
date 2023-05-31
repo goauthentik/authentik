@@ -44,6 +44,14 @@ class TestBlueprintsV1API(APITestCase):
                 ),
             )
 
+    def test_api_oci(self):
+        """Test validation with OCI path"""
+        res = self.client.post(
+            reverse("authentik_api:blueprintinstance-list"),
+            data={"name": "foo", "path": "oci://foo/bar"},
+        )
+        self.assertEqual(res.status_code, 201)
+
     def test_api_blank(self):
         """Test blank"""
         res = self.client.post(
