@@ -60,7 +60,7 @@
         "@jackfranklin/rollup-plugin-markdown": "^0.4.0",
         "@rollup/plugin-babel": "^6.0.3",
         "@rollup/plugin-commonjs": "^25.0.0",
-        "@rollup/plugin-node-resolve": "^15.0.2",
+        "@rollup/plugin-node-resolve": "^15.1.0",
         "@rollup/plugin-replace": "^5.0.2",
         "@rollup/plugin-typescript": "^11.1.1",
         "@squoosh/cli": "^0.7.3",
