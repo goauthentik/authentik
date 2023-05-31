@@ -15,25 +15,12 @@
         "ecmaVersion": 12,
         "sourceType": "module"
     },
-    "plugins": [
-        "@typescript-eslint",
-        "lit",
-        "custom-elements"
-    ],
+    "plugins": ["@typescript-eslint", "lit", "custom-elements"],
     "rules": {
         "indent": "off",
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "double"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ],
+        "linebreak-style": ["error", "unix"],
+        "quotes": ["error", "double"],
+        "semi": ["error", "always"],
         "@typescript-eslint/ban-ts-comment": "off"
     }
 }

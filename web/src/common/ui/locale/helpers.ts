@@ -7,7 +7,7 @@ import { LOCALES as RAW_LOCALES } from "./definitions";
 // application is first instantiated.
 
 export const LOCALES = RAW_LOCALES.map((locale) =>
-    locale.code === "en" ? { ...locale, locale: async () => enLocale } : locale
+    locale.code === "en" ? { ...locale, locale: async () => enLocale } : locale,
 );
 
 // First attempt a precise match, then see if there's a precise match on the requested locale's

@@ -15,9 +15,14 @@ jobs:
   compile:
     runs-on: ubuntu-latest
     steps:
+      - id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - uses: actions/checkout@v3
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ steps.generate_token.outputs.token }}
       - name: Setup authentik env
         uses: ./.github/actions/setup
       - name: run compile
@@ -26,7 +31,7 @@ jobs:
         uses: peter-evans/create-pull-request@v5
         id: cpr
         with:
-          token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          token: ${{ steps.generate_token.outputs.token }}
           branch: compile-backend-translation
           commit-message: "core: compile backend translations"
           title: "core: compile backend translations"

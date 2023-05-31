@@ -3,8 +3,7 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import Fuse from "fuse.js";
 
 import { msg } from "@lit/localize";
-import { html, css } from "lit";
-
+import { css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -71,7 +70,7 @@ export class LibraryPageApplicationList extends AKElement {
         this.dispatchEvent(
             customEvent(SEARCH_UPDATED, {
                 apps: apps.map((app) => app.item),
-            })
+            }),
         );
     }
 

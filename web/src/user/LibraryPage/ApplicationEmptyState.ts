@@ -44,12 +44,17 @@ export class LibraryPageApplicationEmptyList extends AKElement {
         });
         return html`
             <div class="pf-u-pt-lg">
-                <a aria-disabled="false" class="cta pf-c-button pf-m-secondary" href="/if/admin/${href}"
+                <a
+                    aria-disabled="false"
+                    class="cta pf-c-button pf-m-secondary"
+                    href="/if/admin/${href}"
                     >${msg("Create a new application")}</a
                 >
             </div>
             <div class="pf-c-empty-state__body">
-                <a href="${docLink("/docs/applications")}" target="_blank">${msg("Refer to documentation")}</a>
+                <a href="${docLink("/docs/applications")}" target="_blank"
+                    >${msg("Refer to documentation")}</a
+                >
             </div>
         `;
     }
