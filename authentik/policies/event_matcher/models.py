@@ -25,8 +25,6 @@ def model_choices() -> list[tuple[str, str]]:
     Returns a list of tuples containing (dotted.model.path, name)"""
     choices = []
     for model in apps.get_models():
-        if model._meta.abstract:
-            continue
         if not is_model_allowed(model):
             continue
         name = f"{model._meta.app_label}.{model._meta.model_name}"
