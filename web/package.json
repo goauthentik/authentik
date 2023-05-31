@@ -4,9 +4,8 @@
     "private": true,
     "license": "MIT",
     "scripts": {
-        "lit-extract": "lit-localize extract",
-        "lit-build": "lit-localize build",
-        "extract": "lit-localize extract",
+        "extract-locales": "lit-localize extract",
+        "build-locales": "lit-localize build",
         "build": "lit-localize build && node --max-old-space-size=4096 node_modules/.bin/rollup -c ./rollup.config.js",
         "build-proxy": "lit-localize build && node --max-old-space-size=4096 node_modules/.bin/rollup -c ./rollup.proxy.js",
         "watch": "lit-localize build && node --max-old-space-size=8192 node_modules/.bin/rollup -c -w",
