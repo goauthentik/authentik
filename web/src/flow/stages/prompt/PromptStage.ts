@@ -168,7 +168,10 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.Dropdown:
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
-                        return html`<option value="${choice}" ?selected=${prompt.initialValue === choice}>
+                        return html`<option
+                            value="${choice}"
+                            ?selected=${prompt.initialValue === choice}
+                        >
                             ${choice}
                         </option>`;
                     })}
@@ -190,12 +193,19 @@ ${prompt.initialValue}</textarea
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
-                const inDebug = rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanDebug);
-                const locales = inDebug ? LOCALES : LOCALES.filter((locale) => locale.code !== "debug");
+                const inDebug = rootInterface()?.config?.capabilities.includes(
+                    CapabilitiesEnum.CanDebug,
+                );
+                const locales = inDebug
+                    ? LOCALES
+                    : LOCALES.filter((locale) => locale.code !== "debug");
                 const options = locales.map(
-                    (locale) => html`<option value=${locale.code} ?selected=${locale.code === prompt.initialValue}>
+                    (locale) => html`<option
+                        value=${locale.code}
+                        ?selected=${locale.code === prompt.initialValue}
+                    >
                         ${locale.code.toUpperCase()} - ${locale.label()}
-                    </option> `
+                    </option> `,
                 );
 
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
@@ -242,7 +252,9 @@ ${prompt.initialValue}</textarea
                     ?required=${prompt.required}
                 />
                 <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
-                ${prompt.required ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>` : html``}
+                ${prompt.required
+                    ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
+                    : html``}
                 <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }
@@ -261,13 +273,16 @@ ${prompt.initialValue}</textarea
 
     renderContinue(): TemplateResult {
         return html` <div class="pf-c-form__group pf-m-action">
-            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">${msg("Continue")}</button>
+            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                ${msg("Continue")}
+            </button>
         </div>`;
     }
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -283,7 +298,9 @@ ${prompt.initialValue}</textarea
                         return this.renderField(prompt);
                     })}
                     ${"non_field_errors" in (this.challenge?.responseErrors || {})
-                        ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || [])
+                        ? this.renderNonFieldErrors(
+                              this.challenge?.responseErrors?.non_field_errors || [],
+                          )
                         : html``}
                     ${this.renderContinue()}
                 </form>
