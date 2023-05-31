@@ -12,9 +12,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import { Config, CurrentTenant, UiThemeEnum } from "@goauthentik/api";
 
 export function rootInterface<T extends Interface>(): T | undefined {
-    const el = Array.from(document.body.querySelectorAll("*")).filter(
-        (el) => el instanceof Interface,
-    );
+    const el = Array.from(document.body.querySelectorAll("*")).filter((el) => el instanceof Interface);
     return el[0] as T;
 }
 
@@ -22,17 +20,15 @@ let css: Promise<string[]> | undefined;
 function fetchCustomCSS(): Promise<string[]> {
     if (!css) {
         css = Promise.all(
-            Array.of(...document.head.querySelectorAll<HTMLLinkElement>("link[data-inject]")).map(
-                (link) => {
-                    return fetch(link.href)
-                        .then((res) => {
-                            return res.text();
-                        })
-                        .finally(() => {
-                            return "";
-                        });
-                },
-            ),
+            Array.of(...document.head.querySelectorAll<HTMLLinkElement>("link[data-inject]")).map((link) => {
+                return fetch(link.href)
+                    .then((res) => {
+                        return res.text();
+                    })
+                    .finally(() => {
+                        return "";
+                    });
+            })
         );
     }
     return css;
@@ -68,7 +64,7 @@ export class AKElement extends LitElement {
         if ("ShadyDOM" in window) {
             styleRoot = document;
         }
-        styleRoot.adoptedStyleSheets = [...styleRoot.adoptedStyleSheets, AKGlobal];
+        styleRoot.adoptedStyleSheets.push(AKGlobal.styleSheet);
         this._initTheme(styleRoot);
         this._initCustomCSS(styleRoot);
         return root;
@@ -83,9 +79,7 @@ export class AKElement extends LitElement {
         // when dark is preferred
         this._activateTheme(
             root,
-            window.matchMedia(QUERY_MEDIA_COLOR_LIGHT).matches
-                ? UiThemeEnum.Light
-                : UiThemeEnum.Dark,
+            window.matchMedia(QUERY_MEDIA_COLOR_LIGHT).matches ? UiThemeEnum.Light : UiThemeEnum.Dark
         );
         this._applyTheme(root, await this.getTheme());
     }
@@ -112,10 +106,7 @@ export class AKElement extends LitElement {
             if (!this._mediaMatcher) {
                 this._mediaMatcher = window.matchMedia(QUERY_MEDIA_COLOR_LIGHT);
                 this._mediaMatcherHandler = (ev?: MediaQueryListEvent) => {
-                    const theme =
-                        ev?.matches || this._mediaMatcher?.matches
-                            ? UiThemeEnum.Light
-                            : UiThemeEnum.Dark;
+                    const theme = ev?.matches || this._mediaMatcher?.matches ? UiThemeEnum.Light : UiThemeEnum.Dark;
                     this._activateTheme(root, theme);
                 };
                 this._mediaMatcher.addEventListener("change", this._mediaMatcherHandler);
@@ -147,7 +138,7 @@ export class AKElement extends LitElement {
                 bubbles: true,
                 composed: true,
                 detail: theme,
-            }),
+            })
         );
         this.setAttribute("theme", theme);
         const stylesheet = AKElement.themeToStylesheet(theme);

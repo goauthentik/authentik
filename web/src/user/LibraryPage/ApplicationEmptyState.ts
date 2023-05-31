@@ -19,23 +19,21 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
  * administrator, provide a link to the "Create a new application" page.
  */
 
-const styles = [
-    PFBase,
-    PFEmptyState,
-    PFButton,
-    PFContent,
-    PFSpacing,
-    css`
-        .cta {
-            display: inline-block;
-            font-weight: bold;
-        }
-    `,
-];
-
 @customElement("ak-library-application-empty-list")
 export class LibraryPageApplicationEmptyList extends AKElement {
-    static styles = styles;
+    static styles = [
+        PFBase,
+        PFEmptyState,
+        PFButton,
+        PFContent,
+        PFSpacing,
+        css`
+            .cta {
+                display: inline-block;
+                font-weight: bold;
+            }
+        `,
+    ];
 
     @property({ attribute: "isadmin", type: Boolean })
     isAdmin = false;
@@ -46,17 +44,12 @@ export class LibraryPageApplicationEmptyList extends AKElement {
         });
         return html`
             <div class="pf-u-pt-lg">
-                <a
-                    aria-disabled="false"
-                    class="cta pf-c-button pf-m-secondary"
-                    href="/if/admin/${href}"
+                <a aria-disabled="false" class="cta pf-c-button pf-m-secondary" href="/if/admin/${href}"
                     >${msg("Create a new application")}</a
                 >
             </div>
             <div class="pf-c-empty-state__body">
-                <a href="${docLink("/docs/applications")}" target="_blank"
-                    >${msg("Refer to documentation")}</a
-                >
+                <a href="${docLink("/docs/applications")}" target="_blank">${msg("Refer to documentation")}</a>
             </div>
         `;
     }
