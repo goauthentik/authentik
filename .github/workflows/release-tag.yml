@@ -22,18 +22,23 @@ jobs:
           docker-compose up --no-start
           docker-compose start postgresql redis
           docker-compose run -u root server test-all
+      - id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
       - name: Extract version number
         id: get_version
         uses: actions/github-script@v6
         with:
-          github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
+          github-token: ${{ steps.generate_token.outputs.token }}
           script: |
             return context.payload.ref.replace(/\/refs\/tags\/version\//, '');
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1.1.4
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate_token.outputs.token }}
         with:
           tag_name: ${{ github.ref }}
           release_name: Release ${{ steps.get_version.outputs.result }}
