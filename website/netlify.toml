@@ -29,14 +29,6 @@
   status = 301
   force = true
 
-# ?go-get=1 downloads
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/go-get"
-  status = 200
-  force = true
-  query = {go-get = "1"}
-
 # Container registry
 [[redirects]]
   from = "/v2"
