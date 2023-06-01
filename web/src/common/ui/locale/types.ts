@@ -4,7 +4,7 @@ export type LocaleRow = [string, RegExp, () => string, () => Promise<LocaleModul
 
 export type AkLocale = {
     code: string;
-    match: RegeExp;
+    match: RegExp;
     label: () => string;
     locale: () => Promise<LocaleModule>;
 };
