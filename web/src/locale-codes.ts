@@ -11,31 +11,31 @@ export const sourceLocale = `en`;
  * lexicographically.
  */
 export const targetLocales = [
-  `de`,
-  `en`,
-  `es`,
-  `fr_FR`,
-  `pl`,
-  `pseudo-LOCALE`,
-  `tr`,
-  `zh_TW`,
-  `zh-CN`,
-  `zh-HK`,
+    `de`,
+    `en`,
+    `es`,
+    `fr_FR`,
+    `pl`,
+    `pseudo-LOCALE`,
+    `tr`,
+    `zh_TW`,
+    `zh-CN`,
+    `zh-HK`,
 ] as const;
 
 /**
  * All valid project locale codes. Sorted lexicographically.
  */
 export const allLocales = [
-  `de`,
-  `en`,
-  `en`,
-  `es`,
-  `fr_FR`,
-  `pl`,
-  `pseudo-LOCALE`,
-  `tr`,
-  `zh_TW`,
-  `zh-CN`,
-  `zh-HK`,
+    `de`,
+    `en`,
+    `en`,
+    `es`,
+    `fr_FR`,
+    `pl`,
+    `pseudo-LOCALE`,
+    `tr`,
+    `zh_TW`,
+    `zh-CN`,
+    `zh-HK`,
 ] as const;
