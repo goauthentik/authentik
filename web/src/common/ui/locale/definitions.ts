@@ -1,8 +1,15 @@
+import * as _enLocale from "@goauthentik/locales/en";
+
+import type { LocaleModule } from "@lit/localize";
 import { msg } from "@lit/localize";
 
 import { AkLocale, LocaleRow } from "./types";
 
 export const DEFAULT_FALLBACK = "en";
+
+const enLocale: LocaleModule = _enLocale;
+
+export { enLocale };
 
 // NOTE: This table cannot be made any shorter, despite all the repetition. Bundlers look for the
 // the `await import` string as a *string target* for doing alias substitution, so putting the alias

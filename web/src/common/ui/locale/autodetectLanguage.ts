@@ -5,9 +5,11 @@ import { setLocale } from "./configureLocale";
 import { DEFAULT_FALLBACK } from "./definitions";
 import { findSupportedLocale, localeFromUrl } from "./helpers";
 
-export function autoDetectLanguage(defaultLanguage: string) {
+const isLocaleCandidate = (v: unknown): v is string => typeof v === "string" && v !== "";
+
+export function autoDetectLanguage(defaultLanguage = "en") {
     // Always load en locale at the start so we have something and don't error
-    setLocale("en");
+    setLocale(defaultLanguage);
 
     // Get all locales we can, in order
     // - Global authentik settings (contains user settings)
@@ -15,17 +17,17 @@ export function autoDetectLanguage(defaultLanguage: string) {
     // - Navigator
     // - Fallback (en)
 
-    const localeCandidates = [
+    const localeCandidates: string[] = [
         globalAK()?.locale,
         localeFromUrl("locale"),
         window.navigator.language,
         DEFAULT_FALLBACK,
-    ].filter((v) => v && v !== "");
+    ].filter(isLocaleCandidate);
 
     const firstSupportedLocale = findSupportedLocale(localeCandidates);
 
     if (!firstSupportedLocale) {
-        console.debug(`authentik/locale: No locale for '${locales}', falling back to en`);
+        console.debug(`authentik/locale: No locale for '${localeCandidates}', falling back to en`);
         activateLocale(defaultLanguage);
         return;
     }
