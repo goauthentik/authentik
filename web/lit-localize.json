@@ -9,8 +9,8 @@
         "es",
         "pl",
         "zh_TW",
-        "zh-CN",
-        "zh-HK",
+        "zh-Hans",
+        "zh-Hant",
         "de"
     ],
     "tsConfig": "./tsconfig.json",

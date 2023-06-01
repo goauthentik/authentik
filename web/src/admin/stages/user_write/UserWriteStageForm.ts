@@ -68,30 +68,24 @@ export class UserWriteStageForm extends ModelForm<UserWriteStage, string> {
                                 {
                                     label: msg("Never create users"),
                                     value: UserCreationModeEnum.NeverCreate,
-                                    description: html(
-                                        msg(
-                                            "When no user is present in the flow context, the stage will fail.",
-                                        ),
-                                    ),
+                                    description: html`${msg(
+                                        "When no user is present in the flow context, the stage will fail.",
+                                    )}`,
                                 },
                                 {
                                     label: msg("Create users when required"),
                                     value: UserCreationModeEnum.CreateWhenRequired,
                                     default: true,
-                                    description: html(
-                                        msg(
-                                            "When no user is present in the the flow context, a new user is created.",
-                                        ),
-                                    ),
+                                    description: html`${msg(
+                                        "When no user is present in the the flow context, a new user is created.",
+                                    )}`,
                                 },
                                 {
                                     label: msg("Always create new users"),
                                     value: UserCreationModeEnum.AlwaysCreate,
-                                    description: html(
-                                        msg(
-                                            "Create a new user even if a user is in the flow context.",
-                                        ),
-                                    ),
+                                    description: html`${msg(
+                                        "Create a new user even if a user is in the flow context.",
+                                    )}`,
                                 },
                             ]}
                             .value=${this.instance?.userCreationMode}

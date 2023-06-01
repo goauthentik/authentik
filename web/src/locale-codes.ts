@@ -19,8 +19,8 @@ export const targetLocales = [
     "pseudo-LOCALE",
     "tr",
     "zh_TW",
-    "zh-CN",
-    "zh-HK",
+    "zh-Hans",
+    "zh-Hant",
 ] as const;
 
 /**
@@ -36,6 +36,6 @@ export const allLocales = [
     "pseudo-LOCALE",
     "tr",
     "zh_TW",
-    "zh-CN",
-    "zh-HK",
+    "zh-Hans",
+    "zh-Hant",
 ] as const;
