@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file target-language="zh-CN" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+  <file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
         <source>English</source>
@@ -6007,30 +6007,38 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Avatar image</source>
         <target>头像图片</target>
       </trans-unit>
-<trans-unit id="sbf9c5c5a8e5efad4">
-  <source>Failed</source>
-</trans-unit>
-<trans-unit id="se4cd073c125382af">
-  <source>Unsynced / N/A</source>
-</trans-unit>
-<trans-unit id="s21b3058faf874368">
-  <source>Outdated outposts</source>
-</trans-unit>
-<trans-unit id="s51f92b6fa76656ca">
-  <source>Unhealthy outposts</source>
-</trans-unit>
-<trans-unit id="s0fbf6dc6a1966408">
-  <source>Next</source>
-</trans-unit>
-<trans-unit id="s4409ada9c5c2a7f8">
-  <source>Inactive</source>
-</trans-unit>
-<trans-unit id="s7ec7036b249f4f22">
-  <source>Regular user</source>
-</trans-unit>
-<trans-unit id="s27976e94b05c6970">
-  <source>Activate</source>
-</trans-unit>
+      <trans-unit id="sbf9c5c5a8e5efad4">
+        <source>Failed</source>
+        <target>已失败</target>
+      </trans-unit>
+      <trans-unit id="se4cd073c125382af">
+        <source>Unsynced / N/A</source>
+        <target>未同步 / N/A</target>
+      </trans-unit>
+      <trans-unit id="s21b3058faf874368">
+        <source>Outdated outposts</source>
+        <target>过时的前哨</target>
+      </trans-unit>
+      <trans-unit id="s51f92b6fa76656ca">
+        <source>Unhealthy outposts</source>
+        <target>不健康的前哨</target>
+      </trans-unit>
+      <trans-unit id="s0fbf6dc6a1966408">
+        <source>Next</source>
+        <target>下一步</target>
+      </trans-unit>
+      <trans-unit id="s4409ada9c5c2a7f8">
+        <source>Inactive</source>
+        <target>未激活</target>
+      </trans-unit>
+      <trans-unit id="s7ec7036b249f4f22">
+        <source>Regular user</source>
+        <target>普通用户</target>
+      </trans-unit>
+      <trans-unit id="s27976e94b05c6970">
+        <source>Activate</source>
+        <target>激活</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

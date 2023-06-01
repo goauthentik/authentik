@@ -13,14 +13,7 @@ export const LOCALES = RAW_LOCALES.map((locale) =>
 // prefix, then find the *first* locale for which that locale's prefix matches the requested prefix.
 
 export function getBestMatchLocale(locale: string): AkLocale | undefined {
-    const getPref = (l: string) => l.split(/[_-]/)[0];
-    const altLocale = getPref(locale);
-
-    const preciseMatch = LOCALES.find((l) => l.code === locale);
-    const prefixMatch = LOCALES.find((l) => l.code === altLocale);
-    const fuzzyMatch = LOCALES.find((l) => getPref(l.code) === altLocale);
-
-    return preciseMatch || prefixMatch || fuzzyMatch;
+    return LOCALES.find((l) => l.match.test(locale));
 }
 
 // This looks weird, but it's sensible: we have several candidates, and we want to find the first

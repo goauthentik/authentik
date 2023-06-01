@@ -6007,30 +6007,38 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Avatar image</source>
         <target>Avatar image</target>
       </trans-unit>
-<trans-unit id="sbf9c5c5a8e5efad4">
-  <source>Failed</source>
-</trans-unit>
-<trans-unit id="se4cd073c125382af">
-  <source>Unsynced / N/A</source>
-</trans-unit>
-<trans-unit id="s21b3058faf874368">
-  <source>Outdated outposts</source>
-</trans-unit>
-<trans-unit id="s51f92b6fa76656ca">
-  <source>Unhealthy outposts</source>
-</trans-unit>
-<trans-unit id="s0fbf6dc6a1966408">
-  <source>Next</source>
-</trans-unit>
-<trans-unit id="s4409ada9c5c2a7f8">
-  <source>Inactive</source>
-</trans-unit>
-<trans-unit id="s7ec7036b249f4f22">
-  <source>Regular user</source>
-</trans-unit>
-<trans-unit id="s27976e94b05c6970">
-  <source>Activate</source>
-</trans-unit>
+      <trans-unit id="sbf9c5c5a8e5efad4">
+        <source>Failed</source>
+        <target>Failed</target>
+      </trans-unit>
+      <trans-unit id="se4cd073c125382af">
+        <source>Unsynced / N/A</source>
+        <target>Unsynced / N/A</target>
+      </trans-unit>
+      <trans-unit id="s21b3058faf874368">
+        <source>Outdated outposts</source>
+        <target>Outdated outposts</target>
+      </trans-unit>
+      <trans-unit id="s51f92b6fa76656ca">
+        <source>Unhealthy outposts</source>
+        <target>Unhealthy outposts</target>
+      </trans-unit>
+      <trans-unit id="s0fbf6dc6a1966408">
+        <source>Next</source>
+        <target>Next</target>
+      </trans-unit>
+      <trans-unit id="s4409ada9c5c2a7f8">
+        <source>Inactive</source>
+        <target>Inactive</target>
+      </trans-unit>
+      <trans-unit id="s7ec7036b249f4f22">
+        <source>Regular user</source>
+        <target>Regular user</target>
+      </trans-unit>
+      <trans-unit id="s27976e94b05c6970">
+        <source>Activate</source>
+        <target>Activate</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>
