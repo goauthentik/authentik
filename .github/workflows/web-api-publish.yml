@@ -45,8 +45,8 @@ jobs:
           body: "web: bump API Client version"
           delete-branch: true
           signoff: true
-          team-reviewers: "@goauthentik/core"
-          author: authentik bot <github-bot@goauthentik.io>
+          # ID from https://api.github.com/users/authentik-automation[bot]
+          author: authentik-automation[bot] <135050075+authentik-automation[bot]@users.noreply.github.com>
       - uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ steps.generate_token.outputs.token }}
