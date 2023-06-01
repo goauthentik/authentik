@@ -131,7 +131,7 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
     challenge = request.session.get(SESSION_KEY_WEBAUTHN_CHALLENGE)
     credential_id = data.get("id")
 
-    device = WebAuthnDevice.objects.filter(credential_id=credential_id).first()
+    device = WebAuthnDevice.objects.filter(credential_id=credential_id, user=user).first()
     if not device:
         raise ValidationError("Invalid device")
 
