@@ -18,7 +18,11 @@ func (ds *DirectSearcher) SearchBase(req *search.Request) (ldap.ServerSearchResu
 				Attributes: []*ldap.EntryAttribute{
 					{
 						Name:   "objectClass",
-						Values: []string{ldapConstants.OCTop, ldapConstants.OCDomain},
+						Values: []string{ldapConstants.OCTop},
+					},
+					{
+						Name:   "entryDN",
+						Values: []string{""},
 					},
 					{
 						Name:   "supportedLDAPVersion",
