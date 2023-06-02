@@ -1260,14 +1260,14 @@ wmi = ["wmi (>=1.5.1,<2.0.0)"]
 
 [[package]]
 name = "docker"
-version = "6.1.2"
+version = "6.1.3"
 description = "A Python library for the Docker Engine API."
 category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "docker-6.1.2-py3-none-any.whl", hash = "sha256:134cd828f84543cbf8e594ff81ca90c38288df3c0a559794c12f2e4b634ea19e"},
-    {file = "docker-6.1.2.tar.gz", hash = "sha256:dcc088adc2ec4e7cfc594e275d8bd2c9738c56c808de97476939ef67db5af8c2"},
+    {file = "docker-6.1.3-py3-none-any.whl", hash = "sha256:aecd2277b8bf8e506e484f6ab7aec39abe0038e29fa4a6d3ba86c3fe01844ed9"},
+    {file = "docker-6.1.3.tar.gz", hash = "sha256:aa6d17830045ba5ef0168d5eaa34d37beeb113948c413affe1d5991fc11f9a20"},
 ]
 
 [package.dependencies]
