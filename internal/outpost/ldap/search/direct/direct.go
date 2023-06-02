@@ -31,7 +31,6 @@ func NewDirectSearcher(si server.LDAPServerInstance) *DirectSearcher {
 		si:  si,
 		log: log.WithField("logger", "authentik.outpost.ldap.searcher.direct"),
 	}
-	ds.log.Info("initialised direct searcher")
 	return ds
 }
 
@@ -103,7 +102,13 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 	if scope >= 0 && strings.EqualFold(req.BaseDN, baseDN) {
 		if utils.IncludeObjectClass(filterOC, constants.GetDomainOCs()) {
-			entries = append(entries, ds.si.GetBaseEntry())
+			rootEntries, _ := ds.SearchBase(req)
+			// Since `SearchBase` returns entries for the root DN, we need to go through the
+			// entries and update the base DN
+			for _, e := range rootEntries.Entries {
+				e.DN = ds.si.GetBaseDN()
+				entries = append(entries, e)
+			}
 		}
 
 		scope -= 1 // Bring it from WholeSubtree to SingleLevel and so on

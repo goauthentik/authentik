@@ -2,21 +2,19 @@ package direct
 
 import (
 	"fmt"
+	"strings"
 
 	"beryju.io/ldap"
 	"goauthentik.io/internal/constants"
+	ldapConstants "goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/search"
 )
 
-func (ds *DirectSearcher) SearchBase(req *search.Request, authz bool) (ldap.ServerSearchResult, error) {
-	dn := ""
-	if authz {
-		dn = req.SearchRequest.BaseDN
-	}
+func (ds *DirectSearcher) SearchBase(req *search.Request) (ldap.ServerSearchResult, error) {
 	return ldap.ServerSearchResult{
 		Entries: []*ldap.Entry{
 			{
-				DN: dn,
+				DN: "",
 				Attributes: []*ldap.EntryAttribute{
 					{
 						Name:   "distinguishedName",
@@ -24,7 +22,7 @@ func (ds *DirectSearcher) SearchBase(req *search.Request, authz bool) (ldap.Serv
 					},
 					{
 						Name:   "objectClass",
-						Values: []string{"top", "domain"},
+						Values: []string{ldapConstants.OCTop, ldapConstants.OCDomain},
 					},
 					{
 						Name:   "supportedLDAPVersion",
@@ -33,9 +31,10 @@ func (ds *DirectSearcher) SearchBase(req *search.Request, authz bool) (ldap.Serv
 					{
 						Name: "namingContexts",
 						Values: []string{
-							ds.si.GetBaseDN(),
+							strings.ToLower(ds.si.GetBaseDN()),
 							ds.si.GetBaseUserDN(),
 							ds.si.GetBaseGroupDN(),
+							ds.si.GetBaseVirtualGroupDN(),
 						},
 					},
 					{

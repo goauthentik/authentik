@@ -20,7 +20,7 @@ const (
 	OCOrgPerson     = "organizationalPerson"
 	OCInetOrgPerson = "inetOrgPerson"
 	OCAKUser        = "goauthentik.io/ldap/user"
-	OCPosixAccount        = "posixAccount"
+	OCPosixAccount  = "posixAccount"
 )
 
 const (

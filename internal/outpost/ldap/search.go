@@ -36,38 +36,47 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		sentry.CaptureException(err.(error))
 	}()
 
-	if searchReq.BaseDN == "" {
-		return ldap.ServerSearchResult{
-			Entries: []*ldap.Entry{
-				{
-					DN: "",
-					Attributes: []*ldap.EntryAttribute{
-						{
-							Name:   "objectClass",
-							Values: []string{"top", "OpenLDAProotDSE"},
-						},
-						{
-							Name:   "subschemaSubentry",
-							Values: []string{"cn=subschema"},
-						},
-					},
-				},
-			},
-			Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess,
-		}, nil
-	}
-	bd, err := goldap.ParseDN(strings.ToLower(searchReq.BaseDN))
+	parsedBaseDN, err := goldap.ParseDN(strings.ToLower(searchReq.BaseDN))
 	if err != nil {
-		req.Log().WithError(err).Info("failed to parse basedn")
+		req.Log().WithError(err).Info("failed to parse base DN")
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("invalid DN")
 	}
+	parsedBindDN, err := goldap.ParseDN(strings.ToLower(bindDN))
+	if err != nil {
+		req.Log().WithError(err).Info("failed to parse bind DN")
+		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("invalid DN")
+	}
+
+	var selectedProvider *ProviderInstance
+	longestMatch := 0
 	for _, provider := range ls.providers {
 		providerBase, _ := goldap.ParseDN(strings.ToLower(provider.BaseDN))
-		if providerBase.AncestorOf(bd) || providerBase.Equal(bd) {
-			selectedApp = provider.GetAppSlug()
-			return provider.searcher.Search(req)
+		// Try to match the provider primarily based on the search request's base DN
+		baseDNMatches := providerBase.AncestorOf(parsedBaseDN) || providerBase.Equal(parsedBaseDN)
+		// But also try to match the provider based on the bind DN
+		bindDNMatches := providerBase.AncestorOf(parsedBindDN) || providerBase.Equal(parsedBindDN)
+		if baseDNMatches || bindDNMatches {
+			// Only select the provider if it's a more precise match than previously
+			if len(provider.BaseDN) > longestMatch {
+				req.Log().WithField("provider", provider.BaseDN).Trace("selecting provider for search request")
+				selectedProvider = provider
+				selectedApp = provider.GetAppSlug()
+				longestMatch = len(provider.BaseDN)
+			}
 		}
 	}
+	if selectedProvider == nil {
+		return ls.fallbackRootDSE(req)
+	}
+	// Route based on the base DN
+	if len(searchReq.BaseDN) == 0 {
+		return selectedProvider.searcher.SearchBase(req)
+	}
+	return selectedProvider.searcher.Search(req)
+}
+
+func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchResult, error) {
+	req.Log().Trace("returning fallback Root DSE")
 	return ldap.ServerSearchResult{
 		Entries: []*ldap.Entry{
 			{
@@ -81,9 +90,14 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 						Name:   "subschemaSubentry",
 						Values: []string{"cn=subschema"},
 					},
+					{
+						Name:   "namingContexts",
+						Values: []string{},
+					},
 				},
 			},
 		},
 		Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess,
 	}, nil
+
 }

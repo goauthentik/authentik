@@ -15,6 +15,7 @@ import (
 	"goauthentik.io/internal/outpost/ldap/group"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
+	"goauthentik.io/internal/outpost/ldap/search/direct"
 	"goauthentik.io/internal/outpost/ldap/server"
 	"goauthentik.io/internal/outpost/ldap/utils"
 	"goauthentik.io/internal/outpost/ldap/utils/paginator"
@@ -23,6 +24,7 @@ import (
 type MemorySearcher struct {
 	si  server.LDAPServerInstance
 	log *log.Entry
+	ds  *direct.DirectSearcher
 
 	users  []api.User
 	groups []api.Group
@@ -32,11 +34,16 @@ func NewMemorySearcher(si server.LDAPServerInstance) *MemorySearcher {
 	ms := &MemorySearcher{
 		si:  si,
 		log: log.WithField("logger", "authentik.outpost.ldap.searcher.memory"),
+		ds:  direct.NewDirectSearcher(si),
 	}
 	ms.log.Debug("initialised memory searcher")
 	ms.users = paginator.FetchUsers(ms.si.GetAPIClient().CoreApi.CoreUsersList(context.TODO()))
 	ms.groups = paginator.FetchGroups(ms.si.GetAPIClient().CoreApi.CoreGroupsList(context.TODO()))
 	return ms
+}
+
+func (ms *MemorySearcher) SearchBase(req *search.Request) (ldap.ServerSearchResult, error) {
+	return ms.ds.SearchBase(req)
 }
 
 func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, error) {
@@ -92,7 +99,11 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 	if scope >= 0 && strings.EqualFold(req.BaseDN, baseDN) {
 		if utils.IncludeObjectClass(filterOC, constants.GetDomainOCs()) {
-			entries = append(entries, ms.si.GetBaseEntry())
+			rootEntries, _ := ms.SearchBase(req)
+			for _, e := range rootEntries.Entries {
+				e.DN = ms.si.GetBaseDN()
+				entries = append(entries, e)
+			}
 		}
 
 		scope -= 1 // Bring it from WholeSubtree to SingleLevel and so on
