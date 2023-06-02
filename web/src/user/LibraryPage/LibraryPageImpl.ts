@@ -4,8 +4,7 @@ import "@goauthentik/elements/EmptyState";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/LibraryApplication";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -60,7 +59,7 @@ export class LibraryPage extends AKElement {
     }
 
     pageTitle(): string {
-        return t`My Applications`;
+        return msg("My Applications");
     }
 
     connectedCallback() {
@@ -137,7 +136,7 @@ export class LibraryPage extends AKElement {
     render() {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
             <div class="pf-c-content header">
-                <h1>${t`My applications`}</h1>
+                <h1>${msg("My applications")}</h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : html``}
             </div>
             <section class="pf-c-page__main-section">

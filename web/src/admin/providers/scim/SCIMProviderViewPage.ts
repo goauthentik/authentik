@@ -9,8 +9,7 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/events/ObjectChangelog";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -83,7 +82,7 @@ export class SCIMProviderViewPage extends AKElement {
         return html` <ak-tabs>
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 @activate=${() => {
                     new ProvidersApi(DEFAULT_CONFIG)
                         .providersScimSyncStatusRetrieve({
@@ -101,7 +100,7 @@ export class SCIMProviderViewPage extends AKElement {
             </section>
             <section
                 slot="page-changelog"
-                data-tab-title="${t`Changelog`}"
+                data-tab-title="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -122,11 +121,13 @@ export class SCIMProviderViewPage extends AKElement {
             return html``;
         }
         return html`<div slot="header" class="pf-c-banner pf-m-info">
-                ${t`SCIM provider is in preview.`}
+                ${msg("SCIM provider is in preview.")}
             </div>
             ${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${t`Warning: Provider is not assigned to an application as backchannel provider.`}
+                      ${msg(
+                          "Warning: Provider is not assigned to an application as backchannel provider.",
+                      )}
                   </div>`
                 : html``}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
@@ -136,7 +137,9 @@ export class SCIMProviderViewPage extends AKElement {
                             <dl class="pf-c-description-list pf-m-3-col-on-lg">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Name`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Name")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -146,7 +149,9 @@ export class SCIMProviderViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`URL`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("URL")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -158,19 +163,19 @@ export class SCIMProviderViewPage extends AKElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
-                                <span slot="submit"> ${t`Update`} </span>
-                                <span slot="header"> ${t`Update SCIM Provider`} </span>
+                                <span slot="submit"> ${msg("Update")} </span>
+                                <span slot="header"> ${msg("Update SCIM Provider")} </span>
                                 <ak-provider-scim-form slot="form" .instancePk=${this.provider.pk}>
                                 </ak-provider-scim-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                                    ${t`Edit`}
+                                    ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
                     </div>
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-l-stack__item">
                         <div class="pf-c-card__title">
-                            <p>${t`Sync status`}</p>
+                            <p>${msg("Sync status")}</p>
                         </div>
                         <div class="pf-c-card__body">
                             ${this.syncState
@@ -179,7 +184,7 @@ export class SCIMProviderViewPage extends AKElement {
                                           return html`<li>${m}</li>`;
                                       })}
                                   </ul>`
-                                : html` ${t`Sync not run yet.`} `}
+                                : html` ${msg("Sync not run yet.")} `}
                         </div>
 
                         <div class="pf-c-card__footer">
@@ -201,7 +206,7 @@ export class SCIMProviderViewPage extends AKElement {
                                         });
                                 }}
                             >
-                                ${t`Run sync again`}
+                                ${msg("Run sync again")}
                             </ak-action-button>
                         </div>
                     </div>

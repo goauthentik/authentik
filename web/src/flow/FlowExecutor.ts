@@ -14,8 +14,7 @@ import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
 import { StageHost } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, render } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -413,7 +412,8 @@ export class FlowExecutor extends Interface implements StageHost {
 
     renderChallengeWrapper(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading=${true} header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`
             ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
@@ -519,14 +519,14 @@ export class FlowExecutor extends Interface implements StageHost {
                                                 <li>
                                                     <a
                                                         href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"
-                                                        >${t`Powered by authentik`}</a
+                                                        >${msg("Powered by authentik")}</a
                                                     >
                                                 </li>
                                                 ${this.flowInfo?.background?.startsWith("/static")
                                                     ? html`
                                                           <li>
                                                               <a href="https://unsplash.com/@joshnh"
-                                                                  >${t`Background image`}</a
+                                                                  >${msg("Background image")}</a
                                                               >
                                                           </li>
                                                       `

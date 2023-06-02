@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -33,9 +32,9 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -57,9 +56,9 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
             return html``;
         }
         return html`<ak-form-group>
-            <span slot="header"> ${t`Connection settings`} </span>
+            <span slot="header"> ${msg("Connection settings")} </span>
             <div slot="body" class="pf-c-form">
-                <ak-form-element-horizontal label=${t`SMTP Host`} ?required=${true} name="host">
+                <ak-form-element-horizontal label=${msg("SMTP Host")} ?required=${true} name="host">
                     <input
                         type="text"
                         value="${ifDefined(this.instance?.host || "")}"
@@ -67,7 +66,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${t`SMTP Port`} ?required=${true} name="port">
+                <ak-form-element-horizontal label=${msg("SMTP Port")} ?required=${true} name="port">
                     <input
                         type="number"
                         value="${first(this.instance?.port, 25)}"
@@ -75,7 +74,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                         required
                     />
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${t`SMTP Username`} name="username">
+                <ak-form-element-horizontal label=${msg("SMTP Username")} name="username">
                     <input
                         type="text"
                         value="${ifDefined(this.instance?.username || "")}"
@@ -83,7 +82,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${t`SMTP Password`}
+                    label=${msg("SMTP Password")}
                     ?writeOnly=${this.instance !== undefined}
                     name="password"
                 >
@@ -101,7 +100,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                                 <i class="fas fa-check" aria-hidden="true"></i>
                             </span>
                         </span>
-                        <span class="pf-c-switch__label">${t`Use TLS`}</span>
+                        <span class="pf-c-switch__label">${msg("Use TLS")}</span>
                     </label>
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal name="useSsl">
@@ -116,10 +115,14 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                                 <i class="fas fa-check" aria-hidden="true"></i>
                             </span>
                         </span>
-                        <span class="pf-c-switch__label">${t`Use SSL`}</span>
+                        <span class="pf-c-switch__label">${msg("Use SSL")}</span>
                     </label>
                 </ak-form-element-horizontal>
-                <ak-form-element-horizontal label=${t`Timeout`} ?required=${true} name="timeout">
+                <ak-form-element-horizontal
+                    label=${msg("Timeout")}
+                    ?required=${true}
+                    name="timeout"
+                >
                     <input
                         type="number"
                         value="${first(this.instance?.timeout, 30)}"
@@ -128,7 +131,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${t`From address`}
+                    label=${msg("From address")}
                     ?required=${true}
                     name="fromAddress"
                 >
@@ -146,9 +149,11 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.`}
+                ${msg(
+                    "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",
+                )}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -157,7 +162,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="activateUserOnSuccess">
                         <label class="pf-c-switch">
@@ -172,11 +177,13 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                                 </span>
                             </span>
                             <span class="pf-c-switch__label"
-                                >${t`Activate pending user on success`}</span
+                                >${msg("Activate pending user on success")}</span
                             >
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`When a user returns from the email successfully, their account will be activated.`}
+                            ${msg(
+                                "When a user returns from the email successfully, their account will be activated.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="useGlobalSettings">
@@ -195,14 +202,16 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${t`Use global settings`}</span>
+                            <span class="pf-c-switch__label">${msg("Use global settings")}</span>
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`When enabled, global Email connection settings will be used and connection settings below will be ignored.`}
+                            ${msg(
+                                "When enabled, global Email connection settings will be used and connection settings below will be ignored.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Token expiry`}
+                        label=${msg("Token expiry")}
                         ?required=${true}
                         name="tokenExpiry"
                     >
@@ -213,11 +222,11 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Time in minutes the token sent is valid.`}
+                            ${msg("Time in minutes the token sent is valid.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Subject`}
+                        label=${msg("Subject")}
                         ?required=${true}
                         name="subject"
                     >
@@ -229,7 +238,7 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Template`}
+                        label=${msg("Template")}
                         ?required=${true}
                         name="template"
                     >

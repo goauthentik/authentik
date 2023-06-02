@@ -1,4 +1,5 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
@@ -9,8 +10,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -48,9 +48,9 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated source.`;
+            return msg("Successfully updated source.");
         } else {
-            return t`Successfully created source.`;
+            return msg("Successfully created source.");
         }
     }
 
@@ -89,7 +89,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -97,7 +97,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Slug`} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
@@ -117,11 +117,11 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Enabled`}</span>
+                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`User matching mode`}
+                label=${msg("User matching mode")}
                 ?required=${true}
                 name="userMatchingMode"
             >
@@ -164,12 +164,12 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                 </select>
             </ak-form-element-horizontal>
             ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
-                ? html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                ? html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                           <input type="file" value="" class="pf-c-form-control" />
                           ${this.instance?.icon
                               ? html`
                                     <p class="pf-c-form__helper-text">
-                                        ${t`Currently set to:`} ${this.instance?.icon}
+                                        ${msg("Currently set to:")} ${this.instance?.icon}
                                     </p>
                                 `
                               : html``}
@@ -191,29 +191,33 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                                                 <i class="fas fa-check" aria-hidden="true"></i>
                                             </span>
                                         </span>
-                                        <span class="pf-c-switch__label"> ${t`Clear icon`} </span>
+                                        <span class="pf-c-switch__label">
+                                            ${msg("Clear icon")}
+                                        </span>
                                     </label>
                                     <p class="pf-c-form__helper-text">
-                                        ${t`Delete currently set icon.`}
+                                        ${msg("Delete currently set icon.")}
                                     </p>
                                 </ak-form-element-horizontal>
                             `
                           : html``}`
-                : html`<ak-form-element-horizontal label=${t`Icon`} name="icon">
+                : html`<ak-form-element-horizontal label=${msg("Icon")} name="icon">
                       <input
                           type="text"
                           value="${first(this.instance?.icon, "")}"
                           class="pf-c-form-control"
                       />
-                      <p class="pf-c-form__helper-text">
-                          ${t`Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".`}
-                      </p>
+                      <p class="pf-c-form__helper-text">${iconHelperText}</p>
                   </ak-form-element-horizontal>`}
 
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Protocol settings`} </span>
+                <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`SSO URL`} ?required=${true} name="ssoUrl">
+                    <ak-form-element-horizontal
+                        label=${msg("SSO URL")}
+                        ?required=${true}
+                        name="ssoUrl"
+                    >
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.ssoUrl)}"
@@ -221,48 +225,50 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`URL that the initial Login request is sent to.`}
+                            ${msg("URL that the initial Login request is sent to.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`SLO URL`} name="sloUrl">
+                    <ak-form-element-horizontal label=${msg("SLO URL")} name="sloUrl">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.sloUrl || "")}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Optional URL if the IDP supports Single-Logout.`}
+                            ${msg("Optional URL if the IDP supports Single-Logout.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Issuer`} name="issuer">
+                    <ak-form-element-horizontal label=${msg("Issuer")} name="issuer">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.issuer)}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Also known as Entity ID. Defaults the Metadata URL.`}
+                            ${msg("Also known as Entity ID. Defaults the Metadata URL.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Binding Type`}
+                        label=${msg("Binding Type")}
                         ?required=${true}
                         name="bindingType"
                     >
                         <ak-radio
                             .options=${[
                                 {
-                                    label: t`Redirect binding`,
+                                    label: msg("Redirect binding"),
                                     value: BindingTypeEnum.Redirect,
                                     default: true,
                                 },
                                 {
-                                    label: t`Post-auto binding`,
+                                    label: msg("Post-auto binding"),
                                     value: BindingTypeEnum.PostAuto,
-                                    description: html`${t`Post binding but the request is automatically sent and the user doesn't have to confirm.`}`,
+                                    description: html`${msg(
+                                        "Post binding but the request is automatically sent and the user doesn't have to confirm.",
+                                    )}`,
                                 },
                                 {
-                                    label: t`Post binding`,
+                                    label: msg("Post binding"),
                                     value: BindingTypeEnum.Post,
                                 },
                             ]}
@@ -270,7 +276,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Signing keypair`} name="signingKp">
+                    <ak-form-element-horizontal label=${msg("Signing keypair")} name="signingKp">
                         <ak-search-select
                             .fetchObjects=${async (
                                 query?: string,
@@ -301,11 +307,13 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Keypair which is used to sign outgoing requests. Leave empty to disable signing.`}
+                            ${msg(
+                                "Keypair which is used to sign outgoing requests. Leave empty to disable signing.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Verification Certificate`}
+                        label=${msg("Verification Certificate")}
                         name="verificationKp"
                     >
                         <ak-search-select
@@ -337,13 +345,15 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.`}
+                            ${msg(
+                                "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header"> ${t`Advanced protocol settings`} </span>
+                <span slot="header"> ${msg("Advanced protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="allowIdpInitiated">
                         <label class="pf-c-switch">
@@ -358,15 +368,17 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                                 </span>
                             </span>
                             <span class="pf-c-switch__label"
-                                >${t` Allow IDP-initiated logins`}</span
+                                >${msg(" Allow IDP-initiated logins")}</span
                             >
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.`}
+                            ${msg(
+                                "Allows authentication flows initiated by the IdP. This can be a security risk, as no validation of the request ID is done.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`NameID Policy`}
+                        label=${msg("NameID Policy")}
                         ?required=${true}
                         name="nameIdPolicy"
                     >
@@ -376,39 +388,39 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                                 ?selected=${this.instance?.nameIdPolicy ===
                                 NameIdPolicyEnum._20nameidFormatpersistent}
                             >
-                                ${t`Persistent`}
+                                ${msg("Persistent")}
                             </option>
                             <option
                                 value=${NameIdPolicyEnum._11nameidFormatemailAddress}
                                 ?selected=${this.instance?.nameIdPolicy ===
                                 NameIdPolicyEnum._11nameidFormatemailAddress}
                             >
-                                ${t`Email address`}
+                                ${msg("Email address")}
                             </option>
                             <option
                                 value=${NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
                                 ?selected=${this.instance?.nameIdPolicy ===
                                 NameIdPolicyEnum._20nameidFormatWindowsDomainQualifiedName}
                             >
-                                ${t`Windows`}
+                                ${msg("Windows")}
                             </option>
                             <option
                                 value=${NameIdPolicyEnum._20nameidFormatX509SubjectName}
                                 ?selected=${this.instance?.nameIdPolicy ===
                                 NameIdPolicyEnum._20nameidFormatX509SubjectName}
                             >
-                                ${t`X509 Subject`}
+                                ${msg("X509 Subject")}
                             </option>
                             <option
                                 value=${NameIdPolicyEnum._20nameidFormattransient}
                                 ?selected=${this.instance?.nameIdPolicy ===
                                 NameIdPolicyEnum._20nameidFormattransient}
                             >
-                                ${t`Transient`}
+                                ${msg("Transient")}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`User path`} name="userPathTemplate">
+                    <ak-form-element-horizontal label=${msg("User path")} name="userPathTemplate">
                         <input
                             type="text"
                             value="${first(
@@ -417,12 +429,10 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             )}"
                             class="pf-c-form-control"
                         />
-                        <p class="pf-c-form__helper-text">
-                            ${t`Path template for users created. Use placeholders like \`%(slug)s\` to insert the source slug.`}
-                        </p>
+                        <p class="pf-c-form__helper-text">${placeholderHelperText}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Delete temporary users after`}
+                        label=${msg("Delete temporary users after")}
                         ?required=${true}
                         name="temporaryUserDeleteAfter"
                     >
@@ -433,12 +443,14 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.`}
+                            ${msg(
+                                "Time offset when temporary users should be deleted. This only applies if your IDP uses the NameID Format 'transient', and the user doesn't log out manually.",
+                            )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Digest algorithm`}
+                        label=${msg("Digest algorithm")}
                         ?required=${true}
                         name="digestAlgorithm"
                     >
@@ -467,7 +479,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Signature algorithm`}
+                        label=${msg("Signature algorithm")}
                         ?required=${true}
                         name="signatureAlgorithm"
                     >
@@ -502,10 +514,10 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header"> ${t`Flow settings`} </span>
+                <span slot="header"> ${msg("Flow settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Pre-authentication flow`}
+                        label=${msg("Pre-authentication flow")}
                         ?required=${true}
                         name="preAuthenticationFlow"
                     >
@@ -547,10 +559,12 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                             ?blankable=${true}
                         >
                         </ak-search-select>
-                        <p class="pf-c-form__helper-text">${t`Flow used before authentication.`}</p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Flow used before authentication.")}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Authentication flow`}
+                        label=${msg("Authentication flow")}
                         ?required=${true}
                         name="authenticationFlow"
                     >
@@ -592,11 +606,11 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow to use when authenticating existing users.`}
+                            ${msg("Flow to use when authenticating existing users.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Enrollment flow`}
+                        label=${msg("Enrollment flow")}
                         ?required=${true}
                         name="enrollmentFlow"
                     >
@@ -638,7 +652,7 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow to use when enrolling new users.`}
+                            ${msg("Flow to use when enrolling new users.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

@@ -5,8 +5,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -39,9 +38,9 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated rule.`;
+            return msg("Successfully updated rule.");
         } else {
-            return t`Successfully created rule.`;
+            return msg("Successfully created rule.");
         }
     }
 
@@ -60,7 +59,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -68,7 +67,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Group`} name="group">
+            <ak-form-element-horizontal label=${msg("Group")} name="group">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
@@ -93,10 +92,16 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.`}
+                    ${msg(
+                        "Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Transports`} ?required=${true} name="transports">
+            <ak-form-element-horizontal
+                label=${msg("Transports")}
+                ?required=${true}
+                name="transports"
+            >
                 <select class="pf-c-form-control" multiple>
                     ${this.eventTransports?.results.map((transport) => {
                         const selected = Array.from(this.instance?.transports || []).some((su) => {
@@ -108,13 +113,15 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     })}
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.`}
+                    ${msg(
+                        "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.",
+                    )}
                 </p>
                 <p class="pf-c-form__helper-text">
-                    ${t`Hold control/command to select multiple items.`}
+                    ${msg("Hold control/command to select multiple items.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Severity`} ?required=${true} name="severity">
+            <ak-form-element-horizontal label=${msg("Severity")} ?required=${true} name="severity">
                 <ak-radio
                     .options=${[
                         {

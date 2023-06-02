@@ -2,8 +2,7 @@ import { RequestInfo } from "@goauthentik/common/api/middleware";
 import { EVENT_API_DRAWER_TOGGLE, EVENT_REQUEST_POST } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -75,8 +74,10 @@ export class APIDrawer extends AKElement {
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">${t`API Requests`}</h1>
-                        <a href="/api/v3/" target="_blank">${t`Open API Browser`}</a>
+                        <h1 class="pf-c-notification-drawer__header-title">
+                            ${msg("API Requests")}
+                        </h1>
+                        <a href="/api/v3/" target="_blank">${msg("Open API Browser")}</a>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div class="pf-c-notification-drawer__header-action-close">

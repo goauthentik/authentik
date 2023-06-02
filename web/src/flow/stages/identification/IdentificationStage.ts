@@ -4,8 +4,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -187,14 +186,14 @@ export class IdentificationStage extends BaseStage<
         return html`<div class="pf-c-login__main-footer-band">
             ${this.challenge.enrollUrl
                 ? html`<p class="pf-c-login__main-footer-band-item">
-                      ${t`Need an account?`}
-                      <a id="enroll" href="${this.challenge.enrollUrl}">${t`Sign up.`}</a>
+                      ${msg("Need an account?")}
+                      <a id="enroll" href="${this.challenge.enrollUrl}">${msg("Sign up.")}</a>
                   </p>`
                 : html``}
             ${this.challenge.recoveryUrl
                 ? html`<p class="pf-c-login__main-footer-band-item">
                       <a id="recovery" href="${this.challenge.recoveryUrl}"
-                          >${t`Forgot username or password?`}</a
+                          >${msg("Forgot username or password?")}</a
                       >
                   </p>`
                 : html``}
@@ -204,7 +203,7 @@ export class IdentificationStage extends BaseStage<
     renderInput(): TemplateResult {
         let type: "text" | "email" = "text";
         if (!this.challenge?.userFields || this.challenge.userFields.length === 0) {
-            return html`<p>${t`Select one of the sources below to login.`}</p>`;
+            return html`<p>${msg("Select one of the sources below to login.")}</p>`;
         }
         const fields = (this.challenge?.userFields || []).sort();
         // Check if the field should be *only* email to set the input type
@@ -212,9 +211,9 @@ export class IdentificationStage extends BaseStage<
             type = "email";
         }
         const uiFields: { [key: string]: string } = {
-            [UserFieldsEnum.Username]: t`Username`,
-            [UserFieldsEnum.Email]: t`Email`,
-            [UserFieldsEnum.Upn]: t`UPN`,
+            [UserFieldsEnum.Username]: msg("Username"),
+            [UserFieldsEnum.Email]: msg("Email"),
+            [UserFieldsEnum.Upn]: msg("UPN"),
         };
         const label = OR_LIST_FORMATTERS.format(fields.map((f) => uiFields[f]));
         return html`<ak-form-element
@@ -236,7 +235,7 @@ export class IdentificationStage extends BaseStage<
             ${this.challenge.passwordFields
                 ? html`
                       <ak-form-element
-                          label="${t`Password`}"
+                          label="${msg("Password")}"
                           ?required="${true}"
                           class="pf-c-form__group"
                           .errors=${(this.challenge.responseErrors || {})["password"]}
@@ -244,7 +243,7 @@ export class IdentificationStage extends BaseStage<
                           <input
                               type="password"
                               name="password"
-                              placeholder="${t`Password`}"
+                              placeholder="${msg("Password")}"
                               autocomplete="current-password"
                               class="pf-c-form-control"
                               required
@@ -262,13 +261,13 @@ export class IdentificationStage extends BaseStage<
                 </button>
             </div>
             ${this.challenge.passwordlessUrl
-                ? html`<ak-divider>${t`Or`}</ak-divider>
+                ? html`<ak-divider>${msg("Or")}</ak-divider>
                       <div>
                           <a
                               href=${this.challenge.passwordlessUrl}
                               class="pf-c-button pf-m-secondary pf-m-block"
                           >
-                              ${t`Use a security key`}
+                              ${msg("Use a security key")}
                           </a>
                       </div>`
                 : html``}`;
@@ -276,7 +275,8 @@ export class IdentificationStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -289,7 +289,9 @@ export class IdentificationStage extends BaseStage<
                     }}
                 >
                     ${this.challenge.applicationPre
-                        ? html`<p>${t`Login to continue to ${this.challenge.applicationPre}.`}</p>`
+                        ? html`<p>
+                              ${msg(str`Login to continue to ${this.challenge.applicationPre}.`)}
+                          </p>`
                         : html``}
                     ${this.renderInput()}
                 </form>

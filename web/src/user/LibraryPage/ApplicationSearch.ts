@@ -2,8 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import Fuse from "fuse.js";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { css, html } from "lit";
 import { customElement, property, query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -132,7 +131,7 @@ export class LibraryPageApplicationList extends AKElement {
             type="text"
             class="pf-u-display-none pf-u-display-block-on-md"
             autofocus
-            placeholder=${t`Search...`}
+            placeholder=${msg("Search...")}
             value=${ifDefined(this.query)}
         />`;
     }

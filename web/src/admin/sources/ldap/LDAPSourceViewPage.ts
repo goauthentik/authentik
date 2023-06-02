@@ -9,8 +9,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
 import "@goauthentik/elements/forms/ModalForm";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -63,7 +62,7 @@ export class LDAPSourceViewPage extends AKElement {
         return html`<ak-tabs>
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
                 @activate=${() => {
                     new SourcesApi(DEFAULT_CONFIG)
@@ -81,7 +80,9 @@ export class LDAPSourceViewPage extends AKElement {
                             <dl class="pf-c-description-list pf-m-2-col-on-lg">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Name`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Name")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -92,7 +93,7 @@ export class LDAPSourceViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Server URI`}</span
+                                            >${msg("Server URI")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -104,7 +105,7 @@ export class LDAPSourceViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Base DN`}</span
+                                            >${msg("Base DN")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -119,33 +120,35 @@ export class LDAPSourceViewPage extends AKElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
-                                <span slot="submit"> ${t`Update`} </span>
-                                <span slot="header"> ${t`Update LDAP Source`} </span>
+                                <span slot="submit"> ${msg("Update")} </span>
+                                <span slot="header"> ${msg("Update LDAP Source")} </span>
                                 <ak-source-ldap-form slot="form" .instancePk=${this.source.slug}>
                                 </ak-source-ldap-form>
                                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                                    ${t`Edit`}
+                                    ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
                     </div>
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__title">
-                            <p>${t`Sync status`}</p>
+                            <p>${msg("Sync status")}</p>
                         </div>
                         <div class="pf-c-card__body">
                             ${this.syncState.length < 1
-                                ? html`<p>${t`Not synced yet.`}</p>`
+                                ? html`<p>${msg("Not synced yet.")}</p>`
                                 : html`
                                       <ul class="pf-c-list">
                                           ${this.syncState.map((task) => {
                                               let header = "";
                                               if (task.status === TaskStatusEnum.Warning) {
-                                                  header = t`Task finished with warnings`;
+                                                  header = msg("Task finished with warnings");
                                               } else if (task.status === TaskStatusEnum.Error) {
-                                                  header = t`Task finished with errors`;
+                                                  header = msg("Task finished with errors");
                                               } else {
-                                                  header = t`Last sync: ${task.taskFinishTimestamp.toLocaleString()}`;
+                                                  header = msg(
+                                                      str`Last sync: ${task.taskFinishTimestamp.toLocaleString()}`,
+                                                  );
                                               }
                                               return html`<li>
                                                   <p>${task.taskName}</p>
@@ -179,7 +182,7 @@ export class LDAPSourceViewPage extends AKElement {
                                         });
                                 }}
                             >
-                                ${t`Run sync again`}
+                                ${msg("Run sync again")}
                             </ak-action-button>
                         </div>
                     </div>
@@ -187,7 +190,7 @@ export class LDAPSourceViewPage extends AKElement {
             </section>
             <section
                 slot="page-changelog"
-                data-tab-title="${t`Changelog`}"
+                data-tab-title="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">

@@ -5,8 +5,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -44,9 +43,9 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -74,9 +73,11 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.`}
+                ${msg(
+                    "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.",
+                )}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -85,10 +86,10 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Device classes`}
+                        label=${msg("Device classes")}
                         ?required=${true}
                         name="deviceClasses"
                     >
@@ -97,42 +98,42 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                                 value=${DeviceClassesEnum.Static}
                                 ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Static)}
                             >
-                                ${t`Static Tokens`}
+                                ${msg("Static Tokens")}
                             </option>
                             <option
                                 value=${DeviceClassesEnum.Totp}
                                 ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Totp)}
                             >
-                                ${t`TOTP Authenticators`}
+                                ${msg("TOTP Authenticators")}
                             </option>
                             <option
                                 value=${DeviceClassesEnum.Webauthn}
                                 ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Webauthn)}
                             >
-                                ${t`WebAuthn Authenticators`}
+                                ${msg("WebAuthn Authenticators")}
                             </option>
                             <option
                                 value=${DeviceClassesEnum.Duo}
                                 ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Duo)}
                             >
-                                ${t`Duo Authenticators`}
+                                ${msg("Duo Authenticators")}
                             </option>
                             <option
                                 value=${DeviceClassesEnum.Sms}
                                 ?selected=${this.isDeviceClassSelected(DeviceClassesEnum.Sms)}
                             >
-                                ${t`SMS-based Authenticators`}
+                                ${msg("SMS-based Authenticators")}
                             </option>
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Device classes which can be used to authenticate.`}
+                            ${msg("Device classes which can be used to authenticate.")}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Last validation threshold`}
+                        label=${msg("Last validation threshold")}
                         ?required=${true}
                         name="lastAuthThreshold"
                     >
@@ -143,12 +144,14 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.`}
+                            ${msg(
+                                "If any of the devices user of the types selected above have been used within this duration, this stage will be skipped.",
+                            )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Not configured action`}
+                        label=${msg("Not configured action")}
                         ?required=${true}
                         name="notConfiguredAction"
                     >
@@ -171,42 +174,44 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                                 ?selected=${this.instance?.notConfiguredAction ===
                                 NotConfiguredActionEnum.Configure}
                             >
-                                ${t`Force the user to configure an authenticator`}
+                                ${msg("Force the user to configure an authenticator")}
                             </option>
                             <option
                                 value=${NotConfiguredActionEnum.Deny}
                                 ?selected=${this.instance?.notConfiguredAction ===
                                 NotConfiguredActionEnum.Deny}
                             >
-                                ${t`Deny the user access`}
+                                ${msg("Deny the user access")}
                             </option>
                             <option
                                 value=${NotConfiguredActionEnum.Skip}
                                 ?selected=${this.instance?.notConfiguredAction ===
                                 NotConfiguredActionEnum.Skip}
                             >
-                                ${t`Continue`}
+                                ${msg("Continue")}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`WebAuthn User verification`}
+                        label=${msg("WebAuthn User verification")}
                         ?required=${true}
                         name="webauthnUserVerification"
                     >
                         <ak-radio
                             .options=${[
                                 {
-                                    label: t`User verification must occur.`,
+                                    label: msg("User verification must occur."),
                                     value: UserVerificationEnum.Required,
                                     default: true,
                                 },
                                 {
-                                    label: t`User verification is preferred if available, but not required.`,
+                                    label: msg(
+                                        "User verification is preferred if available, but not required.",
+                                    ),
                                     value: UserVerificationEnum.Preferred,
                                 },
                                 {
-                                    label: t`User verification should not occur.`,
+                                    label: msg("User verification should not occur."),
                                     value: UserVerificationEnum.Discouraged,
                                 },
                             ]}
@@ -217,7 +222,7 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                     ${this.showConfigurationStages
                         ? html`
                               <ak-form-element-horizontal
-                                  label=${t`Configuration stages`}
+                                  label=${msg("Configuration stages")}
                                   name="configurationStages"
                               >
                                   <select class="pf-c-form-control" multiple>
@@ -236,10 +241,14 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                                       })}
                                   </select>
                                   <p class="pf-c-form__helper-text">
-                                      ${t`Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.`}
+                                      ${msg(
+                                          "Stages used to configure Authenticator when user doesn't have any compatible devices. After this configuration Stage passes, the user is not prompted again.",
+                                      )}
                                   </p>
                                   <p class="pf-c-form__helper-text">
-                                      ${t`When multiple stages are selected, the user can choose which one they want to enroll.`}
+                                      ${msg(
+                                          "When multiple stages are selected, the user can choose which one they want to enroll.",
+                                      )}
                                   </p>
                               </ak-form-element-horizontal>
                           `

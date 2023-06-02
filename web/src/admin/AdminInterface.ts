@@ -21,8 +21,7 @@ import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -167,7 +166,7 @@ export class AdminInterface extends Interface {
                 ? html`
                       <ak-sidebar-item ?highlight=${true}>
                           <span slot="label"
-                              >${t`A newer version of the frontend is available.`}</span
+                              >${msg("A newer version of the frontend is available.")}</span
                           >
                       </ak-sidebar-item>
                   `
@@ -181,125 +180,127 @@ export class AdminInterface extends Interface {
                       )}`}
                   >
                       <span slot="label"
-                          >${t`You're currently impersonating ${this.user.user.username}. Click to stop.`}</span
+                          >${msg(
+                              str`You're currently impersonating ${this.user.user.username}. Click to stop.`,
+                          )}</span
                       >
                   </ak-sidebar-item>`
                 : html``}
             <ak-sidebar-item path="/if/user/" ?isAbsoluteLink=${true} ?highlight=${true}>
-                <span slot="label">${t`User interface`}</span>
+                <span slot="label">${msg("User interface")}</span>
             </ak-sidebar-item>
             <ak-sidebar-item .expanded=${true}>
-                <span slot="label">${t`Dashboards`}</span>
+                <span slot="label">${msg("Dashboards")}</span>
                 <ak-sidebar-item path="/administration/overview">
-                    <span slot="label">${t`Overview`}</span>
+                    <span slot="label">${msg("Overview")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/administration/dashboard/users">
-                    <span slot="label">${t`Users`}</span>
+                    <span slot="label">${msg("Users")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/administration/system-tasks">
-                    <span slot="label">${t`System Tasks`}</span>
+                    <span slot="label">${msg("System Tasks")}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${t`Applications`}</span>
+                <span slot="label">${msg("Applications")}</span>
                 <ak-sidebar-item
                     path="/core/applications"
                     .activeWhen=${[`^/core/applications/(?<slug>${SLUG_REGEX})$`]}
                 >
-                    <span slot="label">${t`Applications`}</span>
+                    <span slot="label">${msg("Applications")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item
                     path="/core/providers"
                     .activeWhen=${[`^/core/providers/(?<id>${ID_REGEX})$`]}
                 >
-                    <span slot="label">${t`Providers`}</span>
+                    <span slot="label">${msg("Providers")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/outpost/outposts">
-                    <span slot="label">${t`Outposts`}</span>
+                    <span slot="label">${msg("Outposts")}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${t`Events`}</span>
+                <span slot="label">${msg("Events")}</span>
                 <ak-sidebar-item
                     path="/events/log"
                     .activeWhen=${[`^/events/log/(?<id>${UUID_REGEX})$`]}
                 >
-                    <span slot="label">${t`Logs`}</span>
+                    <span slot="label">${msg("Logs")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/events/rules">
-                    <span slot="label">${t`Notification Rules`}</span>
+                    <span slot="label">${msg("Notification Rules")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/events/transports">
-                    <span slot="label">${t`Notification Transports`}</span>
+                    <span slot="label">${msg("Notification Transports")}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${t`Customisation`}</span>
+                <span slot="label">${msg("Customisation")}</span>
                 <ak-sidebar-item path="/policy/policies">
-                    <span slot="label">${t`Policies`}</span>
+                    <span slot="label">${msg("Policies")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/core/property-mappings">
-                    <span slot="label">${t`Property Mappings`}</span>
+                    <span slot="label">${msg("Property Mappings")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/blueprints/instances">
-                    <span slot="label">${t`Blueprints`}</span>
+                    <span slot="label">${msg("Blueprints")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/policy/reputation">
-                    <span slot="label">${t`Reputation scores`}</span>
+                    <span slot="label">${msg("Reputation scores")}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${t`Flows & Stages`}</span>
+                <span slot="label">${msg("Flows & Stages")}</span>
                 <ak-sidebar-item
                     path="/flow/flows"
                     .activeWhen=${[`^/flow/flows/(?<slug>${SLUG_REGEX})$`]}
                 >
-                    <span slot="label">${t`Flows`}</span>
+                    <span slot="label">${msg("Flows")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/flow/stages">
-                    <span slot="label">${t`Stages`}</span>
+                    <span slot="label">${msg("Stages")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/flow/stages/prompts">
-                    <span slot="label">${t`Prompts`}</span>
+                    <span slot="label">${msg("Prompts")}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${t`Directory`}</span>
+                <span slot="label">${msg("Directory")}</span>
                 <ak-sidebar-item
                     path="/identity/users"
                     .activeWhen=${[`^/identity/users/(?<id>${ID_REGEX})$`]}
                 >
-                    <span slot="label">${t`Users`}</span>
+                    <span slot="label">${msg("Users")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item
                     path="/identity/groups"
                     .activeWhen=${[`^/identity/groups/(?<id>${UUID_REGEX})$`]}
                 >
-                    <span slot="label">${t`Groups`}</span>
+                    <span slot="label">${msg("Groups")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item
                     path="/core/sources"
                     .activeWhen=${[`^/core/sources/(?<slug>${SLUG_REGEX})$`]}
                 >
-                    <span slot="label">${t`Federation & Social login`}</span>
+                    <span slot="label">${msg("Federation & Social login")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/core/tokens">
-                    <span slot="label">${t`Tokens & App passwords`}</span>
+                    <span slot="label">${msg("Tokens & App passwords")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/flow/stages/invitations">
-                    <span slot="label">${t`Invitations`}</span>
+                    <span slot="label">${msg("Invitations")}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${t`System`}</span>
+                <span slot="label">${msg("System")}</span>
                 <ak-sidebar-item path="/core/tenants">
-                    <span slot="label">${t`Tenants`}</span>
+                    <span slot="label">${msg("Tenants")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/crypto/certificates">
-                    <span slot="label">${t`Certificates`}</span>
+                    <span slot="label">${msg("Certificates")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/outpost/integrations">
-                    <span slot="label">${t`Outpost Integrations`}</span>
+                    <span slot="label">${msg("Outpost Integrations")}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
         `;

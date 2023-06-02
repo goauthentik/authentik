@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -38,9 +37,9 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated policy.`;
+            return msg("Successfully updated policy.");
         } else {
-            return t`Successfully created policy.`;
+            return msg("Successfully created policy.");
         }
     }
 
@@ -59,10 +58,10 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
 
     renderStaticRules(): TemplateResult {
         return html` <ak-form-group>
-            <span slot="header"> ${t`Static rules`} </span>
+            <span slot="header"> ${msg("Static rules")} </span>
             <div slot="body" class="pf-c-form">
                 <ak-form-element-horizontal
-                    label=${t`Minimum length`}
+                    label=${msg("Minimum length")}
                     ?required=${true}
                     name="lengthMin"
                 >
@@ -74,7 +73,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${t`Minimum amount of Uppercase Characters`}
+                    label=${msg("Minimum amount of Uppercase Characters")}
                     ?required=${true}
                     name="amountUppercase"
                 >
@@ -86,7 +85,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${t`Minimum amount of Lowercase Characters`}
+                    label=${msg("Minimum amount of Lowercase Characters")}
                     ?required=${true}
                     name="amountLowercase"
                 >
@@ -98,7 +97,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${t`Minimum amount of Digits`}
+                    label=${msg("Minimum amount of Digits")}
                     ?required=${true}
                     name="amountDigits"
                 >
@@ -110,7 +109,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${t`Minimum amount of Symbols Characters`}
+                    label=${msg("Minimum amount of Symbols Characters")}
                     ?required=${true}
                     name="amountSymbols"
                 >
@@ -122,7 +121,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${t`Error message`}
+                    label=${msg("Error message")}
                     ?required=${true}
                     name="errorMessage"
                 >
@@ -134,7 +133,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal
-                    label=${t`Symbol charset`}
+                    label=${msg("Symbol charset")}
                     ?required=${true}
                     name="symbolCharset"
                 >
@@ -147,7 +146,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                         required
                     />
                     <p class="pf-c-form__helper-text">
-                        ${t`Characters which are considered as symbols.`}
+                        ${msg("Characters which are considered as symbols.")}
                     </p>
                 </ak-form-element-horizontal>
             </div>
@@ -157,10 +156,10 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
     renderHIBP(): TemplateResult {
         return html`
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`HaveIBeenPwned settings`} </span>
+                <span slot="header"> ${msg("HaveIBeenPwned settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Allowed count`}
+                        label=${msg("Allowed count")}
                         ?required=${true}
                         name="hibpAllowedCount"
                     >
@@ -171,7 +170,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Allow up to N occurrences in the HIBP database.`}
+                            ${msg("Allow up to N occurrences in the HIBP database.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
@@ -182,10 +181,10 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
     renderZxcvbn(): TemplateResult {
         return html`
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`zxcvbn settings`} </span>
+                <span slot="header"> ${msg("zxcvbn settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Score threshold`}
+                        label=${msg("Score threshold")}
                         ?required=${true}
                         name="zxcvbnScoreThreshold"
                     >
@@ -196,22 +195,32 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`If the password's score is less than or equal this value, the policy will fail.`}
+                            ${msg(
+                                "If the password's score is less than or equal this value, the policy will fail.",
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`0: Too guessable: risky password. (guesses < 10^3)`}
+                            ${msg("0: Too guessable: risky password. (guesses < 10^3)")}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`1: Very guessable: protection from throttled online attacks. (guesses < 10^6)`}
+                            ${msg(
+                                "1: Very guessable: protection from throttled online attacks. (guesses < 10^6)",
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`2: Somewhat guessable: protection from unthrottled online attacks. (guesses < 10^8)`}
+                            ${msg(
+                                "2: Somewhat guessable: protection from unthrottled online attacks. (guesses < 10^8)",
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses < 10^10)`}
+                            ${msg(
+                                "3: Safely unguessable: moderate protection from offline slow-hash scenario. (guesses < 10^10)",
+                            )}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`4: Very unguessable: strong protection from offline slow-hash scenario. (guesses >= 10^10)`}
+                            ${msg(
+                                "4: Very unguessable: strong protection from offline slow-hash scenario. (guesses >= 10^10)",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
@@ -222,9 +231,11 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Checks the value from the policy request against several rules, mostly used to ensure password strength.`}
+                ${msg(
+                    "Checks the value from the policy request against several rules, mostly used to ensure password strength.",
+                )}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -244,14 +255,16 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Execution logging`}</span>
+                    <span class="pf-c-switch__label">${msg("Execution logging")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.`}
+                    ${msg(
+                        "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Password field`}
+                label=${msg("Password field")}
                 ?required=${true}
                 name="passwordField"
             >
@@ -262,7 +275,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Field key to check, field keys defined in Prompt stages are available.`}
+                    ${msg("Field key to check, field keys defined in Prompt stages are available.")}
                 </p>
             </ak-form-element-horizontal>
 
@@ -282,7 +295,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Check static rules`}</span>
+                    <span class="pf-c-switch__label">${msg("Check static rules")}</span>
                 </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="checkHaveIBeenPwned">
@@ -301,10 +314,10 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Check haveibeenpwned.com`}</span>
+                    <span class="pf-c-switch__label">${msg("Check haveibeenpwned.com")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`For more info see:`}
+                    ${msg("For more info see:")}
                     <a href="https://haveibeenpwned.com/API/v2#SearchingPwnedPasswordsByRange"
                         >haveibeenpwned.com</a
                     >
@@ -326,10 +339,10 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Check zxcvbn`}</span>
+                    <span class="pf-c-switch__label">${msg("Check zxcvbn")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`Password strength estimator created by Dropbox, see:`}
+                    ${msg("Password strength estimator created by Dropbox, see:")}
                     <a href="https://github.com/dropbox/zxcvbn#readme">dropbox/zxcvbn</a>
                 </p>
             </ak-form-element-horizontal>

@@ -4,8 +4,7 @@ import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { Form } from "@goauthentik/elements/forms/Form";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -21,16 +20,16 @@ export class ModalForm extends ModalButton {
     loading = false;
 
     @property({ type: String })
-    cancelText = t`Cancel`;
+    cancelText = msg("Cancel");
 
     async confirm(): Promise<void> {
         const form = this.querySelector<Form<unknown>>("[slot=form]");
         if (!form) {
-            return Promise.reject(t`No form found`);
+            return Promise.reject(msg("No form found"));
         }
         const formPromise = form.submit(new Event("submit"));
         if (!formPromise) {
-            return Promise.reject(t`Form didn't return a promise for submitting`);
+            return Promise.reject(msg("Form didn't return a promise for submitting"));
         }
         return formPromise
             .then(() => {

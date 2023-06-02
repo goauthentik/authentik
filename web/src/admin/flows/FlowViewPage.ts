@@ -9,8 +9,7 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -66,27 +65,29 @@ export class FlowViewPage extends AKElement {
             <ak-tabs>
                 <div
                     slot="page-overview"
-                    data-tab-title="${t`Flow Overview`}"
+                    data-tab-title="${msg("Flow Overview")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-l-grid pf-m-gutter">
                         <div
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
                         >
-                            <div class="pf-c-card__title">${t`Related actions`}</div>
+                            <div class="pf-c-card__title">${msg("Related actions")}</div>
                             <div class="pf-c-card__body">
                                 <dl class="pf-c-description-list">
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
-                                                >${t`Edit`}</span
+                                                >${msg("Edit")}</span
                                             >
                                         </dt>
                                         <dd class="pf-c-description-list__description">
                                             <div class="pf-c-description-list__text">
                                                 <ak-forms-modal>
-                                                    <span slot="submit"> ${t`Update`} </span>
-                                                    <span slot="header"> ${t`Update Flow`} </span>
+                                                    <span slot="submit"> ${msg("Update")} </span>
+                                                    <span slot="header">
+                                                        ${msg("Update Flow")}
+                                                    </span>
                                                     <ak-flow-form
                                                         slot="form"
                                                         .instancePk=${this.flow.slug}
@@ -96,14 +97,14 @@ export class FlowViewPage extends AKElement {
                                                         slot="trigger"
                                                         class="pf-c-button pf-m-block pf-m-secondary"
                                                     >
-                                                        ${t`Edit`}
+                                                        ${msg("Edit")}
                                                     </button>
                                                 </ak-forms-modal>
                                             </div>
                                         </dd>
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
-                                                >${t`Execute flow`}</span
+                                                >${msg("Execute flow")}</span
                                             >
                                         </dt>
                                         <dd class="pf-c-description-list__description">
@@ -119,7 +120,7 @@ export class FlowViewPage extends AKElement {
                                                         window.open(finalURL, "_blank");
                                                     }}
                                                 >
-                                                    ${t`Normal`}
+                                                    ${msg("Normal")}
                                                 </button>
                                                 <button
                                                     class="pf-c-button pf-m-block pf-m-secondary"
@@ -138,7 +139,7 @@ export class FlowViewPage extends AKElement {
                                                             });
                                                     }}
                                                 >
-                                                    ${t`with current user`}
+                                                    ${msg("with current user")}
                                                 </button>
                                                 <button
                                                     class="pf-c-button pf-m-block pf-m-secondary"
@@ -165,13 +166,13 @@ export class FlowViewPage extends AKElement {
                                                             });
                                                     }}
                                                 >
-                                                    ${t`with inspector`}
+                                                    ${msg("with inspector")}
                                                 </button>
                                             </div>
                                         </dd>
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
-                                                >${t`Export flow`}</span
+                                                >${msg("Export flow")}</span
                                             >
                                         </dt>
                                         <dd class="pf-c-description-list__description">
@@ -180,7 +181,7 @@ export class FlowViewPage extends AKElement {
                                                     class="pf-c-button pf-m-block pf-m-secondary"
                                                     href=${this.flow.exportUrl}
                                                 >
-                                                    ${t`Export`}
+                                                    ${msg("Export")}
                                                 </a>
                                             </div>
                                         </dd>
@@ -191,7 +192,7 @@ export class FlowViewPage extends AKElement {
                         <div
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
                         >
-                            <div class="pf-c-card__title">${t`Diagram`}</div>
+                            <div class="pf-c-card__title">${msg("Diagram")}</div>
                             <div class="pf-c-card__body">
                                 <ak-flow-diagram flowSlug=${this.flow.slug}> </ak-flow-diagram>
                             </div>
@@ -199,7 +200,7 @@ export class FlowViewPage extends AKElement {
                         <div
                             class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                         >
-                            <div class="pf-c-card__title">${t`Changelog`}</div>
+                            <div class="pf-c-card__title">${msg("Changelog")}</div>
                             <div class="pf-c-card__body">
                                 <ak-object-changelog
                                     targetModelPk=${this.flow.pk || ""}
@@ -213,7 +214,7 @@ export class FlowViewPage extends AKElement {
                 </div>
                 <div
                     slot="page-stage-bindings"
-                    data-tab-title="${t`Stage Bindings`}"
+                    data-tab-title="${msg("Stage Bindings")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
@@ -224,12 +225,12 @@ export class FlowViewPage extends AKElement {
                 </div>
                 <div
                     slot="page-policy-bindings"
-                    data-tab-title="${t`Policy / Group / User Bindings`}"
+                    data-tab-title="${msg("Policy / Group / User Bindings")}"
                     class="pf-c-page__main-section pf-m-no-padding-mobile"
                 >
                     <div class="pf-c-card">
                         <div class="pf-c-card__title">
-                            ${t`These bindings control which users can access this flow.`}
+                            ${msg("These bindings control which users can access this flow.")}
                         </div>
                         <div class="pf-c-card__body">
                             <ak-bound-policies-list .target=${this.flow.policybindingmodelPtrId}>

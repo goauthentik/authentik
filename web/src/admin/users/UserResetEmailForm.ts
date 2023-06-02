@@ -4,8 +4,7 @@ import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -24,7 +23,7 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveReque
     user!: User;
 
     getSuccessMessage(): string {
-        return t`Successfully sent email.`;
+        return msg("Successfully sent email.");
     }
 
     async send(data: CoreUsersRecoveryEmailRetrieveRequest): Promise<void> {
@@ -34,7 +33,11 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveReque
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Email stage`} ?required=${true} name="emailStage">
+            <ak-form-element-horizontal
+                label=${msg("Email stage")}
+                ?required=${true}
+                name="emailStage"
+            >
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
                         const args: StagesAllListRequest = {

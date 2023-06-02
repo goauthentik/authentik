@@ -5,8 +5,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -26,9 +25,9 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated integration.`;
+            return msg("Successfully updated integration.");
         } else {
-            return t`Successfully created integration.`;
+            return msg("Successfully created integration.");
         }
     }
 
@@ -47,7 +46,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -67,20 +66,22 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Local`}</span>
+                    <span class="pf-c-switch__label">${msg("Local")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`If enabled, use the local connection. Required Docker socket/Kubernetes Integration.`}
+                    ${msg(
+                        "If enabled, use the local connection. Required Docker socket/Kubernetes Integration.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Kubeconfig`} name="kubeconfig">
+            <ak-form-element-horizontal label=${msg("Kubeconfig")} name="kubeconfig">
                 <ak-codemirror
                     mode="yaml"
                     value="${YAML.stringify(first(this.instance?.kubeconfig, {}))}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Set custom attributes using YAML or JSON.`}
+                    ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="verifySsl">
@@ -96,7 +97,7 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                         </span>
                     </span>
                     <span class="pf-c-switch__label"
-                        >${t`Verify Kubernetes API SSL Certificate`}</span
+                        >${msg("Verify Kubernetes API SSL Certificate")}</span
                     >
                 </label>
             </ak-form-element-horizontal>

@@ -1,8 +1,7 @@
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { PromptStage } from "@goauthentik/flow/stages/prompt/PromptStage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -32,7 +31,7 @@ export class UserSettingsPromptStage extends PromptStage {
         if (this.shouldRenderInWrapper(prompt)) {
             return html`
                 <ak-form-element-horizontal
-                    label=${t`${prompt.label}`}
+                    label=${msg(str`${prompt.label}`)}
                     ?required=${prompt.required}
                     name=${prompt.fieldKey}
                     ?invalid=${errors !== undefined}
@@ -51,13 +50,13 @@ export class UserSettingsPromptStage extends PromptStage {
         return html` <div class="pf-c-form__group pf-m-action">
             <div class="pf-c-form__horizontal-group">
                 <div class="pf-c-form__actions">
-                    <button type="submit" class="pf-c-button pf-m-primary">${t`Save`}</button>
+                    <button type="submit" class="pf-c-button pf-m-primary">${msg("Save")}</button>
                     ${this.host.tenant?.flowUnenrollment
                         ? html` <a
                               class="pf-c-button pf-m-danger"
                               href="/if/flow/${this.host.tenant.flowUnenrollment}/"
                           >
-                              ${t`Delete account`}
+                              ${msg("Delete account")}
                           </a>`
                         : html``}
                 </div>
@@ -67,7 +66,8 @@ export class UserSettingsPromptStage extends PromptStage {
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<div class="pf-c-login__main-body">
                 <form

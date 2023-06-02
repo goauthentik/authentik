@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -29,18 +28,21 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     order = "-expires";
 
     columns(): TableColumn[] {
-        return [new TableColumn(t`Last IP`, "last_ip"), new TableColumn(t`Expires`, "expires")];
+        return [
+            new TableColumn(msg("Last IP"), "last_ip"),
+            new TableColumn(msg("Expires"), "expires"),
+        ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Session(s)`}
+            objectLabel=${msg("Session(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: AuthenticatedSession) => {
                 return [
-                    { key: t`Last IP`, value: item.lastIp },
-                    { key: t`Expiry`, value: item.expires?.toLocaleString() || t`-` },
+                    { key: msg("Last IP"), value: item.lastIp },
+                    { key: msg("Expiry"), value: item.expires?.toLocaleString() || msg("-") },
                 ];
             }}
             .usedBy=${(item: AuthenticatedSession) => {
@@ -55,7 +57,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -63,7 +65,7 @@ export class AuthenticatedSessionList extends Table<AuthenticatedSession> {
     row(item: AuthenticatedSession): TemplateResult[] {
         return [
             html`<div>
-                    ${item.current ? html`${t`(Current session)`}&nbsp;` : html``}${item.lastIp}
+                    ${item.current ? html`${msg("(Current session)")}&nbsp;` : html``}${item.lastIp}
                 </div>
                 <small>${item.userAgent.userAgent?.family}, ${item.userAgent.os?.family}</small>`,
             html`${item.expires?.toLocaleString()}`,

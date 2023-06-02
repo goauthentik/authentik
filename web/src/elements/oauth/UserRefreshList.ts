@@ -5,8 +5,7 @@ import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -39,10 +38,10 @@ export class UserOAuthRefreshList extends Table<TokenModel> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Provider`, "provider"),
-            new TableColumn(t`Revoked?`, "revoked"),
-            new TableColumn(t`Expires`, "expires"),
-            new TableColumn(t`Scopes`, "scope"),
+            new TableColumn(msg("Provider"), "provider"),
+            new TableColumn(msg("Revoked?"), "revoked"),
+            new TableColumn(msg("Expires"), "expires"),
+            new TableColumn(msg("Scopes"), "scope"),
         ];
     }
 
@@ -51,7 +50,7 @@ export class UserOAuthRefreshList extends Table<TokenModel> {
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <h3>${t`ID Token`}</h3>
+                            <h3>${msg("ID Token")}</h3>
                             <pre>${item.idToken}</pre>
                         </div>
                     </div>
@@ -64,7 +63,7 @@ export class UserOAuthRefreshList extends Table<TokenModel> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Refresh Tokens(s)`}
+            objectLabel=${msg("Refresh Tokens(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: ExpiringBaseGrantModel) => {
                 return new Oauth2Api(DEFAULT_CONFIG).oauth2RefreshTokensUsedByList({
@@ -78,7 +77,7 @@ export class UserOAuthRefreshList extends Table<TokenModel> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -87,7 +86,7 @@ export class UserOAuthRefreshList extends Table<TokenModel> {
         return [
             html`<a href="#/core/providers/${item.provider?.pk}"> ${item.provider?.name} </a>`,
             html`<ak-label color=${item.revoked ? PFColor.Orange : PFColor.Green}>
-                ${item.revoked ? t`Yes` : t`No`}
+                ${item.revoked ? msg("Yes") : msg("No")}
             </ak-label>`,
             html`${item.expires?.toLocaleString()}`,
             html`${item.scope.join(", ")}`,

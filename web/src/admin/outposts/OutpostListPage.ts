@@ -14,8 +14,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
@@ -29,13 +28,13 @@ export function TypeToLabel(type?: OutpostTypeEnum): string {
     if (!type) return "";
     switch (type) {
         case OutpostTypeEnum.Proxy:
-            return t`Proxy`;
+            return msg("Proxy");
         case OutpostTypeEnum.Ldap:
-            return t`LDAP`;
+            return msg("LDAP");
         case OutpostTypeEnum.Radius:
-            return t`Radius`;
+            return msg("Radius");
         case OutpostTypeEnum.UnknownDefaultOpenApi:
-            return t`Unknown type`;
+            return msg("Unknown type");
     }
 }
 
@@ -44,10 +43,12 @@ export class OutpostListPage extends TablePage<Outpost> {
     expandable = true;
 
     pageTitle(): string {
-        return t`Outposts`;
+        return msg("Outposts");
     }
     pageDescription(): string | undefined {
-        return t`Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.`;
+        return msg(
+            "Outposts are deployments of authentik components to support different environments and protocols, like reverse proxies.",
+        );
     }
     pageIcon(): string {
         return "pf-icon pf-icon-zone";
@@ -82,12 +83,12 @@ export class OutpostListPage extends TablePage<Outpost> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Type`, "type"),
-            new TableColumn(t`Providers`),
-            new TableColumn(t`Integration`, "service_connection__name"),
-            new TableColumn(t`Health and Version`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Type"), "type"),
+            new TableColumn(msg("Providers")),
+            new TableColumn(msg("Integration"), "service_connection__name"),
+            new TableColumn(msg("Health and Version")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
@@ -105,10 +106,12 @@ export class OutpostListPage extends TablePage<Outpost> {
             html`<div>${item.name}</div>
                 ${item.config.authentik_host === ""
                     ? html`<ak-label color=${PFColor.Orange} ?compact=${true}>
-                          ${t`Warning: authentik Domain is not configured, authentication will not work.`}
+                          ${msg(
+                              "Warning: authentik Domain is not configured, authentication will not work.",
+                          )}
                       </ak-label>`
                     : html`<ak-label color=${PFColor.Green} ?compact=${true}>
-                          ${t`Logging in via ${item.config.authentik_host}.`}
+                          ${msg(str`Logging in via ${item.config.authentik_host}.`)}
                       </ak-label>`}`,
             html`${TypeToLabel(item.type)}`,
             html`<ul>
@@ -118,13 +121,13 @@ export class OutpostListPage extends TablePage<Outpost> {
                     </li>`;
                 })}
             </ul>`,
-            html`${item.serviceConnectionObj?.name || t`No integration active`}`,
+            html`${item.serviceConnectionObj?.name || msg("No integration active")}`,
             html`<ak-outpost-health-simple
                 outpostId=${ifDefined(item.pk)}
             ></ak-outpost-health-simple>`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update Outpost`} </span>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Outpost")} </span>
                     <ak-outpost-form
                         slot="form"
                         .instancePk=${item.pk}
@@ -138,7 +141,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                 ${item.managed !== "goauthentik.io/outposts/embedded"
                     ? html`<ak-outpost-deployment-modal .outpost=${item} size=${PFSize.Medium}>
                           <button slot="trigger" class="pf-c-button pf-m-tertiary">
-                              ${t`View Deployment Info`}
+                              ${msg("View Deployment Info")}
                           </button>
                       </ak-outpost-deployment-modal>`
                     : html``}`,
@@ -149,7 +152,9 @@ export class OutpostListPage extends TablePage<Outpost> {
         return html`<td role="cell" colspan="5">
             <div class="pf-c-table__expandable-row-content">
                 <h3>
-                    ${t`Detailed health (one instance per column, data is cached so may be out of date)`}
+                    ${msg(
+                        "Detailed health (one instance per column, data is cached so may be out of date)",
+                    )}
                 </h3>
                 <dl class="pf-c-description-list pf-m-3-col-on-lg">
                     ${this.health[item.pk].map((h) => {
@@ -169,7 +174,7 @@ export class OutpostListPage extends TablePage<Outpost> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Outpost(s)`}
+            objectLabel=${msg("Outpost(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Outpost) => {
                 return new OutpostsApi(DEFAULT_CONFIG).outpostsInstancesUsedByList({
@@ -183,7 +188,7 @@ export class OutpostListPage extends TablePage<Outpost> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -191,10 +196,10 @@ export class OutpostListPage extends TablePage<Outpost> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Outpost`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Outpost")} </span>
                 <ak-outpost-form slot="form"> </ak-outpost-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
     }

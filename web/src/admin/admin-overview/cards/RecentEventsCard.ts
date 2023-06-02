@@ -10,8 +10,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -53,17 +52,17 @@ export class RecentEventsCard extends Table<Event> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Action`, "action"),
-            new TableColumn(t`User`, "user"),
-            new TableColumn(t`Creation Date`, "created"),
-            new TableColumn(t`Client IP`, "client_ip"),
-            new TableColumn(t`Tenant`, "tenant_name"),
+            new TableColumn(msg("Action"), "action"),
+            new TableColumn(msg("User"), "user"),
+            new TableColumn(msg("Creation Date"), "created"),
+            new TableColumn(msg("Client IP"), "client_ip"),
+            new TableColumn(msg("Tenant"), "tenant_name"),
         ];
     }
 
     renderToolbar(): TemplateResult {
         return html`<div class="pf-c-card__title">
-            <i class="pf-icon pf-icon-catalog"></i>&nbsp;${t`Recent events`}
+            <i class="pf-icon pf-icon-catalog"></i>&nbsp;${msg("Recent events")}
         </div>`;
     }
 
@@ -80,21 +79,21 @@ export class RecentEventsCard extends Table<Event> {
                       ${item.user.on_behalf_of
                           ? html`<small>
                                 <a href="#/identity/users/${item.user.on_behalf_of.pk}"
-                                    >${t`On behalf of ${item.user.on_behalf_of.username}`}</a
+                                    >${msg(str`On behalf of ${item.user.on_behalf_of.username}`)}</a
                                 >
                             </small>`
                           : html``}`
                 : html`-`,
             html`<span>${item.created?.toLocaleString()}</span>`,
-            html` <div>${item.clientIp || t`-`}</div>
+            html` <div>${item.clientIp || msg("-")}</div>
                 <small>${EventGeo(item)}</small>`,
-            html`<span>${item.tenant?.name || t`-`}</span>`,
+            html`<span>${item.tenant?.name || msg("-")}</span>`,
         ];
     }
 
     renderEmpty(): TemplateResult {
-        return super.renderEmpty(html`<ak-empty-state header=${t`No Events found.`}>
-            <div slot="body">${t`No matching events could be found.`}</div>
+        return super.renderEmpty(html`<ak-empty-state header=${msg("No Events found.")}>
+            <div slot="body">${msg("No matching events could be found.")}</div>
         </ak-empty-state>`);
     }
 }

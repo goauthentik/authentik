@@ -10,8 +10,7 @@ import { currentInterface } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -39,7 +38,7 @@ export class PageHeader extends AKElement {
         const currentIf = currentInterface();
         let title = tenant?.brandingTitle || TITLE_DEFAULT;
         if (currentIf === "admin") {
-            title = `${t`Admin`} - ${title}`;
+            title = `${msg("Admin")} - ${title}`;
         }
         if (value !== "") {
             title = `${value} - ${title}`;

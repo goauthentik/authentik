@@ -13,8 +13,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -24,10 +23,12 @@ import { Source, SourcesApi } from "@goauthentik/api";
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
     pageTitle(): string {
-        return t`Federation & Social login`;
+        return msg("Federation & Social login");
     }
     pageDescription(): string | undefined {
-        return t`Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.`;
+        return msg(
+            "Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.",
+        );
     }
     pageIcon(): string {
         return "pf-icon pf-icon-middleware";
@@ -51,13 +52,17 @@ export class SourceListPage extends TablePage<Source> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn(t`Name`, "name"), new TableColumn(t`Type`), new TableColumn("")];
+        return [
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Type")),
+            new TableColumn(""),
+        ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Source(s)`}
+            objectLabel=${msg("Source(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Source) => {
                 return new SourcesApi(DEFAULT_CONFIG).sourcesAllUsedByList({
@@ -71,7 +76,7 @@ export class SourceListPage extends TablePage<Source> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -86,13 +91,13 @@ export class SourceListPage extends TablePage<Source> {
                 ${item.enabled
                     ? html``
                     : html`<ak-label color=${PFColor.Orange} ?compact=${true}>
-                          ${t`Disabled`}</ak-label
+                          ${msg("Disabled")}</ak-label
                       >`}
             </a>`,
             html`${item.verboseName}`,
             html` <ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
                 <ak-proxy-form
                     slot="form"
                     .args=${{
@@ -112,9 +117,9 @@ export class SourceListPage extends TablePage<Source> {
         return [
             html`<div>
                 <div>${item.name}</div>
-                <ak-label color=${PFColor.Grey} ?compact=${true}> ${t`Built-in`}</ak-label>
+                <ak-label color=${PFColor.Grey} ?compact=${true}> ${msg("Built-in")}</ak-label>
             </div>`,
-            html`${t`Built-in`}`,
+            html`${msg("Built-in")}`,
             html``,
         ];
     }

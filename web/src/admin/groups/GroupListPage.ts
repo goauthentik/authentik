@@ -9,8 +9,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -23,10 +22,10 @@ export class GroupListPage extends TablePage<Group> {
         return true;
     }
     pageTitle(): string {
-        return t`Groups`;
+        return msg("Groups");
     }
     pageDescription(): string {
-        return t`Group users together and give them permissions based on the membership.`;
+        return msg("Group users together and give them permissions based on the membership.");
     }
     pageIcon(): string {
         return "pf-icon pf-icon-users";
@@ -46,18 +45,18 @@ export class GroupListPage extends TablePage<Group> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Parent`, "parent"),
-            new TableColumn(t`Members`),
-            new TableColumn(t`Superuser privileges?`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Parent"), "parent"),
+            new TableColumn(msg("Members")),
+            new TableColumn(msg("Superuser privileges?")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Group(s)`}
+            objectLabel=${msg("Group(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Group) => {
                 return new CoreApi(DEFAULT_CONFIG).coreGroupsUsedByList({
@@ -71,7 +70,7 @@ export class GroupListPage extends TablePage<Group> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -79,14 +78,14 @@ export class GroupListPage extends TablePage<Group> {
     row(item: Group): TemplateResult[] {
         return [
             html`<a href="#/identity/groups/${item.pk}">${item.name}</a>`,
-            html`${item.parentName || t`-`}`,
+            html`${item.parentName || msg("-")}`,
             html`${Array.from(item.users || []).length}`,
             html`<ak-label color=${item.isSuperuser ? PFColor.Green : PFColor.Grey}>
-                ${item.isSuperuser ? t`Yes` : t`No`}
+                ${item.isSuperuser ? msg("Yes") : msg("No")}
             </ak-label>`,
             html` <ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update Group`} </span>
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg("Update Group")} </span>
                 <ak-group-form slot="form" .instancePk=${item.pk}> </ak-group-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <i class="fas fa-edit"></i>
@@ -98,10 +97,10 @@ export class GroupListPage extends TablePage<Group> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Group`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Group")} </span>
                 <ak-group-form slot="form"> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
     }

@@ -2,8 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKChart } from "@goauthentik/elements/charts/Chart";
 import { ChartData, Tick } from "chart.js";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
 
 import { Coordinate, CoreApi } from "@goauthentik/api";
@@ -23,14 +22,14 @@ export class ApplicationAuthorizeChart extends AKChart<Coordinate[]> {
         const valueStamp = ticks[index];
         const delta = Date.now() - valueStamp.value;
         const ago = Math.round(delta / 1000 / 3600 / 24);
-        return t`${ago} days ago`;
+        return msg(str`${ago} days ago`);
     }
 
     getChartData(data: Coordinate[]): ChartData {
         return {
             datasets: [
                 {
-                    label: t`Authorizations`,
+                    label: msg("Authorizations"),
                     backgroundColor: "rgba(189, 229, 184, .5)",
                     spanGaps: true,
                     data:

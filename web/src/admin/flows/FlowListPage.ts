@@ -12,8 +12,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -25,10 +24,12 @@ export class FlowListPage extends TablePage<Flow> {
         return true;
     }
     pageTitle(): string {
-        return t`Flows`;
+        return msg("Flows");
     }
     pageDescription(): string {
-        return t`Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.`;
+        return msg(
+            "Flows describe a chain of Stages to authenticate, enroll or recover a user. Stages are chosen based on policies applied to them.",
+        );
     }
     pageIcon(): string {
         return "pf-icon pf-icon-process-automation";
@@ -56,18 +57,18 @@ export class FlowListPage extends TablePage<Flow> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Identifier`, "slug"),
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Stages`),
-            new TableColumn(t`Policies`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Identifier"), "slug"),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Stages")),
+            new TableColumn(msg("Policies")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Flow(s)`}
+            objectLabel=${msg("Flow(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Flow) => {
                 return new FlowsApi(DEFAULT_CONFIG).flowsInstancesUsedByList({
@@ -81,7 +82,7 @@ export class FlowListPage extends TablePage<Flow> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -98,8 +99,8 @@ export class FlowListPage extends TablePage<Flow> {
             html`${Array.from(item.stages || []).length}`,
             html`${Array.from(item.policies || []).length}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update Flow`} </span>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Flow")} </span>
                     <ak-flow-form slot="form" .instancePk=${item.slug}> </ak-flow-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
                         <i class="fas fa-edit"></i>
@@ -125,16 +126,16 @@ export class FlowListPage extends TablePage<Flow> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Flow`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Flow")} </span>
                 <ak-flow-form slot="form"> </ak-flow-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
             <ak-forms-modal>
-                <span slot="submit"> ${t`Import`} </span>
-                <span slot="header"> ${t`Import Flow`} </span>
+                <span slot="submit"> ${msg("Import")} </span>
+                <span slot="header"> ${msg("Import Flow")} </span>
                 <ak-flow-import-form slot="form"> </ak-flow-import-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Import`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Import")}</button>
             </ak-forms-modal>
         `;
     }
@@ -143,20 +144,22 @@ export class FlowListPage extends TablePage<Flow> {
         return html`
             ${super.renderToolbar()}
             <ak-forms-confirm
-                successMessage=${t`Successfully cleared flow cache`}
-                errorMessage=${t`Failed to delete flow cache`}
-                action=${t`Clear cache`}
+                successMessage=${msg("Successfully cleared flow cache")}
+                errorMessage=${msg("Failed to delete flow cache")}
+                action=${msg("Clear cache")}
                 .onConfirm=${() => {
                     return new FlowsApi(DEFAULT_CONFIG).flowsInstancesCacheClearCreate();
                 }}
             >
-                <span slot="header"> ${t`Clear Flow cache`} </span>
+                <span slot="header"> ${msg("Clear Flow cache")} </span>
                 <p slot="body">
-                    ${t`Are you sure you want to clear the flow cache?
-                    This will cause all flows to be re-evaluated on their next usage.`}
+                    ${msg(
+                        `Are you sure you want to clear the flow cache?
+            This will cause all flows to be re-evaluated on their next usage.`,
+                    )}
                 </p>
                 <button slot="trigger" class="pf-c-button pf-m-secondary" type="button">
-                    ${t`Clear cache`}
+                    ${msg("Clear cache")}
                 </button>
                 <div slot="modal"></div>
             </ak-forms-confirm>

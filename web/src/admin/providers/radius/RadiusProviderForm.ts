@@ -7,8 +7,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement } from "lit/decorators.js";
@@ -32,9 +31,9 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated provider.`;
+            return msg("Successfully updated provider.");
         } else {
-            return t`Successfully created provider.`;
+            return msg("Successfully created provider.");
         }
     }
 
@@ -53,7 +52,7 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -62,7 +61,7 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Authentication flow`}
+                label=${msg("Authentication flow")}
                 ?required=${true}
                 name="authorizationFlow"
             >
@@ -96,14 +95,14 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
                     }}
                 >
                 </ak-search-select>
-                <p class="pf-c-form__helper-text">${t`Flow used for users to authenticate.`}</p>
+                <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Protocol settings`} </span>
+                <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Shared secret`}
+                        label=${msg("Shared secret")}
                         ?required=${true}
                         name="sharedSecret"
                     >
@@ -118,7 +117,7 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
                         />
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Client Networks`}
+                        label=${msg("Client Networks")}
                         ?required=${true}
                         name="clientNetworks"
                     >
@@ -129,9 +128,9 @@ export class RadiusProviderFormPage extends ModelForm<RadiusProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`List of CIDRs (comma-seperated) that clients can connect from. A more specific
+                            ${msg(`List of CIDRs (comma-seperated) that clients can connect from. A more specific
                             CIDR will match before a looser one. Clients connecting from a non-specified CIDR
-                            will be dropped.`}
+                            will be dropped.`)}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

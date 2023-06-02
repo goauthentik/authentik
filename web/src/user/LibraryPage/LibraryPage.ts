@@ -4,8 +4,7 @@ import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { localized, msg } from "@lit/localize";
 import { html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 
@@ -26,6 +25,7 @@ import type { PageUIConfig } from "./types";
  *
  */
 
+@localized()
 @customElement("ak-library")
 export class LibraryPage extends AKElement {
     @state()
@@ -75,11 +75,11 @@ export class LibraryPage extends AKElement {
     }
 
     pageTitle(): string {
-        return t`My Applications`;
+        return msg("My Applications");
     }
 
     loading() {
-        return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+        return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>`;
     }
 
     running() {

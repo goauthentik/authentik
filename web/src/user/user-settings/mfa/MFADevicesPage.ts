@@ -7,8 +7,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/user-settings/mfa/MFADeviceForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -25,9 +24,9 @@ export function stageToAuthenticatorName(stage: UserSetting): string {
 export function deviceTypeName(device: Device): string {
     switch (device.type) {
         case "otp_static.StaticDevice":
-            return t`Static tokens`;
+            return msg("Static tokens");
         case "otp_totp.TOTPDevice":
-            return t`TOTP Device`;
+            return msg("TOTP Device");
         default:
             return device.verboseName;
     }
@@ -55,7 +54,7 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn(t`Name`), new TableColumn(t`Type`), new TableColumn("")];
+        return [new TableColumn(msg("Name")), new TableColumn(msg("Type")), new TableColumn("")];
     }
 
     renderToolbar(): TemplateResult {
@@ -67,7 +66,7 @@ export class MFADevicesPage extends Table<Device> {
         });
         return html`<ak-dropdown class="pf-c-dropdown">
                 <button class="pf-m-primary pf-c-dropdown__toggle" type="button">
-                    <span class="pf-c-dropdown__toggle-text">${t`Enroll`}</span>
+                    <span class="pf-c-dropdown__toggle-text">${msg("Enroll")}</span>
                     <i class="fas fa-caret-down pf-c-dropdown__toggle-icon" aria-hidden="true"></i>
                 </button>
                 <ul class="pf-c-dropdown__menu" hidden>
@@ -120,14 +119,14 @@ export class MFADevicesPage extends Table<Device> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Device(s)`}
+            objectLabel=${msg("Device(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Device) => {
                 return this.deleteWrapper(item);
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -138,8 +137,8 @@ export class MFADevicesPage extends Table<Device> {
             html`${deviceTypeName(item)}`,
             html`
                 <ak-forms-modal>
-                    <span slot="submit">${t`Update`}</span>
-                    <span slot="header">${t`Update Device`}</span>
+                    <span slot="submit">${msg("Update")}</span>
+                    <span slot="header">${msg("Update Device")}</span>
                     <ak-user-mfa-form slot="form" deviceType=${item.type} .instancePk=${item.pk}>
                     </ak-user-mfa-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">

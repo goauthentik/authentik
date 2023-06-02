@@ -11,8 +11,7 @@ import "@goauthentik/user/user-settings/mfa/MFADevicesPage";
 import "@goauthentik/user/user-settings/sources/SourceSettings";
 import "@goauthentik/user/user-settings/tokens/UserTokenList";
 
-import { t } from "@lingui/macro";
-
+import { localized, msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -32,6 +31,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { StagesApi, UserSetting } from "@goauthentik/api";
 
+@localized()
 @customElement("ak-user-settings")
 export class UserSettingsPage extends AKElement {
     static get styles(): CSSResult[] {
@@ -83,7 +83,7 @@ export class UserSettingsPage extends AKElement {
                 <ak-tabs ?vertical="${true}">
                     <section
                         slot="page-details"
-                        data-tab-title="${t`User details`}"
+                        data-tab-title="${msg("User details")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <div class="pf-l-stack pf-m-gutter">
@@ -101,7 +101,7 @@ export class UserSettingsPage extends AKElement {
                     </section>
                     <section
                         slot="page-sessions"
-                        data-tab-title="${t`Sessions`}"
+                        data-tab-title="${msg("Sessions")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <ak-user-session-list
@@ -112,7 +112,7 @@ export class UserSettingsPage extends AKElement {
                     </section>
                     <section
                         slot="page-consents"
-                        data-tab-title="${t`Consent`}"
+                        data-tab-title="${msg("Consent")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <ak-user-consent-list
@@ -121,7 +121,7 @@ export class UserSettingsPage extends AKElement {
                     </section>
                     <section
                         slot="page-mfa"
-                        data-tab-title="${t`MFA Devices`}"
+                        data-tab-title="${msg("MFA Devices")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <ak-user-settings-mfa
@@ -130,14 +130,14 @@ export class UserSettingsPage extends AKElement {
                     </section>
                     <section
                         slot="page-sources"
-                        data-tab-title="${t`Connected services`}"
+                        data-tab-title="${msg("Connected services")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <ak-user-settings-source></ak-user-settings-source>
                     </section>
                     <section
                         slot="page-tokens"
-                        data-tab-title="${t`Tokens and App passwords`}"
+                        data-tab-title="${msg("Tokens and App passwords")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
                         <ak-user-token-list></ak-user-token-list>

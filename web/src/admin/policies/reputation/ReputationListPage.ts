@@ -9,8 +9,7 @@ import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 import getUnicodeFlagIcon from "country-flag-icons/unicode";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -22,10 +21,12 @@ export class ReputationListPage extends TablePage<Reputation> {
         return true;
     }
     pageTitle(): string {
-        return t`Reputation scores`;
+        return msg("Reputation scores");
     }
     pageDescription(): string {
-        return t`Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login.`;
+        return msg(
+            "Reputation for IP and user identifiers. Scores are decreased for each failed login and increased for each successful login.",
+        );
     }
     pageIcon(): string {
         return "fa fa-ban";
@@ -47,17 +48,17 @@ export class ReputationListPage extends TablePage<Reputation> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Identifier`, "identifier"),
-            new TableColumn(t`IP`, "ip"),
-            new TableColumn(t`Score`, "score"),
-            new TableColumn(t`Updated`, "updated"),
+            new TableColumn(msg("Identifier"), "identifier"),
+            new TableColumn(msg("IP"), "ip"),
+            new TableColumn(msg("Score"), "score"),
+            new TableColumn(msg("Updated"), "updated"),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Reputation`}
+            objectLabel=${msg("Reputation")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Reputation) => {
                 return new PoliciesApi(DEFAULT_CONFIG).policiesReputationScoresUsedByList({
@@ -71,7 +72,7 @@ export class ReputationListPage extends TablePage<Reputation> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }

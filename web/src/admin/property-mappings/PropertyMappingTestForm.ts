@@ -6,8 +6,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -34,7 +33,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     request?: PolicyTestRequest;
 
     getSuccessMessage(): string {
-        return t`Successfully sent test-request.`;
+        return msg("Successfully sent test-request.");
     }
 
     async send(data: PolicyTestRequest): Promise<PropertyMappingTestResult> {
@@ -48,7 +47,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     }
 
     renderResult(): TemplateResult {
-        return html`<ak-form-element-horizontal label=${t`Result`}>
+        return html`<ak-form-element-horizontal label=${msg("Result")}>
             ${this.result?.successful
                 ? html`<ak-codemirror
                       mode="javascript"
@@ -65,7 +64,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     }
 
     renderExampleButtons(): TemplateResult {
-        const header = html`<p>${t`Example context data`}</p>`;
+        const header = html`<p>${msg("Example context data")}</p>`;
         switch (this.mapping?.metaModelName) {
             case "authentik_sources_ldap.ldappropertymapping":
                 return html`${header}${this.renderExampleLDAP()}`;
@@ -95,7 +94,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                     };
                 }}
             >
-                ${t`Active Directory User`}
+                ${msg("Active Directory User")}
             </button>
             <button
                 class="pf-c-button pf-m-secondary"
@@ -114,14 +113,14 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                     };
                 }}
             >
-                ${t`Active Directory Group`}
+                ${msg("Active Directory Group")}
             </button>
         `;
     }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`User`} ?required=${true} name="user">
+            <ak-form-element-horizontal label=${msg("User")} ?required=${true} name="user">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
@@ -148,7 +147,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Context`} name="context">
+            <ak-form-element-horizontal label=${msg("Context")} name="context">
                 <ak-codemirror
                     mode="yaml"
                     value=${YAML.stringify(first(this.request?.context, {}))}

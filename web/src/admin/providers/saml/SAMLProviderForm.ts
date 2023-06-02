@@ -7,8 +7,7 @@ import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -52,9 +51,9 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated provider.`;
+            return msg("Successfully updated provider.");
         } else {
-            return t`Successfully created provider.`;
+            return msg("Successfully created provider.");
         }
     }
 
@@ -73,7 +72,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -82,7 +81,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Authentication flow`}
+                label=${msg("Authentication flow")}
                 ?required=${false}
                 name="authenticationFlow"
             >
@@ -113,11 +112,11 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Flow used when a user access this provider and is not authenticated.`}
+                    ${msg("Flow used when a user access this provider and is not authenticated.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Authorization flow`}
+                label=${msg("Authorization flow")}
                 ?required=${true}
                 name="authorizationFlow"
             >
@@ -148,14 +147,18 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Flow used when authorizing this provider.`}
+                    ${msg("Flow used when authorizing this provider.")}
                 </p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Protocol settings`} </span>
+                <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`ACS URL`} ?required=${true} name="acsUrl">
+                    <ak-form-element-horizontal
+                        label=${msg("ACS URL")}
+                        ?required=${true}
+                        name="acsUrl"
+                    >
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.acsUrl)}"
@@ -163,29 +166,33 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             required
                         />
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Issuer`} ?required=${true} name="issuer">
+                    <ak-form-element-horizontal
+                        label=${msg("Issuer")}
+                        ?required=${true}
+                        name="issuer"
+                    >
                         <input
                             type="text"
                             value="${this.instance?.issuer || "authentik"}"
                             class="pf-c-form-control"
                             required
                         />
-                        <p class="pf-c-form__helper-text">${t`Also known as EntityID.`}</p>
+                        <p class="pf-c-form__helper-text">${msg("Also known as EntityID.")}</p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Service Provider Binding`}
+                        label=${msg("Service Provider Binding")}
                         ?required=${true}
                         name="spBinding"
                     >
                         <ak-radio
                             .options=${[
                                 {
-                                    label: t`Redirect`,
+                                    label: msg("Redirect"),
                                     value: SpBindingEnum.Redirect,
                                     default: true,
                                 },
                                 {
-                                    label: t`Post`,
+                                    label: msg("Post"),
                                     value: SpBindingEnum.Post,
                                 },
                             ]}
@@ -193,10 +200,12 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         >
                         </ak-radio>
                         <p class="pf-c-form__helper-text">
-                            ${t`Determines how authentik sends the response back to the Service Provider.`}
+                            ${msg(
+                                "Determines how authentik sends the response back to the Service Provider.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Audience`} name="audience">
+                    <ak-form-element-horizontal label=${msg("Audience")} name="audience">
                         <input
                             type="text"
                             value="${ifDefined(this.instance?.audience)}"
@@ -207,9 +216,12 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
             </ak-form-group>
 
             <ak-form-group>
-                <span slot="header"> ${t`Advanced protocol settings`} </span>
+                <span slot="header"> ${msg("Advanced protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Signing Certificate`} name="signingKp">
+                    <ak-form-element-horizontal
+                        label=${msg("Signing Certificate")}
+                        name="signingKp"
+                    >
                         <ak-search-select
                             .fetchObjects=${async (
                                 query?: string,
@@ -240,11 +252,13 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Certificate used to sign outgoing Responses going to the Service Provider.`}
+                            ${msg(
+                                "Certificate used to sign outgoing Responses going to the Service Provider.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Verification Certificate`}
+                        label=${msg("Verification Certificate")}
                         name="verificationKp"
                     >
                         <ak-search-select
@@ -276,12 +290,14 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.`}
+                            ${msg(
+                                "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
-                        label=${t`Property mappings`}
+                        label=${msg("Property mappings")}
                         ?required=${true}
                         name="propertyMappings"
                     >
@@ -309,11 +325,11 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`NameID Property Mapping`}
+                        label=${msg("NameID Property Mapping")}
                         name="nameIdMapping"
                     >
                         <ak-search-select
@@ -346,12 +362,14 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected.`}
+                            ${msg(
+                                "Configure how the NameID value will be created. When left empty, the NameIDPolicy of the incoming request will be respected.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
-                        label=${t`Assertion valid not before`}
+                        label=${msg("Assertion valid not before")}
                         ?required=${true}
                         name="assertionValidNotBefore"
                     >
@@ -362,12 +380,12 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Configure the maximum allowed time drift for an assertion.`}
+                            ${msg("Configure the maximum allowed time drift for an assertion.")}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Assertion valid not on or after`}
+                        label=${msg("Assertion valid not on or after")}
                         ?required=${true}
                         name="assertionValidNotOnOrAfter"
                     >
@@ -378,12 +396,12 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Assertion not valid on or after current time + this value.`}
+                            ${msg("Assertion not valid on or after current time + this value.")}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Session valid not on or after`}
+                        label=${msg("Session valid not on or after")}
                         ?required=${true}
                         name="sessionValidNotOnOrAfter"
                     >
@@ -394,13 +412,13 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Session not valid on or after current time + this value.`}
+                            ${msg("Session not valid on or after current time + this value.")}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
-                        label=${t`Digest algorithm`}
+                        label=${msg("Digest algorithm")}
                         ?required=${true}
                         name="digestAlgorithm"
                     >
@@ -429,7 +447,7 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Signature algorithm`}
+                        label=${msg("Signature algorithm")}
                         ?required=${true}
                         name="signatureAlgorithm"
                     >

@@ -23,8 +23,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -46,13 +45,13 @@ export function ModeToLabel(action?: ProxyMode): string {
     if (!action) return "";
     switch (action) {
         case ProxyMode.Proxy:
-            return t`Proxy`;
+            return msg("Proxy");
         case ProxyMode.ForwardSingle:
-            return t`Forward auth (single application)`;
+            return msg("Forward auth (single application)");
         case ProxyMode.ForwardDomain:
-            return t`Forward auth (domain-level)`;
+            return msg("Forward auth (domain-level)");
         case ProxyMode.UnknownDefaultOpenApi:
-            return t`Unknown proxy mode`;
+            return msg("Unknown proxy mode");
     }
 }
 
@@ -114,31 +113,31 @@ export class ProxyProviderViewPage extends AKElement {
     renderConfig(): TemplateResult {
         const serves = [
             {
-                label: t`Nginx (Ingress)`,
+                label: msg("Nginx (Ingress)"),
                 md: MDNginxIngress,
             },
             {
-                label: t`Nginx (Proxy Manager)`,
+                label: msg("Nginx (Proxy Manager)"),
                 md: MDNginxPM,
             },
             {
-                label: t`Nginx (standalone)`,
+                label: msg("Nginx (standalone)"),
                 md: MDNginxStandalone,
             },
             {
-                label: t`Traefik (Ingress)`,
+                label: msg("Traefik (Ingress)"),
                 md: MDTraefikIngress,
             },
             {
-                label: t`Traefik (Compose)`,
+                label: msg("Traefik (Compose)"),
                 md: MDTraefikCompose,
             },
             {
-                label: t`Traefik (Standalone)`,
+                label: msg("Traefik (Standalone)"),
                 md: MDTraefikStandalone,
             },
             {
-                label: t`Caddy (Standalone)`,
+                label: msg("Caddy (Standalone)"),
                 md: MDCaddyStandalone,
             },
         ];
@@ -188,15 +187,15 @@ export class ProxyProviderViewPage extends AKElement {
             return html``;
         }
         return html` <ak-tabs>
-            <section slot="page-overview" data-tab-title="${t`Overview`}">
+            <section slot="page-overview" data-tab-title="${msg("Overview")}">
                 ${this.renderTabOverview()}
             </section>
-            <section slot="page-authentication" data-tab-title="${t`Authentication`}">
+            <section slot="page-authentication" data-tab-title="${msg("Authentication")}">
                 ${this.renderTabAuthentication()}
             </section>
             <section
                 slot="page-changelog"
-                data-tab-title="${t`Changelog`}"
+                data-tab-title="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
@@ -224,7 +223,7 @@ export class ProxyProviderViewPage extends AKElement {
                     <dl class="pf-c-description-list pf-m-3-col-on-lg">
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${t`Client ID`}</span>
+                                <span class="pf-c-description-list__text">${msg("Client ID")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
@@ -250,11 +249,11 @@ export class ProxyProviderViewPage extends AKElement {
         return html`${this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${t`Warning: Provider is not used by an Application.`}
+                      ${msg("Warning: Provider is not used by an Application.")}
                   </div>`}
             ${this.provider?.outpostSet.length < 1
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                      ${t`Warning: Provider is not used by any Outpost.`}
+                      ${msg("Warning: Provider is not used by any Outpost.")}
                   </div>`
                 : html``}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
@@ -263,7 +262,7 @@ export class ProxyProviderViewPage extends AKElement {
                         <dl class="pf-c-description-list pf-m-3-col-on-lg">
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${t`Name`}</span>
+                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -274,7 +273,7 @@ export class ProxyProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`Assigned to application`}</span
+                                        >${msg("Assigned to application")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
@@ -288,7 +287,7 @@ export class ProxyProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`Internal Host`}</span
+                                        >${msg("Internal Host")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
@@ -300,7 +299,7 @@ export class ProxyProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`External Host`}</span
+                                        >${msg("External Host")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
@@ -314,7 +313,7 @@ export class ProxyProviderViewPage extends AKElement {
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`Basic-Auth`}</span
+                                        >${msg("Basic-Auth")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
@@ -324,14 +323,16 @@ export class ProxyProviderViewPage extends AKElement {
                                                 ? PFColor.Green
                                                 : PFColor.Grey}
                                         >
-                                            ${this.provider.basicAuthEnabled ? t`Yes` : t`No`}
+                                            ${this.provider.basicAuthEnabled
+                                                ? msg("Yes")
+                                                : msg("No")}
                                         </ak-label>
                                     </div>
                                 </dd>
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${t`Mode`}</span>
+                                    <span class="pf-c-description-list__text">${msg("Mode")}</span>
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -343,27 +344,27 @@ export class ProxyProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__footer">
                         <ak-forms-modal>
-                            <span slot="submit"> ${t`Update`} </span>
-                            <span slot="header"> ${t`Update Proxy Provider`} </span>
+                            <span slot="submit"> ${msg("Update")} </span>
+                            <span slot="header"> ${msg("Update Proxy Provider")} </span>
                             <ak-provider-proxy-form
                                 slot="form"
                                 .instancePk=${this.provider.pk || 0}
                             >
                             </ak-provider-proxy-form>
                             <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${t`Edit`}
+                                ${msg("Edit")}
                             </button>
                         </ak-forms-modal>
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">${t`Protocol Settings`}</div>
+                    <div class="pf-c-card__title">${msg("Protocol Settings")}</div>
                     <div class="pf-c-card__body">
                         <dl class="pf-c-description-list pf-m-3-col-on-lg">
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
                                     <span class="pf-c-description-list__text"
-                                        >${t`Allowed Redirect URIs`}</span
+                                        >${msg("Allowed Redirect URIs")}</span
                                     >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
@@ -380,11 +381,11 @@ export class ProxyProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">${t`Setup`}</div>
+                    <div class="pf-c-card__title">${msg("Setup")}</div>
                     <div class="pf-c-card__body">
                         ${isForward(this.provider?.mode || ProxyMode.Proxy)
                             ? html` ${this.renderConfig()} `
-                            : html` <p>${t`No additional setup is required.`}</p> `}
+                            : html` <p>${msg("No additional setup is required.")}</p> `}
                     </div>
                 </div>
             </div>`;

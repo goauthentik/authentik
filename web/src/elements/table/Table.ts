@@ -10,8 +10,7 @@ import "@goauthentik/elements/table/TablePagination";
 import { Pagination } from "@goauthentik/elements/table/TablePagination";
 import "@goauthentik/elements/table/TableSearch";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -236,7 +235,7 @@ export abstract class Table<T> extends AKElement {
         return html`<tr role="row">
             <td role="cell" colspan="25">
                 <div class="pf-l-bullseye">
-                    <ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>
+                    <ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>
                 </div>
             </td>
         </tr>`;
@@ -250,7 +249,7 @@ export abstract class Table<T> extends AKElement {
                         ${inner
                             ? inner
                             : html`<ak-empty-state
-                                  header="${t`No objects found.`}"
+                                  header="${msg("No objects found.")}"
                               ></ak-empty-state>`}
                     </div>
                 </td>
@@ -259,7 +258,7 @@ export abstract class Table<T> extends AKElement {
     }
 
     renderError(): TemplateResult {
-        return html`<ak-empty-state header="${t`Failed to fetch objects.`}" icon="fa-times">
+        return html`<ak-empty-state header="${msg("Failed to fetch objects.")}" icon="fa-times">
             <div slot="body">${this.hasError?.toString()}</div>
         </ak-empty-state>`;
     }
@@ -401,7 +400,7 @@ export abstract class Table<T> extends AKElement {
             }}
             class="pf-m-secondary"
         >
-            ${t`Refresh`}</ak-spinner-button
+            ${msg("Refresh")}</ak-spinner-button
         >`;
     }
 
@@ -480,7 +479,7 @@ export abstract class Table<T> extends AKElement {
                                   <input
                                       name="select-all"
                                       type="checkbox"
-                                      aria-label=${t`Select all rows`}
+                                      aria-label=${msg("Select all rows")}
                                       .checked=${this.selectedElements.length ===
                                           this.data?.results.length &&
                                       this.selectedElements.length > 0}

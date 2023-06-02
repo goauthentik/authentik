@@ -1,7 +1,6 @@
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -63,11 +62,11 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         if (!url.protocol.startsWith("http")) {
             return html`<ak-empty-state
                 icon="fas fa-check"
-                header=${t`You may close this page now.`}
+                header=${msg("You may close this page now.")}
             >
             </ak-empty-state>`;
         }
-        return html`<ak-empty-state ?loading=${true} header=${t`Loading`}> </ak-empty-state>`;
+        return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}> </ak-empty-state>`;
     }
 
     render(): TemplateResult {
@@ -75,12 +74,12 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
             return this.renderLoading();
         }
         return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${t`Redirect`}</h1>
+                <h1 class="pf-c-title pf-m-3xl">${msg("Redirect")}</h1>
             </header>
             <div class="pf-c-login__main-body">
                 <form class="pf-c-form">
                     <div class="pf-c-form__group">
-                        <p>${t`You're about to be redirect to the following URL.`}</p>
+                        <p>${msg("You're about to be redirect to the following URL.")}</p>
                         <code>${this.getURL()}</code>
                     </div>
                     <div class="pf-c-form__group pf-m-action">
@@ -92,7 +91,7 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                                 this.startedRedirect = true;
                             }}
                         >
-                            ${t`Follow redirect`}
+                            ${msg("Follow redirect")}
                         </a>
                     </div>
                 </form>

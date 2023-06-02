@@ -12,8 +12,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
 import "@goauthentik/elements/forms/ModalForm";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -70,7 +69,7 @@ export class GroupViewPage extends AKElement {
     render(): TemplateResult {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-users"
-                header=${t`Group ${this.group?.name || ""}`}
+                header=${msg(str`Group ${this.group?.name || ""}`)}
                 description=${this.group?.name || ""}
             >
             </ak-page-header>
@@ -84,19 +83,21 @@ export class GroupViewPage extends AKElement {
         return html`<ak-tabs>
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Group Info`}</div>
+                        <div class="pf-c-card__title">${msg("Group Info")}</div>
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list pf-m-2-col">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`Name`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Name")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -107,7 +108,7 @@ export class GroupViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Superuser`}</span
+                                            >${msg("Superuser")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -124,12 +125,12 @@ export class GroupViewPage extends AKElement {
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-forms-modal>
-                                <span slot="submit"> ${t`Update`} </span>
-                                <span slot="header"> ${t`Update Group`} </span>
+                                <span slot="submit"> ${msg("Update")} </span>
+                                <span slot="header"> ${msg("Update Group")} </span>
                                 <ak-group-form slot="form" .instancePk=${this.group.pk}>
                                 </ak-group-form>
                                 <button slot="trigger" class="pf-m-primary pf-c-button">
-                                    ${t`Edit`}
+                                    ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
@@ -137,13 +138,15 @@ export class GroupViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Notes`}</div>
+                        <div class="pf-c-card__title">${msg("Notes")}</div>
                         <div class="pf-c-card__body">
                             ${Object.hasOwn(this.group?.attributes || {}, "notes")
                                 ? html`${this.group.attributes?.notes}`
                                 : html`
                                       <p>
-                                          ${t`Edit the notes attribute of this group to add notes here.`}
+                                          ${msg(
+                                              "Edit the notes attribute of this group to add notes here.",
+                                          )}
                                       </p>
                                   `}
                         </div>
@@ -151,7 +154,7 @@ export class GroupViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${t`Changelog`}</div>
+                        <div class="pf-c-card__title">${msg("Changelog")}</div>
                         <div class="pf-c-card__body">
                             <ak-object-changelog
                                 targetModelPk=${this.group.pk}
@@ -165,7 +168,7 @@ export class GroupViewPage extends AKElement {
             </section>
             <section
                 slot="page-users"
-                data-tab-title="${t`Users`}"
+                data-tab-title="${msg("Users")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
