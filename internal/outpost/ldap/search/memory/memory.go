@@ -46,6 +46,10 @@ func (ms *MemorySearcher) SearchBase(req *search.Request) (ldap.ServerSearchResu
 	return ms.ds.SearchBase(req)
 }
 
+func (ms *MemorySearcher) SearchSubschema(req *search.Request) (ldap.ServerSearchResult, error) {
+	return ms.ds.SearchSubschema(req)
+}
+
 func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, error) {
 	accsp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.check_access")
 	baseDN := ms.si.GetBaseDN()

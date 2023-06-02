@@ -50,7 +50,7 @@ func NewRequest(bindDN string, searchReq ldap.SearchRequest, conn net.Conn) (*Re
 		"filter":    searchReq.Filter,
 	})
 	filterOC, err := ldap.GetFilterObjectClass(searchReq.Filter)
-	if err != nil {
+	if err != nil && len(searchReq.Filter) > 0 {
 		l.WithError(err).WithField("objectClass", filterOC).Warning("invalid filter object class")
 	}
 	return &Request{

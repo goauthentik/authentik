@@ -17,16 +17,16 @@ func (ds *DirectSearcher) SearchBase(req *search.Request) (ldap.ServerSearchResu
 				DN: "",
 				Attributes: []*ldap.EntryAttribute{
 					{
-						Name:   "distinguishedName",
-						Values: []string{ds.si.GetBaseDN()},
-					},
-					{
 						Name:   "objectClass",
 						Values: []string{ldapConstants.OCTop, ldapConstants.OCDomain},
 					},
 					{
 						Name:   "supportedLDAPVersion",
 						Values: []string{"3"},
+					},
+					{
+						Name:   "subschemaSubentry",
+						Values: []string{"cn=subschema"},
 					},
 					{
 						Name: "namingContexts",

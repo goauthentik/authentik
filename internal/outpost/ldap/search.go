@@ -72,6 +72,9 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	if len(searchReq.BaseDN) == 0 {
 		return selectedProvider.searcher.SearchBase(req)
 	}
+	if strings.EqualFold(searchReq.BaseDN, "cn=subschema") {
+		return selectedProvider.searcher.SearchSubschema(req)
+	}
 	return selectedProvider.searcher.Search(req)
 }
 

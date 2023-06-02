@@ -1,5 +1,7 @@
 package constants
 
+const OC = "objectClass"
+
 const (
 	OCTop         = "top"
 	OCDomain      = "domain"
