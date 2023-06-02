@@ -87,6 +87,6 @@
         "ts-lit-plugin": "^1.2.1",
         "tslib": "^2.5.2",
         "turnstile-types": "^1.1.2",
-        "typescript": "^5.0.4"
+        "typescript": "^5.1.3"
     }
 }
