@@ -41,7 +41,7 @@
         "core-js": "^3.30.2",
         "country-flag-icons": "^1.5.7",
         "fuse.js": "^6.6.2",
-        "lit": "^2.7.4",
+        "lit": "^2.7.5",
         "mermaid": "^10.2.2",
         "rapidoc": "^9.3.4",
         "webcomponent-qr-code": "^1.1.1",
