@@ -75,3 +75,155 @@ SOCIAL_AUTH_OIDC_SECRET = environ.get('SOCIAL_AUTH_OIDC_SECRET')
 #SOCIAL_AUTH_OIDC_KEY = '<Client ID>'
 #SOCIAL_AUTH_OIDC_SECRET = '<Client Secret>'
 ```
+
+### Groups
+
+To manage groups in NetBox custom social auth pipelines are required. To create them you have to create the `custom_pipeline.py` file in the NetBox directory with the following content.
+
+```python
+from django.contrib.auth.models import Group
+
+class AuthFailed(Exception):
+    pass
+
+def add_groups(response, user, backend, *args, **kwargs):
+    try:
+        groups = response['groups']
+    except KeyError:
+        pass
+
+    # Add all groups from oAuth token
+    for group in groups:
+        group, created = Group.objects.get_or_create(name=group)
+        group.user_set.add(user)
+
+def remove_groups(response, user, backend, *args, **kwargs):
+    try:
+        groups = response['groups']
+    except KeyError:
+        # Remove all groups if no groups in oAuth token
+        user.groups.clear()
+        pass
+
+    # Get all groups of user
+    user_groups = [item.name for item in user.groups.all()]
+    # Getgroups of user whitch
+    # are not part of oAuth token
+    delete_groups = list(set(user_groups) - set(groups))
+
+    # Delete non oAuth token groups
+    for delete_group in delete_groups:
+        group = Group.objects.get(name=delete_group)
+        group.user_set.remove(user)
+
+
+def set_roles(response, user, backend, *args, **kwargs):
+    # Remove Roles temporary
+    user.is_superuser = False
+    user.is_staff = False
+    try:
+        groups = response['groups']
+    except KeyError:
+        # When no groups are set
+        # save the user withour Roles
+        user.save()
+        pass
+
+    # Set roles is role (superuser or staff) is in groups
+    user.is_superuser = True if 'superusers' in groups else False
+    user.is_staff = True if 'staff' in groups else False
+    user.save()
+```
+
+The path of the file in the Offical Docker image is: `/opt/netbox/netbox/netbox/custom_pipeline.py`
+
+To enable the pipelines, add the pipelines section to the netbox configuration file from above
+
+```python
+SOCIAL_AUTH_PIPELINE = (
+    ###################
+    # Default piplines
+    ###################
+
+    # Get the information we can about the user and return it in a simple
+    # format to create the user instance later. In some cases the details are
+    # already part of the auth response from the provider, but sometimes this
+    # could hit a provider API.
+    'social_core.pipeline.social_auth.social_details',
+
+    # Get the social uid from whichever service we're authing thru. The uid is
+    # the unique identifier of the given user in the provider.
+    'social_core.pipeline.social_auth.social_uid',
+
+    # Verifies that the current auth process is valid within the current
+    # project, this is where emails and domains whitelists are applied (if
+    # defined).
+    'social_core.pipeline.social_auth.auth_allowed',
+
+    # Checks if the current social-account is already associated in the site.
+    'social_core.pipeline.social_auth.social_user',
+
+    # Make up a username for this person, appends a random string at the end if
+    # there's any collision.
+    'social_core.pipeline.user.get_username',
+
+    # Send a validation email to the user to verify its email address.
+    # Disabled by default.
+    # 'social_core.pipeline.mail.mail_validation',
+
+    # Associates the current social details with another user account with
+    # a similar email address. Disabled by default.
+    # 'social_core.pipeline.social_auth.associate_by_email',
+
+    # Create a user account if we haven't found one yet.
+    'social_core.pipeline.user.create_user',
+
+    # Create the record that associates the social account with the user.
+    'social_core.pipeline.social_auth.associate_user',
+
+    # Populate the extra_data field in the social record with the values
+    # specified by settings (and the default ones like access_token, etc).
+    'social_core.pipeline.social_auth.load_extra_data',
+
+    # Update the user record with any changed info from the auth service.
+    'social_core.pipeline.user.user_details',
+
+
+    ###################
+    # Custom piplines
+    ###################
+    # Set authentik Groups
+    'netbox.custom_pipeline.add_groups',
+    'netbox.custom_pipeline.remove_groups',
+    # Set Roles
+    'netbox.custom_pipeline.set_roles'
+)
+
+```
+
+### Roles
+
+In netbox, there are two special user roles `superuser` and `staff`. To set them, add your users to the `superusers` or `staff` group in authentik.
+
+To use custom group names, the following property mapping example can be used.  
+In the example, the group `netbox_admins` is used for the `superusers` and the group `netbox_staff` for the `staff` users.
+
+Name: `Netbox profile`  
+Scope name: `profile`
+
+Expression:
+
+```python
+return {
+  # Because authentik only saves the user's full name, and has no concept of first and last names,
+  # the full name is used as given name.
+  # You can override this behaviour in custom mappings, i.e. `request.user.name.split(" ")`
+  "name": request.user.name,
+  "given_name": request.user.attributes.get("firstname"),
+  "family_name": request.user.attributes.get("lastname"),
+  "preferred_username": request.user.username,
+  "nickname": request.user.username,
+  # groups is not part of the official userinfo schema, but is a quasi-standard
+  "groups": ["superusers" if group.name == "netbox_admin" else "staff" if group.name == "netbox_staff" else group.name for group in request.user.ak_groups.all()],
+}
+```
