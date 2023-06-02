@@ -50,16 +50,6 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	accsp := sentry.StartSpan(req.Context(), "authentik.providers.ldap.search.check_access")
 	baseDN := ms.si.GetBaseDN()
 
-	filterOC, err := ldap.GetFilterObjectClass(req.Filter)
-	if err != nil {
-		metrics.RequestsRejected.With(prometheus.Labels{
-			"outpost_name": ms.si.GetOutpostName(),
-			"type":         "search",
-			"reason":       "filter_parse_fail",
-			"app":          ms.si.GetAppSlug(),
-		}).Inc()
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, fmt.Errorf("Search Error: error parsing filter: %s", req.Filter)
-	}
 	if len(req.BindDN) < 1 {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ms.si.GetOutpostName(),
@@ -95,10 +85,10 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	entries := make([]*ldap.Entry, 0)
 
 	scope := req.SearchRequest.Scope
-	needUsers, needGroups := ms.si.GetNeededObjects(scope, req.BaseDN, filterOC)
+	needUsers, needGroups := ms.si.GetNeededObjects(scope, req.BaseDN, req.FilterObjectClass)
 
 	if scope >= 0 && strings.EqualFold(req.BaseDN, baseDN) {
-		if utils.IncludeObjectClass(filterOC, constants.GetDomainOCs()) {
+		if utils.IncludeObjectClass(req.FilterObjectClass, constants.GetDomainOCs()) {
 			rootEntries, _ := ms.SearchBase(req)
 			for _, e := range rootEntries.Entries {
 				e.DN = ms.si.GetBaseDN()
@@ -111,6 +101,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 
 	var users *[]api.User
 	var groups []*group.LDAPGroup
+	var err error
 
 	if needUsers {
 		if flags.CanSearch {
@@ -170,12 +161,12 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	if scope >= 0 && (strings.EqualFold(req.BaseDN, ms.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ms.si.GetBaseUserDN())) {
 		singleu := utils.HasSuffixNoCase(req.BaseDN, ","+ms.si.GetBaseUserDN())
 
-		if !singleu && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
-			entries = append(entries, utils.GetContainerEntry(filterOC, ms.si.GetBaseUserDN(), constants.OUUsers))
+		if !singleu && utils.IncludeObjectClass(req.FilterObjectClass, constants.GetContainerOCs()) {
+			entries = append(entries, utils.GetContainerEntry(req.FilterObjectClass, ms.si.GetBaseUserDN(), constants.OUUsers))
 			scope -= 1
 		}
 
-		if scope >= 0 && users != nil && utils.IncludeObjectClass(filterOC, constants.GetUserOCs()) {
+		if scope >= 0 && users != nil && utils.IncludeObjectClass(req.FilterObjectClass, constants.GetUserOCs()) {
 			for _, u := range *users {
 				entry := ms.si.UserEntry(u)
 				if strings.EqualFold(req.BaseDN, entry.DN) || !singleu {
@@ -190,12 +181,12 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	if scope >= 0 && (strings.EqualFold(req.BaseDN, ms.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ms.si.GetBaseGroupDN())) {
 		singleg := utils.HasSuffixNoCase(req.BaseDN, ","+ms.si.GetBaseGroupDN())
 
-		if !singleg && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
-			entries = append(entries, utils.GetContainerEntry(filterOC, ms.si.GetBaseGroupDN(), constants.OUGroups))
+		if !singleg && utils.IncludeObjectClass(req.FilterObjectClass, constants.GetContainerOCs()) {
+			entries = append(entries, utils.GetContainerEntry(req.FilterObjectClass, ms.si.GetBaseGroupDN(), constants.OUGroups))
 			scope -= 1
 		}
 
-		if scope >= 0 && groups != nil && utils.IncludeObjectClass(filterOC, constants.GetGroupOCs()) {
+		if scope >= 0 && groups != nil && utils.IncludeObjectClass(req.FilterObjectClass, constants.GetGroupOCs()) {
 			for _, g := range groups {
 				if strings.EqualFold(req.BaseDN, g.DN) || !singleg {
 					entries = append(entries, g.Entry())
@@ -209,12 +200,12 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	if scope >= 0 && (strings.EqualFold(req.BaseDN, ms.si.GetBaseDN()) || utils.HasSuffixNoCase(req.BaseDN, ms.si.GetBaseVirtualGroupDN())) {
 		singlevg := utils.HasSuffixNoCase(req.BaseDN, ","+ms.si.GetBaseVirtualGroupDN())
 
-		if !singlevg && utils.IncludeObjectClass(filterOC, constants.GetContainerOCs()) {
-			entries = append(entries, utils.GetContainerEntry(filterOC, ms.si.GetBaseVirtualGroupDN(), constants.OUVirtualGroups))
+		if !singlevg && utils.IncludeObjectClass(req.FilterObjectClass, constants.GetContainerOCs()) {
+			entries = append(entries, utils.GetContainerEntry(req.FilterObjectClass, ms.si.GetBaseVirtualGroupDN(), constants.OUVirtualGroups))
 			scope -= 1
 		}
 
-		if scope >= 0 && users != nil && utils.IncludeObjectClass(filterOC, constants.GetVirtualGroupOCs()) {
+		if scope >= 0 && users != nil && utils.IncludeObjectClass(req.FilterObjectClass, constants.GetVirtualGroupOCs()) {
 			for _, u := range *users {
 				entry := group.FromAPIUser(u, ms.si).Entry()
 				if strings.EqualFold(req.BaseDN, entry.DN) || !singlevg {
