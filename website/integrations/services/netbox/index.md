@@ -219,8 +219,7 @@ return {
   # the full name is used as given name.
   # You can override this behaviour in custom mappings, i.e. `request.user.name.split(" ")`
   "name": request.user.name,
-  "given_name": request.user.attributes.get("firstname"),
-  "family_name": request.user.attributes.get("lastname"),
+  "given_name": request.user.name,
   "preferred_username": request.user.username,
   "nickname": request.user.username,
   # groups is not part of the official userinfo schema, but is a quasi-standard
