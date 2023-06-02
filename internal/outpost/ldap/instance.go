@@ -9,6 +9,7 @@ import (
 	"github.com/go-openapi/strfmt"
 	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
+
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ldap/bind"
@@ -39,7 +40,7 @@ type ProviderInstance struct {
 	outpostName         string
 	outpostPk           int32
 	searchAllowedGroups []*strfmt.UUID
-	boundUsersMutex     sync.RWMutex
+	boundUsersMutex     *sync.RWMutex
 	boundUsers          map[string]*flags.UserFlags
 
 	uidStartNumber int32
