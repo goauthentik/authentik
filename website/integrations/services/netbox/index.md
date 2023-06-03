@@ -76,7 +76,7 @@ LOGOUT_REDIRECT_URL = environ.get('LOGOUT_REDIRECT_URL')
 #SOCIAL_AUTH_OIDC_ENDPOINT = 'https://authentik.company/application/o/<Application
 #SOCIAL_AUTH_OIDC_KEY = '<Client ID>'
 #SOCIAL_AUTH_OIDC_SECRET = '<Client Secret>'
-LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<Application slug>/end-session/
+#LOGOUT_REDIRECT_URL = 'https://authentik.company/application/o/<Application slug>/end-session/
 ```
 
 ### Groups
