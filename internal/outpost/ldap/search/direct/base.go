@@ -36,9 +36,6 @@ func (ds *DirectSearcher) SearchBase(req *search.Request) (ldap.ServerSearchResu
 						Name: "namingContexts",
 						Values: []string{
 							strings.ToLower(ds.si.GetBaseDN()),
-							ds.si.GetBaseUserDN(),
-							ds.si.GetBaseGroupDN(),
-							ds.si.GetBaseVirtualGroupDN(),
 						},
 					},
 					{
