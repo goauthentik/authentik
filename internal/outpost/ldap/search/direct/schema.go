@@ -24,6 +24,7 @@ func (ds *DirectSearcher) SearchSubschema(req *search.Request) (ldap.ServerSearc
 						Name: "ldapSyntaxes",
 						Values: []string{
 							"( 1.3.6.1.4.1.1466.115.121.1.40 DESC 'Octet String' )",
+							"( 1.3.6.1.4.1.1466.115.121.1.15 DESC 'Directory String' )",
 							"( 1.3.6.1.4.1.1466.115.121.1.7 DESC 'Boolean' )",
 						},
 					},
@@ -43,8 +44,12 @@ func (ds *DirectSearcher) SearchSubschema(req *search.Request) (ldap.ServerSearc
 						Name: "attributeTypes",
 						Values: []string{
 							"( 2.5.4.0 NAME 'objectClass' DESC 'RFC4512: object classes of the entity' EQUALITY objectIdentifierMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.38 )",
-							"( 1.3.6.1.1.4 NAME 'vendorName' DESC 'RFC3045: name of implementation vendor' EQUALITY caseExactMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 SINGLE-VALUE NO-USER-MODIFICATION USAGE dSAOperation )",
-							"( 1.3.6.1.1.5 NAME 'vendorVersion' DESC 'RFC3045: version of implementation' EQUALITY caseExactMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.40 SINGLE-VALUE NO-USER-MODIFICATION USAGE dSAOperation )",
+							"( 1.3.6.1.4.1.1466.101.120.5 NAME 'namingContexts' DESC 'RFC4512: naming contexts' SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 USAGE dSAOperation )",
+							"( 2.5.18.10 NAME 'subschemaSubentry' DESC 'RFC4512: name of controlling subschema entry' EQUALITY distinguishedNameMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 SINGLE-VALUE NO-USER-MODIFICATION USAGE directoryOperation )",
+							"( 1.3.6.1.4.1.1466.101.120.15 NAME 'supportedLDAPVersion' DESC 'RFC4512: supported LDAP versions' SYNTAX 1.3.6.1.4.1.1466.115.121.1.27 USAGE dSAOperation )",
+							"( 1.3.6.1.1.20 NAME 'entryDN' DESC 'DN of the entry' EQUALITY distinguishedNameMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 SINGLE-VALUE NO-USER-MODIFICATION USAGE directoryOperation )",
+							"( 1.3.6.1.1.4 NAME 'vendorName' DESC 'RFC3045: name of implementation vendor' EQUALITY caseExactMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE NO-USER-MODIFICATION USAGE dSAOperation )",
+							"( 1.3.6.1.1.5 NAME 'vendorVersion' DESC 'RFC3045: version of implementation' EQUALITY caseExactMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE NO-USER-MODIFICATION USAGE dSAOperation )",
 							// Custom attributes
 							// Temporarily use 1.3.6.1.4.1.26027.1.1 as a base
 							// https://docs.oracle.com/cd/E19450-01/820-6169/working-with-object-identifiers.html#obtaining-a-base-oid
