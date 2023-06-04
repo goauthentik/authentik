@@ -3,6 +3,7 @@ package direct
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"beryju.io/ldap"
 	"goauthentik.io/internal/constants"
@@ -36,6 +37,18 @@ func (ds *DirectSearcher) SearchBase(req *search.Request) (ldap.ServerSearchResu
 						Name: "namingContexts",
 						Values: []string{
 							strings.ToLower(ds.si.GetBaseDN()),
+						},
+					},
+					{
+						Name: "rootDomainNamingContext",
+						Values: []string{
+							strings.ToLower(ds.si.GetBaseDN()),
+						},
+					},
+					{
+						Name: "currentTime",
+						Values: []string{
+							time.Now().Format(time.RFC3339),
 						},
 					},
 					{
