@@ -14,7 +14,7 @@ func (ds *DirectSearcher) SearchSubschema(req *search.Request) (ldap.ServerSearc
 				Attributes: []*ldap.EntryAttribute{
 					{
 						Name:   "cn",
-						Values: []string{"schema"},
+						Values: []string{"subschema"},
 					},
 					{
 						Name:   constants.OC,
