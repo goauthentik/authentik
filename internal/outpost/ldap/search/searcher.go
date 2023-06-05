@@ -1,7 +1,7 @@
 package search
 
 import (
-	"github.com/nmcclain/ldap"
+	"beryju.io/ldap"
 )
 
 type Searcher interface {

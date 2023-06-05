@@ -5,9 +5,9 @@ import (
 	"net"
 	"strings"
 
+	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	goldap "github.com/go-ldap/ldap/v3"
-	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ldap/metrics"
@@ -37,24 +37,24 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	}()
 
 	if searchReq.BaseDN == "" {
-        return ldap.ServerSearchResult{
-            Entries: []*ldap.Entry{
-                {
-                    DN: "",
-                    Attributes: []*ldap.EntryAttribute{
-                        {
-                            Name:   "objectClass",
-                            Values: []string{"top", "OpenLDAProotDSE"},
-                        },
-                        {
-                            Name:   "subschemaSubentry",
-                            Values: []string{"cn=subschema"},
-                        },
-                    },
-                },
-            },
-            Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess,
-        }, nil
+		return ldap.ServerSearchResult{
+			Entries: []*ldap.Entry{
+				{
+					DN: "",
+					Attributes: []*ldap.EntryAttribute{
+						{
+							Name:   "objectClass",
+							Values: []string{"top", "OpenLDAProotDSE"},
+						},
+						{
+							Name:   "subschemaSubentry",
+							Values: []string{"cn=subschema"},
+						},
+					},
+				},
+			},
+			Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess,
+		}, nil
 	}
 	bd, err := goldap.ParseDN(strings.ToLower(searchReq.BaseDN))
 	if err != nil {
@@ -68,7 +68,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 			return provider.searcher.Search(req)
 		}
 	}
-    return ldap.ServerSearchResult{
+	return ldap.ServerSearchResult{
 		Entries: []*ldap.Entry{
 			{
 				DN: "",

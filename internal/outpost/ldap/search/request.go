@@ -6,9 +6,9 @@ import (
 	"net"
 	"strings"
 
+	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
-	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/utils"
 )

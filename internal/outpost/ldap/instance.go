@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
+	"beryju.io/ldap"
 	"github.com/go-openapi/strfmt"
-	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
 
 	"goauthentik.io/api/v3"
