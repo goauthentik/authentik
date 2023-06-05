@@ -138,6 +138,34 @@ class TestProviderLDAP(SeleniumTestCase):
         "default/flow-default-authentication-flow.yaml",
         "default/flow-default-invalidation-flow.yaml",
     )
+    def test_ldap_bind_success_starttls(self):
+        """Test simple bind with ssl"""
+        self._prepare()
+        server = Server("ldap://localhost:3389")
+        _connection = Connection(
+            server,
+            raise_exceptions=True,
+            user=f"cn={self.user.username},ou=users,DC=ldap,DC=goauthentik,DC=io",
+            password=self.user.username,
+        )
+        _connection.start_tls()
+        _connection.bind()
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.LOGIN,
+                user={
+                    "pk": self.user.pk,
+                    "email": self.user.email,
+                    "username": self.user.username,
+                },
+            )
+        )
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
     def test_ldap_bind_fail(self):
         """Test simple bind (failed)"""
         self._prepare()
