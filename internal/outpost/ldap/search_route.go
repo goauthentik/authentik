@@ -3,8 +3,8 @@ package ldap
 import (
 	"strings"
 
+	"beryju.io/ldap"
 	goldap "github.com/go-ldap/ldap/v3"
-	"github.com/nmcclain/ldap"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/search"
 )
@@ -57,13 +57,17 @@ func (ls *LDAPServer) searchRoute(req *search.Request, pi *ProviderInstance) (ld
 func (ls *LDAPServer) filterResultAttributes(req *search.Request, result ldap.ServerSearchResult) ldap.ServerSearchResult {
 	allowedAttributes := []string{}
 	if len(req.Attributes) == 1 && req.Attributes[0] == constants.SearchAttributeNone {
-		allowedAttributes = []string{""}
+		allowedAttributes = []string{"objectClass"}
 	}
 	if len(req.Attributes) == 1 && req.Attributes[0] == constants.SearchAttributeAll {
 		allowedAttributes = []string{}
 	}
 	if len(req.Attributes) > 0 {
-		allowedAttributes = req.Attributes
+		// Only strictly filter allowed attributes if we haven't already narrowed the attributes
+		// down
+		if len(allowedAttributes) < 1 {
+			allowedAttributes = req.Attributes
+		}
 		// Filter LDAP returned attributes by search requested attributes, taking "1.1"
 		// into consideration
 		return req.FilterLDAPAttributes(result, func(attr *ldap.EntryAttribute) bool {

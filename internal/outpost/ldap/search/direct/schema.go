@@ -1,7 +1,7 @@
 package direct
 
 import (
-	"github.com/nmcclain/ldap"
+	"beryju.io/ldap"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/search"
 )
