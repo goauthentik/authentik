@@ -19,21 +19,23 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
  * administrator, provide a link to the "Create a new application" page.
  */
 
+const styles = [
+    PFBase,
+    PFEmptyState,
+    PFButton,
+    PFContent,
+    PFSpacing,
+    css`
+        .cta {
+            display: inline-block;
+            font-weight: bold;
+        }
+    `,
+];
+
 @customElement("ak-library-application-empty-list")
 export class LibraryPageApplicationEmptyList extends AKElement {
-    static styles = [
-        PFBase,
-        PFEmptyState,
-        PFButton,
-        PFContent,
-        PFSpacing,
-        css`
-            .cta {
-                display: inline-block;
-                font-weight: bold;
-            }
-        `,
-    ];
+    static styles = styles;
 
     @property({ attribute: "isadmin", type: Boolean })
     isAdmin = false;
