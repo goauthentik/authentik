@@ -1,13 +1,10 @@
 package ldap
 
 import (
-	"errors"
 	"net"
-	"strings"
 
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
-	goldap "github.com/go-ldap/ldap/v3"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ldap/constants"
@@ -37,46 +34,16 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		sentry.CaptureException(err.(error))
 	}()
 
-	parsedBaseDN, err := goldap.ParseDN(strings.ToLower(searchReq.BaseDN))
-	if err != nil {
-		req.Log().WithError(err).Info("failed to parse base DN")
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("invalid DN")
-	}
-	parsedBindDN, err := goldap.ParseDN(strings.ToLower(bindDN))
-	if err != nil {
-		req.Log().WithError(err).Info("failed to parse bind DN")
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("invalid DN")
-	}
-
-	var selectedProvider *ProviderInstance
-	longestMatch := 0
-	for _, provider := range ls.providers {
-		providerBase, _ := goldap.ParseDN(strings.ToLower(provider.BaseDN))
-		// Try to match the provider primarily based on the search request's base DN
-		baseDNMatches := providerBase.AncestorOf(parsedBaseDN) || providerBase.Equal(parsedBaseDN)
-		// But also try to match the provider based on the bind DN
-		bindDNMatches := providerBase.AncestorOf(parsedBindDN) || providerBase.Equal(parsedBindDN)
-		if baseDNMatches || bindDNMatches {
-			// Only select the provider if it's a more precise match than previously
-			if len(provider.BaseDN) > longestMatch {
-				req.Log().WithField("provider", provider.BaseDN).Trace("selecting provider for search request")
-				selectedProvider = provider
-				selectedApp = provider.GetAppSlug()
-				longestMatch = len(provider.BaseDN)
-			}
-		}
-	}
+	selectedProvider := ls.providerForRequest(req)
 	if selectedProvider == nil {
 		return ls.fallbackRootDSE(req)
 	}
-	// Route based on the base DN
-	if len(searchReq.BaseDN) == 0 {
-		return selectedProvider.searcher.SearchBase(req)
+	selectedApp = selectedProvider.GetAppSlug()
+	result, err := ls.searchRoute(req, selectedProvider)
+	if err != nil {
+		return result, nil
 	}
-	if strings.EqualFold(searchReq.BaseDN, "cn=subschema") || req.FilterObjectClass == constants.OCSubSchema {
-		return selectedProvider.searcher.SearchSubschema(req)
-	}
-	return selectedProvider.searcher.Search(req)
+	return ls.filterResultAttributes(req, result), nil
 }
 
 func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchResult, error) {
@@ -89,6 +56,10 @@ func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchRes
 					{
 						Name:   "objectClass",
 						Values: []string{constants.OCTop},
+					},
+					{
+						Name:   "entryDN",
+						Values: []string{""},
 					},
 					{
 						Name:   "subschemaSubentry",

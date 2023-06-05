@@ -10,6 +10,11 @@ const (
 )
 
 const (
+	SearchAttributeNone = "1.1"
+	SearchAttributeAll  = "*"
+)
+
+const (
 	OCGroup              = "group"
 	OCGroupOfUniqueNames = "groupOfUniqueNames"
 	OCGroupOfNames       = "groupOfNames"

@@ -10,7 +10,7 @@ func (ds *DirectSearcher) SearchSubschema(req *search.Request) (ldap.ServerSearc
 	return ldap.ServerSearchResult{
 		Entries: []*ldap.Entry{
 			{
-				DN: req.BaseDN,
+				DN: "cn=subschema",
 				Attributes: []*ldap.EntryAttribute{
 					{
 						Name:   "cn",
