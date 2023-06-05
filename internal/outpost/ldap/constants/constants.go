@@ -6,6 +6,7 @@ const (
 	OCTop         = "top"
 	OCDomain      = "domain"
 	OCNSContainer = "nsContainer"
+	OCSubSchema   = "subschema"
 )
 
 const (

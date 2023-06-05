@@ -10,6 +10,7 @@ import (
 	goldap "github.com/go-ldap/ldap/v3"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
 )
@@ -72,7 +73,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	if len(searchReq.BaseDN) == 0 {
 		return selectedProvider.searcher.SearchBase(req)
 	}
-	if strings.EqualFold(searchReq.BaseDN, "cn=subschema") {
+	if strings.EqualFold(searchReq.BaseDN, "cn=subschema") || req.FilterObjectClass == constants.OCSubSchema {
 		return selectedProvider.searcher.SearchSubschema(req)
 	}
 	return selectedProvider.searcher.Search(req)
@@ -87,7 +88,7 @@ func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchRes
 				Attributes: []*ldap.EntryAttribute{
 					{
 						Name:   "objectClass",
-						Values: []string{"top", "OpenLDAProotDSE"},
+						Values: []string{constants.OCTop},
 					},
 					{
 						Name:   "subschemaSubentry",
@@ -96,6 +97,12 @@ func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchRes
 					{
 						Name:   "namingContexts",
 						Values: []string{},
+					},
+					{
+						Name: "description",
+						Values: []string{
+							"This LDAP server requires an authenticated session.",
+						},
 					},
 				},
 			},
