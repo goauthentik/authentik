@@ -240,12 +240,7 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Due to protocol limitations, this certificate is only used when the outpost has a single provider, or all providers use the same certificate.",
-                            )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "If multiple providers share an outpost, a self-signed certificate is used.",
+                                "The certificate for the above configured Base DN. As a fallback, the provider uses a self-signed certificate.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
