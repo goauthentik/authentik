@@ -5,9 +5,8 @@
     "license": "MIT",
     "scripts": {
         "extract-locales": "lit-localize extract",
-        "build-locales": "run-s build-locales:build build-locales:repair",
+        "build-locales": "run-s build-locales:build",
         "build-locales:build": "lit-localize build",
-        "build-locales:repair": "prettier --write ./src/locale-codes.ts",
         "build": "lit-localize build && node --max-old-space-size=4096 node_modules/.bin/rollup -c ./rollup.config.js",
         "build-proxy": "lit-localize build && node --max-old-space-size=4096 node_modules/.bin/rollup -c ./rollup.proxy.js",
         "watch": "lit-localize build && node --max-old-space-size=8192 node_modules/.bin/rollup -c -w",
