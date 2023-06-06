@@ -15,7 +15,7 @@
     "trailingComma": "all",
     "useTabs": false,
     "vueIndentScriptAndStyle": false,
-    "importOrder": ["^@lingui/(.*)$", "^(@?)lit(.*)$", "\\.css$", "^@goauthentik/api$", "^[./]"],
+    "importOrder": ["^(@?)lit(.*)$", "\\.css$", "^@goauthentik/api$", "^[./]"],
     "importOrderSeparation": true,
     "importOrderSortSpecifiers": true,
     "importOrderParserPlugins": ["typescript", "classProperties", "decorators-legacy"]
