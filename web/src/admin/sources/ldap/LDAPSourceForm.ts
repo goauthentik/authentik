@@ -189,7 +189,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.sni, true)}
+                                ?checked=${first(this.instance?.sni, false)}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
