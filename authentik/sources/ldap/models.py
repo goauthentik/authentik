@@ -6,7 +6,7 @@ from typing import Optional
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import LDAPSchemaError
+from ldap3.core.exceptions import LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
@@ -171,9 +171,10 @@ class LDAPSource(Source):
             connection.start_tls(read_server_info=False)
         try:
             connection.bind()
-        except LDAPSchemaError as exc:
+        except (LDAPSchemaError, LDAPInsufficientAccessRightsResult) as exc:
             # Schema error, so try connecting without schema info
             # See https://github.com/goauthentik/authentik/issues/4590
+            # See also https://github.com/goauthentik/authentik/issues/3399
             if server_kwargs.get("get_info", ALL) == NONE:
                 raise exc
             server_kwargs["get_info"] = NONE
