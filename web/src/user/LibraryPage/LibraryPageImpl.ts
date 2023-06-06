@@ -37,13 +37,13 @@ import type { AppGroupList, PageUIConfig } from "./types";
 export class LibraryPage extends AKElement {
     static styles = styles;
 
-    @property()
-    apps!: PaginatedResponse<Application>;
-
     @property({ attribute: "isadmin", type: Boolean })
     isAdmin = false;
 
-    @property()
+    @property({ attribute: false })
+    apps!: PaginatedResponse<Application>;
+
+    @property({ attribute: false })
     uiConfig!: PageUIConfig;
 
     @state()

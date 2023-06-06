@@ -50,7 +50,9 @@
                 "name": "ts-lit-plugin",
                 "strict": true,
                 "rules": {
-                    "no-unknown-tag-name": "off"
+                    "no-unknown-tag-name": "off",
+                    "no-missing-import": "off",
+                    "no-incompatible-type-binding": "warn"
                 }
             }
         ]
