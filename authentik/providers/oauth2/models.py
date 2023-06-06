@@ -9,7 +9,7 @@ from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
+from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite.core import from_dict
 from django.db import models
 from django.http import HttpRequest
@@ -215,7 +215,7 @@ class OAuth2Provider(Provider):
     )
 
     @cached_property
-    def jwt_key(self) -> tuple[str | PRIVATE_KEY_TYPES, str]:
+    def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
         """Get either the configured certificate or the client secret"""
         if not self.signing_key:
             # No Certificate at all, assume HS256

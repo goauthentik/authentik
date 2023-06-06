@@ -5,7 +5,7 @@
     "license": "MIT",
     "scripts": {
         "extract-locales": "lit-localize extract",
-        "build-locales": "run-s build-locales:build build-locales:repair",
+        "build-locales": "run-s build-locales:build",
         "build-locales:build": "lit-localize build",
         "build-locales:repair": "prettier --write ./src/locale-codes.ts",
         "rollup:build": "node --max-old-space-size=4096 node_modules/.bin/rollup -c ./rollup.config.js",
@@ -25,7 +25,7 @@
         "build-storybook": "storybook build"
     },
     "dependencies": {
-        "@codemirror/lang-html": "^6.4.3",
+        "@codemirror/lang-html": "^6.4.4",
         "@codemirror/lang-javascript": "^6.1.9",
         "@codemirror/lang-python": "^6.1.2",
         "@codemirror/lang-xml": "^6.0.2",
@@ -78,10 +78,10 @@
         "@storybook/web-components-vite": "^7.0.18",
         "@trivago/prettier-plugin-sort-imports": "^4.1.1",
         "@types/chart.js": "^2.9.37",
-        "@types/codemirror": "5.60.7",
+        "@types/codemirror": "5.60.8",
         "@types/grecaptcha": "^3.0.4",
-        "@typescript-eslint/eslint-plugin": "^5.59.8",
-        "@typescript-eslint/parser": "^5.59.8",
+        "@typescript-eslint/eslint-plugin": "^5.59.9",
+        "@typescript-eslint/parser": "^5.59.9",
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "eslint": "^8.42.0",
