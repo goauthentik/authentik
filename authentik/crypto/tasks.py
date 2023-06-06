@@ -5,6 +5,7 @@ from pathlib import Path
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.serialization import load_pem_private_key
 from cryptography.x509.base import load_pem_x509_certificate
+from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 from structlog.stdlib import get_logger
 
@@ -93,3 +94,8 @@ def certificate_discovery(self: MonitoredTask):
             messages=[_("Successfully imported %(count)d files." % {"count": discovered})],
         )
     )
+
+
+def generate_pre_shared_key(length=32):
+    return get_random_string(length)
+
