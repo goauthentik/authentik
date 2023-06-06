@@ -8,8 +8,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/sync/errgroup"
 
+	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
-	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"

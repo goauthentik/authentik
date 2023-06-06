@@ -3,7 +3,7 @@ package bind
 import (
 	"context"
 
-	"github.com/nmcclain/ldap"
+	"beryju.io/ldap"
 )
 
 type Binder interface {

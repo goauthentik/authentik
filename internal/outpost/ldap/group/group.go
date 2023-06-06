@@ -3,7 +3,7 @@ package group
 import (
 	"strconv"
 
-	"github.com/nmcclain/ldap"
+	"beryju.io/ldap"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/server"

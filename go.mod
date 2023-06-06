@@ -3,6 +3,7 @@ module goauthentik.io
 go 1.20
 
 require (
+	beryju.io/ldap v0.1.0
 	github.com/Netflix/go-env v0.0.0-20210215222557-e437a7e7f9fb
 	github.com/coreos/go-oidc v2.2.1+incompatible
 	github.com/garyburd/redigo v1.6.4
@@ -20,7 +21,6 @@ require (
 	github.com/gorilla/websocket v1.5.0
 	github.com/jellydator/ttlcache/v3 v3.0.1
 	github.com/nmcclain/asn1-ber v0.0.0-20170104154839-2661553a0484
-	github.com/nmcclain/ldap v0.0.0-20210720162743-7f8d1e44eeba
 	github.com/pires/go-proxyproto v0.7.0
 	github.com/prometheus/client_golang v1.15.1
 	github.com/sirupsen/logrus v1.9.3

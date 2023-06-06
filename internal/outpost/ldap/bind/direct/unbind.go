@@ -1,7 +1,7 @@
 package direct
 
 import (
-	"github.com/nmcclain/ldap"
+	"beryju.io/ldap"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/flow"
 	"goauthentik.io/internal/outpost/ldap/bind"

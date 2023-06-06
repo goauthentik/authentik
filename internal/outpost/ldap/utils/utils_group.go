@@ -3,9 +3,9 @@ package utils
 import (
 	"strings"
 
+	"beryju.io/ldap"
 	goldap "github.com/go-ldap/ldap/v3"
 	ber "github.com/nmcclain/asn1-ber"
-	"github.com/nmcclain/ldap"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 )
