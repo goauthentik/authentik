@@ -35,9 +35,8 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         this.result = undefined;
     }
 
-    renderRequestForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Username`} ?required=${true} name="name">
+    renderInlineForm(): TemplateResult {
+        return html`<ak-form-element-horizontal label=${t`Username`} ?required=${true} name="name">
                 <input type="text" value="" class="pf-c-form-control" required />
                 <p class="pf-c-form__helper-text">
                     ${t`User's primary identifier. 150 characters or fewer.`}
@@ -78,8 +77,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                     value="${dateTimeLocal(new Date(Date.now() + 1000 * 60 ** 2 * 24 * 360))}"
                     class="pf-c-form-control"
                 />
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 
     renderResponseForm(): TemplateResult {
@@ -113,6 +111,6 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         if (this.result) {
             return this.renderResponseForm();
         }
-        return this.renderRequestForm();
+        return super.renderForm();
     }
 }

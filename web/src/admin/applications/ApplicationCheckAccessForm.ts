@@ -115,9 +115,8 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         `;
     }
 
-    renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`User`} ?required=${true} name="forUser">
+    renderInlineForm(): TemplateResult {
+        return html`<ak-form-element-horizontal label=${t`User`} ?required=${true} name="forUser">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<User[]> => {
                         const args: CoreUsersListRequest = {
@@ -144,7 +143,6 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            ${this.result ? this.renderResult() : html``}
-        </form>`;
+            ${this.result ? this.renderResult() : html``}`;
     }
 }
