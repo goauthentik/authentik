@@ -45,41 +45,39 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Groups to add")} name="groups">
-                <div class="pf-c-input-group">
-                    <ak-user-group-select-table
-                        .confirm=${(items: Group[]) => {
-                            this.groupsToAdd = items;
-                            this.requestUpdate();
-                            return Promise.resolve();
-                        }}
-                    >
-                        <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                            <i class="fas fa-plus" aria-hidden="true"></i>
-                        </button>
-                    </ak-user-group-select-table>
-                    <div class="pf-c-form-control">
-                        <ak-chip-group>
-                            ${this.groupsToAdd.map((group) => {
-                                return html`<ak-chip
-                                    .removable=${true}
-                                    value=${ifDefined(group.pk)}
-                                    @remove=${() => {
-                                        const idx = this.groupsToAdd.indexOf(group);
-                                        this.groupsToAdd.splice(idx, 1);
-                                        this.requestUpdate();
-                                    }}
-                                >
-                                    ${group.name}
-                                </ak-chip>`;
-                            })}
-                        </ak-chip-group>
-                    </div>
+    renderInlineForm(): TemplateResult {
+        return html`<ak-form-element-horizontal label=${msg("Groups to add")} name="groups">
+            <div class="pf-c-input-group">
+                <ak-user-group-select-table
+                    .confirm=${(items: Group[]) => {
+                        this.groupsToAdd = items;
+                        this.requestUpdate();
+                        return Promise.resolve();
+                    }}
+                >
+                    <button slot="trigger" class="pf-c-button pf-m-control" type="button">
+                        <i class="fas fa-plus" aria-hidden="true"></i>
+                    </button>
+                </ak-user-group-select-table>
+                <div class="pf-c-form-control">
+                    <ak-chip-group>
+                        ${this.groupsToAdd.map((group) => {
+                            return html`<ak-chip
+                                .removable=${true}
+                                value=${ifDefined(group.pk)}
+                                @remove=${() => {
+                                    const idx = this.groupsToAdd.indexOf(group);
+                                    this.groupsToAdd.splice(idx, 1);
+                                    this.requestUpdate();
+                                }}
+                            >
+                                ${group.name}
+                            </ak-chip>`;
+                        })}
+                    </ak-chip-group>
                 </div>
-            </ak-form-element-horizontal>
-        </form> `;
+            </div>
+        </ak-form-element-horizontal>`;
     }
 }
 
