@@ -56,11 +56,13 @@ Starting with 2021.9.1, custom attributes will override the inbuilt attributes.
 Starting with 2023.3, periods and slashes in custom attributes will be sanitized.
 :::
 
-## SSL
+## SSL / StartTLS
 
 You can also configure SSL for your LDAP Providers by selecting a certificate and a server name in the provider settings.
 
-This enables you to bind on port 636 using LDAPS, StartTLS is not supported.
+Starting with authentik 2023.6, StartTLS is supported, and the provider will pick the correct certificate based on the DN a bind attempt is made with.
+
+This enables you to bind on port 636 using LDAPS.
 
 ## Integrations
 

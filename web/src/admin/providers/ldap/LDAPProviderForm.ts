@@ -52,7 +52,6 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 lDAPProviderRequest: data,
             });
         } else {
-            data.tlsServerName = "";
             return new ProvidersApi(DEFAULT_CONFIG).providersLdapCreate({
                 lDAPProviderRequest: data,
             });
@@ -240,12 +239,24 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Due to protocol limitations, this certificate is only used when the outpost has a single provider, or all providers use the same certificate.",
+                                "The certificate for the above configured Base DN. As a fallback, the provider uses a self-signed certificate.",
                             )}
                         </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("TLS Server name")}
+                        ?required=${true}
+                        name="tlsServerName"
+                    >
+                        <input
+                            type="text"
+                            value="${first(this.instance?.tlsServerName, "")}"
+                            class="pf-c-form-control"
+                            required
+                        />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "If multiple providers share an outpost, a self-signed certificate is used.",
+                                "DNS name for which the above configured certificate should be used. The certificate cannot be detected based on the base DN, as the SSL/TLS negotiation happens before such data is exchanged.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

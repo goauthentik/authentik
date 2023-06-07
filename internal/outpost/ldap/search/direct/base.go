@@ -3,7 +3,7 @@ package direct
 import (
 	"fmt"
 
-	"github.com/nmcclain/ldap"
+	"beryju.io/ldap"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ldap/search"
 )

@@ -1,6 +1,6 @@
-# Authentik WebUI
+# authentik WebUI
 
-This is the default UI for the Authentik server. The documentation is going to be a little sparse
+This is the default UI for the authentik server. The documentation is going to be a little sparse
 for awhile, but at least let's get started.
 
 # Comments
