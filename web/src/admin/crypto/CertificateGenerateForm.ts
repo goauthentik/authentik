@@ -21,9 +21,12 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
         });
     }
 
-    renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Common Name`} name="commonName" ?required=${true}>
+    renderInlineForm(): TemplateResult {
+        return html`<ak-form-element-horizontal
+                label=${t`Common Name`}
+                name="commonName"
+                ?required=${true}
+            >
                 <input type="text" class="pf-c-form-control" required />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${t`Subject-alt name`} name="subjectAltName">
@@ -38,7 +41,6 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
                 ?required=${true}
             >
                 <input class="pf-c-form-control" type="number" value="365" />
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

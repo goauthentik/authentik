@@ -59,9 +59,8 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            ${this.group?.isSuperuser ? html`` : html``}
+    renderInlineForm(): TemplateResult {
+        return html`${this.group?.isSuperuser ? html`` : html``}
             <ak-form-element-horizontal label=${t`Users to add`} name="users">
                 <div class="pf-c-input-group">
                     <ak-group-member-select-table
@@ -93,8 +92,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
                         </ak-chip-group>
                     </div>
                 </div>
-            </ak-form-element-horizontal>
-        </form> `;
+            </ak-form-element-horizontal>`;
     }
 }
 

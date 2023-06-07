@@ -66,8 +66,8 @@ def ldap_sync_password(sender, user: User, password: str, **_):
     if not sources.exists():
         return
     source = sources.first()
-    changer = LDAPPasswordChanger(source)
     try:
+        changer = LDAPPasswordChanger(source)
         changer.change_password(user, password)
     except LDAPOperationResult as exc:
         LOGGER.warning("failed to set LDAP password", exc=exc)
