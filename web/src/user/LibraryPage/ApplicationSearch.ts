@@ -36,7 +36,7 @@ export class LibraryPageApplicationList extends AKElement {
         `,
     ];
 
-    @property()
+    @property({ attribute: false })
     apps: Application[] = [];
 
     @property()

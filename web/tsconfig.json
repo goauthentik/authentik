@@ -42,6 +42,7 @@
         "strictNullChecks": true,
         "allowUnreachableCode": false,
         "allowUnusedLabels": false,
+        "useDefineForClassFields": false,
         "alwaysStrict": true,
         "noImplicitAny": true,
         "plugins": [
@@ -49,7 +50,9 @@
                 "name": "ts-lit-plugin",
                 "strict": true,
                 "rules": {
-                    "no-unknown-tag-name": "off"
+                    "no-unknown-tag-name": "off",
+                    "no-missing-import": "off",
+                    "no-incompatible-type-binding": "warn"
                 }
             }
         ]

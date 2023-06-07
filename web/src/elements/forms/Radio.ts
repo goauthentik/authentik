@@ -22,7 +22,7 @@ export class Radio<T> extends AKElement {
     @property()
     name = "";
 
-    @property()
+    @property({ attribute: false })
     value?: T;
 
     static get styles(): CSSResult[] {

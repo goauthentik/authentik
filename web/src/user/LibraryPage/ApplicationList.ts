@@ -57,7 +57,7 @@ export class LibraryPageApplicationList extends AKElement {
     @property({ attribute: true })
     selected = "";
 
-    @property()
+    @property({ attribute: false })
     apps: AppGroupList = [];
 
     get currentLayout(): Pair {

@@ -142,7 +142,7 @@ export class DeleteBulkForm<T> extends ModalButton {
     usedBy?: (item: T) => Promise<UsedBy[]>;
 
     @property({ attribute: false })
-    delete!: (item: T) => Promise<T>;
+    delete!: (item: T) => Promise<unknown>;
 
     async confirm(): Promise<void> {
         try {

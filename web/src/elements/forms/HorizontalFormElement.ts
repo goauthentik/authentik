@@ -11,6 +11,10 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+/**
+ * @custom-element ak-form-element-horizontal
+ */
+
 @customElement("ak-form-element-horizontal")
 export class HorizontalFormElement extends AKElement {
     static get styles(): CSSResult[] {

@@ -23,7 +23,7 @@ export class RecentEventsCard extends Table<Event> {
     @property()
     order = "-created";
 
-    @property()
+    @property({ type: Number })
     pageSize = 10;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Event>> {

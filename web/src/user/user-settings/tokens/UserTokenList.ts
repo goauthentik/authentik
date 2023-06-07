@@ -133,14 +133,11 @@ export class UserTokenList extends Table<Token> {
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Token(s)")}
             .objects=${this.selectedElements}
-            .metadata=${(item: Token) => {
-                return [{ key: msg("Identifier"), value: item.identifier }];
-            }}
-            .delete=${(item: Token) => {
-                return new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
+            .metadata=${(item: Token) => [{ key: msg("Identifier"), value: item.identifier }]}
+            .delete=${(item: Token) =>
+                new CoreApi(DEFAULT_CONFIG).coreTokensDestroy({
                     identifier: item.identifier,
-                });
-            }}
+                })}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
                 ${msg("Delete")}

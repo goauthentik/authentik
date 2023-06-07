@@ -106,7 +106,7 @@ export class RelatedUserList extends Table<User> {
         return true;
     }
 
-    @property()
+    @property({ attribute: false })
     targetGroup?: Group;
 
     @property()
