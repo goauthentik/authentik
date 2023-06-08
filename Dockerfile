@@ -20,7 +20,7 @@ WORKDIR /work/web
 RUN npm ci --include=dev && npm run build
 
 # Stage 3: Poetry to requirements.txt export
-FROM docker.io/python:3.11.3-slim-bullseye AS poetry-locker
+FROM docker.io/python:3.11.4-slim-bullseye AS poetry-locker
 
 WORKDIR /work
 COPY ./pyproject.toml /work
@@ -63,7 +63,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     "
 
 # Stage 6: Run
-FROM docker.io/python:3.11.3-slim-bullseye AS final-image
+FROM docker.io/python:3.11.4-slim-bullseye AS final-image
 
 LABEL org.opencontainers.image.url https://goauthentik.io
 LABEL org.opencontainers.image.description goauthentik.io Main server image, see https://goauthentik.io for more info.
