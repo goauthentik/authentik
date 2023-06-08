@@ -31,10 +31,14 @@ export class PasswordMatchIndicator extends AKElement {
      * throw an exception.
      */
     @property({ attribute: true })
-    src = "";
+    first = "";
 
-    sourceInput?: HTMLInputElement;
-    otherInput?: HTMLInputElement;
+    @property({ attribute: true })
+    second = "";
+
+    firstElement?: HTMLInputElement;
+
+    secondElement?: HTMLInputElement;
 
     @state()
     match = false;
@@ -46,38 +50,38 @@ export class PasswordMatchIndicator extends AKElement {
 
     connectedCallback() {
         super.connectedCallback();
-        this.input.addEventListener("keyup", this.checkPasswordMatch);
-        this.other.addEventListener("keyup", this.checkPasswordMatch);
+        this.firstInput.addEventListener("keyup", this.checkPasswordMatch);
+        this.secondInput.addEventListener("keyup", this.checkPasswordMatch);
     }
 
     disconnectedCallback() {
-        this.other.removeEventListener("keyup", this.checkPasswordMatch);
-        this.input.removeEventListener("keyup", this.checkPasswordMatch);
+        this.secondInput.removeEventListener("keyup", this.checkPasswordMatch);
+        this.firstInput.removeEventListener("keyup", this.checkPasswordMatch);
         super.disconnectedCallback();
     }
 
     checkPasswordMatch() {
         this.match =
-            this.input.value.length > 0 &&
-            this.other.value.length > 0 &&
-            this.input.value === this.other.value;
+            this.firstInput.value.length > 0 &&
+            this.secondInput.value.length > 0 &&
+            this.firstInput.value === this.secondInput.value;
     }
 
-    get input() {
-        if (this.sourceInput) {
-            return this.sourceInput;
+    get firstInput() {
+        if (this.firstElement) {
+            return this.firstElement;
         }
-        return (this.sourceInput = findInput(this.getRootNode() as Element, ELEMENT, this.src));
+        return (this.firstElement = findInput(this.getRootNode() as Element, ELEMENT, this.first));
     }
 
-    get other() {
-        if (this.otherInput) {
-            return this.otherInput;
+    get secondInput() {
+        if (this.secondElement) {
+            return this.secondElement;
         }
-        return (this.otherInput = findInput(
+        return (this.secondElement = findInput(
             this.getRootNode() as Element,
             ELEMENT,
-            this.src.replace(/_repeat/, ""),
+            this.second,
         ));
     }
 

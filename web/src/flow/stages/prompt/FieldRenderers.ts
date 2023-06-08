@@ -1,11 +1,13 @@
-import { rootInterface } from "@goauthentik/elements/Base";
 import { LOCALES } from "@goauthentik/common/ui/locale";
+import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/password-match-indicator";
 import "@goauthentik/elements/password-strength-indicator";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
-import { TemplateResult, html } from "lit";
+
 import { msg } from "@lit/localize";
-import { StagePrompt, CapabilitiesEnum, PromptTypeEnum } from "@goauthentik/api";
+import { TemplateResult, html } from "lit";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
+
+import { CapabilitiesEnum, PromptTypeEnum, StagePrompt } from "@goauthentik/api";
 
 export function password(prompt: StagePrompt) {
     return html`<input
@@ -20,7 +22,12 @@ export function password(prompt: StagePrompt) {
         ></ak-password-strength-indicator>`;
 }
 
+const REPEAT = /_repeat/;
+
 export function repeatPassword(prompt: StagePrompt) {
+    const first = `input[name="${prompt.fieldKey}"]`;
+    const second = `input[name="${prompt.fieldKey.replace(REPEAT, "")}"]`;
+
     return html` <div style="display:flex; flex-direction:row; gap: 0.5em; align-content: center">
         <input
             style="flex:1 0"
@@ -31,13 +38,14 @@ export function repeatPassword(prompt: StagePrompt) {
             class="pf-c-form-control"
             ?required=${prompt.required}
         /><ak-password-match-indicator
-            src='input[name="${prompt.fieldKey}"]'
+            first="${first}"
+            second="${second}"
         ></ak-password-match-indicator>
     </div>`;
 }
 
 export function renderPassword(prompt: StagePrompt) {
-    return /_repeat$/.test(prompt.fieldKey) ? repeatPassword(prompt) : password(prompt);
+    return REPEAT.test(prompt.fieldKey) ? repeatPassword(prompt) : password(prompt);
 }
 
 export function renderText(prompt: StagePrompt) {
@@ -209,7 +217,7 @@ export function renderAkLocale(prompt: StagePrompt) {
             ?selected=${locale.code === prompt.initialValue}
         >
             ${locale.code.toUpperCase()} - ${locale.label()}
-        </option> `
+        </option> `,
     );
 
     return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
