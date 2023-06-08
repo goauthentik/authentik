@@ -54,7 +54,7 @@ func (ds *DirectSearcher) SearchSubschema(req *search.Request) (ldap.ServerSearc
 							"( 1.3.6.1.1.20 NAME 'entryDN' DESC 'DN of the entry' EQUALITY distinguishedNameMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.12 SINGLE-VALUE NO-USER-MODIFICATION USAGE directoryOperation )",
 							"( 1.3.6.1.1.4 NAME 'vendorName' DESC 'RFC3045: name of implementation vendor' EQUALITY caseExactMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE NO-USER-MODIFICATION USAGE dSAOperation )",
 							"( 1.3.6.1.1.5 NAME 'vendorVersion' DESC 'RFC3045: version of implementation' EQUALITY caseExactMatch SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 SINGLE-VALUE NO-USER-MODIFICATION USAGE dSAOperation )",
-							"( 0.9.2342.19200300.100.1.1 NAME 'uid' SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' )",
+							"( 0.9.2342.19200300.100.1.1 NAME 'uid' SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' SINGLE-VALUE )",
 							"( 0.9.2342.19200300.100.1.3 NAME 'mail' SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' SINGLE-VALUE )",
 							"( 0.9.2342.19200300.100.1.41 NAME 'mobile' SYNTAX '1.3.6.1.4.1.1466.115.121.1.15' SINGLE-VALUE )",
 							"( 1.2.840.113556.1.2.102 NAME 'memberOf' SYNTAX '1.3.6.1.4.1.1466.115.121.1.12' NO-USER-MODIFICATION )",
@@ -83,11 +83,10 @@ func (ds *DirectSearcher) SearchSubschema(req *search.Request) (ldap.ServerSearc
 							// Custom attributes
 							// Temporarily use 1.3.6.1.4.1.26027.1.1 as a base
 							// https://docs.oracle.com/cd/E19450-01/820-6169/working-with-object-identifiers.html#obtaining-a-base-oid
-							"( 1.3.6.1.4.1.26027.1.1.2 NAME ( 'goauthentik.io/ldap/superuser' 'ak-superuser' ) SYNTAX '1.3.6.1.4.1.1466.115.121.1.7' )",
-							"( 1.3.6.1.4.1.26027.1.1.3 NAME ( 'goauthentik.io/ldap/active' 'ak-active' ) SYNTAX '1.3.6.1.4.1.1466.115.121.1.7' )",
-							"( 1.3.6.1.4.1.26027.1.1.4 NAME ( 'goauthentik.io/user/sources' 'goauthentikio-user-sources' ) SYNTAX '1.3.6.1.4.1.1466.115.121.1.40' )",
-							"( 1.3.6.1.4.1.26027.1.1.5 NAME 'goauthentikio-user-override-ips' SYNTAX '1.3.6.1.4.1.1466.115.121.1.7' )",
-							"( 1.3.6.1.4.1.26027.1.1.6 NAME 'goauthentikio-user-service-account' SYNTAX '1.3.6.1.4.1.1466.115.121.1.7' )",
+							"( 1.3.6.1.4.1.26027.1.1.2 NAME ( 'goauthentik.io/ldap/superuser' 'ak-superuser' ) SYNTAX '1.3.6.1.4.1.1466.115.121.1.7' SINGLE-VALUE )",
+							"( 1.3.6.1.4.1.26027.1.1.3 NAME ( 'goauthentik.io/ldap/active' 'ak-active' ) SYNTAX '1.3.6.1.4.1.1466.115.121.1.7' SINGLE-VALUE )",
+							"( 1.3.6.1.4.1.26027.1.1.4 NAME 'goauthentikio-user-override-ips' SYNTAX '1.3.6.1.4.1.1466.115.121.1.7' SINGLE-VALUE )",
+							"( 1.3.6.1.4.1.26027.1.1.5 NAME 'goauthentikio-user-service-account' SYNTAX '1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALUE' )",
 						},
 					},
 				},
