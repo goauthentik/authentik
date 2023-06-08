@@ -207,6 +207,24 @@ export function renderRadioButtonGroup(prompt: StagePrompt) {
     })}`;
 }
 
+export function renderCheckbox(prompt: StagePrompt) {
+    return html`<div class="pf-c-check">
+        <input
+            type="checkbox"
+            class="pf-c-check__input"
+            id="${prompt.fieldKey}"
+            name="${prompt.fieldKey}"
+            ?checked=${prompt.initialValue !== ""}
+            ?required=${prompt.required}
+        />
+        <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
+        ${prompt.required
+            ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
+            : html``}
+        <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
+    </div>`;
+}
+
 export function renderAkLocale(prompt: StagePrompt) {
     // TODO: External reference.
     const inDebug = rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanDebug);
@@ -247,6 +265,7 @@ export const promptRenderers = new Map<PromptTypeEnum, Renderer>([
     [PromptTypeEnum.Static, renderStatic],
     [PromptTypeEnum.Dropdown, renderDropdown],
     [PromptTypeEnum.RadioButtonGroup, renderRadioButtonGroup],
+    [PromptTypeEnum.Checkbox, renderCheckbox],
     [PromptTypeEnum.AkLocale, renderAkLocale],
 ]);
 

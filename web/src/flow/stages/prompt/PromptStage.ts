@@ -6,7 +6,6 @@ import { BaseStage } from "@goauthentik/flow/stages/base";
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -24,7 +23,13 @@ import {
     StagePrompt,
 } from "@goauthentik/api";
 
-import promptRenderers from "./FieldRenderers";
+import { renderCheckbox } from "./FieldRenderers";
+import {
+    renderContinue,
+    renderPromptHelpText,
+    renderPromptInner,
+    shouldRenderInWrapper,
+} from "./helpers";
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
@@ -48,70 +53,35 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
         ];
     }
 
-    renderPromptInner(prompt: StagePrompt): TemplateResult {
-        const renderer = promptRenderers.get(prompt.type);
-        if (!renderer) {
-            return html`<p>invalid type '${prompt.type}'</p>`;
-        }
-        return renderer(prompt);
-    }
+    /* TODO: Legacy: None of these refer to the `this` field. Static fields are a code smell. */
 
-    renderPromptHelpText(prompt: StagePrompt): TemplateResult {
-        if (prompt.subText === "") {
-            return html``;
-        }
-        return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
+    renderPromptInner(prompt: StagePrompt) {
+        return renderPromptInner(prompt);
     }
-
-    shouldRenderInWrapper(prompt: StagePrompt): boolean {
-        // Special types that aren't rendered in a wrapper
-        const specialTypes = [
-            PromptTypeEnum.Static,
-            PromptTypeEnum.Hidden,
-            PromptTypeEnum.Separator,
-        ];
-        const special = specialTypes.find((s) => s === prompt.type);
-        return !special;
+    renderPromptHelpText(prompt: StagePrompt) {
+        return renderPromptHelpText(prompt);
+    }
+    shouldRenderInWrapper(prompt: StagePrompt) {
+        return shouldRenderInWrapper(prompt);
     }
 
     renderField(prompt: StagePrompt): TemplateResult {
-        // Checkbox is rendered differently
+        // Checkbox has a slightly different layout, so it must be intercepted early.
         if (prompt.type === PromptTypeEnum.Checkbox) {
-            return html`<div class="pf-c-check">
-                <input
-                    type="checkbox"
-                    class="pf-c-check__input"
-                    id="${prompt.fieldKey}"
-                    name="${prompt.fieldKey}"
-                    ?checked=${prompt.initialValue !== ""}
-                    ?required=${prompt.required}
-                />
-                <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
-                ${prompt.required
-                    ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
-                    : html``}
-                <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
-            </div>`;
+            return renderCheckbox(prompt);
         }
-        if (this.shouldRenderInWrapper(prompt)) {
+
+        if (shouldRenderInWrapper(prompt)) {
             return html`<ak-form-element
                 label="${prompt.label}"
                 ?required="${prompt.required}"
                 class="pf-c-form__group"
                 .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
             >
-                ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
+                ${renderPromptInner(prompt)} ${renderPromptHelpText(prompt)}
             </ak-form-element>`;
         }
-        return html` ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}`;
-    }
-
-    renderContinue(): TemplateResult {
-        return html` <div class="pf-c-form__group pf-m-action">
-            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                ${msg("Continue")}
-            </button>
-        </div>`;
+        return html` ${renderPromptInner(prompt)} ${renderPromptHelpText(prompt)}`;
     }
 
     render(): TemplateResult {
@@ -119,6 +89,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
+
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
@@ -137,7 +108,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                               this.challenge?.responseErrors?.non_field_errors || [],
                           )
                         : html``}
-                    ${this.renderContinue()}
+                    ${renderContinue()}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
