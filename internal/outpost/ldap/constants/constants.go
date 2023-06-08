@@ -1,9 +1,18 @@
 package constants
 
+const OC = "objectClass"
+
 const (
 	OCTop         = "top"
 	OCDomain      = "domain"
 	OCNSContainer = "nsContainer"
+	OCSubSchema   = "subschema"
+)
+
+const (
+	SearchAttributeNone           = "1.1"
+	SearchAttributeAllUser        = "*"
+	SearchAttributeAllOperational = "+"
 )
 
 const (
@@ -20,7 +29,7 @@ const (
 	OCOrgPerson     = "organizationalPerson"
 	OCInetOrgPerson = "inetOrgPerson"
 	OCAKUser        = "goauthentik.io/ldap/user"
-	OCPosixAccount        = "posixAccount"
+	OCPosixAccount  = "posixAccount"
 )
 
 const (
