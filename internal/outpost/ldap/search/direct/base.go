@@ -12,6 +12,11 @@ import (
 )
 
 func (ds *DirectSearcher) SearchBase(req *search.Request) (ldap.ServerSearchResult, error) {
+	if req.Scope == ldap.ScopeSingleLevel {
+		return ldap.ServerSearchResult{
+			ResultCode: ldap.LDAPResultNoSuchObject,
+		}, nil
+	}
 	return ldap.ServerSearchResult{
 		Entries: []*ldap.Entry{
 			{
