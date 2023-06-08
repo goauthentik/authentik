@@ -251,8 +251,8 @@ class TestProviderLDAP(SeleniumTestCase):
                             "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
-                        "uidNumber": str(2000 + o_user.pk),
-                        "gidNumber": str(2000 + o_user.pk),
+                        "uidNumber": 2000 + o_user.pk,
+                        "gidNumber": 2000 + o_user.pk,
                         "memberOf": [],
                         "homeDirectory": f"/home/{o_user.username}",
                         "ak-active": True,
@@ -278,8 +278,8 @@ class TestProviderLDAP(SeleniumTestCase):
                             "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
-                        "uidNumber": str(2000 + embedded_account.pk),
-                        "gidNumber": str(2000 + embedded_account.pk),
+                        "uidNumber": 2000 + embedded_account.pk,
+                        "gidNumber": 2000 + embedded_account.pk,
                         "memberOf": [],
                         "homeDirectory": f"/home/{embedded_account.username}",
                         "ak-active": True,
@@ -305,8 +305,8 @@ class TestProviderLDAP(SeleniumTestCase):
                             "inetOrgPerson",
                             "goauthentik.io/ldap/user",
                         ],
-                        "uidNumber": str(2000 + self.user.pk),
-                        "gidNumber": str(2000 + self.user.pk),
+                        "uidNumber": 2000 + self.user.pk,
+                        "gidNumber": 2000 + self.user.pk,
                         "memberOf": [
                             f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
                             for group in self.user.ak_groups.all()
