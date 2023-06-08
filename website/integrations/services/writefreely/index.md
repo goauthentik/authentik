@@ -90,7 +90,7 @@ Restart writefreely.service
 
 ## Account linking
 
-If your username in authentik and your WriteFreely username differ, you may need to link your accounts before being able to use SSO.
+If your usernames in authentik and WriteFreely are different, you might need to link your accounts before being able to use SSO.
 
 To link the accounts, first log into Writefreely with local credentials, and then navigate to **Customize -->Account Settings**. In the option "Linked Accounts", click on "authentik".
 

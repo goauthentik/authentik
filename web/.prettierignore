@@ -7,3 +7,4 @@ coverage
 # Import order matters
 poly.ts
 src/locale-codes.ts
+src/locales/
