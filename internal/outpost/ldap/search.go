@@ -1,15 +1,13 @@
 package ldap
 
 import (
-	"errors"
 	"net"
-	"strings"
 
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
-	goldap "github.com/go-ldap/ldap/v3"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/metrics"
 	"goauthentik.io/internal/outpost/ldap/search"
 )
@@ -36,38 +34,20 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 		sentry.CaptureException(err.(error))
 	}()
 
-	if searchReq.BaseDN == "" {
-		return ldap.ServerSearchResult{
-			Entries: []*ldap.Entry{
-				{
-					DN: "",
-					Attributes: []*ldap.EntryAttribute{
-						{
-							Name:   "objectClass",
-							Values: []string{"top", "OpenLDAProotDSE"},
-						},
-						{
-							Name:   "subschemaSubentry",
-							Values: []string{"cn=subschema"},
-						},
-					},
-				},
-			},
-			Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess,
-		}, nil
+	selectedProvider := ls.providerForRequest(req)
+	if selectedProvider == nil {
+		return ls.fallbackRootDSE(req)
 	}
-	bd, err := goldap.ParseDN(strings.ToLower(searchReq.BaseDN))
+	selectedApp = selectedProvider.GetAppSlug()
+	result, err := ls.searchRoute(req, selectedProvider)
 	if err != nil {
-		req.Log().WithError(err).Info("failed to parse basedn")
-		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultOperationsError}, errors.New("invalid DN")
+		return result, nil
 	}
-	for _, provider := range ls.providers {
-		providerBase, _ := goldap.ParseDN(strings.ToLower(provider.BaseDN))
-		if providerBase.AncestorOf(bd) || providerBase.Equal(bd) {
-			selectedApp = provider.GetAppSlug()
-			return provider.searcher.Search(req)
-		}
-	}
+	return ls.filterResultAttributes(req, result), nil
+}
+
+func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchResult, error) {
+	req.Log().Trace("returning fallback Root DSE")
 	return ldap.ServerSearchResult{
 		Entries: []*ldap.Entry{
 			{
@@ -75,15 +55,30 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 				Attributes: []*ldap.EntryAttribute{
 					{
 						Name:   "objectClass",
-						Values: []string{"top", "OpenLDAProotDSE"},
+						Values: []string{constants.OCTop},
+					},
+					{
+						Name:   "entryDN",
+						Values: []string{""},
 					},
 					{
 						Name:   "subschemaSubentry",
 						Values: []string{"cn=subschema"},
+					},
+					{
+						Name:   "namingContexts",
+						Values: []string{},
+					},
+					{
+						Name: "description",
+						Values: []string{
+							"This LDAP server requires an authenticated session.",
+						},
 					},
 				},
 			},
 		},
 		Referrals: []string{}, Controls: []ldap.Control{}, ResultCode: ldap.LDAPResultSuccess,
 	}, nil
+
 }

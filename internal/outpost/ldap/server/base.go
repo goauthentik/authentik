@@ -35,6 +35,5 @@ type LDAPServerInstance interface {
 	GetFlags(dn string) *flags.UserFlags
 	SetFlags(dn string, flags *flags.UserFlags)
 
-	GetBaseEntry() *ldap.Entry
-	GetNeededObjects(int, string, string) (bool, bool)
+	GetNeededObjects(scope int, baseDN string, filterOC string) (bool, bool)
 }
