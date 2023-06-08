@@ -10,8 +10,9 @@ const (
 )
 
 const (
-	SearchAttributeNone = "1.1"
-	SearchAttributeAll  = "*"
+	SearchAttributeNone           = "1.1"
+	SearchAttributeAllUser        = "*"
+	SearchAttributeAllOperational = "+"
 )
 
 const (

@@ -59,9 +59,6 @@ func (ls *LDAPServer) filterResultAttributes(req *search.Request, result ldap.Se
 	if len(req.Attributes) == 1 && req.Attributes[0] == constants.SearchAttributeNone {
 		allowedAttributes = []string{"objectClass"}
 	}
-	if len(req.Attributes) == 1 && req.Attributes[0] == constants.SearchAttributeAll {
-		allowedAttributes = []string{}
-	}
 	if len(req.Attributes) > 0 {
 		// Only strictly filter allowed attributes if we haven't already narrowed the attributes
 		// down
@@ -72,6 +69,10 @@ func (ls *LDAPServer) filterResultAttributes(req *search.Request, result ldap.Se
 		// into consideration
 		return req.FilterLDAPAttributes(result, func(attr *ldap.EntryAttribute) bool {
 			for _, allowed := range allowedAttributes {
+				if allowed == constants.SearchAttributeAllUser ||
+					allowed == constants.SearchAttributeAllOperational {
+					return true
+				}
 				if strings.EqualFold(allowed, attr.Name) {
 					return true
 				}
