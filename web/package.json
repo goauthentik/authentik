@@ -16,6 +16,7 @@
         "watch": "run-s build-locales rollup:watch",
         "lint": "eslint . --max-warnings 0 --fix",
         "lit-analyse": "lit-analyzer src",
+        "precommit": "run-s build-locales lint tsc prettier",
         "prettier-check": "prettier --check .",
         "prettier": "prettier --write .",
         "tsc:execute": "tsc --noEmit -p .",
@@ -51,7 +52,8 @@
         "mermaid": "^10.2.2",
         "rapidoc": "^9.3.4",
         "webcomponent-qr-code": "^1.1.1",
-        "yaml": "^2.3.1"
+        "yaml": "^2.3.1",
+        "zxcvbn": "^4.4.2"
     },
     "devDependencies": {
         "@babel/core": "^7.22.1",
@@ -80,6 +82,7 @@
         "@types/chart.js": "^2.9.37",
         "@types/codemirror": "5.60.8",
         "@types/grecaptcha": "^3.0.4",
+        "@types/zxcvbn": "^4.4.1",
         "@typescript-eslint/eslint-plugin": "^5.59.9",
         "@typescript-eslint/parser": "^5.59.9",
         "babel-plugin-macros": "^3.1.0",

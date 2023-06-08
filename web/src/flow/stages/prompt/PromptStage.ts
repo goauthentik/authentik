@@ -1,5 +1,3 @@
-import { LOCALES } from "@goauthentik/common/ui/locale";
-import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
@@ -20,12 +18,13 @@ import PFTitle from "@patternfly/patternfly/components/Title/title.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    CapabilitiesEnum,
     PromptChallenge,
     PromptChallengeResponseRequest,
     PromptTypeEnum,
     StagePrompt,
 } from "@goauthentik/api";
+
+import promptRenderers from "./FieldRenderers";
 
 @customElement("ak-stage-prompt")
 export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeResponseRequest> {
@@ -50,174 +49,11 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
     }
 
     renderPromptInner(prompt: StagePrompt): TemplateResult {
-        switch (prompt.type) {
-            case PromptTypeEnum.Text:
-                return html`<input
-                    type="text"
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    autocomplete="off"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}
-                    value="${prompt.initialValue}"
-                />`;
-            case PromptTypeEnum.TextArea:
-                return html`<textarea
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    autocomplete="off"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}
-                >
-${prompt.initialValue}</textarea
-                >`;
-            case PromptTypeEnum.TextReadOnly:
-                return html`<input
-                    type="text"
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
-                    ?readonly=${true}
-                    value="${prompt.initialValue}"
-                />`;
-            case PromptTypeEnum.TextAreaReadOnly:
-                return html`<textarea
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
-                    readonly
-                >
-${prompt.initialValue}</textarea
-                >`;
-            case PromptTypeEnum.Username:
-                return html`<input
-                    type="text"
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    autocomplete="username"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}
-                    value="${prompt.initialValue}"
-                />`;
-            case PromptTypeEnum.Email:
-                return html`<input
-                    type="email"
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}
-                    value="${prompt.initialValue}"
-                />`;
-            case PromptTypeEnum.Password:
-                return html`<input
-                    type="password"
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    autocomplete="new-password"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}
-                />`;
-            case PromptTypeEnum.Number:
-                return html`<input
-                    type="number"
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}
-                    value="${prompt.initialValue}"
-                />`;
-            case PromptTypeEnum.Date:
-                return html`<input
-                    type="date"
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}
-                    value="${prompt.initialValue}"
-                />`;
-            case PromptTypeEnum.DateTime:
-                return html`<input
-                    type="datetime"
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}
-                    value="${prompt.initialValue}"
-                />`;
-            case PromptTypeEnum.File:
-                return html`<input
-                    type="file"
-                    name="${prompt.fieldKey}"
-                    placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}
-                    value="${prompt.initialValue}"
-                />`;
-            case PromptTypeEnum.Separator:
-                return html`<ak-divider>${prompt.placeholder}</ak-divider>`;
-            case PromptTypeEnum.Hidden:
-                return html`<input
-                    type="hidden"
-                    name="${prompt.fieldKey}"
-                    value="${prompt.initialValue}"
-                    class="pf-c-form-control"
-                    ?required=${prompt.required}
-                />`;
-            case PromptTypeEnum.Static:
-                return html`<p>${unsafeHTML(prompt.initialValue)}</p>`;
-            case PromptTypeEnum.Dropdown:
-                return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
-                    ${prompt.choices?.map((choice) => {
-                        return html`<option
-                            value="${choice}"
-                            ?selected=${prompt.initialValue === choice}
-                        >
-                            ${choice}
-                        </option>`;
-                    })}
-                </select>`;
-            case PromptTypeEnum.RadioButtonGroup:
-                return html`${(prompt.choices || []).map((choice) => {
-                    const id = `${prompt.fieldKey}-${choice}`;
-                    return html`<div class="pf-c-check">
-                        <input
-                            type="radio"
-                            class="pf-c-check__input"
-                            name="${prompt.fieldKey}"
-                            id="${id}"
-                            ?checked="${prompt.initialValue === choice}"
-                            ?required="${prompt.required}"
-                            value="${choice}"
-                        />
-                        <label class="pf-c-check__label" for=${id}>${choice}</label>
-                    </div> `;
-                })}`;
-            case PromptTypeEnum.AkLocale: {
-                const inDebug = rootInterface()?.config?.capabilities.includes(
-                    CapabilitiesEnum.CanDebug,
-                );
-                const locales = inDebug
-                    ? LOCALES
-                    : LOCALES.filter((locale) => locale.code !== "debug");
-                const options = locales.map(
-                    (locale) => html`<option
-                        value=${locale.code}
-                        ?selected=${locale.code === prompt.initialValue}
-                    >
-                        ${locale.code.toUpperCase()} - ${locale.label()}
-                    </option> `,
-                );
-
-                return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
-                    <option value="" ?selected=${prompt.initialValue === ""}>
-                        ${msg("Auto-detect (based on your browser)")}
-                    </option>
-                    ${options}
-                </select>`;
-            }
-            default:
-                return html`<p>invalid type '${prompt.type}'</p>`;
+        const renderer = promptRenderers.get(prompt.type);
+        if (!renderer) {
+            return html`<p>invalid type '${prompt.type}'</p>`;
         }
+        return renderer(prompt);
     }
 
     renderPromptHelpText(prompt: StagePrompt): TemplateResult {
@@ -229,14 +65,13 @@ ${prompt.initialValue}</textarea
 
     shouldRenderInWrapper(prompt: StagePrompt): boolean {
         // Special types that aren't rendered in a wrapper
-        if (
-            prompt.type === PromptTypeEnum.Static ||
-            prompt.type === PromptTypeEnum.Hidden ||
-            prompt.type === PromptTypeEnum.Separator
-        ) {
-            return false;
-        }
-        return true;
+        const specialTypes = [
+            PromptTypeEnum.Static,
+            PromptTypeEnum.Hidden,
+            PromptTypeEnum.Separator,
+        ];
+        const special = specialTypes.find((s) => s === prompt.type);
+        return !special;
     }
 
     renderField(prompt: StagePrompt): TemplateResult {
