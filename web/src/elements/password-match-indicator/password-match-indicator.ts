@@ -7,11 +7,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import findInput from "../password-strength-indicator/findInput.js";
 
-/**
- * A simple display showing if the passwords match. This element is extremely fragile and
- * role-specific, depending as it does on the token string '_repeat' inside the selector.
- */
-
 const ELEMENT = "ak-password-match-indicator";
 
 @customElement(ELEMENT)
@@ -27,12 +22,16 @@ export class PasswordMatchIndicator extends AKElement {
     ];
 
     /**
-     * The input element to observe. Attaching this to anything other than an HTMLInputElement will
-     * throw an exception.
+     * A valid selector for the first input element to observe. Attaching this to anything other
+     * than an HTMLInputElement will throw an exception.
      */
     @property({ attribute: true })
     first = "";
 
+    /**
+     * A valid selector for the second input element to observe. Attaching this to anything other
+     * than an HTMLInputElement will throw an exception.
+     */
     @property({ attribute: true })
     second = "";
 
