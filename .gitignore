@@ -204,3 +204,4 @@ data/
 
 # Local Netlify folder
 .netlify
+.ruff_cache

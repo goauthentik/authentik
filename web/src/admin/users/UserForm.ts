@@ -3,6 +3,7 @@ import { UserTypeEnum } from "@goauthentik/api/dist/models/UserTypeEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
