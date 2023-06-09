@@ -17,6 +17,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
@@ -25,6 +26,8 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.oauth2.id_token import IDToken, SubModes
 from authentik.sources.oauth.models import OAuthSource
+
+LOGGER = get_logger()
 
 
 def generate_client_secret() -> str:
@@ -251,8 +254,12 @@ class OAuth2Provider(Provider):
         if self.redirect_uris == "":
             return None
         main_url = self.redirect_uris.split("\n", maxsplit=1)[0]
-        launch_url = urlparse(main_url)._replace(path="")
-        return urlunparse(launch_url)
+        try:
+            launch_url = urlparse(main_url)._replace(path="")
+            return urlunparse(launch_url)
+        except ValueError as exc:
+            LOGGER.warning("Failed to format launch url", exc=exc)
+            return None
 
     @property
     def component(self) -> str:
