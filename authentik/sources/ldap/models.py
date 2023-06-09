@@ -132,7 +132,6 @@ class LDAPSource(Source):
                 private_key_file = temp_key.name
             tls_kwargs["local_private_key_file"] = private_key_file
             tls_kwargs["local_certificate_file"] = certificate_file
-            tls_kwargs["validate"] = CERT_REQUIRED
         if ciphers := CONFIG.y("ldap.tls.ciphers", None):
             tls_kwargs["ciphers"] = ciphers.strip()
         if self.sni:
