@@ -46,7 +46,7 @@ class TestAPI(APITestCase):
         self.assertEqual(body["issuer"], "http://testserver/application/o/test/")
 
     # https://github.com/goauthentik/authentik/pull/5918
-    @skipUnless(version_info >= (3, 11,4), "This behaviour is only Python 3.11.4 and up")
+    @skipUnless(version_info >= (3, 11, 4), "This behaviour is only Python 3.11.4 and up")
     def test_launch_url(self):
         """Test launch_url"""
         self.provider.redirect_uris = (
