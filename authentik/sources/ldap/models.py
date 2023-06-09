@@ -1,6 +1,7 @@
 """authentik LDAP Models"""
+from os import chmod
 from ssl import CERT_REQUIRED
-from tempfile import NamedTemporaryFile
+from tempfile import NamedTemporaryFile, mkdtemp
 from typing import Optional
 
 from django.db import models
@@ -124,12 +125,15 @@ class LDAPSource(Source):
             tls_kwargs["ca_certs_data"] = self.peer_certificate.certificate_data
             tls_kwargs["validate"] = CERT_REQUIRED
         if self.client_certificate:
-            with NamedTemporaryFile(mode="w", delete=False) as temp_cert:
+            temp_dir = mkdtemp(dir="/tmp")
+            with NamedTemporaryFile(mode="w", delete=False, dir=temp_dir) as temp_cert:
                 temp_cert.write(self.client_certificate.certificate_data)
                 certificate_file = temp_cert.name
-            with NamedTemporaryFile(mode="w", delete=False) as temp_key:
+                chmod(certificate_file, 0o600)
+            with NamedTemporaryFile(mode="w", delete=False, dir=temp_dir) as temp_key:
                 temp_key.write(self.client_certificate.key_data)
                 private_key_file = temp_key.name
+                chmod(private_key_file, 0o600)
             tls_kwargs["local_private_key_file"] = private_key_file
             tls_kwargs["local_certificate_file"] = certificate_file
         if ciphers := CONFIG.y("ldap.tls.ciphers", None):
