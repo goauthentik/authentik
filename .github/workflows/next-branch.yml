@@ -1,0 +1,20 @@
+name: next-branch
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # every day at noon
+  workflow_dispatch:
+
+jobs:
+  update-next:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+      - id: main-status
+        run: |
+          echo "::set-output name=status::$(curl -fsSL -o head_status.json -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token}}" "https://api.github.com/repos/${{ github.repository }}/commits/HEAD/status" | jq -r '.state')"
+      - if: ${{ steps.main-status.outputs.status == 'success' }}
+        run: |
+          git push origin next --force
