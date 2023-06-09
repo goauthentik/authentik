@@ -251,8 +251,11 @@ class OAuth2Provider(Provider):
         if self.redirect_uris == "":
             return None
         main_url = self.redirect_uris.split("\n", maxsplit=1)[0]
-        launch_url = urlparse(main_url)._replace(path="")
-        return urlunparse(launch_url)
+        try:
+            launch_url = urlparse(main_url)._replace(path="")
+            return urlunparse(launch_url)
+        except ValueError:
+            return None
 
     @property
     def component(self) -> str:
