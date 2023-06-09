@@ -257,8 +257,7 @@ class OAuth2Provider(Provider):
         try:
             launch_url = urlparse(main_url)._replace(path="")
             return urlunparse(launch_url)
-        # pylint: disable=broad-except
-        except Exception as exc:
+        except ValueError as exc:
             LOGGER.warning("Failed to format launch url", exc=exc)
             return None
 
