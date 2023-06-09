@@ -139,7 +139,7 @@ class LDAPSource(Source):
         if ciphers := CONFIG.y("ldap.tls.ciphers", None):
             tls_kwargs["ciphers"] = ciphers.strip()
         if self.sni:
-            tls_kwargs["sni"] = self.server_uri.strip()
+            tls_kwargs["sni"] = self.server_uri.split(",")[0].strip()
         server_kwargs = {
             "get_info": ALL,
             "connect_timeout": LDAP_TIMEOUT,
