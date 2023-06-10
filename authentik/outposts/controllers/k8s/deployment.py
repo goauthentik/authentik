@@ -1,9 +1,11 @@
 """Kubernetes Deployment Reconciler"""
+from json import JSONDecodeError, loads
 from typing import TYPE_CHECKING
 
 from django.utils.text import slugify
 from kubernetes.client import (
     AppsV1Api,
+    V1Affinity,
     V1Capabilities,
     V1Container,
     V1ContainerPort,
@@ -12,14 +14,21 @@ from kubernetes.client import (
     V1EnvVar,
     V1EnvVarSource,
     V1LabelSelector,
+    V1NodeAffinity,
+    V1NodeSelectorRequirement,
+    V1NodeSelectorTerm,
+    V1NodeSelector,
     V1ObjectMeta,
     V1ObjectReference,
     V1PodSecurityContext,
     V1PodSpec,
     V1PodTemplateSpec,
+    V1PreferredSchedulingTerm,
+    V1ResourceRequirements,
     V1SeccompProfile,
     V1SecretKeySelector,
     V1SecurityContext,
+    V1Toleration,
 )
 
 from authentik import get_full_version
@@ -70,6 +79,112 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         )
         return kwargs
 
+    def construct_resources(self, json_input):
+        if json_input is None:
+            return None
+
+        try:
+            data = loads(json_input)
+        except JSONDecodeError:
+            print("Error: Invalid JSON input")
+            return None
+
+        resources_data = data.get("resources", {})
+        requests = resources_data.get("requests", {})
+        limits = resources_data.get("limits", {})
+        resource_requirements = V1ResourceRequirements(limits=limits, requests=requests)
+        return resource_requirements
+
+    def construct_tolerations(self, json_input):
+        if json_input is None:
+            return None
+
+        try:
+            data = loads(json_input)
+        except JSONDecodeError:
+            print("Error: Invalid JSON input")
+            return None
+
+        tolerations_data = data.get("tolerations", [])
+        tolerations = []
+        for toleration_data in tolerations_data:
+            key = toleration_data.get("key")
+            operator = toleration_data.get("operator")
+            if key and operator:
+                toleration = V1Toleration(key=key, operator=operator)
+                tolerations.append(toleration)
+        return tolerations
+
+    def construct_affinity(self, json_input):
+        if json_input is None:
+            return None
+
+        try:
+            data = loads(json_input)
+        except JSONDecodeError:
+            print("Error: Invalid JSON input")
+            return None
+
+        node_affinity_data = data.get("nodeAffinity", {})
+        preferred_during_scheduling = node_affinity_data.get(
+            "preferredDuringSchedulingIgnoredDuringExecution", []
+        )
+        required_during_scheduling = node_affinity_data.get(
+            "requiredDuringSchedulingIgnoredDuringExecution", {}
+        )
+        affinity = V1Affinity()
+        affinity.node_affinity = V1NodeAffinity()
+
+        if preferred_during_scheduling:
+            preferred_during_scheduling_affinity = []
+            for preference in preferred_during_scheduling:
+                preference_data = preference.get("preference", {})
+                match_expressions = preference_data.get("matchExpressions", [])
+                match_expressions_list = []
+                for expression in match_expressions:
+                    key = expression.get("key")
+                    operator = expression.get("operator")
+                    values = expression.get("values")
+                    if key is not None and operator is not None and values is not None:
+                        match_expressions_list.append(
+                            V1NodeSelectorRequirement(key=key, operator=operator, values=values)
+                        )
+                    else:
+                        print("Error: Invalid match expression")
+                preferred_during_scheduling_affinity.append(
+                    V1PreferredSchedulingTerm(
+                        preference=V1NodeSelectorTerm(match_expressions=match_expressions_list),
+                        weight=preference.get("weight"),
+                    )
+                )
+
+            affinity.node_affinity.preferred_during_scheduling_ignored_during_execution = (
+                preferred_during_scheduling_affinity
+            )
+
+        if required_during_scheduling:
+            node_selector_terms = required_during_scheduling.get("nodeSelectorTerms", [])
+            if node_selector_terms:
+                required_match_expressions = node_selector_terms[0].get("matchExpressions", [])
+                required_match_expressions_list = []
+                for expression in required_match_expressions:
+                    key = expression.get("key")
+                    operator = expression.get("operator")
+                    values = expression.get("values")
+                    if key is not None and operator is not None and values is not None:
+                        required_match_expressions_list.append(
+                            V1NodeSelectorRequirement(key=key, operator=operator, values=values)
+                        )
+                    else:
+                        print("Error: Invalid match expression")
+                affinity.node_affinity.required_during_scheduling_ignored_during_execution = V1NodeSelector(
+                    node_selector_terms=[V1NodeSelectorTerm(match_expressions=required_match_expressions_list)]
+                )
+            else:
+                print("Error: No nodeSelectorTerms found")
+
+        return affinity
+
     def get_reference_object(self) -> V1Deployment:
         """Get deployment object for outpost"""
         # Generate V1ContainerPort objects
@@ -104,6 +219,10 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                         )
                     ),
                     spec=V1PodSpec(
+                        affinity=self.construct_affinity(self.outpost.config.kubernetes_affinity),
+                        tolerations=self.construct_tolerations(
+                            self.outpost.config.kubernetes_tolerations
+                        ),
                         image_pull_secrets=[
                             V1ObjectReference(name=secret) for secret in image_pull_secrets
                         ],
@@ -117,6 +236,9 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                                 name=str(self.outpost.type),
                                 image=image_name,
                                 ports=container_ports,
+                                resources=self.construct_resources(
+                                    self.outpost.config.kubernetes_resources
+                                ),
                                 env=[
                                     V1EnvVar(
                                         name="AUTHENTIK_HOST",
