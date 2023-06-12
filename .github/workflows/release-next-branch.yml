@@ -1,4 +1,4 @@
-name: release-next-branch
+name: authentik-on-release-next-branch
 
 on:
   schedule:
@@ -18,7 +18,7 @@ jobs:
           ref: main
       - id: main-status
         run: |
-          status=$(curl -fsSL -o head_status.json -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token}}" "https://api.github.com/repos/${{ github.repository }}/commits/HEAD/status" | jq -r '.status')
+          status=$(curl -fsSL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/commits/HEAD/status" | jq -r '.status')
           echo "status=${status}" >> $GITHUB_OUTPUT
       - if: ${{ steps.main-status.outputs.status == 'success' }}
         run: |
