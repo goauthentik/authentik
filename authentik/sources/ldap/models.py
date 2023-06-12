@@ -125,7 +125,7 @@ class LDAPSource(Source):
             tls_kwargs["ca_certs_data"] = self.peer_certificate.certificate_data
             tls_kwargs["validate"] = CERT_REQUIRED
         if self.client_certificate:
-            temp_dir = mkdtemp(dir="/tmp")
+            temp_dir = mkdtemp()
             with NamedTemporaryFile(mode="w", delete=False, dir=temp_dir) as temp_cert:
                 temp_cert.write(self.client_certificate.certificate_data)
                 certificate_file = temp_cert.name
