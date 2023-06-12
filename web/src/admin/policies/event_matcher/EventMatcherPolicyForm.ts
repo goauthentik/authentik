@@ -177,7 +177,9 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Match events created by selected model. When left empty, all models are matched.`}
+                            ${msg(
+                                "Match events created by selected model. When left empty, all models are matched.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
