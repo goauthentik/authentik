@@ -32,6 +32,9 @@ The following outpost settings are used:
     -   'prometheus servicemonitor'
     -   'ingress'
     -   'traefik middleware'
+-   `kubernetes_affinity`: Allows configuration of Kubernetes nodeAffinity for outpost deployment, from a single JSON string
+-   `kubernetes_tolerations`: Allows configuration of Kubernetes tolerations for outpost deployment, from a single JSON string
+-   `kubernetes_resources`: Allows configuration of Kubernetes resources for outpost deployment, from a single JSON string
 -   `kubernetes_image_pull_secrets`: If the above docker image is in a private repository, use these secrets to pull.
 
     NOTE: The secret must be created manually in the namespace first.
