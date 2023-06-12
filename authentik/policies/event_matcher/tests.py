@@ -42,6 +42,22 @@ class TestEventMatcherPolicy(TestCase):
         self.assertTrue(response.passing)
         self.assertTupleEqual(response.messages, ("App matched.",))
 
+    def test_match_model(self):
+        """Test match model"""
+        event = Event.new(EventAction.LOGIN)
+        event.context = {
+            "model": {
+                "app": "foo",
+                "model_name": "bar",
+            }
+        }
+        request = PolicyRequest(get_anonymous_user())
+        request.context["event"] = event
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(model="foo.bar")
+        response = policy.passes(request)
+        self.assertTrue(response.passing)
+        self.assertTupleEqual(response.messages, ("Model matched.",))
+
     def test_drop(self):
         """Test drop event"""
         event = Event.new(EventAction.LOGIN)
@@ -49,6 +65,19 @@ class TestEventMatcherPolicy(TestCase):
         request = PolicyRequest(get_anonymous_user())
         request.context["event"] = event
         policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(client_ip="1.2.3.5")
+        response = policy.passes(request)
+        self.assertFalse(response.passing)
+
+    def test_drop_multiple(self):
+        """Test drop event"""
+        event = Event.new(EventAction.LOGIN)
+        event.app = "foo"
+        event.client_ip = "1.2.3.4"
+        request = PolicyRequest(get_anonymous_user())
+        request.context["event"] = event
+        policy: EventMatcherPolicy = EventMatcherPolicy.objects.create(
+            client_ip="1.2.3.5", app="bar"
+        )
         response = policy.passes(request)
         self.assertFalse(response.passing)
 
