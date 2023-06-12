@@ -184,6 +184,26 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                             ${msg("To use SSL instead, use 'ldaps://' and disable this option.")}
                         </p>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="sni">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.sni, false)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Use Server URI for SNI verification")}</span
+                            >
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Required for servers using TLS 1.3+")}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("TLS Verification Certificate")}
                         name="peerCertificate"
@@ -219,6 +239,45 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("TLS Client authentication certificate")}
+                        name="clientCertificate"
+                    >
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<CertificateKeyPair[]> => {
+                                const args: CryptoCertificatekeypairsListRequest = {
+                                    ordering: "name",
+                                    hasKey: true,
+                                    includeDetails: false,
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const certificates = await new CryptoApi(
+                                    DEFAULT_CONFIG,
+                                ).cryptoCertificatekeypairsList(args);
+                                return certificates.results;
+                            }}
+                            .renderElement=${(item: CertificateKeyPair): string => {
+                                return item.name;
+                            }}
+                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: CertificateKeyPair): boolean => {
+                                return item.pk === this.instance?.clientCertificate;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Client certificate keypair to authenticate against the LDAP Server's Certificate.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

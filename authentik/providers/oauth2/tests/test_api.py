@@ -1,5 +1,7 @@
 """Test OAuth2 API"""
 from json import loads
+from sys import version_info
+from unittest import skipUnless
 
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -42,3 +44,14 @@ class TestAPI(APITestCase):
         self.assertEqual(response.status_code, 200)
         body = loads(response.content.decode())
         self.assertEqual(body["issuer"], "http://testserver/application/o/test/")
+
+    # https://github.com/goauthentik/authentik/pull/5918
+    @skipUnless(version_info >= (3, 11, 4), "This behaviour is only Python 3.11.4 and up")
+    def test_launch_url(self):
+        """Test launch_url"""
+        self.provider.redirect_uris = (
+            "https://[\\d\\w]+.pr.test.goauthentik.io/source/oauth/callback/authentik/\n"
+        )
+        self.provider.save()
+        self.provider.refresh_from_db()
+        self.assertIsNone(self.provider.launch_url)

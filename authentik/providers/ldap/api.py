@@ -105,7 +105,9 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
 class LDAPOutpostConfigViewSet(ReadOnlyModelViewSet):
     """LDAPProvider Viewset"""
 
-    queryset = LDAPProvider.objects.filter(application__isnull=False)
+    queryset = LDAPProvider.objects.filter(
+        Q(application__isnull=False) | Q(backchannel_application__isnull=False)
+    )
     serializer_class = LDAPOutpostConfigSerializer
     ordering = ["name"]
     search_fields = ["name"]

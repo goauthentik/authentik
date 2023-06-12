@@ -17097,6 +17097,11 @@ paths:
         schema:
           type: string
       - in: query
+        name: client_certificate
+        schema:
+          type: string
+          format: uuid
+      - in: query
         name: enabled
         schema:
           type: boolean
@@ -17171,6 +17176,10 @@ paths:
         name: slug
         schema:
           type: string
+      - in: query
+        name: sni
+        schema:
+          type: boolean
       - in: query
         name: start_tls
         schema:
@@ -30950,11 +30959,20 @@ components:
           nullable: true
           description: Optionally verify the LDAP Server's Certificate against the
             CA Chain in this keypair.
+        client_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Client certificate to authenticate against the LDAP Server's
+            Certificate.
         bind_cn:
           type: string
         start_tls:
           type: boolean
           title: Enable Start TLS
+        sni:
+          type: boolean
+          title: Use Server URI for SNI verification
         base_dn:
           type: string
         additional_user_dn:
@@ -31064,6 +31082,12 @@ components:
           nullable: true
           description: Optionally verify the LDAP Server's Certificate against the
             CA Chain in this keypair.
+        client_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Client certificate to authenticate against the LDAP Server's
+            Certificate.
         bind_cn:
           type: string
         bind_password:
@@ -31072,6 +31096,9 @@ components:
         start_tls:
           type: boolean
           title: Enable Start TLS
+        sni:
+          type: boolean
+          title: Use Server URI for SNI verification
         base_dn:
           type: string
           minLength: 1
@@ -36356,6 +36383,12 @@ components:
           nullable: true
           description: Optionally verify the LDAP Server's Certificate against the
             CA Chain in this keypair.
+        client_certificate:
+          type: string
+          format: uuid
+          nullable: true
+          description: Client certificate to authenticate against the LDAP Server's
+            Certificate.
         bind_cn:
           type: string
         bind_password:
@@ -36364,6 +36397,9 @@ components:
         start_tls:
           type: boolean
           title: Enable Start TLS
+        sni:
+          type: boolean
+          title: Use Server URI for SNI verification
         base_dn:
           type: string
           minLength: 1

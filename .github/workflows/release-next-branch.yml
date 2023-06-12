@@ -1,0 +1,25 @@
+name: authentik-on-release-next-branch
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # every day at noon
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-next:
+    runs-on: ubuntu-latest
+    environment: internal-production
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+      - id: main-state
+        run: |
+          state=$(curl -fsSL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/commits/HEAD/state" | jq -r '.state')
+          echo "state=${state}" >> $GITHUB_OUTPUT
+      - if: ${{ steps.main-state.outputs.state == 'success' }}
+        run: |
+          git push origin next --force
