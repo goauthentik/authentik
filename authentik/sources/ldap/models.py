@@ -145,7 +145,9 @@ class LDAPSource(Source):
         if self.start_tls:
             connection.start_tls(read_server_info=False)
         try:
-            connection.bind()
+            successful = connection.bind()
+            if successful:
+                return connection
         except LDAPSchemaError as exc:
             # Schema error, so try connecting without schema info
             # See https://github.com/goauthentik/authentik/issues/4590
@@ -153,7 +155,7 @@ class LDAPSource(Source):
                 raise exc
             server_kwargs["get_info"] = NONE
             return self.connection(server_kwargs, connection_kwargs)
-        return connection
+        return RuntimeError("Failed to bind")
 
     class Meta:
         verbose_name = _("LDAP Source")

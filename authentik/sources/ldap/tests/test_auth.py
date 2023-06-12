@@ -29,6 +29,37 @@ class LDAPSyncTests(TestCase):
             additional_group_dn="ou=groups",
         )
 
+    def test_auth_direct_user_ad(self):
+        """Test direct auth"""
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default-")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms-")
+            )
+        )
+        raw_conn = mock_ad_connection(LDAP_PASSWORD)
+        bind_mock = Mock(wraps=raw_conn.bind)
+        raw_conn.bind = bind_mock
+        connection = MagicMock(return_value=raw_conn)
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync.sync()
+
+            user = User.objects.get(username="user0_sn")
+            # auth_user_by_bind = Mock(return_value=user)
+            backend = LDAPBackend()
+            self.assertEqual(
+                backend.authenticate(None, username="user0_sn", password=LDAP_PASSWORD),
+                user,
+            )
+            connection.assert_called_with(
+                connection_kwargs={
+                    "user": "cn=user0,ou=users,dc=goauthentik,dc=io",
+                    "password": LDAP_PASSWORD,
+                }
+            )
+            bind_mock.assert_not_called()
+
     def test_auth_synced_user_ad(self):
         """Test Cached auth"""
         self.source.property_mappings.set(
