@@ -1,13 +1,18 @@
 """Event Matcher models"""
+from itertools import chain
+
 from django.apps import apps
 from django.db import models
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
+from structlog.stdlib import get_logger
 
 from authentik.blueprints.v1.importer import is_model_allowed
 from authentik.events.models import Event, EventAction
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
+
+LOGGER = get_logger()
 
 
 def app_choices() -> list[tuple[str, str]]:
@@ -82,57 +87,55 @@ class EventMatcherPolicy(Policy):
         if "event" not in request.context:
             return PolicyResult(False)
         event: Event = request.context["event"]
-        matches = []
+        matches: list[PolicyResult] = []
         messages = []
-        if self.passes_action(request, event):
-            matches.append(True)
-            messages.append("Action matched.")
-        if self.passes_client_ip(request, event):
-            matches.append(True)
-            messages.append("Client IP matched.")
-        if self.passes_app(request, event):
-            matches.append(True)
-            messages.append("App matched.")
-        if self.passes_model(request, event):
-            matches.append(True)
-            messages.append("Model matched.")
-        if len(matches) < 1:
-            return PolicyResult(False)
-        return PolicyResult(True, *messages)
+        checks = [
+            self.passes_action,
+            self.passes_client_ip,
+            self.passes_app,
+            self.passes_model,
+        ]
+        for checker in checks:
+            result = checker(request, event)
+            if result is None:
+                continue
+            LOGGER.info(
+                "Event matcher check result",
+                checker=checker.__name__,
+                result=result,
+            )
+            matches.append(result)
+        passing = all([x.passing for x in matches])
+        messages = chain(*[x.messages for x in matches])
+        result = PolicyResult(passing, *messages)
+        result.source_results = matches
+        return result
 
-    def passes_action(self, request: PolicyRequest, event: Event) -> bool:
+    def passes_action(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.action` matches"""
         if self.action == "":
-            return False
-        if self.action == event.action:
-            return True
-        return False
+            return None
+        return PolicyResult(self.action == event.action, "Action matched.")
 
-    def passes_client_ip(self, request: PolicyRequest, event: Event) -> bool:
+    def passes_client_ip(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.client_ip` matches"""
         if self.client_ip == "":
-            return False
-        if self.client_ip == event.client_ip:
-            return True
-        return False
+            return None
+        return PolicyResult(self.client_ip == event.client_ip, "Client IP matched.")
 
-    def passes_app(self, request: PolicyRequest, event: Event) -> bool:
+    def passes_app(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.app` matches"""
         if self.app == "":
-            return False
-        if self.app == event.app:
-            return True
-        return False
+            return None
+        return PolicyResult(self.app == event.app, "App matched.")
 
-    def passes_model(self, request: PolicyRequest, event: Event) -> bool:
+    def passes_model(self, request: PolicyRequest, event: Event) -> PolicyResult | None:
         """Check if `self.model` is set, and pass if it matches the event's model"""
         if self.model == "":
-            return False
+            return None
         event_model_info = event.context.get("model", {})
         event_model = f"{event_model_info.get('app')}.{event_model_info.get('model_name')}"
-        if event_model == self.model:
-            return True
-        return False
+        return PolicyResult(event_model == self.model, "Model matched.")
 
     class Meta(Policy.PolicyMeta):
         verbose_name = _("Event Matcher Policy")
