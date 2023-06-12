@@ -18,7 +18,7 @@ jobs:
           ref: main
       - id: main-state
         run: |
-          state=$(curl -fsSL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/commits/HEAD/state" | jq -r '.state')
+          state=$(curl -fsSL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/commits/HEAD/status" | jq -r '.state')
           echo "state=${state}" >> $GITHUB_OUTPUT
       - if: ${{ steps.main-state.outputs.state == 'success' }}
         run: |
