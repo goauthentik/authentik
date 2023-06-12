@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-04 02:48+0000\n"
+"POT-Creation-Date: 2023-06-12 12:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1365,7 +1365,7 @@ msgstr ""
 msgid "Authentication token"
 msgstr ""
 
-#: authentik/providers/scim/models.py:33 authentik/sources/ldap/models.py:96
+#: authentik/providers/scim/models.py:33 authentik/sources/ldap/models.py:94
 msgid "Property mappings used for group creation/updating."
 msgstr ""
 
@@ -1426,11 +1426,11 @@ msgstr ""
 msgid "Used recovery-link to authenticate."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:36
+#: authentik/sources/ldap/models.py:37
 msgid "Server URI"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:45
+#: authentik/sources/ldap/models.py:46
 msgid ""
 "Optionally verify the LDAP Server's Certificate against the CA Chain in this "
 "keypair."
@@ -1441,73 +1441,73 @@ msgid ""
 "Client certificate to authenticate against the LDAP Server's Certificate."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:60
+#: authentik/sources/ldap/models.py:58
 msgid "Bind CN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:62
+#: authentik/sources/ldap/models.py:60
 msgid "Enable Start TLS"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:63
+#: authentik/sources/ldap/models.py:61
 msgid "Use Server URI for SNI verification"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:65
+#: authentik/sources/ldap/models.py:63
 msgid "Base DN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:67
+#: authentik/sources/ldap/models.py:65
 msgid "Prepended to Base DN for User-queries."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:68
+#: authentik/sources/ldap/models.py:66
 msgid "Addition User DN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:72
+#: authentik/sources/ldap/models.py:70
 msgid "Prepended to Base DN for Group-queries."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:73
+#: authentik/sources/ldap/models.py:71
 msgid "Addition Group DN"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:79
+#: authentik/sources/ldap/models.py:77
 msgid "Consider Objects matching this filter to be Users."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:82
+#: authentik/sources/ldap/models.py:80
 msgid "Field which contains members of a group."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:86
+#: authentik/sources/ldap/models.py:84
 msgid "Consider Objects matching this filter to be Groups."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:89
+#: authentik/sources/ldap/models.py:87
 msgid "Field which contains a unique Identifier."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:103
+#: authentik/sources/ldap/models.py:101
 msgid ""
 "When a user changes their password, sync it back to LDAP. This can only be "
 "enabled on a single LDAP source."
 msgstr ""
 
-#: authentik/sources/ldap/models.py:187
+#: authentik/sources/ldap/models.py:188
 msgid "LDAP Source"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:188
+#: authentik/sources/ldap/models.py:189
 msgid "LDAP Sources"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:210
+#: authentik/sources/ldap/models.py:211
 msgid "LDAP Property Mapping"
 msgstr ""
 
-#: authentik/sources/ldap/models.py:211
+#: authentik/sources/ldap/models.py:212
 msgid "LDAP Property Mappings"
 msgstr ""
 

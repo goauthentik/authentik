@@ -243,7 +243,7 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${msg("Client TLS Authentication Certificate")}
+                        label=${msg("TLS Client authentication certificate")}
                         name="clientCertificate"
                     >
                         <ak-search-select
