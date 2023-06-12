@@ -151,7 +151,7 @@ web-check-compile:
 	cd web && npm run tsc
 
 web-i18n-extract:
-	cd web && npm run extract
+	cd web && npm run extract-locales
 
 #########################
 ## Website
