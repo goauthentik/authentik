@@ -16,10 +16,10 @@ jobs:
       - uses: actions/checkout@v3
         with:
           ref: main
-      - id: main-status
+      - id: main-state
         run: |
-          status=$(curl -fsSL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/commits/HEAD/status" | jq -r '.status')
-          echo "status=${status}" >> $GITHUB_OUTPUT
-      - if: ${{ steps.main-status.outputs.status == 'success' }}
+          state=$(curl -fsSL -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ github.token }}" "https://api.github.com/repos/${{ github.repository }}/commits/HEAD/state" | jq -r '.state')
+          echo "state=${state}" >> $GITHUB_OUTPUT
+      - if: ${{ steps.main-state.outputs.state == 'success' }}
         run: |
           git push origin next --force
