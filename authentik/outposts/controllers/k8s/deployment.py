@@ -15,9 +15,9 @@ from kubernetes.client import (
     V1EnvVarSource,
     V1LabelSelector,
     V1NodeAffinity,
+    V1NodeSelector,
     V1NodeSelectorRequirement,
     V1NodeSelectorTerm,
-    V1NodeSelector,
     V1ObjectMeta,
     V1ObjectReference,
     V1PodSecurityContext,
@@ -80,6 +80,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         return kwargs
 
     def construct_resources(self, json_input):
+        """Construct V1ResourceRequirements from JSON input"""
         if json_input is None:
             return None
 
@@ -96,6 +97,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         return resource_requirements
 
     def construct_tolerations(self, json_input):
+        """Create V1Toleration from JSON input"""
         if json_input is None:
             return None
 
@@ -116,6 +118,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         return tolerations
 
     def construct_affinity(self, json_input):
+        """Create V1NodeAffinity from JSON Input"""
         if json_input is None:
             return None
 
@@ -132,6 +135,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         required_during_scheduling = node_affinity_data.get(
             "requiredDuringSchedulingIgnoredDuringExecution", {}
         )
+
         affinity = V1Affinity()
         affinity.node_affinity = V1NodeAffinity()
 
@@ -140,23 +144,24 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             for preference in preferred_during_scheduling:
                 preference_data = preference.get("preference", {})
                 match_expressions = preference_data.get("matchExpressions", [])
-                match_expressions_list = []
-                for expression in match_expressions:
-                    key = expression.get("key")
-                    operator = expression.get("operator")
-                    values = expression.get("values")
-                    if key is not None and operator is not None and values is not None:
-                        match_expressions_list.append(
-                            V1NodeSelectorRequirement(key=key, operator=operator, values=values)
-                        )
-                    else:
-                        print("Error: Invalid match expression")
-                preferred_during_scheduling_affinity.append(
-                    V1PreferredSchedulingTerm(
-                        preference=V1NodeSelectorTerm(match_expressions=match_expressions_list),
-                        weight=preference.get("weight"),
+                match_expressions_list = [
+                    V1NodeSelectorRequirement(
+                        key=expression.get("key"),
+                        operator=expression.get("operator"),
+                        values=expression.get("values"),
                     )
-                )
+                    for expression in match_expressions
+                    if all(expression.get(key) is not None for key in ["key", "operator", "values"])
+                ]
+                if len(match_expressions_list) != len(match_expressions):
+                    print("Error: Invalid match expression")
+                else:
+                    preferred_during_scheduling_affinity.append(
+                        V1PreferredSchedulingTerm(
+                            preference=V1NodeSelectorTerm(match_expressions=match_expressions_list),
+                            weight=preference.get("weight"),
+                        )
+                    )
 
             affinity.node_affinity.preferred_during_scheduling_ignored_during_execution = (
                 preferred_during_scheduling_affinity
@@ -165,21 +170,26 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         if required_during_scheduling:
             node_selector_terms = required_during_scheduling.get("nodeSelectorTerms", [])
             if node_selector_terms:
-                required_match_expressions = node_selector_terms[0].get("matchExpressions", [])
-                required_match_expressions_list = []
-                for expression in required_match_expressions:
-                    key = expression.get("key")
-                    operator = expression.get("operator")
-                    values = expression.get("values")
-                    if key is not None and operator is not None and values is not None:
-                        required_match_expressions_list.append(
-                            V1NodeSelectorRequirement(key=key, operator=operator, values=values)
+                required_matchexpressions = node_selector_terms[0].get("matchExpressions", [])
+                required_matchexpressions_list = [
+                    V1NodeSelectorRequirement(
+                        key=expression.get("key"),
+                        operator=expression.get("operator"),
+                        values=expression.get("values"),
+                    )
+                    for expression in required_matchexpressions
+                    if all(expression.get(key) is not None for key in ["key", "operator", "values"])
+                ]
+                if len(required_matchexpressions_list) != len(required_matchexpressions):
+                    print("Error: Invalid match expression")
+                else:
+                    affinity.node_affinity.required_during_scheduling_ignored_during_execution = (
+                        V1NodeSelector(
+                            node_selector_terms=[
+                                V1NodeSelectorTerm(match_expressions=required_matchexpressions_list)
+                            ]
                         )
-                    else:
-                        print("Error: Invalid match expression")
-                affinity.node_affinity.required_during_scheduling_ignored_during_execution = V1NodeSelector(
-                    node_selector_terms=[V1NodeSelectorTerm(match_expressions=required_match_expressions_list)]
-                )
+                    )
             else:
                 print("Error: No nodeSelectorTerms found")
 
