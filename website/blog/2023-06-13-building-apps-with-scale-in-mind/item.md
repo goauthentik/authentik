@@ -44,7 +44,7 @@ A classic architecture with a layered approach like the Model-View-Controller (M
 
 ### Microservices Architecture
 
-Another option is to adopt a microservices architecture, where each app component runs as a separate service with its own data storage, deployment, and scaling capabilities. This approach provides greater flexibility and resilience, as individual services can be scaled, updated, or replaced without affecting the entire app. While microservices architecture offers several advantages, it also introduces certain complexities. Managing multiple services can be challenging, as it requires coordination and can result in increased network latency. Ensuring data consistency across different services is another common concern. Despite these challenges, with careful planning and proper tooling, the benefits of microservices often outweigh the complexities.
+Another option is to adopt a microservices architecture, where each app component runs as a separate service with its own data storage, deployment, and scaling capabilities. This approach can provide greater flexibility and resilience, as individual services can be scaled, updated, or replaced without affecting the entire app. While microservices architecture offers several advantages, it also introduces certain complexities. Managing multiple services can be challenging, as it requires coordination and can result in increased network latency. Ensuring data consistency across different services is another common concern. Here, with authentik, we chose to use a [mono-repo approach](https://goauthentik.io/blog/2023-04-22-monorepos-are-great), but perhaps the most well-known example of successful (and necessary) microservices archiecture is [OpenStack](https://www.openstack.org/).
 
 ## Horizontal Scaling for System Servers
 
@@ -52,7 +52,7 @@ The architecture of your system also matters. Horizontal scaling means adding mo
 
 ### Load Balancing
 
-To achieve scalability, design your app to support load balancing and implement cutting-edge techniques like clustering or containerization, such as Docker implements. These strategies will help you respond quickly to sudden surges in demand and keep your app running smoothly. Imagine the benefits for your business when you can seamlessly handle significant increases in user traffic, and then scale back down when the extra resources are no longer needed. Focus on building a scalable app that can effectively handle varying levels of demand and remain prepared for any scenario.
+To achieve scalability, design your app to support load balancing and implement cutting-edge techniques like clustering or containerization. These strategies will help you respond quickly to sudden surges in demand and keep your app running smoothly. Imagine the benefits for your business when you can seamlessly handle significant increases in user traffic, and then scale back down when the extra resources are no longer needed. Focus on building a scalable app that can effectively handle varying levels of demand and remain prepared for any scenario.
 
 ## Clustering and Containerization
 
@@ -64,7 +64,7 @@ Just as your environment and system needs to be scalable, so does your underlyin
 
 ### Distributed Databases and Sharding
 
-With the vast amount of data and high traffic typical of modern applications, selecting a distributed database such as MongoDB or Apache Cassandra and employing sharding techniques is crucial. By distributing data across multiple servers, you can handle large volumes of information without any hiccups. Sharding provides yet further data distribution; chunks of data are stored on different database tables, or nodes, and optionally on different machines. Automated sharding means that a single database or server never gets overloaded; the data load is smoothly distributed and performance of the application is not compromised.
+With the vast amount of data and high traffic typical of modern applications, selecting a distributed database that provides replication and sharding, such as PostgreSQL, is crucial. By distributing data across multiple servers, you can handle large volumes of information without any hiccups. Sharding provides yet further data distribution; chunks of data are stored on different database tables, or nodes, and optionally on different machines. Automated sharding means that a single database or server never gets overloaded; the data load is smoothly distributed and performance of the application is not compromised.
 
 ## Caching Mechanisms
 
@@ -76,7 +76,7 @@ The use of asynchronous processing allows multiple tasks (retrieve data from a t
 
 ### Message Queues and Background Processing
 
-By performing time-consuming or resource-intensive tasks asynchronously, you can create a more efficient and scalable app that won't slow down or crash. Utilize message queues like RabbitMQ or Apache Kafka, along with background processing frameworks like Celery, to offload tasks to separate worker processes or services. Not only will this approach help maintain responsiveness even during peak usage, but it will also help your app scale as your user base grows.
+By performing time-consuming or resource-intensive tasks asynchronously, you can create a more efficient and scalable app that won't slow down or crash. Utilize message queues such as RabbitMQ or Apache Kafka (or Redis' native message queueing, like we use here with authentik) along with background processing frameworks like Celery, to offload tasks to separate worker processes or services. Not only will this approach help maintain responsiveness even during peak usage, but it will also help your app scale as your user base grows.
 
 ## Performance Optimization
 
