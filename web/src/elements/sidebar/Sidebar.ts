@@ -9,6 +9,8 @@ import PFNav from "@patternfly/patternfly/components/Nav/nav.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { UiThemeEnum } from "@goauthentik/api";
+
 @customElement("ak-sidebar")
 export class Sidebar extends AKElement {
     static get styles(): CSSResult[] {
@@ -24,6 +26,9 @@ export class Sidebar extends AKElement {
                 .pf-c-nav__link.pf-m-current:hover::after,
                 .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
                     --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
+                }
+                :host([theme="light"]) {
+                    border-right-color: transparent !important;
                 }
 
                 .pf-c-nav__section + .pf-c-nav__section {
@@ -61,7 +66,10 @@ export class Sidebar extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<nav class="pf-c-nav" aria-label="Global">
+        return html`<nav
+            class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
+            aria-label="Global"
+        >
             <ak-sidebar-brand></ak-sidebar-brand>
             <ul class="pf-c-nav__list">
                 <slot></slot>
