@@ -96,6 +96,6 @@ In addition to using distributed architectures, as we discussed above, another t
 
 It is also important to assess potential failure points and plan accordingly. By proactively planning for failure scenarios, you can minimize the impact of outages, avoid data loss, and maintain a smooth user experience. Building a fault-tolerant system is a critical step in creating a reliable app that can withstand unforeseen challenges and provide consistent service to users.
 
-## Putting it All Together 
+## Putting it All Together
 
 We’ve covered the primary strategies and techniques for building scalable applications, from architecture to asynchronous processing. By incorporating these principles and strategies into the app development process, you can build robust, scalable applications that can handle increased user demand, adapt to growing requirements, and provide a seamless user experience even as the application grows in size and complexity.
