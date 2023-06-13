@@ -30,7 +30,7 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AdminApi, SessionUser, Version } from "@goauthentik/api";
+import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 
 autoDetectLanguage();
 
@@ -116,7 +116,11 @@ export class AdminInterface extends Interface {
     render(): TemplateResult {
         return html` <div class="pf-c-page">
             <ak-sidebar
-                class="pf-c-page__sidebar ${this.sidebarOpen ? "pf-m-expanded" : "pf-m-collapsed"}"
+                class="pf-c-page__sidebar ${this.sidebarOpen
+                    ? "pf-m-expanded"
+                    : "pf-m-collapsed"} ${this.activeTheme === UiThemeEnum.Light
+                    ? "pf-m-light"
+                    : ""}"
             >
                 ${this.renderSidebarItems()}
             </ak-sidebar>
@@ -204,16 +208,16 @@ export class AdminInterface extends Interface {
             <ak-sidebar-item>
                 <span slot="label">${msg("Applications")}</span>
                 <ak-sidebar-item
-                    path="/core/applications"
-                    .activeWhen=${[`^/core/applications/(?<slug>${SLUG_REGEX})$`]}
-                >
-                    <span slot="label">${msg("Applications")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item
                     path="/core/providers"
                     .activeWhen=${[`^/core/providers/(?<id>${ID_REGEX})$`]}
                 >
                     <span slot="label">${msg("Providers")}</span>
+                </ak-sidebar-item>
+                <ak-sidebar-item
+                    path="/core/applications"
+                    .activeWhen=${[`^/core/applications/(?<slug>${SLUG_REGEX})$`]}
+                >
+                    <span slot="label">${msg("Applications")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/outpost/outposts">
                     <span slot="label">${msg("Outposts")}</span>

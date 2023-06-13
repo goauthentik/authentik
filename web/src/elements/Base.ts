@@ -160,6 +160,7 @@ export class AKElement extends LitElement {
             root.adoptedStyleSheets = root.adoptedStyleSheets.filter((v) => v !== oldStylesheet);
         }
         this._activeTheme = theme;
+        this.requestUpdate();
     }
 
     disconnectedCallback() {
