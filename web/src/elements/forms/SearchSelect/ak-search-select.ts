@@ -364,3 +364,5 @@ export class SearchSelect<T> extends AKElement {
         </div>`;
     }
 }
+
+export default SearchSelect;
