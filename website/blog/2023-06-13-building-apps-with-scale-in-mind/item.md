@@ -98,4 +98,4 @@ It is also important to assess potential failure points and plan accordingly. By
 
 ## Putting it All Together (and testing it!)
 
-We’ve covered the primary strategies and techniques for building scalable applications, from architecture to asynchronous processing. By incorporating these principles and strategies into the app development process, you can build robust, scalable applications that can handle increased user demand, adapt to growing requirements, and provide a seamless user experience even as the app grows in size and complexity.
+We’ve covered the primary strategies and techniques for building scalable applications, from architecture to asynchronous processing. By incorporating these principles and strategies into the app development process, you can build robust, scalable applications that can handle increased user demand, adapt to growing requirements, and provide a seamless user experience even as the application grows in size and complexity.
