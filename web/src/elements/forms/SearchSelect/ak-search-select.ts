@@ -18,8 +18,8 @@ type Group<T> = [string, T[]];
 
 @customElement("ak-search-select")
 export class SearchSelect<T> extends AKElement {
-    // A function which takes the query above (accepting that it may be empty) and
-    // returns a new collection of objects.
+    // A function which takes the query state object (accepting that it may be empty) and returns a
+    // new collection of objects.
     @property({ attribute: false })
     fetchObjects!: (query?: string) => Promise<T[]>;
 
