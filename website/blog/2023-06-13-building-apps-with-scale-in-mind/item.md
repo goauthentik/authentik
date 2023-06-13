@@ -14,9 +14,12 @@ tags:
     - distributed systems
     - performance
 hide_table_of_contents: false
+image: ./image1.jpg
 ---
 
 When building apps with scale in mind, the fundamentals involve designing and developing applications in a way that allows them to handle increased user demand, larger data volumes, and growing functionality without compromising performance or stability. Scaling an application effectively requires careful planning, architecture design, and the use of scalable technologies. This blog will explore some key considerations and strategies for building apps for scalability.
+
+![](./image1.jpg)
 
 <!--truncate-->
 
