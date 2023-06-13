@@ -22,4 +22,4 @@ jobs:
           echo "state=${state}" >> $GITHUB_OUTPUT
       - if: ${{ steps.main-state.outputs.state == 'success' }}
         run: |
-          git push origin next --force
+          git push origin --force main:next
