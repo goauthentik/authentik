@@ -46,6 +46,10 @@ class OutpostKubernetesTests(TestCase):
 
         config = self.outpost.config
         config.kubernetes_replicas = 3
+        # pylint: disable=line-too-long
+        config.kubernetes_affinity = """{"nodeAffinity":{"preferredDuringSchedulingIgnoredDuringExecution":[{"preference":{"matchExpressions":[{"key":"node-label-key","operator":"In","values":["node-label-value"]}]},"weight":1}],"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"topology.kubernetes.io/region","operator":"In","values":["east1"]},{"key":"topology.kubernetes.io/zone","operator":"In","values":["us-east-1c"]}]}]}}}"""  # noqa: E501
+        config.kubernetes_toleration = """{"tolerations":[{"key":"is_cpu_compute","operator":"Exists"},{"key":"is_gpu_compute","operator":"Exists"}]}"""  # noqa: E501
+        config.kubernetes_resources = """{"resources":{"requests":{"cpu":"2","memory":"4Gi"},"limits":{"cpu":"4","memory":"8Gi"}}}"""  # noqa: E501
         self.outpost.config = config
 
         with self.assertRaises(NeedsUpdate):
