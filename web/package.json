@@ -50,6 +50,7 @@
         "lit": "^2.7.5",
         "mermaid": "^10.2.3",
         "rapidoc": "^9.3.4",
+        "style-mod": "^4.0.3",
         "webcomponent-qr-code": "^1.1.1",
         "yaml": "^2.3.1"
     },
