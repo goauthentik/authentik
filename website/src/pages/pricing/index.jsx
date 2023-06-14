@@ -60,7 +60,8 @@ export default function pricingPage() {
                                         $5 <small>/internal user/month</small>
                                     </h1>
                                     <h1>
-                                        $0.02 <small>/B2C user/month</small>
+                                        $0.02{" "}
+                                        <small>/external user/month</small>
                                     </h1>
                                     <a
                                         className="button button--info button--block"
