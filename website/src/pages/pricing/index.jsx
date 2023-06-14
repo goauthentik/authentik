@@ -15,7 +15,7 @@ export default function pricingPage() {
 
                     <div className={"row"}>
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "28rem" }}>
+                            <div className="card" style={{ height: "32rem" }}>
                                 <div className="card__header">
                                     <h3>Open Source</h3>
                                 </div>
@@ -41,7 +41,7 @@ export default function pricingPage() {
                             </div>
                         </div>
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "28rem" }}>
+                            <div className="card" style={{ height: "32rem" }}>
                                 <div className="card__header">
                                     <h3>Enterprise Self-Hosted</h3>
                                 </div>
@@ -57,7 +57,11 @@ export default function pricingPage() {
                                 </div>
                                 <div className="card__footer">
                                     <h1>
-                                        $5 <small>/user/month</small>
+                                        $5 <small>/internal user/month</small>
+                                    </h1>
+                                    <h1>
+                                        $0.02{" "}
+                                        <small>/external user/month</small>
                                     </h1>
                                     <a
                                         className="button button--info button--block"
@@ -68,9 +72,8 @@ export default function pricingPage() {
                                 </div>
                             </div>
                         </div>
-
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "28rem" }}>
+                            <div className="card" style={{ height: "32rem" }}>
                                 <div className="card__header">
                                     <h3>Enterprise Cloud</h3>
                                 </div>
@@ -91,6 +94,10 @@ export default function pricingPage() {
                                     <h4>Minimum 100 users</h4>
                                     <h1>
                                         $5 <small>/user/month</small>
+                                    </h1>
+                                    <h1>
+                                        $0.02{" "}
+                                        <small>/external user/month</small>
                                     </h1>
                                     <a
                                         className="button button--info button--block"
