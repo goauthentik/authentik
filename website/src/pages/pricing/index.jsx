@@ -15,7 +15,7 @@ export default function pricingPage() {
 
                     <div className={"row"}>
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "28rem" }}>
+                            <div className="card" style={{ height: "32rem" }}>
                                 <div className="card__header">
                                     <h3>Open Source</h3>
                                 </div>
@@ -41,7 +41,7 @@ export default function pricingPage() {
                             </div>
                         </div>
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "28rem" }}>
+                            <div className="card" style={{ height: "32rem" }}>
                                 <div className="card__header">
                                     <h3>Enterprise Self-Hosted</h3>
                                 </div>
@@ -57,7 +57,11 @@ export default function pricingPage() {
                                 </div>
                                 <div className="card__footer">
                                     <h1>
-                                        $5 <small>/user/month</small>
+                                        $5 <small>/internal user/month</small>
+                                    </h1>
+                                    <h1>
+                                        $0.02{" "}
+                                        <small>/external user/month</small>
                                     </h1>
                                     <a
                                         className="button button--info button--block"
@@ -68,9 +72,8 @@ export default function pricingPage() {
                                 </div>
                             </div>
                         </div>
-
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "28rem" }}>
+                            <div className="card" style={{ height: "32rem" }}>
                                 <div className="card__header">
                                     <h3>Enterprise Cloud</h3>
                                 </div>
@@ -91,6 +94,10 @@ export default function pricingPage() {
                                     <h4>Minimum 100 users</h4>
                                     <h1>
                                         $5 <small>/user/month</small>
+                                    </h1>
+                                    <h1>
+                                        $0.02{" "}
+                                        <small>/external user/month</small>
                                     </h1>
                                     <a
                                         className="button button--info button--block"
@@ -114,16 +121,24 @@ export default function pricingPage() {
                             </p>
                             <div class="card-demo margin--md">
                                 <Card
-                                    body="No. As part of our core principal, we will not move any features from the open source version to the enterprise version. Features from the enterprise version are periodically moved to the open source version."
                                     title="Will any feature of the open-source version ever become enterprise?"
+                                    body="No. As part of our core principle, we will not move any features from the open source version to the enterprise version. Features from the enterprise version are periodically moved to the open source version."
                                 />
                                 <Card
-                                    body="We're always curious to hear what our customers are interested in and what they want to see in authentik, so if you have any questions about features send an email to <a href='mailto:hello@goauthentik.io'>hello@goauthentik.io</a>."
+                                    title="Cam I get paid support for the open-source version?"
+                                    body="We only offer support as part of an enterprise license. You can get community support on GitHub and Discord for the open-source version."
+                                />
+                                <Card
+                                    title="What's the difference between internal and external users?"
+                                    body="Internal users might be users such as company employees, which will get access to the full Enterprise feature set. External users might be external consultants or B2C customers. These users don't get access to enterprise features."
+                                />
+                                <Card
                                     title="Are you planning to add X to authentik?"
+                                    body="We're always curious to hear what our customers are interested in and what they want to see in authentik, so if you have any questions about features send an email to <a href='mailto:hello@goauthentik.io'>hello@goauthentik.io</a>."
                                 />
                                 <Card
-                                    body="Anyone that wants to use the enterprise features listed above. There's no minimum user amount required for enterprise."
                                     title="Who should use Enterprise plans?"
+                                    body="Anyone that wants to use the enterprise features listed above. There's no minimum user amount required for enterprise."
                                 />
                             </div>
                         </div>

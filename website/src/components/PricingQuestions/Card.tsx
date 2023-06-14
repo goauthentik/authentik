@@ -33,7 +33,7 @@ const Card = ({ title, body }: CardProps): JSX.Element => {
                             marginLeft: "0.5rem",
                         }}
                     >
-                        {title}
+                        <strong>{title}</strong>
                     </div>
                 </div>
                 {isActive && (
