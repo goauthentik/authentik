@@ -20,9 +20,9 @@
         "prettier": "prettier --write .",
         "tsc:execute": "tsc --noEmit -p .",
         "tsc": "run-s build-locales tsc:execute",
-        "background-image": "npx @squoosh/cli -d src/assets/images --resize '{\"enabled\":true,\"width\":2560,\"method\":\"lanczos3\",\"fitMethod\":\"contain\",\"premultiply\":true,\"linearRGB\":true}' --mozjpeg '{\"quality\":75,\"baseline\":false,\"arithmetic\":false,\"progressive\":true,\"optimize_coding\":true,\"smoothing\":0,\"color_space\":3,\"quant_table\":3,\"trellis_multipass\":false,\"trellis_opt_zero\":false,\"trellis_opt_table\":false,\"trellis_loops\":1,\"auto_subsample\":true,\"chroma_subsample\":2,\"separate_chroma_quality\":false,\"chroma_quality\":75}' src/assets/images/flow_background.jpg",
         "storybook": "storybook dev -p 6006",
-        "storybook:build": "storybook build"
+        "storybook:build": "storybook build",
+        "background-image": "node run scripts/image.js"
     },
     "dependencies": {
         "@codemirror/lang-html": "^6.4.4",
@@ -71,7 +71,6 @@
         "@rollup/plugin-node-resolve": "^15.0.2",
         "@rollup/plugin-replace": "^5.0.2",
         "@rollup/plugin-typescript": "^11.1.1",
-        "@squoosh/cli": "^0.7.3",
         "@storybook/addon-essentials": "^7.0.20",
         "@storybook/addon-links": "^7.0.20",
         "@storybook/blocks": "^7.0.20",
@@ -102,6 +101,7 @@
         "rollup-plugin-minify-html-literals": "^1.2.6",
         "rollup-plugin-postcss-lit": "^2.0.0",
         "rollup-plugin-terser": "^7.0.2",
+        "sharp": "^0.32.1",
         "storybook": "^7.0.20",
         "ts-lit-plugin": "^1.2.1",
         "tslib": "^2.5.3",
