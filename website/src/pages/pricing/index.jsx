@@ -15,7 +15,7 @@ export default function pricingPage() {
 
                     <div className={"row"}>
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "32rem" }}>
+                            <div className="card" style={{ height: "100%" }}>
                                 <div className="card__header">
                                     <h3>Open Source</h3>
                                 </div>
@@ -41,7 +41,7 @@ export default function pricingPage() {
                             </div>
                         </div>
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "32rem" }}>
+                            <div className="card" style={{ height: "100%" }}>
                                 <div className="card__header">
                                     <h3>Enterprise Self-Hosted</h3>
                                 </div>
@@ -73,7 +73,7 @@ export default function pricingPage() {
                             </div>
                         </div>
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "32rem" }}>
+                            <div className="card" style={{ height: "100%" }}>
                                 <div className="card__header">
                                     <h3>Enterprise Cloud</h3>
                                 </div>
