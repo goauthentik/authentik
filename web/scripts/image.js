@@ -1,4 +1,6 @@
+/* eslint-disable */
 const sharp = require("sharp");
+/* eslint-disable */
 const fs = require("fs");
 
 const flowBackground = `${__dirname}/src/assets/images/flow_background.jpg`;
