@@ -22,7 +22,7 @@
         "tsc": "run-s build-locales tsc:execute",
         "storybook": "storybook dev -p 6006",
         "storybook:build": "storybook build",
-        "background-image": "node run scripts/image.js"
+        "background-image": "sharp resize 2650 --mozjpeg -i src/assets/images/flow_background.jpg -o src/assets/images/flow_background.jpg"
     },
     "dependencies": {
         "@codemirror/lang-html": "^6.4.4",
@@ -101,7 +101,7 @@
         "rollup-plugin-minify-html-literals": "^1.2.6",
         "rollup-plugin-postcss-lit": "^2.0.0",
         "rollup-plugin-terser": "^7.0.2",
-        "sharp": "^0.32.1",
+        "sharp-cli": "^4.1.1",
         "storybook": "^7.0.20",
         "ts-lit-plugin": "^1.2.1",
         "tslib": "^2.5.3",
