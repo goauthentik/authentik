@@ -2,6 +2,7 @@ import { config, tenant } from "@goauthentik/common/api/config";
 import { EVENT_LOCALE_CHANGE, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { adaptCSS } from "@goauthentik/common/utils";
+
 import { LitElement } from "lit";
 import { state } from "lit/decorators.js";
 
@@ -13,7 +14,7 @@ import { Config, CurrentTenant, UiThemeEnum } from "@goauthentik/api";
 
 export function rootInterface<T extends Interface>(): T | undefined {
     const el = Array.from(document.body.querySelectorAll("*")).filter(
-        (el) => el instanceof Interface
+        (el) => el instanceof Interface,
     );
     return el[0] as T;
 }
@@ -31,8 +32,8 @@ function fetchCustomCSS(): Promise<string[]> {
                         .finally(() => {
                             return "";
                         });
-                }
-            )
+                },
+            ),
         );
     }
     return css;
@@ -85,7 +86,7 @@ export class AKElement extends LitElement {
             root,
             window.matchMedia(QUERY_MEDIA_COLOR_LIGHT).matches
                 ? UiThemeEnum.Light
-                : UiThemeEnum.Dark
+                : UiThemeEnum.Dark,
         );
         this._applyTheme(root, await this.getTheme());
     }
@@ -147,7 +148,7 @@ export class AKElement extends LitElement {
                 bubbles: true,
                 composed: true,
                 detail: theme,
-            })
+            }),
         );
         this.setAttribute("theme", theme);
         const stylesheet = AKElement.themeToStylesheet(theme);
