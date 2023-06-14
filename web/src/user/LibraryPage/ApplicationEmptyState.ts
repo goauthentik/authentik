@@ -1,6 +1,7 @@
 import { docLink } from "@goauthentik/common/global";
 import { AKElement } from "@goauthentik/elements/Base";
 import { paramURL } from "@goauthentik/elements/router/RouterOutlet";
+import { adaptCSS } from "@goauthentik/common/utils";
 
 import { msg } from "@lit/localize";
 import { css, html } from "lit";
@@ -19,7 +20,7 @@ import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
  * administrator, provide a link to the "Create a new application" page.
  */
 
-const styles = [
+const styles = adaptCSS([
     PFBase,
     PFEmptyState,
     PFButton,
@@ -31,7 +32,7 @@ const styles = [
             font-weight: bold;
         }
     `,
-];
+]);
 
 @customElement("ak-library-application-empty-list")
 export class LibraryPageApplicationEmptyList extends AKElement {

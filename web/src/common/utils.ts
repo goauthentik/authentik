@@ -1,4 +1,5 @@
 import { SentryIgnoredError } from "@goauthentik/common/errors";
+import { CSSResult, css } from "lit";
 
 export function getCookie(name: string): string {
     let cookieValue = "";
@@ -115,3 +116,19 @@ export function dateTimeLocal(date: Date): string {
     const parts = localISOTime.split(":");
     return `${parts[0]}:${parts[1]}`;
 }
+
+// Lit is extremely well-typed with regard to CSS, and Storybook's `build` does not currently have a
+// coherent way of importing CSS-as-text into CSSStyleSheet. It works well when Storybook is running
+// in `dev,` but in `build` it fails. Storied components will have to map their textual CSS imports
+// using the function below.
+type AdaptableStylesheet = Readonly<string | CSSResult | CSSStyleSheet>;
+type AdaptedStylesheets = CSSStyleSheet | CSSStyleSheet[];
+
+// prettier-ignore
+export const _adaptCSS = (sheet: AdaptableStylesheet) =>
+    typeof sheet === "string" ? css([sheet] as unknown as TemplateStringsArray, ...[]).styleSheet
+    : "styleSheet" in sheet ? sheet.styleSheet
+    : sheet;
+
+export const adaptCSS = (sheet: AdaptableStylesheet | AdaptableStylesheet[]): AdaptedStylesheets =>
+    Array.isArray(sheet) ? sheet.map(_adaptCSS) : _adaptCSS(sheet);
