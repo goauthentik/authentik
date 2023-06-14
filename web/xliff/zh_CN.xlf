@@ -966,16 +966,6 @@
         <target>证书</target>
         
       </trans-unit>
-      <trans-unit id="s4eb524a2bb358f8b">
-        <source>Due to protocol limitations, this certificate is only used when the outpost has a single provider, or all providers use the same certificate.</source>
-        <target>由于协议限制，只在前哨有单个提供程序，或所有提供程序都使用相同证书时才使用此证书。</target>
-        
-      </trans-unit>
-      <trans-unit id="s73e9d580d6d96b02">
-        <source>If multiple providers share an outpost, a self-signed certificate is used.</source>
-        <target>如果多个提供程序共享同一个前哨，则使用自签名证书。</target>
-        
-      </trans-unit>
       <trans-unit id="sac43cb9690260b86">
         <source>UID start number</source>
         <target>UID 起始编号</target>
@@ -7547,6 +7537,42 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>激活</target>
         
       </trans-unit>
+<trans-unit id="s1024166475850a65">
+  <source>Use Server URI for SNI verification</source>
+  <target>SNI 验证时使用服务器 URI</target>
+</trans-unit>
+<trans-unit id="se65beb94fffc3c4b">
+  <source>Required for servers using TLS 1.3+</source>
+  <target>使用 TLS 1.3+ 的服务器必需</target>
+</trans-unit>
+<trans-unit id="s5506b35a1bceb141">
+  <source>Client certificate keypair to authenticate against the LDAP Server's Certificate.</source>
+  <target>基于 LDAP 服务端证书进行身份验证的客户端证书密钥对。</target>
+</trans-unit>
+<trans-unit id="s4647b2c92638d6fd">
+  <source>The certificate for the above configured Base DN. As a fallback, the provider uses a self-signed certificate.</source>
+  <target>为上方配置 Base DN 提供的证书。作为回退，提供程序使用一个自签名证书。</target>
+</trans-unit>
+<trans-unit id="scd247ffad6e04ac0">
+  <source>TLS Server name</source>
+  <target>TLS 服务器名称</target>
+</trans-unit>
+<trans-unit id="s2acef4f6ba39bf11">
+  <source>DNS name for which the above configured certificate should be used. The certificate cannot be detected based on the base DN, as the SSL/TLS negotiation happens before such data is exchanged.</source>
+  <target>上方配置证书应该使用的 DNS 名称。无法基于 Base DN 检测证书，因为 SSL/TLS 协商发生在此类数据交换之前。</target>
+</trans-unit>
+<trans-unit id="s000ee3e634868b3c">
+  <source>TLS Client authentication certificate</source>
+  <target>TLS 客户端身份验证证书</target>
+</trans-unit>
+<trans-unit id="s5da52af9b083c29a">
+  <source>Model</source>
+  <target>模型</target>
+</trans-unit>
+<trans-unit id="s3ba9b8aeb686d9f7">
+  <source>Match events created by selected model. When left empty, all models are matched.</source>
+  <target>匹配选定模型创建的事件。如果留空，则匹配所有模型。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
