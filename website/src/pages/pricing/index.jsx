@@ -121,7 +121,7 @@ export default function pricingPage() {
                             <div class="card-demo margin--md">
                                 <Card
                                     title="Will any feature of the open-source version ever become enterprise?"
-                                    body="No. As part of our core principal, we will not move any features from the open source version to the enterprise version. Features from the enterprise version are periodically moved to the open source version."
+                                    body="No. As part of our core principle, we will not move any features from the open source version to the enterprise version. Features from the enterprise version are periodically moved to the open source version."
                                 />
                                 <Card
                                     title="Cam I get paid support for the open-source version?"
