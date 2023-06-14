@@ -38593,9 +38593,34 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StagePrompt'
+        meta:
+          type: array
+          items:
+            $ref: '#/components/schemas/PromptChallengeMeta'
       required:
       - fields
+      - meta
       - type
+    PromptChallengeMeta:
+      type: object
+      description: |-
+        Additional context sent with the initial challenge, which might contain
+        info when doing dry-runs or other validation fails
+      properties:
+        field_key:
+          type: string
+      required:
+      - field_key
+    PromptChallengeResponseMetaRequest:
+      type: object
+      description: |-
+        Additional context sent back by the flow executor when submitting
+        the prompt stage
+      properties:
+        dry_run:
+          type: boolean
+      required:
+      - dry_run
     PromptChallengeResponseRequest:
       type: object
       description: |-
@@ -38606,6 +38631,10 @@ components:
           type: string
           minLength: 1
           default: ak-stage-prompt
+        meta:
+          $ref: '#/components/schemas/PromptChallengeResponseMetaRequest'
+      required:
+      - meta
       additionalProperties: {}
     PromptRequest:
       type: object

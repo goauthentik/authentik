@@ -19,11 +19,12 @@ from rest_framework.serializers import ValidationError
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
-from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes
+from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTypes, HttpChallengeResponse
 from authentik.flows.planner import FlowPlan
 from authentik.flows.stage import ChallengeStageView
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyBindingModel, PolicyEngineMode
+from authentik.policies.types import PolicyResult
 from authentik.stages.prompt.models import FieldTypes, Prompt, PromptStage
 from authentik.stages.prompt.signals import password_validate
 
@@ -33,7 +34,7 @@ PLAN_CONTEXT_PROMPT = "prompt_data"
 class StagePromptSerializer(PassiveSerializer):
     """Serializer for a single Prompt field"""
 
-    field_key = CharField()
+    field_key = CharField(required=True)
     label = CharField(allow_blank=True)
     type = ChoiceField(choices=FieldTypes.choices)
     required = BooleanField()
@@ -44,11 +45,26 @@ class StagePromptSerializer(PassiveSerializer):
     choices = ListField(child=CharField(allow_blank=True), allow_empty=True, allow_null=True)
 
 
+class PromptChallengeMeta(PassiveSerializer):
+    """Additional context sent with the initial challenge, which might contain
+    info when doing dry-runs or other validation fails"""
+
+    field_key = CharField(required=True)
+
+
 class PromptChallenge(Challenge):
     """Initial challenge being sent, define fields"""
 
     fields = StagePromptSerializer(many=True)
+    meta = PromptChallengeMeta(many=True)
     component = CharField(default="ak-stage-prompt")
+
+
+class PromptChallengeResponseMeta(PassiveSerializer):
+    """Additional context sent back by the flow executor when submitting
+    the prompt stage"""
+
+    dry_run = BooleanField(required=True)
 
 
 class PromptChallengeResponse(ChallengeResponse):
@@ -56,8 +72,11 @@ class PromptChallengeResponse(ChallengeResponse):
     on the stage"""
 
     stage_instance: PromptStage
+    validation_result: PolicyResult
 
     component = CharField(default="ak-stage-prompt")
+
+    meta = PromptChallengeResponseMeta()
 
     def __init__(self, *args, **kwargs):
         stage: PromptStage = kwargs.pop("stage_instance", None)
@@ -142,9 +161,9 @@ class PromptChallengeResponse(ChallengeResponse):
         engine.request.context[PLAN_CONTEXT_PROMPT] = attrs
         engine.use_cache = False
         engine.build()
-        result = engine.result
-        if not result.passing:
-            raise ValidationError(list(result.messages))
+        self.validation_result = engine.result
+        if not self.validation_result.passing:
+            raise ValidationError(list(self.validation_result.messages))
         return attrs
 
 
@@ -240,8 +259,17 @@ class PromptStageView(ChallengeStageView):
             user=self.get_pending_user(),
         )
 
-    def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
-        if PLAN_CONTEXT_PROMPT not in self.executor.plan.context:
-            self.executor.plan.context[PLAN_CONTEXT_PROMPT] = {}
+    def challenge_dry_run(self, response: PromptChallengeResponse, result: PolicyResult) -> HttpResponse:
+        challenge = self.get_challenge()
+        # TODO update challenge.meta
+        return HttpChallengeResponse(challenge)
+
+    def challenge_valid(self, response: PromptChallengeResponse) -> HttpResponse:
+        if response.validated_data["meta"]["dry_run"]:
+            # If we get to this point, the serializer must have a .validation_result attribute
+            # as if any other validation fails, it would've raised a validation error
+            # which is handled in the challenge stage base class
+            return self.challenge_dry_run(response, response.validation_result)
+        self.executor.plan.context.setdefault(PLAN_CONTEXT_PROMPT, {})
         self.executor.plan.context[PLAN_CONTEXT_PROMPT].update(response.validated_data)
         return self.executor.stage_ok()
