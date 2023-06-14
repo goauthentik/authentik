@@ -693,7 +693,7 @@ msgstr "匹配选定应用程序创建的事件。如果留空，则匹配所有
 msgid ""
 "Match events created by selected model. When left empty, all models are "
 "matched. When an app is selected, all the application's models are matched."
-msgstr "匹配所选模型创建的事件。留空时，匹配所有模型。选择应用程序后，匹配该应用程序的所有模型。"
+msgstr "匹配选定模型创建的事件。如果留空，则匹配所有模型。选择应用程序后，则匹配该应用程序的所有模型。"
 
 #: authentik/policies/event_matcher/api.py:42
 msgid "At least one criteria must be set."
