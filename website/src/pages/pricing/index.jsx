@@ -60,8 +60,7 @@ export default function pricingPage() {
                                         $5 <small>/internal user/month</small>
                                     </h1>
                                     <h1>
-                                        $0.02{" "}
-                                        <small>/external user/month</small>
+                                        $0.02 <small>/B2C user/month</small>
                                     </h1>
                                     <a
                                         className="button button--info button--block"
@@ -121,16 +120,20 @@ export default function pricingPage() {
                             </p>
                             <div class="card-demo margin--md">
                                 <Card
-                                    body="No. As part of our core principal, we will not move any features from the open source version to the enterprise version. Features from the enterprise version are periodically moved to the open source version."
                                     title="Will any feature of the open-source version ever become enterprise?"
+                                    body="No. As part of our core principal, we will not move any features from the open source version to the enterprise version. Features from the enterprise version are periodically moved to the open source version."
                                 />
                                 <Card
-                                    body="We're always curious to hear what our customers are interested in and what they want to see in authentik, so if you have any questions about features send an email to <a href='mailto:hello@goauthentik.io'>hello@goauthentik.io</a>."
+                                    title="What's the difference between internal and external users?"
+                                    body="Internal users might be users such as company employees, which will get access to the full Enterprise feature set. External users might be external consultants or B2C customers. These users don't get access to enterprise features."
+                                />
+                                <Card
                                     title="Are you planning to add X to authentik?"
+                                    body="We're always curious to hear what our customers are interested in and what they want to see in authentik, so if you have any questions about features send an email to <a href='mailto:hello@goauthentik.io'>hello@goauthentik.io</a>."
                                 />
                                 <Card
-                                    body="Anyone that wants to use the enterprise features listed above. There's no minimum user amount required for enterprise."
                                     title="Who should use Enterprise plans?"
+                                    body="Anyone that wants to use the enterprise features listed above. There's no minimum user amount required for enterprise."
                                 />
                             </div>
                         </div>
