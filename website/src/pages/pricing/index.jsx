@@ -9,13 +9,13 @@ export default function pricingPage() {
             <section>
                 <div
                     className="container"
-                    style={{ marginTop: "2rem", marginBottom: "4rem" }}
+                    style={{ marginTop: "2rem", marginBottom: "2rem" }}
                 >
                     <h1 style={{ textAlign: "center" }}>Pricing</h1>
 
                     <div className={"row"}>
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "32rem" }}>
+                            <div className="card" style={{ height: "100%" }}>
                                 <div className="card__header">
                                     <h3>Open Source</h3>
                                 </div>
@@ -41,7 +41,7 @@ export default function pricingPage() {
                             </div>
                         </div>
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "32rem" }}>
+                            <div className="card" style={{ height: "100%" }}>
                                 <div className="card__header">
                                     <h3>Enterprise Self-Hosted</h3>
                                 </div>
@@ -73,7 +73,7 @@ export default function pricingPage() {
                             </div>
                         </div>
                         <div className={"col col--4 margin-vert--md"}>
-                            <div className="card" style={{ height: "32rem" }}>
+                            <div className="card" style={{ height: "100%" }}>
                                 <div className="card__header">
                                     <h3>Enterprise Cloud</h3>
                                 </div>
@@ -116,16 +116,16 @@ export default function pricingPage() {
                 <div className="container" style={{ marginBottom: "3rem" }}>
                     <div class="row">
                         <div className="col col--8 col--offset-2">
-                            <p className="hero__subtitle margin--md">
+                            <h2 className="hero__subtitle margin--md">
                                 Frequently Asked Questions
-                            </p>
+                            </h2>
                             <div class="card-demo margin--md">
                                 <Card
                                     title="Will any feature of the open-source version ever become enterprise?"
                                     body="No. As part of our core principle, we will not move any features from the open source version to the enterprise version. Features from the enterprise version are periodically moved to the open source version."
                                 />
                                 <Card
-                                    title="Cam I get paid support for the open-source version?"
+                                    title="Can I get paid support for the open-source version?"
                                     body="We only offer support as part of an enterprise license. You can get community support on GitHub and Discord for the open-source version."
                                 />
                                 <Card
