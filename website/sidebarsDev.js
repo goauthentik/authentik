@@ -62,5 +62,10 @@ module.exports = {
             type: "doc",
             id: "releases/index",
         },
+        {
+            type: "category",
+            label: "Hackathon",
+            items: ["hackathon/index"],
+        },
     ],
 };
