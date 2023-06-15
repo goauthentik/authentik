@@ -64,7 +64,7 @@ module.exports = {
         },
         {
             type: "category",
-            label: "Hackathon",
+            label: "Community Events",
             items: ["hackathon/index"],
         },
     ],

@@ -32,10 +32,6 @@ Online, in our [GitHub repo](https://github.com/goauthentik/authentik), using Di
 
 -   **Saturday**: demos, votes, awards, and wrap up
 
-## Registration form
-
-Use this handy [registration form](./registration-2023.md) to let us know you'll be there!
-
 ## Questions?
 
 Chat on with us on Discord and email us at hackathon@goauthentik.io!
@@ -43,3 +39,7 @@ Chat on with us on Discord and email us at hackathon@goauthentik.io!
 ## Spread the word!
 
 We would be grateful if you help us get the word out. Share this page and information wherever you hang out. Bring 'em all!
+
+## Registration form
+
+https://docs.google.com/forms/d/e/1FAIpQLSc10MiK4li-SIY8SidhwFEwFbDcna-fio1xFY2nmimqXPPvLA/viewform
