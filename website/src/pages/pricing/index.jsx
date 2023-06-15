@@ -125,7 +125,7 @@ export default function pricingPage() {
                                     body="No. As part of our core principle, we will not move any features from the open source version to the enterprise version. Features from the enterprise version are periodically moved to the open source version."
                                 />
                                 <Card
-                                    title="Cam I get paid support for the open-source version?"
+                                    title="Can I get paid support for the open-source version?"
                                     body="We only offer support as part of an enterprise license. You can get community support on GitHub and Discord for the open-source version."
                                 />
                                 <Card
