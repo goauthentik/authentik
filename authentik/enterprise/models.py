@@ -2,9 +2,10 @@
 from base64 import b64decode
 from binascii import Error
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta
+from datetime import timedelta
 from enum import Enum
 from functools import lru_cache
+from time import mktime
 from uuid import uuid4
 
 from cryptography.exceptions import InvalidSignature
@@ -80,13 +81,12 @@ class LicenseKey:
     @staticmethod
     def get_total() -> "LicenseKey":
         """Get a summarized version of all (not expired) licenses"""
-        _now = now()
-        active_licenses = License.objects.filter(expiry__lte=_now)
-        total = LicenseKey(get_license_aud(), _now, "Summarized license", -1, -1)
+        active_licenses = License.objects.filter(expiry__gte=now())
+        total = LicenseKey(get_license_aud(), 0, "Summarized license", 0, 0)
         for lic in active_licenses:
             total.users += lic.users
             total.external_users += lic.external_users
-            exp_ts = datetime.fromtimestamp(lic.expiry)
+            exp_ts = int(mktime(lic.expiry.timetuple()))
             if exp_ts >= total.exp:
                 total.exp = exp_ts
             total.flags.extend(lic.status.flags)

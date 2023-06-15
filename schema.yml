@@ -5551,6 +5551,10 @@ paths:
       operationId: enterprise_license_list
       description: License Viewset
       parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
       - name: ordering
         required: false
         in: query
@@ -5841,7 +5845,7 @@ paths:
   /enterprise/license/is_valid/:
     get:
       operationId: enterprise_license_is_valid_retrieve
-      description: License Viewset
+      description: Get the total license status
       tags:
       - enterprise
       security:

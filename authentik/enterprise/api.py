@@ -57,6 +57,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     serializer_class = LicenseSerializer
     search_fields = ["name"]
     ordering = ["name"]
+    filterset_fields = ["name"]
 
     @permission_required(None, ["authentik_enterprise.view_license"])
     @extend_schema(
