@@ -9,7 +9,7 @@ export default function pricingPage() {
             <section>
                 <div
                     className="container"
-                    style={{ marginTop: "2rem", marginBottom: "4rem" }}
+                    style={{ marginTop: "2rem", marginBottom: "2rem" }}
                 >
                     <h1 style={{ textAlign: "center" }}>Pricing</h1>
 
@@ -116,9 +116,9 @@ export default function pricingPage() {
                 <div className="container" style={{ marginBottom: "3rem" }}>
                     <div class="row">
                         <div className="col col--8 col--offset-2">
-                            <p className="hero__subtitle margin--md">
+                            <h2 className="hero__subtitle margin--md">
                                 Frequently Asked Questions
-                            </p>
+                            </h2>
                             <div class="card-demo margin--md">
                                 <Card
                                     title="Will any feature of the open-source version ever become enterprise?"
