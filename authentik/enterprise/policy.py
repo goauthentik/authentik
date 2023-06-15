@@ -4,7 +4,7 @@ from typing import Optional
 from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import User, UserTypes
-from authentik.enterprise.models import LicenseBody
+from authentik.enterprise.models import LicenseKey
 from authentik.policies.models import Policy
 from authentik.policies.types import PolicyRequest, PolicyResult
 from authentik.policies.views import PolicyAccessView
@@ -22,7 +22,7 @@ class EnterprisePolicy(Policy):
         raise NotImplementedError
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
-        if not LicenseBody.get_total().is_valid():
+        if not LicenseKey.get_total().is_valid():
             return PolicyResult(False)
         if request.user.type != UserTypes.DEFAULT:
             return PolicyResult(False)

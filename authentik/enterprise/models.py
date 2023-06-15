@@ -2,7 +2,7 @@
 from base64 import b64decode
 from binascii import Error
 from dataclasses import dataclass, field
-from datetime import timedelta
+from datetime import datetime, timedelta
 from enum import Enum
 from functools import lru_cache
 from uuid import uuid4
@@ -11,7 +11,7 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from dacite import from_dict
 from django.db import models
-from django.utils.timezone import datetime
+from django.utils.timezone import now
 from jwt import PyJWTError, decode, get_unverified_header
 from rest_framework.exceptions import ValidationError
 
@@ -26,33 +26,6 @@ def get_licensing_key() -> Certificate:
         return load_pem_x509_certificate(_key.read())
 
 
-def validate_license(jwt: str) -> dict:
-    """Validate the license from a given JWT"""
-    headers = get_unverified_header(jwt)
-    x5c = headers.get("x5c")
-    try:
-        cert = load_pem_x509_certificate(b64decode(x5c))
-    except (ValueError, Error) as exc:
-        raise ValidationError("Unable to verify license") from exc
-    try:
-        cert.verify_directly_issued_by(get_licensing_key())
-    except (InvalidSignature, TypeError, ValueError) as exc:
-        raise ValidationError("Unable to verify license") from exc
-    try:
-        body = from_dict(
-            LicenseBody,
-            decode(
-                jwt,
-                cert.public_key(),
-                algorithms=["ES521"],
-                audience=get_license_aud(),
-            ),
-        )
-    except PyJWTError as exc:
-        raise ValidationError("Unable to verify license") from exc
-    return body
-
-
 def get_license_aud() -> str:
     """Get the JWT audience field"""
     return f"enterprise.goauthentik.io/license/{get_install_id()}"
@@ -63,7 +36,7 @@ class LicenseFlags(Enum):
 
 
 @dataclass
-class LicenseBody:
+class LicenseKey:
     """License JWT claims"""
 
     aud: str
@@ -75,10 +48,41 @@ class LicenseBody:
     flags: list[LicenseFlags] = field(default_factory=list)
 
     @staticmethod
-    def get_total() -> "LicenseBody":
+    def validate(jwt: str) -> "LicenseKey":
+        """Validate the license from a given JWT"""
+        try:
+            headers = get_unverified_header(jwt)
+        except PyJWTError:
+            raise ValidationError("Unable to verify license")
+        x5c = headers.get("x5c")
+        try:
+            cert = load_pem_x509_certificate(b64decode(x5c))
+        except (ValueError, Error):
+            raise ValidationError("Unable to verify license")
+        try:
+            cert.verify_directly_issued_by(get_licensing_key())
+        except (InvalidSignature, TypeError, ValueError):
+            raise ValidationError("Unable to verify license")
+        try:
+            body = from_dict(
+                LicenseKey,
+                decode(
+                    jwt,
+                    cert.public_key(),
+                    algorithms=["ES521"],
+                    audience=get_license_aud(),
+                ),
+            )
+        except PyJWTError:
+            raise ValidationError("Unable to verify license")
+        return body
+
+    @staticmethod
+    def get_total() -> "LicenseKey":
         """Get a summarized version of all (not expired) licenses"""
-        active_licenses = License.objects.filter(expiry__lte=datetime.now())
-        total = LicenseBody(get_license_aud(), datetime.now(), "Summarized license", -1, -1)
+        _now = now()
+        active_licenses = License.objects.filter(expiry__lte=_now)
+        total = LicenseKey(get_license_aud(), _now, "Summarized license", -1, -1)
         for lic in active_licenses:
             total.users += lic.users
             total.external_users += lic.external_users
@@ -93,7 +97,7 @@ class LicenseBody:
         default_users = User.objects.filter(type=UserTypes.DEFAULT).count()
         if default_users > self.users:
             return False
-        last_month = datetime.now() - timedelta(days=30)
+        last_month = now() - timedelta(days=30)
         active_users = User.objects.filter(
             type=UserTypes.EXTERNAL, last_login__gte=last_month
         ).count()
@@ -114,6 +118,6 @@ class License(models.Model):
     external_users = models.BigIntegerField()
 
     @property
-    def status(self) -> LicenseBody:
+    def status(self) -> LicenseKey:
         """Get parsed license status"""
-        return validate_license(self.key)
+        return LicenseKey.validate(self.key)

@@ -12,7 +12,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
-from authentik.enterprise.models import License, LicenseBody, validate_license
+from authentik.enterprise.models import License, LicenseKey
 from authentik.root.install_id import get_install_id
 
 
@@ -21,7 +21,7 @@ class LicenseSerializer(ModelSerializer):
 
     def validate_key(self, key: str) -> str:
         """Validate the license key (install_id and signature)"""
-        validate_license(key)
+        LicenseKey.validate(key)
         return key
 
     class Meta:
@@ -84,5 +84,5 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     @action(detail=False, methods=["GET"])
     def is_valid(self, request: Request) -> Response:
         """Get the total license status"""
-        total = LicenseBody.get_total()
+        total = LicenseKey.get_total()
         return Response(LicenseBodySerializer(instance=total))
