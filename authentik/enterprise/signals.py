@@ -4,20 +4,20 @@ from django.dispatch import receiver
 from django.utils.timezone import datetime
 
 from authentik.api.v3.config import Capabilities, capabilities
-from authentik.enterprise.models import License
+from authentik.enterprise.models import License, LicenseBody
 
 
 @receiver(capabilities)
 def enterprise_capabilities(sender, **_):
-    # TODO: Filter not expired
-    for license in License.objects.all():
-        if license.is_valid():
-            return Capabilities.IS_ENTERPRISE_LICENSED
+    """Add enterprise licensed capability when license is fully valid"""
+    if LicenseBody.get_total().is_valid():
+        return Capabilities.IS_ENTERPRISE_LICENSED
     return None
 
 
 @receiver(pre_save, sender=License)
 def pre_save_license(sender: type[License], instance: License, **_):
+    """Extract data from license jwt and save it into model"""
     status = instance.status
     instance.name = status.name
     instance.users = status.users

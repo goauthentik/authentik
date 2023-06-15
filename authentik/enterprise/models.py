@@ -1,7 +1,7 @@
 """Enterprise models"""
 from base64 import b64decode
 from binascii import Error
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import timedelta
 from enum import Enum
 from functools import lru_cache
@@ -36,20 +36,20 @@ def validate_license(jwt: str) -> dict:
         raise ValidationError("Unable to verify license") from exc
     try:
         cert.verify_directly_issued_by(get_licensing_key())
-    except (InvalidSignature, TypeError, ValueError):
-        raise ValidationError("Unable to verify license")
+    except (InvalidSignature, TypeError, ValueError) as exc:
+        raise ValidationError("Unable to verify license") from exc
     try:
         body = from_dict(
             LicenseBody,
             decode(
                 jwt,
-                cert,
+                cert.public_key(),
                 algorithms=["ES521"],
                 audience=get_license_aud(),
             ),
         )
-    except PyJWTError:
-        raise ValidationError("Unable to verify license")
+    except PyJWTError as exc:
+        raise ValidationError("Unable to verify license") from exc
     return body
 
 
@@ -72,22 +72,20 @@ class LicenseBody:
     name: str
     users: int
     external_users: int
-    flags: list[LicenseFlags]
+    flags: list[LicenseFlags] = field(default_factory=list)
 
     @staticmethod
     def get_total() -> "LicenseBody":
         """Get a summarized version of all (not expired) licenses"""
-        active_licenses = License.objects.filter(expiry__lte=datetime().now())
-        total = LicenseBody(
-            get_license_aud("summary"), datetime().now(), "Summarized license", -1, -1
-        )
-        for license in active_licenses:
-            total.users += license.users
-            total.external_users += license.external_users
-            exp_ts = datetime.fromtimestamp(license.expiry)
+        active_licenses = License.objects.filter(expiry__lte=datetime.now())
+        total = LicenseBody(get_license_aud(), datetime.now(), "Summarized license", -1, -1)
+        for lic in active_licenses:
+            total.users += lic.users
+            total.external_users += lic.external_users
+            exp_ts = datetime.fromtimestamp(lic.expiry)
             if exp_ts >= total.exp:
                 total.exp = exp_ts
-            total.flags.extend(license.status.flags)
+            total.flags.extend(lic.status.flags)
         return total
 
     def is_valid(self) -> bool:
@@ -95,7 +93,7 @@ class LicenseBody:
         default_users = User.objects.filter(type=UserTypes.DEFAULT).count()
         if default_users > self.users:
             return False
-        last_month = datetime().now() - timedelta(days=30)
+        last_month = datetime.now() - timedelta(days=30)
         active_users = User.objects.filter(
             type=UserTypes.EXTERNAL, last_login__gte=last_month
         ).count()
@@ -118,4 +116,4 @@ class License(models.Model):
     @property
     def status(self) -> LicenseBody:
         """Get parsed license status"""
-        return from_dict(LicenseBody, validate_license(self.key))
+        return validate_license(self.key)

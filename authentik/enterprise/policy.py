@@ -1,6 +1,8 @@
 """Enterprise license policies"""
 from typing import Optional
 
+from rest_framework.serializers import BaseSerializer
+
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.models import LicenseBody
 from authentik.policies.models import Policy
@@ -10,6 +12,14 @@ from authentik.policies.views import PolicyAccessView
 
 class EnterprisePolicy(Policy):
     """Check that a user is correctly licensed for the request"""
+
+    @property
+    def component(self) -> str:
+        return ""
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        raise NotImplementedError
 
     def passes(self, request: PolicyRequest) -> PolicyResult:
         if not LicenseBody.get_total().is_valid():
@@ -31,3 +41,6 @@ class EnterprisePolicyAccessView(PolicyAccessView):
         if not enterprise_result.passing:
             return enterprise_result
         return result
+
+    def resolve_provider_application(self):
+        raise NotImplementedError

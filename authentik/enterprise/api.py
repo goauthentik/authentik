@@ -20,6 +20,7 @@ class LicenseSerializer(ModelSerializer):
     """License Serializer"""
 
     def validate_key(self, key: str) -> str:
+        """Validate the license key (install_id and signature)"""
         validate_license(key)
         return key
 
@@ -82,5 +83,6 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     )
     @action(detail=False, methods=["GET"])
     def is_valid(self, request: Request) -> Response:
+        """Get the total license status"""
         total = LicenseBody.get_total()
         return Response(LicenseBodySerializer(instance=total))
