@@ -5811,6 +5811,60 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /enterprise/license/get_install_id/:
+    get:
+      operationId: enterprise_license_get_install_id_retrieve
+      description: Get install_id
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallID'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /enterprise/license/is_valid/:
+    get:
+      operationId: enterprise_license_is_valid_retrieve
+      description: License Viewset
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseBody'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /events/events/:
     get:
       operationId: events_events_list
@@ -30754,6 +30808,13 @@ components:
           type: boolean
       required:
       - name
+    InstallID:
+      type: object
+      properties:
+        install_id:
+          type: string
+      required:
+      - install_id
     IntentEnum:
       enum:
       - verification
@@ -31651,6 +31712,20 @@ components:
       - key
       - license_uuid
       - name
+      - users
+    LicenseBody:
+      type: object
+      description: Serializer for license status
+      properties:
+        users:
+          type: integer
+        external_users:
+          type: integer
+        is_valid:
+          type: boolean
+      required:
+      - external_users
+      - is_valid
       - users
     LicenseRequest:
       type: object

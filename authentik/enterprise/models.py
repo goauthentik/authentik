@@ -3,6 +3,7 @@ from base64 import b64decode
 from binascii import Error
 from dataclasses import dataclass
 from datetime import timedelta
+from enum import Enum
 from functools import lru_cache
 from uuid import uuid4
 
@@ -57,6 +58,10 @@ def get_license_aud() -> str:
     return f"enterprise.goauthentik.io/license/{get_install_id()}"
 
 
+class LicenseFlags(Enum):
+    """License flags"""
+
+
 @dataclass
 class LicenseBody:
     """License JWT claims"""
@@ -67,6 +72,36 @@ class LicenseBody:
     name: str
     users: int
     external_users: int
+    flags: list[LicenseFlags]
+
+    @staticmethod
+    def get_total() -> "LicenseBody":
+        """Get a summarized version of all (not expired) licenses"""
+        active_licenses = License.objects.filter(expiry__lte=datetime().now())
+        total = LicenseBody(
+            get_license_aud("summary"), datetime().now(), "Summarized license", -1, -1
+        )
+        for license in active_licenses:
+            total.users += license.users
+            total.external_users += license.external_users
+            exp_ts = datetime.fromtimestamp(license.expiry)
+            if exp_ts >= total.exp:
+                total.exp = exp_ts
+            total.flags.extend(license.status.flags)
+        return total
+
+    def is_valid(self) -> bool:
+        """Check if the given license body covers all users"""
+        default_users = User.objects.filter(type=UserTypes.DEFAULT).count()
+        if default_users > self.users:
+            return False
+        last_month = datetime().now() - timedelta(days=30)
+        active_users = User.objects.filter(
+            type=UserTypes.EXTERNAL, last_login__gte=last_month
+        ).count()
+        if active_users > self.external_users:
+            return False
+        return True
 
 
 class License(models.Model):
@@ -84,17 +119,3 @@ class License(models.Model):
     def status(self) -> LicenseBody:
         """Get parsed license status"""
         return from_dict(LicenseBody, validate_license(self.key))
-
-    def is_valid(self) -> bool:
-        """Check if license is valid"""
-        status = self.status
-        default_users = User.objects.filter(type=UserTypes.DEFAULT).count()
-        if default_users > status.users:
-            return False
-        last_month = datetime().now() - timedelta(days=30)
-        active_users = User.objects.filter(last_login__gte=last_month).count()
-        if active_users > status.external_users:
-            return False
-        if self.expiry < datetime().now():
-            return False
-        return True
