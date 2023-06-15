@@ -5,12 +5,15 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import { EnterpriseApi, License } from "@goauthentik/api";
 
 @customElement("ak-enterprise-license-form")
 export class EnterpriseLicenseForm extends ModelForm<License, string> {
+    @state()
+    installID?: string;
+
     loadInstance(pk: string): Promise<License> {
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseRetrieve({
             licenseUuid: pk,
@@ -23,6 +26,12 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
         } else {
             return msg("Successfully created license.");
         }
+    }
+
+    async load(): Promise<void> {
+        this.installID = (
+            await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseGetInstallIdRetrieve()
+        ).installId;
     }
 
     async send(data: License): Promise<License> {
@@ -40,6 +49,9 @@ export class EnterpriseLicenseForm extends ModelForm<License, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
+            <ak-form-element-horizontal label=${msg("Install ID")}>
+                <input class="pf-c-form-control" readonly type="text" value="${this.installID}" />
+            </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 name="key"
                 ?writeOnly=${this.instance !== undefined}
