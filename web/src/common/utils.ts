@@ -125,7 +125,7 @@ export function dateTimeLocal(date: Date): string {
 type AdaptableStylesheet = Readonly<string | CSSResult | CSSStyleSheet>;
 type AdaptedStylesheets = CSSStyleSheet | CSSStyleSheet[];
 
-const isCSSResult = (v: any): v is CSSResult =>
+const isCSSResult = (v: unknown): v is CSSResult =>
     v instanceof CSSResult && v.styleSheet !== undefined;
 
 // prettier-ignore
