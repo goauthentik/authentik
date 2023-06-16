@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 from hashlib import sha256
 from time import sleep
 
-from django.conf import settings
 from django.test.client import RequestFactory
 from django.urls.base import reverse
 from django_otp.oath import TOTP
@@ -17,6 +16,7 @@ from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
+from authentik.root.install_id import get_install_id
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     validate_challenge_code,
@@ -194,7 +194,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
                 "stage": stage.pk.hex + generate_id(),
                 "exp": (datetime.now() + timedelta(days=3)).timestamp(),
             },
-            key=sha256(f"{settings.SECRET_KEY}:{stage.pk.hex}".encode("ascii")).hexdigest(),
+            key=sha256(f"{get_install_id()}:{stage.pk.hex}".encode("ascii")).hexdigest(),
         )
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -233,7 +233,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
                 "stage": stage.pk.hex,
                 "exp": (datetime.now() + timedelta(days=3)).timestamp(),
             },
-            key=sha256(f"{settings.SECRET_KEY}:{stage.pk.hex}".encode("ascii")).hexdigest(),
+            key=sha256(f"{get_install_id()}:{stage.pk.hex}".encode("ascii")).hexdigest(),
         )
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -272,7 +272,7 @@ class AuthenticatorValidateStageTOTPTests(FlowTestCase):
                 "stage": stage.pk.hex,
                 "exp": (datetime.now() - timedelta(days=3)).timestamp(),
             },
-            key=sha256(f"{settings.SECRET_KEY}:{stage.pk.hex}".encode("ascii")).hexdigest(),
+            key=sha256(f"{get_install_id()}:{stage.pk.hex}".encode("ascii")).hexdigest(),
         )
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),

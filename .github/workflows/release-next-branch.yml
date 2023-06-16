@@ -1,0 +1,20 @@
+name: authentik-on-release-next-branch
+
+on:
+  schedule:
+    - cron: "0 12 * * *" # every day at noon
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-next:
+    runs-on: ubuntu-latest
+    environment: internal-production
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: main
+      - run: |
+          git push origin --force main:next

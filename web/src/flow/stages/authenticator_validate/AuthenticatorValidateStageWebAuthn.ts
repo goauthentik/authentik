@@ -5,8 +5,7 @@ import {
 import { AuthenticatorValidateStage } from "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStage";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -63,10 +62,10 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
                 publicKey: this.transformedCredentialRequestOptions,
             });
             if (!assertion) {
-                throw new Error(t`Assertions is empty`);
+                throw new Error(msg("Assertions is empty"));
             }
         } catch (err) {
-            throw new Error(t`Error when creating credential: ${err}`);
+            throw new Error(msg(str`Error when creating credential: ${err}`));
         }
 
         // we now have an authentication assertion! encode the byte arrays contained
@@ -81,7 +80,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
                 webauthn: transformedAssertionForServer,
             });
         } catch (err) {
-            throw new Error(t`Error when validating assertion on server: ${err}`);
+            throw new Error(msg(str`Error when validating assertion on server: ${err}`));
         }
     }
 
@@ -121,7 +120,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
                                   this.authenticateWrapper();
                               }}
                           >
-                              ${t`Retry authentication`}
+                              ${msg("Retry authentication")}
                           </button>
                       </div>`
                     : html`<div class="pf-c-form__group pf-m-action">
@@ -143,7 +142,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
                                       ).selectedDeviceChallenge = undefined;
                                   }}
                               >
-                                  ${t`Return to device picker`}
+                                  ${msg("Return to device picker")}
                               </button>
                           </li>`
                         : html``}

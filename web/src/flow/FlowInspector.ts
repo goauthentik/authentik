@@ -3,8 +3,7 @@ import { EVENT_FLOW_ADVANCE, EVENT_FLOW_INSPECTOR_TOGGLE } from "@goauthentik/co
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -88,7 +87,9 @@ export class FlowInspector extends AKElement {
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">${t`Flow inspector`}</h1>
+                        <h1 class="pf-c-notification-drawer__header-title">
+                            ${msg("Flow inspector")}
+                        </h1>
                     </div>
                 </div>
                 <div class="pf-c-notification-drawer__body">
@@ -109,13 +110,16 @@ export class FlowInspector extends AKElement {
             return this.renderAccessDenied();
         }
         if (!this.state) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<div class="pf-c-drawer__body pf-m-no-padding">
             <div class="pf-c-notification-drawer">
                 <div class="pf-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">${t`Flow inspector`}</h1>
+                        <h1 class="pf-c-notification-drawer__header-title">
+                            ${msg("Flow inspector")}
+                        </h1>
                     </div>
                     <div class="pf-c-notification-drawer__header-action">
                         <div class="pf-c-notification-drawer__header-action-close">
@@ -130,7 +134,7 @@ export class FlowInspector extends AKElement {
                                 }}
                                 class="pf-c-button pf-m-plain"
                                 type="button"
-                                aria-label=${t`Close`}
+                                aria-label=${msg("Close")}
                             >
                                 <i class="fas fa-times" aria-hidden="true"></i>
                             </button>
@@ -142,14 +146,14 @@ export class FlowInspector extends AKElement {
                         <div class="pf-l-stack__item">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${t`Next stage`}</div>
+                                    <div class="pf-c-card__title">${msg("Next stage")}</div>
                                 </div>
                                 <div class="pf-c-card__body">
                                     <dl class="pf-c-description-list">
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
                                                 <span class="pf-c-description-list__text"
-                                                    >${t`Stage name`}</span
+                                                    >${msg("Stage name")}</span
                                                 >
                                             </dt>
                                             <dd class="pf-c-description-list__description">
@@ -162,7 +166,7 @@ export class FlowInspector extends AKElement {
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
                                                 <span class="pf-c-description-list__text"
-                                                    >${t`Stage kind`}</span
+                                                    >${msg("Stage kind")}</span
                                                 >
                                             </dt>
                                             <dd class="pf-c-description-list__description">
@@ -175,7 +179,7 @@ export class FlowInspector extends AKElement {
                                         <div class="pf-c-description-list__group">
                                             <dt class="pf-c-description-list__term">
                                                 <span class="pf-c-description-list__text"
-                                                    >${t`Stage object`}</span
+                                                    >${msg("Stage object")}</span
                                                 >
                                             </dt>
                                             <dd class="pf-c-description-list__description">
@@ -183,7 +187,7 @@ export class FlowInspector extends AKElement {
                                                     ? html` <div
                                                           class="pf-c-description-list__text"
                                                       >
-                                                          ${t`This flow is completed.`}
+                                                          ${msg("This flow is completed.")}
                                                       </div>`
                                                     : html`<ak-expand>
                                                           <pre class="pf-c-description-list__text">
@@ -199,7 +203,7 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                         <div class="pf-l-stack__item">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${t`Plan history`}</div>
+                                    <div class="pf-c-card__title">${msg("Plan history")}</div>
                                 </div>
                                 <div class="pf-c-card__body">
                                     <ol class="pf-c-progress-stepper pf-m-vertical">
@@ -295,7 +299,9 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                         <div class="pf-l-stack__item">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${t`Current plan context`}</div>
+                                    <div class="pf-c-card__title">
+                                        ${msg("Current plan context")}
+                                    </div>
                                 </div>
                                 <div class="pf-c-card__body">
                                     <pre>
@@ -307,7 +313,7 @@ ${JSON.stringify(this.state.currentPlan?.planContext, null, 4)}</pre
                         <div class="pf-l-stack__item">
                             <div class="pf-c-card">
                                 <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${t`Session ID`}</div>
+                                    <div class="pf-c-card__title">${msg("Session ID")}</div>
                                 </div>
                                 <div class="pf-c-card__body">
                                     <code class="break">${this.state.currentPlan?.sessionId}</code>

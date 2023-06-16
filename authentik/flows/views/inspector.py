@@ -23,6 +23,7 @@ from authentik.flows.api.bindings import FlowStageBindingSerializer
 from authentik.flows.models import Flow
 from authentik.flows.planner import FlowPlan
 from authentik.flows.views.executor import SESSION_KEY_HISTORY, SESSION_KEY_PLAN
+from authentik.root.install_id import get_install_id
 
 
 class FlowInspectorPlanSerializer(PassiveSerializer):
@@ -51,7 +52,7 @@ class FlowInspectorPlanSerializer(PassiveSerializer):
         """Get a unique session ID"""
         request: Request = self.context["request"]
         return sha256(
-            f"{request._request.session.session_key}-{settings.SECRET_KEY}".encode("ascii")
+            f"{request._request.session.session_key}-{get_install_id()}".encode("ascii")
         ).hexdigest()
 
 

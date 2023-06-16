@@ -12,8 +12,9 @@ import (
 	"goauthentik.io/internal/crypto"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/ldap/metrics"
+	"goauthentik.io/internal/utils"
 
-	"github.com/nmcclain/ldap"
+	"beryju.io/ldap"
 )
 
 type LDAPServer struct {
@@ -26,15 +27,21 @@ type LDAPServer struct {
 }
 
 func NewServer(ac *ak.APIController) *LDAPServer {
-	s := ldap.NewServer()
-	s.EnforceLDAP = true
 	ls := &LDAPServer{
-		s:         s,
 		log:       log.WithField("logger", "authentik.outpost.ldap"),
 		ac:        ac,
 		cs:        ak.NewCryptoStore(ac.Client.CryptoApi),
 		providers: []*ProviderInstance{},
 	}
+	s := ldap.NewServer()
+	s.EnforceLDAP = true
+
+	tlsConfig := utils.GetTLSConfig()
+	tlsConfig.GetCertificate = ls.getCertificates
+	s.StartTLS = tlsConfig
+
+	ls.s = s
+
 	defaultCert, err := crypto.GenerateSelfSignedCert()
 	if err != nil {
 		log.Warning(err)
@@ -67,7 +74,7 @@ func (ls *LDAPServer) StartLDAPServer() error {
 		return err
 	}
 	ls.log.WithField("listen", listen).Info("Stopping LDAP server")
-	return ls.s.ListenAndServe(listen)
+	return nil
 }
 
 func (ls *LDAPServer) Start() error {

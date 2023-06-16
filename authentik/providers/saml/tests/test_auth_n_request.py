@@ -90,6 +90,7 @@ class TestAuthNRequest(TestCase):
             issuer="authentik",
             pre_authentication_flow=create_test_flow(),
             signing_kp=cert,
+            verification_kp=cert,
         )
 
     def test_signed_valid(self):

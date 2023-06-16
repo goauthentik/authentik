@@ -2,8 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Spinner";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -48,8 +47,8 @@ export class TopApplicationsTable extends AKElement {
         return html`<table class="pf-c-table pf-m-compact" role="grid">
             <thead>
                 <tr role="row">
-                    <th role="columnheader" scope="col">${t`Application`}</th>
-                    <th role="columnheader" scope="col">${t`Logins`}</th>
+                    <th role="columnheader" scope="col">${msg("Application")}</th>
+                    <th role="columnheader" scope="col">${msg("Logins")}</th>
                     <th role="columnheader" scope="col"></th>
                 </tr>
             </thead>

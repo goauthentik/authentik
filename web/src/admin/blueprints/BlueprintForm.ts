@@ -8,8 +8,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -45,9 +44,9 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated instance.`;
+            return msg("Successfully updated instance.");
         } else {
-            return t`Successfully created instance.`;
+            return msg("Successfully created instance.");
         }
     }
 
@@ -78,7 +77,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -98,9 +97,11 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Enabled`}</span>
+                    <span class="pf-c-switch__label">${msg("Enabled")}</span>
                 </label>
-                <p class="pf-c-form__helper-text">${t`Disabled blueprints are never applied.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Disabled blueprints are never applied.")}
+                </p>
             </ak-form-element-horizontal>
             <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">
@@ -116,7 +117,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                     this.source = blueprintSource.file;
                                 }}
                             >
-                                <span class="pf-c-toggle-group__text">${t`Local path`}</span>
+                                <span class="pf-c-toggle-group__text">${msg("Local path")}</span>
                             </button>
                         </div>
                         <div class="pf-c-divider pf-m-vertical" role="separator"></div>
@@ -131,7 +132,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                     this.source = blueprintSource.oci;
                                 }}
                             >
-                                <span class="pf-c-toggle-group__text">${t`OCI Registry`}</span>
+                                <span class="pf-c-toggle-group__text">${msg("OCI Registry")}</span>
                             </button>
                         </div>
                         <div class="pf-c-divider pf-m-vertical" role="separator"></div>
@@ -146,14 +147,14 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                     this.source = blueprintSource.internal;
                                 }}
                             >
-                                <span class="pf-c-toggle-group__text">${t`Internal`}</span>
+                                <span class="pf-c-toggle-group__text">${msg("Internal")}</span>
                             </button>
                         </div>
                     </div>
                 </div>
                 <div class="pf-c-card__footer">
                     ${this.source === blueprintSource.file
-                        ? html`<ak-form-element-horizontal label=${t`Path`} name="path">
+                        ? html`<ak-form-element-horizontal label=${msg("Path")} name="path">
                               <ak-search-select
                                   .fetchObjects=${async (
                                       query?: string,
@@ -186,7 +187,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                           </ak-form-element-horizontal>`
                         : html``}
                     ${this.source === blueprintSource.oci
-                        ? html`<ak-form-element-horizontal label=${t`URL`} name="path">
+                        ? html`<ak-form-element-horizontal label=${msg("URL")} name="path">
                               <input
                                   type="text"
                                   value="${ifDefined(this.instance?.path)}"
@@ -194,22 +195,24 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                                   required
                               />
                               <p class="pf-c-form__helper-text">
-                                  ${t`OCI URL, in the format of oci://registry.domain.tld/path/to/manifest.`}
+                                  ${msg(
+                                      "OCI URL, in the format of oci://registry.domain.tld/path/to/manifest.",
+                                  )}
                               </p>
                               <p class="pf-c-form__helper-text">
-                                  ${t`See more about OCI support here:`}&nbsp;
+                                  ${msg("See more about OCI support here:")}&nbsp;
                                   <a
                                       target="_blank"
                                       href="${docLink(
                                           "/developer-docs/blueprints/?utm_source=authentik#storage---oci",
                                       )}"
-                                      >${t`Documentation`}</a
+                                      >${msg("Documentation")}</a
                                   >
                               </p>
                           </ak-form-element-horizontal>`
                         : html``}
                     ${this.source === blueprintSource.internal
-                        ? html`<ak-form-element-horizontal label=${t`Blueprint`} name="content">
+                        ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
                               <ak-codemirror
                                   mode="yaml"
                                   .parseValue=${false}
@@ -221,16 +224,16 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
             </div>
 
             <ak-form-group>
-                <span slot="header">${t`Additional settings`}</span>
+                <span slot="header">${msg("Additional settings")}</span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Context`} name="context">
+                    <ak-form-element-horizontal label=${msg("Context")} name="context">
                         <ak-codemirror
                             mode="yaml"
                             value="${YAML.stringify(first(this.instance?.context, {}))}"
                         >
                         </ak-codemirror>
                         <p class="pf-c-form__helper-text">
-                            ${t`Configure the blueprint context, used for templating.`}
+                            ${msg("Configure the blueprint context, used for templating.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

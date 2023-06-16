@@ -9,8 +9,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -38,9 +37,9 @@ export class GroupForm extends ModelForm<Group, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated group.`;
+            return msg("Successfully updated group.");
         } else {
-            return t`Successfully created group.`;
+            return msg("Successfully created group.");
         }
     }
 
@@ -60,7 +59,7 @@ export class GroupForm extends ModelForm<Group, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -80,13 +79,13 @@ export class GroupForm extends ModelForm<Group, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Is superuser`}</span>
+                    <span class="pf-c-switch__label">${msg("Is superuser")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`Users added to this group will be superusers.`}
+                    ${msg("Users added to this group will be superusers.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Parent`} name="parent">
+            <ak-form-element-horizontal label=${msg("Parent")} name="parent">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Group[]> => {
                         const args: CoreGroupsListRequest = {
@@ -111,14 +110,18 @@ export class GroupForm extends ModelForm<Group, string> {
                 >
                 </ak-search-select>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Attributes`} ?required=${true} name="attributes">
+            <ak-form-element-horizontal
+                label=${msg("Attributes")}
+                ?required=${true}
+                name="attributes"
+            >
                 <ak-codemirror
                     mode="yaml"
                     value="${YAML.stringify(first(this.instance?.attributes, {}))}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Set custom attributes using YAML or JSON.`}
+                    ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

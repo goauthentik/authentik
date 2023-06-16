@@ -5,8 +5,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -38,9 +37,9 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated transport.`;
+            return msg("Successfully updated transport.");
         } else {
-            return t`Successfully created transport.`;
+            return msg("Successfully created transport.");
         }
     }
 
@@ -70,7 +69,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -78,27 +77,27 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Mode`} ?required=${true} name="mode">
+            <ak-form-element-horizontal label=${msg("Mode")} ?required=${true} name="mode">
                 <ak-radio
                     @change=${(ev: CustomEvent<NotificationTransportModeEnum>) => {
                         this.onModeChange(ev.detail);
                     }}
                     .options=${[
                         {
-                            label: t`Local (notifications will be created within authentik)`,
+                            label: msg("Local (notifications will be created within authentik)"),
                             value: NotificationTransportModeEnum.Local,
                             default: true,
                         },
                         {
-                            label: t`Email`,
+                            label: msg("Email"),
                             value: NotificationTransportModeEnum.Email,
                         },
                         {
-                            label: t`Webhook (generic)`,
+                            label: msg("Webhook (generic)"),
                             value: NotificationTransportModeEnum.Webhook,
                         },
                         {
-                            label: t`Webhook (Slack/Discord)`,
+                            label: msg("Webhook (Slack/Discord)"),
                             value: NotificationTransportModeEnum.WebhookSlack,
                         },
                     ]}
@@ -108,7 +107,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
-                label=${t`Webhook URL`}
+                label=${msg("Webhook URL")}
                 name="webhookUrl"
                 ?required=${true}
             >
@@ -120,7 +119,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 ?hidden=${!this.showWebhook}
-                label=${t`Webhook Mapping`}
+                label=${msg("Webhook Mapping")}
                 name="webhookMapping"
             >
                 <ak-search-select
@@ -163,10 +162,12 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Send once`}</span>
+                    <span class="pf-c-switch__label">${msg("Send once")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`Only send notification once, for example when sending a webhook into a chat channel.`}
+                    ${msg(
+                        "Only send notification once, for example when sending a webhook into a chat channel.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

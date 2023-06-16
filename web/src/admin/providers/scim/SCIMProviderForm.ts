@@ -6,8 +6,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -42,9 +41,9 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated provider.`;
+            return msg("Successfully updated provider.");
         } else {
-            return t`Successfully created provider.`;
+            return msg("Successfully created provider.");
         }
     }
 
@@ -63,7 +62,7 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -72,9 +71,9 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Protocol settings`} </span>
+                <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`URL`} ?required=${true} name="url">
+                    <ak-form-element-horizontal label=${msg("URL")} ?required=${true} name="url">
                         <input
                             type="text"
                             value="${first(this.instance?.url, "")}"
@@ -82,10 +81,14 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`SCIM base url, usually ends in /v2.`}
+                            ${msg("SCIM base url, usually ends in /v2.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Token`} ?required=${true} name="token">
+                    <ak-form-element-horizontal
+                        label=${msg("Token")}
+                        ?required=${true}
+                        name="token"
+                    >
                         <input
                             type="text"
                             value="${first(this.instance?.token, "")}"
@@ -93,13 +96,15 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Token to authenticate with. Currently only bearer authentication is supported.`}
+                            ${msg(
+                                "Token to authenticate with. Currently only bearer authentication is supported.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group ?expanded=${true}>
-                <span slot="header">${t`User filtering`}</span>
+                <span slot="header">${msg("User filtering")}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="excludeUsersServiceAccount">
                         <label class="pf-c-switch">
@@ -113,10 +118,12 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${t`Exclude service accounts`}</span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Exclude service accounts")}</span
+                            >
                         </label>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Group`} name="filterGroup">
+                    <ak-form-element-horizontal label=${msg("Group")} name="filterGroup">
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Group[]> => {
                                 const args: CoreGroupsListRequest = {
@@ -143,16 +150,16 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Only sync users within the selected group.`}
+                            ${msg("Only sync users within the selected group.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group ?expanded=${true}>
-                <span slot="header"> ${t`Attribute mapping`} </span>
+                <span slot="header"> ${msg("Attribute mapping")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`User Property Mappings`}
+                        label=${msg("User Property Mappings")}
                         ?required=${true}
                         name="propertyMappings"
                     >
@@ -179,14 +186,14 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                             })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Property mappings used to user mapping.`}
+                            ${msg("Property mappings used to user mapping.")}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Group Property Mappings`}
+                        label=${msg("Group Property Mappings")}
                         ?required=${true}
                         name="propertyMappingsGroup"
                     >
@@ -212,10 +219,10 @@ export class SCIMProviderFormPage extends ModelForm<SCIMProvider, number> {
                             })}
                         </select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Property mappings used to group creation.`}
+                            ${msg("Property mappings used to group creation.")}
                         </p>
                         <p class="pf-c-form__helper-text">
-                            ${t`Hold control/command to select multiple items.`}
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

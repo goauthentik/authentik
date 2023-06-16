@@ -1,11 +1,13 @@
 """authentik LDAP Models"""
+from os import chmod
 from ssl import CERT_REQUIRED
+from tempfile import NamedTemporaryFile, mkdtemp
 from typing import Optional
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import LDAPSchemaError
+from ldap3.core.exceptions import LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
@@ -39,14 +41,24 @@ class LDAPSource(Source):
         on_delete=models.SET_DEFAULT,
         default=None,
         null=True,
+        related_name="ldap_peer_certificates",
         help_text=_(
             "Optionally verify the LDAP Server's Certificate against the CA Chain in this keypair."
         ),
+    )
+    client_certificate = models.ForeignKey(
+        CertificateKeyPair,
+        on_delete=models.SET_DEFAULT,
+        default=None,
+        null=True,
+        related_name="ldap_client_certificates",
+        help_text=_("Client certificate to authenticate against the LDAP Server's Certificate."),
     )
 
     bind_cn = models.TextField(verbose_name=_("Bind CN"), blank=True)
     bind_password = models.TextField(blank=True)
     start_tls = models.BooleanField(default=False, verbose_name=_("Enable Start TLS"))
+    sni = models.BooleanField(default=False, verbose_name=_("Use Server URI for SNI verification"))
 
     base_dn = models.TextField(verbose_name=_("Base DN"))
     additional_user_dn = models.TextField(
@@ -112,8 +124,22 @@ class LDAPSource(Source):
         if self.peer_certificate:
             tls_kwargs["ca_certs_data"] = self.peer_certificate.certificate_data
             tls_kwargs["validate"] = CERT_REQUIRED
+        if self.client_certificate:
+            temp_dir = mkdtemp()
+            with NamedTemporaryFile(mode="w", delete=False, dir=temp_dir) as temp_cert:
+                temp_cert.write(self.client_certificate.certificate_data)
+                certificate_file = temp_cert.name
+                chmod(certificate_file, 0o600)
+            with NamedTemporaryFile(mode="w", delete=False, dir=temp_dir) as temp_key:
+                temp_key.write(self.client_certificate.key_data)
+                private_key_file = temp_key.name
+                chmod(private_key_file, 0o600)
+            tls_kwargs["local_private_key_file"] = private_key_file
+            tls_kwargs["local_certificate_file"] = certificate_file
         if ciphers := CONFIG.y("ldap.tls.ciphers", None):
             tls_kwargs["ciphers"] = ciphers.strip()
+        if self.sni:
+            tls_kwargs["sni"] = self.server_uri.split(",", maxsplit=1)[0].strip()
         server_kwargs = {
             "get_info": ALL,
             "connect_timeout": LDAP_TIMEOUT,
@@ -133,8 +159,10 @@ class LDAPSource(Source):
         """Get a fully connected and bound LDAP Connection"""
         server_kwargs = server_kwargs or {}
         connection_kwargs = connection_kwargs or {}
-        connection_kwargs.setdefault("user", self.bind_cn)
-        connection_kwargs.setdefault("password", self.bind_password)
+        if self.bind_cn is not None:
+            connection_kwargs.setdefault("user", self.bind_cn)
+        if self.bind_password is not None:
+            connection_kwargs.setdefault("password", self.bind_password)
         connection = Connection(
             self.server(**server_kwargs),
             raise_exceptions=True,
@@ -145,15 +173,18 @@ class LDAPSource(Source):
         if self.start_tls:
             connection.start_tls(read_server_info=False)
         try:
-            connection.bind()
-        except LDAPSchemaError as exc:
+            successful = connection.bind()
+            if successful:
+                return connection
+        except (LDAPSchemaError, LDAPInsufficientAccessRightsResult) as exc:
             # Schema error, so try connecting without schema info
             # See https://github.com/goauthentik/authentik/issues/4590
+            # See also https://github.com/goauthentik/authentik/issues/3399
             if server_kwargs.get("get_info", ALL) == NONE:
                 raise exc
             server_kwargs["get_info"] = NONE
             return self.connection(server_kwargs, connection_kwargs)
-        return connection
+        return RuntimeError("Failed to bind")
 
     class Meta:
         verbose_name = _("LDAP Source")

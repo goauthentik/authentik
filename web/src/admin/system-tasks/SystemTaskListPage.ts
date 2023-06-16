@@ -7,8 +7,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -22,10 +21,10 @@ export class SystemTaskListPage extends TablePage<Task> {
         return false;
     }
     pageTitle(): string {
-        return t`System Tasks`;
+        return msg("System Tasks");
     }
     pageDescription(): string {
-        return t`Long-running operations which authentik executes in the background.`;
+        return msg("Long-running operations which authentik executes in the background.");
     }
     pageIcon(): string {
         return "pf-icon pf-icon-automation";
@@ -57,24 +56,24 @@ export class SystemTaskListPage extends TablePage<Task> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Identifier`),
-            new TableColumn(t`Description`),
-            new TableColumn(t`Last run`),
-            new TableColumn(t`Status`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Identifier")),
+            new TableColumn(msg("Description")),
+            new TableColumn(msg("Last run")),
+            new TableColumn(msg("Status")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     taskStatus(task: Task): TemplateResult {
         switch (task.status) {
             case TaskStatusEnum.Successful:
-                return html`<ak-label color=${PFColor.Green}>${t`Successful`}</ak-label>`;
+                return html`<ak-label color=${PFColor.Green}>${msg("Successful")}</ak-label>`;
             case TaskStatusEnum.Warning:
-                return html`<ak-label color=${PFColor.Orange}>${t`Warning`}</ak-label>`;
+                return html`<ak-label color=${PFColor.Orange}>${msg("Warning")}</ak-label>`;
             case TaskStatusEnum.Error:
-                return html`<ak-label color=${PFColor.Red}>${t`Error`}</ak-label>`;
+                return html`<ak-label color=${PFColor.Red}>${msg("Error")}</ak-label>`;
             default:
-                return html`<ak-label color=${PFColor.Grey}>${t`Unknown`}</ak-label>`;
+                return html`<ak-label color=${PFColor.Grey}>${msg("Unknown")}</ak-label>`;
         }
     }
 
@@ -84,17 +83,17 @@ export class SystemTaskListPage extends TablePage<Task> {
                     <dl class="pf-c-description-list pf-m-horizontal">
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${t`Duration`}</span>
+                                <span class="pf-c-description-list__text">${msg("Duration")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${t`${item.taskDuration.toFixed(2)} seconds`}
+                                    ${msg(str`${item.taskDuration.toFixed(2)} seconds`)}
                                 </div>
                             </dd>
                         </div>
                         <div class="pf-c-description-list__group">
                             <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${t`Messages`}</span>
+                                <span class="pf-c-description-list__text">${msg("Messages")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">

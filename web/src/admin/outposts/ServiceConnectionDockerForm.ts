@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -28,9 +27,9 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated integration.`;
+            return msg("Successfully updated integration.");
         } else {
-            return t`Successfully created integration.`;
+            return msg("Successfully created integration.");
         }
     }
 
@@ -49,7 +48,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -69,13 +68,15 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Local`}</span>
+                    <span class="pf-c-switch__label">${msg("Local")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`If enabled, use the local connection. Required Docker socket/Kubernetes Integration.`}
+                    ${msg(
+                        "If enabled, use the local connection. Required Docker socket/Kubernetes Integration.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Docker URL`} ?required=${true} name="url">
+            <ak-form-element-horizontal label=${msg("Docker URL")} ?required=${true} name="url">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.url)}"
@@ -83,11 +84,13 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.`}
+                    ${msg(
+                        "Can be in the format of 'unix://' when connecting to a local docker daemon, using 'ssh://' to connect via SSH, or 'https://:2376' when connecting to a remote system.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`TLS Verification Certificate`}
+                label=${msg("TLS Verification Certificate")}
                 name="tlsVerification"
             >
                 <ak-search-select
@@ -118,11 +121,13 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`CA which the endpoint's Certificate is verified against. Can be left empty for no validation.`}
+                    ${msg(
+                        "CA which the endpoint's Certificate is verified against. Can be left empty for no validation.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`TLS Authentication Certificate/SSH Keypair`}
+                label=${msg("TLS Authentication Certificate/SSH Keypair")}
                 name="tlsAuthentication"
             >
                 <ak-search-select
@@ -153,10 +158,12 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 >
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Certificate/Key used for authentication. Can be left empty for no authentication.`}
+                    ${msg(
+                        "Certificate/Key used for authentication. Can be left empty for no authentication.",
+                    )}
                 </p>
                 <p class="pf-c-form__helper-text">
-                    ${t`When connecting via SSH, this keypair is used for authentication.`}
+                    ${msg("When connecting via SSH, this keypair is used for authentication.")}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

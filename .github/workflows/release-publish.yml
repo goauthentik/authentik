@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2.1.0
+        uses: docker/setup-qemu-action@v2.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: prepare variables
@@ -59,7 +59,7 @@ jobs:
         with:
           go-version-file: "go.mod"
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2.1.0
+        uses: docker/setup-qemu-action@v2.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: prepare variables
@@ -123,6 +123,7 @@ jobs:
           set -x
           export GOOS=${{ matrix.goos }}
           export GOARCH=${{ matrix.goarch }}
+          export CGO_ENABLED=0
           go build -tags=outpost_static_embed -v -o ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2

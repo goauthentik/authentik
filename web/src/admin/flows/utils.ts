@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { msg } from "@lit/localize";
 
 import { Flow, FlowDesignationEnum, LayoutEnum } from "@goauthentik/api";
 
@@ -9,37 +9,37 @@ export function RenderFlowOption(flow: Flow): string {
 export function DesignationToLabel(designation: FlowDesignationEnum): string {
     switch (designation) {
         case FlowDesignationEnum.Authentication:
-            return t`Authentication`;
+            return msg("Authentication");
         case FlowDesignationEnum.Authorization:
-            return t`Authorization`;
+            return msg("Authorization");
         case FlowDesignationEnum.Enrollment:
-            return t`Enrollment`;
+            return msg("Enrollment");
         case FlowDesignationEnum.Invalidation:
-            return t`Invalidation`;
+            return msg("Invalidation");
         case FlowDesignationEnum.Recovery:
-            return t`Recovery`;
+            return msg("Recovery");
         case FlowDesignationEnum.StageConfiguration:
-            return t`Stage Configuration`;
+            return msg("Stage Configuration");
         case FlowDesignationEnum.Unenrollment:
-            return t`Unenrollment`;
+            return msg("Unenrollment");
         case FlowDesignationEnum.UnknownDefaultOpenApi:
-            return t`Unknown designation`;
+            return msg("Unknown designation");
     }
 }
 
 export function LayoutToLabel(layout: LayoutEnum): string {
     switch (layout) {
         case LayoutEnum.Stacked:
-            return t`Stacked`;
+            return msg("Stacked");
         case LayoutEnum.ContentLeft:
-            return t`Content left`;
+            return msg("Content left");
         case LayoutEnum.ContentRight:
-            return t`Content right`;
+            return msg("Content right");
         case LayoutEnum.SidebarLeft:
-            return t`Sidebar left`;
+            return msg("Sidebar left");
         case LayoutEnum.SidebarRight:
-            return t`Sidebar right`;
+            return msg("Sidebar right");
         case LayoutEnum.UnknownDefaultOpenApi:
-            return t`Unknown layout`;
+            return msg("Unknown layout");
     }
 }

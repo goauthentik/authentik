@@ -7,7 +7,7 @@ from cryptography import x509
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.asymmetric import ec, rsa
-from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
+from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from cryptography.x509.oid import NameOID
 
 from authentik import __version__
@@ -40,7 +40,7 @@ class CertificateBuilder:
         self.cert.save()
         return self.cert
 
-    def generate_private_key(self) -> PRIVATE_KEY_TYPES:
+    def generate_private_key(self) -> PrivateKeyTypes:
         """Generate private key"""
         if self._use_ec_private_key:
             return ec.generate_private_key(curve=ec.SECP256R1)

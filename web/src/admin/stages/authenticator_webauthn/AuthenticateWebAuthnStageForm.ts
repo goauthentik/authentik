@@ -6,8 +6,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -33,9 +32,9 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -58,9 +57,11 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello).`}
+                ${msg(
+                    "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
+                )}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${first(this.instance?.name, "")}"
@@ -69,7 +70,7 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Authenticator type name`}
+                label=${msg("Authenticator type name")}
                 ?required=${false}
                 name="friendlyName"
             >
@@ -79,30 +80,34 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Display name of this authenticator, used by users when they enroll an authenticator.`}
+                    ${msg(
+                        "Display name of this authenticator, used by users when they enroll an authenticator.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`User verification`}
+                        label=${msg("User verification")}
                         ?required=${true}
                         name="userVerification"
                     >
                         <ak-radio
                             .options=${[
                                 {
-                                    label: t`User verification must occur.`,
+                                    label: msg("User verification must occur."),
                                     value: UserVerificationEnum.Required,
                                     default: true,
                                 },
                                 {
-                                    label: t`User verification is preferred if available, but not required.`,
+                                    label: msg(
+                                        "User verification is preferred if available, but not required.",
+                                    ),
                                     value: UserVerificationEnum.Preferred,
                                 },
                                 {
-                                    label: t`User verification should not occur.`,
+                                    label: msg("User verification should not occur."),
                                     value: UserVerificationEnum.Discouraged,
                                 },
                             ]}
@@ -111,23 +116,29 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Resident key requirement`}
+                        label=${msg("Resident key requirement")}
                         ?required=${true}
                         name="residentKeyRequirement"
                     >
                         <ak-radio
                             .options=${[
                                 {
-                                    label: t`The authenticator should not create a dedicated credential`,
+                                    label: msg(
+                                        "The authenticator should not create a dedicated credential",
+                                    ),
                                     value: ResidentKeyRequirementEnum.Required,
                                     default: true,
                                 },
                                 {
-                                    label: t`The authenticator can create and store a dedicated credential, but if it doesn't that's alright too`,
+                                    label: msg(
+                                        "The authenticator can create and store a dedicated credential, but if it doesn't that's alright too",
+                                    ),
                                     value: ResidentKeyRequirementEnum.Preferred,
                                 },
                                 {
-                                    label: t`The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur`,
+                                    label: msg(
+                                        "The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur",
+                                    ),
                                     value: ResidentKeyRequirementEnum.Discouraged,
                                 },
                             ]}
@@ -136,23 +147,25 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Authenticator Attachment`}
+                        label=${msg("Authenticator Attachment")}
                         ?required=${true}
                         name="authenticatorAttachment"
                     >
                         <ak-radio
                             .options=${[
                                 {
-                                    label: t`No preference is sent`,
+                                    label: msg("No preference is sent"),
                                     value: null,
                                     default: true,
                                 },
                                 {
-                                    label: t`A non-removable authenticator, like TouchID or Windows Hello`,
+                                    label: msg(
+                                        "A non-removable authenticator, like TouchID or Windows Hello",
+                                    ),
                                     value: AuthenticatorAttachmentEnum.Platform,
                                 },
                                 {
-                                    label: t`A "roaming" authenticator, like a YubiKey`,
+                                    label: msg('A "roaming" authenticator, like a YubiKey'),
                                     value: AuthenticatorAttachmentEnum.CrossPlatform,
                                 },
                             ]}
@@ -160,7 +173,10 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                         >
                         </ak-radio>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
+                    <ak-form-element-horizontal
+                        label=${msg("Configuration flow")}
+                        name="configureFlow"
+                    >
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
@@ -192,7 +208,9 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.`}
+                            ${msg(
+                                "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

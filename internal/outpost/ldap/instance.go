@@ -2,15 +2,13 @@ package ldap
 
 import (
 	"crypto/tls"
-	"fmt"
 	"strings"
 	"sync"
 
 	"github.com/go-openapi/strfmt"
-	"github.com/nmcclain/ldap"
 	log "github.com/sirupsen/logrus"
+
 	"goauthentik.io/api/v3"
-	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/outpost/ldap/bind"
 	ldapConstants "goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/flags"
@@ -39,7 +37,7 @@ type ProviderInstance struct {
 	outpostName         string
 	outpostPk           int32
 	searchAllowedGroups []*strfmt.UUID
-	boundUsersMutex     sync.RWMutex
+	boundUsersMutex     *sync.RWMutex
 	boundUsers          map[string]*flags.UserFlags
 
 	uidStartNumber int32
@@ -104,43 +102,6 @@ func (pi *ProviderInstance) GetInvalidationFlowSlug() string {
 
 func (pi *ProviderInstance) GetSearchAllowedGroups() []*strfmt.UUID {
 	return pi.searchAllowedGroups
-}
-
-func (pi *ProviderInstance) GetBaseEntry() *ldap.Entry {
-	return &ldap.Entry{
-		DN: pi.GetBaseDN(),
-		Attributes: []*ldap.EntryAttribute{
-			{
-				Name:   "distinguishedName",
-				Values: []string{pi.GetBaseDN()},
-			},
-			{
-				Name:   "objectClass",
-				Values: []string{ldapConstants.OCTop, ldapConstants.OCDomain},
-			},
-			{
-				Name:   "supportedLDAPVersion",
-				Values: []string{"3"},
-			},
-			{
-				Name: "namingContexts",
-				Values: []string{
-					pi.GetBaseDN(),
-					pi.GetBaseUserDN(),
-					pi.GetBaseGroupDN(),
-					pi.GetBaseVirtualGroupDN(),
-				},
-			},
-			{
-				Name:   "vendorName",
-				Values: []string{"goauthentik.io"},
-			},
-			{
-				Name:   "vendorVersion",
-				Values: []string{fmt.Sprintf("authentik LDAP Outpost Version %s", constants.FullVersion())},
-			},
-		},
-	}
 }
 
 func (pi *ProviderInstance) GetNeededObjects(scope int, baseDN string, filterOC string) (bool, bool) {

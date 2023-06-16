@@ -2,8 +2,7 @@ import { CURRENT_CLASS, EVENT_REFRESH, ROUTE_SEPARATOR } from "@goauthentik/comm
 import { AKElement } from "@goauthentik/elements/Base";
 import { getURLParams, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -99,7 +98,7 @@ export class Tabs extends AKElement {
         }
         if (!this.currentPage) {
             if (pages.length < 1) {
-                return html`<h1>${t`no tabs defined`}</h1>`;
+                return html`<h1>${msg("no tabs defined")}</h1>`;
             }
             const wantedPage = pages[0].attributes.getNamedItem("slot")?.value;
             this.onClick(wantedPage);

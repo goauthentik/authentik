@@ -8,6 +8,7 @@ from rest_framework.viewsets import ViewSet
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.reflection import get_apps
+from authentik.policies.event_matcher.models import model_choices
 
 
 class AppSerializer(PassiveSerializer):
@@ -28,4 +29,18 @@ class AppsViewSet(ViewSet):
         data = []
         for app in sorted(get_apps(), key=lambda app: app.name):
             data.append({"name": app.name, "label": app.verbose_name})
+        return Response(AppSerializer(data, many=True).data)
+
+
+class ModelViewSet(ViewSet):
+    """Read-only view list all installed models"""
+
+    permission_classes = [IsAdminUser]
+
+    @extend_schema(responses={200: AppSerializer(many=True)})
+    def list(self, request: Request) -> Response:
+        """Read-only view list all installed models"""
+        data = []
+        for name, label in model_choices():
+            data.append({"name": name, "label": label})
         return Response(AppSerializer(data, many=True).data)

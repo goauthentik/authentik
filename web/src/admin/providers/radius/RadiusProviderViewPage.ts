@@ -9,8 +9,7 @@ import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -76,12 +75,12 @@ export class RadiusProviderViewPage extends AKElement {
         return html`<ak-tabs>
             <section
                 slot="page-overview"
-                data-tab-title="${t`Overview`}"
+                data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 ${this.provider?.outpostSet.length < 1
                     ? html`<div slot="header" class="pf-c-banner pf-m-warning">
-                          ${t`Warning: Provider is not used by any Outpost.`}
+                          ${msg("Warning: Provider is not used by any Outpost.")}
                       </div>`
                     : html``}
                 <div class="pf-u-display-flex pf-u-justify-content-center">
@@ -92,7 +91,7 @@ export class RadiusProviderViewPage extends AKElement {
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
-                                                >${t`Name`}</span
+                                                >${msg("Name")}</span
                                             >
                                         </dt>
                                         <dd class="pf-c-description-list__description">
@@ -104,7 +103,7 @@ export class RadiusProviderViewPage extends AKElement {
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
-                                                >${t`Assigned to application`}</span
+                                                >${msg("Assigned to application")}</span
                                             >
                                         </dt>
                                         <dd class="pf-c-description-list__description">
@@ -118,7 +117,7 @@ export class RadiusProviderViewPage extends AKElement {
                                     <div class="pf-c-description-list__group">
                                         <dt class="pf-c-description-list__term">
                                             <span class="pf-c-description-list__text"
-                                                >${t`Client Networks`}</span
+                                                >${msg("Client Networks")}</span
                                             >
                                         </dt>
                                         <dd class="pf-c-description-list__description">
@@ -131,15 +130,15 @@ export class RadiusProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-card__footer">
                                 <ak-forms-modal>
-                                    <span slot="submit"> ${t`Update`} </span>
-                                    <span slot="header"> ${t`Update Radius Provider`} </span>
+                                    <span slot="submit"> ${msg("Update")} </span>
+                                    <span slot="header"> ${msg("Update Radius Provider")} </span>
                                     <ak-provider-radius-form
                                         slot="form"
                                         .instancePk=${this.provider.pk}
                                     >
                                     </ak-provider-radius-form>
                                     <button slot="trigger" class="pf-c-button pf-m-primary">
-                                        ${t`Edit`}
+                                        ${msg("Edit")}
                                     </button>
                                 </ak-forms-modal>
                             </div>
@@ -149,7 +148,7 @@ export class RadiusProviderViewPage extends AKElement {
             </section>
             <section
                 slot="page-changelog"
-                data-tab-title="${t`Changelog`}"
+                data-tab-title="${msg("Changelog")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">

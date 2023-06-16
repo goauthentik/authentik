@@ -7,7 +7,8 @@
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
         "plugin:lit/recommended",
-        "plugin:custom-elements/recommended"
+        "plugin:custom-elements/recommended",
+        "plugin:storybook/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -18,7 +19,7 @@
     "rules": {
         "indent": "off",
         "linebreak-style": ["error", "unix"],
-        "quotes": ["error", "double"],
+        "quotes": ["error", "double", { "avoidEscape": true }],
         "semi": ["error", "always"],
         "@typescript-eslint/ban-ts-comment": "off"
     }

@@ -8,6 +8,7 @@ from drf_spectacular.utils import extend_schema, extend_schema_field, inline_ser
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import DictField, ListField
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -16,6 +17,7 @@ from authentik.admin.api.tasks import TaskSerializer
 from authentik.core.api.propertymappings import PropertyMappingSerializer
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.crypto.models import CertificateKeyPair
 from authentik.events.monitored_tasks import TaskInfo
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.tasks import SYNC_CLASSES
@@ -23,6 +25,15 @@ from authentik.sources.ldap.tasks import SYNC_CLASSES
 
 class LDAPSourceSerializer(SourceSerializer):
     """LDAP Source Serializer"""
+
+    client_certificate = PrimaryKeyRelatedField(
+        allow_null=True,
+        help_text="Client certificate to authenticate against the LDAP Server's Certificate.",
+        queryset=CertificateKeyPair.objects.exclude(
+            key_data__exact="",
+        ),
+        required=False,
+    )
 
     def validate(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Check that only a single source has password_sync on"""
@@ -42,9 +53,11 @@ class LDAPSourceSerializer(SourceSerializer):
         fields = SourceSerializer.Meta.fields + [
             "server_uri",
             "peer_certificate",
+            "client_certificate",
             "bind_cn",
             "bind_password",
             "start_tls",
+            "sni",
             "base_dn",
             "additional_user_dn",
             "additional_group_dn",
@@ -75,7 +88,9 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         "server_uri",
         "bind_cn",
         "peer_certificate",
+        "client_certificate",
         "start_tls",
+        "sni",
         "base_dn",
         "additional_user_dn",
         "additional_group_dn",

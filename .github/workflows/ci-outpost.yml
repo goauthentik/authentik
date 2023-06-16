@@ -29,7 +29,8 @@ jobs:
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
-          args: --timeout 5000s
+          version: v1.52.2
+          args: --timeout 5000s --verbose
           skip-pkg-cache: true
   test-unittest:
     runs-on: ubuntu-latest
@@ -67,7 +68,7 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2.1.0
+        uses: docker/setup-qemu-action@v2.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: prepare variables
@@ -135,4 +136,5 @@ jobs:
           set -x
           export GOOS=${{ matrix.goos }}
           export GOARCH=${{ matrix.goarch }}
+          export CGO_ENABLED=0
           go build -tags=outpost_static_embed -v -o ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}

@@ -36,6 +36,7 @@ module.exports = {
                     label: "Cloud Providers",
                     items: [
                         "services/aws/index",
+                        "services/google/index",
                         "services/hashicorp-cloud/index",
                         "services/oracle-cloud/index",
                     ],

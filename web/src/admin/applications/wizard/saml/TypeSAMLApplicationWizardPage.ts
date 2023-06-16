@@ -1,8 +1,7 @@
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 
@@ -18,14 +17,16 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
     applicationTypes: TypeCreate[] = [
         {
             component: "ak-application-wizard-type-saml-import",
-            name: t`Import SAML Metadata`,
-            description: t`Import the metadata document of the applicaation you want to configure.`,
+            name: msg("Import SAML Metadata"),
+            description: msg(
+                "Import the metadata document of the applicaation you want to configure.",
+            ),
             modelName: "",
         },
         {
             component: "ak-application-wizard-type-saml-config",
-            name: t`Manual configuration`,
-            description: t`Manually configure SAML`,
+            name: msg("Manual configuration"),
+            description: msg("Manually configure SAML"),
             modelName: "",
         },
     ];
@@ -34,7 +35,7 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
         return [PFBase, PFButton, PFForm, PFRadio];
     }
 
-    sidebarLabel = () => t`Application type`;
+    sidebarLabel = () => msg("Application type");
 
     render(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

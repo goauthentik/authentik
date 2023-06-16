@@ -1,8 +1,6 @@
 ---
-title: Troubleshooting access problems
+title: I can't access an application
 ---
-
-### I get an access denied error when trying to access an application.
 
 If your user is a superuser, or has the attribute `goauthentik.io/user/debug` set to true (can also be set on a group level):
 

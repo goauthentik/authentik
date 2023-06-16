@@ -9,8 +9,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -22,10 +21,10 @@ export class PromptListPage extends TablePage<Prompt> {
         return true;
     }
     pageTitle(): string {
-        return t`Prompts`;
+        return msg("Prompts");
     }
     pageDescription(): string {
-        return t`Single Prompts that can be used for Prompt Stages.`;
+        return msg("Single Prompts that can be used for Prompt Stages.");
     }
     pageIcon(): string {
         return "pf-icon pf-icon-plugged";
@@ -47,19 +46,19 @@ export class PromptListPage extends TablePage<Prompt> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Field`, "field_key"),
-            new TableColumn(t`Type`, "type"),
-            new TableColumn(t`Order`, "order"),
-            new TableColumn(t`Stages`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Field"), "field_key"),
+            new TableColumn(msg("Type"), "type"),
+            new TableColumn(msg("Order"), "order"),
+            new TableColumn(msg("Stages")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Prompt(s)`}
+            objectLabel=${msg("Prompt(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Prompt) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesPromptPromptsUsedByList({
@@ -73,7 +72,7 @@ export class PromptListPage extends TablePage<Prompt> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -88,8 +87,8 @@ export class PromptListPage extends TablePage<Prompt> {
                 return html`<li>${stage.name}</li>`;
             })}`,
             html`<ak-forms-modal>
-                <span slot="submit"> ${t`Update`} </span>
-                <span slot="header"> ${t`Update Prompt`} </span>
+                <span slot="submit"> ${msg("Update")} </span>
+                <span slot="header"> ${msg("Update Prompt")} </span>
                 <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
                     <i class="fas fa-edit"></i>
@@ -101,10 +100,10 @@ export class PromptListPage extends TablePage<Prompt> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Prompt`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Prompt")} </span>
                 <ak-prompt-form slot="form"> </ak-prompt-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
             </ak-forms-modal>
         `;
     }

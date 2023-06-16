@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -64,7 +63,8 @@ export class AuthenticatorDuoStage extends BaseStage<
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -83,15 +83,20 @@ export class AuthenticatorDuoStage extends BaseStage<
                     >
                         <div slot="link">
                             <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                >${t`Not you?`}</a
+                                >${msg("Not you?")}</a
                             >
                         </div>
                     </ak-form-static>
-                    <img src=${this.challenge.activationBarcode} alt=${t`Duo activation QR code`} />
+                    <img
+                        src=${this.challenge.activationBarcode}
+                        alt=${msg("Duo activation QR code")}
+                    />
                     <p>
-                        ${t`Alternatively, if your current device has Duo installed, click on this link:`}
+                        ${msg(
+                            "Alternatively, if your current device has Duo installed, click on this link:",
+                        )}
                     </p>
-                    <a href=${this.challenge.activationCode}>${t`Duo activation`}</a>
+                    <a href=${this.challenge.activationCode}>${msg("Duo activation")}</a>
 
                     <div class="pf-c-form__group pf-m-action">
                         <button
@@ -101,7 +106,7 @@ export class AuthenticatorDuoStage extends BaseStage<
                                 this.checkEnrollStatus();
                             }}
                         >
-                            ${t`Check status`}
+                            ${msg("Check status")}
                         </button>
                     </div>
                 </form>

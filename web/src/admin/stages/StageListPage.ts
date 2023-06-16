@@ -28,8 +28,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -39,10 +38,12 @@ import { Stage, StagesApi } from "@goauthentik/api";
 @customElement("ak-stage-list")
 export class StageListPage extends TablePage<Stage> {
     pageTitle(): string {
-        return t`Stages`;
+        return msg("Stages");
     }
     pageDescription(): string | undefined {
-        return t`Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.`;
+        return msg(
+            "Stages are single steps of a Flow that a user is guided through. A stage can only be executed from within a flow.",
+        );
     }
     pageIcon(): string {
         return "pf-icon pf-icon-plugged";
@@ -67,16 +68,16 @@ export class StageListPage extends TablePage<Stage> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Flows`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Flows")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Stage(s)`}
+            objectLabel=${msg("Stage(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Stage) => {
                 return new StagesApi(DEFAULT_CONFIG).stagesAllUsedByList({
@@ -90,7 +91,7 @@ export class StageListPage extends TablePage<Stage> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -99,8 +100,8 @@ export class StageListPage extends TablePage<Stage> {
         switch (stage.component) {
             case "ak-stage-authenticator-duo-form":
                 return html`<ak-forms-modal>
-                    <span slot="submit">${t`Import`}</span>
-                    <span slot="header">${t`Import Duo device`}</span>
+                    <span slot="submit">${msg("Import")}</span>
+                    <span slot="header">${msg("Import Duo device")}</span>
                     <ak-stage-authenticator-duo-device-import-form
                         slot="form"
                         .instancePk=${stage.pk}
@@ -129,8 +130,8 @@ export class StageListPage extends TablePage<Stage> {
                 })}
             </ul>`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update ${item.verboseName}`} </span>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
                     <ak-proxy-form
                         slot="form"
                         .args=${{

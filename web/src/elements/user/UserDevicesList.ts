@@ -4,8 +4,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { MFADevicesPage, deviceTypeName } from "@goauthentik/user/user-settings/mfa/MFADevicesPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -64,9 +63,9 @@ export class UserDeviceList extends MFADevicesPage {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Name`, ""),
-            new TableColumn(t`Type`, ""),
-            new TableColumn(t`Confirmed`, ""),
+            new TableColumn(msg("Name"), ""),
+            new TableColumn(msg("Type"), ""),
+            new TableColumn(msg("Confirmed"), ""),
         ];
     }
 
@@ -77,7 +76,7 @@ export class UserDeviceList extends MFADevicesPage {
             }}
             class="pf-m-secondary"
         >
-            ${t`Refresh`}</ak-spinner-button
+            ${msg("Refresh")}</ak-spinner-button
         >`;
     }
 
@@ -85,7 +84,7 @@ export class UserDeviceList extends MFADevicesPage {
         return [
             html`${item.name}`,
             html`${deviceTypeName(item)}`,
-            html`${item.confirmed ? t`Yes` : t`No`}`,
+            html`${item.confirmed ? msg("Yes") : msg("No")}`,
         ];
     }
 }

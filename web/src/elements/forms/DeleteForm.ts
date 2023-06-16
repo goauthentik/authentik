@@ -4,8 +4,7 @@ import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -52,14 +51,14 @@ export class DeleteForm extends ModalButton {
 
     onSuccess(): void {
         showMessage({
-            message: t`Successfully deleted ${this.objectLabel} ${this.obj?.name}`,
+            message: msg(str`Successfully deleted ${this.objectLabel} ${this.obj?.name}`),
             level: MessageLevel.success,
         });
     }
 
     onError(e: Error): void {
         showMessage({
-            message: t`Failed to delete ${this.objectLabel}: ${e.toString()}`,
+            message: msg(str`Failed to delete ${this.objectLabel}: ${e.toString()}`),
             level: MessageLevel.error,
         });
     }
@@ -73,12 +72,14 @@ export class DeleteForm extends ModalButton {
         }
         return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
                 <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${t`Delete ${this.objectLabel}`}</h1>
+                    <h1 class="pf-c-title pf-m-2xl">${msg(str`Delete ${this.objectLabel}`)}</h1>
                 </div>
             </section>
             <section class="pf-c-modal-box__body pf-m-light">
                 <form class="pf-c-form pf-m-horizontal">
-                    <p>${t`Are you sure you want to delete ${this.objectLabel} ${objName} ?`}</p>
+                    <p>
+                        ${msg(str`Are you sure you want to delete ${this.objectLabel} ${objName}?`)}
+                    </p>
                 </form>
             </section>
             ${this.usedBy
@@ -90,26 +91,32 @@ export class DeleteForm extends ModalButton {
                           return html`
                               <section class="pf-c-modal-box__body pf-m-light">
                                   <form class="pf-c-form pf-m-horizontal">
-                                      <p>${t`The following objects use ${objName} `}</p>
+                                      <p>${msg(str`The following objects use ${objName}`)}</p>
                                       <ul class="pf-c-list">
                                           ${usedBy.map((ub) => {
                                               let consequence = "";
                                               switch (ub.action) {
                                                   case UsedByActionEnum.Cascade:
-                                                      consequence = t`object will be DELETED`;
+                                                      consequence = msg("object will be DELETED");
                                                       break;
                                                   case UsedByActionEnum.CascadeMany:
-                                                      consequence = t`connecting object will be deleted`;
+                                                      consequence = msg(
+                                                          "connecting object will be deleted",
+                                                      );
                                                       break;
                                                   case UsedByActionEnum.SetDefault:
-                                                      consequence = t`reference will be reset to default value`;
+                                                      consequence = msg(
+                                                          "reference will be reset to default value",
+                                                      );
                                                       break;
                                                   case UsedByActionEnum.SetNull:
-                                                      consequence = t`reference will be set to an empty value`;
+                                                      consequence = msg(
+                                                          "reference will be set to an empty value",
+                                                      );
                                                       break;
                                               }
                                               return html`<li>
-                                                  ${t`${ub.name} (${consequence})`}
+                                                  ${msg(str`${ub.name} (${consequence})`)}
                                               </li>`;
                                           })}
                                       </ul>
@@ -126,7 +133,7 @@ export class DeleteForm extends ModalButton {
                     }}
                     class="pf-m-danger"
                 >
-                    ${t`Delete`} </ak-spinner-button
+                    ${msg("Delete")} </ak-spinner-button
                 >&nbsp;
                 <ak-spinner-button
                     .callAction=${async () => {
@@ -134,7 +141,7 @@ export class DeleteForm extends ModalButton {
                     }}
                     class="pf-m-secondary"
                 >
-                    ${t`Cancel`}
+                    ${msg("Cancel")}
                 </ak-spinner-button>
             </footer>`;
     }

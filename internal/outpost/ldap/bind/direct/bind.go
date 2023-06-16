@@ -3,8 +3,8 @@ package direct
 import (
 	"context"
 
+	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
-	"github.com/nmcclain/ldap"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/flow"

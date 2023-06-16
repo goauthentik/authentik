@@ -4,8 +4,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -21,9 +20,9 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -43,9 +42,9 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`This stage can be included in enrollment flows to accept invitations.`}
+                ${msg("This stage can be included in enrollment flows to accept invitations.")}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${this.instance?.name || ""}"
@@ -54,7 +53,7 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="continueFlowWithoutInvitation">
                         <label class="pf-c-switch">
@@ -72,11 +71,13 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
                                 </span>
                             </span>
                             <span class="pf-c-switch__label"
-                                >${t`Continue flow without invitation`}</span
+                                >${msg("Continue flow without invitation")}</span
                             >
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.`}
+                            ${msg(
+                                "If this flag is set, this Stage will jump to the next Stage when no Invitation is given. By default this Stage will cancel the Flow when no invitation is given.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

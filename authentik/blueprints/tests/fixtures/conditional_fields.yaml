@@ -11,31 +11,37 @@ metadata:
 entries:
   - model: authentik_core.token
     identifiers:
-      identifier: %(uid)s-token
+      identifier: "%(uid)s-token"
     attrs:
-      key: %(uid)s
-      user: %(user)s
+      key: "%(uid)s"
+      user: "%(user)s"
       intent: api
   - model: authentik_core.application
     identifiers:
-      slug: %(uid)s-app
+      slug: "%(uid)s-app"
     attrs:
-      name: %(uid)s-app
+      name: "%(uid)s-app"
       icon: https://goauthentik.io/img/icon.png
   - model: authentik_sources_oauth.oauthsource
     identifiers:
-      slug: %(uid)s-source
+      slug: "%(uid)s-source"
     attrs:
-      name: %(uid)s-source
+      name: "%(uid)s-source"
       provider_type: azuread
-      consumer_key: %(uid)s
-      consumer_secret: %(uid)s
+      consumer_key: "%(uid)s"
+      consumer_secret: "%(uid)s"
       icon: https://goauthentik.io/img/icon.png
   - model: authentik_flows.flow
     identifiers:
-      slug: %(uid)s-flow
+      slug: "%(uid)s-flow"
     attrs:
-      name: %(uid)s-flow
-      title: %(uid)s-flow
+      name: "%(uid)s-flow"
+      title: "%(uid)s-flow"
       designation: authentication
       background: https://goauthentik.io/img/icon.png
+  - model: authentik_core.user
+    identifiers:
+      username: "%(uid)s"
+    attrs:
+      name: "%(uid)s"
+      password: "%(uid)s"

@@ -1,8 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -37,7 +36,7 @@ export class InvitationListLink extends AKElement {
     renderFlowSelector(): TemplateResult {
         return html`<div class="pf-c-description-list__group">
             <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${t`Select an enrollment flow`}</span>
+                <span class="pf-c-description-list__text">${msg("Select an enrollment flow")}</span>
             </dt>
             <dd class="pf-c-description-list__description">
                 <div class="pf-c-description-list__text">
@@ -78,7 +77,7 @@ export class InvitationListLink extends AKElement {
                                         });
                                     });
                                 }),
-                            html`<option>${t`Loading...`}</option>`,
+                            html`<option>${msg("Loading...")}</option>`,
                         )}
                     </select>
                 </div>
@@ -92,7 +91,7 @@ export class InvitationListLink extends AKElement {
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
                     <span class="pf-c-description-list__text"
-                        >${t`Link to use the invitation.`}</span
+                        >${msg("Link to use the invitation.")}</span
                     >
                 </dt>
                 <dd class="pf-c-description-list__description">

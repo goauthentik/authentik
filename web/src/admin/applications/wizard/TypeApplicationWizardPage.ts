@@ -1,7 +1,6 @@
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 
@@ -17,37 +16,43 @@ export class TypeApplicationWizardPage extends WizardPage {
     applicationTypes: TypeCreate[] = [
         {
             component: "ak-application-wizard-type-oauth",
-            name: t`OAuth2/OIDC`,
-            description: t`Modern applications, APIs and Single-page applications.`,
+            name: msg("OAuth2/OIDC"),
+            description: msg("Modern applications, APIs and Single-page applications."),
             modelName: "",
         },
         {
             component: "ak-application-wizard-type-saml",
-            name: t`SAML`,
-            description: t`XML-based SSO standard. Use this if your application only supports SAML.`,
+            name: msg("SAML"),
+            description: msg(
+                "XML-based SSO standard. Use this if your application only supports SAML.",
+            ),
             modelName: "",
         },
         {
             component: "ak-application-wizard-type-proxy",
-            name: t`Proxy`,
-            description: t`Legacy applications which don't natively support SSO.`,
+            name: msg("Proxy"),
+            description: msg("Legacy applications which don't natively support SSO."),
             modelName: "",
         },
         {
             component: "ak-application-wizard-type-ldap",
-            name: t`LDAP`,
-            description: t`Provide an LDAP interface for applications and users to authenticate against.`,
+            name: msg("LDAP"),
+            description: msg(
+                "Provide an LDAP interface for applications and users to authenticate against.",
+            ),
             modelName: "",
         },
         {
             component: "ak-application-wizard-type-link",
-            name: t`Link`,
-            description: t`Provide an LDAP interface for applications and users to authenticate against.`,
+            name: msg("Link"),
+            description: msg(
+                "Provide an LDAP interface for applications and users to authenticate against.",
+            ),
             modelName: "",
         },
     ];
 
-    sidebarLabel = () => t`Authentication method`;
+    sidebarLabel = () => msg("Authentication method");
 
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, PFForm, PFRadio];

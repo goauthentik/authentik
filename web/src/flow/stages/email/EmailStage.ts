@@ -1,8 +1,7 @@
 import "@goauthentik/elements/EmptyState";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -23,7 +22,8 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -36,12 +36,12 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
                     }}
                 >
                     <div class="pf-c-form__group">
-                        <p>${t`Check your Inbox for a verification email.`}</p>
+                        <p>${msg("Check your Inbox for a verification email.")}</p>
                     </div>
 
                     <div class="pf-c-form__group pf-m-action">
                         <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
-                            ${t`Send Email again.`}
+                            ${msg("Send Email again.")}
                         </button>
                     </div>
                 </form>

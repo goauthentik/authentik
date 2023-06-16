@@ -9,7 +9,7 @@ from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey
 from cryptography.hazmat.primitives.asymmetric.rsa import RSAPrivateKey
-from cryptography.hazmat.primitives.asymmetric.types import PRIVATE_KEY_TYPES
+from cryptography.hazmat.primitives.asymmetric.types import PrivateKeyTypes
 from dacite.core import from_dict
 from django.db import models
 from django.http import HttpRequest
@@ -17,6 +17,7 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from jwt import encode
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
 from authentik.core.models import ExpiringModel, PropertyMapping, Provider, User
 from authentik.crypto.models import CertificateKeyPair
@@ -25,6 +26,8 @@ from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.oauth2.id_token import IDToken, SubModes
 from authentik.sources.oauth.models import OAuthSource
+
+LOGGER = get_logger()
 
 
 def generate_client_secret() -> str:
@@ -215,7 +218,7 @@ class OAuth2Provider(Provider):
     )
 
     @cached_property
-    def jwt_key(self) -> tuple[str | PRIVATE_KEY_TYPES, str]:
+    def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
         """Get either the configured certificate or the client secret"""
         if not self.signing_key:
             # No Certificate at all, assume HS256
@@ -251,8 +254,12 @@ class OAuth2Provider(Provider):
         if self.redirect_uris == "":
             return None
         main_url = self.redirect_uris.split("\n", maxsplit=1)[0]
-        launch_url = urlparse(main_url)._replace(path="")
-        return urlunparse(launch_url)
+        try:
+            launch_url = urlparse(main_url)._replace(path="")
+            return urlunparse(launch_url)
+        except ValueError as exc:
+            LOGGER.warning("Failed to format launch url", exc=exc)
+            return None
 
     @property
     def component(self) -> str:

@@ -1,4 +1,6 @@
 """Provider API Views"""
+from django.db.models import QuerySet
+from django.db.models.query import Q
 from django.utils.translation import gettext_lazy as _
 from django_filters.filters import BooleanFilter
 from django_filters.filterset import FilterSet
@@ -56,17 +58,22 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
 
 
 class ProviderFilter(FilterSet):
-    """Filter for groups"""
+    """Filter for providers"""
 
-    application__isnull = BooleanFilter(
-        field_name="application",
-        lookup_expr="isnull",
-    )
+    application__isnull = BooleanFilter(method="filter_application__isnull")
     backchannel_only = BooleanFilter(
         method="filter_backchannel_only",
     )
 
-    def filter_backchannel_only(self, queryset, name, value):
+    def filter_application__isnull(self, queryset: QuerySet, name, value):
+        """Only return providers that are neither assigned to application,
+        both as provider or application provider"""
+        return queryset.filter(
+            Q(backchannel_application__isnull=value, is_backchannel=True)
+            | Q(application__isnull=value)
+        )
+
+    def filter_backchannel_only(self, queryset: QuerySet, name, value):
         """Only return backchannel providers"""
         return queryset.filter(is_backchannel=value)
 

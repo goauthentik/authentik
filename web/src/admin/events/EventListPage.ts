@@ -7,8 +7,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -19,7 +18,7 @@ export class EventListPage extends TablePage<Event> {
     expandable = true;
 
     pageTitle(): string {
-        return t`Event Log`;
+        return msg("Event Log");
     }
     pageDescription(): string | undefined {
         return;
@@ -45,12 +44,12 @@ export class EventListPage extends TablePage<Event> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Action`, "action"),
-            new TableColumn(t`User`, "user"),
-            new TableColumn(t`Creation Date`, "created"),
-            new TableColumn(t`Client IP`, "client_ip"),
-            new TableColumn(t`Tenant`, "tenant_name"),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Action"), "action"),
+            new TableColumn(msg("User"), "user"),
+            new TableColumn(msg("Creation Date"), "created"),
+            new TableColumn(msg("Client IP"), "client_ip"),
+            new TableColumn(msg("Tenant"), "tenant_name"),
+            new TableColumn(msg("Actions")),
         ];
     }
 
@@ -65,16 +64,16 @@ export class EventListPage extends TablePage<Event> {
                       ${item.user.on_behalf_of
                           ? html`<small>
                                 <a href="#/identity/users/${item.user.on_behalf_of.pk}"
-                                    >${t`On behalf of ${item.user.on_behalf_of.username}`}</a
+                                    >${msg(str`On behalf of ${item.user.on_behalf_of.username}`)}</a
                                 >
                             </small>`
                           : html``}`
                 : html`-`,
             html`<span>${item.created?.toLocaleString()}</span>`,
-            html`<div>${item.clientIp || t`-`}</div>
+            html`<div>${item.clientIp || msg("-")}</div>
 
                 <small>${EventGeo(item)}</small>`,
-            html`<span>${item.tenant?.name || t`-`}</span>`,
+            html`<span>${item.tenant?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
                 <i class="fas fa-share-square"></i>
             </a>`,

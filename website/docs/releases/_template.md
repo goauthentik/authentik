@@ -3,7 +3,7 @@ title: Release xxxx.x
 slug: "/releases/xxxx.x"
 ---
 
-## Breaking changes
+<!-- ## Breaking changes -->
 
 ## New features
 
@@ -13,7 +13,14 @@ This release does not introduce any new requirements.
 
 ### docker-compose
 
-Download the docker-compose file for xxxx.x from [here](https://goauthentik.io/version/xxxx.x/docker-compose.yml). Afterwards, simply run `docker-compose up -d`.
+To upgrade, download the new docker-compose file and update the Docker stack with the new version, using these commands:
+
+```
+wget -O docker-compose.yml https://goauthentik.io/version/xxxx.x/docker-compose.yml
+docker-compose up -d
+```
+
+The `-O` flag retains the downloaded file's name, overwriting any existing local file with the same name.
 
 ### Kubernetes
 
@@ -27,8 +34,8 @@ image:
 
 ## Minor changes/fixes
 
-_Insert the output of `make gen-changelog` here_
+<!-- _Insert the output of `make gen-changelog` here_ -->
 
 ## API Changes
 
-_Insert output of `make gen-diff` here_
+<!-- _Insert output of `make gen-diff` here_ -->

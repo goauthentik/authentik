@@ -6,8 +6,7 @@ import "@goauthentik/elements/Expand";
 import "@goauthentik/elements/Spinner";
 import { PFSize } from "@goauthentik/elements/Spinner";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { until } from "lit/directives/until.js";
@@ -62,7 +61,7 @@ export class EventInfo extends AKElement {
             <dl class="pf-c-description-list pf-m-horizontal">
                 <div class="pf-c-description-list__group">
                     <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${t`UID`}</span>
+                        <span class="pf-c-description-list__text">${msg("UID")}</span>
                     </dt>
                     <dd class="pf-c-description-list__description">
                         <div class="pf-c-description-list__text">${context.pk}</div>
@@ -70,7 +69,7 @@ export class EventInfo extends AKElement {
                 </div>
                 <div class="pf-c-description-list__group">
                     <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${t`Name`}</span>
+                        <span class="pf-c-description-list__text">${msg("Name")}</span>
                     </dt>
                     <dd class="pf-c-description-list__description">
                         <div class="pf-c-description-list__text">${context.name}</div>
@@ -78,7 +77,7 @@ export class EventInfo extends AKElement {
                 </div>
                 <div class="pf-c-description-list__group">
                     <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${t`App`}</span>
+                        <span class="pf-c-description-list__text">${msg("App")}</span>
                     </dt>
                     <dd class="pf-c-description-list__description">
                         <div class="pf-c-description-list__text">${context.app}</div>
@@ -86,7 +85,7 @@ export class EventInfo extends AKElement {
                 </div>
                 <div class="pf-c-description-list__group">
                     <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${t`Model Name`}</span>
+                        <span class="pf-c-description-list__text">${msg("Model Name")}</span>
                     </dt>
                     <dd class="pf-c-description-list__description">
                         <div class="pf-c-description-list__text">${context.model_name}</div>
@@ -103,7 +102,7 @@ export class EventInfo extends AKElement {
         return html`<dl class="pf-c-description-list pf-m-horizontal">
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Message`}</span>
+                    <span class="pf-c-description-list__text">${msg("Message")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${context.message}</div>
@@ -111,7 +110,7 @@ export class EventInfo extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`Subject`}</span>
+                    <span class="pf-c-description-list__text">${msg("Subject")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${context.subject}</div>
@@ -119,7 +118,7 @@ export class EventInfo extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`From`}</span>
+                    <span class="pf-c-description-list__text">${msg("From")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">${context.from_email}</div>
@@ -127,7 +126,7 @@ export class EventInfo extends AKElement {
             </div>
             <div class="pf-c-description-list__group">
                 <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${t`To`}</span>
+                    <span class="pf-c-description-list__text">${msg("To")}</span>
                 </dt>
                 <dd class="pf-c-description-list__description">
                     <div class="pf-c-description-list__text">
@@ -143,13 +142,13 @@ export class EventInfo extends AKElement {
     defaultResponse(): TemplateResult {
         return html`<div class="pf-l-flex">
             <div class="pf-l-flex__item">
-                <div class="pf-c-card__title">${t`Context`}</div>
+                <div class="pf-c-card__title">${msg("Context")}</div>
                 <div class="pf-c-card__body">
                     <code>${JSON.stringify(this.event?.context, null, 4)}</code>
                 </div>
             </div>
             <div class="pf-l-flex__item">
-                <div class="pf-c-card__title">${t`User`}</div>
+                <div class="pf-c-card__title">${msg("User")}</div>
                 <div class="pf-c-card__body">
                     <code>${JSON.stringify(this.event?.user, null, 4)}</code>
                 </div>
@@ -212,7 +211,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             case EventActions.ModelUpdated:
             case EventActions.ModelDeleted:
                 return html`
-                    <div class="pf-c-card__title">${t`Affected model:`}</div>
+                    <div class="pf-c-card__title">${msg("Affected model:")}</div>
                     <div class="pf-c-card__body">
                         ${this.getModelInfo(this.event.context?.model as EventModel)}
                     </div>
@@ -220,7 +219,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             case EventActions.AuthorizeApplication:
                 return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Authorized application:`}</div>
+                            <div class="pf-c-card__title">${msg("Authorized application:")}</div>
                             <div class="pf-c-card__body">
                                 ${this.getModelInfo(
                                     this.event.context.authorized_application as EventModel,
@@ -228,7 +227,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                             </div>
                         </div>
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Using flow`}</div>
+                            <div class="pf-c-card__title">${msg("Using flow")}</div>
                             <div class="pf-c-card__body">
                                 <span
                                     >${until(
@@ -250,13 +249,13 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                     </div>
                     <ak-expand>${this.defaultResponse()}</ak-expand>`;
             case EventActions.EmailSent:
-                return html`<div class="pf-c-card__title">${t`Email info:`}</div>
+                return html`<div class="pf-c-card__title">${msg("Email info:")}</div>
                     <div class="pf-c-card__body">${this.getEmailInfo(this.event.context)}</div>
                     <ak-expand>
                         <iframe srcdoc=${this.event.context.body}></iframe>
                     </ak-expand>`;
             case EventActions.SecretView:
-                return html` <div class="pf-c-card__title">${t`Secret:`}</div>
+                return html` <div class="pf-c-card__title">${msg("Secret:")}</div>
                     ${this.getModelInfo(this.event.context.secret as EventModel)}`;
             case EventActions.SystemException:
                 return html` <a
@@ -264,11 +263,11 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                         target="_blank"
                         href=${this.buildGitHubIssueUrl(this.event.context)}
                     >
-                        ${t`Open issue on GitHub...`}
+                        ${msg("Open issue on GitHub...")}
                     </a>
                     <div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Exception`}</div>
+                            <div class="pf-c-card__title">${msg("Exception")}</div>
                             <div class="pf-c-card__body">
                                 <pre>${this.event.context.message}</pre>
                             </div>
@@ -278,13 +277,13 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             case EventActions.PropertyMappingException:
                 return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Exception`}</div>
+                            <div class="pf-c-card__title">${msg("Exception")}</div>
                             <div class="pf-c-card__body">
                                 <pre>${this.event.context.message || this.event.context.error}</pre>
                             </div>
                         </div>
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Expression`}</div>
+                            <div class="pf-c-card__title">${msg("Expression")}</div>
                             <div class="pf-c-card__body">
                                 <code>${this.event.context.expression}</code>
                             </div>
@@ -294,15 +293,15 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             case EventActions.PolicyException:
                 return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Binding`}</div>
+                            <div class="pf-c-card__title">${msg("Binding")}</div>
                             ${this.getModelInfo(this.event.context.binding as EventModel)}
                         </div>
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Request`}</div>
+                            <div class="pf-c-card__title">${msg("Request")}</div>
                             <div class="pf-c-card__body">
                                 <ul class="pf-c-list">
                                     <li>
-                                        ${t`Object`}:
+                                        ${msg("Object")}:
                                         ${this.getModelInfo(
                                             (this.event.context.request as EventContext)
                                                 .obj as EventModel,
@@ -310,7 +309,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                                     </li>
                                     <li>
                                         <span
-                                            >${t`Context`}:
+                                            >${msg("Context")}:
                                             <code
                                                 >${JSON.stringify(
                                                     (this.event.context.request as EventContext)
@@ -325,7 +324,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                             </div>
                         </div>
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Exception`}</div>
+                            <div class="pf-c-card__title">${msg("Exception")}</div>
                             <div class="pf-c-card__body">
                                 <code
                                     >${this.event.context.message || this.event.context.error}</code
@@ -337,15 +336,15 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
             case EventActions.PolicyExecution:
                 return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Binding`}</div>
+                            <div class="pf-c-card__title">${msg("Binding")}</div>
                             ${this.getModelInfo(this.event.context.binding as EventModel)}
                         </div>
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Request`}</div>
+                            <div class="pf-c-card__title">${msg("Request")}</div>
                             <div class="pf-c-card__body">
                                 <ul class="pf-c-list">
                                     <li>
-                                        ${t`Object`}:
+                                        ${msg("Object")}:
                                         ${this.getModelInfo(
                                             (this.event.context.request as EventContext)
                                                 .obj as EventModel,
@@ -353,7 +352,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                                     </li>
                                     <li>
                                         <span
-                                            >${t`Context`}:
+                                            >${msg("Context")}:
                                             <code
                                                 >${JSON.stringify(
                                                     (this.event.context.request as EventContext)
@@ -368,15 +367,15 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                             </div>
                         </div>
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Result`}</div>
+                            <div class="pf-c-card__title">${msg("Result")}</div>
                             <div class="pf-c-card__body">
                                 <ul class="pf-c-list">
                                     <li>
-                                        ${t`Passing`}:
+                                        ${msg("Passing")}:
                                         ${(this.event.context.result as EventContext).passing}
                                     </li>
                                     <li>
-                                        ${t`Messages`}:
+                                        ${msg("Messages")}:
                                         <ul class="pf-c-list">
                                             ${(
                                                 (this.event.context.result as EventContext)
@@ -395,7 +394,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                 return html`<div class="pf-c-card__title">${this.event.context.message}</div>
                     <ak-expand>${this.defaultResponse()}</ak-expand>`;
             case EventActions.UpdateAvailable:
-                return html`<div class="pf-c-card__title">${t`New version available!`}</div>
+                return html`<div class="pf-c-card__title">${msg("New version available!")}</div>
                     <a
                         target="_blank"
                         href="https://github.com/goauthentik/authentik/releases/tag/version%2F${this
@@ -409,7 +408,7 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                 if ("using_source" in this.event.context) {
                     return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
-                            <div class="pf-c-card__title">${t`Using source`}</div>
+                            <div class="pf-c-card__title">${msg("Using source")}</div>
                             ${this.getModelInfo(this.event.context.using_source as EventModel)}
                         </div>
                     </div>`;
@@ -417,18 +416,18 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                 return this.defaultResponse();
             case EventActions.LoginFailed:
                 return html` <div class="pf-c-card__title">
-                        ${t`Attempted to log in as ${this.event.context.username}`}
+                        ${msg(str`Attempted to log in as ${this.event.context.username}`)}
                     </div>
                     <ak-expand>${this.defaultResponse()}</ak-expand>`;
             case EventActions.Logout:
                 if (Object.keys(this.event.context).length === 0) {
-                    return html`<span>${t`No additional data available.`}</span>`;
+                    return html`<span>${msg("No additional data available.")}</span>`;
                 }
                 return this.defaultResponse();
             case EventActions.SystemTaskException:
                 return html`<div class="pf-l-flex">
                     <div class="pf-l-flex__item">
-                        <div class="pf-c-card__title">${t`Exception`}</div>
+                        <div class="pf-c-card__title">${msg("Exception")}</div>
                         <div class="pf-c-card__body">
                             <pre>${this.event.context.message}</pre>
                         </div>

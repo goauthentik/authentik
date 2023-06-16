@@ -52,7 +52,7 @@ lint:
 migrate:
 	python -m lifecycle.migrate
 
-i18n-extract: i18n-extract-core web-extract
+i18n-extract: i18n-extract-core web-i18n-extract
 
 i18n-extract-core:
 	ak makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
@@ -150,8 +150,8 @@ web-lint:
 web-check-compile:
 	cd web && npm run tsc
 
-web-extract:
-	cd web && npm run extract
+web-i18n-extract:
+	cd web && npm run extract-locales
 
 #########################
 ## Website

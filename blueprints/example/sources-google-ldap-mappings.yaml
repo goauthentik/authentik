@@ -1,0 +1,222 @@
+version: 1
+metadata:
+  labels:
+    blueprints.goauthentik.io/instantiate: "false"
+  name: Example - Google Secure LDAP mappings
+entries:
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-uid
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: uid"
+      object_field: "username"
+      expression: |
+        return ldap.get('uid')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-googleuid
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: googleUid"
+      object_field: "attributes.googleUid"
+      expression: |
+        return ldap.get('googleUid')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-posixuid
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: posixUid"
+      object_field: "attributes.posixUid"
+      expression: |
+        return ldap.get('posixUid')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-cn
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: cn"
+      object_field: "name"
+      expression: |
+        return ldap.get('cn')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-sn
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: sn"
+      object_field: "attributes.sn"
+      expression: |
+        return list_flatten(ldap.get('sn'))
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-givenname
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: givenName"
+      object_field: "attributes.givenName"
+      expression: |
+        return list_flatten(ldap.get('givenName'))
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-displayname
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: displayName"
+      object_field: "attributes.displayName"
+      expression: |
+        return ldap.get('displayName')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-mail
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: mail"
+      object_field: "email"
+      expression: |
+        return ldap.get('mail')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-memberof
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: memberOf"
+      object_field: "attributes.memberOf"
+      expression: |
+        return ldap.get('memberOf')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-title
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: title"
+      object_field: "attributes.title"
+      expression: |
+        return ldap.get('title')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-employeenumber
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: employeeNumber"
+      object_field: "attributes.employeeNumber"
+      expression: |
+        return ldap.get('employeeNumber')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-employeetype
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: employeeType"
+      object_field: "attributes.employeeType"
+      expression: |
+        return ldap.get('employeeType')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-departmentnumber
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: departmentNumber"
+      object_field: "attributes.departmentNumber"
+      expression: |
+        return ldap.get('departmentNumber')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-physicaldeliveryofficename
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: physicalDeliveryOfficeName"
+      object_field: "attributes.physicalDeliveryOfficeName"
+      expression: |
+        return ldap.get('physicalDeliveryOfficeName')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-jpegphoto
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: jpegPhoto"
+      object_field: "attributes.jpegPhoto"
+      expression: |
+        return ldap.get('jpegPhoto')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-entryuuid
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: entryUuid"
+      object_field: "attributes.entryUuid"
+      expression: |
+        return ldap.get('entryUuid')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-objectsid
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: objectSid"
+      object_field: "attributes.objectSid"
+      expression: |
+        return ldap.get('objectSid')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-uidnumber
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: uidNumber"
+      object_field: "attributes.uidNumber"
+      expression: |
+        return ldap.get('uidNumber')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-gidnumber
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: gidNumber"
+      object_field: "attributes.gidNumber"
+      expression: |
+        return ldap.get('gidNumber')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-homedirectory
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: homeDirectory"
+      object_field: "attributes.homeDirectory"
+      expression: |
+        return ldap.get('homeDirectory')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-loginshell
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: loginShell"
+      object_field: "attributes.loginShell"
+      expression: |
+        return ldap.get('loginShell')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-gidnumber
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: gidNumber"
+      object_field: "attributes.gidNumber"
+      expression: |
+        return ldap.get('gidNumber')
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-sshpublickey
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: sshPublicKey"
+      object_field: "attributes.sshPublicKey"
+      expression: |
+        return list_flatten(ldap.get('sshPublicKey'))
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-description
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: description"
+      object_field: "attributes.description"
+      expression: |
+        return list_flatten(ldap.get('description'))
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-member
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: member"
+      object_field: "attributes.member"
+      expression: |
+        return list_flatten(ldap.get('member'))
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-memberuid
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: memberUid"
+      object_field: "attributes.memberUid"
+      expression: |
+        return list_flatten(ldap.get('memberUid'))
+  - identifiers:
+      managed: goauthentik.io/sources/ldap/google-googleadmincreated
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "Google Secure LDAP Mapping: googleAdminCreated"
+      object_field: "attributes.googleAdminCreated"
+      expression: |
+        return list_flatten(ldap.get('googleAdminCreated'))

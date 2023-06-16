@@ -4,8 +4,7 @@ import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -49,7 +48,7 @@ export class ConfirmationForm extends ModalButton {
 
     onError(e: Error): void {
         showMessage({
-            message: t`${this.errorMessage}: ${e.toString()}`,
+            message: msg(str`${this.errorMessage}: ${e.toString()}`),
             level: MessageLevel.error,
         });
     }
@@ -82,7 +81,7 @@ export class ConfirmationForm extends ModalButton {
                     }}
                     class="pf-m-secondary"
                 >
-                    ${t`Cancel`}
+                    ${msg("Cancel")}
                 </ak-spinner-button>
             </footer>`;
     }

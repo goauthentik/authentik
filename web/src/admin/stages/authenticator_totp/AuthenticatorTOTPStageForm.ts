@@ -6,8 +6,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -31,9 +30,9 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -53,9 +52,11 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).`}
+                ${msg(
+                    "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).",
+                )}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${first(this.instance?.name, "")}"
@@ -64,7 +65,7 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Authenticator type name`}
+                label=${msg("Authenticator type name")}
                 ?required=${false}
                 name="friendlyName"
             >
@@ -74,29 +75,40 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Display name of this authenticator, used by users when they enroll an authenticator.`}
+                    ${msg(
+                        "Display name of this authenticator, used by users when they enroll an authenticator.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Digits`} ?required=${true} name="digits">
+                    <ak-form-element-horizontal
+                        label=${msg("Digits")}
+                        ?required=${true}
+                        name="digits"
+                    >
                         <select name="users" class="pf-c-form-control">
                             <option
                                 value="${DigitsEnum.NUMBER_6}"
                                 ?selected=${this.instance?.digits === DigitsEnum.NUMBER_6}
                             >
-                                ${t`6 digits, widely compatible`}
+                                ${msg("6 digits, widely compatible")}
                             </option>
                             <option
                                 value="${DigitsEnum.NUMBER_8}"
                                 ?selected=${this.instance?.digits === DigitsEnum.NUMBER_8}
                             >
-                                ${t`8 digits, not compatible with apps like Google Authenticator`}
+                                ${msg(
+                                    "8 digits, not compatible with apps like Google Authenticator",
+                                )}
                             </option>
                         </select>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`Configuration flow`} name="configureFlow">
+                    <ak-form-element-horizontal
+                        label=${msg("Configuration flow")}
+                        name="configureFlow"
+                    >
                         <ak-search-select
                             .fetchObjects=${async (query?: string): Promise<Flow[]> => {
                                 const args: FlowsInstancesListRequest = {
@@ -128,7 +140,9 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
                         >
                         </ak-search-select>
                         <p class="pf-c-form__helper-text">
-                            ${t`Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.`}
+                            ${msg(
+                                "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
