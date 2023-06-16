@@ -7,7 +7,7 @@ from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import RedirectView
 
-from authentik.core.views import apps, impersonate
+from authentik.core.views import apps
 from authentik.core.views.debug import AccessDeniedView
 from authentik.core.views.interface import FlowInterfaceView, InterfaceView
 from authentik.core.views.session import EndSessionView
@@ -27,17 +27,6 @@ urlpatterns = [
         "application/launch/<slug:application_slug>/",
         apps.RedirectToAppLaunch.as_view(),
         name="application-launch",
-    ),
-    # Impersonation
-    path(
-        "-/impersonation/<int:user_id>/",
-        impersonate.ImpersonateInitView.as_view(),
-        name="impersonate-init",
-    ),
-    path(
-        "-/impersonation/end/",
-        impersonate.ImpersonateEndView.as_view(),
-        name="impersonate-end",
     ),
     # Interfaces
     path(

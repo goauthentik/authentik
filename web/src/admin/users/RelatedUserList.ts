@@ -191,12 +191,20 @@ export class RelatedUserList extends Table<User> {
                 </ak-forms-modal>
                 ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.Impersonate)
                     ? html`
-                          <a
-                              class="pf-c-button pf-m-tertiary"
-                              href="${`/-/impersonation/${item.pk}/`}"
+                          <ak-action-button
+                              class="pf-m-tertiary"
+                              .apiRequest=${() => {
+                                  return new CoreApi(DEFAULT_CONFIG)
+                                      .coreUsersImpersonateCreate({
+                                          id: item.pk,
+                                      })
+                                      .then(() => {
+                                          window.location.href = "/";
+                                      });
+                              }}
                           >
                               ${t`Impersonate`}
-                          </a>
+                          </ak-action-button>
                       `
                     : html``}`,
         ];

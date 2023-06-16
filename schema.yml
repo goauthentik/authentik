@@ -4783,6 +4783,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /core/users/{id}/impersonate/:
+    post:
+      operationId: core_users_impersonate_create
+      description: Impersonate a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully started impersonation
+        '401':
+          description: Access denied
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /core/users/{id}/metrics/:
     get:
       operationId: core_users_metrics_retrieve
@@ -4950,6 +4982,29 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/users/impersonate_end/:
+    get:
+      operationId: core_users_impersonate_end_retrieve
+      description: End Impersonation a user
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully started impersonation
         '400':
           content:
             application/json:
