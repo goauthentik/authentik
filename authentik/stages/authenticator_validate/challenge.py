@@ -131,8 +131,14 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
     challenge = request.session.get(SESSION_KEY_WEBAUTHN_CHALLENGE)
     credential_id = data.get("id")
 
-    device = WebAuthnDevice.objects.filter(credential_id=credential_id, user=user).first()
+    device = WebAuthnDevice.objects.filter(credential_id=credential_id).first()
     if not device:
+        raise ValidationError("Invalid device")
+    # We can only check the device's user if the user we're given isn't anonymous
+    # as this validation is also used for password-less login where webauthn is the very first
+    # step done by a user. Only if this validation happens at a later stage we can check
+    # that the device belongs to the user
+    if not user.is_anonymous and device.user != user:
         raise ValidationError("Invalid device")
 
     stage: AuthenticatorValidateStage = stage_view.executor.current_stage
