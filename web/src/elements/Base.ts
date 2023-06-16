@@ -1,8 +1,9 @@
 import { config, tenant } from "@goauthentik/common/api/config";
 import { EVENT_LOCALE_CHANGE, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
+import { adaptCSS } from "@goauthentik/common/utils";
 
-import { CSSResult, LitElement } from "lit";
+import { LitElement } from "lit";
 import { state } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -68,8 +69,7 @@ export class AKElement extends LitElement {
         if ("ShadyDOM" in window) {
             styleRoot = document;
         }
-        const globalStyleSheet = AKGlobal instanceof CSSResult ? AKGlobal.styleSheet : AKGlobal;
-        styleRoot.adoptedStyleSheets = [...styleRoot.adoptedStyleSheets, globalStyleSheet];
+        styleRoot.adoptedStyleSheets = adaptCSS([...styleRoot.adoptedStyleSheets, AKGlobal]);
         this._initTheme(styleRoot);
         this._initCustomCSS(styleRoot);
         return root;
