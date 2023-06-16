@@ -71,7 +71,7 @@
         "@rollup/plugin-node-resolve": "^15.0.2",
         "@rollup/plugin-replace": "^5.0.2",
         "@rollup/plugin-typescript": "^11.1.1",
-        "@storybook/addon-essentials": "^7.0.20",
+        "@storybook/addon-essentials": "^7.0.21",
         "@storybook/addon-links": "^7.0.21",
         "@storybook/blocks": "^7.0.21",
         "@storybook/web-components": "^7.0.21",
