@@ -204,12 +204,12 @@ class ChallengeStageView(StageView):
         for field, errors in response.errors.items():
             for error in errors:
                 full_errors.setdefault(field, [])
-                full_errors[field].append(
-                    {
-                        "string": str(error),
-                        "code": error.code,
-                    }
-                )
+                field_error = {
+                    "string": str(error),
+                }
+                if hasattr(error, "code"):
+                    field_error["code"] = error.code
+                full_errors[field].append(field_error)
         challenge_response.initial_data["response_errors"] = full_errors
         if not challenge_response.is_valid():
             self.logger.error(

@@ -1,26 +1,19 @@
 """Test validator stage"""
 from unittest.mock import MagicMock, patch
 
-from django.contrib.sessions.middleware import SessionMiddleware
 from django.test.client import RequestFactory
 from django.urls.base import reverse
-from rest_framework.exceptions import ValidationError
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.flows.models import FlowDesignation, FlowStageBinding, NotConfiguredAction
 from authentik.flows.planner import FlowPlan
-from authentik.flows.stage import StageView
 from authentik.flows.tests import FlowTestCase
-from authentik.flows.views.executor import SESSION_KEY_PLAN, FlowExecutorView
+from authentik.flows.views.executor import SESSION_KEY_PLAN
 from authentik.lib.generators import generate_id, generate_key
-from authentik.lib.tests.utils import dummy_get_response
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_validate.api import AuthenticatorValidateStageSerializer
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
-from authentik.stages.authenticator_validate.stage import (
-    SESSION_KEY_DEVICE_CHALLENGES,
-    AuthenticatorValidationChallengeResponse,
-)
+from authentik.stages.authenticator_validate.stage import PLAN_CONTEXT_DEVICE_CHALLENGES
 from authentik.stages.identification.models import IdentificationStage, UserFields
 
 
@@ -86,12 +79,17 @@ class AuthenticatorValidateStageTests(FlowTestCase):
 
     def test_validate_selected_challenge(self):
         """Test validate_selected_challenge"""
-        # Prepare request with session
-        request = self.request_factory.get("/")
+        flow = create_test_flow()
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+            device_classes=[DeviceClasses.STATIC, DeviceClasses.TOTP],
+        )
 
-        middleware = SessionMiddleware(dummy_get_response)
-        middleware.process_request(request)
-        request.session[SESSION_KEY_DEVICE_CHALLENGES] = [
+        session = self.client.session
+        plan = FlowPlan(flow_pk=flow.pk.hex)
+        plan.append_stage(stage)
+        plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
                 "device_class": "static",
                 "device_uid": "1",
@@ -101,23 +99,43 @@ class AuthenticatorValidateStageTests(FlowTestCase):
                 "device_uid": "2",
             },
         ]
-        request.session.save()
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
 
-        res = AuthenticatorValidationChallengeResponse()
-        res.stage = StageView(FlowExecutorView())
-        res.stage.request = request
-        with self.assertRaises(ValidationError):
-            res.validate_selected_challenge(
-                {
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            data={
+                "selected_challenge": {
                     "device_class": "baz",
                     "device_uid": "quox",
+                    "challenge": {},
                 }
-            )
-        res.validate_selected_challenge(
-            {
-                "device_class": "static",
-                "device_uid": "1",
-            }
+            },
+        )
+        self.assertStageResponse(
+            response,
+            flow,
+            response_errors={
+                "selected_challenge": [{"string": "invalid challenge selected", "code": "invalid"}]
+            },
+            component="ak-stage-authenticator-validate",
+        )
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            data={
+                "selected_challenge": {
+                    "device_class": "static",
+                    "device_uid": "1",
+                    "challenge": {},
+                },
+            },
+        )
+        self.assertStageResponse(
+            response,
+            flow,
+            response_errors={"non_field_errors": [{"string": "Empty response", "code": "invalid"}]},
+            component="ak-stage-authenticator-validate",
         )
 
     @patch(

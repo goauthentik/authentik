@@ -82,8 +82,9 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
     def retrieve_file(self) -> str:
         """Get blueprint from path"""
         try:
-            full_path = Path(CONFIG.y("blueprints_dir")).joinpath(Path(self.path)).resolve()
-            if not str(full_path).startswith(CONFIG.y("blueprints_dir")):
+            base = Path(CONFIG.y("blueprints_dir"))
+            full_path = base.joinpath(Path(self.path)).resolve()
+            if not str(full_path).startswith(str(base.resolve())):
                 raise BlueprintRetrievalFailed("Invalid blueprint path")
             with full_path.open("r", encoding="utf-8") as _file:
                 return _file.read()
