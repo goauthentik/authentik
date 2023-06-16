@@ -10,7 +10,9 @@ Everyone welcome; we will work on code, docs, and anything else that looks inter
 
 Moderators will be available for most US and European hours, so if during the multi-day event, participants have questions or a PR needs a technical review, we are here for you.
 
-Swag? Why, Yes! From cool authentik socks to food certificates, and indoubtibly GitHub fame, we've got you covered.
+>More details will be added soon about the exact daily timeframes, for both European-based and US-based participants.
+
+Swag? Why, Yes! From cool authentik-branded socks to food certificates, and indoubtibly GitHub fame, we've got you covered.
 
 ## Date
 
@@ -20,6 +22,12 @@ July 26-30, 2023
 
 Online, in our [GitHub repo](https://github.com/goauthentik/authentik), using Discord for conversations, questions, and video calls.
 
+## Registration form
+
+Use the [Hackathon 2023 Registration Form](https://docs.google.com/forms/d/e/1FAIpQLSc10MiK4li-SIY8SidhwFEwFbDcna-fio1xFY2nmimqXPPvLA/viewform) to let us know that you'll join us!
+
+>If you know what you and/or your team want to work on, you can open an [Issue](https://github.com/goauthentik/authentik/issues) at any time (why not now?) and add the `hackathon` label. Then, when you register, enter the Issue number that you opened on your registration form. This way, on Kickoff Day we can easily match particpants with their Issue of interest.
+
 ## Agenda
 
 -   **Wednesday, July 26th**: Kickoff, voting for topics to work on, teams formed, participants select the Issue/team they are going to work on, and get their environment set up. After the online kickoff, you can start your work at any time.
@@ -28,18 +36,14 @@ Online, in our [GitHub repo](https://github.com/goauthentik/authentik), using Di
 
 -   **Friday, July 28th**: HackDay #2: participants working on their PRs
 
--   **Saturday, July 29th**: an online “meeting” to do wrap-up, participants sign-up for demo slots (Friday and Saturday slots available), then afternoon demos
+-   **Saturday, July 29th**: an online “meeting” to do wrap-up, participants sign-up for demo slots (Saturday and Sunday slots available), then afternoon demos
 
 -   **Sunday, July 30th**: demos, votes, awards, and wrap up
 
 ## Questions?
 
-Chat on with us on Discord and email us at hackathon@goauthentik.io!
+Chat with us on [Discord](https://discord.com/channels/809154715984199690/1110948434552299673) and email us at hackathon@goauthentik.io!
 
 ## Spread the word!
 
 We would be grateful if you help us get the word out. Share this page and information wherever you hang out. Bring 'em all!
-
-## Registration form
-
-https://docs.google.com/forms/d/e/1FAIpQLSc10MiK4li-SIY8SidhwFEwFbDcna-fio1xFY2nmimqXPPvLA/viewform
