@@ -20,7 +20,7 @@ July 26-30, 2023
 
 ## Where
 
-Online, in our [GitHub repo](https://github.com/goauthentik/authentik), using Discord for conversations, questions, and video calls.
+Online, in our [GitHub repo](https://github.com/goauthentik/authentik), using [Discord](https://discord.com/channels/809154715984199690/1110948434552299673) for conversations, questions, and video calls.
 
 ## Registration form
 
