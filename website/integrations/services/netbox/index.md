@@ -110,7 +110,7 @@ def remove_groups(response, user, backend, *args, **kwargs):
 
     # Get all groups of user
     user_groups = [item.name for item in user.groups.all()]
-    # Getgroups of user whitch
+    # Ge tgroups of user which
     # are not part of oAuth token
     delete_groups = list(set(user_groups) - set(groups))
 
@@ -128,7 +128,7 @@ def set_roles(response, user, backend, *args, **kwargs):
         groups = response['groups']
     except KeyError:
         # When no groups are set
-        # save the user withour Roles
+        # save the user without Roles
         user.save()
         pass
 
@@ -138,14 +138,14 @@ def set_roles(response, user, backend, *args, **kwargs):
     user.save()
 ```
 
-The path of the file in the Offical Docker image is: `/opt/netbox/netbox/netbox/custom_pipeline.py`
+The path of the file in the Official Docker image is: `/opt/netbox/netbox/netbox/custom_pipeline.py`
 
 To enable the pipelines, add the pipelines section to the netbox configuration file from above
 
 ```python
 SOCIAL_AUTH_PIPELINE = (
     ###################
-    # Default piplines
+    # Default pipelines
     ###################
 
     # Get the information we can about the user and return it in a simple
@@ -193,7 +193,7 @@ SOCIAL_AUTH_PIPELINE = (
 
 
     ###################
-    # Custom piplines
+    # Custom pipelines
     ###################
     # Set authentik Groups
     'netbox.custom_pipeline.add_groups',
