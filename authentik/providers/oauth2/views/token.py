@@ -39,6 +39,7 @@ from authentik.providers.oauth2.constants import (
     GRANT_TYPE_DEVICE_CODE,
     GRANT_TYPE_PASSWORD,
     GRANT_TYPE_REFRESH_TOKEN,
+    PKCE_METHOD_S256,
     TOKEN_TYPE,
 )
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
@@ -221,7 +222,7 @@ class TokenParams:
 
         # Validate PKCE parameters.
         if self.code_verifier:
-            if self.authorization_code.code_challenge_method == "S256":
+            if self.authorization_code.code_challenge_method == PKCE_METHOD_S256:
                 new_code_challenge = (
                     urlsafe_b64encode(sha256(self.code_verifier.encode("ascii")).digest())
                     .decode("utf-8")
