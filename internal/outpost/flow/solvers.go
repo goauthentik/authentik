@@ -10,16 +10,34 @@ import (
 
 func (fe *FlowExecutor) checkPasswordMFA() {
 	password := fe.getAnswer(StagePassword)
-	if !strings.Contains(password, CodePasswordSeparator) || fe.Answers[StageAuthenticatorValidate] != "" {
+	// We already have an authenticator answer
+	if fe.Answers[StageAuthenticatorValidate] != "" {
+		return
+	}
+	// password doesn't contain the separator
+	if !strings.Contains(password, CodePasswordSeparator) {
+		return
+	}
+	// password ends with the separator, so it won't contain an answer
+	if strings.HasSuffix(password, CodePasswordSeparator) {
 		return
 	}
 	idx := strings.LastIndex(password, CodePasswordSeparator)
+	authenticator := password[idx+1:]
+	// authenticator answer isn't purely numerical, so won't be value
+	if _, err := strconv.Atoi(authenticator); err != nil {
+		return
+	}
+	if len(authenticator) != 6 {
+		return
+	}
 	fe.Answers[StagePassword] = password[:idx]
-	fe.Answers[StageAuthenticatorValidate] = password[idx+1:]
+	fe.Answers[StageAuthenticatorValidate] = authenticator
 }
 
 func (fe *FlowExecutor) solveChallenge_Identification(challenge *api.ChallengeTypes, req api.ApiFlowsExecutorSolveRequest) (api.FlowChallengeResponseRequest, error) {
 	r := api.NewIdentificationChallengeResponseRequest(fe.getAnswer(StageIdentification))
+	fe.checkPasswordMFA()
 	r.SetPassword(fe.getAnswer(StagePassword))
 	return api.IdentificationChallengeResponseRequestAsFlowChallengeResponseRequest(r), nil
 }
