@@ -1086,13 +1086,13 @@ Django = ">=3.2"
 
 [[package]]
 name = "django-otp"
-version = "1.2.1"
+version = "1.2.2"
 description = "A pluggable framework for adding two-factor authentication to Django using one-time passwords."
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "django_otp-1.2.1-py3-none-any.whl", hash = "sha256:1758aabfc17c30ba00142e823c961e20d2a0353040a9e4e4be2688cf71085446"},
-    {file = "django_otp-1.2.1.tar.gz", hash = "sha256:d4785291fc97eb61c02574660f7ae82baab04da187fa5d0fb649d57deea2c62e"},
+    {file = "django_otp-1.2.2-py3-none-any.whl", hash = "sha256:90765d5dac238a719f9550ac05681dd6307f513a81a10b6adb879b4abc6bc1a3"},
+    {file = "django_otp-1.2.2.tar.gz", hash = "sha256:007a6354dabb3a1a54574bf73abf045ebbde0bb8734a38e2ed7845ba450f345e"},
 ]
 
 [package.dependencies]
