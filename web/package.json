@@ -84,7 +84,7 @@
         "@typescript-eslint/parser": "^5.59.11",
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-tsconfig-paths": "^1.0.3",
-        "eslint": "^8.42.0",
+        "eslint": "^8.43.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.8",
         "eslint-plugin-lit": "^1.8.3",
