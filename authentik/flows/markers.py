@@ -30,7 +30,7 @@ class StageMarker:
         return binding
 
 
-@dataclass
+@dataclass(slots=True)
 class ReevaluateMarker(StageMarker):
     """Reevaluate Marker, forces stage's policies to be evaluated again."""
 

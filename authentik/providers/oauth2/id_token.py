@@ -41,7 +41,7 @@ class SubModes(models.TextChoices):
     )
 
 
-@dataclass
+@dataclass(slots=True)
 # pylint: disable=too-many-instance-attributes
 class IDToken:
     """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be

@@ -28,7 +28,7 @@ class WebsocketMessageInstruction(IntEnum):
     TRIGGER_UPDATE = 2
 
 
-@dataclass
+@dataclass(slots=True)
 class WebsocketMessage:
     """Complete Websocket Message that is being sent"""
 

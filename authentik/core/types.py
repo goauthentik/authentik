@@ -8,7 +8,7 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import Challenge
 
 
-@dataclass
+@dataclass(slots=True)
 class UILoginButton:
     """Dataclass for Source's ui_login_button"""
 

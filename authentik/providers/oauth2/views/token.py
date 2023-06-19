@@ -58,7 +58,7 @@ from authentik.stages.password.stage import PLAN_CONTEXT_METHOD, PLAN_CONTEXT_ME
 LOGGER = get_logger()
 
 
-@dataclass
+@dataclass(slots=True)
 # pylint: disable=too-many-instance-attributes
 class TokenParams:
     """Token params"""

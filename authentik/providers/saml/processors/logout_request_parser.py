@@ -12,7 +12,7 @@ from authentik.providers.saml.utils.encoding import decode_base64_and_inflate
 from authentik.sources.saml.processors.constants import NS_SAML_PROTOCOL
 
 
-@dataclass
+@dataclass(slots=True)
 class LogoutRequest:
     """Logout Request"""
 

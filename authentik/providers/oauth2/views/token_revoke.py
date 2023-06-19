@@ -14,7 +14,7 @@ from authentik.providers.oauth2.utils import TokenResponse, authenticate_provide
 LOGGER = get_logger()
 
 
-@dataclass
+@dataclass(slots=True)
 class TokenRevocationParams:
     """Parameters for Token Revocation"""
 
