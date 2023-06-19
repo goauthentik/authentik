@@ -5695,6 +5695,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s3ba9b8aeb686d9f7">
   <source>Match events created by selected model. When left empty, all models are matched.</source>
 </trans-unit>
+<trans-unit id="s254d527e3a53dbb7">
+  <source>Code-based MFA Support</source>
+</trans-unit>
+<trans-unit id="s1889ba2eaeec2f1e">
+  <source>When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
