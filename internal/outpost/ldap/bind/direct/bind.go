@@ -2,6 +2,7 @@ package direct
 
 import (
 	"context"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -16,6 +17,8 @@ import (
 )
 
 const CodePasswordSeparator = ";"
+
+var alphaNum = regexp.MustCompile(`^[a-zA-Z0-9]*$`)
 
 func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResultCode, error) {
 	fe := flow.NewFlowExecutor(req.Context(), db.si.GetAuthenticationFlowSlug(), db.si.GetAPIClient().GetConfig(), log.Fields{
@@ -121,11 +124,19 @@ func (db *DirectBinder) CheckPasswordMFA(fe *flow.FlowExecutor) {
 	}
 	idx := strings.LastIndex(password, CodePasswordSeparator)
 	authenticator := password[idx+1:]
-	// authenticator answer isn't purely numerical, so won't be value
-	if _, err := strconv.Atoi(authenticator); err != nil {
-		return
-	}
-	if len(authenticator) != 6 {
+	// Authenticator is either 6 chars (totp code) or 8 chars (long totp or static)
+	if len(authenticator) == 6 {
+		// authenticator answer isn't purely numerical, so won't be value
+		if _, err := strconv.Atoi(authenticator); err != nil {
+			return
+		}
+	} else if len(authenticator) == 8 {
+		// 8 chars can be a long totp or static token, so it needs to be alphanumerical
+		if !alphaNum.MatchString(authenticator) {
+			return
+		}
+	} else {
+		// Any other length, doesn't contain an answer
 		return
 	}
 	fe.Answers[flow.StagePassword] = password[:idx]

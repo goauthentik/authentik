@@ -12,10 +12,10 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="ldapprovider",
             name="mfa_support",
-            verbose_name="MFA Support",
             field=models.BooleanField(
                 default=True,
                 help_text="When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.",
+                verbose_name="MFA Support",
             ),
         ),
         migrations.AlterField(
