@@ -31,7 +31,7 @@ ERROR_SIGNATURE_REQUIRED_BUT_ABSENT = (
 ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 
 
-@dataclass
+@dataclass(slots=True)
 class AuthNRequest:
     """AuthNRequest Dataclass"""
 

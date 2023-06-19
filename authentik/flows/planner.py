@@ -45,7 +45,7 @@ def cache_key(flow: Flow, user: Optional[User] = None) -> str:
     return prefix
 
 
-@dataclass
+@dataclass(slots=True)
 class FlowPlan:
     """This data-class is the output of a FlowPlanner. It holds a flat list
     of all Stages that should be run."""

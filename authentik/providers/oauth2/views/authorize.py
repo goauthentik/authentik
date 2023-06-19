@@ -74,7 +74,7 @@ SESSION_KEY_LAST_LOGIN_UID = "authentik/providers/oauth2/last_login_uid"
 ALLOWED_PROMPT_PARAMS = {PROMPT_NONE, PROMPT_CONSENT, PROMPT_LOGIN}
 
 
-@dataclass
+@dataclass(slots=True)
 # pylint: disable=too-many-instance-attributes
 class OAuthAuthorizationParams:
     """Parameters required to authorize an OAuth Client"""
