@@ -10,6 +10,7 @@ from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.models import UserManager as DjangoUserManager
 from django.db import models
 from django.db.models import Q, QuerySet, options
+from django.db.models.query import RawQuerySet
 from django.http import HttpRequest
 from django.utils.functional import SimpleLazyObject, cached_property
 from django.utils.timezone import now
@@ -113,27 +114,11 @@ class Group(SerializerModel):
 
     def is_member(self, user: "User") -> bool:
         """Recursively check if `user` is member of us, or any parent."""
-        query = """
-        WITH RECURSIVE parents AS (
-            SELECT authentik_core_group.*, 0 AS relative_depth
-            FROM authentik_core_group
-            WHERE authentik_core_group.group_uuid = %s
-
-            UNION ALL
-
-            SELECT authentik_core_group.*, parents.relative_depth - 1
-            FROM authentik_core_group,parents
-            WHERE (
-                authentik_core_group.parent_id = parents.group_uuid and
-                parents.relative_depth > -20
-            )
+        all_groups = user.all_groups()
+        return any(
+            True if group.group_uuid == self.group_uuid else False
+            for group in all_groups.iterator()
         )
-        SELECT group_uuid
-        FROM parents
-        GROUP BY group_uuid;
-        """
-        groups = Group.objects.raw(query, [self.group_uuid])
-        return user.ak_groups.filter(pk__in=[group.pk for group in groups]).exists()
 
     def __str__(self):
         return f"Group {self.name}"
@@ -176,13 +161,40 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Get the default user path"""
         return User._meta.get_field("path").default
 
+    def all_groups(self) -> RawQuerySet:
+        """Recursively get all groups this user is a member of."""
+        direct_groups = tuple(str(x) for x in self.ak_groups.all().values_list("pk", flat=True))
+        if len(direct_groups) < 1:
+            return Group.objects.none()
+        query = """
+        WITH RECURSIVE parents AS (
+            SELECT authentik_core_group.*, 0 AS relative_depth
+            FROM authentik_core_group
+            WHERE authentik_core_group.group_uuid IN %s
+
+            UNION ALL
+
+            SELECT authentik_core_group.*, parents.relative_depth + 1
+            FROM authentik_core_group, parents
+            WHERE (
+                authentik_core_group.group_uuid = parents.parent_id and
+                parents.relative_depth < 20
+            )
+        )
+        SELECT group_uuid
+        FROM parents
+        GROUP BY group_uuid, name
+        ORDER BY name;
+        """
+        return Group.objects.raw(query, [direct_groups])
+
     def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}
         if request and hasattr(request, "tenant"):
             always_merger.merge(final_attributes, request.tenant.attributes)
-        for group in self.ak_groups.all().order_by("name"):
+        for group in self.all_groups():
             always_merger.merge(final_attributes, group.attributes)
         always_merger.merge(final_attributes, self.attributes)
         return final_attributes
