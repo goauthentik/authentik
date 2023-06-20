@@ -1,5 +1,6 @@
 """Groups API Viewset"""
 from json import loads
+from typing import Optional
 
 from django.db.models.query import QuerySet
 from django.http import Http404
@@ -51,6 +52,13 @@ class GroupSerializer(ModelSerializer):
     parent_name = CharField(source="parent.name", read_only=True)
 
     num_pk = IntegerField(read_only=True)
+
+    def validate_parent(self, parent: Optional[Group]):
+        if not self.instance:
+            return parent
+        if str(parent.group_uuid) == str(self.instance.group_uuid):
+            raise ValidationError("Cannot set group as parent of itself.")
+        return parent
 
     class Meta:
         model = Group
