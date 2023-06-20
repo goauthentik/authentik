@@ -21,8 +21,6 @@ This all depends on your preference and needs.
 
 The following placeholders will be used:
 
--   `authentik.company` is the FQDN of the authentik install.
-
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
 -   ACS URL: `https://signin.aws.amazon.com/saml`
