@@ -66,7 +66,7 @@ func (ls *LDAPServer) Refresh() error {
 		}
 
 		providers[idx] = &ProviderInstance{
-			BaseDN:                 *provider.BaseDn,
+			BaseDN:                 provider.GetBaseDn(),
 			VirtualGroupDN:         virtualGroupDN,
 			GroupDN:                groupDN,
 			UserDN:                 userDN,
@@ -79,8 +79,9 @@ func (ls *LDAPServer) Refresh() error {
 			s:                      ls,
 			log:                    logger,
 			tlsServerName:          provider.TlsServerName,
-			uidStartNumber:         *provider.UidStartNumber,
-			gidStartNumber:         *provider.GidStartNumber,
+			uidStartNumber:         provider.GetUidStartNumber(),
+			gidStartNumber:         provider.GetGidStartNumber(),
+			mfaSupport:             provider.GetMfaSupport(),
 			outpostName:            ls.ac.Outpost.Name,
 			outpostPk:              provider.Pk,
 		}
