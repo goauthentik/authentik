@@ -10,6 +10,7 @@ import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
+import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
 import { StageHost } from "@goauthentik/flow/stages/base";
@@ -487,7 +488,8 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-background-image">${this.renderBackgroundOverlay()}</div>
+        return html` <ak-locale-context>
+            <div class="pf-c-background-image">${this.renderBackgroundOverlay()}</div>
             <div class="pf-c-page__drawer">
                 <div class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
                     <div class="pf-c-drawer__main">
@@ -541,6 +543,7 @@ export class FlowExecutor extends Interface implements StageHost {
                         ${until(this.renderInspector())}
                     </div>
                 </div>
-            </div>`;
+            </div>
+        </ak-locale-context>`;
     }
 }
