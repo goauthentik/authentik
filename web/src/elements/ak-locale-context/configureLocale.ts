@@ -12,8 +12,15 @@ type LocaleSetter = ReturnType<typeof configureLocalization>["setLocale"];
 // This is where the lit-localization module is initialized with our loader, which associates our
 // collection of locales with its getter and setter functions.
 
+let getLocale: LocaleGetter | undefined = undefined;
+let setLocale: LocaleSetter | undefined = undefined;
+
 export function initializeLocalization(): [LocaleGetter, LocaleSetter] {
-    const { getLocale, setLocale } = configureLocalization({
+    if (getLocale && setLocale) {
+        return [getLocale, setLocale];
+    }
+
+    ({ getLocale, setLocale } = configureLocalization({
         sourceLocale,
         targetLocales,
         loadLocale: async (locale: string) => {
@@ -24,7 +31,8 @@ export function initializeLocalization(): [LocaleGetter, LocaleSetter] {
             }
             return localeDef.locale();
         },
-    });
+    }));
+
     return [getLocale, setLocale];
 }
 

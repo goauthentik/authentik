@@ -55,7 +55,7 @@ export class LocaleContext extends LitElement {
                 window.setTimeout(this.notifyApplication, 0);
             });
         } catch (e) {
-            throw new Error("Developer error: Must have only one locale context per session.");
+            throw new Error(`Developer error: Must have only one locale context per session: ${e}`);
         }
     }
 

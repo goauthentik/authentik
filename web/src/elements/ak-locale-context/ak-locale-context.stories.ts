@@ -5,7 +5,7 @@ import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import "./ak-locale-context";
-import { EVENT_REQUEST_LOCALE } from "./helpers";
+import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
 
 export default {
     title: "Elements / Shell / Locale Context",
@@ -40,7 +40,7 @@ export const SwitchingBackAndForth = () => {
     let lang = "en";
     window.setInterval(() => {
         lang = lang === "en" ? "fr_FR" : "en";
-        window.dispatchEvent(customEvent(EVENT_REQUEST_LOCALE, { locale: lang }));
+        window.dispatchEvent(customEvent(EVENT_LOCALE_REQUEST, { locale: lang }));
     }, 1000);
 
     return html`<div style="background: #fff; padding: 4em">
