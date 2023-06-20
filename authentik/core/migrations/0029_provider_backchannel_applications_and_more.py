@@ -11,7 +11,7 @@ def backport_is_backchannel(apps: Apps, schema_editor: BaseDatabaseSchemaEditor)
 
     for model in BackchannelProvider.__subclasses__():
         try:
-            for obj in model.objects.all():
+            for obj in model.objects.only("is_backchannel"):
                 obj.is_backchannel = True
                 obj.save()
         except (DatabaseError, InternalError, ProgrammingError):

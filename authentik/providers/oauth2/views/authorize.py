@@ -35,6 +35,8 @@ from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
 from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.constants import (
+    PKCE_METHOD_PLAIN,
+    PKCE_METHOD_S256,
     PROMPT_CONSENT,
     PROMPT_LOGIN,
     PROMPT_NONE,
@@ -254,7 +256,10 @@ class OAuthAuthorizationParams:
 
     def check_code_challenge(self):
         """PKCE validation of the transformation method."""
-        if self.code_challenge and self.code_challenge_method not in ["plain", "S256"]:
+        if self.code_challenge and self.code_challenge_method not in [
+            PKCE_METHOD_PLAIN,
+            PKCE_METHOD_S256,
+        ]:
             raise AuthorizeError(
                 self.redirect_uri,
                 "invalid_request",

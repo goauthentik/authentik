@@ -80,6 +80,8 @@ The following stages are supported:
 
     Note: Authenticator validation currently only supports DUO, TOTP and static authenticators.
 
+    Starting with authentik 2023.6, code-based authenticators are only supported when _Code-based MFA Support_ is enabled in the provider. When enabled, all users that will bind to the LDAP provider should have a TOTP device configured, as otherwise a password might be incorrectly rejected when semicolons are used in the password.
+
     For code-based authenticators, the code must be given as part of the bind password, separated by a semicolon. For example for the password `example-password` and the code `123456`, the input must be `example-password;123456`.
 
     SMS-based authenticators are not supported as they require a code to be sent from authentik, which is not possible during the bind.
