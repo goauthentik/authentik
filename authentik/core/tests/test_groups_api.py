@@ -67,3 +67,16 @@ class TestGroupsAPI(APITestCase):
             },
         )
         self.assertEqual(res.status_code, 404)
+
+    def test_parent_self(self):
+        """Test parent"""
+        group = Group.objects.create(name=generate_id())
+        self.client.force_login(self.admin)
+        res = self.client.patch(
+            reverse("authentik_api:group-detail", kwargs={"pk": group.pk}),
+            data={
+                "pk": self.user.pk + 3,
+                "parent": group.pk,
+            },
+        )
+        self.assertEqual(res.status_code, 400)
