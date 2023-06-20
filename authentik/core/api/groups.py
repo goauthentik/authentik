@@ -54,7 +54,8 @@ class GroupSerializer(ModelSerializer):
     num_pk = IntegerField(read_only=True)
 
     def validate_parent(self, parent: Optional[Group]):
-        if not self.instance:
+        """Validate group parent (if set), ensuring the parent isn't itself"""
+        if not self.instance or not parent:
             return parent
         if str(parent.group_uuid) == str(self.instance.group_uuid):
             raise ValidationError("Cannot set group as parent of itself.")
