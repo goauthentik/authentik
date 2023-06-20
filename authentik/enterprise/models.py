@@ -55,21 +55,22 @@ class LicenseKey:
             headers = get_unverified_header(jwt)
         except PyJWTError:
             raise ValidationError("Unable to verify license")
-        x5c = headers.get("x5c")
-        try:
-            cert = load_pem_x509_certificate(b64decode(x5c))
-        except (ValueError, Error):
+        x5c: list[str] = headers.get("x5c", [])
+        if len(x5c) < 1:
             raise ValidationError("Unable to verify license")
         try:
-            cert.verify_directly_issued_by(get_licensing_key())
-        except (InvalidSignature, TypeError, ValueError):
+            our_cert = load_pem_x509_certificate(b64decode(x5c[0]))
+            intermediate = load_pem_x509_certificate(b64decode(x5c[1]))
+            our_cert.verify_directly_issued_by(intermediate)
+            intermediate.verify_directly_issued_by(get_licensing_key())
+        except (InvalidSignature, TypeError, ValueError, Error):
             raise ValidationError("Unable to verify license")
         try:
             body = from_dict(
                 LicenseKey,
                 decode(
                     jwt,
-                    cert.public_key(),
+                    our_cert.public_key(),
                     algorithms=["ES521"],
                     audience=get_license_aud(),
                 ),
