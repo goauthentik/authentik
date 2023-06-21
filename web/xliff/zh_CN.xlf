@@ -7573,6 +7573,14 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Match events created by selected model. When left empty, all models are matched.</source>
   <target>匹配选定模型创建的事件。如果留空，则匹配所有模型。</target>
 </trans-unit>
+<trans-unit id="s254d527e3a53dbb7">
+  <source>Code-based MFA Support</source>
+  <target>基于代码的 MFA 支持</target>
+</trans-unit>
+<trans-unit id="s1889ba2eaeec2f1e">
+  <source>When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.</source>
+  <target>启用时，可以通过在密码后添加分号和 TOTP 代码来使用基于代码的多因素身份验证。仅在所有绑定到此提供程序的用户都已配置 TOTP 设备的情况下才应该启用，否则密码可能会因为包含分号而被错误地拒绝。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
