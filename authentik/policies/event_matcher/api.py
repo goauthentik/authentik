@@ -15,7 +15,7 @@ class EventMatcherPolicySerializer(PolicySerializer):
     app = ChoiceField(
         choices=app_choices(),
         required=False,
-        allow_blank=True,
+        allow_null=True,
         help_text=_(
             "Match events created by selected application. When left empty, "
             "all applications are matched."
@@ -24,7 +24,7 @@ class EventMatcherPolicySerializer(PolicySerializer):
     model = ChoiceField(
         choices=model_choices(),
         required=False,
-        allow_blank=True,
+        allow_null=True,
         help_text=_(
             "Match events created by selected model. "
             "When left empty, all models are matched. When an app is selected, "
