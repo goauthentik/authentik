@@ -10922,6 +10922,7 @@ paths:
         name: action
         schema:
           type: string
+          nullable: true
           enum:
           - authorize_application
           - configuration_error
@@ -29100,6 +29101,7 @@ components:
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
+          nullable: true
           description: |-
             Match created events with this action type. When left empty, all action types will be matched.
 
@@ -29132,11 +29134,13 @@ components:
             * `custom_` - Custom Prefix
         client_ip:
           type: string
+          nullable: true
           description: Matches Event's Client IP (strict matching, for network matching
             use an Expression Policy)
         app:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
+          nullable: true
           description: |-
             Match events created by selected application. When left empty, all applications are matched.
 
@@ -29191,6 +29195,7 @@ components:
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
+          nullable: true
           description: |-
             Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
@@ -29286,6 +29291,7 @@ components:
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
+          nullable: true
           description: |-
             Match created events with this action type. When left empty, all action types will be matched.
 
@@ -29318,11 +29324,14 @@ components:
             * `custom_` - Custom Prefix
         client_ip:
           type: string
+          nullable: true
+          minLength: 1
           description: Matches Event's Client IP (strict matching, for network matching
             use an Expression Policy)
         app:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
+          nullable: true
           description: |-
             Match events created by selected application. When left empty, all applications are matched.
 
@@ -29377,6 +29386,7 @@ components:
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
+          nullable: true
           description: |-
             Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 
@@ -36250,6 +36260,7 @@ components:
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
+          nullable: true
           description: |-
             Match created events with this action type. When left empty, all action types will be matched.
 
@@ -36282,11 +36293,14 @@ components:
             * `custom_` - Custom Prefix
         client_ip:
           type: string
+          nullable: true
+          minLength: 1
           description: Matches Event's Client IP (strict matching, for network matching
             use an Expression Policy)
         app:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
+          nullable: true
           description: |-
             Match events created by selected application. When left empty, all applications are matched.
 
@@ -36341,6 +36355,7 @@ components:
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
+          nullable: true
           description: |-
             Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
 

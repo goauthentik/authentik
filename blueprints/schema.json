@@ -3155,9 +3155,12 @@
                     "description": "When this option is enabled, all executions of this policy will be logged. By default, only execution errors are logged."
                 },
                 "action": {
-                    "type": "string",
+                    "type": [
+                        "null",
+                        "string"
+                    ],
                     "enum": [
-                        "",
+                        null,
                         "login",
                         "login_failed",
                         "logout",
@@ -3190,14 +3193,21 @@
                     "description": "Match created events with this action type. When left empty, all action types will be matched."
                 },
                 "client_ip": {
-                    "type": "string",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
                     "title": "Client ip",
                     "description": "Matches Event's Client IP (strict matching, for network matching use an Expression Policy)"
                 },
                 "app": {
-                    "type": "string",
+                    "type": [
+                        "null",
+                        "string"
+                    ],
                     "enum": [
-                        "",
+                        null,
                         "authentik.admin",
                         "authentik.api",
                         "authentik.crypto",
@@ -3251,9 +3261,12 @@
                     "description": "Match events created by selected application. When left empty, all applications are matched."
                 },
                 "model": {
-                    "type": "string",
+                    "type": [
+                        "null",
+                        "string"
+                    ],
                     "enum": [
-                        "",
+                        null,
                         "authentik_crypto.certificatekeypair",
                         "authentik_events.event",
                         "authentik_events.notificationtransport",
