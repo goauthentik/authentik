@@ -11,6 +11,7 @@ import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
@@ -35,7 +36,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
-import { EventsApi, SessionUser } from "@goauthentik/api";
+import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
 
 autoDetectLanguage();
 
@@ -233,18 +234,23 @@ export class UserInterface extends Interface {
                             : html``}
                     </div>
                     ${this.me.original
-                        ? html`<div class="pf-c-page__header-tools">
-                              <div class="pf-c-page__header-tools-group">
-                                  <a
-                                      class="pf-c-button pf-m-warning pf-m-small"
-                                      href=${`/-/impersonation/end/?back=${encodeURIComponent(
-                                          `${window.location.pathname}#${window.location.hash}`,
-                                      )}`}
-                                  >
-                                      ${msg("Stop impersonation")}
-                                  </a>
-                              </div>
-                          </div>`
+                        ? html`&nbsp;
+                              <div class="pf-c-page__header-tools">
+                                  <div class="pf-c-page__header-tools-group">
+                                      <ak-action-button
+                                          class="pf-m-warning pf-m-small"
+                                          .apiRequest=${() => {
+                                              return new CoreApi(DEFAULT_CONFIG)
+                                                  .coreUsersImpersonateEndRetrieve()
+                                                  .then(() => {
+                                                      window.location.reload();
+                                                  });
+                                          }}
+                                      >
+                                          ${msg("Stop impersonation")}
+                                      </ak-action-button>
+                                  </div>
+                              </div>`
                         : html``}
                     <div class="pf-c-page__header-tools-group">
                         <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">

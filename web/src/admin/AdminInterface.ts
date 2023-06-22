@@ -30,7 +30,7 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AdminApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
+import { AdminApi, CoreApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
 
 autoDetectLanguage();
 
@@ -178,10 +178,11 @@ export class AdminInterface extends Interface {
             ${this.user?.original
                 ? html`<ak-sidebar-item
                       ?highlight=${true}
-                      ?isAbsoluteLink=${true}
-                      path=${`/-/impersonation/end/?back=${encodeURIComponent(
-                          `${window.location.pathname}#${window.location.hash}`,
-                      )}`}
+                      @click=${() => {
+                          new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
+                              window.location.reload();
+                          });
+                      }}
                   >
                       <span slot="label"
                           >${msg(

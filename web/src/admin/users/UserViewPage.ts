@@ -204,12 +204,20 @@ export class UserViewPage extends AKElement {
                         )
                             ? html`
                                   <div class="pf-c-card__footer">
-                                      <a
-                                          class="pf-c-button pf-m-tertiary"
-                                          href="${`/-/impersonation/${this.user?.pk}/`}"
+                                      <ak-action-button
+                                          class="pf-m-tertiary"
+                                          .apiRequest=${() => {
+                                              return new CoreApi(DEFAULT_CONFIG)
+                                                  .coreUsersImpersonateCreate({
+                                                      id: this.user?.pk || 0,
+                                                  })
+                                                  .then(() => {
+                                                      window.location.href = "/";
+                                                  });
+                                          }}
                                       >
                                           ${msg("Impersonate")}
-                                      </a>
+                                      </ak-action-button>
                                   </div>
                               `
                             : html``}

@@ -23,7 +23,8 @@ class DiagramElement:
     style: list[str] = field(default_factory=lambda: ["[", "]"])
 
     def __str__(self) -> str:
-        element = f'{self.identifier}{self.style[0]}"{self.description}"{self.style[1]}'
+        description = self.description.replace('"', "#quot;")
+        element = f'{self.identifier}{self.style[0]}"{description}"{self.style[1]}'
         if self.action is not None:
             if self.action != "":
                 element = f"--{self.action}--> {element}"
