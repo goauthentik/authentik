@@ -99,7 +99,7 @@
         "rollup-plugin-copy": "^3.4.0",
         "rollup-plugin-cssimport": "^1.0.3",
         "rollup-plugin-minify-html-literals": "^1.2.6",
-        "rollup-plugin-postcss-lit": "^2.0.0",
+        "rollup-plugin-postcss-lit": "^2.1.0",
         "rollup-plugin-terser": "^7.0.2",
         "sharp-cli": "^4.1.1",
         "storybook": "^7.0.22",
