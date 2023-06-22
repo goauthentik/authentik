@@ -321,6 +321,7 @@ module.exports = {
             },
             items: [
                 "security/policy",
+                "security/2023-06-cure53",
                 "security/CVE-2022-23555",
                 "security/CVE-2022-46145",
                 "security/CVE-2022-46172",
