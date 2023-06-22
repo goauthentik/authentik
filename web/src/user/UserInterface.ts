@@ -234,22 +234,23 @@ export class UserInterface extends Interface {
                             : html``}
                     </div>
                     ${this.me.original
-                        ? html`&nbsp;<div class="pf-c-page__header-tools">
-                              <div class="pf-c-page__header-tools-group">
-                                  <ak-action-button
-                                      class="pf-m-warning pf-m-small"
-                                      .apiRequest=${() => {
-                                          return new CoreApi(DEFAULT_CONFIG)
-                                              .coreUsersImpersonateEndRetrieve()
-                                              .then(() => {
-                                                  window.location.reload();
-                                              });
-                                      }}
-                                  >
-                                      ${msg("Stop impersonation")}
-                                  </ak-action-button>
-                              </div>
-                          </div>`
+                        ? html`&nbsp;
+                              <div class="pf-c-page__header-tools">
+                                  <div class="pf-c-page__header-tools-group">
+                                      <ak-action-button
+                                          class="pf-m-warning pf-m-small"
+                                          .apiRequest=${() => {
+                                              return new CoreApi(DEFAULT_CONFIG)
+                                                  .coreUsersImpersonateEndRetrieve()
+                                                  .then(() => {
+                                                      window.location.reload();
+                                                  });
+                                          }}
+                                      >
+                                          ${msg("Stop impersonation")}
+                                      </ak-action-button>
+                                  </div>
+                              </div>`
                         : html``}
                     <div class="pf-c-page__header-tools-group">
                         <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">

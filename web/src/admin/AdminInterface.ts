@@ -179,9 +179,9 @@ export class AdminInterface extends Interface {
                 ? html`<ak-sidebar-item
                       ?highlight=${true}
                       @click=${() => {
-                        new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
-                            window.location.reload();
-                        });
+                          new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
+                              window.location.reload();
+                          });
                       }}
                   >
                       <span slot="label"
