@@ -13,10 +13,6 @@ Firezone is an open-source remote access platform built on WireGuard?, a modern 
 Deploy on your infrastructure and start onboarding users in minutes.
 :::
 
-:::caution
-This setup uses OIDC and not SAML.
-:::
-
 ## Preparation
 
 The following placeholders will be used:
@@ -28,7 +24,7 @@ The following placeholders will be used:
 Create an OAuth2/OpenID provider with the following parameters:
 
 -   Client type: `Confidential`
--   Rediret URIs/Origins: `Redirect URI from Firezone Config`
+-   Redirect URIs/Origins: `Redirect URI from Firezone Config`
 -   Signing Key: `<Select your certificate>`
 -   Click: `Finish`
 
@@ -52,13 +48,11 @@ Note the Client ID and Client Secret value. Create an application using the prov
 -   Auto-create Users: Enabled in order to automatically provision users when signing in the first time.
 -   Click _Save_,
 
-:::caution
-Although local authentication is quick and easy to get started with, you can limit attack surface by disabling local
-authentication altogether. For production deployments it's usually a good idea to disable local authentication and enforce
-MFA through authentik. If, however, issues arise with your authentik install, it's possible you could be locked out of the admin portal. To re-enable local authentication so you can log in and resolve the issue, you can temporarily
-re-enable local authentication via the REST API or by following instructions from https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli
-:::
+Although local authentication is quick and easy to get started with, you can limit attack surface by disabling local authentication altogether. For production deployments it's usually a good idea to disable local authentication and enforce MFA through authentik.
 
+:::info
+In case something goes wrong with the configuration, you can temporarily re-enable local authentication via the REST API or by following instructions from https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli.
+:::
 ## Additional Resources
 
 -   https://www.firezone.dev/docs/authenticate/oidc/
