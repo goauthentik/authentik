@@ -53,6 +53,7 @@ Although local authentication is quick and easy to get started with, you can lim
 :::info
 In case something goes wrong with the configuration, you can temporarily re-enable local authentication via the REST API or by following instructions from https://www.firezone.dev/docs/administer/troubleshoot/#re-enable-local-authentication-via-cli.
 :::
+
 ## Additional Resources
 
 -   https://www.firezone.dev/docs/authenticate/oidc/
