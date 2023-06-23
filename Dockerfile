@@ -65,14 +65,17 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
 # Stage 6: Run
 FROM docker.io/python:3.11.4-slim-bullseye AS final-image
 
+ARG GIT_BUILD_HASH
+ARG VERSION
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
+
 LABEL org.opencontainers.image.url https://goauthentik.io
 LABEL org.opencontainers.image.description goauthentik.io Main server image, see https://goauthentik.io for more info.
 LABEL org.opencontainers.image.source https://github.com/goauthentik/authentik
+LABEL org.opencontainers.image.version ${VERSION}
+LABEL org.opencontainers.image.revision ${GIT_BUILD_HASH}
 
 WORKDIR /
-
-ARG GIT_BUILD_HASH
-ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 COPY --from=poetry-locker /work/requirements.txt /
 COPY --from=poetry-locker /work/requirements-dev.txt /
