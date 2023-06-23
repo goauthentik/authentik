@@ -2,7 +2,6 @@ package gounicorn
 
 import (
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"os/exec"
@@ -142,7 +141,7 @@ func (g *GoUnicorn) Restart() {
 		return
 	}
 
-	newPidB, err := ioutil.ReadFile(newPidFile)
+	newPidB, err := os.ReadFile(newPidFile)
 	if err != nil {
 		g.log.WithError(err).Warning("failed to find the new gunicorn process, aborting")
 		return
