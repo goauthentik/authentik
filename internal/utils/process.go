@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"syscall"
@@ -21,7 +22,7 @@ func FindProcess(pid int) (*os.Process, error) {
 	if err == nil {
 		return proc, nil
 	}
-	if err.Error() == "os: process already finished" {
+	if errors.Is(err, os.ErrProcessDone) {
 		return nil, nil
 	}
 	errno, ok := err.(syscall.Errno)
