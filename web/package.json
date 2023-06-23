@@ -74,7 +74,7 @@
         "@storybook/addon-essentials": "^7.0.22",
         "@storybook/addon-links": "^7.0.22",
         "@storybook/blocks": "^7.0.22",
-        "@storybook/web-components": "^7.0.22",
+        "@storybook/web-components": "^7.0.23",
         "@storybook/web-components-vite": "^7.0.22",
         "@trivago/prettier-plugin-sort-imports": "^4.1.1",
         "@types/chart.js": "^2.9.37",
