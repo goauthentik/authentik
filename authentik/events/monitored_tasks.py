@@ -69,8 +69,10 @@ class TaskInfo:
         return cache.get_many(cache.keys(CACHE_KEY_PREFIX + "*"))
 
     @staticmethod
-    def by_name(name: str) -> Optional["TaskInfo"]:
+    def by_name(name: str) -> Optional["TaskInfo"] | Optional[list["TaskInfo"]]:
         """Get TaskInfo Object by name"""
+        if "*" in name:
+            return cache.get_many(cache.keys(CACHE_KEY_PREFIX + name)).values()
         return cache.get(CACHE_KEY_PREFIX + name, None)
 
     def delete(self):

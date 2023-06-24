@@ -1,4 +1,7 @@
 """LDAP Sync tasks"""
+from pickle import dumps, loads  # nosec
+
+from celery import chain, group
 from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
 
@@ -8,6 +11,7 @@ from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.reflection import class_to_path, path_to_class
 from authentik.root.celery import CELERY_APP
 from authentik.sources.ldap.models import LDAPSource
+from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
@@ -24,8 +28,34 @@ SYNC_CLASSES = [
 def ldap_sync_all():
     """Sync all sources"""
     for source in LDAPSource.objects.filter(enabled=True):
-        for sync_class in SYNC_CLASSES:
-            ldap_sync.delay(source.pk, class_to_path(sync_class))
+        ldap_sync_single(source)
+
+
+@CELERY_APP.task()
+def ldap_sync_single(source: LDAPSource):
+    """Sync a single source"""
+    task = chain(
+        # User and group sync can happen at once, they have no dependencies on each other
+        group(
+            ldap_sync_paginator(source, UserLDAPSynchronizer)
+            + ldap_sync_paginator(source, GroupLDAPSynchronizer),
+        ),
+        # Membership sync needs to run afterwards
+        group(
+            ldap_sync_paginator(source, MembershipLDAPSynchronizer),
+        ),
+    )
+    task()
+
+
+def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) -> list:
+    """Return a list of task signatures with LDAP pagination data"""
+    sync_inst: BaseLDAPSynchronizer = sync(source)
+    signatures = []
+    for page in sync_inst.get_objects():
+        page_sync = ldap_sync.si(source.pk, class_to_path(sync), dumps(page))
+        signatures.append(page_sync)
+    return signatures
 
 
 @CELERY_APP.task(
@@ -34,7 +64,7 @@ def ldap_sync_all():
     soft_time_limit=60 * 60 * int(CONFIG.y("ldap.task_timeout_hours")),
     task_time_limit=60 * 60 * int(CONFIG.y("ldap.task_timeout_hours")),
 )
-def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str):
+def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, raw_page: bytes):
     """Synchronization of an LDAP Source"""
     self.result_timeout_hours = int(CONFIG.y("ldap.task_timeout_hours"))
     try:
@@ -43,11 +73,12 @@ def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str):
         # Because the source couldn't be found, we don't have a UID
         # to set the state with
         return
-    sync = path_to_class(sync_class)
-    self.set_uid(f"{source.slug}:{sync.__name__.replace('LDAPSynchronizer', '').lower()}")
+    sync: type[BaseLDAPSynchronizer] = path_to_class(sync_class)
+    self.set_uid(f"{source.slug}:{sync.name()}")
     try:
-        sync_inst = sync(source)
-        count = sync_inst.sync()
+        sync_inst: BaseLDAPSynchronizer = sync(source)
+        page = loads(raw_page)  # nosec
+        count = sync_inst.sync(page)
         messages = sync_inst.messages
         messages.append(f"Synced {count} objects.")
         self.set_status(
