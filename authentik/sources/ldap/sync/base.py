@@ -1,6 +1,7 @@
 """Sync LDAP Users and groups into authentik"""
 from typing import Any, Generator, Optional
 
+from django.conf import settings
 from django.db.models.base import Model
 from django.db.models.query import QuerySet
 from ldap3 import DEREF_ALWAYS, SUBTREE, Connection
@@ -31,7 +32,21 @@ class BaseLDAPSynchronizer:
 
     @staticmethod
     def name() -> str:
+        """UI name for the type of object this class synchronizes"""
         raise NotImplementedError
+
+    def sync_full(self):
+        """Run full sync, this function should only be used in tests"""
+        if not settings.TEST:  # noqa
+            raise RuntimeError(
+                f"{self.__class__.__name__}.sync_full() should only be used in tests"
+            )
+        for page in self.get_objects():
+            self.sync(page)
+
+    def sync(self, page: Optional[list]) -> int:
+        """Sync function, implemented in subclass"""
+        raise NotImplementedError()
 
     @property
     def messages(self) -> list[str]:
@@ -64,6 +79,7 @@ class BaseLDAPSynchronizer:
         """Get objects from LDAP, implemented in subclass"""
         raise NotImplementedError()
 
+    # pylint: disable=too-many-arguments
     def search_paginator(
         self,
         search_base,
@@ -104,10 +120,6 @@ class BaseLDAPSynchronizer:
             except KeyError:
                 cookie = None
             yield self._connection.response
-
-    def sync(self, page: Optional[list]) -> int:
-        """Sync function, implemented in subclass"""
-        raise NotImplementedError()
 
     def _flatten(self, value: Any) -> Any:
         """Flatten `value` if its a list"""
