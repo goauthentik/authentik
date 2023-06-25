@@ -19,7 +19,7 @@ The following placeholders will be used:
 -   `netbox.company` is the FQDN of the NetBox install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to Applications->Providers. Create a OAuth2/OpenID provider with the following parameters:
+Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to _Applications_ -> _Providers_. Create a _OAuth2/OpenID provider_ with the following parameters:
 
 -   Client Type: `Confidential`
 -   Redirect URIs: `https://netbox.company/oauth/complete/oidc/`
@@ -30,7 +30,7 @@ Note the Client ID and Client Secret values. Create an application, using the pr
 
 ## NetBox
 
-:::caution
+:::info
 This setup was tested and developed with NetBox Docker. For a non-Docker installation, the Docker part must be disabled and the non-docker part must be used.
 :::
 
@@ -42,13 +42,13 @@ REMOTE_AUTH_ENABLED='true'
 REMOTE_AUTH_BACKEND='social_core.backends.open_id_connect.OpenIdConnectAuth'
 
 # python-social-auth config
-SOCIAL_AUTH_OIDC_ENDPOINT='https://authentik.company/application/o/<Application slug>'
+SOCIAL_AUTH_OIDC_ENDPOINT='https://authentik.company/application/o/<Application slug>/'
 SOCIAL_AUTH_OIDC_KEY='<Client ID>'
 SOCIAL_AUTH_OIDC_SECRET='<Client Secret>'
 LOGOUT_REDIRECT_URL='https://authentik.company/application/o/<Application slug>/end-session/'
 ```
 
-The Netbox configuration needs to be extended for this you can create a new file in the configuration folder, for example `authentik.py`.
+The Netbox configuration needs to be extended, for this you can create a new file in the configuration folder, for example `authentik.py`.
 
 ```py
 from os import environ
@@ -110,8 +110,7 @@ def remove_groups(response, user, backend, *args, **kwargs):
 
     # Get all groups of user
     user_groups = [item.name for item in user.groups.all()]
-    # Ge tgroups of user which
-    # are not part of oAuth token
+    # Get groups of user which are not part of oAuth token
     delete_groups = list(set(user_groups) - set(groups))
 
     # Delete non oAuth token groups
@@ -208,24 +207,17 @@ SOCIAL_AUTH_PIPELINE = (
 
 In netbox, there are two special user roles `superuser` and `staff`. To set them, add your users to the `superusers` or `staff` group in authentik.
 
-To use custom group names, the following property mapping example can be used.  
-In the example, the group `netbox_admins` is used for the `superusers` and the group `netbox_staff` for the `staff` users.
+To use custom group names, the following scope mapping example can be used. In the example, the group `netbox_admins` is used for the `superusers` and the group `netbox_staff` for the `staff` users.
 
-Name: `Netbox profile`  
-Scope name: `profile`
+Name: `Netbox roles`
+Scope name: `roles`
 
 Expression:
 
 ```python
 return {
-  # Because authentik only saves the user's full name, and has no concept of first and last names,
-  # the full name is used as given name.
-  # You can override this behaviour in custom mappings, i.e. `request.user.name.split(" ")`
-  "name": request.user.name,
-  "given_name": request.user.name,
-  "preferred_username": request.user.username,
-  "nickname": request.user.username,
-  # groups is not part of the official userinfo schema, but is a quasi-standard
   "groups": ["superusers" if group.name == "netbox_admin" else "staff" if group.name == "netbox_staff" else group.name for group in request.user.ak_groups.all()],
 }
 ```
+
+This scope mapping must also be selected in the _OAuth2/OpenID Provider_ created above.

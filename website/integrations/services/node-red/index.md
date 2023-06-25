@@ -27,7 +27,7 @@ The following placeholders will be used:
 
 ### Step 1
 
-In authentik, create an _OAuth2/OpenID Provider_ (under _Resources/Providers_) with these settings:
+In authentik, create an _OAuth2/OpenID Provider_ (under _Applications/Providers_) with these settings:
 
 :::note
 Only settings that have been modified from default have been listed.
