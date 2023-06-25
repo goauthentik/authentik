@@ -68,6 +68,7 @@ module.exports = {
                         "services/harbor/index",
                         "services/hashicorp-vault/index",
                         "services/minio/index",
+                        "services/netbox/index",
                         "services/opnsense/index",
                         "services/pfsense/index",
                         "services/pgadmin/index",
