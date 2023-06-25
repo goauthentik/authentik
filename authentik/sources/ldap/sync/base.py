@@ -1,5 +1,5 @@
 """Sync LDAP Users and groups into authentik"""
-from typing import Any, Generator, Optional
+from typing import Any, Generator
 
 from django.conf import settings
 from django.db.models.base import Model
@@ -44,7 +44,7 @@ class BaseLDAPSynchronizer:
         for page in self.get_objects():
             self.sync(page)
 
-    def sync(self, page: Optional[list]) -> int:
+    def sync(self, page_data: list) -> int:
         """Sync function, implemented in subclass"""
         raise NotImplementedError()
 

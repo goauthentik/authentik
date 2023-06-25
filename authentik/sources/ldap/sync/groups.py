@@ -1,5 +1,5 @@
 """Sync LDAP Users and groups into authentik"""
-from typing import Generator, Optional
+from typing import Generator
 
 from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
@@ -26,13 +26,13 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             **kwargs,
         )
 
-    def sync(self, page: Optional[list]) -> int:
+    def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Groups and create authentik_core.Group instances"""
         if not self._source.sync_groups:
             self.message("Group syncing is disabled for this Source")
             return -1
         group_count = 0
-        for group in page:
+        for group in page_data:
             if "attributes" not in group:
                 continue
             attributes = group.get("attributes", {})

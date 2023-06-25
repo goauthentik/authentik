@@ -118,8 +118,10 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         """Get source's sync status"""
         source = self.get_object()
         results = []
-        for task in TaskInfo.by_name(f"ldap_sync:{source.slug}:*"):
-            results.append(task)
+        tasks = TaskInfo.by_name(f"ldap_sync:{source.slug}:*")
+        if tasks:
+            for task in tasks:
+                results.append(task)
         return Response(TaskSerializer(results, many=True).data)
 
     @extend_schema(

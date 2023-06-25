@@ -1,5 +1,5 @@
 """Sync LDAP Users into authentik"""
-from typing import Generator, Optional
+from typing import Generator
 
 from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError
@@ -28,13 +28,13 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             **kwargs,
         )
 
-    def sync(self, page: Optional[list]) -> int:
+    def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Users and create authentik_core.User instances"""
         if not self._source.sync_users:
             self.message("User syncing is disabled for this Source")
             return -1
         user_count = 0
-        for user in page:
+        for user in page_data:
             if "attributes" not in user:
                 continue
             attributes = user.get("attributes", {})

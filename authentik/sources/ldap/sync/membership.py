@@ -36,13 +36,13 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
             **kwargs,
         )
 
-    def sync(self, page: Optional[list]) -> int:
+    def sync(self, page_data: list) -> int:
         """Iterate over all Users and assign Groups using memberOf Field"""
         if not self._source.sync_groups:
             self.message("Group syncing is disabled for this Source")
             return -1
         membership_count = 0
-        for group in page:
+        for group in page_data:
             if "attributes" not in group:
                 continue
             members = group.get("attributes", {}).get(self._source.group_membership_field, [])
