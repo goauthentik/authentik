@@ -41,6 +41,10 @@ class AuthenticatorValidateStageTests(FlowTestCase):
         FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
         FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
 
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             {"uid_field": self.user.username},
@@ -50,6 +54,67 @@ class AuthenticatorValidateStageTests(FlowTestCase):
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
             follow=True,
         )
+        self.assertStageResponse(
+            response,
+            flow,
+            component="ak-stage-identification",
+            password_fields=False,
+            primary_action="Continue",
+            user_fields=["username"],
+            sources=[],
+            show_source_labels=False,
+        )
+
+    def test_not_configured_action_multiple(self):
+        """Test not_configured_action"""
+        conf_stage = IdentificationStage.objects.create(
+            name=generate_id(),
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        conf_stage2 = IdentificationStage.objects.create(
+            name=generate_id(),
+            user_fields=[
+                UserFields.USERNAME,
+            ],
+        )
+        stage = AuthenticatorValidateStage.objects.create(
+            name=generate_id(),
+            not_configured_action=NotConfiguredAction.CONFIGURE,
+        )
+        stage.configuration_stages.set([conf_stage, conf_stage2])
+        flow = create_test_flow()
+        FlowStageBinding.objects.create(target=flow, stage=conf_stage, order=0)
+        FlowStageBinding.objects.create(target=flow, stage=stage, order=1)
+
+        # Get initial identification stage
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        # Answer initial identification stage
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"uid_field": self.user.username},
+        )
+        self.assertEqual(response.status_code, 302)
+        # Get list of all configuration stages
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
+        # Select stage
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+            {"selected_stage": conf_stage.pk},
+        )
+        self.assertEqual(response.status_code, 302)
+        # get actual identification stage response
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
+        )
+        self.assertEqual(response.status_code, 200)
         self.assertStageResponse(
             response,
             flow,
