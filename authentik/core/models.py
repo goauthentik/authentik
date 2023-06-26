@@ -575,6 +575,23 @@ class UserSourceConnection(SerializerModel, CreatedUpdatedModel):
         unique_together = (("user", "source"),)
 
 
+class GroupSourceConnection(SerializerModel, CreatedUpdatedModel):
+    """Connection between Group and Source."""
+
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    source = models.ForeignKey(Source, on_delete=models.CASCADE)
+
+    objects = InheritanceManager()
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        """Get serializer for this model"""
+        raise NotImplementedError
+
+    class Meta:
+        unique_together = (("group", "source"),)
+
+
 class ExpiringModel(models.Model):
     """Base Model which can expire, and is automatically cleaned up."""
 

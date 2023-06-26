@@ -7,6 +7,7 @@ from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
 from authentik.core.models import Group
 from authentik.events.models import Event, EventAction
+from authentik.sources.ldap.models import LDAPGroupSourceConnection
 from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
 
 
@@ -63,7 +64,13 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                     },
                     defaults,
                 )
-                self._logger.debug("Created group with attributes", **defaults)
+                LDAPGroupSourceConnection.objects.update_or_create(
+                    defaults={
+                        "unique_identifier": uniq,
+                        "source": self._source,
+                    },
+                    group=ak_group,
+                )
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,

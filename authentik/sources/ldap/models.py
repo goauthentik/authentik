@@ -10,7 +10,13 @@ from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
 from ldap3.core.exceptions import LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Group, PropertyMapping, Source, UserSourceConnection
+from authentik.core.models import (
+    Group,
+    GroupSourceConnection,
+    PropertyMapping,
+    Source,
+    UserSourceConnection,
+)
 from authentik.crypto.models import CertificateKeyPair
 from authentik.lib.config import CONFIG
 from authentik.lib.models import DomainlessURLValidator
@@ -113,7 +119,7 @@ class LDAPSource(Source):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPSourceSerializer
+        from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 
         return LDAPSourceSerializer
 
@@ -202,7 +208,7 @@ class LDAPPropertyMapping(PropertyMapping):
 
     @property
     def serializer(self) -> type[Serializer]:
-        from authentik.sources.ldap.api import LDAPPropertyMappingSerializer
+        from authentik.sources.ldap.api.property_mappings import LDAPPropertyMappingSerializer
 
         return LDAPPropertyMappingSerializer
 
@@ -221,12 +227,26 @@ class LDAPUserSourceConnection(UserSourceConnection):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.sources.ldap.api.source_connections import (
-            LDAPUserSourceConnectionSerializer,
-        )
+        from authentik.sources.ldap.api.source_connections import LDAPUserSourceConnectionSerializer
 
         return LDAPUserSourceConnectionSerializer
 
     class Meta:
         verbose_name = _("LDAP User Source Connection")
         verbose_name_plural = _("LDAP User Source Connections")
+
+
+class LDAPGroupSourceConnection(GroupSourceConnection):
+    """Connection between an authentik group and an LDAP source."""
+
+    unique_identifier = models.TextField(unique=True)
+
+    @property
+    def serializer(self) -> Serializer:
+        from authentik.sources.ldap.api.source_connections import LDAPUserSourceConnectionSerializer
+
+        return LDAPUserSourceConnectionSerializer
+
+    class Meta:
+        verbose_name = _("LDAP Group Source Connection")
+        verbose_name_plural = _("LDAP Group Source Connections")

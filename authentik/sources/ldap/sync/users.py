@@ -7,6 +7,7 @@ from ldap3 import ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES, SUBTREE
 
 from authentik.core.models import User
 from authentik.events.models import Event, EventAction
+from authentik.sources.ldap.models import LDAPUserSourceConnection
 from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchronizer
 from authentik.sources.ldap.sync.vendor.freeipa import FreeIPA
 from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
@@ -58,6 +59,13 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 ak_user, created = self.update_or_create_attributes(
                     User, {f"attributes__{LDAP_UNIQUENESS}": uniq}, defaults
                 )
+                LDAPUserSourceConnection.objects.update_or_create(
+                    defaults={
+                        "unique_identifier": uniq,
+                        "source": self._source,
+                    },
+                    user=ak_user,
+                )
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
                 Event.new(
                     EventAction.CONFIGURATION_ERROR,
@@ -72,6 +80,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             else:
                 self._logger.debug("Synced User", user=ak_user.username, created=created)
                 user_count += 1
+                # TODO: Optimise vendor sync to not create a new connection
                 MicrosoftActiveDirectory(self._source).sync(attributes, ak_user, created)
                 FreeIPA(self._source).sync(attributes, ak_user, created)
         return user_count

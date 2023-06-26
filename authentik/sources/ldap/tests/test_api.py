@@ -2,7 +2,7 @@
 from rest_framework.test import APITestCase
 
 from authentik.lib.generators import generate_key
-from authentik.sources.ldap.api import LDAPSourceSerializer
+from authentik.sources.ldap.api.sources import LDAPSourceSerializer
 from authentik.sources.ldap.models import LDAPSource
 
 LDAP_PASSWORD = generate_key()

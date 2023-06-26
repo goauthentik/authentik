@@ -150,4 +150,3 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
                 obj.pop("raw_dn", None)
                 all_objects[class_name].append(obj)
         return Response(data=all_objects)
-
