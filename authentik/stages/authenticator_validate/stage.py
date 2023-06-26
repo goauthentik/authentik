@@ -282,7 +282,7 @@ class AuthenticatorValidateStageView(ChallengeStageView):
             and self.executor.current_stage.not_configured_action == NotConfiguredAction.CONFIGURE
         ):
             self.logger.debug("Got selected stage in context, running that")
-            stage_pk = self.executor.plan.context(PLAN_CONTEXT_SELECTED_STAGE)
+            stage_pk = self.executor.plan.context.get(PLAN_CONTEXT_SELECTED_STAGE)
             # Because the foreign key to stage.configuration_stage points to
             # a base stage class, we need to do another lookup
             stage = Stage.objects.get_subclass(pk=stage_pk)
