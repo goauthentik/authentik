@@ -1,7 +1,8 @@
 """LDAP Sync tasks"""
-from pickle import dumps, loads  # nosec
+from uuid import uuid4
 
 from celery import chain, group
+from django.core.cache import cache
 from ldap3.core.exceptions import LDAPException
 from structlog.stdlib import get_logger
 
@@ -22,6 +23,7 @@ SYNC_CLASSES = [
     GroupLDAPSynchronizer,
     MembershipLDAPSynchronizer,
 ]
+CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 
 
 @CELERY_APP.task()
@@ -53,7 +55,9 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
     sync_inst: BaseLDAPSynchronizer = sync(source)
     signatures = []
     for page in sync_inst.get_objects():
-        page_sync = ldap_sync.si(source.pk, class_to_path(sync), dumps(page))
+        page_cache_key = CACHE_KEY_PREFIX + str(uuid4())
+        cache.set(page_cache_key, page)
+        page_sync = ldap_sync.si(source.pk, class_to_path(sync), page_cache_key)
         signatures.append(page_sync)
     return signatures
 
@@ -64,7 +68,7 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
     soft_time_limit=60 * 60 * int(CONFIG.y("ldap.task_timeout_hours")),
     task_time_limit=60 * 60 * int(CONFIG.y("ldap.task_timeout_hours")),
 )
-def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, raw_page: bytes):
+def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
     self.result_timeout_hours = int(CONFIG.y("ldap.task_timeout_hours"))
     try:
@@ -74,10 +78,14 @@ def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, raw_page: by
         # to set the state with
         return
     sync: type[BaseLDAPSynchronizer] = path_to_class(sync_class)
-    self.set_uid(f"{source.slug}:{sync.name()}")
+    uid = page_cache_key.replace(CACHE_KEY_PREFIX, "")
+    self.set_uid(f"{source.slug}:{sync.name()}:{uid}")
     try:
         sync_inst: BaseLDAPSynchronizer = sync(source)
-        page = loads(raw_page)  # nosec
+        page = cache.get(page_cache_key)
+        if not page:
+            return
+        cache.touch(page_cache_key)
         count = sync_inst.sync(page)
         messages = sync_inst.messages
         messages.append(f"Synced {count} objects.")
@@ -87,6 +95,7 @@ def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, raw_page: by
                 messages,
             )
         )
+        cache.delete(page_cache_key)
     except LDAPException as exc:
         # No explicit event is created here as .set_status with an error will do that
         LOGGER.warning(exception_to_string(exc))
