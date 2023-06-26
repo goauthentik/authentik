@@ -25,7 +25,7 @@
         "background-image": "sharp resize 2650 --mozjpeg -i src/assets/images/flow_background.jpg -o src/assets/images/flow_background.jpg"
     },
     "dependencies": {
-        "@codemirror/lang-html": "^6.4.4",
+        "@codemirror/lang-html": "^6.4.5",
         "@codemirror/lang-javascript": "^6.1.9",
         "@codemirror/lang-python": "^6.1.3",
         "@codemirror/lang-xml": "^6.0.2",
