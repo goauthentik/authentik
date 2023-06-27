@@ -154,7 +154,7 @@ class AutosubmitChallenge(Challenge):
     """Autosubmit challenge used to send and navigate a POST request"""
 
     url = CharField()
-    attrs = DictField(child=CharField())
+    attrs = DictField(child=CharField(allow_blank=True), allow_empty=True)
     title = CharField(required=False)
     component = CharField(default="ak-stage-autosubmit")
 
