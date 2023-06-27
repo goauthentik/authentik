@@ -2,7 +2,7 @@
 from base64 import b64decode
 from binascii import Error
 from dataclasses import dataclass, field
-from datetime import timedelta
+from datetime import datetime, timedelta
 from enum import Enum
 from functools import lru_cache
 from time import mktime
@@ -12,7 +12,10 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from dacite import from_dict
 from django.db import models
-from django.utils.timezone import now
+from django.db.models.functions import TruncDate
+from django.db.models.query import QuerySet
+from django.utils.timezone import get_current_timezone, now
+from guardian.shortcuts import get_anonymous_user
 from jwt import PyJWTError, decode, get_unverified_header
 from rest_framework.exceptions import ValidationError
 
@@ -93,18 +96,86 @@ class LicenseKey:
             total.flags.extend(lic.status.flags)
         return total
 
+    @property
+    def base_user_qs(self) -> QuerySet:
+        return User.objects.all().exclude(pk=get_anonymous_user().pk)
+
     def is_valid(self) -> bool:
-        """Check if the given license body covers all users"""
-        default_users = User.objects.filter(type=UserTypes.DEFAULT).count()
+        """Check if the given license body covers all users
+
+        Only checks the current count, no historical data is checked"""
+        default_users = self.base_user_qs.filter(type=UserTypes.DEFAULT).count()
         if default_users > self.users:
             return False
         last_month = now() - timedelta(days=30)
-        active_users = User.objects.filter(
+        active_users = self.base_user_qs.filter(
             type=UserTypes.EXTERNAL, last_login__gte=last_month
         ).count()
         if active_users > self.external_users:
             return False
         return True
+
+    def last_valid_date(self) -> datetime:
+        exp = datetime.fromtimestamp(self.exp, tz=get_current_timezone())
+        if self.is_valid() or exp < now():
+            # License is valid, so we can just set the cache to that date
+            # or license is invalid, but the expiry date is in the past
+            return exp
+        # Warning to admin after 2 weeks of overage
+        # Warning to user after 4 weeks of overage
+        # Read only after 6 weeks of overage
+        default_users = self.check_default_users()
+        external_users = self.check_external_users()
+        last_valid = min(default_users, external_users)
+        return last_valid
+
+    def check_default_users(self):
+        """Find the last time when the amount of users existent were within the license"""
+        user_dates = (
+            self.base_user_qs.filter(
+                type=UserTypes.DEFAULT,
+            )
+            .annotate(date=TruncDate("date_joined"))
+            .values_list("date", flat=True)
+            .reverse()
+        )
+        last_valid_date = now()
+        # Go through dates in reverse, starting from newest to oldest
+        for date in user_dates:
+            # Count how many users were created on a given date
+            users = self.base_user_qs.filter(date_joined__date=date).count()
+            # If that user count is more than the license has, we continue looking
+            if users > self.users:
+                continue
+            # Once we've found the last date where the user count is less or equal than
+            # what the license has, that's the date
+            last_valid_date = date
+            break
+        return last_valid_date
+
+    def check_external_users(self):
+        """Find the last time monthly active external users were in the license limit"""
+        user_dates = (
+            self.base_user_qs.filter(
+                type=UserTypes.EXTERNAL,
+            )
+            .annotate(date=TruncDate("last_login"))
+            .values_list("date", flat=True)
+            .reverse()
+        )
+        last_valid_date = now()
+        # Go through dates in reverse, starting from newest to oldest
+        for date in user_dates:
+            # Count how many users were created on a given date
+            users = self.base_user_qs.filter(last_login__date=date).count()
+            # If that user count is more than the license has, we continue looking
+            if users > self.external_users:
+                continue
+            # Once we've found the last date where the user count is less or equal than
+            # what the license has, that's the date
+            last_valid_date = date
+            break
+        return last_valid_date
 
 
 class License(models.Model):
