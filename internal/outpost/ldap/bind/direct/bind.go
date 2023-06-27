@@ -28,6 +28,7 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 	passed, err := fe.Execute()
 	flags := flags.UserFlags{
 		Session: fe.GetSession(),
+		UserPk:  -1,
 	}
 	db.si.SetFlags(req.BindDN, &flags)
 	if err != nil {

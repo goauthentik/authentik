@@ -73,7 +73,7 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	}
 
 	flags := ms.si.GetFlags(req.BindDN)
-	if flags == nil {
+	if flags == nil || (flags.UserInfo == nil && flags.UserPk == -1) {
 		req.Log().Debug("User info not cached")
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": ms.si.GetOutpostName(),
