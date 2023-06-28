@@ -54,6 +54,10 @@ function cleanup {
     rm -f ${MODE_FILE}
 }
 
+if [[ "${AUTHENTIK_REMOTE_DEBUG}" == "true" ]]; then
+    pip install --no-cache-dir debugpy
+fi
+
 if [[ "$1" == "server" ]]; then
     wait_for_db
     set_mode "server"

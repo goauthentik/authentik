@@ -1,6 +1,7 @@
 """Run worker"""
 from sys import exit as sysexit
 from tempfile import tempdir
+from authentik.lib.config import CONFIG
 
 from celery.apps.worker import Worker
 from django.core.management.base import BaseCommand
@@ -17,6 +18,9 @@ class Command(BaseCommand):
 
     def handle(self, **options):
         close_old_connections()
+        if CONFIG.y_bool("remote_debug"):
+            import debugpy
+            debugpy.listen(("0.0.0.0", 6900))  # nosec
         worker: Worker = CELERY_APP.Worker(
             no_color=False,
             quiet=True,
@@ -30,5 +34,6 @@ class Command(BaseCommand):
         )
         for task in CELERY_APP.tasks:
             LOGGER.debug("Registered task", task=task)
+
         worker.start()
         sysexit(worker.exitcode)

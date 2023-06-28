@@ -41,6 +41,7 @@ class TaskResult:
 
     def with_error(self, exc: Exception) -> "TaskResult":
         """Since errors might not always be pickle-able, set the traceback"""
+        # TODO: Mark exception somehow so that is rendered as <pre> in frontend
         self.messages.append(exception_to_string(exc))
         return self
 
