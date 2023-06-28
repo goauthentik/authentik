@@ -54,8 +54,14 @@ function cleanup {
     rm -f ${MODE_FILE}
 }
 
+function prepare_debug {
+    pip install --no-cache-dir -r /requirements-dev.txt
+    touch /unittest.xml
+    chown authentik:authentik /unittest.xml
+}
+
 if [[ "${AUTHENTIK_REMOTE_DEBUG}" == "true" ]]; then
-    pip install --no-cache-dir debugpy
+    prepare_debug
 fi
 
 if [[ "$1" == "server" ]]; then
@@ -79,9 +85,7 @@ elif [[ "$1" == "worker-status" ]]; then
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test-all" ]]; then
-    pip install --no-cache-dir -r /requirements-dev.txt
-    touch /unittest.xml
-    chown authentik:authentik /unittest.xml
+    prepare_debug
     check_if_root "python -m manage test authentik"
 elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)
