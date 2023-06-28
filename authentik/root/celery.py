@@ -130,11 +130,7 @@ class LivenessProbe(bootsteps.StartStopStep):
         HEARTBEAT_FILE.touch()
 
 
-# Using a string here means the worker doesn't have to serialize
-# the configuration object to child processes.
-# - namespace='CELERY' means all celery-related configuration keys
-#   should have a `CELERY_` prefix.
-CELERY_APP.config_from_object(settings, namespace="CELERY")
+CELERY_APP.config_from_object(settings.CELERY)
 
 # Load task modules from all registered Django app configs.
 CELERY_APP.autodiscover_tasks()

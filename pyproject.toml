@@ -178,6 +178,7 @@ black = "*"
 bump2version = "*"
 colorama = "*"
 coverage = { extras = ["toml"], version = "*" }
+debugpy = "*"
 django-silk = "*"
 drf-jsonschema-serializer = "*"
 importlib-metadata = "*"
