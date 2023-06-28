@@ -151,7 +151,7 @@ class LDAPSource(Source):
                 servers.append(Server(server, **server_kwargs))
         else:
             servers = [Server(self.server_uri, **server_kwargs)]
-        return ServerPool(servers, RANDOM, active=True, exhaust=True)
+        return ServerPool(servers, RANDOM, active=5, exhaust=True)
 
     def connection(
         self, server_kwargs: Optional[dict] = None, connection_kwargs: Optional[dict] = None
