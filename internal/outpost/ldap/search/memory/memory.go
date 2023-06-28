@@ -112,12 +112,13 @@ func (ms *MemorySearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 						flags.UserInfo = &ms.users[i]
 					}
 				}
-
 				if flags.UserInfo == nil {
 					req.Log().WithField("pk", flags.UserPk).Warning("User with pk is not in local cache")
 					err = fmt.Errorf("failed to get userinfo")
 				}
-			} else {
+			}
+			if flags.UserInfo != nil {
+				req.Log().WithField("baseDN", req.BaseDN).WithField("userinfo", flags.UserInfo).Debug("Assign userinfo")
 				u[0] = *flags.UserInfo
 			}
 			users = &u
