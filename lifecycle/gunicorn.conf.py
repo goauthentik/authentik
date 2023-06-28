@@ -160,4 +160,5 @@ if not CONFIG.y_bool("disable_startup_analytics", False):
 
 if CONFIG.y_bool("remote_debug"):
     import debugpy
+
     debugpy.listen(("0.0.0.0", 6800))  # nosec
