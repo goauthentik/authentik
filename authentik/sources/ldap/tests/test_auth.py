@@ -43,7 +43,7 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=raw_conn)
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
-            user_sync.sync()
+            user_sync.sync_full()
 
             user = User.objects.get(username="user0_sn")
             # auth_user_by_bind = Mock(return_value=user)
@@ -71,7 +71,7 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
-            user_sync.sync()
+            user_sync.sync_full()
 
             user = User.objects.get(username="user0_sn")
             auth_user_by_bind = Mock(return_value=user)
@@ -98,7 +98,7 @@ class LDAPSyncTests(TestCase):
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
-            user_sync.sync()
+            user_sync.sync_full()
 
             user = User.objects.get(username="user0_sn")
             auth_user_by_bind = Mock(return_value=user)

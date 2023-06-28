@@ -12,13 +12,9 @@ from authentik.core.models import User
 from authentik.core.signals import password_changed
 from authentik.events.models import Event, EventAction
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
-from authentik.lib.utils.reflection import class_to_path
 from authentik.sources.ldap.models import LDAPSource
 from authentik.sources.ldap.password import LDAPPasswordChanger
-from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
-from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
-from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.sources.ldap.tasks import ldap_sync
+from authentik.sources.ldap.tasks import ldap_sync_single
 from authentik.stages.prompt.signals import password_validate
 
 LOGGER = get_logger()
@@ -35,12 +31,7 @@ def sync_ldap_source_on_save(sender, instance: LDAPSource, **_):
     #   and the mappings are created with an m2m event
     if not instance.property_mappings.exists() or not instance.property_mappings_group.exists():
         return
-    for sync_class in [
-        UserLDAPSynchronizer,
-        GroupLDAPSynchronizer,
-        MembershipLDAPSynchronizer,
-    ]:
-        ldap_sync.delay(instance.pk, class_to_path(sync_class))
+    ldap_sync_single.delay(instance.pk)
 
 
 @receiver(password_validate)
