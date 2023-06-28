@@ -30,7 +30,10 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 		Session: fe.GetSession(),
 		UserPk:  -1,
 	}
-	db.si.SetFlags(req.BindDN, &flags)
+	//only set, if empty
+	if db.si.GetFlags(req.BindDN) == nil {
+		db.si.SetFlags(req.BindDN, &flags)
+	}
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": db.si.GetOutpostName(),
