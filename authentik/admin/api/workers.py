@@ -19,7 +19,7 @@ class WorkerView(APIView):
     def get(self, request: Request) -> Response:
         """Get currently connected worker count."""
         count = len(CELERY_APP.control.ping(timeout=0.5))
-        # In debug we run with `CELERY_TASK_ALWAYS_EAGER`, so tasks are ran on the main process
+        # In debug we run with `task_always_eager`, so tasks are ran on the main process
         if settings.DEBUG:  # pragma: no cover
             count += 1
         return Response({"count": count})
