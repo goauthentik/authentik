@@ -67,7 +67,6 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     }
 
     onSuccess(r: unknown) {
-        console.log("Emitting:", `${this.eventPrefix}-success`, r);
         this.dispatchCustomEvent(`${this.eventPrefix}-success`, {
             result: r,
         });
