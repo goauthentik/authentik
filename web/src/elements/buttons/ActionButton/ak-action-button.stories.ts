@@ -47,7 +47,7 @@ const displayMessage = (result) => {
         `<li><i>Event</i>: ${
             "result" in result.detail ? result.detail.result : result.detail.error
         }</li>`,
-        "text/xml"
+        "text/xml",
     );
     const target = document.querySelector("#action-button-message-pad");
     target!.appendChild(doc.firstChild);
@@ -65,7 +65,9 @@ export const ButtonWithSuccess = () => {
         });
 
     return container(
-        html`<ak-action-button class="pf-m-primary" .apiRequest=${run}>3 Seconds</ak-action-button>`
+        html`<ak-action-button class="pf-m-primary" .apiRequest=${run}
+            >3 Seconds</ak-action-button
+        >`,
     );
 };
 
