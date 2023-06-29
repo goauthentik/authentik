@@ -124,7 +124,8 @@ class UserWriteStageView(StageView):
             connection: UserSourceConnection = self.executor.plan.context[
                 PLAN_CONTEXT_SOURCES_CONNECTION
             ]
-            user.attributes[USER_ATTRIBUTE_SOURCES].append(connection.source.name)
+            if connection.source.name not in user.attributes[USER_ATTRIBUTE_SOURCES]:
+                user.attributes[USER_ATTRIBUTE_SOURCES].append(connection.source.name)
 
     def get(self, request: HttpRequest) -> HttpResponse:
         """Save data in the current flow to the currently pending user. If no user is pending,
