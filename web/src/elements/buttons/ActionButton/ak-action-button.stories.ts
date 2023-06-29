@@ -50,6 +50,7 @@ const displayMessage = (result) => {
         "text/xml",
     );
     const target = document.querySelector("#action-button-message-pad");
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     target!.appendChild(doc.firstChild);
 };
 

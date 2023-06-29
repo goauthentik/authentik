@@ -10,6 +10,8 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFSpinner from "@patternfly/patternfly/components/Spinner/spinner.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+// `pointer-events: none` makes the button inaccessible during the processing phase.
+
 const buttonStyles = [
     PFBase,
     PFButton,
@@ -32,6 +34,17 @@ const StatusMap = new Map<TaskStatus, string>([
 ]);
 
 const SPINNER_TIMEOUT = 1000 * 1.5; // milliseconds
+
+/**
+ * BaseTaskButton
+ *
+ * This is an abstract base class for our four-state buttons. It provides the four basic events of
+ * this class: click, success, failure, reset. Subclasses can override any of these event handlers,
+ * but overriding onSuccess() or onFailure() means that you must either call `onComplete` if you
+ * want to preserve the TaskButton's "reset after completion" semantics, or inside `onSuccess` and
+ * `onFailure` call their `super.` equivalents.
+ *
+ */
 
 export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     eventPrefix = "ak-button";
