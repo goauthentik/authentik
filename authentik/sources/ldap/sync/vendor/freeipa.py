@@ -11,6 +11,10 @@ from authentik.sources.ldap.sync.base import BaseLDAPSynchronizer
 class FreeIPA(BaseLDAPSynchronizer):
     """FreeIPA-specific LDAP"""
 
+    @staticmethod
+    def name() -> str:
+        return "freeipa"
+
     def get_objects(self, **kwargs) -> Generator:
         yield None
 

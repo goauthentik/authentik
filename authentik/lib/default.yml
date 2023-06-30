@@ -26,6 +26,7 @@ redis:
   cache_timeout_reputation: 300
 
 debug: false
+remote_debug: false
 
 log_level: info
 

@@ -157,3 +157,8 @@ if not CONFIG.y_bool("disable_startup_analytics", False):
         # pylint: disable=broad-exception-caught
         except Exception:  # nosec
             pass
+
+if CONFIG.y_bool("remote_debug"):
+    import debugpy
+
+    debugpy.listen(("0.0.0.0", 6800))  # nosec

@@ -113,7 +113,7 @@ filterwarnings = [
 
 [tool.poetry]
 name = "authentik"
-version = "2023.5.3"
+version = "2023.5.4"
 description = ""
 authors = ["authentik Team <hello@goauthentik.io>"]
 
@@ -127,7 +127,7 @@ colorama = "*"
 dacite = "*"
 deepmerge = "*"
 defusedxml = "*"
-django = "*"
+django = "<=4.1.9"
 django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"
@@ -178,6 +178,7 @@ black = "*"
 bump2version = "*"
 colorama = "*"
 coverage = { extras = ["toml"], version = "*" }
+debugpy = "*"
 django-silk = "*"
 drf-jsonschema-serializer = "*"
 importlib-metadata = "*"

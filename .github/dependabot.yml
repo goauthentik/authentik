@@ -24,6 +24,18 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "web:"
+    groups:
+      sentry:
+        patterns:
+          - "@sentry/*"
+      babel:
+        patterns:
+          - "@babel/*"
+          - "babel-*"
+      storybook:
+        patterns:
+          - "@storybook/*"
+          - "*storybook*"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
@@ -32,6 +44,10 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "website:"
+    groups:
+      docusaurus:
+        patterns:
+          - "@docusaurus/*"
   - package-ecosystem: pip
     directory: "/"
     schedule:

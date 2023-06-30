@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.5.3
+  version: 2023.5.4
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -4041,11 +4041,6 @@ paths:
           * `api` - Intent Api
           * `recovery` - Intent Recovery
           * `app_password` - Intent App Password
-
-          * `verification` - Intent Verification
-          * `api` - Intent Api
-          * `recovery` - Intent Recovery
-          * `app_password` - Intent App Password
       - in: query
         name: managed
         schema:
@@ -5962,10 +5957,6 @@ paths:
           * `notice` - Notice
           * `warning` - Warning
           * `alert` - Alert
-
-          * `notice` - Notice
-          * `warning` - Warning
-          * `alert` - Alert
       - in: query
         name: user
         schema:
@@ -6502,11 +6493,6 @@ paths:
           * `webhook` - Generic Webhook
           * `webhook_slack` - Slack Webhook (Slack/Discord)
           * `email` - Email
-
-          * `local` - authentik inbuilt notifications
-          * `webhook` - Generic Webhook
-          * `webhook_slack` - Slack Webhook (Slack/Discord)
-          * `email` - Email
       - in: query
         name: name
         schema:
@@ -6890,9 +6876,6 @@ paths:
           - all
           - any
         description: |-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
-
           * `all` - all, all policies must pass
           * `any` - any, any policy must pass
       - in: query
@@ -15945,11 +15928,6 @@ paths:
           * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
           * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
           * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
-
-          * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
-          * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
-          * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
       - in: query
         name: is_backchannel
         schema:
@@ -16015,12 +15993,6 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
         description: |-
-          * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
-          * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
-
           * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
           * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
           * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
@@ -17667,9 +17639,6 @@ paths:
         description: |-
           * `all` - all, all policies must pass
           * `any` - any, any policy must pass
-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
       - in: query
         name: profile_url
         schema:
@@ -18036,9 +18005,6 @@ paths:
         description: |-
           * `all` - all, all policies must pass
           * `any` - any, any policy must pass
-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
       - name: search
         required: false
         in: query
@@ -18383,10 +18349,6 @@ paths:
           * `REDIRECT` - Redirect Binding
           * `POST` - POST Binding
           * `POST_AUTO` - POST Binding with auto-confirmation
-
-          * `REDIRECT` - Redirect Binding
-          * `POST` - POST Binding
-          * `POST_AUTO` - POST Binding with auto-confirmation
       - in: query
         name: digest_algorithm
         schema:
@@ -18397,11 +18359,6 @@ paths:
           - http://www.w3.org/2001/04/xmlenc#sha256
           - http://www.w3.org/2001/04/xmlenc#sha512
         description: |-
-          * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
-          * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
-          * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
-
           * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
           * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
           * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
@@ -18473,9 +18430,6 @@ paths:
         description: |-
           * `all` - all, all policies must pass
           * `any` - any, any policy must pass
-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
       - in: query
         name: pre_authentication_flow
         schema:
@@ -18498,12 +18452,6 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
         description: |-
-          * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
-          * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
-
           * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
           * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
           * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
@@ -20455,9 +20403,6 @@ paths:
         description: |-
           * `basic` - Basic
           * `bearer` - Bearer
-
-          * `basic` - Basic
-          * `bearer` - Bearer
       - in: query
         name: configure_flow
         schema:
@@ -20506,9 +20451,6 @@ paths:
           - generic
           - twilio
         description: |-
-          * `twilio` - Twilio
-          * `generic` - Generic
-
           * `twilio` - Twilio
           * `generic` - Generic
       - name: search
@@ -21069,9 +21011,6 @@ paths:
         description: |-
           * `6` - 6 digits, widely compatible
           * `8` - 8 digits, not compatible with apps like Google Authenticator
-
-          * `6` - 6 digits, widely compatible
-          * `8` - 8 digits, not compatible with apps like Google Authenticator
       - in: query
         name: friendly_name
         schema:
@@ -21375,10 +21314,6 @@ paths:
           * `skip` - Skip
           * `deny` - Deny
           * `configure` - Configure
-
-          * `skip` - Skip
-          * `deny` - Deny
-          * `configure` - Configure
       - name: ordering
         required: false
         in: query
@@ -21655,9 +21590,6 @@ paths:
         description: |-
           * `platform` - Platform
           * `cross-platform` - Cross Platform
-
-          * `platform` - Platform
-          * `cross-platform` - Cross Platform
       - in: query
         name: configure_flow
         schema:
@@ -21701,10 +21633,6 @@ paths:
           * `discouraged` - Discouraged
           * `preferred` - Preferred
           * `required` - Required
-
-          * `discouraged` - Discouraged
-          * `preferred` - Preferred
-          * `required` - Required
       - name: search
         required: false
         in: query
@@ -21725,10 +21653,6 @@ paths:
           - preferred
           - required
         description: |-
-          * `required` - Required
-          * `preferred` - Preferred
-          * `discouraged` - Discouraged
-
           * `required` - Required
           * `preferred` - Preferred
           * `discouraged` - Discouraged
@@ -22259,10 +22183,6 @@ paths:
           - expiring
           - permanent
         description: |-
-          * `always_require` - Always Require
-          * `permanent` - Permanent
-          * `expiring` - Expiring
-
           * `always_require` - Always Require
           * `permanent` - Permanent
           * `expiring` - Expiring
@@ -24663,25 +24583,6 @@ paths:
           * `hidden` - Hidden: Hidden field, can be used to insert data into form.
           * `static` - Static: Static value, displayed as-is.
           * `ak-locale` - authentik: Selection of locales authentik supports
-
-          * `text` - Text: Simple Text input
-          * `text_area` - Text area: Multiline Text Input.
-          * `text_read_only` - Text (read-only): Simple Text input, but cannot be edited.
-          * `text_area_read_only` - Text area (read-only): Multiline Text input, but cannot be edited.
-          * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
-          * `email` - Email: Text field with Email type.
-          * `password` - Password: Masked input, multiple inputs of this type on the same prompt need to be identical.
-          * `number` - Number
-          * `checkbox` - Checkbox
-          * `radio-button-group` - Fixed choice field rendered as a group of radio buttons.
-          * `dropdown` - Fixed choice field rendered as a dropdown.
-          * `date` - Date
-          * `date-time` - Date Time
-          * `file` - File: File upload for arbitrary files. File content will be available in flow context as data-URI
-          * `separator` - Separator: Static Separator Line
-          * `hidden` - Hidden: Hidden field, can be used to insert data into form.
-          * `static` - Static: Static value, displayed as-is.
-          * `ak-locale` - authentik: Selection of locales authentik supports
       tags:
       - stages
       security:
@@ -26133,10 +26034,6 @@ paths:
           - create_when_required
           - never_create
         description: |-
-          * `never_create` - Never Create
-          * `create_when_required` - Create When Required
-          * `always_create` - Always Create
-
           * `never_create` - Never Create
           * `create_when_required` - Create When Required
           * `always_create` - Always Create

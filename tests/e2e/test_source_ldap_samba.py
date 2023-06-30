@@ -63,7 +63,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(name="goauthentik.io/sources/ldap/default-name")
         )
-        UserLDAPSynchronizer(source).sync()
+        UserLDAPSynchronizer(source).sync_full()
         self.assertTrue(User.objects.filter(username="bob").exists())
         self.assertTrue(User.objects.filter(username="james").exists())
         self.assertTrue(User.objects.filter(username="john").exists())
@@ -94,9 +94,9 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(managed="goauthentik.io/sources/ldap/default-name")
         )
-        GroupLDAPSynchronizer(source).sync()
-        UserLDAPSynchronizer(source).sync()
-        MembershipLDAPSynchronizer(source).sync()
+        GroupLDAPSynchronizer(source).sync_full()
+        UserLDAPSynchronizer(source).sync_full()
+        MembershipLDAPSynchronizer(source).sync_full()
         self.assertIsNotNone(User.objects.get(username="bob"))
         self.assertIsNotNone(User.objects.get(username="james"))
         self.assertIsNotNone(User.objects.get(username="john"))
@@ -137,7 +137,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         source.property_mappings_group.set(
             LDAPPropertyMapping.objects.filter(name="goauthentik.io/sources/ldap/default-name")
         )
-        UserLDAPSynchronizer(source).sync()
+        UserLDAPSynchronizer(source).sync_full()
         username = "bob"
         password = generate_id()
         result = self.container.exec_run(
@@ -160,7 +160,7 @@ class TestSourceLDAPSamba(SeleniumTestCase):
         )
         self.assertEqual(result.exit_code, 0)
         # Sync again
-        UserLDAPSynchronizer(source).sync()
+        UserLDAPSynchronizer(source).sync_full()
         user.refresh_from_db()
         # Since password in samba was checked, it should be invalidated here too
         self.assertFalse(user.has_usable_password())
