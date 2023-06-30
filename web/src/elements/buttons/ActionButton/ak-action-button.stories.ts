@@ -42,16 +42,17 @@ const container = (testItem: TemplateResult) => html` <div style="background: #f
     <ul id="action-button-message-pad" style="margin-top: 1em"></ul>
 </div>`;
 
-const displayMessage = (result) => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const displayMessage = (result: any) => {
     const doc = new DOMParser().parseFromString(
         `<li><i>Event</i>: ${
             "result" in result.detail ? result.detail.result : result.detail.error
         }</li>`,
-        "text/xml",
+        "text/xml"
     );
     const target = document.querySelector("#action-button-message-pad");
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    target!.appendChild(doc.firstChild);
+    target!.appendChild(doc.firstChild!);
 };
 
 window.addEventListener("ak-button-success", displayMessage);
@@ -59,16 +60,14 @@ window.addEventListener("ak-button-failure", displayMessage);
 
 export const ButtonWithSuccess = () => {
     const run = () =>
-        new Promise<void>(function (resolve) {
+        new Promise<string>(function (resolve) {
             setTimeout(function () {
                 resolve("Success!");
             }, 3000);
         });
 
     return container(
-        html`<ak-action-button class="pf-m-primary" .apiRequest=${run}
-            >3 Seconds</ak-action-button
-        >`,
+        html`<ak-action-button class="pf-m-primary" .apiRequest=${run}>3 Seconds</ak-action-button>`
     );
 };
 
