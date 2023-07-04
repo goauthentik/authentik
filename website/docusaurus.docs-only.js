@@ -17,7 +17,7 @@ module.exports = async function () {
                 title: "authentik",
                 logo: {
                     alt: "authentik logo",
-                    src: "img/icon_left_brand.svg",
+                    src: "img/icon.svg",
                 },
                 items: [
                     {
@@ -50,7 +50,10 @@ module.exports = async function () {
                     },
                 ],
             },
-            footer: mainConfig.themeConfig.footer,
+            footer: {
+                links: [],
+                copyright: mainConfig.themeConfig.footer.copyright,
+            },
             colorMode: mainConfig.themeConfig.colorMode,
             tableOfContents: mainConfig.themeConfig.tableOfContents,
         },
