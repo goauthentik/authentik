@@ -25,7 +25,7 @@ module.exports = async function () {
                 title: "authentik",
                 logo: {
                     alt: "authentik logo",
-                    src: "img/icon_left_brand.svg",
+                    src: "img/icon.svg",
                 },
                 items: [
                     { to: "blog", label: "Blog", position: "left" },
@@ -47,11 +47,6 @@ module.exports = async function () {
                     {
                         to: "pricing/",
                         label: "Pricing",
-                        position: "left",
-                    },
-                    {
-                        to: "jobs/",
-                        label: "Jobs",
                         position: "left",
                     },
                     {
@@ -122,6 +117,11 @@ module.exports = async function () {
                     {
                         title: "More",
                         items: [
+                            {
+                                to: "jobs/",
+                                label: "Jobs",
+                                position: "left",
+                            },
                             {
                                 label: "GitHub",
                                 href: "https://github.com/goauthentik/authentik",
