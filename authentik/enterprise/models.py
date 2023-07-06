@@ -12,14 +12,13 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.x509 import Certificate, load_pem_x509_certificate
 from dacite import from_dict
 from django.db import models
-from django.db.models.functions import TruncDate
 from django.db.models.query import QuerySet
-from django.utils.timezone import get_current_timezone, now
+from django.utils.timezone import now
 from guardian.shortcuts import get_anonymous_user
 from jwt import PyJWTError, decode, get_unverified_header
 from rest_framework.exceptions import ValidationError
 
-from authentik.core.models import User, UserTypes
+from authentik.core.models import ExpiringModel, User, UserTypes
 from authentik.root.install_id import get_install_id
 
 
@@ -100,82 +99,42 @@ class LicenseKey:
     def base_user_qs(self) -> QuerySet:
         return User.objects.all().exclude(pk=get_anonymous_user().pk)
 
+    def get_default_user_count(self):
+        return self.base_user_qs.filter(type=UserTypes.DEFAULT).count()
+
+    def get_external_user_count(self):
+        # Count since start of the month
+        last_month = now().replace(day=1)
+        return self.base_user_qs.filter(type=UserTypes.EXTERNAL, last_login__gte=last_month).count()
+
     def is_valid(self) -> bool:
         """Check if the given license body covers all users
 
         Only checks the current count, no historical data is checked"""
-        default_users = self.base_user_qs.filter(type=UserTypes.DEFAULT).count()
+        default_users = self.get_default_user_count()
         if default_users > self.users:
             return False
-        last_month = now() - timedelta(days=30)
-        active_users = self.base_user_qs.filter(
-            type=UserTypes.EXTERNAL, last_login__gte=last_month
-        ).count()
+        active_users = self.get_external_user_count()
         if active_users > self.external_users:
             return False
         return True
 
-    def last_valid_date(self) -> datetime:
-        exp = datetime.fromtimestamp(self.exp, tz=get_current_timezone())
-        if self.is_valid() or exp < now():
-            # License is valid, so we can just set the cache to that date
-            # or license is invalid, but the expiry date is in the past
-            return exp
-        # Warning to admin after 2 weeks of overage
-        # Warning to user after 4 weeks of overage
-        # Read only after 6 weeks of overage
-        default_users = self.check_default_users()
-        external_users = self.check_external_users()
-        last_valid = min(default_users, external_users)
-        return last_valid
-
-    def check_default_users(self):
-        """Find the last time when the amount of users existent were within the license"""
-        user_dates = (
-            self.base_user_qs.filter(
-                type=UserTypes.DEFAULT,
-            )
-            .annotate(date=TruncDate("date_joined"))
-            .values_list("date", flat=True)
-            .reverse()
+    def record_usage(self):
+        """Capture the current validity status and metrics and save them"""
+        LicenseUsage.objects.create(
+            user_count=self.get_default_user_count(),
+            external_user_count=self.get_external_user_count(),
+            within_limits=self.is_valid(),
         )
-        last_valid_date = now()
-        # Go through dates in reverse, starting from newest to oldest
-        for date in user_dates:
-            # Count how many users were created on a given date
-            users = self.base_user_qs.filter(date_joined__date=date).count()
-            # If that user count is more than the license has, we continue looking
-            if users > self.users:
-                continue
-            # Once we've found the last date where the user count is less or equal than
-            # what the license has, that's the date
-            last_valid_date = date
-            break
-        return last_valid_date
 
-    def check_external_users(self):
-        """Find the last time monthly active external users were in the license limit"""
-        user_dates = (
-            self.base_user_qs.filter(
-                type=UserTypes.EXTERNAL,
-            )
-            .annotate(date=TruncDate("last_login"))
-            .values_list("date", flat=True)
-            .reverse()
+    @staticmethod
+    def last_valid_date() -> datetime:
+        usage: LicenseUsage = (
+            LicenseUsage.filter_not_expired(valid=True).order_by("-record_date").first()
         )
-        last_valid_date = now()
-        # Go through dates in reverse, starting from newest to oldest
-        for date in user_dates:
-            # Count how many users were created on a given date
-            users = self.base_user_qs.filter(last_login__date=date).count()
-            # If that user count is more than the license has, we continue looking
-            if users > self.external_users:
-                continue
-            # Once we've found the last date where the user count is less or equal than
-            # what the license has, that's the date
-            last_valid_date = date
-            break
-        return last_valid_date
+        if not usage:
+            return now()
+        return usage.record_date
 
 
 class License(models.Model):
@@ -193,3 +152,22 @@ class License(models.Model):
     def status(self) -> LicenseKey:
         """Get parsed license status"""
         return LicenseKey.validate(self.key)
+
+
+def usage_expiry():
+    """Keep license usage records for 3 months"""
+    return now() + timedelta(days=30 * 3)
+
+
+class LicenseUsage(ExpiringModel):
+    """a single license usage record"""
+
+    expires = models.DateTimeField(default=usage_expiry)
+
+    usage_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
+
+    user_count = models.BigIntegerField()
+    external_user_count = models.BigIntegerField()
+    within_limits = models.BooleanField()
+
+    record_date = models.DateTimeField(auto_now_add=True)

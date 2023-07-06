@@ -4618,11 +4618,6 @@ paths:
           * `external` - External
           * `service_account` - Service Account
           * `internal_service_account` - Internal Service Account
-
-          * `default` - Default
-          * `external` - External
-          * `service_account` - Service Account
-          * `internal_service_account` - Internal Service Account
       - in: query
         name: username
         schema:
@@ -5802,6 +5797,33 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /enterprise/license/forecast/:
+    get:
+      operationId: enterprise_license_forecast_retrieve
+      description: Forecast how many users will be required in a year
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseForecast'
           description: ''
         '400':
           content:
@@ -31730,6 +31752,17 @@ components:
       required:
       - external_users
       - is_valid
+      - users
+    LicenseForecast:
+      type: object
+      description: Serializer for license forecast
+      properties:
+        users:
+          type: integer
+        external_users:
+          type: integer
+      required:
+      - external_users
       - users
     LicenseRequest:
       type: object

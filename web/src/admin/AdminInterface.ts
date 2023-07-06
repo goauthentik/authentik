@@ -11,6 +11,7 @@ import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/ak-locale-context";
+import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
@@ -30,7 +31,14 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AdminApi, CapabilitiesEnum, CoreApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
+import {
+    AdminApi,
+    CapabilitiesEnum,
+    CoreApi,
+    SessionUser,
+    UiThemeEnum,
+    Version,
+} from "@goauthentik/api";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends Interface {
@@ -67,7 +75,13 @@ export class AdminInterface extends Interface {
                 .display-none {
                     display: none;
                 }
+                :host {
+                    display: flex;
+                    flex-direction: column;
+                    height: 100%;
+                }
                 .pf-c-page {
+                    flex-grow: 1;
                     background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
                 /* Global page background colour */
@@ -113,7 +127,8 @@ export class AdminInterface extends Interface {
 
     render(): TemplateResult {
         return html` <ak-locale-context
-            ><div class="pf-c-page">
+            ><ak-enterprise-status></ak-enterprise-status>
+            <div class="pf-c-page">
                 <ak-sidebar
                     class="pf-c-page__sidebar ${this.sidebarOpen
                         ? "pf-m-expanded"
