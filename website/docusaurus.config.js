@@ -86,8 +86,8 @@ module.exports = async function () {
             announcementBar: {
                 id: "hackathon",
                 content: `We're hosting a hackathon with a total prize pool of $5.000 in July! Sign up <a href="https://goauthentik.io/developer-docs/hackathon/">here</a>!`,
-                backgroundColor: "#fafbfc",
-                textColor: "#091E42",
+                backgroundColor: "#ffffff",
+                textColor: "#000000",
                 isCloseable: false,
             },
             footer: {
