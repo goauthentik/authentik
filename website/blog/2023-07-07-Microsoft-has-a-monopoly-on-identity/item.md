@@ -47,7 +47,7 @@ The following three cases that the FTC brought against Microsoft highlight not a
 
 ### Horizontal versus vertical monopolies
 
-Much of our societal and legal understanding of monopoly is based on a two-dimensional model: Monopolies are either vertical, meaning that a company integrates and controls a supply chain, or horizontal, meaning that a company acquires and controls so much of an industry that it can then exert undue power.
+Much of our societal and legal understanding of monopoly is based on a two-dimensional model: monopolies are either vertical, meaning that a company integrates and controls a supply chain, or horizontal, meaning that a company acquires and controls so much of an industry that it can then exert undue power.
 
 When the FTC made its 2001 case against Microsoft, the entire company was worth [$28 billion](https://www.statista.com/statistics/267805/microsofts-global-revenue-since-2002/). Now, the identity and access industry alone was worth [$13 billion in 2021](https://www.globenewswire.com/news-release/2023/01/19/2591625/0/en/Identity-and-Access-Management-Market-Size-Worth-USD-34-52-Billion-by-2028-Report-by-Fortune-Business-Insights.html) and will be worth almost $35 billion by 2028.
 
