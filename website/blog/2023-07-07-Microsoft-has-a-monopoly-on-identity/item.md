@@ -63,7 +63,7 @@ Microsoft does indeed “bundle”, in business terminology, by offering a suite
 
 Microsoft Teams, their collaboration and chat platform, has become the latest anchor point for the Microsoft ecosystem. Earlier cornerstone products for Microsoft were their personal computers (PCs), the Windows operating system, and the Microsoft Office suite.
 
-[Ben Thompson](https://stratechery.com/2022/thin-platforms/), a former Microsoft employee who writes about technology, business strategy, and the internet, has shared some interesting insights on his web site [Startechery](https://stratechery.com/2022/thin-platforms/):
+[Ben Thompson](https://stratechery.com/2022/thin-platforms/), a former Microsoft employee who writes about technology, business strategy, and the internet, has shared some interesting insights on his website [Startechery](https://stratechery.com/2022/thin-platforms/):
 
 “_This is exactly what Microsoft would go on to build with Teams: the beautiful thing about chat is that like any social product it is only as useful as the number of people who are using it, which is to say it only works if it is a monopoly — everyone in the company needs to be on board, and they need to not be using anything else. That, by extension, sets up Teams to play the Windows role, but instead of monopolizing an individual PC, it monopolizes an entire company._”
 
