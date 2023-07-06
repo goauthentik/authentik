@@ -30,7 +30,6 @@ Only settings that have been modified from default have been listed.
 In authentik, create an _OAuth2/OpenID Provider_ (under _Applications/Providers_) with these settings:
 
 -   Name: ArgoCD
--   Authorization flow: `default-provider-authorization-explicit-consent`
 -   Client Type: `Confidential`
 -   Signing Key: Select any available key
 -   Redirect URIs:
