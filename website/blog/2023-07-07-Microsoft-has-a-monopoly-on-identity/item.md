@@ -28,7 +28,7 @@ At Authentik, we’ve seen the monopolistic powers that Microsoft has over the i
 
 In the FTC’s definition of [monopolization](https://www.ftc.gov/advice-guidance/competition-guidance/guide-antitrust-laws/single-firm-conduct/monopolization-defined), Microsoft is the only company and case cited by name. Ironically, Microsoft has grown even more since that case. The FTC has caught on to how powerful their technology is, and even threatened to reverse Facebook and Instagram acquisition, but hasn’t updated its understanding of what a monopoly can be.
 
-And because of that misapprehension, Microsoft has – ironically – become the tech industry’s preeminent monopoly.
+And because of that misapprehension, Microsoft has, ironically, become the tech industry’s preeminent monopoly.
 
 ### Microsoft’s three landmark antitrust cases
 
