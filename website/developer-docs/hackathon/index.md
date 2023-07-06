@@ -12,7 +12,7 @@ Moderators will be available for most US and European hours, so if during the mu
 
 > More details will be added soon about the exact daily timeframes, for both European-based and US-based participants.
 
-Swag? Why, Yes! From cool authentik-branded socks to food certificates, and indoubtibly GitHub fame, we've got you covered.
+Prizes? Why, Yes! We've got a total prize pool of $5000 and a bunch of cool authentik-branded socks, food certificates, and indubitably GitHub fame.
 
 ## Date
 
