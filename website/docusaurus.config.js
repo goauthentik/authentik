@@ -53,13 +53,13 @@ module.exports = async function () {
                         type: "dropdown",
                         label: `Version: ${releases[0].replace(
                             /releases\/\d+\/v/,
-                            ""
+                            "",
                         )}`,
                         position: "right",
                         items: releases.map((release) => {
                             const version = release.replace(
                                 /releases\/\d+\/v/,
-                                ""
+                                "",
                             );
                             const subdomain = version.replace(".", "-");
                             const label = `Version: ${version}`;
@@ -171,7 +171,7 @@ module.exports = async function () {
                                     // Only replace issues and PR links
                                     buildUrl: function (
                                         values,
-                                        defaultBuildUrl
+                                        defaultBuildUrl,
                                     ) {
                                         return values.type === "issue"
                                             ? defaultBuildUrl(values)
