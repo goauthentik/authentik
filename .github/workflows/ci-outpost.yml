@@ -120,7 +120,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/setup-node@v3.7.0
         with:
           node-version: "20"
           cache: "npm"
