@@ -102,7 +102,7 @@
         "rollup-plugin-postcss-lit": "^2.1.0",
         "rollup-plugin-terser": "^7.0.2",
         "sharp-cli": "^4.1.1",
-        "storybook": "^7.0.25",
+        "storybook": "^7.0.26",
         "ts-lit-plugin": "^1.2.1",
         "tslib": "^2.6.0",
         "turnstile-types": "^1.1.2",
