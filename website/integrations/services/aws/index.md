@@ -19,10 +19,6 @@ This all depends on your preference and needs.
 
 ## Preparation
 
-The following placeholders will be used:
-
--   `authentik.company` is the FQDN of the authentik install.
-
 Create an application in authentik and note the slug, as this will be used later. Create a SAML provider with the following parameters:
 
 -   ACS URL: `https://signin.aws.amazon.com/saml`
@@ -86,12 +82,6 @@ return user.username
 # Method 2: IAM Identity Center
 
 ## Preparation
-
-The following placeholders are used:
-
--   `authentik.company` is the FQDN of the authentik install.
-
-Additional Preparation:
 
 -   A certificate to sign SAML assertions is required. You can use authentik's default certificate, or provide/generate one yourself.
 -   You may pre-create an AWS application.

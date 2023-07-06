@@ -118,10 +118,9 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         """Get source's sync status"""
         source = self.get_object()
         results = []
-        for sync_class in SYNC_CLASSES:
-            sync_name = sync_class.__name__.replace("LDAPSynchronizer", "").lower()
-            task = TaskInfo.by_name(f"ldap_sync:{source.slug}:{sync_name}")
-            if task:
+        tasks = TaskInfo.by_name(f"ldap_sync:{source.slug}:*")
+        if tasks:
+            for task in tasks:
                 results.append(task)
         return Response(TaskSerializer(results, many=True).data)
 
@@ -143,7 +142,7 @@ class LDAPSourceViewSet(UsedByMixin, ModelViewSet):
         source = self.get_object()
         all_objects = {}
         for sync_class in SYNC_CLASSES:
-            class_name = sync_class.__name__.replace("LDAPSynchronizer", "").lower()
+            class_name = sync_class.name()
             all_objects.setdefault(class_name, [])
             for obj in sync_class(source).get_objects(size_limit=10):
                 obj: dict

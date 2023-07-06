@@ -42,6 +42,10 @@ class UserAccountControl(IntFlag):
 class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
     """Microsoft-specific LDAP"""
 
+    @staticmethod
+    def name() -> str:
+        return "microsoft_ad"
+
     def get_objects(self, **kwargs) -> Generator:
         yield None
 

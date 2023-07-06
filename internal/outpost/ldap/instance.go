@@ -42,6 +42,7 @@ type ProviderInstance struct {
 
 	uidStartNumber int32
 	gidStartNumber int32
+	mfaSupport     bool
 }
 
 func (pi *ProviderInstance) GetAPIClient() *api.APIClient {
@@ -66,6 +67,10 @@ func (pi *ProviderInstance) GetBaseUserDN() string {
 
 func (pi *ProviderInstance) GetOutpostName() string {
 	return pi.outpostName
+}
+
+func (pi *ProviderInstance) GetMFASupport() bool {
+	return pi.mfaSupport
 }
 
 func (pi *ProviderInstance) GetFlags(dn string) *flags.UserFlags {

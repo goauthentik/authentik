@@ -29,6 +29,7 @@ class LDAPProviderSerializer(ProviderSerializer):
             "outpost_set",
             "search_mode",
             "bind_mode",
+            "mfa_support",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 
@@ -99,6 +100,7 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "gid_start_number",
             "search_mode",
             "bind_mode",
+            "mfa_support",
         ]
 
 

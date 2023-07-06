@@ -1,5 +1,4 @@
 """authentik administration overview"""
-import os
 import platform
 from datetime import datetime
 from sys import version as python_version
@@ -34,7 +33,6 @@ class RuntimeDict(TypedDict):
 class SystemSerializer(PassiveSerializer):
     """Get system information."""
 
-    env = SerializerMethodField()
     http_headers = SerializerMethodField()
     http_host = SerializerMethodField()
     http_is_secure = SerializerMethodField()
@@ -42,10 +40,6 @@ class SystemSerializer(PassiveSerializer):
     tenant = SerializerMethodField()
     server_time = SerializerMethodField()
     embedded_outpost_host = SerializerMethodField()
-
-    def get_env(self, request: Request) -> dict[str, str]:
-        """Get Environment"""
-        return os.environ.copy()
 
     def get_http_headers(self, request: Request) -> dict[str, str]:
         """Get HTTP Request headers"""

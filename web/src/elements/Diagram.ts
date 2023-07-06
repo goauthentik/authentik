@@ -46,6 +46,7 @@ export class Diagram extends AKElement {
             flowchart: {
                 curve: "linear",
             },
+            htmlLabels: false,
         };
         mermaid.initialize(this.config);
     }

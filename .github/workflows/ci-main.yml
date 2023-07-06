@@ -218,6 +218,7 @@ jobs:
             ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
+            VERSION=${{ steps.ev.outputs.version }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
       - name: Comment on PR
         if: github.event_name == 'pull_request'
@@ -262,5 +263,6 @@ jobs:
             ghcr.io/goauthentik/dev-server:gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}-arm64
           build-args: |
             GIT_BUILD_HASH=${{ steps.ev.outputs.sha }}
+            VERSION=${{ steps.ev.outputs.version }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: linux/arm64

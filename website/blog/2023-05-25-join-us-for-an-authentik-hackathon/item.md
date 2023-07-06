@@ -16,6 +16,10 @@ tags:
 hide_table_of_contents: false
 ---
 
+:::tip
+We've published the Hackathon infos! See [here](https://goauthentik.io/developer-docs/hackathon/).
+:::
+
 We are thrilled to announce the first ever Authentik Security hackathon! The event will be online, over the course of a week in summer of 2023. More details about the exact days, registration form, and agenda are coming soon.
 
 Yes, there will be swag and prizes and accolades, possibly even low-key Git-fame.

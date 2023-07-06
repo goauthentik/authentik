@@ -30,7 +30,7 @@ class PytestTestRunner:  # pragma: no cover
             self.args.append(f"--randomly-seed={kwargs['randomly_seed']}")
 
         settings.TEST = True
-        settings.CELERY_TASK_ALWAYS_EAGER = True
+        settings.CELERY["task_always_eager"] = True
         CONFIG.y_set("avatars", "none")
         CONFIG.y_set("geoip", "tests/GeoLite2-City-Test.mmdb")
         CONFIG.y_set("blueprints_dir", "./blueprints")

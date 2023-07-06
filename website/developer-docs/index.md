@@ -1,5 +1,5 @@
 ---
-title: Developer documentation
+title: Contributing to authentik
 slug: /
 ---
 

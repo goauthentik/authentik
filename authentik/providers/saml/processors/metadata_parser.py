@@ -35,7 +35,7 @@ def format_pem_certificate(unformatted_cert: str) -> str:
     return "\n".join(lines)
 
 
-@dataclass
+@dataclass(slots=True)
 class ServiceProviderMetadata:
     """SP Metadata Dataclass"""
 

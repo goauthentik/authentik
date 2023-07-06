@@ -43,6 +43,7 @@ jobs:
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           build-args: |
+            VERSION=${{ steps.ev.outputs.version }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost:
     runs-on: ubuntu-latest
@@ -90,6 +91,7 @@ jobs:
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
           build-args: |
+            VERSION=${{ steps.ev.outputs.version }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost-binary:
     timeout-minutes: 120
@@ -108,7 +110,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/setup-node@v3.7.0
         with:
           node-version: "20"
           cache: "npm"

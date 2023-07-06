@@ -94,6 +94,11 @@ class TestAdminAPI(TestCase):
         response = self.client.get(reverse("authentik_api:apps-list"))
         self.assertEqual(response.status_code, 200)
 
+    def test_models(self):
+        """Test models API"""
+        response = self.client.get(reverse("authentik_api:models-list"))
+        self.assertEqual(response.status_code, 200)
+
     @reconcile_app("authentik_outposts")
     def test_system(self):
         """Test system API"""

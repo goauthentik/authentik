@@ -20,7 +20,7 @@ class OpenIDConnectOAuthRedirect(OAuthRedirect):
 class OpenIDConnectOAuth2Callback(OAuthCallback):
     """OpenIDConnect OAuth2 Callback"""
 
-    client_class: UserprofileHeaderAuthClient
+    client_class = UserprofileHeaderAuthClient
 
     def get_user_id(self, info: dict[str, str]) -> str:
         return info.get("sub", "")

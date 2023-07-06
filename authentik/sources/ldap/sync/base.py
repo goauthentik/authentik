@@ -1,9 +1,10 @@
 """Sync LDAP Users and groups into authentik"""
 from typing import Any, Generator
 
+from django.conf import settings
 from django.db.models.base import Model
 from django.db.models.query import QuerySet
-from ldap3 import Connection
+from ldap3 import DEREF_ALWAYS, SUBTREE, Connection
 from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
@@ -28,6 +29,24 @@ class BaseLDAPSynchronizer:
         self._connection = source.connection()
         self._messages = []
         self._logger = get_logger().bind(source=source, syncer=self.__class__.__name__)
+
+    @staticmethod
+    def name() -> str:
+        """UI name for the type of object this class synchronizes"""
+        raise NotImplementedError
+
+    def sync_full(self):
+        """Run full sync, this function should only be used in tests"""
+        if not settings.TEST:  # noqa
+            raise RuntimeError(
+                f"{self.__class__.__name__}.sync_full() should only be used in tests"
+            )
+        for page in self.get_objects():
+            self.sync(page)
+
+    def sync(self, page_data: list) -> int:
+        """Sync function, implemented in subclass"""
+        raise NotImplementedError()
 
     @property
     def messages(self) -> list[str]:
@@ -60,9 +79,47 @@ class BaseLDAPSynchronizer:
         """Get objects from LDAP, implemented in subclass"""
         raise NotImplementedError()
 
-    def sync(self) -> int:
-        """Sync function, implemented in subclass"""
-        raise NotImplementedError()
+    # pylint: disable=too-many-arguments
+    def search_paginator(
+        self,
+        search_base,
+        search_filter,
+        search_scope=SUBTREE,
+        dereference_aliases=DEREF_ALWAYS,
+        attributes=None,
+        size_limit=0,
+        time_limit=0,
+        types_only=False,
+        get_operational_attributes=False,
+        controls=None,
+        paged_size=5,
+        paged_criticality=False,
+    ):
+        """Search in pages, returns each page"""
+        cookie = True
+        while cookie:
+            self._connection.search(
+                search_base,
+                search_filter,
+                search_scope,
+                dereference_aliases,
+                attributes,
+                size_limit,
+                time_limit,
+                types_only,
+                get_operational_attributes,
+                controls,
+                paged_size,
+                paged_criticality,
+                None if cookie is True else cookie,
+            )
+            try:
+                cookie = self._connection.result["controls"]["1.2.840.113556.1.4.319"]["value"][
+                    "cookie"
+                ]
+            except KeyError:
+                cookie = None
+            yield self._connection.response
 
     def _flatten(self, value: Any) -> Any:
         """Flatten `value` if its a list"""

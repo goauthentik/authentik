@@ -27,7 +27,7 @@ The following placeholders will be used:
 -   `nextcloud.company` is the FQDN of the Nextcloud install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to Applications->Providers. Create a SAML provider with the following parameters:
+Create an application in authentik and note the slug you choose, as this will be used later. In the Admin Interface, go to _Applications_ -> _Providers_. Create a _SAML provider_ with the following parameters:
 
 -   ACS URL: `https://nextcloud.company/apps/user_saml/saml/acs`
 -   Issuer: `https://authentik.company`

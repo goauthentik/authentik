@@ -27,12 +27,6 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
         });
     }
 
-    async load(): Promise<void> {
-        this.apps = await new AdminApi(DEFAULT_CONFIG).adminAppsList();
-    }
-
-    apps?: App[];
-
     getSuccessMessage(): string {
         if (this.instance) {
             return msg("Successfully updated policy.");
@@ -133,22 +127,58 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("App")} name="app">
-                        <select class="pf-c-form-control">
-                            <option value="" ?selected=${this.instance?.app === undefined}>
-                                ---------
-                            </option>
-                            ${this.apps?.map((app) => {
-                                return html`<option
-                                    value=${app.name}
-                                    ?selected=${this.instance?.app === app.name}
-                                >
-                                    ${app.label}
-                                </option>`;
-                            })}
-                        </select>
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<App[]> => {
+                                const items = await new AdminApi(DEFAULT_CONFIG).adminAppsList();
+                                return items.filter((item) =>
+                                    query ? item.name.includes(query) : true,
+                                );
+                            }}
+                            .renderElement=${(item: App): string => {
+                                return item.label;
+                            }}
+                            .value=${(item: App | undefined): string | undefined => {
+                                return item?.name;
+                            }}
+                            .selected=${(item: App): boolean => {
+                                return this.instance?.app === item.name;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Match events created by selected application. When left empty, all applications are matched.",
+                            )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Model")} name="model">
+                        <ak-search-select
+                            .fetchObjects=${async (query?: string): Promise<App[]> => {
+                                const items = await new AdminApi(DEFAULT_CONFIG).adminModelsList();
+                                return items
+                                    .filter((item) => (query ? item.name.includes(query) : true))
+                                    .sort((a, b) => {
+                                        if (a.name < b.name) return -1;
+                                        if (a.name > b.name) return 1;
+                                        return 0;
+                                    });
+                            }}
+                            .renderElement=${(item: App): string => {
+                                return `${item.label} (${item.name.split(".")[0]})`;
+                            }}
+                            .value=${(item: App | undefined): string | undefined => {
+                                return item?.name;
+                            }}
+                            .selected=${(item: App): boolean => {
+                                return this.instance?.model === item.name;
+                            }}
+                            ?blankable=${true}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Match events created by selected model. When left empty, all models are matched.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

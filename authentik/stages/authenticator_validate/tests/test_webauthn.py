@@ -22,7 +22,7 @@ from authentik.stages.authenticator_validate.challenge import (
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_validate.stage import (
-    SESSION_KEY_DEVICE_CHALLENGES,
+    PLAN_CONTEXT_DEVICE_CHALLENGES,
     AuthenticatorValidateStageView,
 )
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
@@ -211,14 +211,14 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         plan.append_stage(stage)
         plan.append_stage(UserLoginStage(name=generate_id()))
         plan.context[PLAN_CONTEXT_PENDING_USER] = self.user
-        session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_DEVICE_CHALLENGES] = [
+        plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
                 "device_class": device.__class__.__name__.lower().replace("device", ""),
                 "device_uid": device.pk,
                 "challenge": {},
             }
         ]
+        session[SESSION_KEY_PLAN] = plan
         session[SESSION_KEY_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
             "g98I51mQvZXo5lxLfhrD2zfolhZbLRyCgqkkYap1jwSaJ13BguoJWCF9_Lg3AgO4Wh-Bqa556JE20oKsYbl6RA"
         )
@@ -283,14 +283,14 @@ class AuthenticatorValidateStageWebAuthnTests(FlowTestCase):
         plan = FlowPlan(flow_pk=flow.pk.hex)
         plan.append_stage(stage)
         plan.append_stage(UserLoginStage(name=generate_id()))
-        session[SESSION_KEY_PLAN] = plan
-        session[SESSION_KEY_DEVICE_CHALLENGES] = [
+        plan.context[PLAN_CONTEXT_DEVICE_CHALLENGES] = [
             {
                 "device_class": device.__class__.__name__.lower().replace("device", ""),
                 "device_uid": device.pk,
                 "challenge": {},
             }
         ]
+        session[SESSION_KEY_PLAN] = plan
         session[SESSION_KEY_WEBAUTHN_CHALLENGE] = base64url_to_bytes(
             "g98I51mQvZXo5lxLfhrD2zfolhZbLRyCgqkkYap1jwSaJ13BguoJWCF9_Lg3AgO4Wh-Bqa556JE20oKsYbl6RA"
         )

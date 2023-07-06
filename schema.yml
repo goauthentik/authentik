@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.5.3
+  version: 2023.5.4
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -52,6 +52,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/LoginMetrics'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /admin/models/:
+    get:
+      operationId: admin_models_list
+      description: Read-only view list all installed models
+      tags:
+      - admin
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/App'
           description: ''
         '400':
           content:
@@ -4012,11 +4041,6 @@ paths:
           * `api` - Intent Api
           * `recovery` - Intent Recovery
           * `app_password` - Intent App Password
-
-          * `verification` - Intent Verification
-          * `api` - Intent Api
-          * `recovery` - Intent Recovery
-          * `app_password` - Intent App Password
       - in: query
         name: managed
         schema:
@@ -4783,6 +4807,38 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /core/users/{id}/impersonate/:
+    post:
+      operationId: core_users_impersonate_create
+      description: Impersonate a user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully started impersonation
+        '401':
+          description: Access denied
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /core/users/{id}/metrics/:
     get:
       operationId: core_users_metrics_retrieve
@@ -4950,6 +5006,29 @@ paths:
                 items:
                   $ref: '#/components/schemas/UsedBy'
           description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/users/impersonate_end/:
+    get:
+      operationId: core_users_impersonate_end_retrieve
+      description: End Impersonation a user
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully started impersonation
         '400':
           content:
             application/json:
@@ -5878,10 +5957,6 @@ paths:
           * `notice` - Notice
           * `warning` - Warning
           * `alert` - Alert
-
-          * `notice` - Notice
-          * `warning` - Warning
-          * `alert` - Alert
       - in: query
         name: user
         schema:
@@ -6418,11 +6493,6 @@ paths:
           * `webhook` - Generic Webhook
           * `webhook_slack` - Slack Webhook (Slack/Discord)
           * `email` - Email
-
-          * `local` - authentik inbuilt notifications
-          * `webhook` - Generic Webhook
-          * `webhook_slack` - Slack Webhook (Slack/Discord)
-          * `email` - Email
       - in: query
         name: name
         schema:
@@ -6806,9 +6876,6 @@ paths:
           - all
           - any
         description: |-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
-
           * `all` - all, all policies must pass
           * `any` - any, any policy must pass
       - in: query
@@ -10893,6 +10960,7 @@ paths:
         name: action
         schema:
           type: string
+          nullable: true
           enum:
           - authorize_application
           - configuration_error
@@ -10973,6 +11041,10 @@ paths:
         schema:
           type: string
           format: date-time
+      - in: query
+        name: model
+        schema:
+          type: string
       - in: query
         name: name
         schema:
@@ -15856,11 +15928,6 @@ paths:
           * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
           * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
           * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
-
-          * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
-          * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
-          * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
       - in: query
         name: is_backchannel
         schema:
@@ -15926,12 +15993,6 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
         description: |-
-          * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
-          * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
-
           * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
           * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
           * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
@@ -17578,9 +17639,6 @@ paths:
         description: |-
           * `all` - all, all policies must pass
           * `any` - any, any policy must pass
-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
       - in: query
         name: profile_url
         schema:
@@ -17947,9 +18005,6 @@ paths:
         description: |-
           * `all` - all, all policies must pass
           * `any` - any, any policy must pass
-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
       - name: search
         required: false
         in: query
@@ -18294,10 +18349,6 @@ paths:
           * `REDIRECT` - Redirect Binding
           * `POST` - POST Binding
           * `POST_AUTO` - POST Binding with auto-confirmation
-
-          * `REDIRECT` - Redirect Binding
-          * `POST` - POST Binding
-          * `POST_AUTO` - POST Binding with auto-confirmation
       - in: query
         name: digest_algorithm
         schema:
@@ -18308,11 +18359,6 @@ paths:
           - http://www.w3.org/2001/04/xmlenc#sha256
           - http://www.w3.org/2001/04/xmlenc#sha512
         description: |-
-          * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
-          * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
-          * `http://www.w3.org/2001/04/xmlenc#sha512` - SHA512
-
           * `http://www.w3.org/2000/09/xmldsig#sha1` - SHA1
           * `http://www.w3.org/2001/04/xmlenc#sha256` - SHA256
           * `http://www.w3.org/2001/04/xmldsig-more#sha384` - SHA384
@@ -18384,9 +18430,6 @@ paths:
         description: |-
           * `all` - all, all policies must pass
           * `any` - any, any policy must pass
-
-          * `all` - all, all policies must pass
-          * `any` - any, any policy must pass
       - in: query
         name: pre_authentication_flow
         schema:
@@ -18409,12 +18452,6 @@ paths:
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha384
           - http://www.w3.org/2001/04/xmldsig-more#rsa-sha512
         description: |-
-          * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
-          * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha512` - RSA-SHA512
-          * `http://www.w3.org/2000/09/xmldsig#dsa-sha1` - DSA-SHA1
-
           * `http://www.w3.org/2000/09/xmldsig#rsa-sha1` - RSA-SHA1
           * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha256` - RSA-SHA256
           * `http://www.w3.org/2001/04/xmldsig-more#rsa-sha384` - RSA-SHA384
@@ -20366,9 +20403,6 @@ paths:
         description: |-
           * `basic` - Basic
           * `bearer` - Bearer
-
-          * `basic` - Basic
-          * `bearer` - Bearer
       - in: query
         name: configure_flow
         schema:
@@ -20417,9 +20451,6 @@ paths:
           - generic
           - twilio
         description: |-
-          * `twilio` - Twilio
-          * `generic` - Generic
-
           * `twilio` - Twilio
           * `generic` - Generic
       - name: search
@@ -20980,9 +21011,6 @@ paths:
         description: |-
           * `6` - 6 digits, widely compatible
           * `8` - 8 digits, not compatible with apps like Google Authenticator
-
-          * `6` - 6 digits, widely compatible
-          * `8` - 8 digits, not compatible with apps like Google Authenticator
       - in: query
         name: friendly_name
         schema:
@@ -21286,10 +21314,6 @@ paths:
           * `skip` - Skip
           * `deny` - Deny
           * `configure` - Configure
-
-          * `skip` - Skip
-          * `deny` - Deny
-          * `configure` - Configure
       - name: ordering
         required: false
         in: query
@@ -21566,9 +21590,6 @@ paths:
         description: |-
           * `platform` - Platform
           * `cross-platform` - Cross Platform
-
-          * `platform` - Platform
-          * `cross-platform` - Cross Platform
       - in: query
         name: configure_flow
         schema:
@@ -21612,10 +21633,6 @@ paths:
           * `discouraged` - Discouraged
           * `preferred` - Preferred
           * `required` - Required
-
-          * `discouraged` - Discouraged
-          * `preferred` - Preferred
-          * `required` - Required
       - name: search
         required: false
         in: query
@@ -21636,10 +21653,6 @@ paths:
           - preferred
           - required
         description: |-
-          * `required` - Required
-          * `preferred` - Preferred
-          * `discouraged` - Discouraged
-
           * `required` - Required
           * `preferred` - Preferred
           * `discouraged` - Discouraged
@@ -22170,10 +22183,6 @@ paths:
           - expiring
           - permanent
         description: |-
-          * `always_require` - Always Require
-          * `permanent` - Permanent
-          * `expiring` - Expiring
-
           * `always_require` - Always Require
           * `permanent` - Permanent
           * `expiring` - Expiring
@@ -24574,25 +24583,6 @@ paths:
           * `hidden` - Hidden: Hidden field, can be used to insert data into form.
           * `static` - Static: Static value, displayed as-is.
           * `ak-locale` - authentik: Selection of locales authentik supports
-
-          * `text` - Text: Simple Text input
-          * `text_area` - Text area: Multiline Text Input.
-          * `text_read_only` - Text (read-only): Simple Text input, but cannot be edited.
-          * `text_area_read_only` - Text area (read-only): Multiline Text input, but cannot be edited.
-          * `username` - Username: Same as Text input, but checks for and prevents duplicate usernames.
-          * `email` - Email: Text field with Email type.
-          * `password` - Password: Masked input, multiple inputs of this type on the same prompt need to be identical.
-          * `number` - Number
-          * `checkbox` - Checkbox
-          * `radio-button-group` - Fixed choice field rendered as a group of radio buttons.
-          * `dropdown` - Fixed choice field rendered as a dropdown.
-          * `date` - Date
-          * `date-time` - Date Time
-          * `file` - File: File upload for arbitrary files. File content will be available in flow context as data-URI
-          * `separator` - Separator: Static Separator Line
-          * `hidden` - Hidden: Hidden field, can be used to insert data into form.
-          * `static` - Static: Static value, displayed as-is.
-          * `ak-locale` - authentik: Selection of locales authentik supports
       tags:
       - stages
       security:
@@ -26044,10 +26034,6 @@ paths:
           - create_when_required
           - never_create
         description: |-
-          * `never_create` - Never Create
-          * `create_when_required` - Create When Required
-          * `always_create` - Always Create
-
           * `never_create` - Never Create
           * `create_when_required` - Create When Required
           * `always_create` - Always Create
@@ -29067,6 +29053,7 @@ components:
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
+          nullable: true
           description: |-
             Match created events with this action type. When left empty, all action types will be matched.
 
@@ -29099,11 +29086,13 @@ components:
             * `custom_` - Custom Prefix
         client_ip:
           type: string
+          nullable: true
           description: Matches Event's Client IP (strict matching, for network matching
             use an Expression Policy)
         app:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
+          nullable: true
           description: |-
             Match events created by selected application. When left empty, all applications are matched.
 
@@ -29155,6 +29144,83 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          nullable: true
+          description: |-
+            Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+            * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+            * `authentik_flows.flow` - Flow
+            * `authentik_flows.flowstagebinding` - Flow Stage Binding
+            * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
+            * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
+            * `authentik_outposts.outpost` - outpost
+            * `authentik_policies_dummy.dummypolicy` - Dummy Policy
+            * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
+            * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+            * `authentik_policies_expression.expressionpolicy` - Expression Policy
+            * `authentik_policies_password.passwordpolicy` - Password Policy
+            * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
+            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies.policybinding` - Policy Binding
+            * `authentik_providers_ldap.ldapprovider` - LDAP Provider
+            * `authentik_providers_oauth2.scopemapping` - Scope Mapping
+            * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
+            * `authentik_providers_oauth2.authorizationcode` - Authorization Code
+            * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
+            * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
+            * `authentik_providers_proxy.proxyprovider` - Proxy Provider
+            * `authentik_providers_radius.radiusprovider` - Radius Provider
+            * `authentik_providers_saml.samlprovider` - SAML Provider
+            * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
+            * `authentik_providers_scim.scimprovider` - SCIM Provider
+            * `authentik_providers_scim.scimmapping` - SCIM Mapping
+            * `authentik_sources_ldap.ldapsource` - LDAP Source
+            * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
+            * `authentik_sources_oauth.oauthsource` - OAuth Source
+            * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
+            * `authentik_sources_plex.plexsource` - Plex Source
+            * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
+            * `authentik_sources_saml.samlsource` - SAML Source
+            * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+            * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
+            * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+            * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
+            * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
+            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+            * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
+            * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
+            * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
+            * `authentik_stages_captcha.captchastage` - Captcha Stage
+            * `authentik_stages_consent.consentstage` - Consent Stage
+            * `authentik_stages_consent.userconsent` - User Consent
+            * `authentik_stages_deny.denystage` - Deny Stage
+            * `authentik_stages_dummy.dummystage` - Dummy Stage
+            * `authentik_stages_email.emailstage` - Email Stage
+            * `authentik_stages_identification.identificationstage` - Identification Stage
+            * `authentik_stages_invitation.invitationstage` - Invitation Stage
+            * `authentik_stages_invitation.invitation` - Invitation
+            * `authentik_stages_password.passwordstage` - Password Stage
+            * `authentik_stages_prompt.prompt` - Prompt
+            * `authentik_stages_prompt.promptstage` - Prompt Stage
+            * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
+            * `authentik_stages_user_login.userloginstage` - User Login Stage
+            * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
+            * `authentik_stages_user_write.userwritestage` - User Write Stage
+            * `authentik_tenants.tenant` - Tenant
+            * `authentik_blueprints.blueprintinstance` - Blueprint Instance
+            * `authentik_core.group` - group
+            * `authentik_core.user` - User
+            * `authentik_core.application` - Application
+            * `authentik_core.token` - Token
       required:
       - bound_to
       - component
@@ -29177,6 +29243,7 @@ components:
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
+          nullable: true
           description: |-
             Match created events with this action type. When left empty, all action types will be matched.
 
@@ -29209,11 +29276,14 @@ components:
             * `custom_` - Custom Prefix
         client_ip:
           type: string
+          nullable: true
+          minLength: 1
           description: Matches Event's Client IP (strict matching, for network matching
             use an Expression Policy)
         app:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
+          nullable: true
           description: |-
             Match events created by selected application. When left empty, all applications are matched.
 
@@ -29265,6 +29335,83 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          nullable: true
+          description: |-
+            Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+            * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+            * `authentik_flows.flow` - Flow
+            * `authentik_flows.flowstagebinding` - Flow Stage Binding
+            * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
+            * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
+            * `authentik_outposts.outpost` - outpost
+            * `authentik_policies_dummy.dummypolicy` - Dummy Policy
+            * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
+            * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+            * `authentik_policies_expression.expressionpolicy` - Expression Policy
+            * `authentik_policies_password.passwordpolicy` - Password Policy
+            * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
+            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies.policybinding` - Policy Binding
+            * `authentik_providers_ldap.ldapprovider` - LDAP Provider
+            * `authentik_providers_oauth2.scopemapping` - Scope Mapping
+            * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
+            * `authentik_providers_oauth2.authorizationcode` - Authorization Code
+            * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
+            * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
+            * `authentik_providers_proxy.proxyprovider` - Proxy Provider
+            * `authentik_providers_radius.radiusprovider` - Radius Provider
+            * `authentik_providers_saml.samlprovider` - SAML Provider
+            * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
+            * `authentik_providers_scim.scimprovider` - SCIM Provider
+            * `authentik_providers_scim.scimmapping` - SCIM Mapping
+            * `authentik_sources_ldap.ldapsource` - LDAP Source
+            * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
+            * `authentik_sources_oauth.oauthsource` - OAuth Source
+            * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
+            * `authentik_sources_plex.plexsource` - Plex Source
+            * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
+            * `authentik_sources_saml.samlsource` - SAML Source
+            * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+            * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
+            * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+            * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
+            * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
+            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+            * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
+            * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
+            * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
+            * `authentik_stages_captcha.captchastage` - Captcha Stage
+            * `authentik_stages_consent.consentstage` - Consent Stage
+            * `authentik_stages_consent.userconsent` - User Consent
+            * `authentik_stages_deny.denystage` - Deny Stage
+            * `authentik_stages_dummy.dummystage` - Dummy Stage
+            * `authentik_stages_email.emailstage` - Email Stage
+            * `authentik_stages_identification.identificationstage` - Identification Stage
+            * `authentik_stages_invitation.invitationstage` - Invitation Stage
+            * `authentik_stages_invitation.invitation` - Invitation
+            * `authentik_stages_password.passwordstage` - Password Stage
+            * `authentik_stages_prompt.prompt` - Prompt
+            * `authentik_stages_prompt.promptstage` - Prompt Stage
+            * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
+            * `authentik_stages_user_login.userloginstage` - User Login Stage
+            * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
+            * `authentik_stages_user_write.userwritestage` - User Write Stage
+            * `authentik_tenants.tenant` - Tenant
+            * `authentik_blueprints.blueprintinstance` - Blueprint Instance
+            * `authentik_core.group` - group
+            * `authentik_core.user` - User
+            * `authentik_core.application` - Application
+            * `authentik_core.token` - Token
       required:
       - name
     EventRequest:
@@ -30611,7 +30758,7 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: The start for uidNumbers, this number is added to the user.Pk
+          description: The start for uidNumbers, this number is added to the user.pk
             to make sure that the numbers aren't too low for POSIX users. Default
             is 2000 to ensure that we don't collide with local users uidNumber
         gid_start_number:
@@ -30619,13 +30766,20 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: The start for gidNumbers, this number is added to a number
-            generated from the group.Pk to make sure that the numbers aren't too low
+            generated from the group.pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
           $ref: '#/components/schemas/LDAPAPIAccessMode'
         bind_mode:
           $ref: '#/components/schemas/LDAPAPIAccessMode'
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be
+            used by appending a semicolon and the TOTP code to the password. This
+            should only be enabled if all users that will bind to this provider have
+            a TOTP device configured, as otherwise a password may incorrectly be rejected
+            if it contains a semicolon.
       required:
       - application_slug
       - bind_flow_slug
@@ -30781,7 +30935,7 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: The start for uidNumbers, this number is added to the user.Pk
+          description: The start for uidNumbers, this number is added to the user.pk
             to make sure that the numbers aren't too low for POSIX users. Default
             is 2000 to ensure that we don't collide with local users uidNumber
         gid_start_number:
@@ -30789,7 +30943,7 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: The start for gidNumbers, this number is added to a number
-            generated from the group.Pk to make sure that the numbers aren't too low
+            generated from the group.pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         outpost_set:
@@ -30801,6 +30955,13 @@ components:
           $ref: '#/components/schemas/LDAPAPIAccessMode'
         bind_mode:
           $ref: '#/components/schemas/LDAPAPIAccessMode'
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be
+            used by appending a semicolon and the TOTP code to the password. This
+            should only be enabled if all users that will bind to this provider have
+            a TOTP device configured, as otherwise a password may incorrectly be rejected
+            if it contains a semicolon.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -30856,7 +31017,7 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: The start for uidNumbers, this number is added to the user.Pk
+          description: The start for uidNumbers, this number is added to the user.pk
             to make sure that the numbers aren't too low for POSIX users. Default
             is 2000 to ensure that we don't collide with local users uidNumber
         gid_start_number:
@@ -30864,13 +31025,20 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: The start for gidNumbers, this number is added to a number
-            generated from the group.Pk to make sure that the numbers aren't too low
+            generated from the group.pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
           $ref: '#/components/schemas/LDAPAPIAccessMode'
         bind_mode:
           $ref: '#/components/schemas/LDAPAPIAccessMode'
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be
+            used by appending a semicolon and the TOTP code to the password. This
+            should only be enabled if all users that will bind to this provider have
+            a TOTP device configured, as otherwise a password may incorrectly be rejected
+            if it contains a semicolon.
       required:
       - authorization_flow
       - name
@@ -31236,6 +31404,150 @@ components:
       required:
       - labels
       - name
+    ModelEnum:
+      enum:
+      - authentik_crypto.certificatekeypair
+      - authentik_events.event
+      - authentik_events.notificationtransport
+      - authentik_events.notification
+      - authentik_events.notificationrule
+      - authentik_events.notificationwebhookmapping
+      - authentik_flows.flow
+      - authentik_flows.flowstagebinding
+      - authentik_outposts.dockerserviceconnection
+      - authentik_outposts.kubernetesserviceconnection
+      - authentik_outposts.outpost
+      - authentik_policies_dummy.dummypolicy
+      - authentik_policies_event_matcher.eventmatcherpolicy
+      - authentik_policies_expiry.passwordexpirypolicy
+      - authentik_policies_expression.expressionpolicy
+      - authentik_policies_password.passwordpolicy
+      - authentik_policies_reputation.reputationpolicy
+      - authentik_policies_reputation.reputation
+      - authentik_policies.policybinding
+      - authentik_providers_ldap.ldapprovider
+      - authentik_providers_oauth2.scopemapping
+      - authentik_providers_oauth2.oauth2provider
+      - authentik_providers_oauth2.authorizationcode
+      - authentik_providers_oauth2.accesstoken
+      - authentik_providers_oauth2.refreshtoken
+      - authentik_providers_proxy.proxyprovider
+      - authentik_providers_radius.radiusprovider
+      - authentik_providers_saml.samlprovider
+      - authentik_providers_saml.samlpropertymapping
+      - authentik_providers_scim.scimprovider
+      - authentik_providers_scim.scimmapping
+      - authentik_sources_ldap.ldapsource
+      - authentik_sources_ldap.ldappropertymapping
+      - authentik_sources_oauth.oauthsource
+      - authentik_sources_oauth.useroauthsourceconnection
+      - authentik_sources_plex.plexsource
+      - authentik_sources_plex.plexsourceconnection
+      - authentik_sources_saml.samlsource
+      - authentik_sources_saml.usersamlsourceconnection
+      - authentik_stages_authenticator_duo.authenticatorduostage
+      - authentik_stages_authenticator_duo.duodevice
+      - authentik_stages_authenticator_sms.authenticatorsmsstage
+      - authentik_stages_authenticator_sms.smsdevice
+      - authentik_stages_authenticator_static.authenticatorstaticstage
+      - authentik_stages_authenticator_totp.authenticatortotpstage
+      - authentik_stages_authenticator_validate.authenticatorvalidatestage
+      - authentik_stages_authenticator_webauthn.authenticatewebauthnstage
+      - authentik_stages_authenticator_webauthn.webauthndevice
+      - authentik_stages_captcha.captchastage
+      - authentik_stages_consent.consentstage
+      - authentik_stages_consent.userconsent
+      - authentik_stages_deny.denystage
+      - authentik_stages_dummy.dummystage
+      - authentik_stages_email.emailstage
+      - authentik_stages_identification.identificationstage
+      - authentik_stages_invitation.invitationstage
+      - authentik_stages_invitation.invitation
+      - authentik_stages_password.passwordstage
+      - authentik_stages_prompt.prompt
+      - authentik_stages_prompt.promptstage
+      - authentik_stages_user_delete.userdeletestage
+      - authentik_stages_user_login.userloginstage
+      - authentik_stages_user_logout.userlogoutstage
+      - authentik_stages_user_write.userwritestage
+      - authentik_tenants.tenant
+      - authentik_blueprints.blueprintinstance
+      - authentik_core.group
+      - authentik_core.user
+      - authentik_core.application
+      - authentik_core.token
+      type: string
+      description: |-
+        * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
+        * `authentik_events.event` - Event
+        * `authentik_events.notificationtransport` - Notification Transport
+        * `authentik_events.notification` - Notification
+        * `authentik_events.notificationrule` - Notification Rule
+        * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+        * `authentik_flows.flow` - Flow
+        * `authentik_flows.flowstagebinding` - Flow Stage Binding
+        * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
+        * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
+        * `authentik_outposts.outpost` - outpost
+        * `authentik_policies_dummy.dummypolicy` - Dummy Policy
+        * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
+        * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+        * `authentik_policies_expression.expressionpolicy` - Expression Policy
+        * `authentik_policies_password.passwordpolicy` - Password Policy
+        * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
+        * `authentik_policies_reputation.reputation` - reputation
+        * `authentik_policies.policybinding` - Policy Binding
+        * `authentik_providers_ldap.ldapprovider` - LDAP Provider
+        * `authentik_providers_oauth2.scopemapping` - Scope Mapping
+        * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
+        * `authentik_providers_oauth2.authorizationcode` - Authorization Code
+        * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
+        * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
+        * `authentik_providers_proxy.proxyprovider` - Proxy Provider
+        * `authentik_providers_radius.radiusprovider` - Radius Provider
+        * `authentik_providers_saml.samlprovider` - SAML Provider
+        * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
+        * `authentik_providers_scim.scimprovider` - SCIM Provider
+        * `authentik_providers_scim.scimmapping` - SCIM Mapping
+        * `authentik_sources_ldap.ldapsource` - LDAP Source
+        * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
+        * `authentik_sources_oauth.oauthsource` - OAuth Source
+        * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
+        * `authentik_sources_plex.plexsource` - Plex Source
+        * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
+        * `authentik_sources_saml.samlsource` - SAML Source
+        * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+        * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
+        * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+        * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
+        * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
+        * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+        * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+        * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
+        * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
+        * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
+        * `authentik_stages_captcha.captchastage` - Captcha Stage
+        * `authentik_stages_consent.consentstage` - Consent Stage
+        * `authentik_stages_consent.userconsent` - User Consent
+        * `authentik_stages_deny.denystage` - Deny Stage
+        * `authentik_stages_dummy.dummystage` - Dummy Stage
+        * `authentik_stages_email.emailstage` - Email Stage
+        * `authentik_stages_identification.identificationstage` - Identification Stage
+        * `authentik_stages_invitation.invitationstage` - Invitation Stage
+        * `authentik_stages_invitation.invitation` - Invitation
+        * `authentik_stages_password.passwordstage` - Password Stage
+        * `authentik_stages_prompt.prompt` - Prompt
+        * `authentik_stages_prompt.promptstage` - Prompt Stage
+        * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
+        * `authentik_stages_user_login.userloginstage` - User Login Stage
+        * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
+        * `authentik_stages_user_write.userwritestage` - User Write Stage
+        * `authentik_tenants.tenant` - Tenant
+        * `authentik_blueprints.blueprintinstance` - Blueprint Instance
+        * `authentik_core.group` - group
+        * `authentik_core.user` - User
+        * `authentik_core.application` - Application
+        * `authentik_core.token` - Token
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -35900,6 +36212,7 @@ components:
         action:
           allOf:
           - $ref: '#/components/schemas/EventActions'
+          nullable: true
           description: |-
             Match created events with this action type. When left empty, all action types will be matched.
 
@@ -35932,11 +36245,14 @@ components:
             * `custom_` - Custom Prefix
         client_ip:
           type: string
+          nullable: true
+          minLength: 1
           description: Matches Event's Client IP (strict matching, for network matching
             use an Expression Policy)
         app:
           allOf:
           - $ref: '#/components/schemas/AppEnum'
+          nullable: true
           description: |-
             Match events created by selected application. When left empty, all applications are matched.
 
@@ -35988,6 +36304,83 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+        model:
+          allOf:
+          - $ref: '#/components/schemas/ModelEnum'
+          nullable: true
+          description: |-
+            Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched.
+
+            * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
+            * `authentik_events.event` - Event
+            * `authentik_events.notificationtransport` - Notification Transport
+            * `authentik_events.notification` - Notification
+            * `authentik_events.notificationrule` - Notification Rule
+            * `authentik_events.notificationwebhookmapping` - Webhook Mapping
+            * `authentik_flows.flow` - Flow
+            * `authentik_flows.flowstagebinding` - Flow Stage Binding
+            * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
+            * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
+            * `authentik_outposts.outpost` - outpost
+            * `authentik_policies_dummy.dummypolicy` - Dummy Policy
+            * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
+            * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+            * `authentik_policies_expression.expressionpolicy` - Expression Policy
+            * `authentik_policies_password.passwordpolicy` - Password Policy
+            * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
+            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies.policybinding` - Policy Binding
+            * `authentik_providers_ldap.ldapprovider` - LDAP Provider
+            * `authentik_providers_oauth2.scopemapping` - Scope Mapping
+            * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
+            * `authentik_providers_oauth2.authorizationcode` - Authorization Code
+            * `authentik_providers_oauth2.accesstoken` - OAuth2 Access Token
+            * `authentik_providers_oauth2.refreshtoken` - OAuth2 Refresh Token
+            * `authentik_providers_proxy.proxyprovider` - Proxy Provider
+            * `authentik_providers_radius.radiusprovider` - Radius Provider
+            * `authentik_providers_saml.samlprovider` - SAML Provider
+            * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
+            * `authentik_providers_scim.scimprovider` - SCIM Provider
+            * `authentik_providers_scim.scimmapping` - SCIM Mapping
+            * `authentik_sources_ldap.ldapsource` - LDAP Source
+            * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
+            * `authentik_sources_oauth.oauthsource` - OAuth Source
+            * `authentik_sources_oauth.useroauthsourceconnection` - User OAuth Source Connection
+            * `authentik_sources_plex.plexsource` - Plex Source
+            * `authentik_sources_plex.plexsourceconnection` - User Plex Source Connection
+            * `authentik_sources_saml.samlsource` - SAML Source
+            * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
+            * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
+            * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+            * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
+            * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
+            * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+            * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
+            * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
+            * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
+            * `authentik_stages_captcha.captchastage` - Captcha Stage
+            * `authentik_stages_consent.consentstage` - Consent Stage
+            * `authentik_stages_consent.userconsent` - User Consent
+            * `authentik_stages_deny.denystage` - Deny Stage
+            * `authentik_stages_dummy.dummystage` - Dummy Stage
+            * `authentik_stages_email.emailstage` - Email Stage
+            * `authentik_stages_identification.identificationstage` - Identification Stage
+            * `authentik_stages_invitation.invitationstage` - Invitation Stage
+            * `authentik_stages_invitation.invitation` - Invitation
+            * `authentik_stages_password.passwordstage` - Password Stage
+            * `authentik_stages_prompt.prompt` - Prompt
+            * `authentik_stages_prompt.promptstage` - Prompt Stage
+            * `authentik_stages_user_delete.userdeletestage` - User Delete Stage
+            * `authentik_stages_user_login.userloginstage` - User Login Stage
+            * `authentik_stages_user_logout.userlogoutstage` - User Logout Stage
+            * `authentik_stages_user_write.userwritestage` - User Write Stage
+            * `authentik_tenants.tenant` - Tenant
+            * `authentik_blueprints.blueprintinstance` - Blueprint Instance
+            * `authentik_core.group` - group
+            * `authentik_core.user` - User
+            * `authentik_core.application` - Application
+            * `authentik_core.token` - Token
     PatchedEventRequest:
       type: object
       description: Event Serializer
@@ -36316,7 +36709,7 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
-          description: The start for uidNumbers, this number is added to the user.Pk
+          description: The start for uidNumbers, this number is added to the user.pk
             to make sure that the numbers aren't too low for POSIX users. Default
             is 2000 to ensure that we don't collide with local users uidNumber
         gid_start_number:
@@ -36324,13 +36717,20 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: The start for gidNumbers, this number is added to a number
-            generated from the group.Pk to make sure that the numbers aren't too low
+            generated from the group.pk to make sure that the numbers aren't too low
             for POSIX groups. Default is 4000 to ensure that we don't collide with
             local groups or users primary groups gidNumber
         search_mode:
           $ref: '#/components/schemas/LDAPAPIAccessMode'
         bind_mode:
           $ref: '#/components/schemas/LDAPAPIAccessMode'
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be
+            used by appending a semicolon and the TOTP code to the password. This
+            should only be enabled if all users that will bind to this provider have
+            a TOTP device configured, as otherwise a password may incorrectly be rejected
+            if it contains a semicolon.
     PatchedLDAPSourceRequest:
       type: object
       description: LDAP Source Serializer
@@ -40555,12 +40955,6 @@ components:
       type: object
       description: Get system information.
       properties:
-        env:
-          type: object
-          additionalProperties:
-            type: string
-          description: Get Environment
-          readOnly: true
         http_headers:
           type: object
           additionalProperties:
@@ -40614,7 +41008,6 @@ components:
           readOnly: true
       required:
       - embedded_outpost_host
-      - env
       - http_headers
       - http_host
       - http_is_secure

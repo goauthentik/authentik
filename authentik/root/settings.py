@@ -182,13 +182,13 @@ REST_FRAMEWORK = {
     },
 }
 
-REDIS_PROTOCOL_PREFIX = "redis://"
-REDIS_CELERY_TLS_REQUIREMENTS = ""
+_redis_protocol_prefix = "redis://"
+_redis_celery_tls_requirements = ""
 if CONFIG.y_bool("redis.tls", False):
-    REDIS_PROTOCOL_PREFIX = "rediss://"
-    REDIS_CELERY_TLS_REQUIREMENTS = f"?ssl_cert_reqs={CONFIG.y('redis.tls_reqs')}"
+    _redis_protocol_prefix = "rediss://"
+    _redis_celery_tls_requirements = f"?ssl_cert_reqs={CONFIG.y('redis.tls_reqs')}"
 _redis_url = (
-    f"{REDIS_PROTOCOL_PREFIX}:"
+    f"{_redis_protocol_prefix}:"
     f"{quote_plus(CONFIG.y('redis.password'))}@{quote_plus(CONFIG.y('redis.host'))}:"
     f"{int(CONFIG.y('redis.port'))}"
 )
@@ -326,27 +326,27 @@ USE_TZ = True
 
 LOCALE_PATHS = ["./locale"]
 
-# Celery settings
-# Add a 10 minute timeout to all Celery tasks.
-CELERY_TASK_SOFT_TIME_LIMIT = 600
-CELERY_WORKER_MAX_TASKS_PER_CHILD = 50
-CELERY_WORKER_CONCURRENCY = 2
-CELERY_BEAT_SCHEDULE = {
-    "clean_expired_models": {
-        "task": "authentik.core.tasks.clean_expired_models",
-        "schedule": crontab(minute="2-59/5"),
-        "options": {"queue": "authentik_scheduled"},
+CELERY = {
+    "task_soft_time_limit": 600,
+    "worker_max_tasks_per_child": 50,
+    "worker_concurrency": 2,
+    "beat_schedule": {
+        "clean_expired_models": {
+            "task": "authentik.core.tasks.clean_expired_models",
+            "schedule": crontab(minute="2-59/5"),
+            "options": {"queue": "authentik_scheduled"},
+        },
+        "user_cleanup": {
+            "task": "authentik.core.tasks.clean_temporary_users",
+            "schedule": crontab(minute="9-59/5"),
+            "options": {"queue": "authentik_scheduled"},
+        },
     },
-    "user_cleanup": {
-        "task": "authentik.core.tasks.clean_temporary_users",
-        "schedule": crontab(minute="9-59/5"),
-        "options": {"queue": "authentik_scheduled"},
-    },
+    "task_create_missing_queues": True,
+    "task_default_queue": "authentik",
+    "broker_url": f"{_redis_url}/{CONFIG.y('redis.db')}{_redis_celery_tls_requirements}",
+    "result_backend": f"{_redis_url}/{CONFIG.y('redis.db')}{_redis_celery_tls_requirements}",
 }
-CELERY_TASK_CREATE_MISSING_QUEUES = True
-CELERY_TASK_DEFAULT_QUEUE = "authentik"
-CELERY_BROKER_URL = f"{_redis_url}/{CONFIG.y('redis.db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
-CELERY_RESULT_BACKEND = f"{_redis_url}/{CONFIG.y('redis.db')}{REDIS_CELERY_TLS_REQUIREMENTS}"
 
 # Sentry integration
 env = get_env()
@@ -455,7 +455,7 @@ _DISALLOWED_ITEMS = [
     "INSTALLED_APPS",
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
-    "CELERY_BEAT_SCHEDULE",
+    "CELERY",
 ]
 
 
@@ -466,7 +466,7 @@ def _update_settings(app_path: str):
         INSTALLED_APPS.extend(getattr(settings_module, "INSTALLED_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
-        CELERY_BEAT_SCHEDULE.update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
+        CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                 globals()[_attr] = getattr(settings_module, _attr)
@@ -482,7 +482,7 @@ for _app in INSTALLED_APPS:
 _update_settings("data.user_settings")
 
 if DEBUG:
-    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY["task_always_eager"] = True
     os.environ[ENV_GIT_HASH_KEY] = "dev"
     INSTALLED_APPS.append("silk")
     SILKY_PYTHON_PROFILER = True
