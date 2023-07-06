@@ -25,11 +25,13 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
         });
     }
 
-    renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Password")} ?required=${true} name="password">
-                <input type="password" value="" class="pf-c-form-control" required />
-            </ak-form-element-horizontal>
-        </form>`;
+    renderInlineForm(): TemplateResult {
+        return html`<ak-form-element-horizontal
+            label=${msg("Password")}
+            ?required=${true}
+            name="password"
+        >
+            <input type="password" value="" class="pf-c-form-control" required />
+        </ak-form-element-horizontal>`;
     }
 }

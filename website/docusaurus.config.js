@@ -25,7 +25,7 @@ module.exports = async function () {
                 title: "authentik",
                 logo: {
                     alt: "authentik logo",
-                    src: "img/icon_left_brand.svg",
+                    src: "img/icon.svg",
                 },
                 items: [
                     { to: "blog", label: "Blog", position: "left" },
@@ -50,21 +50,16 @@ module.exports = async function () {
                         position: "left",
                     },
                     {
-                        to: "jobs/",
-                        label: "Jobs",
-                        position: "left",
-                    },
-                    {
                         type: "dropdown",
                         label: `Version: ${releases[0].replace(
                             /releases\/\d+\/v/,
-                            ""
+                            "",
                         )}`,
                         position: "right",
                         items: releases.map((release) => {
                             const version = release.replace(
                                 /releases\/\d+\/v/,
-                                ""
+                                "",
                             );
                             const subdomain = version.replace(".", "-");
                             const label = `Version: ${version}`;
@@ -87,6 +82,13 @@ module.exports = async function () {
                         position: "right",
                     },
                 ],
+            },
+            announcementBar: {
+                id: "hackathon",
+                content: `We're hosting a hackathon with a total prize pool of $5.000 in July! Sign up <a href="https://goauthentik.io/developer-docs/hackathon/">here</a>!`,
+                backgroundColor: "#ffffff",
+                textColor: "#000000",
+                isCloseable: false,
             },
             footer: {
                 links: [
@@ -122,6 +124,11 @@ module.exports = async function () {
                     {
                         title: "More",
                         items: [
+                            {
+                                to: "jobs/",
+                                label: "Jobs",
+                                position: "left",
+                            },
                             {
                                 label: "GitHub",
                                 href: "https://github.com/goauthentik/authentik",
@@ -164,7 +171,7 @@ module.exports = async function () {
                                     // Only replace issues and PR links
                                     buildUrl: function (
                                         values,
-                                        defaultBuildUrl
+                                        defaultBuildUrl,
                                     ) {
                                         return values.type === "issue"
                                             ? defaultBuildUrl(values)

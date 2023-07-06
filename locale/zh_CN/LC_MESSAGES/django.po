@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-13 11:23+0000\n"
+"POT-Creation-Date: 2023-06-19 17:34+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -884,28 +884,39 @@ msgstr "该组中的用户可以执行搜索查询。如果未设置，则每个
 
 #: authentik/providers/ldap/models.py:53
 msgid ""
-"The start for uidNumbers, this number is added to the user.Pk to make sure "
+"The start for uidNumbers, this number is added to the user.pk to make sure "
 "that the numbers aren't too low for POSIX users. Default is 2000 to ensure "
 "that we don't collide with local users uidNumber"
 msgstr ""
-"起始 uidNumbers，这个数字会被添加到 user.Pk 中，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为 "
+"起始 uidNumbers，这个数字会被添加到 user.pk 中，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为 "
 "2000，以确保我们不会与本地用户的 uidNumber 发生冲突"
 
 #: authentik/providers/ldap/models.py:62
 msgid ""
 "The start for gidNumbers, this number is added to a number generated from "
-"the group.Pk to make sure that the numbers aren't too low for POSIX groups. "
+"the group.pk to make sure that the numbers aren't too low for POSIX groups. "
 "Default is 4000 to ensure that we don't collide with local groups or users "
 "primary groups gidNumber"
 msgstr ""
-"起始 gidNumbers，这个数字会被添加到从 group.Pk 生成的数字中，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为 "
+"起始 gidNumbers，这个数字会被添加到从 group.pk 生成的数字中，以确保对于 POSIX 用户来说，这个数字不会太低。默认值为 "
 "4000，以确保我们不会与本地群组或用户主组的 gidNumber 发生冲突"
 
-#: authentik/providers/ldap/models.py:97
+#: authentik/providers/ldap/models.py:76
+msgid ""
+"When enabled, code-based multi-factor authentication can be used by "
+"appending a semicolon and the TOTP code to the password. This should only be"
+" enabled if all users that will bind to this provider have a TOTP device "
+"configured, as otherwise a password may incorrectly be rejected if it "
+"contains a semicolon."
+msgstr ""
+"启用时，可以通过在密码后添加分号和 TOTP 代码来使用基于代码的多因素身份验证。仅在所有绑定到此提供程序的用户都已配置 TOTP "
+"设备的情况下才应该启用，否则密码可能会因为包含分号而被错误地拒绝。"
+
+#: authentik/providers/ldap/models.py:108
 msgid "LDAP Provider"
 msgstr "LDAP 提供程序"
 
-#: authentik/providers/ldap/models.py:98
+#: authentik/providers/ldap/models.py:109
 msgid "LDAP Providers"
 msgstr "LDAP 提供程序"
 

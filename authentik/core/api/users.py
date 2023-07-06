@@ -68,11 +68,12 @@ from authentik.core.models import (
     TokenIntents,
     User,
 )
-from authentik.events.models import EventAction
+from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
+from authentik.lib.config import CONFIG
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -566,6 +567,58 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             },
         )
         send_mails(email_stage, message)
+        return Response(status=204)
+
+    @permission_required("authentik_core.impersonate")
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            "204": OpenApiResponse(description="Successfully started impersonation"),
+            "401": OpenApiResponse(description="Access denied"),
+        },
+    )
+    @action(detail=True, methods=["POST"])
+    def impersonate(self, request: Request, pk: int) -> Response:
+        """Impersonate a user"""
+        if not CONFIG.y_bool("impersonation"):
+            LOGGER.debug("User attempted to impersonate", user=request.user)
+            return Response(status=401)
+        if not request.user.has_perm("impersonate"):
+            LOGGER.debug("User attempted to impersonate without permissions", user=request.user)
+            return Response(status=401)
+
+        user_to_be = self.get_object()
+
+        request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
+        request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
+
+        Event.new(EventAction.IMPERSONATION_STARTED).from_http(request, user_to_be)
+
+        return Response(status=201)
+
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            "204": OpenApiResponse(description="Successfully started impersonation"),
+        },
+    )
+    @action(detail=False, methods=["GET"])
+    def impersonate_end(self, request: Request) -> Response:
+        """End Impersonation a user"""
+        if (
+            SESSION_KEY_IMPERSONATE_USER not in request.session
+            or SESSION_KEY_IMPERSONATE_ORIGINAL_USER not in request.session
+        ):
+            LOGGER.debug("Can't end impersonation", user=request.user)
+            return Response(status=204)
+
+        original_user = request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
+
+        del request.session[SESSION_KEY_IMPERSONATE_USER]
+        del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
+
+        Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
+
         return Response(status=204)
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:

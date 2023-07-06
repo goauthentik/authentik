@@ -1,4 +1,5 @@
 """API Authentication"""
+from hmac import compare_digest
 from typing import Any, Optional
 
 from django.conf import settings
@@ -78,7 +79,7 @@ def token_secret_key(value: str) -> Optional[User]:
     and return the service account for the managed outpost"""
     from authentik.outposts.apps import MANAGED_OUTPOST
 
-    if value != settings.SECRET_KEY:
+    if not compare_digest(value, settings.SECRET_KEY):
         return None
     outposts = Outpost.objects.filter(managed=MANAGED_OUTPOST)
     if not outposts:

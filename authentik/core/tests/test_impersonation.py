@@ -1,14 +1,14 @@
 """impersonation tests"""
 from json import loads
 
-from django.test.testcases import TestCase
 from django.urls import reverse
+from rest_framework.test import APITestCase
 
 from authentik.core.models import User
 from authentik.core.tests.utils import create_test_admin_user
 
 
-class TestImpersonation(TestCase):
+class TestImpersonation(APITestCase):
     """impersonation tests"""
 
     def setUp(self) -> None:
@@ -23,10 +23,10 @@ class TestImpersonation(TestCase):
         self.other_user.save()
         self.client.force_login(self.user)
 
-        self.client.get(
+        self.client.post(
             reverse(
-                "authentik_core:impersonate-init",
-                kwargs={"user_id": self.other_user.pk},
+                "authentik_api:user-impersonate",
+                kwargs={"pk": self.other_user.pk},
             )
         )
 
@@ -35,7 +35,7 @@ class TestImpersonation(TestCase):
         self.assertEqual(response_body["user"]["username"], self.other_user.username)
         self.assertEqual(response_body["original"]["username"], self.user.username)
 
-        self.client.get(reverse("authentik_core:impersonate-end"))
+        self.client.get(reverse("authentik_api:user-impersonate-end"))
 
         response = self.client.get(reverse("authentik_api:user-me"))
         response_body = loads(response.content.decode())
@@ -46,9 +46,7 @@ class TestImpersonation(TestCase):
         """test impersonation without permissions"""
         self.client.force_login(self.other_user)
 
-        self.client.get(
-            reverse("authentik_core:impersonate-init", kwargs={"user_id": self.user.pk})
-        )
+        self.client.get(reverse("authentik_api:user-impersonate", kwargs={"pk": self.user.pk}))
 
         response = self.client.get(reverse("authentik_api:user-me"))
         response_body = loads(response.content.decode())
@@ -58,5 +56,5 @@ class TestImpersonation(TestCase):
         """test un-impersonation without impersonating first"""
         self.client.force_login(self.other_user)
 
-        response = self.client.get(reverse("authentik_core:impersonate-end"))
-        self.assertRedirects(response, reverse("authentik_core:if-user"))
+        response = self.client.get(reverse("authentik_api:user-impersonate-end"))
+        self.assertEqual(response.status_code, 204)

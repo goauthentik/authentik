@@ -36,8 +36,15 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 	passed, err := fe.Execute()
 	flags := flags.UserFlags{
 		Session: fe.GetSession(),
+		UserPk:  flags.InvalidUserPK,
 	}
-	db.si.SetFlags(req.BindDN, &flags)
+	// only set flags if we don't have flags for this DN yet
+	// as flags are only checked during the bind, we can remember whether a certain DN
+	// can search or not, as if they bind correctly first and then use incorrect credentials
+	// later, they won't get past this step anyways
+	if db.si.GetFlags(req.BindDN) == nil {
+		db.si.SetFlags(req.BindDN, &flags)
+	}
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
 			"outpost_name": db.si.GetOutpostName(),

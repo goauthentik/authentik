@@ -58,9 +58,8 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return data;
     }
 
-    renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            ${this.group?.isSuperuser ? html`` : html``}
+    renderInlineForm(): TemplateResult {
+        return html`${this.group?.isSuperuser ? html`` : html``}
             <ak-form-element-horizontal label=${msg("Users to add")} name="users">
                 <div class="pf-c-input-group">
                     <ak-group-member-select-table
@@ -92,8 +91,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
                         </ak-chip-group>
                     </div>
                 </div>
-            </ak-form-element-horizontal>
-        </form> `;
+            </ak-form-element-horizontal>`;
     }
 }
 
@@ -194,12 +192,20 @@ export class RelatedUserList extends Table<User> {
                 </ak-forms-modal>
                 ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate)
                     ? html`
-                          <a
-                              class="pf-c-button pf-m-tertiary"
-                              href="${`/-/impersonation/${item.pk}/`}"
+                          <ak-action-button
+                              class="pf-m-tertiary"
+                              .apiRequest=${() => {
+                                  return new CoreApi(DEFAULT_CONFIG)
+                                      .coreUsersImpersonateCreate({
+                                          id: item.pk,
+                                      })
+                                      .then(() => {
+                                          window.location.href = "/";
+                                      });
+                              }}
                           >
                               ${msg("Impersonate")}
-                          </a>
+                          </ak-action-button>
                       `
                     : html``}`,
         ];

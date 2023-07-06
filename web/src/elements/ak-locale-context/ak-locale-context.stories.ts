@@ -1,3 +1,4 @@
+import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
 import { customEvent } from "@goauthentik/elements/utils/customEvents";
 
 import { localized, msg } from "@lit/localize";
@@ -5,7 +6,6 @@ import { LitElement, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 import "./ak-locale-context";
-import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
 
 export default {
     title: "Elements / Shell / Locale Context",

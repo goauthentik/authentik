@@ -1,10 +1,11 @@
 import { EVENT_LOCALE_CHANGE } from "@goauthentik/common/constants";
+import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
 import { customEvent, isCustomEvent } from "@goauthentik/elements/utils/customEvents";
 
 import { provide } from "@lit-labs/context";
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
+
 import { initializeLocalization } from "./configureLocale";
 import type { LocaleGetter, LocaleSetter } from "./configureLocale";
 import locale from "./context";

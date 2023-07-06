@@ -132,9 +132,9 @@ class TestPolicyProcess(TestCase):
         )
         binding = PolicyBinding(policy=policy, target=Application.objects.create(name="test"))
 
-        http_request = self.factory.get(reverse("authentik_core:impersonate-end"))
+        http_request = self.factory.get(reverse("authentik_api:user-impersonate-end"))
         http_request.user = self.user
-        http_request.resolver_match = resolve(reverse("authentik_core:impersonate-end"))
+        http_request.resolver_match = resolve(reverse("authentik_api:user-impersonate-end"))
 
         request = PolicyRequest(self.user)
         request.set_http_request(http_request)

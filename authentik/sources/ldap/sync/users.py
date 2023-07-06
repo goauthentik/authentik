@@ -15,8 +15,12 @@ from authentik.sources.ldap.sync.vendor.ms_ad import MicrosoftActiveDirectory
 class UserLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users into authentik"""
 
+    @staticmethod
+    def name() -> str:
+        return "users"
+
     def get_objects(self, **kwargs) -> Generator:
-        return self._connection.extend.standard.paged_search(
+        return self.search_paginator(
             search_base=self.base_dn_users,
             search_filter=self._source.user_object_filter,
             search_scope=SUBTREE,
@@ -24,13 +28,13 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             **kwargs,
         )
 
-    def sync(self) -> int:
+    def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Users and create authentik_core.User instances"""
         if not self._source.sync_users:
             self.message("User syncing is disabled for this Source")
             return -1
         user_count = 0
-        for user in self.get_objects():
+        for user in page_data:
             if "attributes" not in user:
                 continue
             attributes = user.get("attributes", {})

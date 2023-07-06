@@ -38,6 +38,18 @@
     max-height: 200px;
 }
 
+@media (max-width: 996px) {
+    .hero_image > img {
+        display: none;
+    }
+}
+
+@media (max-width: 430px) {
+    .hero__title {
+        font-size: 2rem;
+    }
+}
+
 .before-after-slider img {
     max-width: none;
 }

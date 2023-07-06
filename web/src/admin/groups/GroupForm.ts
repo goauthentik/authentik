@@ -95,6 +95,9 @@ export class GroupForm extends ModelForm<Group, string> {
                             args.search = query;
                         }
                         const groups = await new CoreApi(DEFAULT_CONFIG).coreGroupsList(args);
+                        if (this.instance) {
+                            return groups.results.filter((g) => g.pk !== this.instance?.pk);
+                        }
                         return groups.results;
                     }}
                     .renderElement=${(group: Group): string => {
