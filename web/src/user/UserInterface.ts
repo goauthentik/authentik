@@ -6,12 +6,11 @@ import {
 } from "@goauthentik/common/constants";
 import { configureSentry } from "@goauthentik/common/sentry";
 import { UserDisplay } from "@goauthentik/common/ui/config";
-import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import { me } from "@goauthentik/common/users";
 import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/buttons/ActionButton";
+import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
@@ -36,9 +35,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
-import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
-
-autoDetectLanguage();
+import { EventsApi, SessionUser } from "@goauthentik/api";
 
 @customElement("ak-interface-user")
 export class UserInterface extends Interface {
@@ -84,8 +81,8 @@ export class UserInterface extends Interface {
                     display: none;
                 }
                 .pf-c-brand {
-                    min-height: 48px;
-                    height: 48px;
+                    min-height: 32px;
+                    height: 32px;
                 }
                 .has-notifications {
                     color: #2b9af3;
@@ -150,157 +147,168 @@ export class UserInterface extends Interface {
             default:
                 userDisplay = this.me.user.username;
         }
-        return html`<div class="pf-c-page">
-            <div class="background-wrapper" style="${this.uiConfig.theme.background}"></div>
-            <header class="pf-c-page__header">
-                <div class="pf-c-page__header-brand">
-                    <a href="#/" class="pf-c-page__header-brand-link">
-                        <img
-                            class="pf-c-brand"
-                            src="${first(this.tenant?.brandingLogo, DefaultTenant.brandingLogo)}"
-                            alt="${(this.tenant?.brandingTitle, DefaultTenant.brandingTitle)}"
-                        />
-                    </a>
-                </div>
-                <div class="pf-c-page__header-tools">
-                    <div class="pf-c-page__header-tools-group">
-                        ${this.uiConfig.enabledFeatures.apiDrawer
-                            ? html`<div
-                                  class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
-                              >
-                                  <button
-                                      class="pf-c-button pf-m-plain"
-                                      type="button"
-                                      @click=${() => {
-                                          this.apiDrawerOpen = !this.apiDrawerOpen;
-                                          updateURLParams({
-                                              apiDrawerOpen: this.apiDrawerOpen,
-                                          });
-                                      }}
-                                  >
-                                      <i class="fas fa-code" aria-hidden="true"></i>
-                                  </button>
-                              </div>`
-                            : html``}
-                        ${this.uiConfig.enabledFeatures.notificationDrawer
-                            ? html`<div
-                                  class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
-                              >
-                                  <button
-                                      class="pf-c-button pf-m-plain"
-                                      type="button"
-                                      aria-label="${msg("Unread notifications")}"
-                                      @click=${() => {
-                                          this.notificationDrawerOpen =
-                                              !this.notificationDrawerOpen;
-                                          updateURLParams({
-                                              notificationDrawerOpen: this.notificationDrawerOpen,
-                                          });
-                                      }}
-                                  >
-                                      <span
-                                          class="pf-c-notification-badge ${this.notificationsCount >
-                                          0
-                                              ? "pf-m-unread"
-                                              : ""}"
-                                      >
-                                          <i class="pf-icon-bell" aria-hidden="true"></i>
-                                          <span class="pf-c-notification-badge__count"
-                                              >${this.notificationsCount}</span
-                                          >
-                                      </span>
-                                  </button>
-                              </div> `
-                            : html``}
-                        ${this.uiConfig.enabledFeatures.settings
-                            ? html` <div class="pf-c-page__header-tools-item">
-                                  <a class="pf-c-button pf-m-plain" type="button" href="#/settings">
-                                      <i class="fas fa-cog" aria-hidden="true"></i>
-                                  </a>
-                              </div>`
-                            : html``}
-                        <div class="pf-c-page__header-tools-item">
-                            <a href="/flows/-/default/invalidation/" class="pf-c-button pf-m-plain">
-                                <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                        ${this.me.user.isSuperuser
-                            ? html`<a
-                                  class="pf-c-button pf-m-primary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                                  href="/if/admin"
-                              >
-                                  ${msg("Admin interface")}
-                              </a>`
-                            : html``}
+        return html` <ak-locale-context>
+            <div class="pf-c-page">
+                <div class="background-wrapper" style="${this.uiConfig.theme.background}"></div>
+                <header class="pf-c-page__header">
+                    <div class="pf-c-page__header-brand">
+                        <a href="#/" class="pf-c-page__header-brand-link">
+                            <img
+                                class="pf-c-brand"
+                                src="${first(
+                                    this.tenant?.brandingLogo,
+                                    DefaultTenant.brandingLogo,
+                                )}"
+                                alt="${(this.tenant?.brandingTitle, DefaultTenant.brandingTitle)}"
+                            />
+                        </a>
                     </div>
-                    ${this.me.original
-                        ? html`&nbsp;
-                              <div class="pf-c-page__header-tools">
-                                  <div class="pf-c-page__header-tools-group">
-                                      <ak-action-button
-                                          class="pf-m-warning pf-m-small"
-                                          .apiRequest=${() => {
-                                              return new CoreApi(DEFAULT_CONFIG)
-                                                  .coreUsersImpersonateEndRetrieve()
-                                                  .then(() => {
-                                                      window.location.reload();
-                                                  });
+                    <div class="pf-c-page__header-tools">
+                        <div class="pf-c-page__header-tools-group">
+                            ${this.uiConfig.enabledFeatures.apiDrawer
+                                ? html`<div
+                                      class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                                  >
+                                      <button
+                                          class="pf-c-button pf-m-plain"
+                                          type="button"
+                                          @click=${() => {
+                                              this.apiDrawerOpen = !this.apiDrawerOpen;
+                                              updateURLParams({
+                                                  apiDrawerOpen: this.apiDrawerOpen,
+                                              });
                                           }}
                                       >
+                                          <i class="fas fa-code" aria-hidden="true"></i>
+                                      </button>
+                                  </div>`
+                                : html``}
+                            ${this.uiConfig.enabledFeatures.notificationDrawer
+                                ? html`<div
+                                      class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+                                  >
+                                      <button
+                                          class="pf-c-button pf-m-plain"
+                                          type="button"
+                                          aria-label="${msg("Unread notifications")}"
+                                          @click=${() => {
+                                              this.notificationDrawerOpen =
+                                                  !this.notificationDrawerOpen;
+                                              updateURLParams({
+                                                  notificationDrawerOpen:
+                                                      this.notificationDrawerOpen,
+                                              });
+                                          }}
+                                      >
+                                          <span
+                                              class="pf-c-notification-badge ${this
+                                                  .notificationsCount > 0
+                                                  ? "pf-m-unread"
+                                                  : ""}"
+                                          >
+                                              <i class="pf-icon-bell" aria-hidden="true"></i>
+                                              <span class="pf-c-notification-badge__count"
+                                                  >${this.notificationsCount}</span
+                                              >
+                                          </span>
+                                      </button>
+                                  </div> `
+                                : html``}
+                            ${this.uiConfig.enabledFeatures.settings
+                                ? html` <div class="pf-c-page__header-tools-item">
+                                      <a
+                                          class="pf-c-button pf-m-plain"
+                                          type="button"
+                                          href="#/settings"
+                                      >
+                                          <i class="fas fa-cog" aria-hidden="true"></i>
+                                      </a>
+                                  </div>`
+                                : html``}
+                            <div class="pf-c-page__header-tools-item">
+                                <a
+                                    href="/flows/-/default/invalidation/"
+                                    class="pf-c-button pf-m-plain"
+                                >
+                                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                            ${this.me.user.isSuperuser
+                                ? html`<a
+                                      class="pf-c-button pf-m-primary pf-m-small pf-u-display-none pf-u-display-block-on-md"
+                                      href="/if/admin"
+                                  >
+                                      ${msg("Admin interface")}
+                                  </a>`
+                                : html``}
+                        </div>
+                        ${this.me.original
+                            ? html`<div class="pf-c-page__header-tools">
+                                  <div class="pf-c-page__header-tools-group">
+                                      <a
+                                          class="pf-c-button pf-m-warning pf-m-small"
+                                          href=${`/-/impersonation/end/?back=${encodeURIComponent(
+                                              `${window.location.pathname}#${window.location.hash}`,
+                                          )}`}
+                                      >
                                           ${msg("Stop impersonation")}
-                                      </ak-action-button>
+                                      </a>
                                   </div>
                               </div>`
-                        : html``}
-                    <div class="pf-c-page__header-tools-group">
-                        <div class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md">
-                            ${userDisplay}
-                        </div>
-                    </div>
-                    <img
-                        class="pf-c-avatar"
-                        src=${this.me.user.avatar}
-                        alt="${msg("Avatar image")}"
-                    />
-                </div>
-            </header>
-            <div class="pf-c-page__drawer">
-                <div
-                    class="pf-c-drawer ${this.notificationDrawerOpen || this.apiDrawerOpen
-                        ? "pf-m-expanded"
-                        : "pf-m-collapsed"}"
-                >
-                    <div class="pf-c-drawer__main">
-                        <div class="pf-c-drawer__content">
-                            <div class="pf-c-drawer__body">
-                                <main class="pf-c-page__main">
-                                    <ak-router-outlet
-                                        role="main"
-                                        class="pf-l-bullseye__item pf-c-page__main"
-                                        tabindex="-1"
-                                        id="main-content"
-                                        defaultUrl="/library"
-                                        .routes=${ROUTES}
-                                    >
-                                    </ak-router-outlet>
-                                </main>
+                            : html``}
+                        <div class="pf-c-page__header-tools-group">
+                            <div
+                                class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md"
+                            >
+                                ${userDisplay}
                             </div>
                         </div>
-                        <ak-notification-drawer
-                            class="pf-c-drawer__panel pf-m-width-33 ${this.notificationDrawerOpen
-                                ? ""
-                                : "display-none"}"
-                            ?hidden=${!this.notificationDrawerOpen}
-                        ></ak-notification-drawer>
-                        <ak-api-drawer
-                            class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
-                                ? ""
-                                : "display-none"}"
-                            ?hidden=${!this.apiDrawerOpen}
-                        ></ak-api-drawer>
+                        <img
+                            class="pf-c-avatar"
+                            src=${this.me.user.avatar}
+                            alt="${msg("Avatar image")}"
+                        />
+                    </div>
+                </header>
+                <div class="pf-c-page__drawer">
+                    <div
+                        class="pf-c-drawer ${this.notificationDrawerOpen || this.apiDrawerOpen
+                            ? "pf-m-expanded"
+                            : "pf-m-collapsed"}"
+                    >
+                        <div class="pf-c-drawer__main">
+                            <div class="pf-c-drawer__content">
+                                <div class="pf-c-drawer__body">
+                                    <main class="pf-c-page__main">
+                                        <ak-router-outlet
+                                            role="main"
+                                            class="pf-l-bullseye__item pf-c-page__main"
+                                            tabindex="-1"
+                                            id="main-content"
+                                            defaultUrl="/library"
+                                            .routes=${ROUTES}
+                                        >
+                                        </ak-router-outlet>
+                                    </main>
+                                </div>
+                            </div>
+                            <ak-notification-drawer
+                                class="pf-c-drawer__panel pf-m-width-33 ${this
+                                    .notificationDrawerOpen
+                                    ? ""
+                                    : "display-none"}"
+                                ?hidden=${!this.notificationDrawerOpen}
+                            ></ak-notification-drawer>
+                            <ak-api-drawer
+                                class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
+                                    ? ""
+                                    : "display-none"}"
+                                ?hidden=${!this.apiDrawerOpen}
+                            ></ak-api-drawer>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>`;
+        </ak-locale-context>`;
     }
 }

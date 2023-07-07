@@ -3,9 +3,9 @@ import {
     EventMiddleware,
     LoggingMiddleware,
 } from "@goauthentik/common/api/middleware";
-import { EVENT_REFRESH, VERSION } from "@goauthentik/common/constants";
+import { EVENT_LOCALE_REQUEST, EVENT_REFRESH, VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
-import { activateLocale } from "@goauthentik/common/ui/locale";
+import { customEvent } from "@goauthentik/elements/utils/customEvents";
 
 import { Config, Configuration, CoreApi, CurrentTenant, RootApi } from "@goauthentik/api";
 
@@ -39,7 +39,7 @@ export function tenantSetLocale(tenant: CurrentTenant) {
         return;
     }
     console.debug("authentik/locale: setting locale from tenant default");
-    activateLocale(tenant.defaultLocale);
+    window.dispatchEvent(customEvent(EVENT_LOCALE_REQUEST, { locale: tenant.defaultLocale }));
 }
 
 let globalTenantPromise: Promise<CurrentTenant> | undefined = Promise.resolve(globalAK().tenant);

@@ -238,13 +238,14 @@ module.exports = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
+                "releases/2023/v2023.6",
                 "releases/2023/v2023.5",
                 "releases/2023/v2023.4",
-                "releases/2023/v2023.3",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2023/v2023.3",
                         "releases/2023/v2023.2",
                         "releases/2023/v2023.1",
                         "releases/2022/v2022.12",
@@ -321,11 +322,12 @@ module.exports = {
             },
             items: [
                 "security/policy",
+                "security/CVE-2023-36456",
                 "security/2023-06-cure53",
+                "security/CVE-2023-26481",
                 "security/CVE-2022-23555",
                 "security/CVE-2022-46145",
                 "security/CVE-2022-46172",
-                "security/CVE-2023-26481",
             ],
         },
     ],
