@@ -35,7 +35,7 @@
         "@formatjs/intl-listformat": "^7.4.0",
         "@fortawesome/fontawesome-free": "^6.4.0",
         "@lit-labs/context": "^0.3.3",
-        "@goauthentik/api": "^2023.5.4-1687900474",
+        "@goauthentik/api": "^2023.6.0-1688736781",
         "@lit/localize": "^0.11.4",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^7.57.0",
@@ -57,7 +57,7 @@
         "yaml": "^2.3.1"
     },
     "devDependencies": {
-        "@babel/core": "^7.22.7",
+        "@babel/core": "^7.22.8",
         "@babel/plugin-proposal-class-properties": "^7.18.6",
         "@babel/plugin-proposal-decorators": "^7.22.7",
         "@babel/plugin-proposal-private-methods": "^7.18.6",

@@ -16,10 +16,12 @@ LOGGER = get_logger()
 
 def _get_client_ip_from_meta(meta: dict[str, Any]) -> str:
     """Attempt to get the client's IP by checking common HTTP Headers.
-    Returns none if no IP Could be found"""
+    Returns none if no IP Could be found
+
+    No additional validation is done here as requests are expected to only arrive here
+    via the go proxy, which deals with validating these headers for us"""
     headers = (
         "HTTP_X_FORWARDED_FOR",
-        "HTTP_X_REAL_IP",
         "REMOTE_ADDR",
     )
     for _header in headers:
