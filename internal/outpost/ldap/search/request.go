@@ -81,11 +81,12 @@ func (r *Request) FilterLDAPAttributes(res ldap.ServerSearchResult, cb func(attr
 		newAttrs := []*ldap.EntryAttribute{}
 		for _, attr := range e.Attributes {
 			include := cb(attr)
+			l := r.Log().WithField("key", attr.Name).WithField("entry", e.DN)
 			if include {
 				newAttrs = append(newAttrs, attr)
-				r.Log().WithField("key", attr.Name).Trace("keeping attribute")
+				l.Trace("keeping attribute")
 			} else {
-				r.Log().WithField("key", attr.Name).Trace("filtering out field based on LDAP request")
+				l.Trace("filtering out field based on LDAP request")
 			}
 		}
 		e.Attributes = newAttrs
