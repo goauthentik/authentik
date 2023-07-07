@@ -33,7 +33,7 @@
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.4.0",
         "@fortawesome/fontawesome-free": "^6.4.0",
-        "@goauthentik/api": "^2023.5.4-1687900474",
+        "@goauthentik/api": "^2023.6.0-1688736781",
         "@lit/localize": "^0.11.4",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^7.57.0",
