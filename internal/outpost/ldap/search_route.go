@@ -42,7 +42,7 @@ func (ls *LDAPServer) providerForRequest(req *search.Request) *ProviderInstance 
 
 func (ls *LDAPServer) searchRoute(req *search.Request, pi *ProviderInstance) (ldap.ServerSearchResult, error) {
 	// Route based on the base DN
-	if len(req.BaseDN) == 0 {
+	if len(req.BaseDN) == 0 && req.Filter == "" {
 		req.Log().Trace("routing to base")
 		return pi.searcher.SearchBase(req)
 	}
@@ -69,12 +69,6 @@ func (ls *LDAPServer) filterResultAttributes(req *search.Request, result ldap.Se
 		// into consideration
 		return req.FilterLDAPAttributes(result, func(attr *ldap.EntryAttribute) bool {
 			for _, allowed := range allowedAttributes {
-				if strings.EqualFold(allowed, "cn") {
-					allowed = "commonName"
-				}
-				if strings.EqualFold(allowed, "dn") {
-					allowed = "distinguishedName"
-				}
 				if allowed == constants.SearchAttributeAllUser ||
 					allowed == constants.SearchAttributeAllOperational {
 					return true
