@@ -277,6 +277,16 @@ Timeout in hours for LDAP synchronization tasks.
 
 Defaults to `2`.
 
+### `AUTHENTIK_LDAP__PAGE_SIZE`
+
+:::info
+Requires authentik 2023.6.1
+:::
+
+Page size for LDAP synchronization. Controls the number of objects created in a single task.
+
+Defaults to `50`.
+
 ### `AUTHENTIK_LDAP__TLS__CIPHERS`
 
 :::info

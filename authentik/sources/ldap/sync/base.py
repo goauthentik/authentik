@@ -9,6 +9,7 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
+from authentik.lib.config import CONFIG
 from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
@@ -92,7 +93,7 @@ class BaseLDAPSynchronizer:
         types_only=False,
         get_operational_attributes=False,
         controls=None,
-        paged_size=5,
+        paged_size=int(CONFIG.y("ldap.page_size", 50)),
         paged_criticality=False,
     ):
         """Search in pages, returns each page"""
