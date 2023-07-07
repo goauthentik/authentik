@@ -344,3 +344,76 @@ class TestProviderLDAP(SeleniumTestCase):
         self.assertIsNotNone(server.schema)
         self.assertTrue(server.schema.is_valid())
         self.assertIsNotNone(server.schema.object_classes["goauthentik.io/ldap/user"])
+
+    @retry()
+    @apply_blueprint(
+        "default/flow-default-authentication-flow.yaml",
+        "default/flow-default-invalidation-flow.yaml",
+    )
+    @reconcile_app("authentik_outposts")
+    def test_ldap_search_attrs_filter(self):
+        """Test search with attributes filtering"""
+        # Remove akadmin to ensure list is correct
+        # Remove user before starting container so it's not cached
+        User.objects.filter(username="akadmin").delete()
+
+        outpost = self._prepare()
+        server = Server("ldap://localhost:3389", get_info=ALL)
+        _connection = Connection(
+            server,
+            raise_exceptions=True,
+            user=f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+            password=self.user.username,
+        )
+        _connection.bind()
+        self.assertTrue(
+            Event.objects.filter(
+                action=EventAction.LOGIN,
+                user={
+                    "pk": self.user.pk,
+                    "email": self.user.email,
+                    "username": self.user.username,
+                },
+            )
+        )
+
+        embedded_account = Outpost.objects.filter(managed=MANAGED_OUTPOST).first().user
+
+        _connection.search(
+            "ou=Users,DC=ldaP,dc=goauthentik,dc=io",
+            "(objectClass=user)",
+            search_scope=SUBTREE,
+            attributes=["cn"],
+        )
+        response: dict = _connection.response
+        # Remove raw_attributes to make checking easier
+        for obj in response:
+            del obj["raw_attributes"]
+            del obj["raw_dn"]
+        o_user = outpost.user
+        self.assertCountEqual(
+            response,
+            [
+                {
+                    "dn": f"cn={o_user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                    "attributes": {
+                        "cn": o_user.username,
+                    },
+                    "type": "searchResEntry",
+                },
+                {
+                    "dn": f"cn={embedded_account.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                    "attributes": {
+                        "cn": embedded_account.username,
+                    },
+                    "type": "searchResEntry",
+                },
+                {
+                    "dn": f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                    "attributes": {
+                        "cn": self.user.username,
+                    },
+                    "type": "searchResEntry",
+                },
+            ],
+        )
