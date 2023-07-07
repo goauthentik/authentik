@@ -84,8 +84,8 @@ export class UserInterface extends Interface {
                     display: none;
                 }
                 .pf-c-brand {
-                    min-height: 48px;
-                    height: 48px;
+                    min-height: 32px;
+                    height: 32px;
                 }
                 .has-notifications {
                     color: #2b9af3;
