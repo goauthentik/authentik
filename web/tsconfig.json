@@ -2,6 +2,7 @@
     "compilerOptions": {
         "strict": true,
         "paths": {
+            "@goauthentik/app/*": ["src/*"],
             "@goauthentik/admin/*": ["src/admin/*"],
             "@goauthentik/common/*": ["src/common/*"],
             "@goauthentik/docs/*": ["../website/docs/*"],
