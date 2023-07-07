@@ -3183,13 +3183,13 @@ urllib3 = {version = ">=1.26,<3", extras = ["socks"]}
 
 [[package]]
 name = "sentry-sdk"
-version = "1.27.0"
+version = "1.27.1"
 description = "Python client for Sentry (https://sentry.io)"
 optional = false
 python-versions = "*"
 files = [
-    {file = "sentry-sdk-1.27.0.tar.gz", hash = "sha256:eb2a5080912dc9b397925657669e3761d95d62c8aa4c0c6d6a73d5a31edaafe9"},
-    {file = "sentry_sdk-1.27.0-py2.py3-none-any.whl", hash = "sha256:8c0ba7a0ed4e39635d335fdac7c00840b14ce4319bb8629b934243d6306fee7d"},
+    {file = "sentry-sdk-1.27.1.tar.gz", hash = "sha256:53f36293a0da271a22f476259d2fda76c0b8a1cb96b16d6e6e6aca490d7f3451"},
+    {file = "sentry_sdk-1.27.1-py2.py3-none-any.whl", hash = "sha256:24308bd05a1f7d65e40acc68a768b4e5c35462039bfd6ae2ca116b92a7b53c78"},
 ]
 
 [package.dependencies]
