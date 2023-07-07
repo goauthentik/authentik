@@ -73,6 +73,7 @@ outposts:
 
 ldap:
   task_timeout_hours: 2
+  page_size: 50
   tls:
     ciphers: null
 
