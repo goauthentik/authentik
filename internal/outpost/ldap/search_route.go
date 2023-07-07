@@ -57,7 +57,7 @@ func (ls *LDAPServer) searchRoute(req *search.Request, pi *ProviderInstance) (ld
 func (ls *LDAPServer) filterResultAttributes(req *search.Request, result ldap.ServerSearchResult) ldap.ServerSearchResult {
 	allowedAttributes := []string{}
 	if len(req.Attributes) == 1 && req.Attributes[0] == constants.SearchAttributeNone {
-		allowedAttributes = []string{"objectClass"}
+		allowedAttributes = []string{constants.OC}
 	}
 	if len(req.Attributes) > 0 {
 		// Only strictly filter allowed attributes if we haven't already narrowed the attributes
@@ -69,6 +69,12 @@ func (ls *LDAPServer) filterResultAttributes(req *search.Request, result ldap.Se
 		// into consideration
 		return req.FilterLDAPAttributes(result, func(attr *ldap.EntryAttribute) bool {
 			for _, allowed := range allowedAttributes {
+				if strings.EqualFold(allowed, "cn") {
+					allowed = "commonName"
+				}
+				if strings.EqualFold(allowed, "dn") {
+					allowed = "distinguishedName"
+				}
 				if allowed == constants.SearchAttributeAllUser ||
 					allowed == constants.SearchAttributeAllOperational {
 					return true
