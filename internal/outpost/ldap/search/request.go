@@ -75,21 +75,3 @@ func (r *Request) Log() *log.Entry {
 func (r *Request) RemoteAddr() string {
 	return utils.GetIP(r.conn.RemoteAddr())
 }
-
-func (r *Request) FilterLDAPAttributes(res ldap.ServerSearchResult, cb func(attr *ldap.EntryAttribute) bool) ldap.ServerSearchResult {
-	for _, e := range res.Entries {
-		newAttrs := []*ldap.EntryAttribute{}
-		for _, attr := range e.Attributes {
-			include := cb(attr)
-			l := r.Log().WithField("key", attr.Name).WithField("entry", e.DN)
-			if include {
-				newAttrs = append(newAttrs, attr)
-				l.Trace("keeping attribute")
-			} else {
-				l.Trace("filtering out field based on LDAP request")
-			}
-		}
-		e.Attributes = newAttrs
-	}
-	return res
-}

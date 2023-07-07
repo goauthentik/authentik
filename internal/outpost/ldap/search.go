@@ -40,10 +40,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	}
 	selectedApp = selectedProvider.GetAppSlug()
 	result, err := ls.searchRoute(req, selectedProvider)
-	if err != nil {
-		return result, nil
-	}
-	return ls.filterResultAttributes(req, result), nil
+	return result, err
 }
 
 func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchResult, error) {
