@@ -250,6 +250,7 @@ class TestProviderLDAP(SeleniumTestCase):
                             "organizationalPerson",
                             "inetOrgPerson",
                             "goauthentik.io/ldap/user",
+                            "posixAccount",
                         ],
                         "uidNumber": 2000 + o_user.pk,
                         "gidNumber": 2000 + o_user.pk,
@@ -277,6 +278,7 @@ class TestProviderLDAP(SeleniumTestCase):
                             "organizationalPerson",
                             "inetOrgPerson",
                             "goauthentik.io/ldap/user",
+                            "posixAccount",
                         ],
                         "uidNumber": 2000 + embedded_account.pk,
                         "gidNumber": 2000 + embedded_account.pk,
@@ -304,6 +306,7 @@ class TestProviderLDAP(SeleniumTestCase):
                             "organizationalPerson",
                             "inetOrgPerson",
                             "goauthentik.io/ldap/user",
+                            "posixAccount",
                         ],
                         "uidNumber": 2000 + self.user.pk,
                         "gidNumber": 2000 + self.user.pk,
@@ -329,6 +332,7 @@ class TestProviderLDAP(SeleniumTestCase):
     @reconcile_app("authentik_outposts")
     def test_ldap_schema(self):
         """Test LDAP Schema"""
+        self._prepare()
         server = Server("ldap://localhost:3389", get_info=ALL)
         _connection = Connection(
             server,
