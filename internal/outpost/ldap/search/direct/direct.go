@@ -87,7 +87,7 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	c := api.NewAPIClient(ds.si.GetAPIClient().GetConfig())
 	c.GetConfig().AddDefaultHeader("X-authentik-outpost-ldap-query", req.Filter)
 
-	scope := req.SearchRequest.Scope
+	scope := req.Scope
 	needUsers, needGroups := ds.si.GetNeededObjects(scope, req.BaseDN, req.FilterObjectClass)
 
 	if scope >= 0 && strings.EqualFold(req.BaseDN, baseDN) {
