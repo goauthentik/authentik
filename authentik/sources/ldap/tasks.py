@@ -30,12 +30,15 @@ CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 def ldap_sync_all():
     """Sync all sources"""
     for source in LDAPSource.objects.filter(enabled=True):
-        ldap_sync_single(source)
+        ldap_sync_single(source.pk)
 
 
 @CELERY_APP.task()
-def ldap_sync_single(source: LDAPSource):
+def ldap_sync_single(source_pk: str):
     """Sync a single source"""
+    source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
+    if not source:
+        return
     task = chain(
         # User and group sync can happen at once, they have no dependencies on each other
         group(
@@ -71,9 +74,8 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
 def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
     self.result_timeout_hours = int(CONFIG.y("ldap.task_timeout_hours"))
-    try:
-        source: LDAPSource = LDAPSource.objects.get(pk=source_pk)
-    except LDAPSource.DoesNotExist:
+    source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
+    if not source:
         # Because the source couldn't be found, we don't have a UID
         # to set the state with
         return
