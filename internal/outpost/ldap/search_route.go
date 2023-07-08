@@ -42,7 +42,7 @@ func (ls *LDAPServer) providerForRequest(req *search.Request) *ProviderInstance 
 
 func (ls *LDAPServer) searchRoute(req *search.Request, pi *ProviderInstance) (ldap.ServerSearchResult, error) {
 	// Route based on the base DN
-	if len(req.BaseDN) == 0 && req.Filter == "" {
+	if len(req.BaseDN) == 0 {
 		req.Log().Trace("routing to base")
 		return pi.searcher.SearchBase(req)
 	}
