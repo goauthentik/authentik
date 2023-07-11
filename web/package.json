@@ -83,7 +83,7 @@
         "@types/codemirror": "5.60.8",
         "@types/grecaptcha": "^3.0.4",
         "@typescript-eslint/eslint-plugin": "^5.61.0",
-        "@typescript-eslint/parser": "^5.61.0",
+        "@typescript-eslint/parser": "^5.62.0",
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "eslint": "^8.44.0",
