@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-19 17:34+0000\n"
+"POT-Creation-Date: 2023-07-11 18:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,11 +56,11 @@ msgid ""
 "to be overwritten in a later update."
 msgstr ""
 
-#: authentik/blueprints/models.py:109
+#: authentik/blueprints/models.py:112
 msgid "Blueprint Instance"
 msgstr ""
 
-#: authentik/blueprints/models.py:110
+#: authentik/blueprints/models.py:113
 msgid "Blueprint Instances"
 msgstr ""
 
@@ -82,11 +82,11 @@ msgstr ""
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
-#: authentik/core/api/users.py:143
+#: authentik/core/api/users.py:144
 msgid "No leading or trailing slashes allowed."
 msgstr ""
 
-#: authentik/core/api/users.py:146
+#: authentik/core/api/users.py:147
 msgid "No empty segments in user path allowed."
 msgstr ""
 
@@ -296,7 +296,7 @@ msgid "Powered by authentik"
 msgstr ""
 
 #: authentik/core/views/apps.py:53
-#: authentik/providers/oauth2/views/authorize.py:386
+#: authentik/providers/oauth2/views/authorize.py:391
 #: authentik/providers/oauth2/views/device_init.py:70
 #: authentik/providers/saml/views/sso.py:70
 #, python-format
@@ -427,7 +427,7 @@ msgstr ""
 msgid "Webhook Mappings"
 msgstr ""
 
-#: authentik/events/monitored_tasks.py:195
+#: authentik/events/monitored_tasks.py:198
 msgid "Task has not been run yet."
 msgstr ""
 
@@ -436,55 +436,55 @@ msgstr ""
 msgid "Flow not applicable to current user/request: %(messages)s"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:67
-#: authentik/flows/api/flows_diagram.py:93
+#: authentik/flows/api/flows_diagram.py:68
+#: authentik/flows/api/flows_diagram.py:94
 #, python-format
 msgid "Policy (%(type)s)"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:70
+#: authentik/flows/api/flows_diagram.py:71
 #, python-format
 msgid "Binding %(order)d"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:117
+#: authentik/flows/api/flows_diagram.py:118
 msgid "Policy passed"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:121
+#: authentik/flows/api/flows_diagram.py:122
 #, python-format
 msgid "Stage (%(type)s)"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:145
-#: authentik/flows/api/flows_diagram.py:205
+#: authentik/flows/api/flows_diagram.py:146
+#: authentik/flows/api/flows_diagram.py:206
 msgid "Policy denied"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:155
-#: authentik/flows/api/flows_diagram.py:167
-#: authentik/flows/api/flows_diagram.py:204
-#: authentik/flows/api/flows_diagram.py:226
+#: authentik/flows/api/flows_diagram.py:156
+#: authentik/flows/api/flows_diagram.py:168
+#: authentik/flows/api/flows_diagram.py:205
+#: authentik/flows/api/flows_diagram.py:227
 msgid "End of the flow"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:168
+#: authentik/flows/api/flows_diagram.py:169
 msgid "Requirement not fulfilled"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:176
+#: authentik/flows/api/flows_diagram.py:177
 msgid "Flow authentication requirement"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:182
+#: authentik/flows/api/flows_diagram.py:183
 msgid "Requirement fulfilled"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:195
+#: authentik/flows/api/flows_diagram.py:196
 msgid "Pre-flow policies"
 msgstr ""
 
-#: authentik/flows/api/flows_diagram.py:213 authentik/flows/models.py:193
+#: authentik/flows/api/flows_diagram.py:214 authentik/flows/models.py:193
 msgid "Flow"
 msgstr ""
 
@@ -662,14 +662,14 @@ msgid "Dummy Policies"
 msgstr ""
 
 #: authentik/policies/event_matcher/api.py:20
-#: authentik/policies/event_matcher/models.py:55
+#: authentik/policies/event_matcher/models.py:56
 msgid ""
 "Match events created by selected application. When left empty, all "
 "applications are matched."
 msgstr ""
 
 #: authentik/policies/event_matcher/api.py:29
-#: authentik/policies/event_matcher/models.py:63
+#: authentik/policies/event_matcher/models.py:64
 msgid ""
 "Match events created by selected model. When left empty, all models are "
 "matched. When an app is selected, all the application's models are matched."
@@ -679,23 +679,23 @@ msgstr ""
 msgid "At least one criteria must be set."
 msgstr ""
 
-#: authentik/policies/event_matcher/models.py:47
+#: authentik/policies/event_matcher/models.py:48
 msgid ""
 "Match created events with this action type. When left empty, all action "
 "types will be matched."
 msgstr ""
 
-#: authentik/policies/event_matcher/models.py:71
+#: authentik/policies/event_matcher/models.py:73
 msgid ""
 "Matches Event's Client IP (strict matching, for network matching use an "
 "Expression Policy)"
 msgstr ""
 
-#: authentik/policies/event_matcher/models.py:141
+#: authentik/policies/event_matcher/models.py:143
 msgid "Event Matcher Policy"
 msgstr ""
 
-#: authentik/policies/event_matcher/models.py:142
+#: authentik/policies/event_matcher/models.py:144
 msgid "Event Matcher Policies"
 msgstr ""
 
@@ -1126,7 +1126,7 @@ msgstr ""
 msgid "Device Tokens"
 msgstr ""
 
-#: authentik/providers/oauth2/views/authorize.py:441
+#: authentik/providers/oauth2/views/authorize.py:446
 #: authentik/providers/saml/views/flows.py:87
 #, python-format
 msgid "Redirecting to %(app)s..."
@@ -1527,7 +1527,7 @@ msgstr ""
 msgid "LDAP Property Mappings"
 msgstr ""
 
-#: authentik/sources/ldap/signals.py:59
+#: authentik/sources/ldap/signals.py:50
 msgid "Password does not match Active Directory Complexity."
 msgstr ""
 
@@ -2428,16 +2428,16 @@ msgstr ""
 msgid "User Write Stages"
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:133
+#: authentik/stages/user_write/stage.py:134
 msgid "No Pending data."
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:139
+#: authentik/stages/user_write/stage.py:140
 msgid "No user found and can't create new user."
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:156
-#: authentik/stages/user_write/stage.py:170
+#: authentik/stages/user_write/stage.py:157
+#: authentik/stages/user_write/stage.py:171
 msgid "Failed to update user. Please try again later."
 msgstr ""
 
