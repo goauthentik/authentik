@@ -77,7 +77,7 @@ export class AdminOverviewPage extends AKElement {
                     <!-- row 1 -->
                     <div class="pf-l-grid__item pf-m-6-col pf-l-grid pf-m-gutter">
                         <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-4-col-on-2xl graph-container"
+                            class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl graph-container"
                         >
                             <ak-aggregate-card
                                 icon="fa fa-share"
@@ -127,7 +127,7 @@ export class AdminOverviewPage extends AKElement {
                             </ak-aggregate-card>
                         </div>
                         <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-4-col-on-2xl graph-container"
+                            class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl graph-container"
                         >
                             <ak-aggregate-card
                                 icon="pf-icon pf-icon-zone"
@@ -138,7 +138,7 @@ export class AdminOverviewPage extends AKElement {
                             </ak-aggregate-card>
                         </div>
                         <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-8-col-on-xl pf-m-4-col-on-2xl graph-container"
+                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl graph-container"
                         >
                             <ak-aggregate-card icon="fa fa-sync-alt" header=${msg("Sync status")}>
                                 <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
