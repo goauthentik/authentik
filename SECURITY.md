@@ -6,7 +6,7 @@ CVE (Common Vulnerability and Exposure) is a system designed to aggregate all vu
 
 “Weakness in an information system, system security procedures, internal controls, or implementation that could be exploited or triggered by a threat source.”
 
-If it is determined that the issue does qualify as a CVE, a CVE number will be issued to the reporter from GitHub. 
+If it is determined that the issue does qualify as a CVE, a CVE number will be issued to the reporter from GitHub.
 
 Even if the issue is not a CVE, we still greatly appreciate your help in hardening authentik.
 
@@ -16,8 +16,8 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 | Version | Supported |
 | --- | --- |
-| 2023.4.x | ✅ |
 | 2023.5.x | ✅ |
+| 2023.6.x | ✅ |
 
 ## Reporting a Vulnerability
 
