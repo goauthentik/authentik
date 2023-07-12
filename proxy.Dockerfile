@@ -8,7 +8,7 @@ WORKDIR /static
 RUN npm ci --include=dev && npm run build-proxy
 
 # Stage 2: Build
-FROM docker.io/golang:1.20.5-bullseye AS builder
+FROM docker.io/golang:1.20.6-bullseye AS builder
 
 WORKDIR /go/src/goauthentik.io
 
