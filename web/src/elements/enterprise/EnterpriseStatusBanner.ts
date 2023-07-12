@@ -7,12 +7,12 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-import { EnterpriseApi, LicenseBody } from "@goauthentik/api";
+import { EnterpriseApi, LicenseSummary } from "@goauthentik/api";
 
 @customElement("ak-enterprise-status")
 export class EnterpriseStatusBanner extends AKElement {
     @state()
-    body?: LicenseBody;
+    summary?: LicenseSummary;
 
     @property()
     interface: "admin" | "user" | "" = "";
@@ -22,13 +22,13 @@ export class EnterpriseStatusBanner extends AKElement {
     }
 
     firstUpdated(): void {
-        new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseIsValidRetrieve().then((b) => {
-            this.body = b;
+        new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve().then((b) => {
+            this.summary = b;
         });
     }
 
     renderBanner(): TemplateResult {
-        return html`<div class="pf-c-banner ${this.body?.readOnly ? "pf-m-red" : "pf-m-orange"}">
+        return html`<div class="pf-c-banner ${this.summary?.readOnly ? "pf-m-red" : "pf-m-orange"}">
             ${msg("Warning: The current user count has exceeded the configured licenses.")}
             <a href="/if/admin/#/enterprise/licenses"> ${msg("Click here for more info.")} </a>
         </div>`;
@@ -37,12 +37,12 @@ export class EnterpriseStatusBanner extends AKElement {
     render(): TemplateResult {
         switch (this.interface.toLowerCase()) {
             case "admin":
-                if (this.body?.showAdminWarning || this.body?.readOnly) {
+                if (this.summary?.showAdminWarning || this.summary?.readOnly) {
                     return this.renderBanner();
                 }
                 break;
             case "user":
-                if (this.body?.showUserWarning || this.body?.readOnly) {
+                if (this.summary?.showUserWarning || this.summary?.readOnly) {
                     return this.renderBanner();
                 }
                 break;

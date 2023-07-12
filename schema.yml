@@ -5864,9 +5864,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /enterprise/license/is_valid/:
+  /enterprise/license/summary/:
     get:
-      operationId: enterprise_license_is_valid_retrieve
+      operationId: enterprise_license_summary_retrieve
       description: Get the total license status
       tags:
       - enterprise
@@ -5877,7 +5877,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LicenseBody'
+                $ref: '#/components/schemas/LicenseSummary'
           description: ''
         '400':
           content:
@@ -31739,29 +31739,6 @@ components:
       - license_uuid
       - name
       - users
-    LicenseBody:
-      type: object
-      description: Serializer for license status
-      properties:
-        users:
-          type: integer
-        external_users:
-          type: integer
-        is_valid:
-          type: boolean
-        show_admin_warning:
-          type: boolean
-        show_user_warning:
-          type: boolean
-        read_only:
-          type: boolean
-      required:
-      - external_users
-      - is_valid
-      - read_only
-      - show_admin_warning
-      - show_user_warning
-      - users
     LicenseForecast:
       type: object
       description: Serializer for license forecast
@@ -31782,6 +31759,36 @@ components:
           minLength: 1
       required:
       - key
+    LicenseSummary:
+      type: object
+      description: Serializer for license status
+      properties:
+        users:
+          type: integer
+        external_users:
+          type: integer
+        is_valid:
+          type: boolean
+        show_admin_warning:
+          type: boolean
+        show_user_warning:
+          type: boolean
+        read_only:
+          type: boolean
+        latest_valid:
+          type: string
+          format: date-time
+        has_license:
+          type: boolean
+      required:
+      - external_users
+      - has_license
+      - is_valid
+      - latest_valid
+      - read_only
+      - show_admin_warning
+      - show_user_warning
+      - users
     Link:
       type: object
       description: Returns a single link

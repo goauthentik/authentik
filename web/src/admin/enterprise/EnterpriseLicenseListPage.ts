@@ -18,7 +18,7 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { EnterpriseApi, License, LicenseForecast } from "@goauthentik/api";
+import { EnterpriseApi, License, LicenseForecast, LicenseSummary } from "@goauthentik/api";
 
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
@@ -44,6 +44,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     @state()
     forecast?: LicenseForecast;
 
+    @state()
+    summary?: LicenseSummary;
+
     static get styles(): CSSResult[] {
         return super.styles.concat(
             PFDescriptionList,
@@ -59,6 +62,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<License>> {
         this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
+        this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve();
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseList({
             ordering: this.order,
             page: page,
@@ -129,7 +133,15 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         </ak-aggregate-card>
                     </div>
                     <div class="pf-l-grid__item pf-c-card">
-                        <div class="pf-c-card__body">item 3</div>
+                        <ak-aggregate-card
+                            icon="pf-icon pf-icon-user"
+                            header=${msg("Expiry")}
+                            subtext=${msg("TODO Copy")}
+                        >
+                            ${this.summary?.hasLicense
+                                ? this.summary.latestValid.toLocaleString()
+                                : "-"}
+                        </ak-aggregate-card>
                     </div>
                     <div class="pf-l-grid__item pf-c-card">
                         <div class="pf-c-card__body"></div>

@@ -1,11 +1,11 @@
 """Enterprise API Views"""
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, IntegerField
+from rest_framework.fields import BooleanField, CharField, IntegerField, DateTimeField
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -46,7 +46,7 @@ class LicenseSerializer(ModelSerializer):
         }
 
 
-class LicenseBodySerializer(PassiveSerializer):
+class LicenseSummary(PassiveSerializer):
     """Serializer for license status"""
 
     users = IntegerField(required=True)
@@ -55,6 +55,8 @@ class LicenseBodySerializer(PassiveSerializer):
     show_admin_warning = BooleanField()
     show_user_warning = BooleanField()
     read_only = BooleanField()
+    latest_valid = DateTimeField()
+    has_license = BooleanField()
 
 
 class LicenseForecastSerializer(PassiveSerializer):
@@ -92,11 +94,11 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         request=OpenApiTypes.NONE,
         responses={
-            200: LicenseBodySerializer(),
+            200: LicenseSummary(),
         },
     )
     @action(detail=False, methods=["GET"], permission_classes=[IsAuthenticated])
-    def is_valid(self, request: Request) -> Response:
+    def summary(self, request: Request) -> Response:
         """Get the total license status"""
         total = LicenseKey.get_total()
         last_valid = LicenseKey.last_valid_date()
@@ -104,13 +106,16 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         show_admin_warning = last_valid < now() - timedelta(weeks=2)
         show_user_warning= last_valid < now() - timedelta(weeks=4)
         read_only = last_valid < now() - timedelta(weeks=6)
-        response = LicenseBodySerializer(data={
+        latest_valid = datetime.fromtimestamp(total.exp)
+        response = LicenseSummary(data={
             "users": total.users,
             "external_users": total.external_users,
             "is_valid": total.is_valid(),
             "show_admin_warning": show_admin_warning,
             "show_user_warning": show_user_warning,
             "read_only": read_only,
+            "latest_valid": latest_valid,
+            "has_license": License.objects.all().count() > 0,
         })
         response.is_valid(raise_exception=True)
         return Response(response.data)
