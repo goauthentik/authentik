@@ -43,7 +43,7 @@ During the Kickoff video-conference on July 26th, we will spend some time identi
 
 Either way, there will be fun and challenging hacking to be done, truly something for everyone, from code to documentation to website pages, and the glue in between them all.
 
-### And for you seasoned hackers….
+### And for you seasoned hackers…
 
 As a [still newish company](https://goauthentik.io/blog/2023-03-23-whats-new-with-authentik-march-2023) and as a new team, this is our first hackathon [together], too! We have all participated in hackathons before at some level, but not yet put on one for [authentik](https://github.com/goauthentik/authentik), our SSO authentication project.
 
