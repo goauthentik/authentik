@@ -74,7 +74,7 @@ module.exports = async function () {
                                     // Only replace issues and PR links
                                     buildUrl: function (
                                         values,
-                                        defaultBuildUrl
+                                        defaultBuildUrl,
                                     ) {
                                         return values.type === "issue"
                                             ? defaultBuildUrl(values)
