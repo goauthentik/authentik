@@ -39,7 +39,7 @@ All of us in the software world want to build (and sometimes break and rebuild) 
 
 You can take a look at our [open Issues](https://github.com/goauthentik/authentik/issues) and see if any of them speak to you; maybe you have encountered a similar issue and want to find the answers, or maybe you have the answers and want to throw into a PR. Also, you can open a new Issue and add the `hackathon` label; we are sure you have your own ideas, too!
 
-During the Kickoff video-conference on July 30th, we will spend some time identifying which existing Issues participants want to work on, which new ones need to be created, and if there are larger, more complex Issues that a team can be formed to tackle together.
+During the Kickoff video-conference on July 26th, we will spend some time identifying which existing Issues participants want to work on, which new ones need to be created, and if there are larger, more complex Issues that a team can be formed to tackle together.
 
 Either way, there will be fun and challenging hacking to be done, truly something for everyone, from code to documentation to website pages, and the glue in between them all.
 
