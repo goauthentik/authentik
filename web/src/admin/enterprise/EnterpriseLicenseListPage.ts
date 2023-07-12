@@ -3,6 +3,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/SpinnerButton";
+import "@goauthentik/elements/cards/AggregateCard";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
@@ -10,12 +11,14 @@ import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, TemplateResult, css, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
+import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { EnterpriseApi, License } from "@goauthentik/api";
+import { EnterpriseApi, License, LicenseForecast } from "@goauthentik/api";
 
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
@@ -32,18 +35,30 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         return msg("TODO Copy");
     }
     pageIcon(): string {
-        // TODO: update icon
         return "pf-icon pf-icon-key";
     }
 
     @property()
     order = "name";
 
+    @state()
+    forecast?: LicenseForecast;
+
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList);
+        return super.styles.concat(
+            PFDescriptionList,
+            PFGrid,
+            PFCard,
+            css`
+                .pf-m-no-padding-bottom {
+                    padding-bottom: 0;
+                }
+            `,
+        );
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<License>> {
+        this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseList({
             ordering: this.order,
             page: page,
@@ -87,6 +102,41 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
+    }
+
+    renderSectionBefore(): TemplateResult {
+        return html`
+            <section class="pf-c-page__main-section pf-m-no-padding-bottom">
+                <div
+                    class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
+                >
+                    <div class="pf-l-grid__item pf-c-card">
+                        <ak-aggregate-card
+                            icon="pf-icon pf-icon-user"
+                            header=${msg("Forecasted default users")}
+                            subtext=${msg("TODO Copy")}
+                        >
+                            ${this.forecast?.users}
+                        </ak-aggregate-card>
+                    </div>
+                    <div class="pf-l-grid__item pf-c-card">
+                        <ak-aggregate-card
+                            icon="pf-icon pf-icon-user"
+                            header=${msg("Forecasted external users")}
+                            subtext=${msg("TODO Copy")}
+                        >
+                            ${this.forecast?.externalUsers}
+                        </ak-aggregate-card>
+                    </div>
+                    <div class="pf-l-grid__item pf-c-card">
+                        <div class="pf-c-card__body">item 3</div>
+                    </div>
+                    <div class="pf-l-grid__item pf-c-card">
+                        <div class="pf-c-card__body"></div>
+                    </div>
+                </div>
+            </section>
+        `;
     }
 
     row(item: License): TemplateResult[] {

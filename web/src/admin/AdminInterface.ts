@@ -127,7 +127,7 @@ export class AdminInterface extends Interface {
 
     render(): TemplateResult {
         return html` <ak-locale-context
-            ><ak-enterprise-status></ak-enterprise-status>
+            ><ak-enterprise-status interface="admin"></ak-enterprise-status>
             <div class="pf-c-page">
                 <ak-sidebar
                     class="pf-c-page__sidebar ${this.sidebarOpen

@@ -52,6 +52,9 @@ class LicenseBodySerializer(PassiveSerializer):
     users = IntegerField(required=True)
     external_users = IntegerField(required=True)
     is_valid = BooleanField()
+    show_admin_warning = BooleanField()
+    show_user_warning = BooleanField()
+    read_only = BooleanField()
 
 
 class LicenseForecastSerializer(PassiveSerializer):
@@ -96,7 +99,21 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     def is_valid(self, request: Request) -> Response:
         """Get the total license status"""
         total = LicenseKey.get_total()
-        return Response(LicenseBodySerializer(instance=total))
+        last_valid = LicenseKey.last_valid_date()
+        # TODO: move this to a different place?
+        show_admin_warning = last_valid < now() - timedelta(weeks=2)
+        show_user_warning= last_valid < now() - timedelta(weeks=4)
+        read_only = last_valid < now() - timedelta(weeks=6)
+        response = LicenseBodySerializer(data={
+            "users": total.users,
+            "external_users": total.external_users,
+            "is_valid": total.is_valid(),
+            "show_admin_warning": show_admin_warning,
+            "show_user_warning": show_user_warning,
+            "read_only": read_only,
+        })
+        response.is_valid(raise_exception=True)
+        return Response(response.data)
 
     @permission_required(None, ["authentik_enterprise.view_license"])
     @extend_schema(
@@ -114,13 +131,15 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
             type=UserTypes.DEFAULT, date_joined__gte=last_month
         ).count()
         # Forecast for external users
-        external_in_last_month = LicenseKey().get_external_user_count()
+        external_in_last_month = LicenseKey.get_external_user_count()
         forecast_for_months = 12
-        return Response(
-            LicenseForecastSerializer(
+        response = LicenseForecastSerializer(
                 data={
                     "users": users_in_last_month * forecast_for_months,
                     "external_users": external_in_last_month * forecast_for_months,
                 }
             )
+        response.is_valid(raise_exception=True)
+        return Response(
+            response.data
         )

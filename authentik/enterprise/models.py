@@ -95,17 +95,23 @@ class LicenseKey:
             total.flags.extend(lic.status.flags)
         return total
 
-    @property
-    def base_user_qs(self) -> QuerySet:
+    @staticmethod
+    def base_user_qs() -> QuerySet:
         return User.objects.all().exclude(pk=get_anonymous_user().pk)
 
-    def get_default_user_count(self):
-        return self.base_user_qs.filter(type=UserTypes.DEFAULT).count()
+    @staticmethod
+    def get_default_user_count():
+        return LicenseKey.base_user_qs().filter(type=UserTypes.DEFAULT).count()
 
-    def get_external_user_count(self):
+    @staticmethod
+    def get_external_user_count():
         # Count since start of the month
         last_month = now().replace(day=1)
-        return self.base_user_qs.filter(type=UserTypes.EXTERNAL, last_login__gte=last_month).count()
+        return (
+            LicenseKey.base_user_qs()
+            .filter(type=UserTypes.EXTERNAL, last_login__gte=last_month)
+            .count()
+        )
 
     def is_valid(self) -> bool:
         """Check if the given license body covers all users
@@ -130,7 +136,7 @@ class LicenseKey:
     @staticmethod
     def last_valid_date() -> datetime:
         usage: LicenseUsage = (
-            LicenseUsage.filter_not_expired(valid=True).order_by("-record_date").first()
+            LicenseUsage.filter_not_expired(within_limits=True).order_by("-record_date").first()
         )
         if not usage:
             return now()

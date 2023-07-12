@@ -31749,9 +31749,18 @@ components:
           type: integer
         is_valid:
           type: boolean
+        show_admin_warning:
+          type: boolean
+        show_user_warning:
+          type: boolean
+        read_only:
+          type: boolean
       required:
       - external_users
       - is_valid
+      - read_only
+      - show_admin_warning
+      - show_user_warning
       - users
     LicenseForecast:
       type: object
