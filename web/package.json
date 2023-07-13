@@ -39,7 +39,7 @@
         "@lit/localize": "^0.11.4",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^7.58.0",
-        "@sentry/tracing": "^7.58.0",
+        "@sentry/tracing": "^7.58.1",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "chart.js": "^4.3.0",
