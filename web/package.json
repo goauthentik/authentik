@@ -53,7 +53,7 @@
         "mermaid": "^10.2.4",
         "rapidoc": "^9.3.4",
         "style-mod": "^4.0.3",
-        "webcomponent-qr-code": "^1.1.1",
+        "webcomponent-qr-code": "^1.2.0",
         "yaml": "^2.3.1"
     },
     "devDependencies": {
