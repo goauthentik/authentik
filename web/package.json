@@ -38,7 +38,7 @@
         "@lit-labs/context": "^0.3.3",
         "@lit/localize": "^0.11.4",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^7.57.0",
+        "@sentry/browser": "^7.58.0",
         "@sentry/tracing": "^7.57.0",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
