@@ -1317,13 +1317,13 @@ ssh = ["paramiko (>=2.4.3)"]
 
 [[package]]
 name = "drf-jsonschema-serializer"
-version = "1.0.0"
+version = "2.0.0"
 description = "JSON Schema support for Django REST Framework"
 optional = false
 python-versions = "*"
 files = [
-    {file = "drf-jsonschema-serializer-1.0.0.tar.gz", hash = "sha256:aa58d03deba5a936bc0b0dbca4b69ee902886b7a0be130797f1d5e741b92e42b"},
-    {file = "drf_jsonschema_serializer-1.0.0-py3-none-any.whl", hash = "sha256:06401c94f1a2610797a26c390b701504b90b6b44683932daccbc250ea2aad3b1"},
+    {file = "drf-jsonschema-serializer-2.0.0.tar.gz", hash = "sha256:bfeea9f2e49f6f14d12ae5a55680657abb70066615739682351589cda67c3f4f"},
+    {file = "drf_jsonschema_serializer-2.0.0-py3-none-any.whl", hash = "sha256:02b4e4f19d680b0565a4231f1cba29371c01af0e1682944f1e2d1093bbd07d86"},
 ]
 
 [package.dependencies]
