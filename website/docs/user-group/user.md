@@ -22,7 +22,7 @@ Optional flag, when set to false prevents the user from changing their own name.
 
 ### `goauthentik.io/user/can-change-email`
 
-Optional flag, when set to false prevents the user from changing their own email.
+Optional flag, when set to false prevents the user from changing their own email address.
 
 ### `goauthentik.io/user/token-expires`:
 
