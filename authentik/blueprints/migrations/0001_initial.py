@@ -45,7 +45,7 @@ def check_blueprint_v1_file(BlueprintInstance: type, path: Path):
             enabled=True,
             managed_models=[],
             last_applied_hash="",
-            metadata=metadata,
+            metadata=metadata or {},
         )
         instance.save()
 

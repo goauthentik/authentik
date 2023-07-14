@@ -7,7 +7,7 @@ COPY ./SECURITY.md /work/
 
 ENV NODE_ENV=production
 WORKDIR /work/website
-RUN npm ci && npm run build-docs-only
+RUN npm ci --include=dev && npm run build-docs-only
 
 # Stage 2: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:20 as web-builder
@@ -17,10 +17,10 @@ COPY ./website /work/website/
 
 ENV NODE_ENV=production
 WORKDIR /work/web
-RUN npm ci && npm run build
+RUN npm ci --include=dev && npm run build
 
 # Stage 3: Poetry to requirements.txt export
-FROM docker.io/python:3.11.3-slim-bullseye AS poetry-locker
+FROM docker.io/python:3.11.4-slim-bullseye AS poetry-locker
 
 WORKDIR /work
 COPY ./pyproject.toml /work
@@ -31,7 +31,7 @@ RUN pip install --no-cache-dir poetry && \
     poetry export --without-hashes -f requirements.txt --dev --output requirements-dev.txt
 
 # Stage 4: Build go proxy
-FROM --platform=${BUILDPLATFORM} docker.io/golang:1.20.4-bullseye AS go-builder
+FROM docker.io/golang:1.20.6-bullseye AS go-builder
 
 WORKDIR /work
 
@@ -47,32 +47,33 @@ COPY ./go.sum /work/go.sum
 RUN go build -o /work/authentik ./cmd/server/
 
 # Stage 5: MaxMind GeoIP
-FROM ghcr.io/maxmind/geoipupdate:v5.1 as geoip
+FROM ghcr.io/maxmind/geoipupdate:v6.0 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City"
 ENV GEOIPUPDATE_VERBOSE="true"
+ENV GEOIPUPDATE_ACCOUNT_ID_FILE="/run/secrets/GEOIPUPDATE_ACCOUNT_ID"
+ENV GEOIPUPDATE_LICENSE_KEY_FILE="/run/secrets/GEOIPUPDATE_LICENSE_KEY"
 
 USER root
 RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     --mount=type=secret,id=GEOIPUPDATE_LICENSE_KEY \
     mkdir -p /usr/share/GeoIP && \
-    /bin/sh -c "\
-        export GEOIPUPDATE_ACCOUNT_ID=$(cat /run/secrets/GEOIPUPDATE_ACCOUNT_ID); \
-        export GEOIPUPDATE_LICENSE_KEY=$(cat /run/secrets/GEOIPUPDATE_LICENSE_KEY); \
-        /usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0 \
-    "
+    /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 6: Run
-FROM docker.io/python:3.11.3-slim-bullseye AS final-image
+FROM docker.io/python:3.11.4-slim-bullseye AS final-image
+
+ARG GIT_BUILD_HASH
+ARG VERSION
+ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 LABEL org.opencontainers.image.url https://goauthentik.io
 LABEL org.opencontainers.image.description goauthentik.io Main server image, see https://goauthentik.io for more info.
 LABEL org.opencontainers.image.source https://github.com/goauthentik/authentik
+LABEL org.opencontainers.image.version ${VERSION}
+LABEL org.opencontainers.image.revision ${GIT_BUILD_HASH}
 
 WORKDIR /
-
-ARG GIT_BUILD_HASH
-ENV GIT_BUILD_HASH=$GIT_BUILD_HASH
 
 COPY --from=poetry-locker /work/requirements.txt /
 COPY --from=poetry-locker /work/requirements-dev.txt /

@@ -4,8 +4,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Spinner";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -58,10 +57,10 @@ export class OutpostHealthSimpleElement extends AKElement {
             return html`<ak-spinner></ak-spinner>`;
         }
         if (!this.outpostHealth) {
-            return html`<ak-label color=${PFColor.Grey}>${t`Not available`}</ak-label>`;
+            return html`<ak-label color=${PFColor.Grey}>${msg("Not available")}</ak-label>`;
         }
         return html`<ak-label color=${PFColor.Green}>
-            ${t`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`}</ak-label
+            ${msg(str`Last seen: ${this.outpostHealth.lastSeen?.toLocaleTimeString()}`)}</ak-label
         >`;
     }
 }

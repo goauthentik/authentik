@@ -1,5 +1,5 @@
 """core Configs API"""
-from os import path
+from pathlib import Path
 
 from django.conf import settings
 from django.db import models
@@ -63,7 +63,7 @@ class ConfigView(APIView):
         """Get all capabilities this server instance supports"""
         caps = []
         deb_test = settings.DEBUG or settings.TEST
-        if path.ismount(settings.MEDIA_ROOT) or deb_test:
+        if Path(settings.MEDIA_ROOT).is_mount() or deb_test:
             caps.append(Capabilities.CAN_SAVE_MEDIA)
         if GEOIP_READER.enabled:
             caps.append(Capabilities.CAN_GEO_IP)

@@ -81,7 +81,6 @@ class SCIMUserTests(TestCase):
                     "givenName": uid,
                 },
                 "displayName": uid,
-                "photos": [],
                 "userName": uid,
             },
         )
@@ -137,7 +136,6 @@ class SCIMUserTests(TestCase):
                     "formatted": uid,
                     "givenName": uid,
                 },
-                "photos": [],
                 "userName": uid,
             },
         )
@@ -190,7 +188,6 @@ class SCIMUserTests(TestCase):
                     "givenName": uid,
                 },
                 "displayName": uid,
-                "photos": [],
                 "userName": uid,
             },
         )
@@ -258,7 +255,6 @@ class SCIMUserTests(TestCase):
                     "givenName": uid,
                 },
                 "displayName": uid,
-                "photos": [],
                 "userName": uid,
             },
         )

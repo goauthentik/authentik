@@ -10,8 +10,7 @@ import "@goauthentik/elements/forms/ProxyForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -37,22 +36,22 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     columns(): TableColumn[] {
         return [
-            new TableColumn(t`Order`),
-            new TableColumn(t`Name`),
-            new TableColumn(t`Type`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Order")),
+            new TableColumn(msg("Name")),
+            new TableColumn(msg("Type")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Stage binding(s)`}
+            objectLabel=${msg("Stage binding(s)")}
             .objects=${this.selectedElements}
             .metadata=${(item: FlowStageBinding) => {
                 return [
-                    { key: t`Stage`, value: item.stageObj?.name || "" },
-                    { key: t`Stage type`, value: item.stageObj?.verboseName || "" },
+                    { key: msg("Stage"), value: item.stageObj?.name || "" },
+                    { key: msg("Stage type"), value: item.stageObj?.verboseName || "" },
                 ];
             }}
             .usedBy=${(item: FlowStageBinding) => {
@@ -67,7 +66,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -78,8 +77,8 @@ export class BoundStagesList extends Table<FlowStageBinding> {
             html`${item.stageObj?.name}`,
             html`${item.stageObj?.verboseName}`,
             html` <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update ${item.stageObj?.verboseName}`} </span>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg(str`Update ${item.stageObj?.verboseName}`)} </span>
                     <ak-proxy-form
                         slot="form"
                         .args=${{
@@ -89,16 +88,16 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                     >
                     </ak-proxy-form>
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
-                        ${t`Edit Stage`}
+                        ${msg("Edit Stage")}
                     </button>
                 </ak-forms-modal>
                 <ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update Stage binding`} </span>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Stage binding")} </span>
                     <ak-stage-binding-form slot="form" .instancePk=${item.pk}>
                     </ak-stage-binding-form>
                     <button slot="trigger" class="pf-c-button pf-m-secondary">
-                        ${t`Edit Binding`}
+                        ${msg("Edit Binding")}
                     </button>
                 </ak-forms-modal>`,
         ];
@@ -110,7 +109,9 @@ export class BoundStagesList extends Table<FlowStageBinding> {
                 <div class="pf-c-table__expandable-row-content">
                     <div class="pf-c-content">
                         <p>
-                            ${t`These bindings control if this stage will be applied to the flow.`}
+                            ${msg(
+                                "These bindings control if this stage will be applied to the flow.",
+                            )}
                         </p>
                         <ak-bound-policies-list .target=${item.policybindingmodelPtrId}>
                         </ak-bound-policies-list>
@@ -121,18 +122,18 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     renderEmpty(): TemplateResult {
         return super.renderEmpty(html`<ak-empty-state
-            header=${t`No Stages bound`}
+            header=${msg("No Stages bound")}
             icon="pf-icon-module"
         >
-            <div slot="body">${t`No stages are currently bound to this flow.`}</div>
+            <div slot="body">${msg("No stages are currently bound to this flow.")}</div>
             <div slot="primary">
                 <ak-forms-modal>
-                    <span slot="submit"> ${t`Create`} </span>
-                    <span slot="header"> ${t`Create Stage binding`} </span>
+                    <span slot="submit"> ${msg("Create")} </span>
+                    <span slot="header"> ${msg("Create Stage binding")} </span>
                     <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                     </ak-stage-binding-form>
                     <button slot="trigger" class="pf-c-button pf-m-primary">
-                        ${t`Bind stage`}
+                        ${msg("Bind stage")}
                     </button>
                 </ak-forms-modal>
             </div>
@@ -142,17 +143,17 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     renderToolbar(): TemplateResult {
         return html`
             <ak-stage-wizard
-                createText=${t`Create & bind Stage`}
+                createText=${msg("Create & bind Stage")}
                 ?showBindingPage=${true}
                 bindingTarget=${ifDefined(this.target)}
             ></ak-stage-wizard>
             <ak-forms-modal>
-                <span slot="submit"> ${t`Create`} </span>
-                <span slot="header"> ${t`Create Stage binding`} </span>
+                <span slot="submit"> ${msg("Create")} </span>
+                <span slot="header"> ${msg("Create Stage binding")} </span>
                 <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
                 </ak-stage-binding-form>
                 <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${t`Bind existing stage`}
+                    ${msg("Bind existing stage")}
                 </button>
             </ak-forms-modal>
             ${super.renderToolbar()}

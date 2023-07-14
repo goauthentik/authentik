@@ -4,7 +4,7 @@ import (
 	"net"
 
 	"github.com/getsentry/sentry-go"
-	"github.com/nmcclain/ldap"
+	"beryju.io/ldap"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ldap/bind"

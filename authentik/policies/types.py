@@ -19,7 +19,7 @@ LOGGER = get_logger()
 CACHE_PREFIX = "goauthentik.io/policies/"
 
 
-@dataclass
+@dataclass(slots=True)
 class PolicyRequest:
     """Data-class to hold policy request data"""
 
@@ -27,14 +27,14 @@ class PolicyRequest:
     http_request: Optional[HttpRequest]
     obj: Optional[Model]
     context: dict[str, Any]
-    debug: bool = False
+    debug: bool
 
     def __init__(self, user: User):
-        super().__init__()
         self.user = user
         self.http_request = None
         self.obj = None
         self.context = {}
+        self.debug = False
 
     def set_http_request(self, request: HttpRequest):  # pragma: no cover
         """Load data from HTTP request, including geoip when enabled"""
@@ -67,7 +67,7 @@ class PolicyRequest:
         return text + ">"
 
 
-@dataclass
+@dataclass(slots=True)
 class PolicyResult:
     """Result from evaluating a policy."""
 
@@ -81,7 +81,6 @@ class PolicyResult:
     log_messages: Optional[list[dict]]
 
     def __init__(self, passing: bool, *messages: str):
-        super().__init__()
         self.passing = passing
         self.messages = messages
         self.raw_result = None

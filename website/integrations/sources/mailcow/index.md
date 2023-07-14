@@ -29,7 +29,7 @@ The following placeholders will be used:
 
 ![ClientID and Secret](mailcow3.png)
 
-## Authentik
+## authentik
 
 5. Under _Directory -> Federation & Social login_ Click **Create > Mailcow OAuth Source**
 

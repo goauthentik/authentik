@@ -5,10 +5,10 @@ from authentik.flows.stage import StageView
 
 
 class DenyStageView(StageView):
-    """Cancells the current flow"""
+    """Cancels the current flow"""
 
     def get(self, request: HttpRequest) -> HttpResponse:
-        """Cancells the current flow"""
+        """Cancels the current flow"""
         return self.executor.stage_invalid()
 
     def post(self, request: HttpRequest) -> HttpResponse:

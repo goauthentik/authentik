@@ -21,7 +21,7 @@ from authentik.core.models import (
 from authentik.core.sources.flow_manager import SourceFlowManager
 from authentik.lib.expression.evaluator import BaseEvaluator
 from authentik.lib.utils.time import timedelta_from_string
-from authentik.policies.utils import delete_none_keys
+from authentik.policies.utils import delete_none_values
 from authentik.sources.saml.exceptions import (
     InvalidSignature,
     MismatchedRequestID,
@@ -72,7 +72,7 @@ class ResponseProcessor:
         self._root_xml = b64decode(raw_response.encode())
         self._root = fromstring(self._root_xml)
 
-        if self._source.signing_kp:
+        if self._source.verification_kp:
             self._verify_signed()
         self._verify_request_id()
         self._verify_status()
@@ -89,7 +89,7 @@ class ResponseProcessor:
 
         ctx = xmlsec.SignatureContext()
         key = xmlsec.Key.from_memory(
-            self._source.signing_kp.certificate_data,
+            self._source.verification_kp.certificate_data,
             xmlsec.constants.KeyDataFormatCertPem,
         )
         ctx.key = key
@@ -160,7 +160,7 @@ class ResponseProcessor:
             self._source,
             self._http_request,
             name_id,
-            delete_none_keys(self.get_attributes()),
+            delete_none_values(self.get_attributes()),
         )
 
     def _get_name_id(self) -> "Element":
@@ -237,7 +237,7 @@ class ResponseProcessor:
             self._source,
             self._http_request,
             name_id.text,
-            delete_none_keys(self.get_attributes()),
+            delete_none_values(self.get_attributes()),
         )
 
 

@@ -35,7 +35,7 @@ type WebServer struct {
 func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
 	l := log.WithField("logger", "authentik.router")
 	mainHandler := mux.NewRouter()
-	mainHandler.Use(handlers.ProxyHeaders)
+	mainHandler.Use(web.ProxyHeaders())
 	mainHandler.Use(handlers.CompressHandler)
 	loggingHandler := mainHandler.NewRoute().Subrouter()
 	loggingHandler.Use(web.NewLoggingHandler(l, nil))

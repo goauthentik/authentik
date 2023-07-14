@@ -2,8 +2,7 @@ import "@goauthentik/elements/EmptyState";
 import "@goauthentik/flow/FormStatic";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
@@ -38,7 +37,8 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`<header class="pf-c-login__main-header">
                 <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
@@ -48,7 +48,7 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                     <h3 class="pf-c-title pf-m-3xl">
                         ${this.challenge?.error
                             ? this.challenge.error
-                            : t`Something went wrong! Please try again later.`}
+                            : msg("Something went wrong! Please try again later.")}
                     </h3>
                     ${this.challenge?.traceback
                         ? html`<div class="pf-c-form__group">
@@ -57,7 +57,7 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                         : html``}
                     ${this.challenge?.requestId
                         ? html`<div class="pf-c-form__group">
-                              <p>${t`Request ID`}</p>
+                              <p>${msg("Request ID")}</p>
                               <code>${this.challenge.requestId}</code>
                           </div>`
                         : html``}

@@ -36,6 +36,7 @@ class SCIMMembershipTests(TestCase):
             slug=generate_id(),
         )
         self.app.backchannel_providers.add(self.provider)
+        self.provider.save()
         self.provider.property_mappings.set(
             [SCIMMapping.objects.get(managed="goauthentik.io/providers/scim/user")]
         )
@@ -91,7 +92,6 @@ class SCIMMembershipTests(TestCase):
                     "active": True,
                     "externalId": user.uid,
                     "name": {"familyName": "", "formatted": "", "givenName": ""},
-                    "photos": [],
                     "displayName": "",
                     "userName": user.username,
                 },
@@ -177,7 +177,6 @@ class SCIMMembershipTests(TestCase):
                     "emails": [],
                     "externalId": user.uid,
                     "name": {"familyName": "", "formatted": "", "givenName": ""},
-                    "photos": [],
                     "userName": user.username,
                 },
             )

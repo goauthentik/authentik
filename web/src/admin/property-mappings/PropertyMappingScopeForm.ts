@@ -4,8 +4,7 @@ import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -22,9 +21,9 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated mapping.`;
+            return msg("Successfully updated mapping.");
         } else {
-            return t`Successfully created mapping.`;
+            return msg("Successfully created mapping.");
         }
     }
 
@@ -43,7 +42,7 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -51,7 +50,11 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Scope name`} ?required=${true} name="scopeName">
+            <ak-form-element-horizontal
+                label=${msg("Scope name")}
+                ?required=${true}
+                name="scopeName"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.scopeName)}"
@@ -59,29 +62,35 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Scope which the client can specify to access these properties.`}
+                    ${msg("Scope which the client can specify to access these properties.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Description`} name="description">
+            <ak-form-element-horizontal label=${msg("Description")} name="description">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.description)}"
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Description shown to the user when consenting. If left empty, the user won't be informed.`}
+                    ${msg(
+                        "Description shown to the user when consenting. If left empty, the user won't be informed.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Expression`} ?required=${true} name="expression">
+            <ak-form-element-horizontal
+                label=${msg("Expression")}
+                ?required=${true}
+                name="expression"
+            >
                 <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Expression using Python.`}
+                    ${msg("Expression using Python.")}
                     <a
                         target="_blank"
                         href="${docLink("/docs/property-mappings/expression?utm_source=authentik")}"
                     >
-                        ${t`See documentation for a list of all variables.`}
+                        ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>
             </ak-form-element-horizontal>

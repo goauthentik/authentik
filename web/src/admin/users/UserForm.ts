@@ -6,8 +6,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import YAML from "yaml";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -35,9 +34,9 @@ export class UserForm extends ModelForm<User, number> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated user.`;
+            return msg("Successfully updated user.");
         } else {
-            return t`Successfully created user.`;
+            return msg("Successfully created user.");
         }
     }
 
@@ -57,7 +56,7 @@ export class UserForm extends ModelForm<User, number> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Username`} ?required=${true} name="username">
+            <ak-form-element-horizontal label=${msg("Username")} ?required=${true} name="username">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.username)}"
@@ -65,18 +64,18 @@ export class UserForm extends ModelForm<User, number> {
                     required
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`User's primary identifier. 150 characters or fewer.`}
+                    ${msg("User's primary identifier. 150 characters or fewer.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Name`} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
                     class="pf-c-form-control"
                 />
-                <p class="pf-c-form__helper-text">${t`User's display name.`}</p>
+                <p class="pf-c-form__helper-text">${msg("User's display name.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Email`} name="email">
+            <ak-form-element-horizontal label=${msg("Email")} name="email">
                 <input
                     type="email"
                     autocomplete="off"
@@ -96,13 +95,15 @@ export class UserForm extends ModelForm<User, number> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Is active`}</span>
+                    <span class="pf-c-switch__label">${msg("Is active")}</span>
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`Designates whether this user should be treated as active. Unselect this instead of deleting accounts.`}
+                    ${msg(
+                        "Designates whether this user should be treated as active. Unselect this instead of deleting accounts.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Path`} ?required=${true} name="path">
+            <ak-form-element-horizontal label=${msg("Path")} ?required=${true} name="path">
                 <input
                     type="text"
                     value="${first(this.instance?.path, "users")}"
@@ -110,14 +111,18 @@ export class UserForm extends ModelForm<User, number> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Attributes`} ?required=${true} name="attributes">
+            <ak-form-element-horizontal
+                label=${msg("Attributes")}
+                ?required=${true}
+                name="attributes"
+            >
                 <ak-codemirror
                     mode="yaml"
                     value="${YAML.stringify(first(this.instance?.attributes, {}))}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Set custom attributes using YAML or JSON.`}
+                    ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>
         </form>`;

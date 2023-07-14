@@ -1,0 +1,27 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: PDB attach Server",
+            "type": "python",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 6800
+            },
+            "justMyCode": true,
+            "django": true
+        },
+        {
+            "name": "Python: PDB attach Worker",
+            "type": "python",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 6900
+            },
+            "justMyCode": true,
+            "django": true
+        },
+    ]
+}

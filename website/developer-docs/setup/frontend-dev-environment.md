@@ -6,12 +6,12 @@ If you want to only make changes on the UI, you don't need a backend running fro
 
 ### Prerequisites
 
--   Node (any recent version should work, we use 20.x to build)
+-   Node.js (any recent version should work; we use 20.x to build)
 -   Make (again, any recent version should work)
--   Docker and docker-compose
+-   Docker and Docker Compose
 
 :::info
-Depending on platform, some native dependencies might be required. On macOS, run `brew install node@20`, and for docker `brew install --cask docker`
+Depending on platform, some native dependencies might be required. On macOS, run `brew install node@20`, and for Docker `brew install --cask docker`
 :::
 
 ### Instructions

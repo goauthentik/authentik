@@ -1,4 +1,8 @@
 """LDAPProvider API Views"""
+from django.db.models import QuerySet
+from django.db.models.query import Q
+from django_filters.filters import BooleanFilter
+from django_filters.filterset import FilterSet
 from rest_framework.fields import CharField, ListField, SerializerMethodField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
@@ -25,8 +29,38 @@ class LDAPProviderSerializer(ProviderSerializer):
             "outpost_set",
             "search_mode",
             "bind_mode",
+            "mfa_support",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+
+
+class LDAPProviderFilter(FilterSet):
+    """LDAP Provider filters"""
+
+    application__isnull = BooleanFilter(method="filter_application__isnull")
+
+    def filter_application__isnull(self, queryset: QuerySet, name, value):
+        """Only return providers that are neither assigned to application,
+        both as provider or application provider"""
+        return queryset.filter(
+            Q(backchannel_application__isnull=value) | Q(application__isnull=value)
+        )
+
+    class Meta:
+        model = LDAPProvider
+        fields = {
+            "application": ["isnull"],
+            "name": ["iexact"],
+            "authorization_flow__slug": ["iexact"],
+            "base_dn": ["iexact"],
+            "search_group__group_uuid": ["iexact"],
+            "search_group__name": ["iexact"],
+            "certificate__kp_uuid": ["iexact"],
+            "certificate__name": ["iexact"],
+            "tls_server_name": ["iexact"],
+            "uid_start_number": ["iexact"],
+            "gid_start_number": ["iexact"],
+        }
 
 
 class LDAPProviderViewSet(UsedByMixin, ModelViewSet):
@@ -34,19 +68,7 @@ class LDAPProviderViewSet(UsedByMixin, ModelViewSet):
 
     queryset = LDAPProvider.objects.all()
     serializer_class = LDAPProviderSerializer
-    filterset_fields = {
-        "application": ["isnull"],
-        "name": ["iexact"],
-        "authorization_flow__slug": ["iexact"],
-        "base_dn": ["iexact"],
-        "search_group__group_uuid": ["iexact"],
-        "search_group__name": ["iexact"],
-        "certificate__kp_uuid": ["iexact"],
-        "certificate__name": ["iexact"],
-        "tls_server_name": ["iexact"],
-        "uid_start_number": ["iexact"],
-        "gid_start_number": ["iexact"],
-    }
+    filterset_class = LDAPProviderFilter
     search_fields = ["name"]
     ordering = ["name"]
 
@@ -78,13 +100,16 @@ class LDAPOutpostConfigSerializer(ModelSerializer):
             "gid_start_number",
             "search_mode",
             "bind_mode",
+            "mfa_support",
         ]
 
 
 class LDAPOutpostConfigViewSet(ReadOnlyModelViewSet):
     """LDAPProvider Viewset"""
 
-    queryset = LDAPProvider.objects.filter(application__isnull=False)
+    queryset = LDAPProvider.objects.filter(
+        Q(application__isnull=False) | Q(backchannel_application__isnull=False)
+    )
     serializer_class = LDAPOutpostConfigSerializer
     ordering = ["name"]
     search_fields = ["name"]

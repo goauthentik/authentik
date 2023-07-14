@@ -2,6 +2,7 @@
 import re
 from copy import copy
 from dataclasses import asdict, is_dataclass
+from enum import Enum
 from pathlib import Path
 from types import GeneratorType
 from typing import Any, Optional
@@ -126,6 +127,8 @@ def sanitize_item(value: Any) -> Any:
         return str(value)
     if isinstance(value, YAMLTag):
         return str(value)
+    if isinstance(value, Enum):
+        return value.value
     if isinstance(value, type):
         return {
             "type": value.__name__,

@@ -1,7 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -52,7 +51,7 @@ export class TableSearch extends AKElement {
                 class="pf-c-form-control"
                 name="search"
                 type="search"
-                placeholder=${t`Search...`}
+                placeholder=${msg("Search...")}
                 value="${ifDefined(this.value)}"
                 @search=${(ev: Event) => {
                     if (!this.onSearch) return;

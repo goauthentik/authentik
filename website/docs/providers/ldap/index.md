@@ -56,16 +56,17 @@ Starting with 2021.9.1, custom attributes will override the inbuilt attributes.
 Starting with 2023.3, periods and slashes in custom attributes will be sanitized.
 :::
 
-## SSL
+## SSL / StartTLS
 
 You can also configure SSL for your LDAP Providers by selecting a certificate and a server name in the provider settings.
 
-This enables you to bind on port 636 using LDAPS, StartTLS is not supported.
+Starting with authentik 2023.6, StartTLS is supported, and the provider will pick the correct certificate based on the configured _TLS Server name_ field. The certificate is not picked based on the Bind DN, as the StartTLS operation should happen be the bind request to ensure bind credentials are transmitted over TLS.
+
+This enables you to bind on port 636 using LDAPS.
 
 ## Integrations
 
-See the integration guide for [sssd](../../../integrations/services/sssd/) for
-an example guide.
+See the integration guide for [sssd](../../../integrations/services/sssd/) for an example guide.
 
 ## Bind Modes
 
@@ -78,6 +79,8 @@ The following stages are supported:
 -   [Authenticator validation](../../flow/stages/authenticator_validate/index.md)
 
     Note: Authenticator validation currently only supports DUO, TOTP and static authenticators.
+
+    Starting with authentik 2023.6, code-based authenticators are only supported when _Code-based MFA Support_ is enabled in the provider. When enabled, all users that will bind to the LDAP provider should have a TOTP device configured, as otherwise a password might be incorrectly rejected when semicolons are used in the password.
 
     For code-based authenticators, the code must be given as part of the bind password, separated by a semicolon. For example for the password `example-password` and the code `123456`, the input must be `example-password;123456`.
 

@@ -142,6 +142,10 @@ export abstract class Form<T> extends AKElement {
             if (element.hidden || !inputElement) {
                 return;
             }
+            // Skip elements that are writeOnly where the user hasn't clicked on the value
+            if (element.writeOnly && !element.writeOnlyActivated) {
+                return;
+            }
             if (
                 inputElement.tagName.toLowerCase() === "select" &&
                 "multiple" in inputElement.attributes
@@ -279,7 +283,21 @@ export abstract class Form<T> extends AKElement {
     }
 
     renderForm(): TemplateResult {
+        const inline = this.renderInlineForm();
+        if (inline) {
+            return html`<form class="pf-c-form pf-m-horizontal" @submit=${this.submit}>
+                ${inline}
+            </form>`;
+        }
         return html`<slot></slot>`;
+    }
+
+    /**
+     * Inline form render callback when inheriting this class, should be overwritten
+     * instead of `this.renderForm`
+     */
+    renderInlineForm(): TemplateResult | undefined {
+        return undefined;
     }
 
     renderNonFieldErrors(): TemplateResult {

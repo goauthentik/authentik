@@ -41,6 +41,7 @@ class TaskResult:
 
     def with_error(self, exc: Exception) -> "TaskResult":
         """Since errors might not always be pickle-able, set the traceback"""
+        # TODO: Mark exception somehow so that is rendered as <pre> in frontend
         self.messages.append(exception_to_string(exc))
         return self
 
@@ -69,8 +70,10 @@ class TaskInfo:
         return cache.get_many(cache.keys(CACHE_KEY_PREFIX + "*"))
 
     @staticmethod
-    def by_name(name: str) -> Optional["TaskInfo"]:
+    def by_name(name: str) -> Optional["TaskInfo"] | Optional[list["TaskInfo"]]:
         """Get TaskInfo Object by name"""
+        if "*" in name:
+            return cache.get_many(cache.keys(CACHE_KEY_PREFIX + name)).values()
         return cache.get(CACHE_KEY_PREFIX + name, None)
 
     def delete(self):
@@ -87,9 +90,9 @@ class TaskInfo:
         except TypeError:
             duration = 0
         GAUGE_TASKS.labels(
-            task_name=self.task_name,
+            task_name=self.task_name.split(":")[0],
             task_uid=self.result.uid or "",
-            status=self.result.status,
+            status=self.result.status.name.lower(),
         ).set(duration)
 
     def save(self, timeout_hours=6):

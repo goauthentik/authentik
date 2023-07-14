@@ -1,8 +1,7 @@
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { Diagram } from "@goauthentik/elements/Diagram";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
 
 import { OAuthSource, UserMatchingModeEnum } from "@goauthentik/api";
@@ -15,7 +14,7 @@ export class OAuthSourceDiagram extends Diagram {
     refreshHandler = (): void => {
         if (!this.source) return;
         const graph = ["graph LR"];
-        graph.push(`source[${t`OAuth Source ${this.source.name}`}]`);
+        graph.push(`source[${msg(str`OAuth Source ${this.source.name}`)}]`);
         graph.push(
             `source --> flow_manager["${UserMatchingModeToLabel(
                 this.source.userMatchingMode || UserMatchingModeEnum.Identifier,

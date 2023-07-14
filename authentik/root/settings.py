@@ -6,6 +6,8 @@ import importlib
 import logging
 import os
 from hashlib import sha512
+from pathlib import Path
+from urllib.parse import quote_plus
 
 import structlog
 from celery.schedules import crontab
@@ -20,11 +22,9 @@ from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BAC
 
 LOGGER = structlog.get_logger()
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-STATIC_ROOT = BASE_DIR + "/static"
-STATICFILES_DIRS = [BASE_DIR + "/web"]
-MEDIA_ROOT = BASE_DIR + "/media"
+BASE_DIR = Path(__file__).absolute().parent.parent.parent
+STATICFILES_DIRS = [BASE_DIR / Path("web")]
+MEDIA_ROOT = BASE_DIR / Path("media")
 
 DEBUG = CONFIG.y_bool("debug")
 SECRET_KEY = CONFIG.y("secret_key")
@@ -321,31 +321,27 @@ USE_TZ = True
 
 LOCALE_PATHS = ["./locale"]
 
-# Celery settings
-# Add a 10 minute timeout to all Celery tasks.
-CELERY_TASK_SOFT_TIME_LIMIT = 600
-CELERY_WORKER_MAX_TASKS_PER_CHILD = 50
-CELERY_WORKER_CONCURRENCY = 2
-CELERY_BEAT_SCHEDULE = {
-    "clean_expired_models": {
-        "task": "authentik.core.tasks.clean_expired_models",
-        "schedule": crontab(minute="2-59/5"),
-        "options": {"queue": "authentik_scheduled"},
+CELERY = {
+    "task_soft_time_limit": 600,
+    "worker_max_tasks_per_child": 50,
+    "worker_concurrency": 2,
+    "beat_schedule": {
+        "clean_expired_models": {
+            "task": "authentik.core.tasks.clean_expired_models",
+            "schedule": crontab(minute="2-59/5"),
+            "options": {"queue": "authentik_scheduled"},
+        },
+        "user_cleanup": {
+            "task": "authentik.core.tasks.clean_temporary_users",
+            "schedule": crontab(minute="9-59/5"),
+            "options": {"queue": "authentik_scheduled"},
+        },
     },
-    "user_cleanup": {
-        "task": "authentik.core.tasks.clean_temporary_users",
-        "schedule": crontab(minute="9-59/5"),
-        "options": {"queue": "authentik_scheduled"},
-    },
+    "task_create_missing_queues": True,
+    "task_default_queue": "authentik",
+    "broker_url": CONFIG.y("broker.url") or CONFIG.y("redis.url"),
+    "result_backend": CONFIG.y("result_backend.url") or CONFIG.y("redis.url"),
 }
-CELERY_TASK_CREATE_MISSING_QUEUES = True
-CELERY_TASK_DEFAULT_QUEUE = "authentik"
-CELERY_BROKER_URL = CONFIG.y("broker.url") or CONFIG.y("redis.url")
-if CONFIG.y("broker.transport_options"):
-    CELERY_BROKER_TRANSPORT_OPTIONS = ast.literal_eval(
-        base64.b64decode(CONFIG.y("broker.transport_options")).decode("utf-8")
-    )
-CELERY_RESULT_BACKEND = CONFIG.y("result_backend.url") or CONFIG.y("redis.url")
 
 # Sentry integration
 env = get_env()
@@ -454,7 +450,7 @@ _DISALLOWED_ITEMS = [
     "INSTALLED_APPS",
     "MIDDLEWARE",
     "AUTHENTICATION_BACKENDS",
-    "CELERY_BEAT_SCHEDULE",
+    "CELERY",
 ]
 
 
@@ -465,7 +461,7 @@ def _update_settings(app_path: str):
         INSTALLED_APPS.extend(getattr(settings_module, "INSTALLED_APPS", []))
         MIDDLEWARE.extend(getattr(settings_module, "MIDDLEWARE", []))
         AUTHENTICATION_BACKENDS.extend(getattr(settings_module, "AUTHENTICATION_BACKENDS", []))
-        CELERY_BEAT_SCHEDULE.update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
+        CELERY["beat_schedule"].update(getattr(settings_module, "CELERY_BEAT_SCHEDULE", {}))
         for _attr in dir(settings_module):
             if not _attr.startswith("__") and _attr not in _DISALLOWED_ITEMS:
                 globals()[_attr] = getattr(settings_module, _attr)
@@ -481,7 +477,7 @@ for _app in INSTALLED_APPS:
 _update_settings("data.user_settings")
 
 if DEBUG:
-    CELERY_TASK_ALWAYS_EAGER = True
+    CELERY["task_always_eager"] = True
     os.environ[ENV_GIT_HASH_KEY] = "dev"
     INSTALLED_APPS.append("silk")
     SILKY_PYTHON_PROFILER = True

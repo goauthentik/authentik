@@ -1,4 +1,6 @@
 """Identification Stage API Views"""
+from django.utils.translation import gettext_lazy as _
+from rest_framework.exceptions import ValidationError
 from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.used_by import UsedByMixin
@@ -8,6 +10,16 @@ from authentik.stages.identification.models import IdentificationStage
 
 class IdentificationStageSerializer(StageSerializer):
     """IdentificationStage Serializer"""
+
+    def validate(self, attrs: dict) -> dict:
+        # Check that at least 1 source is selected when no user fields are selected.
+        sources = attrs.get("sources", [])
+        user_fields = attrs.get("user_fields", [])
+        if len(user_fields) < 1 and len(sources) < 1:
+            raise ValidationError(
+                _("When no user fields are selected, at least one source must be selected")
+            )
+        return super().validate(attrs)
 
     class Meta:
         model = IdentificationStage

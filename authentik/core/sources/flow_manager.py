@@ -28,7 +28,7 @@ from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_GET, SESSI
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.policies.denied import AccessDeniedResponse
-from authentik.policies.utils import delete_none_keys
+from authentik.policies.utils import delete_none_values
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -329,7 +329,7 @@ class SourceFlowManager:
                 )
             ],
             **{
-                PLAN_CONTEXT_PROMPT: delete_none_keys(self.enroll_info),
+                PLAN_CONTEXT_PROMPT: delete_none_values(self.enroll_info),
                 PLAN_CONTEXT_USER_PATH: self.source.get_user_path(),
             },
         )

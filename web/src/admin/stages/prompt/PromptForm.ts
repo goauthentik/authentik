@@ -6,8 +6,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import { StageHost } from "@goauthentik/flow/stages/base";
 import "@goauthentik/flow/stages/prompt/PromptStage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -91,9 +90,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated prompt.`;
+            return msg("Successfully updated prompt.");
         } else {
-            return t`Successfully created prompt.`;
+            return msg("Successfully created prompt.");
         }
     }
 
@@ -128,109 +127,113 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 value=${PromptTypeEnum.Text}
                 ?selected=${this.instance?.type === PromptTypeEnum.Text}
             >
-                ${t`Text: Simple Text input`}
+                ${msg("Text: Simple Text input")}
             </option>
             <option
                 value=${PromptTypeEnum.TextArea}
                 ?selected=${this.instance?.type === PromptTypeEnum.TextArea}
             >
-                ${t`Text Area: Multiline text input`}
+                ${msg("Text Area: Multiline text input")}
             </option>
             <option
                 value=${PromptTypeEnum.TextReadOnly}
                 ?selected=${this.instance?.type === PromptTypeEnum.TextReadOnly}
             >
-                ${t`Text (read-only): Simple Text input, but cannot be edited.`}
+                ${msg("Text (read-only): Simple Text input, but cannot be edited.")}
             </option>
             <option
                 value=${PromptTypeEnum.TextAreaReadOnly}
                 ?selected=${this.instance?.type === PromptTypeEnum.TextAreaReadOnly}
             >
-                ${t`Text Area (read-only): Multiline text input, but cannot be edited.`}
+                ${msg("Text Area (read-only): Multiline text input, but cannot be edited.")}
             </option>
             <option
                 value=${PromptTypeEnum.Username}
                 ?selected=${this.instance?.type === PromptTypeEnum.Username}
             >
-                ${t`Username: Same as Text input, but checks for and prevents duplicate usernames.`}
+                ${msg(
+                    "Username: Same as Text input, but checks for and prevents duplicate usernames.",
+                )}
             </option>
             <option
                 value=${PromptTypeEnum.Email}
                 ?selected=${this.instance?.type === PromptTypeEnum.Email}
             >
-                ${t`Email: Text field with Email type.`}
+                ${msg("Email: Text field with Email type.")}
             </option>
             <option
                 value=${PromptTypeEnum.Password}
                 ?selected=${this.instance?.type === PromptTypeEnum.Password}
             >
-                ${t`Password: Masked input, multiple inputs of this type on the same prompt need to be identical.`}
+                ${msg(
+                    "Password: Masked input, multiple inputs of this type on the same prompt need to be identical.",
+                )}
             </option>
             <option
                 value=${PromptTypeEnum.Number}
                 ?selected=${this.instance?.type === PromptTypeEnum.Number}
             >
-                ${t`Number`}
+                ${msg("Number")}
             </option>
             <option
                 value=${PromptTypeEnum.Checkbox}
                 ?selected=${this.instance?.type === PromptTypeEnum.Checkbox}
             >
-                ${t`Checkbox`}
+                ${msg("Checkbox")}
             </option>
             <option
                 value=${PromptTypeEnum.RadioButtonGroup}
                 ?selected=${this.instance?.type === PromptTypeEnum.RadioButtonGroup}
             >
-                ${t`Radio Button Group (fixed choice)`}
+                ${msg("Radio Button Group (fixed choice)")}
             </option>
             <option
                 value=${PromptTypeEnum.Dropdown}
                 ?selected=${this.instance?.type === PromptTypeEnum.Dropdown}
             >
-                ${t`Dropdown (fixed choice)`}
+                ${msg("Dropdown (fixed choice)")}
             </option>
             <option
                 value=${PromptTypeEnum.Date}
                 ?selected=${this.instance?.type === PromptTypeEnum.Date}
             >
-                ${t`Date`}
+                ${msg("Date")}
             </option>
             <option
                 value=${PromptTypeEnum.DateTime}
                 ?selected=${this.instance?.type === PromptTypeEnum.DateTime}
             >
-                ${t`Date Time`}
+                ${msg("Date Time")}
             </option>
             <option
                 value=${PromptTypeEnum.File}
                 ?selected=${this.instance?.type === PromptTypeEnum.File}
             >
-                ${t`File`}
+                ${msg("File")}
             </option>
             <option
                 value=${PromptTypeEnum.Separator}
                 ?selected=${this.instance?.type === PromptTypeEnum.Separator}
             >
-                ${t`Separator: Static Separator Line`}
+                ${msg("Separator: Static Separator Line")}
             </option>
             <option
                 value=${PromptTypeEnum.Hidden}
                 ?selected=${this.instance?.type === PromptTypeEnum.Hidden}
             >
-                ${t`Hidden: Hidden field, can be used to insert data into form.`}
+                ${msg("Hidden: Hidden field, can be used to insert data into form.")}
             </option>
             <option
                 value=${PromptTypeEnum.Static}
                 ?selected=${this.instance?.type === PromptTypeEnum.Static}
             >
-                ${t`Static: Static value, displayed as-is.`}
+                ${msg("Static: Static value, displayed as-is.")}
             </option>
             <option
                 value=${PromptTypeEnum.AkLocale}
                 ?selected=${this.instance?.type === PromptTypeEnum.AkLocale}
             >
-                ${t`authentik: Locale: Displays a list of locales authentik supports.`}
+                ${msg("authentik: Locale: Displays a list of locales authentik supports.")}
             </option>
         `;
     }
@@ -244,7 +247,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     renderPreview(): TemplateResult {
         return html`
-            <h3 class="pf-c-title pf-m-lg">${t`Preview`}</h3>
+            <h3 class="pf-c-title pf-m-lg">${msg("Preview")}</h3>
             <div class="pf-l-grid pf-m-gutter">
                 <div class="pf-c-card pf-m-selectable pf-m-selected pf-l-grid__item pf-m-12-col">
                     <div class="pf-c-card__body">
@@ -258,7 +261,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ${this.previewError
                     ? html`
                           <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__body">${t`Preview errors`}</div>
+                              <div class="pf-c-card__body">${msg("Preview errors")}</div>
                               <div class="pf-c-card__body">
                                   ${this.previewError.map((err) => html`<pre>${err}</pre>`)}
                               </div>
@@ -268,7 +271,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 ${this.previewResult
                     ? html`
                           <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__body">${t`Data preview`}</div>
+                              <div class="pf-c-card__body">${msg("Data preview")}</div>
                               <div class="pf-c-card__body">
                                   <pre>${JSON.stringify(this.previewResult, undefined, 4)}</pre>
                               </div>
@@ -281,7 +284,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     renderEditForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -292,10 +295,10 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     }}
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Unique name of this field, used for selecting fields in prompt stages.`}
+                    ${msg("Unique name of this field, used for selecting fields in prompt stages.")}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Field Key`} ?required=${true} name="fieldKey">
+            <ak-form-element-horizontal label=${msg("Field Key")} ?required=${true} name="fieldKey">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.fieldKey)}"
@@ -306,13 +309,15 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     }}
                 />
                 <p class="pf-c-form__helper-text">
-                    ${t`Name of the form field, also used to store the value.`}
+                    ${msg("Name of the form field, also used to store the value.")}
                 </p>
                 <p class="pf-c-form__helper-text">
-                    ${t`When used in conjunction with a User Write stage, use attributes.foo to write attributes.`}
+                    ${msg(
+                        "When used in conjunction with a User Write stage, use attributes.foo to write attributes.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Label`} ?required=${true} name="label">
+            <ak-form-element-horizontal label=${msg("Label")} ?required=${true} name="label">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.label)}"
@@ -322,9 +327,11 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         this._shouldRefresh = true;
                     }}
                 />
-                <p class="pf-c-form__helper-text">${t`Label shown next to/above the prompt.`}</p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Label shown next to/above the prompt.")}
+                </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Type`} ?required=${true} name="type">
+            <ak-form-element-horizontal label=${msg("Type")} ?required=${true} name="type">
                 <select
                     class="pf-c-form-control"
                     @change=${() => {
@@ -349,7 +356,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${t`Required`}</span>
+                    <span class="pf-c-switch__label">${msg("Required")}</span>
                 </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="placeholderExpression">
@@ -368,15 +375,17 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         </span>
                     </span>
                     <span class="pf-c-switch__label"
-                        >${t`Interpret placeholder as expression`}</span
+                        >${msg("Interpret placeholder as expression")}</span
                     >
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`When checked, the placeholder will be evaluated in the same way a property mapping is.
-                    If the evaluation fails, the placeholder itself is returned.`}
+                    ${msg(
+                        `When checked, the placeholder will be evaluated in the same way a property mapping is.
+            If the evaluation fails, the placeholder itself is returned.`,
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Placeholder`} name="placeholder">
+            <ak-form-element-horizontal label=${msg("Placeholder")} name="placeholder">
                 <ak-codemirror
                     mode="python"
                     value="${ifDefined(this.instance?.placeholder)}"
@@ -386,9 +395,11 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Optionally provide a short hint that describes the expected input value.
-                    When creating a fixed choice field, enable interpreting as
-                    expression and return a list to return multiple choices.`}
+                    ${msg(
+                        `Optionally provide a short hint that describes the expected input value.
+            When creating a fixed choice field, enable interpreting as expression and return a
+        list to return multiple choices.`,
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="initialValueExpression">
@@ -404,24 +415,28 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         </span>
                     </span>
                     <span class="pf-c-switch__label"
-                        >${t`Interpret initial value as expression`}</span
+                        >${msg("Interpret initial value as expression")}</span
                     >
                 </label>
                 <p class="pf-c-form__helper-text">
-                    ${t`When checked, the initial value will be evaluated in the same way a property mapping is.
-                    If the evaluation fails, the initial value itself is returned.`}
+                    ${msg(
+                        `When checked, the initial value will be evaluated in the same way a property mapping is.
+            If the evaluation fails, the initial value itself is returned.`,
+                    )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Initial value`} name="initialValue">
+            <ak-form-element-horizontal label=${msg("Initial value")} name="initialValue">
                 <ak-codemirror mode="python" value="${ifDefined(this.instance?.initialValue)}">
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
-                    ${t`Optionally pre-fill the input with an initial value.
-                    When creating a fixed choice field, enable interpreting as
-                    expression and return a list to return multiple default choices.`}}
+                    ${msg(
+                        `Optionally pre-fill the input with an initial value.
+            When creating a fixed choice field, enable interpreting as expression and
+        return a list to return multiple default choices.`,
+                    )}}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Help text`} name="subText">
+            <ak-form-element-horizontal label=${msg("Help text")} name="subText">
                 <ak-codemirror
                     mode="htmlmixed"
                     value="${ifDefined(this.instance?.subText)}"
@@ -430,9 +445,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     }}
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">${t`Any HTML can be used.`}</p>
+                <p class="pf-c-form__helper-text">${msg("Any HTML can be used.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Order`} ?required=${true} name="order">
+            <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
                 <input
                     type="number"
                     value="${first(this.instance?.order, 0)}"

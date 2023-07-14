@@ -8,8 +8,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -36,9 +35,9 @@ export class FlowForm extends ModelForm<Flow, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated flow.`;
+            return msg("Successfully updated flow.");
         } else {
-            return t`Successfully created flow.`;
+            return msg("Successfully created flow.");
         }
     }
 
@@ -80,7 +79,7 @@ export class FlowForm extends ModelForm<Flow, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -88,26 +87,26 @@ export class FlowForm extends ModelForm<Flow, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Title`} ?required=${true} name="title">
+            <ak-form-element-horizontal label=${msg("Title")} ?required=${true} name="title">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.title)}"
                     class="pf-c-form-control"
                     required
                 />
-                <p class="pf-c-form__helper-text">${t`Shown as the Title in Flow pages.`}</p>
+                <p class="pf-c-form__helper-text">${msg("Shown as the Title in Flow pages.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Slug`} ?required=${true} name="slug">
+            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
                     class="pf-c-form-control"
                     required
                 />
-                <p class="pf-c-form__helper-text">${t`Visible in the URL.`}</p>
+                <p class="pf-c-form__helper-text">${msg("Visible in the URL.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Designation`}
+                label=${msg("Designation")}
                 ?required=${true}
                 name="designation"
             >
@@ -162,11 +161,13 @@ export class FlowForm extends ModelForm<Flow, string> {
                     </option>
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.`}
+                    ${msg(
+                        "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.",
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${t`Authentication`}
+                label=${msg("Authentication")}
                 ?required=${true}
                 name="authentication"
             >
@@ -175,36 +176,36 @@ export class FlowForm extends ModelForm<Flow, string> {
                         value=${AuthenticationEnum.None}
                         ?selected=${this.instance?.authentication === AuthenticationEnum.None}
                     >
-                        ${t`No requirement`}
+                        ${msg("No requirement")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireAuthenticated}
                         ?selected=${this.instance?.authentication ===
                         AuthenticationEnum.RequireAuthenticated}
                     >
-                        ${t`Require authentication`}
+                        ${msg("Require authentication")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireUnauthenticated}
                         ?selected=${this.instance?.authentication ===
                         AuthenticationEnum.RequireUnauthenticated}
                     >
-                        ${t`Require no authentication.`}
+                        ${msg("Require no authentication.")}
                     </option>
                     <option
                         value=${AuthenticationEnum.RequireSuperuser}
                         ?selected=${this.instance?.authentication ===
                         AuthenticationEnum.RequireSuperuser}
                     >
-                        ${t`Require superuser.`}
+                        ${msg("Require superuser.")}
                     </option>
                 </select>
                 <p class="pf-c-form__helper-text">
-                    ${t`Required authentication level for this flow.`}
+                    ${msg("Required authentication level for this flow.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group>
-                <span slot="header"> ${t`Behavior settings`} </span>
+                <span slot="header"> ${msg("Behavior settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="compatibilityMode">
                         <label class="pf-c-switch">
@@ -218,14 +219,16 @@ export class FlowForm extends ModelForm<Flow, string> {
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${t`Compatibility mode`}</span>
+                            <span class="pf-c-switch__label">${msg("Compatibility mode")}</span>
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${t`Increases compatibility with password managers and mobile devices.`}
+                            ${msg(
+                                "Increases compatibility with password managers and mobile devices.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Denied action`}
+                        label=${msg("Denied action")}
                         ?required=${true}
                         name="deniedAction"
                     >
@@ -235,28 +238,36 @@ export class FlowForm extends ModelForm<Flow, string> {
                                     label: "MESSAGE_CONTINUE",
                                     value: DeniedActionEnum.MessageContinue,
                                     default: true,
-                                    description: html`${t`Will follow the ?next parameter if set, otherwise show a message`}`,
+                                    description: html`${msg(
+                                        "Will follow the ?next parameter if set, otherwise show a message",
+                                    )}`,
                                 },
                                 {
                                     label: "CONTINUE",
                                     value: DeniedActionEnum.Continue,
-                                    description: html`${t`Will either follow the ?next parameter or redirect to the default interface`}`,
+                                    description: html`${msg(
+                                        "Will either follow the ?next parameter or redirect to the default interface",
+                                    )}`,
                                 },
                                 {
                                     label: "MESSAGE",
                                     value: DeniedActionEnum.Message,
-                                    description: html`${t`Will notify the user the flow isn't applicable`}`,
+                                    description: html`${msg(
+                                        "Will notify the user the flow isn't applicable",
+                                    )}`,
                                 },
                             ]}
                             .value=${this.instance?.deniedAction}
                         >
                         </ak-radio>
                         <p class="pf-c-form__helper-text">
-                            ${t`Decides the response when a policy denies access to this flow for a user.`}
+                            ${msg(
+                                "Decides the response when a policy denies access to this flow for a user.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Policy engine mode`}
+                        label=${msg("Policy engine mode")}
                         ?required=${true}
                         name="policyEngineMode"
                     >
@@ -266,12 +277,16 @@ export class FlowForm extends ModelForm<Flow, string> {
                                     label: "any",
                                     value: PolicyEngineMode.Any,
                                     default: true,
-                                    description: html`${t`Any policy must match to grant access`}`,
+                                    description: html`${msg(
+                                        "Any policy must match to grant access",
+                                    )}`,
                                 },
                                 {
                                     label: "all",
                                     value: PolicyEngineMode.All,
-                                    description: html`${t`All policies must match to grant access`}`,
+                                    description: html`${msg(
+                                        "All policies must match to grant access",
+                                    )}`,
                                 },
                             ]}
                             .value=${this.instance?.policyEngineMode}
@@ -281,9 +296,13 @@ export class FlowForm extends ModelForm<Flow, string> {
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header"> ${t`Appearance settings`} </span>
+                <span slot="header"> ${msg("Appearance settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`Layout`} ?required=${true} name="layout">
+                    <ak-form-element-horizontal
+                        label=${msg("Layout")}
+                        ?required=${true}
+                        name="layout"
+                    >
                         <select class="pf-c-form-control">
                             <option
                                 value=${LayoutEnum.Stacked}
@@ -318,18 +337,22 @@ export class FlowForm extends ModelForm<Flow, string> {
                         </select>
                     </ak-form-element-horizontal>
                     ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
-                        ? html`<ak-form-element-horizontal label=${t`Background`} name="background">
+                        ? html`<ak-form-element-horizontal
+                                  label=${msg("Background")}
+                                  name="background"
+                              >
                                   <input type="file" value="" class="pf-c-form-control" />
                                   ${this.instance?.background
                                       ? html`
                                             <p class="pf-c-form__helper-text">
-                                                ${t`Currently set to:`} ${this.instance?.background}
+                                                ${msg("Currently set to:")}
+                                                ${this.instance?.background}
                                             </p>
                                         `
                                       : html``}
 
                                   <p class="pf-c-form__helper-text">
-                                      ${t`Background shown during execution.`}
+                                      ${msg("Background shown during execution.")}
                                   </p>
                               </ak-form-element-horizontal>
                               ${this.instance?.background
@@ -354,23 +377,26 @@ export class FlowForm extends ModelForm<Flow, string> {
                                                     </span>
                                                 </span>
                                                 <span class="pf-c-switch__label">
-                                                    ${t`Clear background`}
+                                                    ${msg("Clear background")}
                                                 </span>
                                             </label>
                                             <p class="pf-c-form__helper-text">
-                                                ${t`Delete currently set background image.`}
+                                                ${msg("Delete currently set background image.")}
                                             </p>
                                         </ak-form-element-horizontal>
                                     `
                                   : html``}`
-                        : html`<ak-form-element-horizontal label=${t`Background`} name="background">
+                        : html`<ak-form-element-horizontal
+                              label=${msg("Background")}
+                              name="background"
+                          >
                               <input
                                   type="text"
                                   value="${first(this.instance?.background, "")}"
                                   class="pf-c-form-control"
                               />
                               <p class="pf-c-form__helper-text">
-                                  ${t`Background shown during execution.`}
+                                  ${msg("Background shown during execution.")}
                               </p>
                           </ak-form-element-horizontal>`}
                 </div>

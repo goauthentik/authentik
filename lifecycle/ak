@@ -54,6 +54,16 @@ function cleanup {
     rm -f ${MODE_FILE}
 }
 
+function prepare_debug {
+    pip install --no-cache-dir -r /requirements-dev.txt
+    touch /unittest.xml
+    chown authentik:authentik /unittest.xml
+}
+
+if [[ "${AUTHENTIK_REMOTE_DEBUG}" == "true" ]]; then
+    prepare_debug
+fi
+
 if [[ "$1" == "server" ]]; then
     wait_for_db
     set_mode "server"
@@ -67,7 +77,7 @@ if [[ "$1" == "server" ]]; then
 elif [[ "$1" == "worker" ]]; then
     wait_for_db
     set_mode "worker"
-    check_if_root "celery -A authentik.root.celery worker -Ofair --max-tasks-per-child=1 --autoscale 3,1 -E -B -s /tmp/celerybeat-schedule -Q authentik,authentik_scheduled,authentik_events"
+    check_if_root "python -m manage worker"
 elif [[ "$1" == "worker-status" ]]; then
     wait_for_db
     celery -A authentik.root.celery flower \
@@ -75,9 +85,7 @@ elif [[ "$1" == "worker-status" ]]; then
 elif [[ "$1" == "bash" ]]; then
     /bin/bash
 elif [[ "$1" == "test-all" ]]; then
-    pip install --no-cache-dir -r /requirements-dev.txt
-    touch /unittest.xml
-    chown authentik:authentik /unittest.xml
+    prepare_debug
     check_if_root "python -m manage test authentik"
 elif [[ "$1" == "healthcheck" ]]; then
     run_authentik healthcheck $(cat $MODE_FILE)

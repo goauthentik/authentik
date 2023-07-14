@@ -1,10 +1,11 @@
 {
     "recommendations": [
-        "EditorConfig.EditorConfig",
         "bashmish.es6-string-css",
         "bpruitt-goddard.mermaid-markdown-syntax-highlighting",
         "dbaeumer.vscode-eslint",
+        "EditorConfig.EditorConfig",
         "esbenp.prettier-vscode",
+        "github.vscode-github-actions",
         "golang.go",
         "Gruntfuggly.todo-tree",
         "mechatroner.rainbow-csv",
@@ -15,6 +16,6 @@
         "ms-python.vscode-pylance",
         "redhat.vscode-yaml",
         "Tobermory.es6-string-html",
-        "unifiedjs.vscode-mdx"
+        "unifiedjs.vscode-mdx",
     ]
 }

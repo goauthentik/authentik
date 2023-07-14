@@ -36,7 +36,7 @@ Only settings that have been modified from default have been listed.
 -   Name: Wordpress
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
--   Redirect URIs/Origins: `https://wp.company/wp-admin/admin-ajax.php?action=openid-connect-authorize`
+-   Redirect URIs/Origins: `https://wp.company/wp-admin/admin-ajax.php\?action=openid-connect-authorize`
 
 ### Step 2 - Wordpress
 
@@ -65,12 +65,12 @@ Review each setting and choose the ones that you require for your installation. 
 
 ### Step 3 - authentik
 
-In authentik, create an application which uses this provider. Optionally apply access restrictions to the application using policy bindings.
+In authentik, create an application which uses this provider and directly launches Wordpress' backend login-screen. Optionally apply access restrictions to the application using policy bindings.
 
 -   Name: Wordpress
 -   Slug: wordpress
 -   Provider: wordpress
--   Launch URL: https://wp.company
+-   Launch URL: https://wp.company/wp-login.php
 
 ## Notes
 

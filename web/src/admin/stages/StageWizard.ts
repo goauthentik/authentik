@@ -26,8 +26,7 @@ import { FormWizardPage } from "@goauthentik/elements/wizard/FormWizardPage";
 import "@goauthentik/elements/wizard/Wizard";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
@@ -43,7 +42,7 @@ import { FlowStageBinding, Stage, StagesApi, TypeCreate } from "@goauthentik/api
 export class InitialStageWizardPage extends WizardPage {
     @property({ attribute: false })
     stageTypes: TypeCreate[] = [];
-    sidebarLabel = () => t`Select type`;
+    sidebarLabel = () => msg("Select type");
 
     static get styles(): CSSResult[] {
         return [PFBase, PFForm, PFButton, PFRadio];
@@ -101,7 +100,7 @@ export class StageWizard extends AKElement {
     }
 
     @property()
-    createText = t`Create`;
+    createText = msg("Create");
 
     @property({ type: Boolean })
     showBindingPage = false;
@@ -122,8 +121,8 @@ export class StageWizard extends AKElement {
         return html`
             <ak-wizard
                 .steps=${this.showBindingPage ? ["initial", "create-binding"] : ["initial"]}
-                header=${t`New stage`}
-                description=${t`Create a new stage.`}
+                header=${msg("New stage")}
+                description=${msg("Create a new stage.")}
             >
                 <ak-stage-wizard-initial slot="initial" .stageTypes=${this.stageTypes}>
                 </ak-stage-wizard-initial>
@@ -131,7 +130,7 @@ export class StageWizard extends AKElement {
                     return html`
                         <ak-wizard-page-form
                             slot=${`type-${type.component}-${type.modelName}`}
-                            .sidebarLabel=${() => t`Create ${type.name}`}
+                            .sidebarLabel=${() => msg(str`Create ${type.name}`)}
                         >
                             <ak-proxy-form type=${type.component}></ak-proxy-form>
                         </ak-wizard-page-form>
@@ -140,7 +139,7 @@ export class StageWizard extends AKElement {
                 ${this.showBindingPage
                     ? html`<ak-wizard-page-form
                           slot="create-binding"
-                          .sidebarLabel=${() => t`Create Binding`}
+                          .sidebarLabel=${() => msg("Create Binding")}
                           .activePageCallback=${async (context: FormWizardPage) => {
                               const createSlot = context.host.steps[1];
                               const bindingForm =

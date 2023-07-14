@@ -3,8 +3,7 @@ import { KeyUnknown } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { WizardFormPage } from "@goauthentik/elements/wizard/WizardFormPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { TemplateResult, html } from "lit";
 
@@ -17,7 +16,7 @@ import {
 
 @customElement("ak-application-wizard-type-proxy")
 export class TypeProxyApplicationWizardPage extends WizardFormPage {
-    sidebarLabel = () => t`Proxy details`;
+    sidebarLabel = () => msg("Proxy details");
 
     nextDataCallback = async (data: KeyUnknown): Promise<boolean> => {
         let name = this.host.state["name"] as string;
@@ -28,7 +27,7 @@ export class TypeProxyApplicationWizardPage extends WizardFormPage {
         if (providers.results.filter((provider) => provider.name == name)) {
             name += "-1";
         }
-        this.host.addActionBefore(t`Create provider`, async (): Promise<boolean> => {
+        this.host.addActionBefore(msg("Create provider"), async (): Promise<boolean> => {
             // Get all flows and default to the implicit authorization
             const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList({
                 designation: FlowDesignationEnum.Authorization,
@@ -51,13 +50,13 @@ export class TypeProxyApplicationWizardPage extends WizardFormPage {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal
-                label=${t`External domain`}
+                label=${msg("External domain")}
                 name="externalHost"
                 ?required=${true}
             >
                 <input type="text" value="" class="pf-c-form-control" required />
                 <p class="pf-c-form__helper-text">
-                    ${t`External domain you will be accessing the domain from.`}
+                    ${msg("External domain you will be accessing the domain from.")}
                 </p>
             </ak-form-element-horizontal>
         </form> `;

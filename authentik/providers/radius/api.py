@@ -1,5 +1,5 @@
 """RadiusProvider API Views"""
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, ListField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
@@ -11,6 +11,8 @@ from authentik.providers.radius.models import RadiusProvider
 class RadiusProviderSerializer(ProviderSerializer):
     """RadiusProvider Serializer"""
 
+    outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
+
     class Meta:
         model = RadiusProvider
         fields = ProviderSerializer.Meta.fields + [
@@ -18,6 +20,7 @@ class RadiusProviderSerializer(ProviderSerializer):
             # Shared secret is not a write-only field, as
             # an admin might have to view it
             "shared_secret",
+            "outpost_set",
         ]
         extra_kwargs = ProviderSerializer.Meta.extra_kwargs
 

@@ -13,8 +13,12 @@ from authentik.sources.ldap.sync.base import LDAP_UNIQUENESS, BaseLDAPSynchroniz
 class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
     """Sync LDAP Users and groups into authentik"""
 
+    @staticmethod
+    def name() -> str:
+        return "groups"
+
     def get_objects(self, **kwargs) -> Generator:
-        return self._connection.extend.standard.paged_search(
+        return self.search_paginator(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
             search_scope=SUBTREE,
@@ -22,13 +26,13 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
             **kwargs,
         )
 
-    def sync(self) -> int:
+    def sync(self, page_data: list) -> int:
         """Iterate over all LDAP Groups and create authentik_core.Group instances"""
         if not self._source.sync_groups:
             self.message("Group syncing is disabled for this Source")
             return -1
         group_count = 0
-        for group in self.get_objects():
+        for group in page_data:
             if "attributes" not in group:
                 continue
             attributes = group.get("attributes", {})

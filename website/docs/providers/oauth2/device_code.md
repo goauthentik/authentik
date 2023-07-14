@@ -1,12 +1,14 @@
 # Device code flow
 
-(Also known as device flow and RFC 8628)
+(Also known as device flow and [RFC 8628](https://datatracker.ietf.org/doc/html/rfc8628))
 
 This type of authentication flow is useful for devices with limited input abilities and/or devices without browsers.
 
 ### Requirements
 
 This device flow is only possible if the active tenant has a device code flow setup. This device code flow is run _after_ the user logs in, and before the user authenticates.
+
+authentik doesn't ship with a default flow for this usecase, so it is recommended to create a new flow for this usecase with the designation of _Stage configuration_
 
 ### Device-side
 

@@ -1,10 +1,10 @@
 <!--
 👋 Hello there! Welcome.
 
-Please check the [Contributing guidelines](https://github.com/goauthentik/authentik/blob/main/CONTRIBUTING.md#how-can-i-contribute).
+Please check the [Contributing guidelines](https://goauthentik.io/developer-docs/#how-can-i-contribute).
 -->
 
-# Details
+## Details
 
 -   **Does this resolve an issue?**
     Resolves #

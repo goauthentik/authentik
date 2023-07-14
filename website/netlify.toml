@@ -29,14 +29,6 @@
   status = 301
   force = true
 
-# ?go-get=1 downloads
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/go-get"
-  status = 200
-  force = true
-  query = {go-get = "1"}
-
 # Container registry
 [[redirects]]
   from = "/v2"
@@ -56,13 +48,13 @@
 
 [[redirects]]
   from = "/js/script.js"
-  to = "https://plausible.io/js/plausible.outbound-links.js"
+  to = "https://plausible.a7k.io/js/plausible.outbound-links.js"
   status = 200
   force = true
 
 [[redirects]]
   from = "/api/event"
-  to = "https://plausible.io/api/event"
+  to = "https://plausible.a7k.io/api/event"
   status = 200
   force = true
 

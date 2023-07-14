@@ -5,8 +5,7 @@ import { EventWithContext } from "@goauthentik/common/events";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 
-import { t } from "@lingui/macro";
-
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
@@ -41,24 +40,24 @@ export class EventViewPage extends AKElement {
 
     render(): TemplateResult {
         if (!this.event) {
-            return html`<ak-page-header icon="pf-icon pf-icon-catalog" header=${t`Loading`}>
+            return html`<ak-page-header icon="pf-icon pf-icon-catalog" header=${msg("Loading")}>
             </ak-page-header> `;
         }
         return html`<ak-page-header
                 icon="pf-icon pf-icon-catalog"
-                header=${t`Event ${this.event.pk}`}
+                header=${msg(str`Event ${this.event.pk}`)}
             >
             </ak-page-header>
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-4-col-on-xl">
-                        <div class="pf-c-card__title">${t`Event info`}</div>
+                        <div class="pf-c-card__title">${msg("Event info")}</div>
                         <div class="pf-c-card__body">
                             <dl class="pf-c-description-list pf-m-horizontal">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Action`}</span
+                                            >${msg("Action")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -69,7 +68,9 @@ export class EventViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`App`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("App")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -79,7 +80,9 @@ export class EventViewPage extends AKElement {
                                 </div>
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text">${t`User`}</span>
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("User")}</span
+                                        >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
@@ -97,7 +100,9 @@ export class EventViewPage extends AKElement {
                                                                     href="#/identity/users/${this
                                                                         .event.user.on_behalf_of
                                                                         .pk}"
-                                                                    >${t`On behalf of ${this.event.user.on_behalf_of.username}`}</a
+                                                                    >${msg(
+                                                                        str`On behalf of ${this.event.user.on_behalf_of.username}`,
+                                                                    )}</a
                                                                 >
                                                             </small>`
                                                           : html``}`
@@ -108,7 +113,7 @@ export class EventViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Created`}</span
+                                            >${msg("Created")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
@@ -120,12 +125,12 @@ export class EventViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Client IP`}</span
+                                            >${msg("Client IP")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            <div>${this.event.clientIp || t`-`}</div>
+                                            <div>${this.event.clientIp || msg("-")}</div>
                                             <small>${EventGeo(this.event)}</small>
                                         </div>
                                     </dd>
@@ -133,12 +138,12 @@ export class EventViewPage extends AKElement {
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
-                                            >${t`Tenant`}</span
+                                            >${msg("Tenant")}</span
                                         >
                                     </dt>
                                     <dd class="pf-c-description-list__description">
                                         <div class="pf-c-description-list__text">
-                                            ${this.event.tenant?.name || t`-`}
+                                            ${this.event.tenant?.name || msg("-")}
                                         </div>
                                     </dd>
                                 </div>

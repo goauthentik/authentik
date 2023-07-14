@@ -12,8 +12,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -29,10 +28,12 @@ export class ApplicationListPage extends TablePage<Application> {
         return true;
     }
     pageTitle(): string {
-        return t`Applications`;
+        return msg("Applications");
     }
     pageDescription(): string {
-        return t`External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.`;
+        return msg(
+            "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.",
+        );
     }
     pageIcon(): string {
         return "pf-icon pf-icon-applications";
@@ -78,11 +79,11 @@ export class ApplicationListPage extends TablePage<Application> {
     columns(): TableColumn[] {
         return [
             new TableColumn(""),
-            new TableColumn(t`Name`, "name"),
-            new TableColumn(t`Group`, "group"),
-            new TableColumn(t`Provider`),
-            new TableColumn(t`Provider Type`),
-            new TableColumn(t`Actions`),
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Group"), "group"),
+            new TableColumn(msg("Provider")),
+            new TableColumn(msg("Provider Type")),
+            new TableColumn(msg("Actions")),
         ];
     }
 
@@ -105,7 +106,7 @@ export class ApplicationListPage extends TablePage<Application> {
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
-            objectLabel=${t`Application(s)`}
+            objectLabel=${msg("Application(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Application) => {
                 return new CoreApi(DEFAULT_CONFIG).coreApplicationsUsedByList({
@@ -119,7 +120,7 @@ export class ApplicationListPage extends TablePage<Application> {
             }}
         >
             <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
-                ${t`Delete`}
+                ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
     }
@@ -133,7 +134,7 @@ export class ApplicationListPage extends TablePage<Application> {
             return html`<img
                 class="app-icon pf-c-avatar"
                 src="${ifDefined(item.metaIcon)}"
-                alt="${t`Application Icon`}"
+                alt="${msg("Application Icon")}"
             />`;
         }
         return html`<i class="fas fa-share-square"></i>`;
@@ -146,16 +147,16 @@ export class ApplicationListPage extends TablePage<Application> {
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
             </a>`,
-            html`${item.group || t`-`}`,
+            html`${item.group || msg("-")}`,
             item.provider
                 ? html`<a href="#/core/providers/${item.providerObj?.pk}">
                       ${item.providerObj?.name}
                   </a>`
                 : html`-`,
-            html`${item.providerObj?.verboseName || t`-`}`,
+            html`${item.providerObj?.verboseName || msg("-")}`,
             html`<ak-forms-modal>
-                    <span slot="submit"> ${t`Update`} </span>
-                    <span slot="header"> ${t`Update Application`} </span>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update Application")} </span>
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
@@ -172,10 +173,10 @@ export class ApplicationListPage extends TablePage<Application> {
 
     renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
-            <span slot="submit"> ${t`Create`} </span>
-            <span slot="header"> ${t`Create Application`} </span>
+            <span slot="submit"> ${msg("Create")} </span>
+            <span slot="header"> ${msg("Create Application")} </span>
             <ak-application-form slot="form"> </ak-application-form>
-            <button slot="trigger" class="pf-c-button pf-m-primary">${t`Create`}</button>
+            <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
         </ak-forms-modal>`;
     }
 }

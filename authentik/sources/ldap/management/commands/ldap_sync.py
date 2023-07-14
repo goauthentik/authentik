@@ -2,9 +2,8 @@
 from django.core.management.base import BaseCommand
 from structlog.stdlib import get_logger
 
-from authentik.lib.utils.reflection import class_to_path
 from authentik.sources.ldap.models import LDAPSource
-from authentik.sources.ldap.tasks import SYNC_CLASSES, ldap_sync
+from authentik.sources.ldap.tasks import ldap_sync_single
 
 LOGGER = get_logger()
 
@@ -21,7 +20,4 @@ class Command(BaseCommand):
             if not source:
                 LOGGER.warning("Source does not exist", slug=source_slug)
                 continue
-            for sync_class in SYNC_CLASSES:
-                LOGGER.info("Starting sync", cls=sync_class)
-                # pylint: disable=no-value-for-parameter
-                ldap_sync(source.pk, class_to_path(sync_class))
+            ldap_sync_single(source)

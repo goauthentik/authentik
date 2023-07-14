@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2.1.0
+        uses: docker/setup-qemu-action@v2.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: prepare variables
@@ -43,6 +43,7 @@ jobs:
             ghcr.io/goauthentik/server:latest
           platforms: linux/amd64,linux/arm64
           build-args: |
+            VERSION=${{ steps.ev.outputs.version }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost:
     runs-on: ubuntu-latest
@@ -59,7 +60,7 @@ jobs:
         with:
           go-version-file: "go.mod"
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2.1.0
+        uses: docker/setup-qemu-action@v2.2.0
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
       - name: prepare variables
@@ -90,6 +91,7 @@ jobs:
           file: ${{ matrix.type }}.Dockerfile
           platforms: linux/amd64,linux/arm64
           build-args: |
+            VERSION=${{ steps.ev.outputs.version }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost-binary:
     timeout-minutes: 120
@@ -108,7 +110,7 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/setup-node@v3.7.0
         with:
           node-version: "20"
           cache: "npm"
@@ -123,6 +125,7 @@ jobs:
           set -x
           export GOOS=${{ matrix.goos }}
           export GOARCH=${{ matrix.goarch }}
+          export CGO_ENABLED=0
           go build -tags=outpost_static_embed -v -o ./authentik-outpost-${{ matrix.type }}_${{ matrix.goos }}_${{ matrix.goarch }} ./cmd/${{ matrix.type }}
       - name: Upload binaries to release
         uses: svenstaro/upload-release-action@v2

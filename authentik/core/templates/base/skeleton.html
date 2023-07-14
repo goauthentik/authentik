@@ -8,7 +8,8 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <title>{% block title %}{% trans title|default:tenant.branding_title %}{% endblock %}</title>
-        <link rel="shortcut icon" type="image/png" href="{% static 'dist/assets/icons/icon.png' %}">
+        <link rel="icon" href="{{ tenant.branding_favicon }}">
+        <link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
         {% block head_before %}
         {% endblock %}
         <link rel="stylesheet" type="text/css" href="{% static 'dist/authentik.css' %}">

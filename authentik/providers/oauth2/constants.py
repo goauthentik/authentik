@@ -19,6 +19,11 @@ SCOPE_OPENID = "openid"
 SCOPE_OPENID_PROFILE = "profile"
 SCOPE_OPENID_EMAIL = "email"
 
+# https://www.iana.org/assignments/oauth-parameters/\
+#   oauth-parameters.xhtml#pkce-code-challenge-method
+PKCE_METHOD_PLAIN = "plain"
+PKCE_METHOD_S256 = "S256"
+
 TOKEN_TYPE = "Bearer"  # nosec
 
 SCOPE_AUTHENTIK_API = "goauthentik.io/api"

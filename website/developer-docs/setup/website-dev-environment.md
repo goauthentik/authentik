@@ -6,7 +6,7 @@ If you want to only make changes to the website, you only need node.
 
 ### Prerequisites
 
--   Node (any recent version should work, we use 20.x to build)
+-   Node.js (any recent version should work; we use 20.x to build)
 -   Make (again, any recent version should work)
 
 :::info

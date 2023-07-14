@@ -10,12 +10,12 @@ import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
+import "@goauthentik/elements/ak-locale-context";
 import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
 import { StageHost } from "@goauthentik/flow/stages/base";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html, render } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
@@ -413,7 +413,8 @@ export class FlowExecutor extends Interface implements StageHost {
 
     renderChallengeWrapper(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading=${true} header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading=${true} header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         return html`
             ${this.loading ? html`<ak-loading-overlay></ak-loading-overlay>` : html``}
@@ -487,7 +488,8 @@ export class FlowExecutor extends Interface implements StageHost {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-background-image">${this.renderBackgroundOverlay()}</div>
+        return html` <ak-locale-context>
+            <div class="pf-c-background-image">${this.renderBackgroundOverlay()}</div>
             <div class="pf-c-page__drawer">
                 <div class="pf-c-drawer ${this.inspectorOpen ? "pf-m-expanded" : "pf-m-collapsed"}">
                     <div class="pf-c-drawer__main">
@@ -519,15 +521,15 @@ export class FlowExecutor extends Interface implements StageHost {
                                                 <li>
                                                     <a
                                                         href="https://goauthentik.io?utm_source=authentik&amp;utm_medium=flow"
-                                                        >${t`Powered by authentik`}</a
+                                                        >${msg("Powered by authentik")}</a
                                                     >
                                                 </li>
                                                 ${this.flowInfo?.background?.startsWith("/static")
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@clarissemeyer"
-                                                                  >${t`Background image`}</a
+                                                                  href="https://unsplash.com/@diegojimenez"
+                                                                  >${msg("Background image")}</a
                                                               >
                                                           </li>
                                                       `
@@ -541,6 +543,7 @@ export class FlowExecutor extends Interface implements StageHost {
                         ${until(this.renderInspector())}
                     </div>
                 </div>
-            </div>`;
+            </div>
+        </ak-locale-context>`;
     }
 }

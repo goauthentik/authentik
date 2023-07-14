@@ -9,7 +9,7 @@ import cssimport from "rollup-plugin-cssimport";
 import { terser } from "rollup-plugin-terser";
 
 // https://github.com/d3/d3-interpolate/issues/58
-const D3_WARNING = /Circular dependency.*d3-[interpolate|selection]/;
+const IGNORED_WARNINGS = /Circular dependency(.*d3-[interpolate|selection])|(.*@lit\/localize.*)/;
 
 const extensions = [".js", ".jsx", ".ts", ".tsx"];
 
@@ -81,7 +81,7 @@ export const defaultOptions = {
     cache: true,
     context: "window",
     onwarn: function (warning, warn) {
-        if (D3_WARNING.test(warning)) {
+        if (IGNORED_WARNINGS.test(warning)) {
             return;
         }
         if (warning.code === "UNRESOLVED_IMPORT") {

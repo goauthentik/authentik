@@ -5,8 +5,6 @@
 {% block head_before %}
 {{ block.super }}
 <link rel="prefetch" href="{{ flow.background_url }}" />
-<link rel="icon" href="{{ tenant.branding_favicon }}">
-<link rel="shortcut icon" href="{{ tenant.branding_favicon }}">
 {% if flow.compatibility_mode and not inspector %}
 <script>ShadyDOM = { force: !navigator.webdriver };</script>
 {% endif %}

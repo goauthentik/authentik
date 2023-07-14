@@ -2,8 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -23,9 +22,9 @@ export class UserTokenForm extends ModelForm<Token, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated token.`;
+            return msg("Successfully updated token.");
         } else {
-            return t`Successfully created token.`;
+            return msg("Successfully created token.");
         }
     }
 
@@ -45,7 +44,11 @@ export class UserTokenForm extends ModelForm<Token, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${t`Identifier`} ?required=${true} name="identifier">
+            <ak-form-element-horizontal
+                label=${msg("Identifier")}
+                ?required=${true}
+                name="identifier"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.identifier)}"
@@ -53,7 +56,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${t`Description`} name="description">
+            <ak-form-element-horizontal label=${msg("Description")} name="description">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.description)}"

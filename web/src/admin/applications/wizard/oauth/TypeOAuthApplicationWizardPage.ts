@@ -1,8 +1,7 @@
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { WizardPage } from "@goauthentik/elements/wizard/WizardPage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
 
@@ -18,26 +17,34 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
     applicationTypes: TypeCreate[] = [
         {
             component: "ak-application-wizard-type-oauth-code",
-            name: t`Web application`,
-            description: t`Applications which handle the authentication server-side (for example, Python, Go, Rust, Java, PHP)`,
+            name: msg("Web application"),
+            description: msg(
+                "Applications which handle the authentication server-side (for example, Python, Go, Rust, Java, PHP)",
+            ),
             modelName: "",
         },
         {
             component: "ak-application-wizard-type-oauth-implicit",
-            name: t`Single-page applications`,
-            description: t`Single-page applications which handle authentication in the browser (for example, Javascript, Angular, React, Vue)`,
+            name: msg("Single-page applications"),
+            description: msg(
+                "Single-page applications which handle authentication in the browser (for example, Javascript, Angular, React, Vue)",
+            ),
             modelName: "",
         },
         {
             component: "ak-application-wizard-type-oauth-implicit",
-            name: t`Native application`,
-            description: t`Applications which redirect users to a non-web callback (for example, Android, iOS)`,
+            name: msg("Native application"),
+            description: msg(
+                "Applications which redirect users to a non-web callback (for example, Android, iOS)",
+            ),
             modelName: "",
         },
         {
             component: "ak-application-wizard-type-oauth-api",
-            name: t`API`,
-            description: t`Authentication without user interaction, or machine-to-machine authentication.`,
+            name: msg("API"),
+            description: msg(
+                "Authentication without user interaction, or machine-to-machine authentication.",
+            ),
             modelName: "",
         },
     ];
@@ -46,7 +53,7 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
         return [PFBase, PFButton, PFForm, PFRadio];
     }
 
-    sidebarLabel = () => t`Application type`;
+    sidebarLabel = () => msg("Application type");
 
     render(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">

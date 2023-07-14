@@ -5,8 +5,7 @@ import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateSta
 import { BaseStage, StageHost } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -53,9 +52,10 @@ export class AuthenticatorValidateStage
     _selectedDeviceChallenge?: DeviceChallenge;
 
     set selectedDeviceChallenge(value: DeviceChallenge | undefined) {
+        const previousChallenge = this._selectedDeviceChallenge;
         this._selectedDeviceChallenge = value;
         if (!value) return;
-        if (value === this._selectedDeviceChallenge) return;
+        if (value === previousChallenge) return;
         // We don't use this.submit here, as we don't want to advance the flow.
         // We just want to notify the backend which challenge has been selected.
         new FlowsApi(DEFAULT_CONFIG).flowsExecutorSolve({
@@ -112,32 +112,32 @@ export class AuthenticatorValidateStage
             case DeviceClassesEnum.Duo:
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
-                        <p>${t`Duo push-notifications`}</p>
-                        <small>${t`Receive a push notification on your device.`}</small>
+                        <p>${msg("Duo push-notifications")}</p>
+                        <small>${msg("Receive a push notification on your device.")}</small>
                     </div>`;
             case DeviceClassesEnum.Webauthn:
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
-                        <p>${t`Authenticator`}</p>
-                        <small>${t`Use a security key to prove your identity.`}</small>
+                        <p>${msg("Authenticator")}</p>
+                        <small>${msg("Use a security key to prove your identity.")}</small>
                     </div>`;
             case DeviceClassesEnum.Totp:
                 return html`<i class="fas fa-clock"></i>
                     <div class="right">
-                        <p>${t`Traditional authenticator`}</p>
-                        <small>${t`Use a code-based authenticator.`}</small>
+                        <p>${msg("Traditional authenticator")}</p>
+                        <small>${msg("Use a code-based authenticator.")}</small>
                     </div>`;
             case DeviceClassesEnum.Static:
                 return html`<i class="fas fa-key"></i>
                     <div class="right">
-                        <p>${t`Recovery keys`}</p>
-                        <small>${t`In case you can't access any other method.`}</small>
+                        <p>${msg("Recovery keys")}</p>
+                        <small>${msg("In case you can't access any other method.")}</small>
                     </div>`;
             case DeviceClassesEnum.Sms:
-                return html`<i class="fas fa-mobile"></i>
+                return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
-                        <p>${t`SMS`}</p>
-                        <small>${t`Tokens sent via SMS.`}</small>
+                        <p>${msg("SMS")}</p>
+                        <small>${msg("Tokens sent via SMS.")}</small>
                     </div>`;
             default:
                 break;
@@ -224,7 +224,8 @@ export class AuthenticatorValidateStage
 
     render(): TemplateResult {
         if (!this.challenge) {
-            return html`<ak-empty-state ?loading="${true}" header=${t`Loading`}> </ak-empty-state>`;
+            return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
+            </ak-empty-state>`;
         }
         // User only has a single device class, so we don't show a picker
         if (this.challenge?.deviceChallenges.length === 1) {
@@ -256,7 +257,7 @@ export class AuthenticatorValidateStage
                               >
                                   <div slot="link">
                                       <a href="${ifDefined(this.challenge.flowInfo?.cancelUrl)}"
-                                          >${t`Not you?`}</a
+                                          >${msg("Not you?")}</a
                                       >
                                   </div>
                               </ak-form-static>
@@ -268,7 +269,7 @@ export class AuthenticatorValidateStage
                               />
                               ${this.selectedDeviceChallenge
                                   ? ""
-                                  : html`<p>${t`Select an authentication method.`}</p>`}
+                                  : html`<p>${msg("Select an authentication method.")}</p>`}
                               ${this.challenge.configurationStages.length > 0
                                   ? this.renderStagePicker()
                                   : html``}

@@ -15,7 +15,7 @@ from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter
+from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter, UUIDFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
@@ -51,6 +51,7 @@ from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import CoordinateSerializer
 from authentik.api.decorators import permission_required
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import LinkSerializer, PassiveSerializer, is_dict
 from authentik.core.middleware import (
@@ -67,11 +68,12 @@ from authentik.core.models import (
     TokenIntents,
     User,
 )
-from authentik.events.models import EventAction
+from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
 from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
+from authentik.lib.config import CONFIG
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -106,11 +108,35 @@ class UserSerializer(ModelSerializer):
     avatar = CharField(read_only=True)
     attributes = JSONField(validators=[is_dict], required=False)
     groups = PrimaryKeyRelatedField(
-        allow_empty=True, many=True, source="ak_groups", queryset=Group.objects.all()
+        allow_empty=True, many=True, source="ak_groups", queryset=Group.objects.all(), default=list
     )
     groups_obj = ListSerializer(child=UserGroupSerializer(), read_only=True, source="ak_groups")
     uid = CharField(read_only=True)
     username = CharField(max_length=150, validators=[UniqueValidator(queryset=User.objects.all())])
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
+            self.fields["password"] = CharField(required=False)
+
+    def create(self, validated_data: dict) -> User:
+        """If this serializer is used in the blueprint context, we allow for
+        directly setting a password. However should be done via the `set_password`
+        method instead of directly setting it like rest_framework."""
+        instance: User = super().create(validated_data)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and "password" in validated_data:
+            instance.set_password(validated_data["password"])
+            instance.save()
+        return instance
+
+    def update(self, instance: User, validated_data: dict) -> User:
+        """Same as `create` above, set the password directly if we're in a blueprint
+        context"""
+        instance = super().update(instance, validated_data)
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and "password" in validated_data:
+            instance.set_password(validated_data["password"])
+            instance.save()
+        return instance
 
     def validate_path(self, path: str) -> str:
         """Validate path"""
@@ -258,7 +284,7 @@ class UsersFilter(FilterSet):
     )
 
     is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
-    uuid = CharFilter(field_name="uuid")
+    uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(
         field_name="path",
@@ -541,6 +567,58 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             },
         )
         send_mails(email_stage, message)
+        return Response(status=204)
+
+    @permission_required("authentik_core.impersonate")
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            "204": OpenApiResponse(description="Successfully started impersonation"),
+            "401": OpenApiResponse(description="Access denied"),
+        },
+    )
+    @action(detail=True, methods=["POST"])
+    def impersonate(self, request: Request, pk: int) -> Response:
+        """Impersonate a user"""
+        if not CONFIG.y_bool("impersonation"):
+            LOGGER.debug("User attempted to impersonate", user=request.user)
+            return Response(status=401)
+        if not request.user.has_perm("impersonate"):
+            LOGGER.debug("User attempted to impersonate without permissions", user=request.user)
+            return Response(status=401)
+
+        user_to_be = self.get_object()
+
+        request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
+        request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
+
+        Event.new(EventAction.IMPERSONATION_STARTED).from_http(request, user_to_be)
+
+        return Response(status=201)
+
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            "204": OpenApiResponse(description="Successfully started impersonation"),
+        },
+    )
+    @action(detail=False, methods=["GET"])
+    def impersonate_end(self, request: Request) -> Response:
+        """End Impersonation a user"""
+        if (
+            SESSION_KEY_IMPERSONATE_USER not in request.session
+            or SESSION_KEY_IMPERSONATE_ORIGINAL_USER not in request.session
+        ):
+            LOGGER.debug("Can't end impersonation", user=request.user)
+            return Response(status=204)
+
+        original_user = request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
+
+        del request.session[SESSION_KEY_IMPERSONATE_USER]
+        del request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER]
+
+        Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
+
         return Response(status=204)
 
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/nmcclain/ldap"
+	"beryju.io/ldap"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/outpost/ldap/constants"
 	"goauthentik.io/internal/outpost/ldap/utils"
@@ -40,11 +40,17 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		"name":           {u.Name},
 		"displayName":    {u.Name},
 		"mail":           {*u.Email},
-		"objectClass":    {constants.OCUser, constants.OCOrgPerson, constants.OCInetOrgPerson, constants.OCAKUser},
-		"uidNumber":      {pi.GetUidNumber(u)},
-		"gidNumber":      {pi.GetUidNumber(u)},
-		"homeDirectory":  {fmt.Sprintf("/home/%s", u.Username)},
-		"sn":             {u.Name},
+		"objectClass": {
+			constants.OCUser,
+			constants.OCOrgPerson,
+			constants.OCInetOrgPerson,
+			constants.OCAKUser,
+			constants.OCPosixAccount,
+		},
+		"uidNumber":     {pi.GetUidNumber(u)},
+		"gidNumber":     {pi.GetUidNumber(u)},
+		"homeDirectory": {fmt.Sprintf("/home/%s", u.Username)},
+		"sn":            {u.Name},
 	})
 	return &ldap.Entry{DN: dn, Attributes: attrs}
 }

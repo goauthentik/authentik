@@ -33,7 +33,7 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            self.fields["key"] = CharField()
+            self.fields["key"] = CharField(required=False)
 
     def validate(self, attrs: dict[Any, str]) -> dict[Any, str]:
         """Ensure only API or App password tokens are created."""

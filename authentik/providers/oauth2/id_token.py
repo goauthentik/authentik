@@ -26,6 +26,7 @@ class SubModes(models.TextChoices):
 
     HASHED_USER_ID = "hashed_user_id", _("Based on the Hashed User ID")
     USER_ID = "user_id", _("Based on user ID")
+    USER_UUID = "user_uuid", _("Based on user UUID")
     USER_USERNAME = "user_username", _("Based on the username")
     USER_EMAIL = (
         "user_email",
@@ -40,7 +41,7 @@ class SubModes(models.TextChoices):
     )
 
 
-@dataclass
+@dataclass(slots=True)
 # pylint: disable=too-many-instance-attributes
 class IDToken:
     """The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be
@@ -96,6 +97,8 @@ class IDToken:
             id_token.sub = token.user.uid
         elif provider.sub_mode == SubModes.USER_ID:
             id_token.sub = str(token.user.pk)
+        elif provider.sub_mode == SubModes.USER_UUID:
+            id_token.sub = str(token.user.uuid)
         elif provider.sub_mode == SubModes.USER_EMAIL:
             id_token.sub = token.user.email
         elif provider.sub_mode == SubModes.USER_USERNAME:

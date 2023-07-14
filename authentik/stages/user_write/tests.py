@@ -97,6 +97,47 @@ class TestUserWriteStage(FlowTestCase):
         self.assertEqual(user_qs.first().attributes["foo"], "bar")
         self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
 
+    def test_user_update_source(self):
+        """Test update of existing user with a source"""
+        new_password = generate_key()
+        plan = FlowPlan(flow_pk=self.flow.pk.hex, bindings=[self.binding], markers=[StageMarker()])
+        plan.context[PLAN_CONTEXT_PENDING_USER] = User.objects.create(
+            username="unittest",
+            email="test@goauthentik.io",
+            attributes={
+                USER_ATTRIBUTE_SOURCES: [
+                    self.source.name,
+                ]
+            },
+        )
+        plan.context[PLAN_CONTEXT_SOURCES_CONNECTION] = UserSourceConnection(source=self.source)
+        plan.context[PLAN_CONTEXT_PROMPT] = {
+            "username": "test-user-new",
+            "password": new_password,
+            "attributes.some.custom-attribute": "test",
+            "attributes": {
+                "foo": "bar",
+            },
+            "some_ignored_attribute": "bar",
+        }
+        session = self.client.session
+        session[SESSION_KEY_PLAN] = plan
+        session.save()
+
+        response = self.client.post(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertStageRedirects(response, reverse("authentik_core:root-redirect"))
+        user_qs = User.objects.filter(username=plan.context[PLAN_CONTEXT_PROMPT]["username"])
+        self.assertTrue(user_qs.exists())
+        self.assertTrue(user_qs.first().check_password(new_password))
+        self.assertEqual(user_qs.first().attributes["some"]["custom-attribute"], "test")
+        self.assertEqual(user_qs.first().attributes["foo"], "bar")
+        self.assertEqual(user_qs.first().attributes[USER_ATTRIBUTE_SOURCES], [self.source.name])
+        self.assertNotIn("some_ignored_attribute", user_qs.first().attributes)
+
     @patch(
         "authentik.flows.views.executor.to_stage_response",
         TO_STAGE_RESPONSE_MOCK,

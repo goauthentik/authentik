@@ -3,8 +3,7 @@ import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
-import { t } from "@lingui/macro";
-
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
@@ -21,9 +20,9 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
 
     getSuccessMessage(): string {
         if (this.instance) {
-            return t`Successfully updated stage.`;
+            return msg("Successfully updated stage.");
         } else {
-            return t`Successfully created stage.`;
+            return msg("Successfully created stage.");
         }
     }
 
@@ -43,9 +42,11 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="form-help-text">
-                ${t`This stage checks the user's current session against the Google reCaptcha (or compatible) service.`}
+                ${msg(
+                    "This stage checks the user's current session against the Google reCaptcha (or compatible) service.",
+                )}
             </div>
-            <ak-form-element-horizontal label=${t`Name`} ?required=${true} name="name">
+            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name || "")}"
@@ -54,10 +55,10 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-group .expanded=${true}>
-                <span slot="header"> ${t`Stage-specific settings`} </span>
+                <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
-                        label=${t`Public Key`}
+                        label=${msg("Public Key")}
                         ?required=${true}
                         name="publicKey"
                     >
@@ -68,26 +69,34 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.`}
+                            ${msg(
+                                "Public key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
-                        label=${t`Private Key`}
+                        label=${msg("Private Key")}
                         ?required=${true}
                         ?writeOnly=${this.instance !== undefined}
                         name="privateKey"
                     >
                         <input type="text" value="" class="pf-c-form-control" required />
                         <p class="pf-c-form__helper-text">
-                            ${t`Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.`}
+                            ${msg(
+                                "Private key, acquired from https://www.google.com/recaptcha/intro/v3.html.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
             <ak-form-group>
-                <span slot="header"> ${t`Advanced settings`} </span>
+                <span slot="header"> ${msg("Advanced settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${t`JS URL`} ?required=${true} name="jsUrl">
+                    <ak-form-element-horizontal
+                        label=${msg("JS URL")}
+                        ?required=${true}
+                        name="jsUrl"
+                    >
                         <input
                             type="text"
                             value="${ifDefined(
@@ -98,10 +107,16 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`URL to fetch JavaScript from, defaults to recaptcha. Can be replaced with any compatible alternative.`}
+                            ${msg(
+                                "URL to fetch JavaScript from, defaults to recaptcha. Can be replaced with any compatible alternative.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${t`API URL`} ?required=${true} name="apiUrl">
+                    <ak-form-element-horizontal
+                        label=${msg("API URL")}
+                        ?required=${true}
+                        name="apiUrl"
+                    >
                         <input
                             type="text"
                             value="${ifDefined(
@@ -112,7 +127,9 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
                             required
                         />
                         <p class="pf-c-form__helper-text">
-                            ${t`URL used to validate captcha response, defaults to recaptcha. Can be replaced with any compatible alternative.`}
+                            ${msg(
+                                "URL used to validate captcha response, defaults to recaptcha. Can be replaced with any compatible alternative.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

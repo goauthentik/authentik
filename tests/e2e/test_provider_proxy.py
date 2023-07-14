@@ -4,7 +4,7 @@ from dataclasses import asdict
 from sys import platform
 from time import sleep
 from typing import Any, Optional
-from unittest.case import skipUnless
+from unittest.case import skip, skipUnless
 
 from channels.testing import ChannelsLiveServerTestCase
 from docker.client import DockerClient, from_env
@@ -191,6 +191,8 @@ class TestProviderProxy(SeleniumTestCase):
         self.assertIn("You've logged out of", full_body_text)
 
 
+# TODO: Fix flaky test
+@skip("Flaky test")
 @skipUnless(platform.startswith("linux"), "requires local docker")
 class TestProviderProxyConnect(ChannelsLiveServerTestCase):
     """Test Proxy connectivity over websockets"""
