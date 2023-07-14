@@ -73,7 +73,7 @@ See [Configuration](../installation/configuration) to change the internal ports.
 
 :::warning
 The server assumes to have local timezone as UTC.
-All internals are handled in UTC; whenever a time is displayed to the user in UI it gets localized.
+All internals are handled in UTC; whenever a time is displayed to the user in UI, the time shown is localized.
 Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers.
 This will not give any advantages. It will cause problems with OAuth and SAML authentication, e.g. [see this GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
 :::
