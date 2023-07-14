@@ -27,15 +27,15 @@ The core sub-component handles most of authentik's logic, such as API requests, 
 
 Similar to [other outposts](../outposts/index.mdx), this outposts allows using [Proxy providers](../providers/proxy/index.md) without deploying a separate outpost.
 
-##### Persistence
+#### Persistence
 
 -   `/media` is used to store icons and such, but not required, and if not mounted, authentik will allow you to set a URL to icons in place of a file upload
 
-### Worker
+### Background Worker
 
 This container executes background tasks, such as sending emails, the event notification system, and everything you can see on the _System Tasks_ page in the frontend.
 
-##### Persistence
+#### Persistence
 
 -   `/certs` is used for authentik to import external certs, which in most cases shouldn't be used for SAML, but rather if you use authentik without a reverse proxy, this is used for the lets encrypt integration
 -   `/templates` is used for custom email templates, and as with the other ones fully optional
@@ -44,7 +44,7 @@ This container executes background tasks, such as sending emails, the event noti
 
 authentik uses PostgreSQL to store all of its configuration and other data (excluding uploaded files).
 
-##### Persistence
+#### Persistence
 
 -   `/var/lib/postgresql/data` is used to store the PostgreSQL database
 
@@ -52,6 +52,6 @@ authentik uses PostgreSQL to store all of its configuration and other data (excl
 
 authentik uses Redis as a message-queue and a cache. Data in Redis is not required to be persistent, however you should be aware that restarting Redis will cause the loss of all sessions.
 
-##### Persistence
+#### Persistence
 
 -   `/data` is used to store the Redis data
