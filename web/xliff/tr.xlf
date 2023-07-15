@@ -5646,6 +5646,84 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s1889ba2eaeec2f1e">
   <source>When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.</source>
 </trans-unit>
+<trans-unit id="s9f9492d30a96b9c6">
+  <source>User type</source>
+</trans-unit>
+<trans-unit id="s0b9a40b7b2853c7d">
+  <source>Default user</source>
+</trans-unit>
+<trans-unit id="s35b9fa270f45b391">
+  <source>External user</source>
+</trans-unit>
+<trans-unit id="s1a635369edaf4dc3">
+  <source>Service account</source>
+</trans-unit>
+<trans-unit id="s0e427111d750cc02">
+  <source>Successfully updated license.</source>
+</trans-unit>
+<trans-unit id="s06ae64e621f302eb">
+  <source>Successfully created license.</source>
+</trans-unit>
+<trans-unit id="s2905c425adae99bd">
+  <source>Install ID</source>
+</trans-unit>
+<trans-unit id="sb18ec434a8a3aafb">
+  <source>License key</source>
+</trans-unit>
+<trans-unit id="s2e109263b73c12d5">
+  <source>Licenses</source>
+</trans-unit>
+<trans-unit id="sf8f9f3032e891e16">
+  <source>TODO Copy</source>
+</trans-unit>
+<trans-unit id="sd49099e9522635f4">
+  <source>License(s)</source>
+</trans-unit>
+<trans-unit id="s3be1d90ffa46b7f1">
+  <source>Enterprise is in preview.</source>
+</trans-unit>
+<trans-unit id="s34dca481f039c226">
+  <source>How to get a license</source>
+</trans-unit>
+<trans-unit id="s948364901c166232">
+  <source>Copy the installation ID</source>
+</trans-unit>
+<trans-unit id="s75c167446b237e0f">
+  <source>Then open the customer portal</source>
+</trans-unit>
+<trans-unit id="s9748dd3bd53d27a4">
+  <source>Forecasted default users</source>
+</trans-unit>
+<trans-unit id="s6b18f594d94c2374">
+  <source>Estimated user count one year from now</source>
+</trans-unit>
+<trans-unit id="s69f246d164be88d0">
+  <source>Forecasted external users</source>
+</trans-unit>
+<trans-unit id="s878fc2eaf94642db">
+  <source>Estimated external user count one year from now</source>
+</trans-unit>
+<trans-unit id="sd22bd01bdf28c548">
+  <source>Cumulative license expiry</source>
+</trans-unit>
+<trans-unit id="sdeb6cee42435dd07">
+  <source>Update License</source>
+</trans-unit>
+<trans-unit id="s99afa741c259d70e">
+  <source>Create License</source>
+</trans-unit>
+<trans-unit id="s7df5b92a3f93544f">
+  <source>Warning: The current user count has exceeded the configured licenses.</source>
+</trans-unit>
+<trans-unit id="s0141f42936495787">
+  <source>Click here for more info.</source>
+</trans-unit>
+<trans-unit id="s7be2df39f727faa2">
+  <source>Enterprise</source>
+</trans-unit>
+<trans-unit id="s9ce7cc01fb9b5b53">
+  <source>Manage enterprise licenses</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

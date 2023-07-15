@@ -2,6 +2,7 @@ import "@goauthentik/admin/enterprise/EnterpriseLicenseForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
+import "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/cards/AggregateCard";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -13,9 +14,13 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
+import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
+import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
 import { EnterpriseApi, License, LicenseForecast, LicenseSummary } from "@goauthentik/api";
@@ -31,8 +36,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         return msg("Licenses");
     }
     pageDescription(): string {
-        // TODO: add copy text
-        return msg("TODO Copy");
+        return msg("Manage enterprise licenses");
     }
     pageIcon(): string {
         return "pf-icon pf-icon-key";
@@ -47,10 +51,16 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     @state()
     summary?: LicenseSummary;
 
+    @state()
+    installID?: string;
+
     static get styles(): CSSResult[] {
         return super.styles.concat(
             PFDescriptionList,
             PFGrid,
+            PFBanner,
+            PFFormControl,
+            PFButton,
             PFCard,
             css`
                 .pf-m-no-padding-bottom {
@@ -63,6 +73,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     async apiEndpoint(page: number): Promise<PaginatedResponse<License>> {
         this.forecast = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseForecastRetrieve();
         this.summary = await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseSummaryRetrieve();
+        this.installID = (
+            await new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseGetInstallIdRetrieve()
+        ).installId;
         return new EnterpriseApi(DEFAULT_CONFIG).enterpriseLicenseList({
             ordering: this.order,
             page: page,
@@ -110,15 +123,38 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
 
     renderSectionBefore(): TemplateResult {
         return html`
+            <div class="pf-c-banner pf-m-info">
+                ${msg("Enterprise is in preview.")}
+                <a href="mailto:hello@goauthentik.io">${msg("TODO Copy")}</a>
+            </div>
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
                     class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
                 >
                     <div class="pf-l-grid__item pf-c-card">
+                        <div class="pf-c-card__title">${msg("How to get a license")}</div>
+                        <div class="pf-c-card__body">
+                            ${this.installID
+                                ? html` ${msg("Copy the installation ID")}
+                                      <input
+                                          class="pf-c-form-control"
+                                          value=${ifDefined(this.installID)}
+                                          readonly
+                                      />
+                                      <a
+                                          target="_blank"
+                                          href="https://customers.goauthentik.io/"
+                                          class="pf-c-button"
+                                          >${msg("Then open the customer portal")}</a
+                                      >`
+                                : html`<ak-spinner></ak-spinner>`}
+                        </div>
+                    </div>
+                    <div class="pf-l-grid__item pf-c-card">
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-user"
                             header=${msg("Forecasted default users")}
-                            subtext=${msg("TODO Copy")}
+                            subtext=${msg("Estimated user count one year from now")}
                         >
                             ${this.forecast?.users}
                         </ak-aggregate-card>
@@ -127,7 +163,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-user"
                             header=${msg("Forecasted external users")}
-                            subtext=${msg("TODO Copy")}
+                            subtext=${msg("Estimated external user count one year from now")}
                         >
                             ${this.forecast?.externalUsers}
                         </ak-aggregate-card>
@@ -136,15 +172,12 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-user"
                             header=${msg("Expiry")}
-                            subtext=${msg("TODO Copy")}
+                            subtext=${msg("Cumulative license expiry")}
                         >
                             ${this.summary?.hasLicense
                                 ? this.summary.latestValid.toLocaleString()
                                 : "-"}
                         </ak-aggregate-card>
-                    </div>
-                    <div class="pf-l-grid__item pf-c-card">
-                        <div class="pf-c-card__body"></div>
                     </div>
                 </div>
             </section>

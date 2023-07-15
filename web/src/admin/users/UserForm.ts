@@ -80,24 +80,22 @@ export class UserForm extends ModelForm<User, number> {
             <ak-form-element-horizontal label=${msg("User type")} ?required=${true} name="type">
                 <ak-radio
                     .options=${[
+                        // TODO: Add better copy
                         {
                             label: "Default",
                             value: UserTypeEnum.Default,
                             default: true,
-                            // TODO: Add copy
-                            description: html`${msg("TODO Copy")}`,
+                            description: html`${msg("Default user")}`,
                         },
                         {
                             label: "External",
                             value: UserTypeEnum.External,
-                            // TODO: Add copy
-                            description: html`${msg("TODO Copy")}`,
+                            description: html`${msg("External user")}`,
                         },
                         {
                             label: "Service account",
                             value: UserTypeEnum.ServiceAccount,
-                            // TODO: Add copy
-                            description: html`${msg("TODO Copy")}`,
+                            description: html`${msg("Service account")}`,
                         },
                     ]}
                     .value=${this.instance?.type}
