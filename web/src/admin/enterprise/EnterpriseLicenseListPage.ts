@@ -14,7 +14,6 @@ import { TablePage } from "@goauthentik/elements/table/TablePage";
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -125,7 +124,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         return html`
             <div class="pf-c-banner pf-m-info">
                 ${msg("Enterprise is in preview.")}
-                <a href="mailto:hello@goauthentik.io">${msg("TODO Copy")}</a>
+                <a href="mailto:hello@goauthentik.io">${msg("Send us feedback!")}</a>
             </div>
             <section class="pf-c-page__main-section pf-m-no-padding-bottom">
                 <div
@@ -135,13 +134,12 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         <div class="pf-c-card__title">${msg("How to get a license")}</div>
                         <div class="pf-c-card__body">
                             ${this.installID
-                                ? html`
-                                      <a
-                                          target="_blank"
-                                          href=${`https://customers.goauthentik.io/from_authentik/purchase/?install_id=${this.installID}`}
-                                          class="pf-c-button"
-                                          >${msg("Click here")}</a
-                                      >`
+                                ? html` <a
+                                      target="_blank"
+                                      href=${`https://customers.goauthentik.io/from_authentik/purchase/?install_id=${this.installID}`}
+                                      class="pf-c-button pf-m-primary pf-m-block"
+                                      >${msg("Go to the customer portal")}</a
+                                  >`
                                 : html`<ak-spinner></ak-spinner>`}
                         </div>
                     </div>
