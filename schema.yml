@@ -4626,6 +4626,7 @@ paths:
         name: uuid
         schema:
           type: string
+          format: uuid
       tags:
       - core
       security:
@@ -31767,7 +31768,7 @@ components:
           type: integer
         external_users:
           type: integer
-        is_valid:
+        valid:
           type: boolean
         show_admin_warning:
           type: boolean
@@ -31783,12 +31784,12 @@ components:
       required:
       - external_users
       - has_license
-      - is_valid
       - latest_valid
       - read_only
       - show_admin_warning
       - show_user_warning
       - users
+      - valid
     Link:
       type: object
       description: Returns a single link

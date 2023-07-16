@@ -150,11 +150,12 @@ class UserSerializer(ModelSerializer):
     def validate_type(self, user_type: str) -> str:
         """Validate user type, internal_service_account is an internal value"""
         if (
-            self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT
-            and user_type != UserTypes.INTERNAL_SERVICE_ACCOUNT
+            self.instance
+            and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT
+            and user_type != UserTypes.INTERNAL_SERVICE_ACCOUNT.value
         ):
             raise ValidationError("Can't change internal service account to other user type.")
-        if user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT.value:
+        if not self.instance and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT.value:
             raise ValidationError("Setting a user to internal service account is not allowed.")
         return user_type
 

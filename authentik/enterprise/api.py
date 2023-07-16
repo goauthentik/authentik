@@ -5,7 +5,7 @@ from django.utils.timezone import now
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, IntegerField, DateTimeField
+from rest_framework.fields import BooleanField, CharField, DateTimeField, IntegerField
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -51,7 +51,7 @@ class LicenseSummary(PassiveSerializer):
 
     users = IntegerField(required=True)
     external_users = IntegerField(required=True)
-    is_valid = BooleanField()
+    valid = BooleanField()
     show_admin_warning = BooleanField()
     show_user_warning = BooleanField()
     read_only = BooleanField()
@@ -104,19 +104,21 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         last_valid = LicenseKey.last_valid_date()
         # TODO: move this to a different place?
         show_admin_warning = last_valid < now() - timedelta(weeks=2)
-        show_user_warning= last_valid < now() - timedelta(weeks=4)
+        show_user_warning = last_valid < now() - timedelta(weeks=4)
         read_only = last_valid < now() - timedelta(weeks=6)
         latest_valid = datetime.fromtimestamp(total.exp)
-        response = LicenseSummary(data={
-            "users": total.users,
-            "external_users": total.external_users,
-            "is_valid": total.is_valid(),
-            "show_admin_warning": show_admin_warning,
-            "show_user_warning": show_user_warning,
-            "read_only": read_only,
-            "latest_valid": latest_valid,
-            "has_license": License.objects.all().count() > 0,
-        })
+        response = LicenseSummary(
+            data={
+                "users": total.users,
+                "external_users": total.external_users,
+                "is_valid": total.is_valid(),
+                "show_admin_warning": show_admin_warning,
+                "show_user_warning": show_user_warning,
+                "read_only": read_only,
+                "latest_valid": latest_valid,
+                "has_license": License.objects.all().count() > 0,
+            }
+        )
         response.is_valid(raise_exception=True)
         return Response(response.data)
 
@@ -139,12 +141,10 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         external_in_last_month = LicenseKey.get_external_user_count()
         forecast_for_months = 12
         response = LicenseForecastSerializer(
-                data={
-                    "users": users_in_last_month * forecast_for_months,
-                    "external_users": external_in_last_month * forecast_for_months,
-                }
-            )
-        response.is_valid(raise_exception=True)
-        return Response(
-            response.data
+            data={
+                "users": users_in_last_month * forecast_for_months,
+                "external_users": external_in_last_month * forecast_for_months,
+            }
         )
+        response.is_valid(raise_exception=True)
+        return Response(response.data)

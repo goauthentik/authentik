@@ -97,14 +97,17 @@ class LicenseKey:
 
     @staticmethod
     def base_user_qs() -> QuerySet:
+        """Base query set for all users"""
         return User.objects.all().exclude(pk=get_anonymous_user().pk)
 
     @staticmethod
     def get_default_user_count():
+        """Get current default user count"""
         return LicenseKey.base_user_qs().filter(type=UserTypes.DEFAULT).count()
 
     @staticmethod
     def get_external_user_count():
+        """Get current external user count"""
         # Count since start of the month
         last_month = now().replace(day=1)
         return (
@@ -135,6 +138,7 @@ class LicenseKey:
 
     @staticmethod
     def last_valid_date() -> datetime:
+        """Get the last date the license was valid"""
         usage: LicenseUsage = (
             LicenseUsage.filter_not_expired(within_limits=True).order_by("-record_date").first()
         )
