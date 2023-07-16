@@ -135,17 +135,12 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         <div class="pf-c-card__title">${msg("How to get a license")}</div>
                         <div class="pf-c-card__body">
                             ${this.installID
-                                ? html` ${msg("Copy the installation ID")}
-                                      <input
-                                          class="pf-c-form-control"
-                                          value=${ifDefined(this.installID)}
-                                          readonly
-                                      />
+                                ? html`
                                       <a
                                           target="_blank"
-                                          href="https://customers.goauthentik.io/"
+                                          href=${`https://customers.goauthentik.io/from_authentik/purchase/?install_id=${this.installID}`}
                                           class="pf-c-button"
-                                          >${msg("Then open the customer portal")}</a
+                                          >${msg("Click here")}</a
                                       >`
                                 : html`<ak-spinner></ak-spinner>`}
                         </div>
