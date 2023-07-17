@@ -329,7 +329,7 @@ class TestProviderLDAP(SeleniumTestCase):
             all_matching = [x for x in expected if x[match_key] == res_item[match_key]]
             self.assertEqual(len(all_matching), 1)
             matching = all_matching[0]
-            self.assertDictEqual(expected, matching)
+            self.assertDictEqual(res_item, matching)
 
     @retry()
     @apply_blueprint(
@@ -422,6 +422,5 @@ class TestProviderLDAP(SeleniumTestCase):
                     "type": "searchResEntry",
                 },
             ],
-
             response,
         )
