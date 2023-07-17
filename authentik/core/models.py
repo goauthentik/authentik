@@ -64,7 +64,7 @@ def default_token_key():
 
 
 class UserTypes(models.TextChoices):
-    """User types, both for grouping, licensing and permissions in the casse
+    """User types, both for grouping, licensing and permissions in the case
     of the internal_service_account"""
 
     DEFAULT = "default"
