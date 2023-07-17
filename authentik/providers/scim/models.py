@@ -1,17 +1,11 @@
 """SCIM Provider models"""
 from django.db import models
-from django.db.models import Q, QuerySet
+from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import (
-    USER_ATTRIBUTE_SA,
-    BackchannelProvider,
-    Group,
-    PropertyMapping,
-    User,
-)
+from authentik.core.models import BackchannelProvider, Group, PropertyMapping, User, UserTypes
 
 
 class SCIMProvider(BackchannelProvider):
@@ -38,17 +32,8 @@ class SCIMProvider(BackchannelProvider):
         according to the provider's settings"""
         base = User.objects.all().exclude(pk=get_anonymous_user().pk)
         if self.exclude_users_service_account:
-            base = base.filter(
-                Q(
-                    **{
-                        f"attributes__{USER_ATTRIBUTE_SA}__isnull": True,
-                    }
-                )
-                | Q(
-                    **{
-                        f"attributes__{USER_ATTRIBUTE_SA}": False,
-                    }
-                )
+            base = base.exclude(type=UserTypes.SERVICE_ACCOUNT).exclude(
+                type=UserTypes.INTERNAL_SERVICE_ACCOUNT
             )
         if self.filter_group:
             base = base.filter(ak_groups__in=[self.filter_group])

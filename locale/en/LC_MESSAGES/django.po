@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-11 18:34+0000\n"
+"POT-Creation-Date: 2023-07-16 13:59+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -90,133 +90,133 @@ msgstr ""
 msgid "No empty segments in user path allowed."
 msgstr ""
 
-#: authentik/core/models.py:74
+#: authentik/core/models.py:86
 msgid "name"
 msgstr ""
 
-#: authentik/core/models.py:76
+#: authentik/core/models.py:88
 msgid "Users added to this group will be superusers."
 msgstr ""
 
-#: authentik/core/models.py:150
+#: authentik/core/models.py:162
 msgid "User's display name."
 msgstr ""
 
-#: authentik/core/models.py:243 authentik/providers/oauth2/models.py:294
+#: authentik/core/models.py:256 authentik/providers/oauth2/models.py:294
 msgid "User"
 msgstr ""
 
-#: authentik/core/models.py:244
+#: authentik/core/models.py:257
 msgid "Users"
 msgstr ""
 
-#: authentik/core/models.py:257
+#: authentik/core/models.py:270
 msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
 msgstr ""
 
-#: authentik/core/models.py:267
+#: authentik/core/models.py:280
 msgid "Flow used when authorizing this provider."
 msgstr ""
 
-#: authentik/core/models.py:279
+#: authentik/core/models.py:292
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
 msgstr ""
 
-#: authentik/core/models.py:334
+#: authentik/core/models.py:347
 msgid "Application's display Name."
 msgstr ""
 
-#: authentik/core/models.py:335
+#: authentik/core/models.py:348
 msgid "Internal application name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:347
+#: authentik/core/models.py:360
 msgid "Open launch URL in a new browser tab or window."
 msgstr ""
 
-#: authentik/core/models.py:411
+#: authentik/core/models.py:424
 msgid "Application"
 msgstr ""
 
-#: authentik/core/models.py:412
+#: authentik/core/models.py:425
 msgid "Applications"
 msgstr ""
 
-#: authentik/core/models.py:418
+#: authentik/core/models.py:431
 msgid "Use the source-specific identifier"
 msgstr ""
 
-#: authentik/core/models.py:420
+#: authentik/core/models.py:433
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr ""
 
-#: authentik/core/models.py:424
+#: authentik/core/models.py:437
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
 
-#: authentik/core/models.py:427
+#: authentik/core/models.py:440
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
 msgstr ""
 
-#: authentik/core/models.py:431
+#: authentik/core/models.py:444
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr ""
 
-#: authentik/core/models.py:438
+#: authentik/core/models.py:451
 msgid "Source's display Name."
 msgstr ""
 
-#: authentik/core/models.py:439
+#: authentik/core/models.py:452
 msgid "Internal source name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:458
+#: authentik/core/models.py:471
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: authentik/core/models.py:467
+#: authentik/core/models.py:480
 msgid "Flow to use when enrolling new users."
 msgstr ""
 
-#: authentik/core/models.py:475
+#: authentik/core/models.py:488
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr ""
 
-#: authentik/core/models.py:647
+#: authentik/core/models.py:660
 msgid "Token"
 msgstr ""
 
-#: authentik/core/models.py:648
+#: authentik/core/models.py:661
 msgid "Tokens"
 msgstr ""
 
-#: authentik/core/models.py:689
+#: authentik/core/models.py:702
 msgid "Property Mapping"
 msgstr ""
 
-#: authentik/core/models.py:690
+#: authentik/core/models.py:703
 msgid "Property Mappings"
 msgstr ""
 
-#: authentik/core/models.py:725
+#: authentik/core/models.py:738
 msgid "Authenticated Session"
 msgstr ""
 
-#: authentik/core/models.py:726
+#: authentik/core/models.py:739
 msgid "Authenticated Sessions"
 msgstr ""
 
@@ -585,65 +585,65 @@ msgstr ""
 msgid "Invalid kubeconfig"
 msgstr ""
 
-#: authentik/outposts/models.py:122
+#: authentik/outposts/models.py:121
 msgid ""
 "If enabled, use the local connection. Required Docker socket/Kubernetes "
 "Integration"
 msgstr ""
 
-#: authentik/outposts/models.py:152
+#: authentik/outposts/models.py:151
 msgid "Outpost Service-Connection"
 msgstr ""
 
-#: authentik/outposts/models.py:153
+#: authentik/outposts/models.py:152
 msgid "Outpost Service-Connections"
 msgstr ""
 
-#: authentik/outposts/models.py:161
+#: authentik/outposts/models.py:160
 msgid ""
 "Can be in the format of 'unix://<path>' when connecting to a local docker "
 "daemon, or 'https://<hostname>:2376' when connecting to a remote system."
 msgstr ""
 
-#: authentik/outposts/models.py:173
+#: authentik/outposts/models.py:172
 msgid ""
 "CA which the endpoint's Certificate is verified against. Can be left empty "
 "for no validation."
 msgstr ""
 
-#: authentik/outposts/models.py:185
+#: authentik/outposts/models.py:184
 msgid ""
 "Certificate/Key used for authentication. Can be left empty for no "
 "authentication."
 msgstr ""
 
-#: authentik/outposts/models.py:203
+#: authentik/outposts/models.py:202
 msgid "Docker Service-Connection"
 msgstr ""
 
-#: authentik/outposts/models.py:204
+#: authentik/outposts/models.py:203
 msgid "Docker Service-Connections"
 msgstr ""
 
-#: authentik/outposts/models.py:212
+#: authentik/outposts/models.py:211
 msgid ""
 "Paste your kubeconfig here. authentik will automatically use the currently "
 "selected context."
 msgstr ""
 
-#: authentik/outposts/models.py:218
+#: authentik/outposts/models.py:217
 msgid "Verify SSL Certificates of the Kubernetes API endpoint"
 msgstr ""
 
-#: authentik/outposts/models.py:235
+#: authentik/outposts/models.py:234
 msgid "Kubernetes Service-Connection"
 msgstr ""
 
-#: authentik/outposts/models.py:236
+#: authentik/outposts/models.py:235
 msgid "Kubernetes Service-Connections"
 msgstr ""
 
-#: authentik/outposts/models.py:252
+#: authentik/outposts/models.py:251
 msgid ""
 "Select Service-Connection authentik should use to manage this outpost. Leave "
 "empty if authentik should not handle the deployment."
@@ -1373,31 +1373,31 @@ msgstr ""
 msgid "SAML Property Mappings"
 msgstr ""
 
-#: authentik/providers/scim/models.py:26
+#: authentik/providers/scim/models.py:20
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr ""
 
-#: authentik/providers/scim/models.py:27
+#: authentik/providers/scim/models.py:21
 msgid "Authentication token"
 msgstr ""
 
-#: authentik/providers/scim/models.py:33 authentik/sources/ldap/models.py:94
+#: authentik/providers/scim/models.py:27 authentik/sources/ldap/models.py:94
 msgid "Property mappings used for group creation/updating."
 msgstr ""
 
-#: authentik/providers/scim/models.py:75
+#: authentik/providers/scim/models.py:60
 msgid "SCIM Provider"
 msgstr ""
 
-#: authentik/providers/scim/models.py:76
+#: authentik/providers/scim/models.py:61
 msgid "SCIM Providers"
 msgstr ""
 
-#: authentik/providers/scim/models.py:96
+#: authentik/providers/scim/models.py:81
 msgid "SCIM Mapping"
 msgstr ""
 
-#: authentik/providers/scim/models.py:97
+#: authentik/providers/scim/models.py:82
 msgid "SCIM Mappings"
 msgstr ""
 

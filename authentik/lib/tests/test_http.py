@@ -1,7 +1,7 @@
 """Test HTTP Helpers"""
 from django.test import RequestFactory, TestCase
 
-from authentik.core.models import USER_ATTRIBUTE_CAN_OVERRIDE_IP, Token, TokenIntents
+from authentik.core.models import Token, TokenIntents, UserTypes
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.lib.utils.http import OUTPOST_REMOTE_IP_HEADER, OUTPOST_TOKEN_HEADER, get_client_ip
 from authentik.lib.views import bad_request_message
@@ -53,7 +53,7 @@ class TestHTTP(TestCase):
         )
         self.assertEqual(get_client_ip(request), "127.0.0.1")
         # Valid
-        self.user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
+        self.user.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
         self.user.save()
         request = self.factory.get(
             "/",
