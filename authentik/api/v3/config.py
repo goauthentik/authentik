@@ -3,6 +3,7 @@ from pathlib import Path
 
 from django.conf import settings
 from django.db import models
+from django.dispatch import Signal
 from drf_spectacular.utils import extend_schema
 from rest_framework.fields import (
     BooleanField,
@@ -20,6 +21,8 @@ from rest_framework.views import APIView
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.geo import GEOIP_READER
 from authentik.lib.config import CONFIG
+
+capabilities = Signal()
 
 
 class Capabilities(models.TextChoices):
@@ -73,6 +76,9 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_DEBUG)
         if "authentik.enterprise" in settings.INSTALLED_APPS:
             caps.append(Capabilities.IS_ENTERPRISE)
+        for _, result in capabilities.send(sender=self):
+            if result:
+                caps.append(result)
         return caps
 
     def get_config(self) -> ConfigSerializer:

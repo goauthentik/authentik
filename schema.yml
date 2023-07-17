@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.6.0
+  version: 2023.6.1
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -4605,6 +4605,20 @@ paths:
         schema:
           type: string
       - in: query
+        name: type
+        schema:
+          type: string
+          enum:
+          - default
+          - external
+          - internal_service_account
+          - service_account
+        description: |-
+          * `default` - Default
+          * `external` - External
+          * `service_account` - Service Account
+          * `internal_service_account` - Internal Service Account
+      - in: query
         name: username
         schema:
           type: string
@@ -4612,6 +4626,7 @@ paths:
         name: uuid
         schema:
           type: string
+          format: uuid
       tags:
       - core
       security:
@@ -5521,6 +5536,356 @@ paths:
           description: ''
         '400':
           description: Bad request
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /enterprise/license/:
+    get:
+      operationId: enterprise_license_list
+      description: License Viewset
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLicenseList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: enterprise_license_create
+      description: License Viewset
+      tags:
+      - enterprise
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicenseRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /enterprise/license/{license_uuid}/:
+    get:
+      operationId: enterprise_license_retrieve
+      description: License Viewset
+      parameters:
+      - in: path
+        name: license_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: enterprise_license_update
+      description: License Viewset
+      parameters:
+      - in: path
+        name: license_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - enterprise
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LicenseRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: enterprise_license_partial_update
+      description: License Viewset
+      parameters:
+      - in: path
+        name: license_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - enterprise
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLicenseRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/License'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: enterprise_license_destroy
+      description: License Viewset
+      parameters:
+      - in: path
+        name: license_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /enterprise/license/{license_uuid}/used_by/:
+    get:
+      operationId: enterprise_license_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: license_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this license.
+        required: true
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /enterprise/license/forecast/:
+    get:
+      operationId: enterprise_license_forecast_retrieve
+      description: Forecast how many users will be required in a year
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseForecast'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /enterprise/license/get_install_id/:
+    get:
+      operationId: enterprise_license_get_install_id_retrieve
+      description: Get install_id
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallID'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /enterprise/license/summary/:
+    get:
+      operationId: enterprise_license_summary_retrieve
+      description: Get the total license status
+      tags:
+      - enterprise
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LicenseSummary'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
         '403':
           content:
             application/json:
@@ -30468,6 +30833,13 @@ components:
           type: boolean
       required:
       - name
+    InstallID:
+      type: object
+      properties:
+        install_id:
+          type: string
+      required:
+      - install_id
     IntentEnum:
       enum:
       - verification
@@ -31336,6 +31708,86 @@ components:
         * `content_right` - CONTENT_RIGHT
         * `sidebar_left` - SIDEBAR_LEFT
         * `sidebar_right` - SIDEBAR_RIGHT
+    License:
+      type: object
+      description: License Serializer
+      properties:
+        license_uuid:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        key:
+          type: string
+        expiry:
+          type: string
+          format: date-time
+          readOnly: true
+        users:
+          type: integer
+          readOnly: true
+        external_users:
+          type: integer
+          readOnly: true
+      required:
+      - expiry
+      - external_users
+      - key
+      - license_uuid
+      - name
+      - users
+    LicenseForecast:
+      type: object
+      description: Serializer for license forecast
+      properties:
+        users:
+          type: integer
+        external_users:
+          type: integer
+      required:
+      - external_users
+      - users
+    LicenseRequest:
+      type: object
+      description: License Serializer
+      properties:
+        key:
+          type: string
+          minLength: 1
+      required:
+      - key
+    LicenseSummary:
+      type: object
+      description: Serializer for license status
+      properties:
+        users:
+          type: integer
+        external_users:
+          type: integer
+        valid:
+          type: boolean
+        show_admin_warning:
+          type: boolean
+        show_user_warning:
+          type: boolean
+        read_only:
+          type: boolean
+        latest_valid:
+          type: string
+          format: date-time
+        has_license:
+          type: boolean
+      required:
+      - external_users
+      - has_license
+      - latest_valid
+      - read_only
+      - show_admin_warning
+      - show_user_warning
+      - users
+      - valid
     Link:
       type: object
       description: Returns a single link
@@ -33683,6 +34135,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/LDAPSource'
+      required:
+      - pagination
+      - results
+    PaginatedLicenseList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/License'
       required:
       - pagination
       - results
@@ -36850,6 +37337,13 @@ components:
             type: string
             format: uuid
           description: Property mappings used for group creation/updating.
+    PatchedLicenseRequest:
+      type: object
+      description: License Serializer
+      properties:
+        key:
+          type: string
+          minLength: 1
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer
@@ -38033,6 +38527,8 @@ components:
         path:
           type: string
           minLength: 1
+        type:
+          $ref: '#/components/schemas/UserTypeEnum'
     PatchedUserSAMLSourceConnectionRequest:
       type: object
       description: SAML Source Serializer
@@ -41430,6 +41926,8 @@ components:
           readOnly: true
         path:
           type: string
+        type:
+          $ref: '#/components/schemas/UserTypeEnum'
       required:
       - avatar
       - groups_obj
@@ -41888,6 +42386,8 @@ components:
         path:
           type: string
           minLength: 1
+        type:
+          $ref: '#/components/schemas/UserTypeEnum'
       required:
       - name
       - username
@@ -41971,6 +42471,8 @@ components:
           additionalProperties: {}
           description: Get user settings with tenant and group settings applied
           readOnly: true
+        type:
+          $ref: '#/components/schemas/UserTypeEnum'
       required:
       - avatar
       - groups
@@ -42071,6 +42573,18 @@ components:
       - pk
       - source
       - user
+    UserTypeEnum:
+      enum:
+      - default
+      - external
+      - service_account
+      - internal_service_account
+      type: string
+      description: |-
+        * `default` - Default
+        * `external` - External
+        * `service_account` - Service Account
+        * `internal_service_account` - Internal Service Account
     UserVerificationEnum:
       enum:
       - required

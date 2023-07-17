@@ -92,7 +92,7 @@ class TaskInfo:
         GAUGE_TASKS.labels(
             task_name=self.task_name.split(":")[0],
             task_uid=self.result.uid or "",
-            status=self.result.status.value,
+            status=self.result.status.name.lower(),
         ).set(duration)
 
     def save(self, timeout_hours=6):

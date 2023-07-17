@@ -5,3 +5,4 @@ dist
 # don't lint nyc coverage output
 coverage
 src/locale-codes.ts
+storybook-static/

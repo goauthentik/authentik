@@ -22,7 +22,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 			"type":         "search",
 			"app":          selectedApp,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)))
-		req.Log().WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
+		req.Log().WithField("attributes", searchReq.Attributes).WithField("took-ms", span.EndTime.Sub(span.StartTime).Milliseconds()).Info("Search request")
 	}()
 
 	defer func() {
@@ -40,10 +40,7 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	}
 	selectedApp = selectedProvider.GetAppSlug()
 	result, err := ls.searchRoute(req, selectedProvider)
-	if err != nil {
-		return result, nil
-	}
-	return ls.filterResultAttributes(req, result), nil
+	return result, err
 }
 
 func (ls *LDAPServer) fallbackRootDSE(req *search.Request) (ldap.ServerSearchResult, error) {

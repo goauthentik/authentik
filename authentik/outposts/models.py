@@ -20,13 +20,12 @@ from structlog.stdlib import get_logger
 from authentik import __version__, get_build_hash
 from authentik.blueprints.models import ManagedModel
 from authentik.core.models import (
-    USER_ATTRIBUTE_CAN_OVERRIDE_IP,
-    USER_ATTRIBUTE_SA,
     USER_PATH_SYSTEM_PREFIX,
     Provider,
     Token,
     TokenIntents,
     User,
+    UserTypes,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
@@ -346,8 +345,7 @@ class Outpost(SerializerModel, ManagedModel):
             user: User = User.objects.create(username=self.user_identifier)
             user.set_unusable_password()
             user_created = True
-        user.attributes[USER_ATTRIBUTE_SA] = True
-        user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
+        user.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
         user.name = f"Outpost {self.name} Service-Account"
         user.path = USER_PATH_OUTPOSTS
         user.save()

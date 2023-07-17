@@ -15,7 +15,7 @@ from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter
+from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter, UUIDFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
@@ -59,7 +59,6 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import (
-    USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_PATH_SERVICE_ACCOUNT,
     AuthenticatedSession,
@@ -67,6 +66,7 @@ from authentik.core.models import (
     Token,
     TokenIntents,
     User,
+    UserTypes,
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -147,6 +147,18 @@ class UserSerializer(ModelSerializer):
                 raise ValidationError(_("No empty segments in user path allowed."))
         return path
 
+    def validate_type(self, user_type: str) -> str:
+        """Validate user type, internal_service_account is an internal value"""
+        if (
+            self.instance
+            and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT
+            and user_type != UserTypes.INTERNAL_SERVICE_ACCOUNT.value
+        ):
+            raise ValidationError("Can't change internal service account to other user type.")
+        if not self.instance and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT.value:
+            raise ValidationError("Setting a user to internal service account is not allowed.")
+        return user_type
+
     class Meta:
         model = User
         fields = [
@@ -163,6 +175,7 @@ class UserSerializer(ModelSerializer):
             "attributes",
             "uid",
             "path",
+            "type",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
@@ -211,6 +224,7 @@ class UserSelfSerializer(ModelSerializer):
             "avatar",
             "uid",
             "settings",
+            "type",
         ]
         extra_kwargs = {
             "is_active": {"read_only": True},
@@ -284,7 +298,7 @@ class UsersFilter(FilterSet):
     )
 
     is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
-    uuid = CharFilter(field_name="uuid")
+    uuid = UUIDFilter(field_name="uuid")
 
     path = CharFilter(
         field_name="path",
@@ -329,6 +343,7 @@ class UsersFilter(FilterSet):
             "attributes",
             "groups_by_name",
             "groups_by_pk",
+            "type",
         ]
 
 
@@ -421,7 +436,8 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 user: User = User.objects.create(
                     username=username,
                     name=username,
-                    attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: expiring},
+                    type=UserTypes.SERVICE_ACCOUNT,
+                    attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: expiring},
                     path=USER_PATH_SERVICE_ACCOUNT,
                 )
                 user.set_unusable_password()
