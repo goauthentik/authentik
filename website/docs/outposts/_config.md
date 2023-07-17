@@ -64,4 +64,7 @@ kubernetes_image_pull_secrets: []
 # (Available with 2022.11.0+)
 # Applies to: proxy outposts
 kubernetes_ingress_class_name: null
+# Optionally apply an RFC 6902 compliant patch to the Kubernetes Outpost Deployment
+# E.G: [{"op":"add","path":"/spec/template/spec/containers/0/resources","value":{"requests":{"cpu":"2000m","memory":"2000Mi"},"limits":{"cpu":"4000m","memory":"8000Mi"}}}]
+kubernetes_json_patch: null
 ```

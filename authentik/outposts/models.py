@@ -75,6 +75,7 @@ class OutpostConfig:
     kubernetes_service_type: str = field(default="ClusterIP")
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
+    kubernetes_json_patch: Optional[list] = field(default=None)
 
 
 class OutpostModel(Model):

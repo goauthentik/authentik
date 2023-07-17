@@ -1,8 +1,11 @@
 """Kubernetes Deployment Reconciler"""
+from json import dumps
 from typing import TYPE_CHECKING
 
 from django.utils.text import slugify
+from jsonpatch import JsonPatchConflict, JsonPatchException, JsonPatchTestFailed, apply_patch
 from kubernetes.client import (
+    ApiClient,
     AppsV1Api,
     V1Capabilities,
     V1Container,
@@ -21,6 +24,7 @@ from kubernetes.client import (
     V1SecretKeySelector,
     V1SecurityContext,
 )
+from requests.models import Response
 
 from authentik import get_full_version
 from authentik.outposts.controllers.base import FIELD_MANAGER
@@ -55,6 +59,13 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             != reference.spec.template.spec.containers[0].image
         ):
             raise NeedsUpdate()
+        patch = self.outpost.config.kubernetes_json_patch
+        if patch is not None:
+            current_json = ApiClient().sanitize_for_serialization(current)
+
+            if apply_patch(current_json, patch) != current_json:
+                raise NeedsUpdate()
+
         super().reconcile(current, reference)
 
     def get_pod_meta(self, **kwargs) -> dict[str, str]:
@@ -86,7 +97,8 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         image_name = self.controller.get_container_image()
         image_pull_secrets = self.outpost.config.kubernetes_image_pull_secrets
         version = get_full_version()
-        return V1Deployment(
+        patch = self.outpost.config.kubernetes_json_patch
+        v1deploy = V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(
                 replicas=self.outpost.config.kubernetes_replicas,
@@ -168,6 +180,18 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                 ),
             ),
         )
+        v1deploy_json = ApiClient().sanitize_for_serialization(v1deploy)
+        try:
+            if patch is not None:
+                ref_v1deploy = apply_patch(v1deploy_json, patch)
+            else:
+                ref_v1deploy = v1deploy_json
+        except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
+            raise Exception(f"JSON Patch failed: {exc}")  # pylint: disable=broad-exception-raised
+        mock_response = Response()
+        mock_response.data = dumps(ref_v1deploy)
+
+        return ApiClient().deserialize(mock_response, "V1Deployment")
 
     def create(self, reference: V1Deployment):
         return self.api.create_namespaced_deployment(

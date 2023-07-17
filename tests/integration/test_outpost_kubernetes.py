@@ -46,6 +46,64 @@ class OutpostKubernetesTests(TestCase):
 
         config = self.outpost.config
         config.kubernetes_replicas = 3
+        # pylint: disable=line-too-long
+        config.kubernetes_json_patch = list(
+            [
+                {
+                    "op": "add",
+                    "path": "/spec/template/spec/containers/0/resources",
+                    "value": {
+                        "requests": {"cpu": "2000m", "memory": "2000Mi"},
+                        "limits": {"cpu": "4000m", "memory": "8000Mi"},
+                    },
+                },
+                {
+                    "op": "add",
+                    "path": "/spec/template/spec/tolerations",
+                    "value": [{"key": "is_cpu_compute", "operator": "Exists"}],
+                },
+                {
+                    "op": "add",
+                    "path": "/spec/template/spec/affinity",
+                    "value": {
+                        "podAntiAffinity": {
+                            "preferredDuringSchedulingIgnoredDuringExecution": [
+                                {
+                                    "weight": 100,
+                                    "podAffinityTerm": {
+                                        "labelSelector": {
+                                            "matchExpressions": [
+                                                {
+                                                    "key": "app",
+                                                    "operator": "In",
+                                                    "values": ["authentik-outpost"],
+                                                }
+                                            ]
+                                        },
+                                        "topologyKey": "topology.kubernetes.io/zone",
+                                    },
+                                }
+                            ]
+                        },
+                        "nodeAffinity": {
+                            "requiredDuringSchedulingIgnoredDuringExecution": {
+                                "nodeSelectorTerms": [
+                                    {
+                                        "matchExpressions": [
+                                            {
+                                                "key": "topology.kubernetes.io/region",
+                                                "operator": "In",
+                                                "values": ["us-east-1"],
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                        },
+                    },
+                },
+            ]
+        )  # noqa: E501
         self.outpost.config = config
 
         with self.assertRaises(NeedsUpdate):
