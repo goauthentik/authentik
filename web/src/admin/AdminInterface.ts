@@ -80,6 +80,10 @@ export class AdminInterface extends Interface {
                     flex-direction: column;
                     height: 100%;
                 }
+                ak-locale-context {
+                    display: flex;
+                    flex-grow: 1;
+                }
                 .pf-c-page {
                     flex-grow: 1;
                     background-color: var(--pf-c-page--BackgroundColor) !important;
