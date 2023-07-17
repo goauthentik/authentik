@@ -28105,7 +28105,6 @@ components:
       - can_impersonate
       - can_debug
       - is_enterprise
-      - is_enterprise_licensed
       type: string
       description: |-
         * `can_save_media` - Can Save Media
@@ -28113,7 +28112,6 @@ components:
         * `can_impersonate` - Can Impersonate
         * `can_debug` - Can Debug
         * `is_enterprise` - Is Enterprise
-        * `is_enterprise_licensed` - Is Enterprise Licensed
     CaptchaChallenge:
       type: object
       description: Site public key

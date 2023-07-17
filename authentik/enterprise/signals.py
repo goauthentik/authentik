@@ -5,16 +5,7 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.utils.timezone import get_current_timezone
 
-from authentik.api.v3.config import Capabilities, capabilities
-from authentik.enterprise.models import License, LicenseKey
-
-
-@receiver(capabilities)
-def enterprise_capabilities(sender, **_):
-    """Add enterprise licensed capability when license is fully valid"""
-    if LicenseKey.get_total().is_valid():
-        return Capabilities.IS_ENTERPRISE_LICENSED
-    return None
+from authentik.enterprise.models import License
 
 
 @receiver(pre_save, sender=License)
