@@ -54,7 +54,8 @@
                     "no-unknown-tag-name": "off",
                     "no-missing-import": "off",
                     "no-incompatible-type-binding": "off",
-                    "no-unknown-property": "off"
+                    "no-unknown-property": "off",
+                    "no-unknown-attribute": "off"
                 }
             }
         ]
