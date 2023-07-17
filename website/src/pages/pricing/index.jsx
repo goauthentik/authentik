@@ -57,7 +57,7 @@ export default function pricingPage() {
                                 </div>
                                 <div className="card__footer">
                                     <h1>
-                                        $5 <small>/internal user/month</small>
+                                        $5 <small>/default user/month</small>
                                     </h1>
                                     <h1>
                                         $0.02{" "}
@@ -129,8 +129,8 @@ export default function pricingPage() {
                                     body="We only offer support as part of an enterprise license. You can get community support on GitHub and Discord for the open-source version."
                                 />
                                 <Card
-                                    title="What's the difference between internal and external users?"
-                                    body="Internal users might be users such as company employees, which will get access to the full Enterprise feature set. External users might be external consultants or B2C customers. These users don't get access to enterprise features."
+                                    title="What's the difference between default and external users?"
+                                    body="Default users might be users such as company employees, which will get access to the full Enterprise feature set. External users might be external consultants or B2C customers. These users don't get access to enterprise features."
                                 />
                                 <Card
                                     title="Are you planning to add X to authentik?"

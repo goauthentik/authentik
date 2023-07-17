@@ -131,47 +131,45 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     class="pf-l-grid pf-m-gutter pf-m-all-6-col-on-sm pf-m-all-4-col-on-md pf-m-all-3-col-on-lg pf-m-all-3-col-on-xl"
                 >
                     <div class="pf-l-grid__item pf-c-card">
-                        <div class="pf-c-card__title">${msg("How to get a license")}</div>
+                        <div class="pf-c-card__title">${msg("Get a license")}</div>
                         <div class="pf-c-card__body">
                             ${this.installID
                                 ? html` <a
                                       target="_blank"
                                       href=${`https://customers.goauthentik.io/from_authentik/purchase/?install_id=${this.installID}`}
                                       class="pf-c-button pf-m-primary pf-m-block"
-                                      >${msg("Go to the customer portal")}</a
+                                      >${msg("Go to Customer Portal")}</a
                                   >`
                                 : html`<ak-spinner></ak-spinner>`}
                         </div>
                     </div>
-                    <div class="pf-l-grid__item pf-c-card">
-                        <ak-aggregate-card
-                            icon="pf-icon pf-icon-user"
-                            header=${msg("Forecasted default users")}
-                            subtext=${msg("Estimated user count one year from now")}
-                        >
-                            ${this.forecast?.users}
-                        </ak-aggregate-card>
-                    </div>
-                    <div class="pf-l-grid__item pf-c-card">
-                        <ak-aggregate-card
-                            icon="pf-icon pf-icon-user"
-                            header=${msg("Forecasted external users")}
-                            subtext=${msg("Estimated external user count one year from now")}
-                        >
-                            ${this.forecast?.externalUsers}
-                        </ak-aggregate-card>
-                    </div>
-                    <div class="pf-l-grid__item pf-c-card">
-                        <ak-aggregate-card
-                            icon="pf-icon pf-icon-user"
-                            header=${msg("Expiry")}
-                            subtext=${msg("Cumulative license expiry")}
-                        >
-                            ${this.summary?.hasLicense
-                                ? this.summary.latestValid.toLocaleString()
-                                : "-"}
-                        </ak-aggregate-card>
-                    </div>
+
+                    <ak-aggregate-card
+                        class="pf-l-grid__item"
+                        icon="pf-icon pf-icon-user"
+                        header=${msg("Forecast default users")}
+                        subtext=${msg("Estimated user count one year from now")}
+                    >
+                        ~&nbsp;${this.forecast?.users}
+                    </ak-aggregate-card>
+                    <ak-aggregate-card
+                        class="pf-l-grid__item"
+                        icon="pf-icon pf-icon-user"
+                        header=${msg("Forecast external users")}
+                        subtext=${msg("Estimated external user count one year from now")}
+                    >
+                        ~&nbsp;${this.forecast?.externalUsers}
+                    </ak-aggregate-card>
+                    <ak-aggregate-card
+                        class="pf-l-grid__item"
+                        icon="pf-icon pf-icon-user"
+                        header=${msg("Expiry")}
+                        subtext=${msg("Cumulative license expiry")}
+                    >
+                        ${this.summary?.hasLicense
+                            ? this.summary.latestValid.toLocaleString()
+                            : "-"}
+                    </ak-aggregate-card>
                 </div>
             </section>
         `;
@@ -212,10 +210,10 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
     renderObjectCreate(): TemplateResult {
         return html`
             <ak-forms-modal>
-                <span slot="submit"> ${msg("Create")} </span>
-                <span slot="header"> ${msg("Create License")} </span>
+                <span slot="submit"> ${msg("Install")} </span>
+                <span slot="header"> ${msg("Install License")} </span>
                 <ak-enterprise-license-form slot="form"> </ak-enterprise-license-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Install")}</button>
             </ak-forms-modal>
         `;
     }
