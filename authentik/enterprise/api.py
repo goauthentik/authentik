@@ -111,7 +111,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
             data={
                 "users": total.users,
                 "external_users": total.external_users,
-                "is_valid": total.is_valid(),
+                "valid": total.is_valid(),
                 "show_admin_warning": show_admin_warning,
                 "show_user_warning": show_user_warning,
                 "read_only": read_only,

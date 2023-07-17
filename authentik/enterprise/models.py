@@ -90,7 +90,7 @@ class LicenseKey:
             total.users += lic.users
             total.external_users += lic.external_users
             exp_ts = int(mktime(lic.expiry.timetuple()))
-            if exp_ts >= total.exp:
+            if exp_ts <= total.exp:
                 total.exp = exp_ts
             total.flags.extend(lic.status.flags)
         return total
