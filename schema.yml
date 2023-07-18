@@ -31746,8 +31746,14 @@ components:
           type: integer
         external_users:
           type: integer
+        forecasted_users:
+          type: integer
+        forecasted_external_users:
+          type: integer
       required:
       - external_users
+      - forecasted_external_users
+      - forecasted_users
       - users
     LicenseRequest:
       type: object

@@ -28,7 +28,7 @@ export class EnterpriseStatusBanner extends AKElement {
     }
 
     renderBanner(): TemplateResult {
-        return html`<div class="pf-c-banner ${this.summary?.readOnly ? "pf-m-red" : "pf-m-orange"}">
+        return html`<div class="pf-c-banner ${this.summary?.readOnly ? "pf-m-red" : "pf-m-gold"}">
             ${msg("Warning: The current user count has exceeded the configured licenses.")}
             <a href="/if/admin/#/enterprise/licenses"> ${msg("Click here for more info.")} </a>
         </div>`;

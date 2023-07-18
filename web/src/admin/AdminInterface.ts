@@ -75,17 +75,7 @@ export class AdminInterface extends Interface {
                 .display-none {
                     display: none;
                 }
-                :host {
-                    display: flex;
-                    flex-direction: column;
-                    height: 100%;
-                }
-                ak-locale-context {
-                    display: flex;
-                    flex-grow: 1;
-                }
                 .pf-c-page {
-                    flex-grow: 1;
                     background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
                 /* Global page background colour */
@@ -130,8 +120,7 @@ export class AdminInterface extends Interface {
     }
 
     render(): TemplateResult {
-        return html` <ak-locale-context
-            ><ak-enterprise-status interface="admin"></ak-enterprise-status>
+        return html` <ak-locale-context>
             <div class="pf-c-page">
                 <ak-sidebar
                     class="pf-c-page__sidebar ${this.sidebarOpen
