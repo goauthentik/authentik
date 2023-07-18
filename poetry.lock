@@ -1862,23 +1862,23 @@ zookeeper = ["kazoo (>=2.8.0)"]
 
 [[package]]
 name = "kubernetes"
-version = "26.1.0"
+version = "27.2.0"
 description = "Kubernetes python client"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "kubernetes-26.1.0-py2.py3-none-any.whl", hash = "sha256:e3db6800abf7e36c38d2629b5cb6b74d10988ee0cba6fba45595a7cbe60c0042"},
-    {file = "kubernetes-26.1.0.tar.gz", hash = "sha256:5854b0c508e8d217ca205591384ab58389abdae608576f9c9afc35a3c76a366c"},
+    {file = "kubernetes-27.2.0-py2.py3-none-any.whl", hash = "sha256:0f9376329c85cf07615ed6886bf9bf21eb1cbfc05e14ec7b0f74ed8153cd2815"},
+    {file = "kubernetes-27.2.0.tar.gz", hash = "sha256:d479931c6f37561dbfdf28fc5f46384b1cb8b28f9db344ed4a232ce91990825a"},
 ]
 
 [package.dependencies]
 certifi = ">=14.05.14"
 google-auth = ">=1.0.1"
+oauthlib = ">=3.2.2"
 python-dateutil = ">=2.5.3"
 pyyaml = ">=5.4.1"
 requests = "*"
 requests-oauthlib = "*"
-setuptools = ">=21.0.0"
 six = ">=1.9.0"
 urllib3 = ">=1.24.2"
 websocket-client = ">=0.32.0,<0.40.0 || >0.40.0,<0.41.dev0 || >=0.43.dev0"
