@@ -83,6 +83,7 @@ export class AdminInterface extends Interface {
                 ak-locale-context {
                     display: flex;
                     flex-grow: 1;
+                    flex-direction: column;
                 }
                 .pf-c-page {
                     flex-grow: 1;
