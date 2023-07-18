@@ -39,8 +39,8 @@
         "@lit-labs/task": "^2.1.2",
         "@lit/localize": "^0.11.4",
         "@patternfly/patternfly": "^4.224.2",
-        "@sentry/browser": "^7.58.1",
-        "@sentry/tracing": "^7.58.1",
+        "@sentry/browser": "^7.59.2",
+        "@sentry/tracing": "^7.59.2",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
         "chart.js": "^4.3.0",
@@ -76,7 +76,7 @@
         "@rollup/plugin-replace": "^5.0.2",
         "@rollup/plugin-typescript": "^11.1.2",
         "@storybook/addon-essentials": "^7.0.27",
-        "@storybook/addon-links": "^7.0.27",
+        "@storybook/addon-links": "^7.1.0",
         "@storybook/blocks": "^7.0.22",
         "@storybook/web-components": "^7.0.24",
         "@storybook/web-components-vite": "^7.0.27",
@@ -84,8 +84,8 @@
         "@types/chart.js": "^2.9.37",
         "@types/codemirror": "5.60.8",
         "@types/grecaptcha": "^3.0.4",
-        "@typescript-eslint/eslint-plugin": "^6.0.0",
-        "@typescript-eslint/parser": "^6.0.0",
+        "@typescript-eslint/eslint-plugin": "^6.1.0",
+        "@typescript-eslint/parser": "^6.1.0",
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "eslint": "^8.45.0",
@@ -117,6 +117,6 @@
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.18.13",
         "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.18.13"
+        "@esbuild/linux-arm64": "^0.18.14"
     }
 }
