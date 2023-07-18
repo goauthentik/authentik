@@ -7581,6 +7581,110 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.</source>
   <target>启用时，可以通过在密码后添加分号和 TOTP 代码来使用基于代码的多因素身份验证。仅在所有绑定到此提供程序的用户都已配置 TOTP 设备的情况下才应该启用，否则密码可能会因为包含分号而被错误地拒绝。</target>
 </trans-unit>
+<trans-unit id="s9f9492d30a96b9c6">
+  <source>User type</source>
+  <target>用户类型</target>
+</trans-unit>
+<trans-unit id="s0b9a40b7b2853c7d">
+  <source>Default user</source>
+  <target>默认用户</target>
+</trans-unit>
+<trans-unit id="s35b9fa270f45b391">
+  <source>External user</source>
+  <target>外部用户</target>
+</trans-unit>
+<trans-unit id="s1a635369edaf4dc3">
+  <source>Service account</source>
+  <target>服务账户</target>
+</trans-unit>
+<trans-unit id="s0e427111d750cc02">
+  <source>Successfully updated license.</source>
+  <target>已成功更新许可证。</target>
+</trans-unit>
+<trans-unit id="s06ae64e621f302eb">
+  <source>Successfully created license.</source>
+  <target>已成功创建许可证。</target>
+</trans-unit>
+<trans-unit id="s2905c425adae99bd">
+  <source>Install ID</source>
+  <target>安装 ID</target>
+</trans-unit>
+<trans-unit id="sb18ec434a8a3aafb">
+  <source>License key</source>
+  <target>许可证密钥</target>
+</trans-unit>
+<trans-unit id="s2e109263b73c12d5">
+  <source>Licenses</source>
+  <target>许可证</target>
+</trans-unit>
+<trans-unit id="sf8f9f3032e891e16">
+  <source>TODO Copy</source>
+  <target>未定副本</target>
+</trans-unit>
+<trans-unit id="sd49099e9522635f4">
+  <source>License(s)</source>
+  <target>许可证</target>
+</trans-unit>
+<trans-unit id="s3be1d90ffa46b7f1">
+  <source>Enterprise is in preview.</source>
+  <target>企业版目前处于预览状态。</target>
+</trans-unit>
+<trans-unit id="s34dca481f039c226">
+  <source>How to get a license</source>
+  <target>如何获取许可证</target>
+</trans-unit>
+<trans-unit id="s948364901c166232">
+  <source>Copy the installation ID</source>
+  <target>复制安装 ID</target>
+</trans-unit>
+<trans-unit id="s75c167446b237e0f">
+  <source>Then open the customer portal</source>
+  <target>然后打开消费者中心</target>
+</trans-unit>
+<trans-unit id="s9748dd3bd53d27a4">
+  <source>Forecasted default users</source>
+  <target>预测默认用户</target>
+</trans-unit>
+<trans-unit id="s6b18f594d94c2374">
+  <source>Estimated user count one year from now</source>
+  <target>预计从此时开始一年内的用户数</target>
+</trans-unit>
+<trans-unit id="s69f246d164be88d0">
+  <source>Forecasted external users</source>
+  <target>预测外部用户</target>
+</trans-unit>
+<trans-unit id="s878fc2eaf94642db">
+  <source>Estimated external user count one year from now</source>
+  <target>预计从此时开始一年内的外部用户数</target>
+</trans-unit>
+<trans-unit id="sd22bd01bdf28c548">
+  <source>Cumulative license expiry</source>
+  <target>累计许可证过期时间</target>
+</trans-unit>
+<trans-unit id="sdeb6cee42435dd07">
+  <source>Update License</source>
+  <target>更新许可证</target>
+</trans-unit>
+<trans-unit id="s99afa741c259d70e">
+  <source>Create License</source>
+  <target>创建许可证</target>
+</trans-unit>
+<trans-unit id="s7df5b92a3f93544f">
+  <source>Warning: The current user count has exceeded the configured licenses.</source>
+  <target>警告：当前用户数超过了配置的许可证限制</target>
+</trans-unit>
+<trans-unit id="s0141f42936495787">
+  <source>Click here for more info.</source>
+  <target>点击这里了解更多。</target>
+</trans-unit>
+<trans-unit id="s7be2df39f727faa2">
+  <source>Enterprise</source>
+  <target>企业版</target>
+</trans-unit>
+<trans-unit id="s9ce7cc01fb9b5b53">
+  <source>Manage enterprise licenses</source>
+  <target>管理企业版许可证</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
