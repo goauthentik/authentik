@@ -94,6 +94,12 @@ export class UserInterface extends Interface {
                     width: 100vw;
                     position: absolute;
                     z-index: -1;
+                    top: 0;
+                    left: 0;
+                }
+                ak-locale-context {
+                    display: flex;
+                    flex-direction: column;
                 }
             `,
         ];

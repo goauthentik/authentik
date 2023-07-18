@@ -63,7 +63,7 @@ export class PageHeader extends AKElement {
             PFPage,
             PFContent,
             css`
-                :host {
+                .bar {
                     display: flex;
                     flex-direction: row;
                     min-height: 114px;
@@ -126,55 +126,58 @@ export class PageHeader extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<button
-                class="sidebar-trigger pf-c-button pf-m-plain"
-                @click=${() => {
-                    this.dispatchEvent(
-                        new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
-                }}
-            >
-                <i class="fas fa-bars"></i>
-            </button>
-            <section class="pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1>
-                        ${this.renderIcon()}
-                        <slot name="header"> ${this.header} </slot>
-                    </h1>
-                    ${this.description ? html`<p>${this.description}</p>` : html``}
-                </div>
-            </section>
-            <button
-                class="notification-trigger pf-c-button pf-m-plain"
-                @click=${() => {
-                    this.dispatchEvent(
-                        new CustomEvent(EVENT_API_DRAWER_TOGGLE, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
-                }}
-            >
-                <i class="fas fa-code"></i>
-            </button>
-            <button
-                class="notification-trigger pf-c-button pf-m-plain ${this.hasNotifications
-                    ? "has-notifications"
-                    : ""}"
-                @click=${() => {
-                    this.dispatchEvent(
-                        new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
-                            bubbles: true,
-                            composed: true,
-                        }),
-                    );
-                }}
-            >
-                <i class="fas fa-bell"></i>
-            </button> `;
+        return html` <ak-enterprise-status interface="admin"></ak-enterprise-status>
+            <div class="bar">
+                <button
+                    class="sidebar-trigger pf-c-button pf-m-plain"
+                    @click=${() => {
+                        this.dispatchEvent(
+                            new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
+                                bubbles: true,
+                                composed: true,
+                            }),
+                        );
+                    }}
+                >
+                    <i class="fas fa-bars"></i>
+                </button>
+                <section class="pf-c-page__main-section pf-m-light">
+                    <div class="pf-c-content">
+                        <h1>
+                            ${this.renderIcon()}
+                            <slot name="header"> ${this.header} </slot>
+                        </h1>
+                        ${this.description ? html`<p>${this.description}</p>` : html``}
+                    </div>
+                </section>
+                <button
+                    class="notification-trigger pf-c-button pf-m-plain"
+                    @click=${() => {
+                        this.dispatchEvent(
+                            new CustomEvent(EVENT_API_DRAWER_TOGGLE, {
+                                bubbles: true,
+                                composed: true,
+                            }),
+                        );
+                    }}
+                >
+                    <i class="fas fa-code"></i>
+                </button>
+                <button
+                    class="notification-trigger pf-c-button pf-m-plain ${this.hasNotifications
+                        ? "has-notifications"
+                        : ""}"
+                    @click=${() => {
+                        this.dispatchEvent(
+                            new CustomEvent(EVENT_NOTIFICATION_DRAWER_TOGGLE, {
+                                bubbles: true,
+                                composed: true,
+                            }),
+                        );
+                    }}
+                >
+                    <i class="fas fa-bell"></i>
+                </button>
+            </div>`;
     }
 }
