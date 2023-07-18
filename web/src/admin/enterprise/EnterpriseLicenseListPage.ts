@@ -11,7 +11,7 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
 
-import { msg } from "@lit/localize";
+import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -148,17 +148,23 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
                         header=${msg("Forecast default users")}
-                        subtext=${msg("Estimated user count one year from now")}
+                        subtext=${msg(
+                            str`Estimated user count one year from now based on ${this.forecast?.users} current users and ${this.forecast?.forecastedUsers} forecasted users.`,
+                        )}
                     >
-                        ~&nbsp;${this.forecast?.users}
+                        ~&nbsp;${(this.forecast?.users || 0) +
+                        (this.forecast?.forecastedUsers || 0)}
                     </ak-aggregate-card>
                     <ak-aggregate-card
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
                         header=${msg("Forecast external users")}
-                        subtext=${msg("Estimated external user count one year from now")}
+                        subtext=${msg(
+                            str`Estimated user count one year from now based on ${this.forecast?.externalUsers} current external users and ${this.forecast?.forecastedExternalUsers} forecasted external users.`,
+                        )}
                     >
-                        ~&nbsp;${this.forecast?.externalUsers}
+                        ~&nbsp;${(this.forecast?.externalUsers || 0) +
+                        (this.forecast?.forecastedExternalUsers || 0)}
                     </ak-aggregate-card>
                     <ak-aggregate-card
                         class="pf-l-grid__item"

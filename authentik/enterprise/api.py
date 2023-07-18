@@ -64,6 +64,8 @@ class LicenseForecastSerializer(PassiveSerializer):
 
     users = IntegerField(required=True)
     external_users = IntegerField(required=True)
+    forecasted_users = IntegerField(required=True)
+    forecasted_external_users = IntegerField(required=True)
 
 
 class LicenseViewSet(UsedByMixin, ModelViewSet):
@@ -142,8 +144,10 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         forecast_for_months = 12
         response = LicenseForecastSerializer(
             data={
-                "users": users_in_last_month * forecast_for_months,
-                "external_users": external_in_last_month * forecast_for_months,
+                "users": LicenseKey.get_default_user_count(),
+                "external_users": LicenseKey.get_external_user_count(),
+                "forecasted_users": (users_in_last_month * forecast_for_months),
+                "forecasted_external_users": (external_in_last_month * forecast_for_months),
             }
         )
         response.is_valid(raise_exception=True)
