@@ -154,12 +154,12 @@ class ConfigLoader:
     @contextmanager
     def patch(self, path: str, value: Any):
         """Context manager for unittests to patch a value"""
-        original_value = self.y(path)
-        self.y_set(path, value)
+        original_value = self.get(path)
+        self.set(path, value)
         try:
             yield
         finally:
-            self.y_set(path, original_value)
+            self.set(path, original_value)
 
     @property
     def raw(self) -> dict:
@@ -176,6 +176,18 @@ class ConfigLoader:
     def get_bool(self, path: str, default=False) -> bool:
         """Wrapper for get that converts value into boolean"""
         return str(self.get(path, default)).lower() == "true"
+
+    def set(self, path: str, value: Any, sep="."):
+        """Set value using same syntax as get()"""
+        # Walk sub_dicts before parsing path
+        root = self.raw
+        # Walk each component of the path
+        path_parts = path.split(sep)
+        for comp in path_parts[:-1]:
+            if comp not in root:
+                root[comp] = {}
+            root = root.get(comp, {})
+        root[path_parts[-1]] = value
 
 
 CONFIG = ConfigLoader()

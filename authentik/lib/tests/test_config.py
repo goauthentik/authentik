@@ -16,16 +16,16 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         environ[ENV_PREFIX + "_test__test"] = "bar"
         config.update_from_env()
-        self.assertEqual(config.y("test.test"), "bar")
+        self.assertEqual(config.get("test.test"), "bar")
 
     def test_patch(self):
         """Test patch decorator"""
         config = ConfigLoader()
-        config.y_set("foo.bar", "bar")
-        self.assertEqual(config.y("foo.bar"), "bar")
+        config.set("foo.bar", "bar")
+        self.assertEqual(config.get("foo.bar"), "bar")
         with config.patch("foo.bar", "baz"):
-            self.assertEqual(config.y("foo.bar"), "baz")
-        self.assertEqual(config.y("foo.bar"), "bar")
+            self.assertEqual(config.get("foo.bar"), "baz")
+        self.assertEqual(config.get("foo.bar"), "bar")
 
     def test_uri_env(self):
         """Test URI parsing (environment)"""
