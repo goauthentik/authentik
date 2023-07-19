@@ -1,10 +1,11 @@
 """Integrate ./manage.py test with pytest"""
 from argparse import ArgumentParser
+from os import environ
 from unittest import TestCase
 
 from django.conf import settings
 
-from authentik.lib.config import CONFIG
+from authentik.lib.config import reload
 from authentik.lib.sentry import sentry_init
 from tests.e2e.utils import get_docker_tag
 
@@ -31,14 +32,14 @@ class PytestTestRunner:  # pragma: no cover
 
         settings.TEST = True
         settings.CELERY["task_always_eager"] = True
-        CONFIG.set("avatars", "none")
-        CONFIG.set("geoip", "tests/GeoLite2-City-Test.mmdb")
-        CONFIG.set("blueprints_dir", "./blueprints")
-        CONFIG.set(
-            "outposts.container_image_base",
-            f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
-        )
-        CONFIG.set("error_reporting.sample_rate", 0)
+        environ["AUTHENTIK_AVATARS"] = "none"
+        environ["AUTHENTIK_GEOIP"] = "tests/GeoLite2-City-Test.mmdb"
+        environ["AUTHENTIK_BLUEPRINTS_DIR"] = "./blueprints"
+        environ[
+            "outposts.container_image_base"
+        ] = f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}"
+        environ["AUTHENTIK_ERROR_REPORTING__SAMPLE_RATE"] = "0"
+        reload()
         sentry_init(
             environment="testing",
             send_default_pii=True,
