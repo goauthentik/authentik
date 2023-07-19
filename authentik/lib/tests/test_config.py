@@ -31,8 +31,8 @@ class TestConfig(TestCase):
         """Test URI parsing (environment)"""
         config = ConfigLoader()
         environ["foo"] = "bar"
-        self.assertEqual(config.parse_uri("env://foo"), "bar")
-        self.assertEqual(config.parse_uri("env://foo?bar"), "bar")
+        self.assertEqual(config.parse_uri("env://foo").value, "bar")
+        self.assertEqual(config.parse_uri("env://foo?bar").value, "bar")
 
     def test_uri_file(self):
         """Test URI parsing (file load)"""
@@ -41,10 +41,24 @@ class TestConfig(TestCase):
         write(file, "foo".encode())
         _, file2_name = mkstemp()
         chmod(file2_name, 0o000)  # Remove all permissions so we can't read the file
-        self.assertEqual(config.parse_uri(f"file://{file_name}"), "foo")
-        self.assertEqual(config.parse_uri(f"file://{file2_name}?def"), "def")
+        self.assertEqual(config.parse_uri(f"file://{file_name}").value, "foo")
+        self.assertEqual(config.parse_uri(f"file://{file2_name}?def").value, "def")
         unlink(file_name)
         unlink(file2_name)
+
+    def test_uri_file_update(self):
+        """Test URI parsing (file load and update)"""
+        file, file_name = mkstemp()
+        write(file, "foo".encode())
+        config = ConfigLoader(file_test=f"file://{file_name}")
+        self.assertEqual(config.get("file_test"), "foo")
+
+        # Update config file
+        write(file, "bar".encode())
+        config.refresh("file_test")
+        self.assertEqual(config.get("file_test"), "foobar")
+
+        unlink(file_name)
 
     def test_file_update(self):
         """Test update_from_file"""
