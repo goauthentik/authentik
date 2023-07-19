@@ -166,15 +166,18 @@ class ConfigLoader:
         """Get raw config dictionary"""
         return self.__config
 
-    # pylint: disable=invalid-name
-    def y(self, path: str, default=None, sep=".") -> Any:
+    def get(self, path: str, default=None, sep=".") -> Any:
         """Access attribute by using yaml path"""
         # Walk sub_dicts before parsing path
         root = self.raw
         # Walk each component of the path
         return get_path_from_dict(root, path, sep=sep, default=default)
 
-    def y_set(self, path: str, value: Any, sep="."):
+    def get_bool(self, path: str, default=False) -> bool:
+        """Wrapper for get that converts value into boolean"""
+        return str(self.y(path, default)).lower() == "true"
+
+    def set(self, path: str, value: Any, sep="."):
         """Set value using same syntax as y()"""
         # Walk sub_dicts before parsing path
         root = self.raw
@@ -185,10 +188,6 @@ class ConfigLoader:
                 root[comp] = {}
             root = root.get(comp, {})
         root[path_parts[-1]] = value
-
-    def y_bool(self, path: str, default=False) -> bool:
-        """Wrapper for y that converts value into boolean"""
-        return str(self.y(path, default)).lower() == "true"
 
 
 CONFIG = ConfigLoader()
@@ -206,4 +205,4 @@ if __name__ == "__main__":
     if len(argv) < 2:
         print(dumps(CONFIG.raw, indent=4))
     else:
-        print(CONFIG.y(argv[1]))
+        print(CONFIG.get(argv[1]))

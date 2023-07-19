@@ -10,6 +10,6 @@ class DatabaseWrapper(BaseDatabaseWrapper):
     def get_connection_params(self):
         reload()
         conn_params = super().get_connection_params()
-        conn_params["user"] = CONFIG.y("postgresql.user")
-        conn_params["password"] = CONFIG.y("postgresql.password")
+        conn_params["user"] = CONFIG.get("postgresql.user")
+        conn_params["password"] = CONFIG.get("postgresql.password")
         return conn_params

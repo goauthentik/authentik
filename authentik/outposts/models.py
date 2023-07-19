@@ -58,7 +58,7 @@ class OutpostConfig:
     authentik_host_insecure: bool = False
     authentik_host_browser: str = ""
 
-    log_level: str = CONFIG.y("log_level")
+    log_level: str = CONFIG.get("log_level")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
 
     container_image: Optional[str] = field(default=None)

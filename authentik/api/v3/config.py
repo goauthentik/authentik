@@ -70,7 +70,7 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_SAVE_MEDIA)
         if GEOIP_READER.enabled:
             caps.append(Capabilities.CAN_GEO_IP)
-        if CONFIG.y_bool("impersonation"):
+        if CONFIG.get_bool("impersonation"):
             caps.append(Capabilities.CAN_IMPERSONATE)
         if settings.DEBUG:  # pragma: no cover
             caps.append(Capabilities.CAN_DEBUG)
@@ -86,17 +86,17 @@ class ConfigView(APIView):
         return ConfigSerializer(
             {
                 "error_reporting": {
-                    "enabled": CONFIG.y("error_reporting.enabled"),
-                    "sentry_dsn": CONFIG.y("error_reporting.sentry_dsn"),
-                    "environment": CONFIG.y("error_reporting.environment"),
-                    "send_pii": CONFIG.y("error_reporting.send_pii"),
-                    "traces_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.4)),
+                    "enabled": CONFIG.get("error_reporting.enabled"),
+                    "sentry_dsn": CONFIG.get("error_reporting.sentry_dsn"),
+                    "environment": CONFIG.get("error_reporting.environment"),
+                    "send_pii": CONFIG.get("error_reporting.send_pii"),
+                    "traces_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.4)),
                 },
                 "capabilities": self.get_capabilities(),
-                "cache_timeout": int(CONFIG.y("redis.cache_timeout")),
-                "cache_timeout_flows": int(CONFIG.y("redis.cache_timeout_flows")),
-                "cache_timeout_policies": int(CONFIG.y("redis.cache_timeout_policies")),
-                "cache_timeout_reputation": int(CONFIG.y("redis.cache_timeout_reputation")),
+                "cache_timeout": int(CONFIG.get("redis.cache_timeout")),
+                "cache_timeout_flows": int(CONFIG.get("redis.cache_timeout_flows")),
+                "cache_timeout_policies": int(CONFIG.get("redis.cache_timeout_policies")),
+                "cache_timeout_reputation": int(CONFIG.get("redis.cache_timeout_reputation")),
             }
         )
 

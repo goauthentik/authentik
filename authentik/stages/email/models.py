@@ -107,13 +107,13 @@ class EmailStage(Stage):
         if self.use_global_settings:
             reload()
             return self.backend_class(
-                host=CONFIG.y("email.host"),
-                port=int(CONFIG.y("email.port")),
-                username=CONFIG.y("email.username"),
-                password=CONFIG.y("email.password"),
-                use_tls=CONFIG.y_bool("email.use_tls", False),
-                use_ssl=CONFIG.y_bool("email.use_ssl", False),
-                timeout=int(CONFIG.y("email.timeout")),
+                host=CONFIG.get("email.host"),
+                port=int(CONFIG.get("email.port")),
+                username=CONFIG.get("email.username"),
+                password=CONFIG.get("email.password"),
+                use_tls=CONFIG.get_bool("email.use_tls", False),
+                use_ssl=CONFIG.get_bool("email.use_ssl", False),
+                timeout=int(CONFIG.get("email.timeout")),
             )
         return self.backend_class(
             host=self.host,

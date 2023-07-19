@@ -78,7 +78,7 @@ class CurrentTenantSerializer(PassiveSerializer):
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,
-        default=CONFIG.y("footer_links", []),
+        default=CONFIG.get("footer_links", []),
     )
     ui_theme = ChoiceField(
         choices=Themes.choices,
