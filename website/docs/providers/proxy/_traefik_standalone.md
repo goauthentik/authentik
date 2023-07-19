@@ -23,11 +23,11 @@ http:
             middlewares:
                 - name: authentik
             priority: 10
-            services: app
+            service: app
         default-router-auth:
-            match: "Host(`app.company`) && PathPrefix(`/outpost.goauthentik.io/`)"
+            rule: "Host(`app.company`) && PathPrefix(`/outpost.goauthentik.io/`)"
             priority: 15
-            services: authentik
+            service: authentik
     services:
         app:
             loadBalancer:
