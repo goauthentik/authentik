@@ -1,6 +1,7 @@
 """authentik database backend"""
-from authentik.lib.config import CONFIG
 from django_prometheus.db.backends.postgresql.base import DatabaseWrapper as BaseDatabaseWrapper
+
+from authentik.lib.config import CONFIG
 
 
 class DatabaseWrapper(BaseDatabaseWrapper):
