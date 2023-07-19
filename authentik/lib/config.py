@@ -195,6 +195,17 @@ CONFIG = ConfigLoader()
 
 def reload():
     """Reload config"""
+    # This is currently a very crude way of reloading the config
+    # - it doesn't keep any changes that were done by set() or @patch()
+    # - it needs to be manually triggered and does not watch files
+    # - I mean this is using the `global` keyword, it can't possibly be good
+    from django.conf import settings
+
+    # This is even more crude, when testing we don't want to refresh the config
+    # as that's basically the only scenario we use .set and .patch, and we don't
+    # (shouldn't need to) worry about changing credentials
+    if settings.TEST:
+        return
     # pylint: disable=global-statement
     global CONFIG
     new_config = ConfigLoader()
