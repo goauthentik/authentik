@@ -1,7 +1,6 @@
 """Test Enroll flow"""
 from time import sleep
 
-from django.test import override_settings
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.wait import WebDriverWait
@@ -9,6 +8,7 @@ from selenium.webdriver.support.wait import WebDriverWait
 from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import User
 from authentik.flows.models import Flow
+from authentik.lib.config import CONFIG
 from authentik.stages.identification.models import IdentificationStage
 from tests.e2e.utils import SeleniumTestCase, retry
 
@@ -56,7 +56,7 @@ class TestFlowsEnroll(SeleniumTestCase):
     @apply_blueprint(
         "example/flows-enrollment-email-verification.yaml",
     )
-    @override_settings(EMAIL_PORT=1025)
+    @CONFIG.patch("email.port", 1025)
     def test_enroll_email(self):
         """Test enroll with Email verification"""
         # Attach enrollment flow to identification stage
