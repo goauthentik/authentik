@@ -52,72 +52,41 @@ Let's create a [Lit context](https://lit.dev/docs/data/context/). That's straigh
 
 ```typescript
 // ./localize/context.ts
-
 import { createContext } from "@lit-labs/context";
-
 export const localeContext = createContext<string>("locale");
-
 export default localeContext;
 ```
 
 All we're storing in this is the string for the locale. There are any number of places where the locale request could come from: the user's browser setting, the URL, a configuration setting from the server, the default fallback. Once we have the context and the `configureLocalization()`function, we need to preserve and update that context. Here's what the top of that context object looks like:
 
 ```
-
 @customElement("locale-context")
-
 export class LocaleContext extends LitElement {
-
     @provide({ context: locale })
-
     @property()
-
     locale = "en";
-
     constructor() {
-
         super();
-
         const [getLocale, setLocale] = configureLocalization();
-
         this.getLocale = getLocale;
-
         this.setLocale = setLocale;
-
         this.updateLocaleHandler = this.updateLocaleHandler.bind(this);
-
     }
-
     connectedCallback() {
-
         super.connectedCallback();
-
         window.addEventListener('custom-request-locale-change', this.updateLocaleHandler);
-
         this.setLocale(this.locale);
-
     }
-
     disconnectedCallback() {
-
         window.removeEventListener('custom-request-locale-change', this.updateLocaleHandler);
-
         super.connectedCallback();
-
     }
-
     updateLocaleHandler(ev: Event) {
-
         this.updateLocale((ev as CustomEvent).detail.locale);
-
         ev.stopPropagation();
-
     }
-
     render() {
-
         return html`<slot></slot>`;
-
     }
 
 ```
@@ -137,29 +106,17 @@ The reason we preserve `getLocale()` and `setLocale()` here is that Lit Localize
 With all that in mind, the actual `updateLocale` library is easy:
 
 ```typescript
-
     updateLocale(code: string) {
-
         if (this.getLocale() === code) {
-
             return;
-
         }
-
         const locale = getBestMatchLocale(code);
-
         if (!locale) {
-
             console.warn(`failed to find locale for code ${code}`);
-
             return;
-
         }
-
         this.setLocale(locale)
-
     }
-
 ```
 
 I won't provide the function `getBestMatchLocale`; it takes the requested locale code you pass it and returns an object containing the path to the locale file, the exact code you want to instantiate, and a label for the language such as "French" or "English" or "Chinese (Traditional)".
@@ -178,9 +135,7 @@ When the user makes a selection, your component just needs to send an event:
 this.dispatchEvent(
     new CustomEvent("custom-request-locale-change", {
         composed: true,
-
         bubbles: true,
-
         details: { locale: requestedCode },
     }),
 );
