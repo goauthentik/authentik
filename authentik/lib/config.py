@@ -193,6 +193,15 @@ class ConfigLoader:
 
 CONFIG = ConfigLoader()
 
+
+def reload():
+    """Reload config"""
+    # pylint: disable=global-statement
+    global CONFIG
+    new_config = ConfigLoader()
+    CONFIG = new_config
+
+
 if __name__ == "__main__":
     if len(argv) < 2:
         print(dumps(CONFIG.raw, indent=4))
