@@ -31,14 +31,14 @@ class PytestTestRunner:  # pragma: no cover
 
         settings.TEST = True
         settings.CELERY["task_always_eager"] = True
-        CONFIG.y_set("avatars", "none")
-        CONFIG.y_set("geoip", "tests/GeoLite2-City-Test.mmdb")
-        CONFIG.y_set("blueprints_dir", "./blueprints")
-        CONFIG.y_set(
+        CONFIG.set("avatars", "none")
+        CONFIG.set("geoip", "tests/GeoLite2-City-Test.mmdb")
+        CONFIG.set("blueprints_dir", "./blueprints")
+        CONFIG.set(
             "outposts.container_image_base",
             f"ghcr.io/goauthentik/dev-%(type)s:{get_docker_tag()}",
         )
-        CONFIG.y_set("error_reporting.sample_rate", 0)
+        CONFIG.set("error_reporting.sample_rate", 0)
         sentry_init(
             environment="testing",
             send_default_pii=True,

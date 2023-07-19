@@ -596,7 +596,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @action(detail=True, methods=["POST"])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
-        if not CONFIG.y_bool("impersonation"):
+        if not CONFIG.get_bool("impersonation"):
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
         if not request.user.has_perm("impersonate"):

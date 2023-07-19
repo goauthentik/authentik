@@ -18,7 +18,7 @@ class Command(BaseCommand):
 
     def handle(self, **options):
         close_old_connections()
-        if CONFIG.y_bool("remote_debug"):
+        if CONFIG.get_bool("remote_debug"):
             import debugpy
 
             debugpy.listen(("0.0.0.0", 6900))  # nosec

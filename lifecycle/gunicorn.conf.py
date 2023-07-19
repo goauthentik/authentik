@@ -37,7 +37,7 @@ makedirs(prometheus_tmp_dir, exist_ok=True)
 max_requests = 1000
 max_requests_jitter = 50
 
-_debug = CONFIG.y_bool("DEBUG", False)
+_debug = CONFIG.get_bool("DEBUG", False)
 
 logconfig_dict = {
     "version": 1,
@@ -80,8 +80,8 @@ if SERVICE_HOST_ENV_NAME in os.environ:
 else:
     default_workers = max(cpu_count() * 0.25, 1) + 1  # Minimum of 2 workers
 
-workers = int(CONFIG.y("web.workers", default_workers))
-threads = int(CONFIG.y("web.threads", 4))
+workers = int(CONFIG.get("web.workers", default_workers))
+threads = int(CONFIG.get("web.threads", 4))
 
 
 def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):
@@ -133,7 +133,7 @@ def pre_fork(server: "Arbiter", worker: DjangoUvicornWorker):
     worker._worker_id = _next_worker_id(server)
 
 
-if not CONFIG.y_bool("disable_startup_analytics", False):
+if not CONFIG.get_bool("disable_startup_analytics", False):
     env = get_env()
     should_send = env not in ["dev", "ci"]
     if should_send:
@@ -158,7 +158,7 @@ if not CONFIG.y_bool("disable_startup_analytics", False):
         except Exception:  # nosec
             pass
 
-if CONFIG.y_bool("remote_debug"):
+if CONFIG.get_bool("remote_debug"):
     import debugpy
 
     debugpy.listen(("0.0.0.0", 6800))  # nosec
