@@ -14,6 +14,7 @@ tags:
     - locale
     - authentik
 hide_table_of_contents: false
+image: ./image1.jpg
 ---
 
 [Lit](https://lit.dev/) comes with its own library to help your app support multiple written languages. Lit's localization feature updates the page automatically when a language is switched during a browser session, but the documentation does not describe **how** you can switch languages.
