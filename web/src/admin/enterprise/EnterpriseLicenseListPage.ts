@@ -136,7 +136,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                             ${this.installID
                                 ? html` <a
                                       target="_blank"
-                                      href=${`https://customers.goauthentik.io/from_authentik/purchase/?install_id=${this.installID}`}
+                                      href=${`https://customers.goauthentik.io/from_authentik/purchase/?install_id=${encodeURIComponent(
+                                          this.installID,
+                                      )}&authentik_url=${encodeURI(window.location.origin)}`}
                                       class="pf-c-button pf-m-primary pf-m-block"
                                       >${msg("Go to Customer Portal")}</a
                                   >`
