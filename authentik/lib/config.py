@@ -118,6 +118,8 @@ class ConfigLoader:
             else:
                 if isinstance(value, str):
                     value = self.parse_uri(value)
+                elif isinstance(value, Attr) and isinstance(value.value, str):
+                    value = self.parse_uri(value.value)
                 elif not isinstance(value, Attr):
                     value = Attr(value)
                 root[key] = value
