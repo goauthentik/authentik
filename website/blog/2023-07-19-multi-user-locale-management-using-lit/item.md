@@ -20,6 +20,8 @@ hide_table_of_contents: false
 
 Let's dive into how you might do that.
 
+![](./image1.jpg)
+
 <!--truncate-->
 
 ## Lit and Localization
