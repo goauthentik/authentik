@@ -60,7 +60,7 @@ class TestConfig(TestCase):
 
         unlink(file_name)
 
-    def test_uri_env(self):
+    def test_uri_env_full(self):
         """Test URI set as env variable"""
         environ["AUTHENTIK_TEST_VAR"] = "file:///foo?bar"
         config = ConfigLoader()
