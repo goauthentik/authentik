@@ -1,6 +1,6 @@
 ---
 title: "Multi-user locale management using Lit"
-slug: 2023-07-19-multi-user-locale-management-using-lit
+slug: 2023-07-20-multi-user-locale-management-using-lit
 authors:
     - name: Kenneth Sternberg
       title: Sr. Frontend Developer at Authentik Security Inc
