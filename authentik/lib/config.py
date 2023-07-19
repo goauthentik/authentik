@@ -71,8 +71,6 @@ class ConfigLoader:
 
     A variable like AUTHENTIK_POSTGRESQL__HOST would translate to postgresql.host"""
 
-    loaded_file = []
-
     def __init__(self, **kwargs):
         super().__init__()
         self.__config = {}
@@ -154,7 +152,6 @@ class ConfigLoader:
                 try:
                     self.update(self.__config, yaml.safe_load(file))
                     self.log("debug", "Loaded config", file=str(path))
-                    self.loaded_file.append(path)
                 except yaml.YAMLError as exc:
                     raise ImproperlyConfigured from exc
         except PermissionError as exc:
