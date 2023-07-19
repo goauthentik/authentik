@@ -59,7 +59,7 @@ export default localeContext;
 
 All we're storing in this is the string for the locale. There are any number of places where the locale request could come from: the user's browser setting, the URL, a configuration setting from the server, the default fallback. Once we have the context and the `configureLocalization()`function, we need to preserve and update that context. Here's what the top of that context object looks like:
 
-```
+```typescript
 @customElement("locale-context")
 export class LocaleContext extends LitElement {
     @provide({ context: locale })
@@ -141,7 +141,7 @@ this.dispatchEvent(
 );
 ```
 
-... and that's it. The top-level context will receive this event and attempt to load the requested locale. If that works, it will fire off a re-render request and all your text will be updated with the new language pack.
+...and that's it. The top-level context will receive this event and attempt to load the requested locale. If that works, it will fire off a re-render request and all your text will be updated with the new language pack.
 
 ## What We've Done
 
