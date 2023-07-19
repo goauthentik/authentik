@@ -21,7 +21,7 @@ http:
         default-router:
             rule: "Host(`app.company`)"
             middlewares:
-                - name: authentik
+                - authentik
             priority: 10
             service: app
         default-router-auth:
