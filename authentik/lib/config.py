@@ -121,10 +121,6 @@ class ConfigLoader:
                 error=str(exc),
             )
 
-    def update_from_dict(self, update: dict):
-        """Update config from dict"""
-        self.__config.update(update)
-
     def update_from_env(self):
         """Check environment variables"""
         outer = {}
