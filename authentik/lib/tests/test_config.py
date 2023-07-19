@@ -60,6 +60,12 @@ class TestConfig(TestCase):
 
         unlink(file_name)
 
+    def test_uri_env(self):
+        """Test URI set as env variable"""
+        environ["AUTHENTIK_TEST_VAR"] = "file:///foo?bar"
+        config = ConfigLoader()
+        self.assertEqual(config.get("test_var"), "bar")
+
     def test_file_update(self):
         """Test update_from_file"""
         config = ConfigLoader()
