@@ -94,7 +94,7 @@ export class LocaleContext extends LitElement {
 
 ```
 
-This is fairly boiler-plate. When this components is constructed by the browser it loads the locale and sets up the update handler. Because the update handler runs in the context of an event handler, we make sure to `.bind()` it to the instance that it will need to access. When this component is connected to the browser, it will have access to the requested locale specified when it becomes part of the DOM, so we call `setLocale()` at that moment.
+This is fairly boiler-plate. When this component is constructed by the browser it loads the locale and sets up the update handler. Because the update handler runs in the context of an event handler, we make sure to `.bind()` it to the instance that it will need to access. When this component is connected to the browser, it will have access to the requested locale specified when it becomes part of the DOM, so we call `setLocale()` at that moment.
 
 The `as CustomEvent` cast there is just for show; please do something smarter with an [assertion function](https://blog.logrocket.com/assertion-functions-typescript/).
 
