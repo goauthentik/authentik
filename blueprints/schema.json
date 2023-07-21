@@ -3984,7 +3984,7 @@
                         "type": {
                             "type": "string",
                             "enum": [
-                                "default",
+                                "internal",
                                 "external",
                                 "service_account",
                                 "internal_service_account"
@@ -4185,7 +4185,7 @@
                         "type": {
                             "type": "string",
                             "enum": [
-                                "default",
+                                "internal",
                                 "external",
                                 "service_account",
                                 "internal_service_account"
@@ -4390,7 +4390,7 @@
                         "type": {
                             "type": "string",
                             "enum": [
-                                "default",
+                                "internal",
                                 "external",
                                 "service_account",
                                 "internal_service_account"
@@ -6556,7 +6556,7 @@
                         "type": {
                             "type": "string",
                             "enum": [
-                                "default",
+                                "internal",
                                 "external",
                                 "service_account",
                                 "internal_service_account"
@@ -7301,7 +7301,7 @@
                         "type": {
                             "type": "string",
                             "enum": [
-                                "default",
+                                "internal",
                                 "external",
                                 "service_account",
                                 "internal_service_account"
@@ -8387,7 +8387,7 @@
                 "type": {
                     "type": "string",
                     "enum": [
-                        "default",
+                        "internal",
                         "external",
                         "service_account",
                         "internal_service_account"

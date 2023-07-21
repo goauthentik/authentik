@@ -98,7 +98,10 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         return super.renderEmpty(html`
             ${inner
                 ? inner
-                : html`<ak-empty-state icon=${this.pageIcon()} header="${msg("No licenses found.")}">
+                : html`<ak-empty-state
+                      icon=${this.pageIcon()}
+                      header="${msg("No licenses found.")}"
+                  >
                       <div slot="body">
                           ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
                       </div>
@@ -164,9 +167,9 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     <ak-aggregate-card
                         class="pf-l-grid__item"
                         icon="pf-icon pf-icon-user"
-                        header=${msg("Forecast default users")}
+                        header=${msg("Forecast internal users")}
                         subtext=${msg(
-                            str`Estimated user count one year from now based on ${this.forecast?.users} current users and ${this.forecast?.forecastedUsers} forecasted users.`,
+                            str`Estimated user count one year from now based on ${this.forecast?.users} current internal users and ${this.forecast?.forecastedUsers} forecasted internal users.`,
                         )}
                     >
                         ~&nbsp;${(this.forecast?.users || 0) +

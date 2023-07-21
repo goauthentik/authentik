@@ -4609,12 +4609,12 @@ paths:
         schema:
           type: string
           enum:
-          - default
           - external
+          - internal
           - internal_service_account
           - service_account
         description: |-
-          * `default` - Default
+          * `internal` - Internal
           * `external` - External
           * `service_account` - Service Account
           * `internal_service_account` - Internal Service Account
@@ -42581,13 +42581,13 @@ components:
       - user
     UserTypeEnum:
       enum:
-      - default
+      - internal
       - external
       - service_account
       - internal_service_account
       type: string
       description: |-
-        * `default` - Default
+        * `internal` - Internal
         * `external` - External
         * `service_account` - Service Account
         * `internal_service_account` - Internal Service Account

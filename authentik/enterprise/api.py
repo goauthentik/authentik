@@ -137,7 +137,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         last_month = now() - timedelta(days=30)
         # Forecast for default users
         users_in_last_month = User.objects.filter(
-            type=UserTypes.DEFAULT, date_joined__gte=last_month
+            type=UserTypes.INTERNAL, date_joined__gte=last_month
         ).count()
         # Forecast for external users
         external_in_last_month = LicenseKey.get_external_user_count()
