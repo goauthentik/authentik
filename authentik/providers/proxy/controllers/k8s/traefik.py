@@ -18,6 +18,10 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler):
             self.reconciler = Traefik2MiddlewareReconciler(controller)
 
     @property
+    def reconciler_name(self) -> str:
+        return self.reconciler.reconciler_name
+
+    @property
     def noop(self) -> bool:
         return self.reconciler.noop
 

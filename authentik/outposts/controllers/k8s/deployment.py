@@ -1,11 +1,8 @@
 """Kubernetes Deployment Reconciler"""
-from json import dumps
 from typing import TYPE_CHECKING
 
 from django.utils.text import slugify
-from jsonpatch import JsonPatchConflict, JsonPatchException, JsonPatchTestFailed, apply_patch
 from kubernetes.client import (
-    ApiClient,
     AppsV1Api,
     V1Capabilities,
     V1Container,
@@ -24,10 +21,9 @@ from kubernetes.client import (
     V1SecretKeySelector,
     V1SecurityContext,
 )
-from requests.models import Response
 
 from authentik import get_full_version
-from authentik.outposts.controllers.base import FIELD_MANAGER, ControllerException
+from authentik.outposts.controllers.base import FIELD_MANAGER
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
 from authentik.outposts.controllers.k8s.utils import compare_ports
@@ -47,6 +43,10 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         self.api = AppsV1Api(controller.client)
         self.outpost = self.controller.outpost
 
+    @property
+    def reconciler_name(self) -> str:
+        return "deployment"
+
     def reconcile(self, current: V1Deployment, reference: V1Deployment):
         compare_ports(
             current.spec.template.spec.containers[0].ports,
@@ -59,13 +59,6 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             != reference.spec.template.spec.containers[0].image
         ):
             raise NeedsUpdate()
-        patch = self.outpost.config.kubernetes_json_patch
-        if patch is not None:
-            current_json = ApiClient().sanitize_for_serialization(current)
-
-            if apply_patch(current_json, patch) != current_json:
-                raise NeedsUpdate()
-
         super().reconcile(current, reference)
 
     def get_pod_meta(self, **kwargs) -> dict[str, str]:
@@ -97,8 +90,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         image_name = self.controller.get_container_image()
         image_pull_secrets = self.outpost.config.kubernetes_image_pull_secrets
         version = get_full_version()
-        patch = self.outpost.config.kubernetes_json_patch
-        v1deploy = V1Deployment(
+        return V1Deployment(
             metadata=meta,
             spec=V1DeploymentSpec(
                 replicas=self.outpost.config.kubernetes_replicas,
@@ -180,18 +172,6 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
                 ),
             ),
         )
-        v1deploy_json = ApiClient().sanitize_for_serialization(v1deploy)
-        try:
-            if patch is not None:
-                ref_v1deploy = apply_patch(v1deploy_json, patch)
-            else:
-                ref_v1deploy = v1deploy_json
-        except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
-            raise ControllerException(f"JSON Patch failed: {exc}") from exc
-        mock_response = Response()
-        mock_response.data = dumps(ref_v1deploy)
-
-        return ApiClient().deserialize(mock_response, "V1Deployment")
 
     def create(self, reference: V1Deployment):
         return self.api.create_namespaced_deployment(

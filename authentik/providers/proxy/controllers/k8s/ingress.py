@@ -31,6 +31,10 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
         super().__init__(controller)
         self.api = NetworkingV1Api(controller.client)
 
+    @property
+    def reconciler_name(self) -> str:
+        return "ingress"
+
     def _check_annotations(self, reference: V1Ingress):
         """Check that all annotations *we* set are correct"""
         for key, value in self.get_ingress_annotations().items():

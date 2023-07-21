@@ -35,8 +35,8 @@ class OutpostKubernetesTests(TestCase):
             service_connection=self.service_connection,
         )
         self.outpost.providers.add(self.provider)
-        self.outpost.config.kubernetes_json_patch = list(
-            [
+        self.outpost.config.kubernetes_json_patches = {
+            "deployment": [
                 {
                     "op": "add",
                     "path": "/spec/template/spec/containers/0/resources",
@@ -46,7 +46,7 @@ class OutpostKubernetesTests(TestCase):
                     },
                 }
             ]
-        )
+        }
         self.outpost.providers.add(self.provider)
         self.outpost.save()
 
@@ -59,8 +59,8 @@ class OutpostKubernetesTests(TestCase):
 
         config = self.outpost.config
         config.kubernetes_replicas = 3
-        config.kubernetes_json_patch = list(
-            [
+        config.kubernetes_json_patches = {
+            "deployment": [
                 {
                     "op": "add",
                     "path": "/spec/template/spec/containers/0/resources",
@@ -70,7 +70,7 @@ class OutpostKubernetesTests(TestCase):
                     },
                 }
             ]
-        )
+        }
         self.outpost.config = config
 
         with self.assertRaises(NeedsUpdate):

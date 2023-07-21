@@ -68,6 +68,10 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         self.crd_plural = "middlewares"
 
     @property
+    def reconciler_name(self) -> str:
+        return "traefik middleware"
+
+    @property
     def noop(self) -> bool:
         if not ProxyProvider.objects.filter(
             outpost__in=[self.controller.outpost],
