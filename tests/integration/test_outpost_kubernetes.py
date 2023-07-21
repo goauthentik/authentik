@@ -35,6 +35,19 @@ class OutpostKubernetesTests(TestCase):
             service_connection=self.service_connection,
         )
         self.outpost.providers.add(self.provider)
+        self.outpost.config.kubernetes_json_patch = list(
+            [
+                {
+                    "op": "add",
+                    "path": "/spec/template/spec/containers/0/resources",
+                    "value": {
+                        "requests": {"cpu": "2000m", "memory": "2000Mi"},
+                        "limits": {"cpu": "4000m", "memory": "8000Mi"},
+                    },
+                }
+            ]
+        )
+        self.outpost.providers.add(self.provider)
         self.outpost.save()
 
     def test_deployment_reconciler(self):
@@ -53,57 +66,12 @@ class OutpostKubernetesTests(TestCase):
                     "op": "add",
                     "path": "/spec/template/spec/containers/0/resources",
                     "value": {
-                        "requests": {"cpu": "2000m", "memory": "2000Mi"},
-                        "limits": {"cpu": "4000m", "memory": "8000Mi"},
+                        "requests": {"cpu": "1000m", "memory": "2000Mi"},
+                        "limits": {"cpu": "2000m", "memory": "4000Mi"},
                     },
-                },
-                {
-                    "op": "add",
-                    "path": "/spec/template/spec/tolerations",
-                    "value": [{"key": "is_cpu_compute", "operator": "Exists"}],
-                },
-                {
-                    "op": "add",
-                    "path": "/spec/template/spec/affinity",
-                    "value": {
-                        "podAntiAffinity": {
-                            "preferredDuringSchedulingIgnoredDuringExecution": [
-                                {
-                                    "weight": 100,
-                                    "podAffinityTerm": {
-                                        "labelSelector": {
-                                            "matchExpressions": [
-                                                {
-                                                    "key": "app",
-                                                    "operator": "In",
-                                                    "values": ["authentik-outpost"],
-                                                }
-                                            ]
-                                        },
-                                        "topologyKey": "topology.kubernetes.io/zone",
-                                    },
-                                }
-                            ]
-                        },
-                        "nodeAffinity": {
-                            "requiredDuringSchedulingIgnoredDuringExecution": {
-                                "nodeSelectorTerms": [
-                                    {
-                                        "matchExpressions": [
-                                            {
-                                                "key": "topology.kubernetes.io/region",
-                                                "operator": "In",
-                                                "values": ["us-east-1"],
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        },
-                    },
-                },
+                }
             ]
-        )  # noqa: E501
+        )
         self.outpost.config = config
 
         with self.assertRaises(NeedsUpdate):
