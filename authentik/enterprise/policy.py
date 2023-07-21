@@ -24,7 +24,7 @@ class EnterprisePolicy(Policy):
     def passes(self, request: PolicyRequest) -> PolicyResult:
         if not LicenseKey.get_total().is_valid():
             return PolicyResult(False)
-        if request.user.type != UserTypes.DEFAULT:
+        if request.user.type != UserTypes.INTERNAL:
             return PolicyResult(False)
         return PolicyResult(True)
 

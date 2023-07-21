@@ -105,7 +105,7 @@ class LicenseKey:
     @staticmethod
     def get_default_user_count():
         """Get current default user count"""
-        return LicenseKey.base_user_qs().filter(type=UserTypes.DEFAULT).count()
+        return LicenseKey.base_user_qs().filter(type=UserTypes.INTERNAL).count()
 
     @staticmethod
     def get_external_user_count():

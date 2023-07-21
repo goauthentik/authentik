@@ -80,22 +80,27 @@ export class UserForm extends ModelForm<User, number> {
             <ak-form-element-horizontal label=${msg("User type")} ?required=${true} name="type">
                 <ak-radio
                     .options=${[
-                        // TODO: Add better copy
                         {
-                            label: "Default",
-                            value: UserTypeEnum.Default,
+                            label: "Internal",
+                            value: UserTypeEnum.Internal,
                             default: true,
-                            description: html`${msg("Default user")}`,
+                            description: html`${msg(
+                                "Internal users might be users such as company employees, which will get access to the full Enterprise feature set.",
+                            )}`,
                         },
                         {
                             label: "External",
                             value: UserTypeEnum.External,
-                            description: html`${msg("External user")}`,
+                            description: html`${msg(
+                                "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
+                            )}`,
                         },
                         {
                             label: "Service account",
                             value: UserTypeEnum.ServiceAccount,
-                            description: html`${msg("Service account")}`,
+                            description: html`${msg(
+                                "Service accounts should be used for machine-to-machine authentication or other automations.",
+                            )}`,
                         },
                     ]}
                     .value=${this.instance?.type}
