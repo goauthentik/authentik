@@ -27,20 +27,21 @@ const metadata: Meta<AKActionButton> = {
 
 export default metadata;
 
-const container = (testItem: TemplateResult) => html` <div style="background: #fff; padding: 2em">
-    <style>
-        li {
-            display: block;
-        }
-        p {
-            margin-top: 1em;
-        }
-    </style>
-    <ak-message-container></ak-message-container>
-    ${testItem}
-    <p>Messages received from the button:</p>
-    <ul id="action-button-message-pad" style="margin-top: 1em"></ul>
-</div>`;
+const container = (testItem: TemplateResult) =>
+    html` <div style="background: #fff; padding: 2em">
+        <style>
+            li {
+                display: block;
+            }
+            p {
+                margin-top: 1em;
+            }
+        </style>
+        <ak-message-container></ak-message-container>
+        ${testItem}
+        <p>Messages received from the button:</p>
+        <ul id="action-button-message-pad" style="margin-top: 1em"></ul>
+    </div>`;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayMessage = (result: any) => {
@@ -81,7 +82,9 @@ export const ButtonWithError = () => {
             }, 3000);
         });
 
-    return container(html` <ak-action-button class="pf-m-secondary" .apiRequest=${run}
-        >3 Seconds</ak-action-button
-    >`);
+    return container(
+        html` <ak-action-button class="pf-m-secondary" .apiRequest=${run}
+            >3 Seconds</ak-action-button
+        >`,
+    );
 };

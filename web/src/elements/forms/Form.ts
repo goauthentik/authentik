@@ -22,7 +22,10 @@ import { ResponseError, ValidationError, ValidationErrorFromJSON } from "@goauth
 
 export class PreventFormSubmit {
     // Stub class which can be returned by form elements to prevent the form from submitting
-    constructor(public message: string, public element?: HorizontalFormElement) {}
+    constructor(
+        public message: string,
+        public element?: HorizontalFormElement,
+    ) {}
 }
 
 export class APIError extends Error {

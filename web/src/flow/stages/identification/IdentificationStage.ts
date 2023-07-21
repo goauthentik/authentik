@@ -44,24 +44,22 @@ export class IdentificationStage extends BaseStage<
     form?: HTMLFormElement;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(
-            css`
-                /* login page's icons */
-                .pf-c-login__main-footer-links-item button {
-                    background-color: transparent;
-                    border: 0;
-                    display: flex;
-                    align-items: stretch;
-                }
-                .pf-c-login__main-footer-links-item img {
-                    fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
-                    width: 100px;
-                    max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
-                    height: 100%;
-                    max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
-                }
-            `,
-        );
+        return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(css`
+            /* login page's icons */
+            .pf-c-login__main-footer-links-item button {
+                background-color: transparent;
+                border: 0;
+                display: flex;
+                align-items: stretch;
+            }
+            .pf-c-login__main-footer-links-item img {
+                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+                width: 100px;
+                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+                height: 100%;
+                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+            }
+        `);
     }
 
     firstUpdated(): void {

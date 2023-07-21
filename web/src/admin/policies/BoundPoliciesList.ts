@@ -170,27 +170,26 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
     }
 
     renderEmpty(): TemplateResult {
-        return super.renderEmpty(html`<ak-empty-state
-            header=${msg("No Policies bound.")}
-            icon="pf-icon-module"
-        >
-            <div slot="body">${msg("No policies are currently bound to this object.")}</div>
-            <div slot="primary">
-                <ak-forms-modal size=${PFSize.Medium}>
-                    <span slot="submit"> ${msg("Create")} </span>
-                    <span slot="header"> ${msg("Create Binding")} </span>
-                    <ak-policy-binding-form
-                        slot="form"
-                        targetPk=${ifDefined(this.target)}
-                        ?policyOnly=${this.policyOnly}
-                    >
-                    </ak-policy-binding-form>
-                    <button slot="trigger" class="pf-c-button pf-m-primary">
-                        ${msg("Create Binding")}
-                    </button>
-                </ak-forms-modal>
-            </div>
-        </ak-empty-state>`);
+        return super.renderEmpty(
+            html`<ak-empty-state header=${msg("No Policies bound.")} icon="pf-icon-module">
+                <div slot="body">${msg("No policies are currently bound to this object.")}</div>
+                <div slot="primary">
+                    <ak-forms-modal size=${PFSize.Medium}>
+                        <span slot="submit"> ${msg("Create")} </span>
+                        <span slot="header"> ${msg("Create Binding")} </span>
+                        <ak-policy-binding-form
+                            slot="form"
+                            targetPk=${ifDefined(this.target)}
+                            ?policyOnly=${this.policyOnly}
+                        >
+                        </ak-policy-binding-form>
+                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                            ${msg("Create Binding")}
+                        </button>
+                    </ak-forms-modal>
+                </div>
+            </ak-empty-state>`,
+        );
     }
 
     renderToolbar(): TemplateResult {

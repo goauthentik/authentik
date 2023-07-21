@@ -21,25 +21,26 @@ function makeid(length: number) {
 // We want the display to be rich and comprehensive.  The next two functions provide
 // a styled wrapper for the return messages, and a styled wrapper for each message.
 
-const container = (testItem: TemplateResult) => html` <div style="background: #fff; padding: 2em">
-    <style>
-        li {
-            display: block;
-        }
-        p {
-            display: block;
-            margin-top: 1em;
-        }
-        p + p {
-            margin-top: 0.2em;
-            padding-left: 2.5rem;
-        }
-    </style>
-    <ak-message-container></ak-message-container>
-    ${testItem}
-    <p>Messages received from the button:</p>
-    <ul id="action-button-message-pad" style="margin-top: 1em"></ul>
-</div>`;
+const container = (testItem: TemplateResult) =>
+    html` <div style="background: #fff; padding: 2em">
+        <style>
+            li {
+                display: block;
+            }
+            p {
+                display: block;
+                margin-top: 1em;
+            }
+            p + p {
+                margin-top: 0.2em;
+                padding-left: 2.5rem;
+            }
+        </style>
+        <ak-message-container></ak-message-container>
+        ${testItem}
+        <p>Messages received from the button:</p>
+        <ul id="action-button-message-pad" style="margin-top: 1em"></ul>
+    </div>`;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayMessage = (result: any) => {
