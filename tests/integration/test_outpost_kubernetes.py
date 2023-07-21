@@ -59,7 +59,6 @@ class OutpostKubernetesTests(TestCase):
 
         config = self.outpost.config
         config.kubernetes_replicas = 3
-        # pylint: disable=line-too-long
         config.kubernetes_json_patch = list(
             [
                 {

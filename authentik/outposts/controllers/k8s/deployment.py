@@ -27,7 +27,7 @@ from kubernetes.client import (
 from requests.models import Response
 
 from authentik import get_full_version
-from authentik.outposts.controllers.base import FIELD_MANAGER
+from authentik.outposts.controllers.base import FIELD_MANAGER, ControllerException
 from authentik.outposts.controllers.k8s.base import KubernetesObjectReconciler
 from authentik.outposts.controllers.k8s.triggers import NeedsUpdate
 from authentik.outposts.controllers.k8s.utils import compare_ports
@@ -187,7 +187,7 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
             else:
                 ref_v1deploy = v1deploy_json
         except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
-            raise Exception(f"JSON Patch failed: {exc}")  # pylint: disable=broad-exception-raised
+            raise ControllerException(f"JSON Patch failed: {exc}") from exc
         mock_response = Response()
         mock_response.data = dumps(ref_v1deploy)
 
