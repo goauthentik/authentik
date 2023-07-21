@@ -92,6 +92,21 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         ];
     }
 
+    // TODO: Make this more generic, maybe automatically get the plural name
+    // of the object to use in the renderEmpty
+    renderEmpty(inner?: TemplateResult): TemplateResult {
+        return super.renderEmpty(html`
+            ${inner
+                ? inner
+                : html`<ak-empty-state icon=${this.pageIcon()} header="${msg("No licenses found.")}">
+                      <div slot="body">
+                          ${this.searchEnabled() ? this.renderEmptyClearSearch() : html``}
+                      </div>
+                      <div slot="primary">${this.renderObjectCreate()}</div>
+                  </ak-empty-state>`}
+        `);
+    }
+
     renderToolbarSelected(): TemplateResult {
         const disabled = this.selectedElements.length < 1;
         return html`<ak-forms-delete-bulk
