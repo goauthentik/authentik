@@ -31,8 +31,8 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
         super().__init__(controller)
         self.api = NetworkingV1Api(controller.client)
 
-    @property
-    def reconciler_name(self) -> str:
+    @staticmethod
+    def reconciler_name() -> str:
         return "ingress"
 
     def _check_annotations(self, reference: V1Ingress):

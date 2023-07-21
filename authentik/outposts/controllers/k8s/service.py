@@ -20,8 +20,8 @@ class ServiceReconciler(KubernetesObjectReconciler[V1Service]):
         super().__init__(controller)
         self.api = CoreV1Api(controller.client)
 
-    @property
-    def reconciler_name(self) -> str:
+    @staticmethod
+    def reconciler_name() -> str:
         return "service"
 
     def reconcile(self, current: V1Service, reference: V1Service):

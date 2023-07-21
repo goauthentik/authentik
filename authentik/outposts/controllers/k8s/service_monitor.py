@@ -71,8 +71,8 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
         self.api_ex = ApiextensionsV1Api(controller.client)
         self.api = CustomObjectsApi(controller.client)
 
-    @property
-    def reconciler_name(self) -> str:
+    @staticmethod
+    def reconciler_name() -> str:
         return "prometheus servicemonitor"
 
     @property

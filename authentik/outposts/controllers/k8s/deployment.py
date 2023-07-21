@@ -43,8 +43,8 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         self.api = AppsV1Api(controller.client)
         self.outpost = self.controller.outpost
 
-    @property
-    def reconciler_name(self) -> str:
+    @staticmethod
+    def reconciler_name() -> str:
         return "deployment"
 
     def reconcile(self, current: V1Deployment, reference: V1Deployment):

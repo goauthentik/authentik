@@ -17,9 +17,9 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler):
         if not self.reconciler.crd_exists():
             self.reconciler = Traefik2MiddlewareReconciler(controller)
 
-    @property
-    def reconciler_name(self) -> str:
-        return self.reconciler.reconciler_name
+    @staticmethod
+    def reconciler_name() -> str:
+        return "traefik middleware"
 
     @property
     def noop(self) -> bool:

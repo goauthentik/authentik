@@ -67,8 +67,8 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         self.crd_version = "v1alpha1"
         self.crd_plural = "middlewares"
 
-    @property
-    def reconciler_name(self) -> str:
+    @staticmethod
+    def reconciler_name() -> str:
         return "traefik middleware"
 
     @property

@@ -50,8 +50,8 @@ class KubernetesObjectReconciler(Generic[T]):
         """Return true if the current outpost is embedded"""
         return self.controller.outpost.managed == MANAGED_OUTPOST
 
-    @property
-    def reconciler_name(self) -> str:
+    @staticmethod
+    def reconciler_name() -> str:
         """A name this reconciler is identified by in the configuration"""
         raise NotImplementedError
 
