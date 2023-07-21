@@ -40,16 +40,14 @@ export class FlowViewPage extends AKElement {
     flow!: Flow;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid].concat(
-            css`
-                img.pf-icon {
-                    max-height: 24px;
-                }
-                ak-tabs {
-                    height: 100%;
-                }
-            `,
-        );
+        return [PFBase, PFPage, PFDescriptionList, PFButton, PFCard, PFContent, PFGrid].concat(css`
+            img.pf-icon {
+                max-height: 24px;
+            }
+            ak-tabs {
+                height: 100%;
+            }
+        `);
     }
 
     render(): TemplateResult {

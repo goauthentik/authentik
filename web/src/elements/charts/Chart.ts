@@ -33,7 +33,12 @@ export const FONT_COLOUR_DARK_MODE = "#fafafa";
 export const FONT_COLOUR_LIGHT_MODE = "#151515";
 
 export class RGBAColor {
-    constructor(public r: number, public g: number, public b: number, public a: number = 1) {}
+    constructor(
+        public r: number,
+        public g: number,
+        public b: number,
+        public a: number = 1,
+    ) {}
     toString(): string {
         return `rgba(${this.r}, ${this.g}, ${this.b}, ${this.a})`;
     }

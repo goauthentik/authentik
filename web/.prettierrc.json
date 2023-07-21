@@ -15,6 +15,7 @@
     "trailingComma": "all",
     "useTabs": false,
     "vueIndentScriptAndStyle": false,
+    "plugins": ["@trivago/prettier-plugin-sort-imports"],
     "importOrder": ["^(@?)lit(.*)$", "\\.css$", "^@goauthentik/api$", "^[./]"],
     "importOrderSeparation": true,
     "importOrderSortSpecifiers": true,
