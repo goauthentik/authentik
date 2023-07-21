@@ -17,6 +17,7 @@ def migrate_user_type_v2(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
         user.type = UserTypes.INTERNAL
         user.save()
 
+
 class Migration(migrations.Migration):
     dependencies = [
         ("authentik_core", "0030_user_type"),

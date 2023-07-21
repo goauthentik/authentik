@@ -11,6 +11,7 @@ from authentik.core.tests.utils import create_test_admin_user, create_test_cert,
 from authentik.policies.models import PolicyBinding
 from authentik.providers.oauth2.constants import (
     GRANT_TYPE_CLIENT_CREDENTIALS,
+    GRANT_TYPE_PASSWORD,
     SCOPE_OPENID,
     SCOPE_OPENID_EMAIL,
     SCOPE_OPENID_PROFILE,
@@ -132,6 +133,31 @@ class TestTokenClientCredentials(OAuthTestCase):
             reverse("authentik_providers_oauth2:token"),
             {
                 "grant_type": GRANT_TYPE_CLIENT_CREDENTIALS,
+                "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
+                "client_id": self.provider.client_id,
+                "username": "sa",
+                "password": self.token.key,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        body = loads(response.content.decode())
+        self.assertEqual(body["token_type"], TOKEN_TYPE)
+        _, alg = self.provider.jwt_key
+        jwt = decode(
+            body["access_token"],
+            key=self.provider.signing_key.public_key,
+            algorithms=[alg],
+            audience=self.provider.client_id,
+        )
+        self.assertEqual(jwt["given_name"], self.user.name)
+        self.assertEqual(jwt["preferred_username"], self.user.username)
+
+    def test_successful_password(self):
+        """test successful (password grant)"""
+        response = self.client.post(
+            reverse("authentik_providers_oauth2:token"),
+            {
+                "grant_type": GRANT_TYPE_PASSWORD,
                 "scope": f"{SCOPE_OPENID} {SCOPE_OPENID_EMAIL} {SCOPE_OPENID_PROFILE}",
                 "client_id": self.provider.client_id,
                 "username": "sa",
