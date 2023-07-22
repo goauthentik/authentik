@@ -42,6 +42,7 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
 
 -   `AUTHENTIK_REDIS__HOST`: Hostname of your Redis Server
 -   `AUTHENTIK_REDIS__PORT`: Redis port, defaults to 6379
+-   `AUTHENTIK_REDIS__USER`: Username for your Redis Server
 -   `AUTHENTIK_REDIS__PASSWORD`: Password for your Redis Server
 -   `AUTHENTIK_REDIS__TLS`: Use TLS to connect to Redis, defaults to false
 -   `AUTHENTIK_REDIS__TLS_REQS`: Redis TLS requirements, defaults to "none"

@@ -45,9 +45,10 @@ REDIS_PROTOCOL_PREFIX = "redis://"
 if CONFIG.get_bool("redis.tls", False):
     REDIS_PROTOCOL_PREFIX = "rediss://"
 REDIS_URL = (
-    f"{REDIS_PROTOCOL_PREFIX}:"
-    f"{quote_plus(CONFIG.get('redis.password'))}@{quote_plus(CONFIG.get('redis.host'))}:"
-    f"{int(CONFIG.get('redis.port'))}/{CONFIG.get('redis.db')}"
+    f"{REDIS_PROTOCOL_PREFIX}"
+    f"{quote_plus(CONFIG.get('redis.user'))}:{quote_plus(CONFIG.get('redis.password'))}"
+    f"@{quote_plus(CONFIG.get('redis.host'))}:{int(CONFIG.get('redis.port'))}"
+    f"/{CONFIG.get('redis.db')}"
 )
 while True:
     try:

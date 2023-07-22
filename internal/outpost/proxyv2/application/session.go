@@ -29,7 +29,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		maxAge = int(*t) + 1
 	}
 	if config.Get().Redis.Host != "" {
-		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.DB))
+		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.User, config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.DB))
 		if err != nil {
 			panic(err)
 		}
