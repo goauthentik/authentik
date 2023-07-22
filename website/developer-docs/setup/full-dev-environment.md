@@ -27,7 +27,7 @@ Depending on your platform, some native dependencies might be required. On macOS
 :::
 
 :::info
-As long as [this issue](https://github.com/xmlsec/python-xmlsec/issues/252) about `libxmlsec-1.3.0` is open, a workaround is required to install a compatible version of `libxmlsec1` with brew, see [this comment](https://github.com/xmlsec/python-xmlsec/issues/254#issuecomment-1511135314).
+As long as [this issue](https://github.com/xmlsec/python-xmlsec/issues/252) about `libxmlsec-1.3.0` is open, a workaround is required to install a compatible version of `libxmlsec1` with brew, see [this comment](https://github.com/xmlsec/python-xmlsec/issues/254#issuecomment-1612005910).
 :::
 
 First, you need to create an isolated Python environment. To create the environment and install dependencies, run the following commands in the same directory as your authentik git repository:

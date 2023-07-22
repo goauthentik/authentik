@@ -172,6 +172,7 @@ webauthn = "*"
 wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
+jsonpatch = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"

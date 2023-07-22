@@ -35,6 +35,19 @@ class OutpostKubernetesTests(TestCase):
             service_connection=self.service_connection,
         )
         self.outpost.providers.add(self.provider)
+        self.outpost.config.kubernetes_json_patches = {
+            "deployment": [
+                {
+                    "op": "add",
+                    "path": "/spec/template/spec/containers/0/resources",
+                    "value": {
+                        "requests": {"cpu": "2000m", "memory": "2000Mi"},
+                        "limits": {"cpu": "4000m", "memory": "8000Mi"},
+                    },
+                }
+            ]
+        }
+        self.outpost.providers.add(self.provider)
         self.outpost.save()
 
     def test_deployment_reconciler(self):
@@ -46,6 +59,18 @@ class OutpostKubernetesTests(TestCase):
 
         config = self.outpost.config
         config.kubernetes_replicas = 3
+        config.kubernetes_json_patches = {
+            "deployment": [
+                {
+                    "op": "add",
+                    "path": "/spec/template/spec/containers/0/resources",
+                    "value": {
+                        "requests": {"cpu": "1000m", "memory": "2000Mi"},
+                        "limits": {"cpu": "2000m", "memory": "4000Mi"},
+                    },
+                }
+            ]
+        }
         self.outpost.config = config
 
         with self.assertRaises(NeedsUpdate):

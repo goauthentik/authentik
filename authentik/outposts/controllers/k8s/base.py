@@ -1,16 +1,20 @@
 """Base Kubernetes Reconciler"""
+from json import dumps
 from typing import TYPE_CHECKING, Generic, Optional, TypeVar
 
 from django.utils.text import slugify
-from kubernetes.client import V1ObjectMeta
+from jsonpatch import JsonPatchConflict, JsonPatchException, JsonPatchTestFailed, apply_patch
+from kubernetes.client import ApiClient, V1ObjectMeta
 from kubernetes.client.exceptions import ApiException, OpenApiException
 from kubernetes.client.models.v1_deployment import V1Deployment
 from kubernetes.client.models.v1_pod import V1Pod
+from requests import Response
 from structlog.stdlib import get_logger
 from urllib3.exceptions import HTTPError
 
 from authentik import __version__
 from authentik.outposts.apps import MANAGED_OUTPOST
+from authentik.outposts.controllers.base import ControllerException
 from authentik.outposts.controllers.k8s.triggers import NeedsRecreate, NeedsUpdate
 
 if TYPE_CHECKING:
@@ -34,10 +38,22 @@ class KubernetesObjectReconciler(Generic[T]):
         self.namespace = controller.outpost.config.kubernetes_namespace
         self.logger = get_logger().bind(type=self.__class__.__name__)
 
+    def get_patch(self):
+        """Get any patches that apply to this CRD"""
+        patches = self.controller.outpost.config.kubernetes_json_patches
+        if not patches:
+            return None
+        return patches.get(self.name, None)
+
     @property
     def is_embedded(self) -> bool:
         """Return true if the current outpost is embedded"""
         return self.controller.outpost.managed == MANAGED_OUTPOST
+
+    @staticmethod
+    def reconciler_name() -> str:
+        """A name this reconciler is identified by in the configuration"""
+        raise NotImplementedError
 
     @property
     def noop(self) -> bool:
@@ -55,6 +71,23 @@ class KubernetesObjectReconciler(Generic[T]):
             }
         ).lower()
 
+    def get_patched_reference_object(self) -> T:
+        """Get patched reference object"""
+        reference = self.get_reference_object()
+        patch = self.get_patch()
+        v1deploy_json = ApiClient().sanitize_for_serialization(reference)
+        try:
+            if patch is not None:
+                ref_v1deploy = apply_patch(v1deploy_json, patch)
+            else:
+                ref_v1deploy = v1deploy_json
+        except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
+            raise ControllerException(f"JSON Patch failed: {exc}") from exc
+        mock_response = Response()
+        mock_response.data = dumps(ref_v1deploy)
+
+        return ApiClient().deserialize(mock_response, reference.__class__.__name__)
+
     # pylint: disable=invalid-name
     def up(self):
         """Create object if it doesn't exist, update if needed or recreate if needed."""
@@ -62,7 +95,7 @@ class KubernetesObjectReconciler(Generic[T]):
         if self.noop:
             self.logger.debug("Object is noop")
             return
-        reference = self.get_reference_object()
+        reference = self.get_patched_reference_object()
         try:
             try:
                 current = self.retrieve()
@@ -128,6 +161,16 @@ class KubernetesObjectReconciler(Generic[T]):
         ReconcileTrigger"""
         if current.metadata.labels != reference.metadata.labels:
             raise NeedsUpdate()
+
+        patch = self.get_patch()
+        if patch is not None:
+            current_json = ApiClient().sanitize_for_serialization(current)
+
+            try:
+                if apply_patch(current_json, patch) != current_json:
+                    raise NeedsUpdate()
+            except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
+                raise ControllerException(f"JSON Patch failed: {exc}") from exc
 
     def create(self, reference: T):
         """API Wrapper to create object"""
