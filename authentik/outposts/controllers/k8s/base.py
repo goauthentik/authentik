@@ -45,7 +45,7 @@ class KubernetesObjectReconciler(Generic[T]):
         patches = self.controller.outpost.config.kubernetes_json_patches
         if not patches:
             return None
-        return patches.get(self.name, None)
+        return patches.get(self.reconciler_name(), None)
 
     @property
     def is_embedded(self) -> bool:
