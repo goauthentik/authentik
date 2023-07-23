@@ -1,7 +1,9 @@
 """Base Kubernetes Reconciler"""
+from dataclasses import asdict
 from json import dumps
 from typing import TYPE_CHECKING, Generic, Optional, TypeVar
 
+from dacite.core import from_dict
 from django.utils.text import slugify
 from jsonpatch import JsonPatchConflict, JsonPatchException, JsonPatchTestFailed, apply_patch
 from kubernetes.client import ApiClient, V1ObjectMeta
@@ -75,18 +77,28 @@ class KubernetesObjectReconciler(Generic[T]):
         """Get patched reference object"""
         reference = self.get_reference_object()
         patch = self.get_patch()
-        v1deploy_json = ApiClient().sanitize_for_serialization(reference)
+        try:
+            json = ApiClient().sanitize_for_serialization(reference)
+        # Custom objects will not be known to the clients openapi types
+        except AttributeError:
+            json = asdict(reference)
         try:
             if patch is not None:
-                ref_v1deploy = apply_patch(v1deploy_json, patch)
+                ref = apply_patch(json, patch)
             else:
-                ref_v1deploy = v1deploy_json
+                ref = json
         except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
             raise ControllerException(f"JSON Patch failed: {exc}") from exc
         mock_response = Response()
-        mock_response.data = dumps(ref_v1deploy)
+        mock_response.data = dumps(ref)
 
-        return ApiClient().deserialize(mock_response, reference.__class__.__name__)
+        try:
+            result = ApiClient().deserialize(mock_response, reference.__class__.__name__)
+        # Custom objects will not be known to the clients openapi types
+        except AttributeError:
+            result = from_dict(reference.__class__, data=ref)
+
+        return result
 
     # pylint: disable=invalid-name
     def up(self):
