@@ -67,7 +67,7 @@ class UserTypes(models.TextChoices):
     """User types, both for grouping, licensing and permissions in the case
     of the internal_service_account"""
 
-    DEFAULT = "default"
+    INTERNAL = "internal"
     EXTERNAL = "external"
 
     # User-created service accounts
@@ -161,7 +161,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
     path = models.TextField(default="users")
-    type = models.TextField(choices=UserTypes.choices, default=UserTypes.DEFAULT)
+    type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")

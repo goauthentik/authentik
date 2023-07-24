@@ -1,7 +1,7 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Iterable, Optional
+from typing import Any, Iterable, Optional
 from uuid import uuid4
 
 from dacite.core import from_dict
@@ -75,6 +75,7 @@ class OutpostConfig:
     kubernetes_service_type: str = field(default="ClusterIP")
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
+    kubernetes_json_patches: Optional[dict[str, list[dict[str, Any]]]] = field(default=None)
 
 
 class OutpostModel(Model):

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-16 13:59+0000\n"
+"POT-Creation-Date: 2023-07-21 13:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -2017,33 +2017,33 @@ msgstr ""
 msgid "Dummy Stages"
 msgstr ""
 
-#: authentik/stages/email/models.py:25
+#: authentik/stages/email/models.py:26
 msgid "Password Reset"
 msgstr ""
 
-#: authentik/stages/email/models.py:29
+#: authentik/stages/email/models.py:30
 msgid "Account Confirmation"
 msgstr ""
 
-#: authentik/stages/email/models.py:58
+#: authentik/stages/email/models.py:59
 msgid ""
 "When enabled, global Email connection settings will be used and connection "
 "settings below will be ignored."
 msgstr ""
 
-#: authentik/stages/email/models.py:73
+#: authentik/stages/email/models.py:74
 msgid "Activate users upon completion of stage."
 msgstr ""
 
-#: authentik/stages/email/models.py:77
+#: authentik/stages/email/models.py:78
 msgid "Time in minutes the token sent is valid."
 msgstr ""
 
-#: authentik/stages/email/models.py:122
+#: authentik/stages/email/models.py:132
 msgid "Email Stage"
 msgstr ""
 
-#: authentik/stages/email/models.py:123
+#: authentik/stages/email/models.py:133
 msgid "Email Stages"
 msgstr ""
 

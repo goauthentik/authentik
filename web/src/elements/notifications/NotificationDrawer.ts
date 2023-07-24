@@ -28,31 +28,29 @@ export class NotificationDrawer extends AKElement {
     unread = 0;
 
     static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFNotificationDrawer, PFContent, PFDropdown].concat(
-            css`
-                .pf-c-drawer__body {
-                    height: 100%;
-                }
-                .pf-c-notification-drawer__body {
-                    flex-grow: 1;
-                }
-                .pf-c-notification-drawer__header {
-                    height: 114px;
-                    align-items: center;
-                }
-                .pf-c-notification-drawer__header-action,
-                .pf-c-notification-drawer__header-action-close,
-                .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
-                    height: 100%;
-                }
-                .pf-c-notification-drawer__list-item-description {
-                    white-space: pre-wrap;
-                }
-                .pf-c-notification-drawer__footer {
-                    margin: 1rem;
-                }
-            `,
-        );
+        return [PFBase, PFButton, PFNotificationDrawer, PFContent, PFDropdown].concat(css`
+            .pf-c-drawer__body {
+                height: 100%;
+            }
+            .pf-c-notification-drawer__body {
+                flex-grow: 1;
+            }
+            .pf-c-notification-drawer__header {
+                height: 114px;
+                align-items: center;
+            }
+            .pf-c-notification-drawer__header-action,
+            .pf-c-notification-drawer__header-action-close,
+            .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
+                height: 100%;
+            }
+            .pf-c-notification-drawer__list-item-description {
+                white-space: pre-wrap;
+            }
+            .pf-c-notification-drawer__footer {
+                margin: 1rem;
+            }
+        `);
     }
 
     firstUpdated(): void {
