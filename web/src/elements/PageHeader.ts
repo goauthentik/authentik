@@ -69,8 +69,11 @@ export class PageHeader extends AKElement {
                     min-height: 114px;
                 }
                 .pf-c-button.pf-m-plain {
-                    background-color: var(--pf-c-page__main-section--m-light--BackgroundColor);
+                    background-color: transparent;
                     border-radius: 0px;
+                }
+                .pf-c-page__main-section.pf-m-light {
+                    background-color: transparent;
                 }
                 .pf-c-page__main-section {
                     flex-grow: 1;
