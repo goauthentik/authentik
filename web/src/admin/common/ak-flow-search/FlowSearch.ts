@@ -91,8 +91,8 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         return flows.results;
     }
 
-    /* This is the most commonly overriden method of this class. About half of the Flow Searches use
-     * this method, but several have more complex needs, such as relating to the tenant, or just
+    /* This is the most commonly overridden method of this class. About half of the Flow Searches
+     * use this method, but several have more complex needs, such as relating to the tenant, or just
      * returning false.
      */
 
