@@ -7,8 +7,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer, Serializer
-from authentik.core.models import ExpiringModel
 
+from authentik.core.models import ExpiringModel
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.generators import generate_id
@@ -21,7 +21,7 @@ def default_token_key():
 
 
 class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
-    """Setup Duo authenticator devices"""
+    """Setup Mobile authenticator devices"""
 
     @property
     def serializer(self) -> type[BaseSerializer]:
@@ -78,8 +78,8 @@ class MobileDevice(SerializerModel, Device):
         verbose_name = _("Mobile Device")
         verbose_name_plural = _("Mobile Devices")
 
-class MobileDeviceToken(ExpiringModel):
 
+class MobileDeviceToken(ExpiringModel):
     device = models.ForeignKey(MobileDevice, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     token = models.TextField(default=default_token_key)
