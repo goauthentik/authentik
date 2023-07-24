@@ -154,7 +154,6 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.flowAuthentication}
-                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -169,7 +168,6 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Invalidation}
                             .currentFlow=${this.instance?.flowInvalidation}
-                            required
                         ></ak-flow-search>
 
                         <p class="pf-c-form__helper-text">
@@ -182,7 +180,6 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Recovery}
                             .currentFlow=${this.instance?.flowRecovery}
-                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -197,7 +194,6 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Unenrollment}
                             .currentFlow=${this.instance?.flowUnenrollment}
-                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -212,7 +208,6 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowUserSettings}
-                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("If set, users are able to configure details of their profile.")}
@@ -225,7 +220,6 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.flowDeviceCode}
-                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(

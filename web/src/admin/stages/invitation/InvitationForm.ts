@@ -71,7 +71,6 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 <ak-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Enrollment}
                     .currentFlow=${this.instance?.flow}
-                    required
                 ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(

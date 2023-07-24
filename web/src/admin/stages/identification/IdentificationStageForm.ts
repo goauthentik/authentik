@@ -265,7 +265,6 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.passwordlessFlow}
-                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -280,7 +279,6 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
-                            required
                         ></ak-flow-search>
 
                         <p class="pf-c-form__helper-text">
@@ -293,7 +291,6 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         <ak-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Recovery}
                             .currentFlow=${this.instance?.recoveryFlow}
-                            required
                         ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(

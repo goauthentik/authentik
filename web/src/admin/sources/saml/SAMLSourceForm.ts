@@ -521,8 +521,8 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         <ak-source-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
                             .currentFlow=${this.instance?.preAuthenticationFlow}
-                            fallback="default-source-pre-authentication"
                             .instanceId=${this.instance?.pk}
+                            fallback="default-source-pre-authentication"
                         ></ak-source-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow used before authentication.")}
@@ -536,8 +536,8 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         <ak-source-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Authentication}
                             .currentFlow=${this.instance?.authenticationFlow}
-                            fallback="default-source-authentication"
                             .instanceId=${this.instance?.pk}
+                            fallback="default-source-authentication"
                         ></ak-source-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow to use when authenticating existing users.")}
@@ -551,8 +551,8 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         <ak-source-flow-search
                             flowType=${FlowsInstancesListDesignationEnum.Enrollment}
                             .currentFlow=${this.instance?.enrollmentFlow}
-                            fallback="default-source-enrollment"
                             .instanceId=${this.instance?.pk}
+                            fallback="default-source-enrollment"
                         ></ak-source-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow to use when enrolling new users.")}
