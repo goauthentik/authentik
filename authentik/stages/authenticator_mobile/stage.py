@@ -2,6 +2,7 @@
 from django.http import HttpResponse
 from django.utils.timezone import now
 from rest_framework.fields import CharField
+from authentik.core.api.utils import PassiveSerializer
 
 from authentik.events.models import Event, EventAction
 from authentik.flows.challenge import (
@@ -11,16 +12,22 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.stages.authenticator_mobile.models import AuthenticatorMobileStage
+from authentik.stages.authenticator_mobile.models import AuthenticatorMobileStage, MobileDeviceToken
 
-SESSION_KEY_MOBILE_ENROLL = "authentik/stages/authenticator_mobile/enroll"
+FLOW_PLAN_MOBILE_ENROLL = "authentik/stages/authenticator_mobile/enroll"
 
+
+class AuthenticatorMobilePayloadChallenge(PassiveSerializer):
+    """Payload within the QR code given to the mobile app, hence the short variable names"""
+
+    u = CharField(required=False, help_text="Server URL")
+    s = CharField(required=False, help_text="Stage UUID")
+    t = CharField(required=False, help_text="Initial Token")
 
 class AuthenticatorMobileChallenge(WithUserInfoChallenge):
     """Mobile Challenge"""
 
-    authentik_url = CharField(required=True)
-    stage_uuid = CharField(required=True)
+    payload = AuthenticatorMobilePayloadChallenge(required=True)
     component = CharField(default="ak-stage-authenticator-mobile")
 
 
@@ -35,13 +42,28 @@ class AuthenticatorMobileStageView(ChallengeStageView):
 
     response_class = AuthenticatorMobileChallengeResponse
 
+    def prepare(self):
+        if FLOW_PLAN_MOBILE_ENROLL in self.executor.plan.context:
+            return
+        token = MobileDeviceToken.objects.create(
+            user=self.get_pending_user(),
+        )
+        self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL] = token
+
     def get_challenge(self, *args, **kwargs) -> Challenge:
         stage: AuthenticatorMobileStage = self.executor.current_stage
+        self.prepare()
+        payload = AuthenticatorMobilePayloadChallenge(data={
+            # TODO: use cloud gateway?
+            "u": self.request.get_host(),
+            "s": str(stage.stage_uuid),
+            "t": self.executor.plan[FLOW_PLAN_MOBILE_ENROLL].token,
+        })
+        payload.is_valid()
         return AuthenticatorMobileChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "authentik_url": self.request.get_host(),
-                "stage_uuid": str(stage.stage_uuid),
+                "payload": payload.validated_data,
             }
         )
 

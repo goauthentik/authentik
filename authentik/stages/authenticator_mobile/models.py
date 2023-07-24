@@ -7,10 +7,17 @@ from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer, Serializer
+from authentik.core.models import ExpiringModel
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
+from authentik.lib.generators import generate_id
 from authentik.lib.models import SerializerModel
+
+
+def default_token_key():
+    """Default token key"""
+    return generate_id(40)
 
 
 class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
@@ -70,3 +77,9 @@ class MobileDevice(SerializerModel, Device):
     class Meta:
         verbose_name = _("Mobile Device")
         verbose_name_plural = _("Mobile Devices")
+
+class MobileDeviceToken(ExpiringModel):
+
+    device = models.ForeignKey(MobileDevice, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
+    token = models.TextField(default=default_token_key)
