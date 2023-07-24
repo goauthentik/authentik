@@ -1,4 +1,5 @@
 # Rename transifex pull requests to have a correct naming
+name: authentik-translation-transifex-rename
 
 on:
   pull_request:
