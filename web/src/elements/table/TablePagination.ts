@@ -48,6 +48,9 @@ export class TablePagination extends AKElement {
     }
 
     render(): TemplateResult {
+        if (!this.pages) {
+            return html``;
+        }
         return html` <div class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md">
             <div class="pf-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">
                 <div class="pf-c-options-menu">
