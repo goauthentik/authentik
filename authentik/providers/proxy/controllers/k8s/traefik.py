@@ -26,19 +26,19 @@ class TraefikMiddlewareReconciler(KubernetesObjectReconciler):
         return self.reconciler.noop
 
     def reconcile(self, current: TraefikMiddleware, reference: TraefikMiddleware):
-        return self.reconcile(current, reference)
+        return self.reconciler.reconcile(current, reference)
 
     def get_reference_object(self) -> TraefikMiddleware:
-        return self.get_reference_object()
+        return self.reconciler.get_reference_object()
 
     def create(self, reference: TraefikMiddleware):
-        return self.create(reference)
+        return self.reconciler.create(reference)
 
     def delete(self, reference: TraefikMiddleware):
-        return self.delete(reference)
+        return self.reconciler.delete(reference)
 
     def retrieve(self) -> TraefikMiddleware:
-        return self.retrieve()
+        return self.reconciler.retrieve()
 
     def update(self, current: TraefikMiddleware, reference: TraefikMiddleware):
-        return self.update(current, reference)
+        return self.reconciler.update(current, reference)
