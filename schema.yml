@@ -22598,8 +22598,8 @@ paths:
                 $ref: '#/components/schemas/GenericError'
           description: ''
   /stages/authenticator/mobile/{stage_uuid}/enrollment_callback/:
-    get:
-      operationId: stages_authenticator_mobile_enrollment_callback_retrieve
+    post:
+      operationId: stages_authenticator_mobile_enrollment_callback_create
       description: AuthenticatorMobileStage Viewset
       parameters:
       - in: path
@@ -22618,7 +22618,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AuthenticatorMobileStage'
+                $ref: '#/components/schemas/MobileDeviceEnrollmentCallback'
           description: ''
         '400':
           content:
@@ -34134,6 +34134,13 @@ components:
       required:
       - name
       - pk
+    MobileDeviceEnrollmentCallback:
+      type: object
+      properties:
+        device_token:
+          type: string
+      required:
+      - device_token
     MobileDeviceRequest:
       type: object
       description: Serializer for Mobile authenticator devices

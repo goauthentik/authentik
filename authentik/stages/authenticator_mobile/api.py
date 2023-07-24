@@ -30,10 +30,6 @@ class AuthenticatorMobileStageSerializer(StageSerializer):
             "configure_flow",
             "friendly_name",
         ]
-        # extra_kwargs = {
-        #     "client_secret": {"write_only": True},
-        #     "admin_secret_key": {"write_only": True},
-        # }
 
 
 class AuthenticatorMobileStageViewSet(UsedByMixin, ModelViewSet):
@@ -48,7 +44,18 @@ class AuthenticatorMobileStageViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["name"]
     ordering = ["name"]
 
-    @action(methods=["GET"], detail=True)
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            200: inline_serializer(
+                "MobileDeviceEnrollmentCallbackSerializer",
+                {
+                    "device_token": CharField(required=True),
+                },
+            ),
+        },
+    )
+    @action(methods=["POST"], detail=True, permission_classes=[])
     def enrollment_callback(self, request: Request, pk: str) -> Response:
         pass
 
