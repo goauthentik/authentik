@@ -1,12 +1,10 @@
-"""AuthenticatorDuoStage API Views"""
-from django.http import Http404
+"""AuthenticatorMobileStage API Views"""
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
-from guardian.shortcuts import get_objects_for_user
+from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ChoiceField, IntegerField
+from rest_framework.fields import CharField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -15,7 +13,6 @@ from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
-from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
 from authentik.stages.authenticator_mobile.models import AuthenticatorMobileStage, MobileDevice

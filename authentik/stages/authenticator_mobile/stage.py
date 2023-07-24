@@ -1,10 +1,8 @@
 """Mobile stage"""
 from django.http import HttpResponse
-from django.utils.timezone import now
 from rest_framework.fields import CharField
-from authentik.core.api.utils import PassiveSerializer
 
-from authentik.events.models import Event, EventAction
+from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -23,6 +21,7 @@ class AuthenticatorMobilePayloadChallenge(PassiveSerializer):
     u = CharField(required=False, help_text="Server URL")
     s = CharField(required=False, help_text="Stage UUID")
     t = CharField(required=False, help_text="Initial Token")
+
 
 class AuthenticatorMobileChallenge(WithUserInfoChallenge):
     """Mobile Challenge"""
@@ -53,12 +52,14 @@ class AuthenticatorMobileStageView(ChallengeStageView):
     def get_challenge(self, *args, **kwargs) -> Challenge:
         stage: AuthenticatorMobileStage = self.executor.current_stage
         self.prepare()
-        payload = AuthenticatorMobilePayloadChallenge(data={
-            # TODO: use cloud gateway?
-            "u": self.request.get_host(),
-            "s": str(stage.stage_uuid),
-            "t": self.executor.plan[FLOW_PLAN_MOBILE_ENROLL].token,
-        })
+        payload = AuthenticatorMobilePayloadChallenge(
+            data={
+                # TODO: use cloud gateway?
+                "u": self.request.get_host(),
+                "s": str(stage.stage_uuid),
+                "t": self.executor.plan[FLOW_PLAN_MOBILE_ENROLL].token,
+            }
+        )
         payload.is_valid()
         return AuthenticatorMobileChallenge(
             data={
