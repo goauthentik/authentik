@@ -226,7 +226,7 @@ MIDDLEWARE = [
     "authentik.events.middleware.AuditMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    "authentik.root.middleware.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
