@@ -42,6 +42,7 @@ class AuthenticatorMobileStageView(ChallengeStageView):
     response_class = AuthenticatorMobileChallengeResponse
 
     def prepare(self):
+        """Prepare the token"""
         if FLOW_PLAN_MOBILE_ENROLL in self.executor.plan.context:
             return
         token = MobileDeviceToken.objects.create(

@@ -80,6 +80,8 @@ class MobileDevice(SerializerModel, Device):
 
 
 class MobileDeviceToken(ExpiringModel):
+    """Mobile device token"""
+
     device = models.ForeignKey(MobileDevice, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     token = models.TextField(default=default_token_key)

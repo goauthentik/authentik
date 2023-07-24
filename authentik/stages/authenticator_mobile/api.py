@@ -54,7 +54,7 @@ class AuthenticatorMobileStageViewSet(UsedByMixin, ModelViewSet):
     )
     @action(methods=["POST"], detail=True, permission_classes=[])
     def enrollment_callback(self, request: Request, pk: str) -> Response:
-        pass
+        """Enrollment callback"""
 
 
 class MobileDeviceSerializer(ModelSerializer):
