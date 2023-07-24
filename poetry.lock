@@ -1340,13 +1340,13 @@ tests = ["black", "django-stubs[compatible-mypy]", "djangorestframework-stubs[co
 
 [[package]]
 name = "drf-spectacular"
-version = "0.26.3"
+version = "0.26.4"
 description = "Sane and flexible OpenAPI 3 schema generation for Django REST framework"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "drf-spectacular-0.26.3.tar.gz", hash = "sha256:b907a72a0244e5dcfeca625e9632cd8ebccdbe2cb528b7c1de1191708be6f31e"},
-    {file = "drf_spectacular-0.26.3-py3-none-any.whl", hash = "sha256:1d84ac70522baaadd6d84a25ce5fe5ea50cfcba0387856689f98ac536f14aa32"},
+    {file = "drf-spectacular-0.26.4.tar.gz", hash = "sha256:8f5a8f87353d1bb8dcb3f3909b7109b2dcbe1d91f3e069409cf322963e140bd6"},
+    {file = "drf_spectacular-0.26.4-py3-none-any.whl", hash = "sha256:afeccc6533dcdb4e78afbfcc49f3c5e9c369aeb62f965e4d1a43b165449c147a"},
 ]
 
 [package.dependencies]
