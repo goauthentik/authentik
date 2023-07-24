@@ -83,10 +83,9 @@ class KubernetesObjectReconciler(Generic[T]):
         except AttributeError:
             json = asdict(reference)
         try:
+            ref = json
             if patch is not None:
                 ref = apply_patch(json, patch)
-            else:
-                ref = json
         except (JsonPatchException, JsonPatchConflict, JsonPatchTestFailed) as exc:
             raise ControllerException(f"JSON Patch failed: {exc}") from exc
         mock_response = Response()
