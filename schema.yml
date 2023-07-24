@@ -22600,7 +22600,7 @@ paths:
   /stages/authenticator/mobile/{stage_uuid}/enrollment_callback/:
     post:
       operationId: stages_authenticator_mobile_enrollment_callback_create
-      description: AuthenticatorMobileStage Viewset
+      description: Enrollment callback
       parameters:
       - in: path
         name: stage_uuid
