@@ -560,6 +560,234 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /authenticators/admin/mobile/:
+    get:
+      operationId: authenticators_admin_mobile_list
+      description: Viewset for Mobile authenticator devices (for admins)
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMobileDeviceList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: authenticators_admin_mobile_create
+      description: Viewset for Mobile authenticator devices (for admins)
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/admin/mobile/{id}/:
+    get:
+      operationId: authenticators_admin_mobile_retrieve
+      description: Viewset for Mobile authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: authenticators_admin_mobile_update
+      description: Viewset for Mobile authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: authenticators_admin_mobile_partial_update
+      description: Viewset for Mobile authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMobileDeviceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: authenticators_admin_mobile_destroy
+      description: Viewset for Mobile authenticator devices (for admins)
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /authenticators/admin/sms/:
     get:
       operationId: authenticators_admin_sms_list
@@ -1707,6 +1935,238 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Duo Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/:
+    get:
+      operationId: authenticators_mobile_list
+      description: Viewset for Mobile authenticator devices
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMobileDeviceList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/{id}/:
+    get:
+      operationId: authenticators_mobile_retrieve
+      description: Viewset for Mobile authenticator devices
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: authenticators_mobile_update
+      description: Viewset for Mobile authenticator devices
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: authenticators_mobile_partial_update
+      description: Viewset for Mobile authenticator devices
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMobileDeviceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: authenticators_mobile_destroy
+      description: Viewset for Mobile authenticator devices
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/{id}/used_by/:
+    get:
+      operationId: authenticators_mobile_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -21900,6 +22360,315 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /stages/authenticator/mobile/:
+    get:
+      operationId: stages_authenticator_mobile_list
+      description: AuthenticatorMobileStage Viewset
+      parameters:
+      - in: query
+        name: configure_flow
+        schema:
+          type: string
+          format: uuid
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAuthenticatorMobileStageList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: stages_authenticator_mobile_create
+      description: AuthenticatorMobileStage Viewset
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorMobileStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorMobileStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/mobile/{stage_uuid}/:
+    get:
+      operationId: stages_authenticator_mobile_retrieve
+      description: AuthenticatorMobileStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorMobileStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: stages_authenticator_mobile_update
+      description: AuthenticatorMobileStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticatorMobileStageRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorMobileStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: stages_authenticator_mobile_partial_update
+      description: AuthenticatorMobileStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAuthenticatorMobileStageRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorMobileStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: stages_authenticator_mobile_destroy
+      description: AuthenticatorMobileStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/mobile/{stage_uuid}/enrollment_callback/:
+    get:
+      operationId: stages_authenticator_mobile_enrollment_callback_retrieve
+      description: AuthenticatorMobileStage Viewset
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthenticatorMobileStage'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /stages/authenticator/mobile/{stage_uuid}/used_by/:
+    get:
+      operationId: stages_authenticator_mobile_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: stage_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Authenticator Setup Stage.
+        required: true
+      tags:
+      - stages
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /stages/authenticator/sms/:
     get:
       operationId: stages_authenticator_sms_list
@@ -27892,6 +28661,7 @@ components:
       - authentik.sources.saml
       - authentik.stages.authenticator
       - authentik.stages.authenticator_duo
+      - authentik.stages.authenticator_mobile
       - authentik.stages.authenticator_sms
       - authentik.stages.authenticator_static
       - authentik.stages.authenticator_totp
@@ -27943,6 +28713,7 @@ components:
         * `authentik.sources.saml` - authentik Sources.SAML
         * `authentik.stages.authenticator` - authentik Stages.Authenticator
         * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
+        * `authentik.stages.authenticator_mobile` - authentik Stages.Authenticator.Mobile
         * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
         * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
         * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
@@ -28505,6 +29276,115 @@ components:
       - api_hostname
       - client_id
       - client_secret
+      - name
+    AuthenticatorMobileChallenge:
+      type: object
+      description: Mobile Challenge
+      properties:
+        type:
+          $ref: '#/components/schemas/ChallengeChoices'
+        flow_info:
+          $ref: '#/components/schemas/ContextualFlowInfo'
+        component:
+          type: string
+          default: ak-stage-authenticator-mobile
+        response_errors:
+          type: object
+          additionalProperties:
+            type: array
+            items:
+              $ref: '#/components/schemas/ErrorDetail'
+        pending_user:
+          type: string
+        pending_user_avatar:
+          type: string
+        authentik_url:
+          type: string
+        stage_uuid:
+          type: string
+      required:
+      - authentik_url
+      - pending_user
+      - pending_user_avatar
+      - stage_uuid
+      - type
+    AuthenticatorMobileChallengeResponseRequest:
+      type: object
+      description: Pseudo class for mobile response
+      properties:
+        component:
+          type: string
+          minLength: 1
+          default: ak-stage-authenticator-mobile
+    AuthenticatorMobileStage:
+      type: object
+      description: AuthenticatorMobileStage Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Stage uuid
+        name:
+          type: string
+        component:
+          type: string
+          description: Get object type so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSet'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+      required:
+      - component
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    AuthenticatorMobileStageRequest:
+      type: object
+      description: AuthenticatorMobileStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
+      required:
       - name
     AuthenticatorSMSChallenge:
       type: object
@@ -29541,6 +30421,7 @@ components:
       - $ref: '#/components/schemas/AccessDeniedChallenge'
       - $ref: '#/components/schemas/AppleLoginChallenge'
       - $ref: '#/components/schemas/AuthenticatorDuoChallenge'
+      - $ref: '#/components/schemas/AuthenticatorMobileChallenge'
       - $ref: '#/components/schemas/AuthenticatorSMSChallenge'
       - $ref: '#/components/schemas/AuthenticatorStaticChallenge'
       - $ref: '#/components/schemas/AuthenticatorTOTPChallenge'
@@ -29567,6 +30448,7 @@ components:
           ak-stage-access-denied: '#/components/schemas/AccessDeniedChallenge'
           ak-source-oauth-apple: '#/components/schemas/AppleLoginChallenge'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallenge'
+          ak-stage-authenticator-mobile: '#/components/schemas/AuthenticatorMobileChallenge'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallenge'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallenge'
           ak-stage-authenticator-totp: '#/components/schemas/AuthenticatorTOTPChallenge'
@@ -30692,6 +31574,7 @@ components:
             * `authentik.sources.saml` - authentik Sources.SAML
             * `authentik.stages.authenticator` - authentik Stages.Authenticator
             * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
+            * `authentik.stages.authenticator_mobile` - authentik Stages.Authenticator.Mobile
             * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
             * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
             * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
@@ -30763,6 +31646,8 @@ components:
             * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
             * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
             * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+            * `authentik_stages_authenticator_mobile.authenticatormobilestage` - Mobile Authenticator Setup Stage
+            * `authentik_stages_authenticator_mobile.mobiledevice` - Mobile Device
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
             * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
@@ -30888,6 +31773,7 @@ components:
             * `authentik.sources.saml` - authentik Sources.SAML
             * `authentik.stages.authenticator` - authentik Stages.Authenticator
             * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
+            * `authentik.stages.authenticator_mobile` - authentik Stages.Authenticator.Mobile
             * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
             * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
             * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
@@ -30959,6 +31845,8 @@ components:
             * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
             * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
             * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+            * `authentik_stages_authenticator_mobile.authenticatormobilestage` - Mobile Authenticator Setup Stage
+            * `authentik_stages_authenticator_mobile.mobiledevice` - Mobile Device
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
             * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
@@ -31347,6 +32235,7 @@ components:
       oneOf:
       - $ref: '#/components/schemas/AppleChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
+      - $ref: '#/components/schemas/AuthenticatorMobileChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
       - $ref: '#/components/schemas/AuthenticatorTOTPChallengeResponseRequest'
@@ -31369,6 +32258,7 @@ components:
         mapping:
           ak-source-oauth-apple: '#/components/schemas/AppleChallengeResponseRequest'
           ak-stage-authenticator-duo: '#/components/schemas/AuthenticatorDuoChallengeResponseRequest'
+          ak-stage-authenticator-mobile: '#/components/schemas/AuthenticatorMobileChallengeResponseRequest'
           ak-stage-authenticator-sms: '#/components/schemas/AuthenticatorSMSChallengeResponseRequest'
           ak-stage-authenticator-static: '#/components/schemas/AuthenticatorStaticChallengeResponseRequest'
           ak-stage-authenticator-totp: '#/components/schemas/AuthenticatorTOTPChallengeResponseRequest'
@@ -33218,6 +34108,32 @@ components:
       required:
       - labels
       - name
+    MobileDevice:
+      type: object
+      description: Serializer for Mobile authenticator devices
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+      - pk
+    MobileDeviceRequest:
+      type: object
+      description: Serializer for Mobile authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
     ModelEnum:
       enum:
       - authentik_crypto.certificatekeypair
@@ -33262,6 +34178,8 @@ components:
       - authentik_sources_saml.usersamlsourceconnection
       - authentik_stages_authenticator_duo.authenticatorduostage
       - authentik_stages_authenticator_duo.duodevice
+      - authentik_stages_authenticator_mobile.authenticatormobilestage
+      - authentik_stages_authenticator_mobile.mobiledevice
       - authentik_stages_authenticator_sms.authenticatorsmsstage
       - authentik_stages_authenticator_sms.smsdevice
       - authentik_stages_authenticator_static.authenticatorstaticstage
@@ -33338,6 +34256,8 @@ components:
         * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
         * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
         * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+        * `authentik_stages_authenticator_mobile.authenticatormobilestage` - Mobile Authenticator Setup Stage
+        * `authentik_stages_authenticator_mobile.mobiledevice` - Mobile Device
         * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
         * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
         * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
@@ -34397,6 +35317,41 @@ components:
       required:
       - pagination
       - results
+    PaginatedAuthenticatorMobileStageList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuthenticatorMobileStage'
+      required:
+      - pagination
+      - results
     PaginatedAuthenticatorSMSStageList:
       type: object
       properties:
@@ -34778,6 +35733,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/License'
+      required:
+      - pagination
+      - results
+    PaginatedMobileDeviceList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MobileDevice'
       required:
       - pagination
       - results
@@ -35887,6 +36877,27 @@ components:
         admin_secret_key:
           type: string
           writeOnly: true
+    PatchedAuthenticatorMobileStageRequest:
+      type: object
+      description: AuthenticatorMobileStage Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        flow_set:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowSetRequest'
+        configure_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used by an authenticated user to configure this Stage.
+            If empty, user will not be able to configure this stage.
+        friendly_name:
+          type: string
+          nullable: true
+          minLength: 1
     PatchedAuthenticatorSMSStageRequest:
       type: object
       description: AuthenticatorSMSStage Serializer
@@ -36325,6 +37336,7 @@ components:
             * `authentik.sources.saml` - authentik Sources.SAML
             * `authentik.stages.authenticator` - authentik Stages.Authenticator
             * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
+            * `authentik.stages.authenticator_mobile` - authentik Stages.Authenticator.Mobile
             * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
             * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
             * `authentik.stages.authenticator_totp` - authentik Stages.Authenticator.TOTP
@@ -36396,6 +37408,8 @@ components:
             * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
             * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
             * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+            * `authentik_stages_authenticator_mobile.authenticatormobilestage` - Mobile Authenticator Setup Stage
+            * `authentik_stages_authenticator_mobile.mobiledevice` - Mobile Device
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
             * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
@@ -36906,6 +37920,15 @@ components:
         key:
           type: string
           minLength: 1
+    PatchedMobileDeviceRequest:
+      type: object
+      description: Serializer for Mobile authenticator devices
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
     PatchedNotificationRequest:
       type: object
       description: Notification Serializer

@@ -1603,6 +1603,78 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_stages_authenticator_mobile.authenticatormobilestage"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_mobile.authenticatormobilestage"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_mobile.authenticatormobilestage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_stages_authenticator_mobile.mobiledevice"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_mobile.mobiledevice"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_mobile.mobiledevice"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_authenticator_sms.authenticatorsmsstage"
                             },
                             "id": {
@@ -3455,6 +3527,7 @@
                         "authentik.sources.saml",
                         "authentik.stages.authenticator",
                         "authentik.stages.authenticator_duo",
+                        "authentik.stages.authenticator_mobile",
                         "authentik.stages.authenticator_sms",
                         "authentik.stages.authenticator_static",
                         "authentik.stages.authenticator_totp",
@@ -3530,6 +3603,8 @@
                         "authentik_sources_saml.usersamlsourceconnection",
                         "authentik_stages_authenticator_duo.authenticatorduostage",
                         "authentik_stages_authenticator_duo.duodevice",
+                        "authentik_stages_authenticator_mobile.authenticatormobilestage",
+                        "authentik_stages_authenticator_mobile.mobiledevice",
                         "authentik_stages_authenticator_sms.authenticatorsmsstage",
                         "authentik_stages_authenticator_sms.smsdevice",
                         "authentik_stages_authenticator_static.authenticatorstaticstage",
@@ -5831,6 +5906,125 @@
             "required": []
         },
         "model_authentik_stages_authenticator_duo.duodevice": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "The human-readable name of this device."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_mobile.authenticatormobilestage": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "flow_set": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Name"
+                            },
+                            "slug": {
+                                "type": "string",
+                                "maxLength": 50,
+                                "minLength": 1,
+                                "pattern": "^[-a-zA-Z0-9_]+$",
+                                "title": "Slug",
+                                "description": "Visible in the URL."
+                            },
+                            "title": {
+                                "type": "string",
+                                "minLength": 1,
+                                "title": "Title",
+                                "description": "Shown as the Title in Flow pages."
+                            },
+                            "designation": {
+                                "type": "string",
+                                "enum": [
+                                    "authentication",
+                                    "authorization",
+                                    "invalidation",
+                                    "enrollment",
+                                    "unenrollment",
+                                    "recovery",
+                                    "stage_configuration"
+                                ],
+                                "title": "Designation",
+                                "description": "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik."
+                            },
+                            "policy_engine_mode": {
+                                "type": "string",
+                                "enum": [
+                                    "all",
+                                    "any"
+                                ],
+                                "title": "Policy engine mode"
+                            },
+                            "compatibility_mode": {
+                                "type": "boolean",
+                                "title": "Compatibility mode",
+                                "description": "Enable compatibility mode, increases compatibility with password managers on mobile devices."
+                            },
+                            "layout": {
+                                "type": "string",
+                                "enum": [
+                                    "stacked",
+                                    "content_left",
+                                    "content_right",
+                                    "sidebar_left",
+                                    "sidebar_right"
+                                ],
+                                "title": "Layout"
+                            },
+                            "denied_action": {
+                                "type": "string",
+                                "enum": [
+                                    "message_continue",
+                                    "message",
+                                    "continue"
+                                ],
+                                "title": "Denied action",
+                                "description": "Configure what should happen when a flow denies access to a user."
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "slug",
+                            "title",
+                            "designation"
+                        ]
+                    },
+                    "title": "Flow set"
+                },
+                "configure_flow": {
+                    "type": "integer",
+                    "title": "Configure flow",
+                    "description": "Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage."
+                },
+                "friendly_name": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Friendly name"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_mobile.mobiledevice": {
             "type": "object",
             "properties": {
                 "name": {
