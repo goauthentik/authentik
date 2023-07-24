@@ -70,7 +70,7 @@ export class AuthenticatorMobileStage extends BaseStage<
                         </div>
                     </ak-form-static>
                     <div class="qr-container">
-                        <qr-code data="${JSON.stringify(this.challenge)}"></qr-code>
+                        <qr-code data="${JSON.stringify(this.challenge.payload)}"></qr-code>
                     </div>
                 </form>
             </div>

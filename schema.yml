@@ -29298,15 +29298,12 @@ components:
           type: string
         pending_user_avatar:
           type: string
-        authentik_url:
-          type: string
-        stage_uuid:
-          type: string
+        payload:
+          $ref: '#/components/schemas/AuthenticatorMobilePayloadChallenge'
       required:
-      - authentik_url
+      - payload
       - pending_user
       - pending_user_avatar
-      - stage_uuid
       - type
     AuthenticatorMobileChallengeResponseRequest:
       type: object
@@ -29316,6 +29313,20 @@ components:
           type: string
           minLength: 1
           default: ak-stage-authenticator-mobile
+    AuthenticatorMobilePayloadChallenge:
+      type: object
+      description: Payload within the QR code given to the mobile app, hence the short
+        variable names
+      properties:
+        u:
+          type: string
+          description: Server URL
+        s:
+          type: string
+          description: Stage UUID
+        t:
+          type: string
+          description: Initial Token
     AuthenticatorMobileStage:
       type: object
       description: AuthenticatorMobileStage Serializer
