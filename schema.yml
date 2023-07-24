@@ -3633,78 +3633,60 @@ paths:
       operationId: core_tenants_list
       description: Tenant Viewset
       parameters:
-      - name: branding_favicon
-        required: false
-        in: query
-        description: branding_favicon
+      - in: query
+        name: branding_favicon
         schema:
           type: string
-      - name: branding_logo
-        required: false
-        in: query
-        description: branding_logo
+      - in: query
+        name: branding_logo
         schema:
           type: string
-      - name: branding_title
-        required: false
-        in: query
-        description: branding_title
+      - in: query
+        name: branding_title
         schema:
           type: string
-      - name: default
-        required: false
-        in: query
-        description: default
+      - in: query
+        name: default
+        schema:
+          type: boolean
+      - in: query
+        name: domain
         schema:
           type: string
-      - name: domain
-        required: false
-        in: query
-        description: domain
+      - in: query
+        name: event_retention
         schema:
           type: string
-      - name: event_retention
-        required: false
-        in: query
-        description: event_retention
+      - in: query
+        name: flow_authentication
         schema:
           type: string
-      - name: flow_authentication
-        required: false
-        in: query
-        description: flow_authentication
+          format: uuid
+      - in: query
+        name: flow_device_code
         schema:
           type: string
-      - name: flow_device_code
-        required: false
-        in: query
-        description: flow_device_code
+          format: uuid
+      - in: query
+        name: flow_invalidation
         schema:
           type: string
-      - name: flow_invalidation
-        required: false
-        in: query
-        description: flow_invalidation
+          format: uuid
+      - in: query
+        name: flow_recovery
         schema:
           type: string
-      - name: flow_recovery
-        required: false
-        in: query
-        description: flow_recovery
+          format: uuid
+      - in: query
+        name: flow_unenrollment
         schema:
           type: string
-      - name: flow_unenrollment
-        required: false
-        in: query
-        description: flow_unenrollment
+          format: uuid
+      - in: query
+        name: flow_user_settings
         schema:
           type: string
-      - name: flow_user_settings
-        required: false
-        in: query
-        description: flow_user_settings
-        schema:
-          type: string
+          format: uuid
       - name: ordering
         required: false
         in: query
@@ -3729,18 +3711,16 @@ paths:
         description: A search term.
         schema:
           type: string
-      - name: tenant_uuid
-        required: false
-        in: query
-        description: tenant_uuid
+      - in: query
+        name: tenant_uuid
         schema:
           type: string
-      - name: web_certificate
-        required: false
-        in: query
-        description: web_certificate
+          format: uuid
+      - in: query
+        name: web_certificate
         schema:
           type: string
+          format: uuid
       tags:
       - core
       security:
@@ -5163,16 +5143,12 @@ paths:
         schema:
           type: boolean
           default: true
-      - name: managed
-        required: false
-        in: query
-        description: managed
+      - in: query
+        name: managed
         schema:
           type: string
-      - name: name
-        required: false
-        in: query
-        description: name
+      - in: query
+        name: name
         schema:
           type: string
       - name: ordering

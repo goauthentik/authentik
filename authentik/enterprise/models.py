@@ -9,7 +9,7 @@ from time import mktime
 from uuid import uuid4
 
 from cryptography.exceptions import InvalidSignature
-from cryptography.x509 import Certificate, load_pem_x509_certificate
+from cryptography.x509 import Certificate, load_der_x509_certificate, load_pem_x509_certificate
 from dacite import from_dict
 from django.db import models
 from django.db.models.query import QuerySet
@@ -61,8 +61,8 @@ class LicenseKey:
         if len(x5c) < 1:
             raise ValidationError("Unable to verify license")
         try:
-            our_cert = load_pem_x509_certificate(b64decode(x5c[0]))
-            intermediate = load_pem_x509_certificate(b64decode(x5c[1]))
+            our_cert = load_der_x509_certificate(b64decode(x5c[0]))
+            intermediate = load_der_x509_certificate(b64decode(x5c[1]))
             our_cert.verify_directly_issued_by(intermediate)
             intermediate.verify_directly_issued_by(get_licensing_key())
         except (InvalidSignature, TypeError, ValueError, Error):
