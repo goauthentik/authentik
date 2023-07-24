@@ -1,3 +1,4 @@
+import "@goauthentik/admin/common/ak-certificate-search/ak-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
@@ -19,9 +20,6 @@ import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import {
-    CertificateKeyPair,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
     FlowsInstancesListDesignationEnum,
     PaginatedOAuthSourceList,
     PaginatedScopeMappingList,
@@ -383,35 +381,10 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 <span slot="header">${msg("Advanced protocol settings")}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.certificate;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-certificate-search
+                            current-certificate=${this.instance?.certificate}
+                            has-key
+                        ></ak-certificate-search>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Additional scopes")}
