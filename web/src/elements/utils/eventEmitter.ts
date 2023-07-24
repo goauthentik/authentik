@@ -19,7 +19,7 @@ export function CustomEmitterElement<T extends Constructor<LitElement>>(supercla
                         target: this,
                         ...detail,
                     },
-                })
+                }),
             );
         }
     };
@@ -65,7 +65,7 @@ export function CustomListenerElement<T extends Constructor<LitElement>>(supercl
         private [HK.addHandler](
             eventName: string,
             handler: EventHandler,
-            internalHandler: EventHandler
+            internalHandler: EventHandler,
         ) {
             if (!this[HK.listenHandlers].has(eventName)) {
                 this[HK.listenHandlers].set(eventName, new WeakMap());
@@ -87,7 +87,7 @@ export function CustomListenerElement<T extends Constructor<LitElement>>(supercl
             const internalHandler = (ev: Event) => {
                 if (!isCustomEvent(ev)) {
                     console.error(
-                        `Received a standard event for custom event ${eventName}; event will not be handled.`
+                        `Received a standard event for custom event ${eventName}; event will not be handled.`,
                     );
                     return;
                 }
@@ -102,7 +102,7 @@ export function CustomListenerElement<T extends Constructor<LitElement>>(supercl
             if (realHandler) {
                 this.removeEventListener(
                     eventName,
-                    realHandler as EventListenerOrEventListenerObject
+                    realHandler as EventListenerOrEventListenerObject,
                 );
             }
             this[HK.removeHandler](eventName, handler);
