@@ -41,7 +41,8 @@ export class AkSourceFlowSearch<T extends Flow> extends FlowSearch<T> {
     // otherwise defer to the parent class.
     selected(flow: Flow): boolean {
         return (
-            (!this.instanceId && !this.value && flow.slug === this.fallback) || super.selected(flow)
+            (!this.instanceId && !this.currentFlow && flow.slug === this.fallback) ||
+            super.selected(flow)
         );
     }
 }

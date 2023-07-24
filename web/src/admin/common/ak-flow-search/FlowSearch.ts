@@ -10,17 +10,26 @@ import { property, query } from "lit/decorators.js";
 import { FlowsApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 import type { Flow, FlowsInstancesListRequest } from "@goauthentik/api";
 
-function renderElement(flow: Flow) {
+export function renderElement(flow: Flow) {
     return RenderFlowOption(flow);
 }
 
-function renderDescription(flow: Flow) {
+export function renderDescription(flow: Flow) {
     return html`${flow.slug}`;
 }
 
-function getFlowValue(flow: Flow | undefined): string | undefined {
+export function getFlowValue(flow: Flow | undefined): string | undefined {
     return flow?.pk;
 }
+
+/**
+ * FlowSearch
+ *
+ * A wrapper around SearchSelect that understands the basic semantics of querying about Flows. This
+ * code eliminates the long blocks of unreadable invocation that were embedded in every provider, as well as in
+ * sources, tenants, and applications.
+ *
+ */
 
 export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement) {
     /**
@@ -81,6 +90,11 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
         const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
         return flows.results;
     }
+
+    /* This is the most commonly overriden method of this class. About half of the Flow Searches use
+     * this method, but several have more complex needs, such as relating to the tenant, or just
+     * returning false.
+     */
 
     selected(flow: Flow): boolean {
         return this.currentFlow === flow.pk;
