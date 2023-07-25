@@ -29,8 +29,15 @@
 
 .hero--primary {
     padding-bottom: 5.3rem !important;
+    /* fix aliasing at the edge */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
     -webkit-clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
+}
+
+.headerRow {
+    margin-bottom: -10rem;
 }
 
 .hero_image {
@@ -39,7 +46,6 @@
 }
 
 .hero_image > img {
-    max-height: 400px;
     filter: drop-shadow(5px 5px 25px rgba(0, 0, 0, 0.6));
 }
 

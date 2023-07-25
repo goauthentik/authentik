@@ -72,10 +72,10 @@ function Home() {
             </Head>
             <header className={clsx("hero hero--primary", styles.heroBanner)}>
                 <div className="container">
-                    <div className="row">
+                    <div className="row headerRow">
                         <div className="col padding-top--lg">
                             <h1 className="hero__title">
-                                <div>Unify</div>
+                                <div>Replace</div>
                                 <div class="slider">
                                     <div class="slider-text-1">
                                         Active Directory
@@ -83,7 +83,7 @@ function Home() {
                                     <div class="slider-text-2">Auth0</div>
                                     <div class="slider-text-3">Okta</div>
                                 </div>
-                                <div>into a single platform.</div>
+                                <div>with a unified platform.</div>
                             </h1>
                             <p className="hero__subtitle">TODO: Tana</p>
                             <div className={styles.buttons}>
