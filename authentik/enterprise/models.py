@@ -73,7 +73,7 @@ class LicenseKey:
                 decode(
                     jwt,
                     our_cert.public_key(),
-                    algorithms=["ES521"],
+                    algorithms=["ES512"],
                     audience=get_license_aud(),
                 ),
             )
