@@ -41,6 +41,7 @@
 }
 
 .hero--primary {
+    background: radial-gradient(circle, rgba(66,15,101,1) 0%, rgba(253,75,45,1) 50%);
     padding-bottom: 5.3rem !important;
     /* fix aliasing at the edge */
     -webkit-backface-visibility: hidden;
