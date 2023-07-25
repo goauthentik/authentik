@@ -12,7 +12,7 @@ import "react-before-after-slider-component/dist/build.css";
 
 const features = [
     {
-        title: "Easy to Use",
+        title: "Easy to use",
         description: (
             <>
                 Identity made easy. authentik makes single-sign on (SSO), user
@@ -21,7 +21,7 @@ const features = [
         ),
     },
     {
-        title: "Realise your workflow",
+        title: "Realize your workflow",
         description: (
             <>
                 authentik lets you build your workflow as you need it, no
@@ -75,16 +75,21 @@ function Home() {
                     <div className="row">
                         <div className="col padding-top--lg">
                             <h1 className="hero__title">
-                                Making authentication simple.
+                                <div>Unify</div>
+                                <div class="slider">
+                                    <div class="slider-text-1">
+                                        Active Directory
+                                    </div>
+                                    <div class="slider-text-2">Auth0</div>
+                                    <div class="slider-text-3">Okta</div>
+                                </div>
+                                <div>into a single platform.</div>
                             </h1>
-                            <p className="hero__subtitle">
-                                authentik is an open-source Identity Provider
-                                focused on flexibility and versatility
-                            </p>
+                            <p className="hero__subtitle">TODO: Tana</p>
                             <div className={styles.buttons}>
                                 <Link
                                     className={clsx(
-                                        "button button--outline button--secondary button--lg",
+                                        "button button--outline button--primary button--lg",
                                         styles.getStarted,
                                     )}
                                     to={useBaseUrl("docs/installation/")}
@@ -96,7 +101,7 @@ function Home() {
                         <div className="col text--center hero_image">
                             <img
                                 alt="authentik logo"
-                                src={useBaseUrl("img/icon_top_brand.svg")}
+                                src={useBaseUrl("img/login.png")}
                             />
                         </div>
                     </div>
@@ -110,6 +115,18 @@ function Home() {
                                 <Feature key={idx} {...props} />
                             ))}
                         </div>
+                    </div>
+                    <div className={clsx("row", styles.rowDark)}>
+                        <div className="container">
+                            TODO: Add 3 last releases here
+                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                            Temporibus aliquam eum animi laboriosam porro quisquam
+                            molestiae, nemo earum perferendis quidem, eaque
+                            molestias consectetur cum similique? Quasi sunt maxime
+                            nihil numquam.
+                        </div>
+                    </div>
+                    <div className="container">
                         <div className="row">
                             <div className="col col--5">
                                 <div>

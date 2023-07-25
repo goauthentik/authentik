@@ -25,7 +25,7 @@ module.exports = async function () {
                 title: "authentik",
                 logo: {
                     alt: "authentik logo",
-                    src: "img/icon.svg",
+                    src: "img/icon_left_brand.svg",
                 },
                 items: [
                     { to: "blog", label: "Blog", position: "left" },
