@@ -25,7 +25,9 @@ class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     @property
     def serializer(self) -> type[BaseSerializer]:
-        from authentik.stages.authenticator_mobile.api import AuthenticatorMobileStageSerializer
+        from authentik.stages.authenticator_mobile.api.stage import (
+            AuthenticatorMobileStageSerializer,
+        )
 
         return AuthenticatorMobileStageSerializer
 
@@ -67,7 +69,7 @@ class MobileDevice(SerializerModel, Device):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.stages.authenticator_mobile.api import MobileDeviceSerializer
+        from authentik.stages.authenticator_mobile.api.device import MobileDeviceSerializer
 
         return MobileDeviceSerializer
 

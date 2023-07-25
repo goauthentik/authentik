@@ -130,7 +130,10 @@ SPECTACULAR_SETTINGS = {
     "CONTACT": {
         "email": "hello@goauthentik.io",
     },
-    "AUTHENTICATION_WHITELIST": ["authentik.api.authentication.TokenAuthentication"],
+    "AUTHENTICATION_WHITELIST": [
+        "authentik.stages.authenticator_mobile.api.auth.MobileDeviceTokenAuthentication",
+        "authentik.api.authentication.TokenAuthentication",
+    ],
     "LICENSE": {
         "name": "MIT",
         "url": "https://github.com/goauthentik/authentik/blob/main/LICENSE",

@@ -22611,8 +22611,14 @@ paths:
         required: true
       tags:
       - stages
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceEnrollmentRequest'
+        required: true
       security:
-      - authentik: []
+      - mobile_device_token: []
       responses:
         '200':
           content:
@@ -34141,6 +34147,14 @@ components:
           type: string
       required:
       - device_token
+    MobileDeviceEnrollmentRequest:
+      type: object
+      properties:
+        device_token:
+          type: string
+          minLength: 1
+      required:
+      - device_token
     MobileDeviceRequest:
       type: object
       description: Serializer for Mobile authenticator devices
@@ -43688,6 +43702,11 @@ components:
           authentik_providers_scim.scimprovider: '#/components/schemas/SCIMProviderRequest'
   securitySchemes:
     authentik:
+      type: apiKey
+      in: header
+      name: Authorization
+      scheme: bearer
+    mobile_device_token:
       type: apiKey
       in: header
       name: Authorization
