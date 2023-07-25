@@ -118,12 +118,12 @@ function Home() {
                     </div>
                     <div className={clsx("row", styles.rowDark)}>
                         <div className="container">
-                            TODO: Add 3 last releases here
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                            Temporibus aliquam eum animi laboriosam porro quisquam
+                            TODO: Add 3 last releases here Lorem ipsum dolor sit
+                            amet consectetur adipisicing elit. Temporibus
+                            aliquam eum animi laboriosam porro quisquam
                             molestiae, nemo earum perferendis quidem, eaque
-                            molestias consectetur cum similique? Quasi sunt maxime
-                            nihil numquam.
+                            molestias consectetur cum similique? Quasi sunt
+                            maxime nihil numquam.
                         </div>
                     </div>
                     <div className="container">
