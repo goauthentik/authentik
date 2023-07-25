@@ -10,6 +10,7 @@ import styles from "./styles.module.css";
 import Comparison from "../components/Comparison";
 import "react-before-after-slider-component/dist/build.css";
 import { NewsBar } from "../components/NewsBar";
+import { TextSlide } from "../components/TextSlide";
 
 function Feature({ imageUrl, title, description }) {
     const imgUrl = useBaseUrl(imageUrl);
@@ -47,13 +48,7 @@ function Home() {
                         <div className="col padding-top--lg">
                             <h1 className="hero__title">
                                 <div>Replace</div>
-                                <div className="slider">
-                                    <div className="slider-text-1">
-                                        Active Directory
-                                    </div>
-                                    <div className="slider-text-2">Auth0</div>
-                                    <div className="slider-text-3">Okta</div>
-                                </div>
+                                <TextSlide words={["Active Directory", "Okta", "Auth0"]}></TextSlide>
                                 <div>with a unified platform.</div>
                             </h1>
                             <p className="hero__subtitle">

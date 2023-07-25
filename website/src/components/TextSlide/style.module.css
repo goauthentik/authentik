@@ -1,0 +1,43 @@
+.slider {
+    height: 60px;
+    overflow: hidden;
+}
+
+.sliderEntry:first-of-type {
+    animation: slide 5s linear infinite;
+}
+
+.sliderEntry {
+    height: 60px;
+    padding: 0px 15px;
+    text-align: center;
+    margin-bottom: 60px;
+    box-sizing: border-box;
+}
+
+@keyframes slide {
+    0% {
+        margin-top: calc(6 * -60px);
+    }
+    5% {
+        /* For stopping effect */
+        margin-top: calc(4 * -60px);
+    }
+    33% {
+        margin-top: calc(4 * -60px);
+    }
+    38% {
+        /* For stopping effect */
+        margin-top: calc(2 * -60px);
+    }
+    66% {
+        margin-top: calc(2 * -60px);
+    }
+    71% {
+        /* For stopping effect */
+        margin-top: 0px;
+    }
+    100% {
+        margin-top: 0px;
+    }
+}
