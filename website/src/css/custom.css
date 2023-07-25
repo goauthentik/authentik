@@ -6,12 +6,19 @@
     --ifm-color-primary-light: #fd644b;
     --ifm-color-primary-lighter: #fd7159;
     --ifm-color-primary-lightest: #fe9786;
-    --ifm-navbar-link-hover-color: var(--ifm-color-content-inverse);
+    --white: #e3e3e3;
+    --ifm-navbar-link-color: var(--white);
+    --ifm-navbar-link-hover-color: var(--ifm-color-gray-1000);
 }
 
 .button.button--outline {
-    color: var(--ifm-navbar-link-hover-color) !important;
-    --ifm-button-border-color: var(--ifm-navbar-link-hover-color) !important;
+    color: var(--white) !important;
+    --ifm-button-border-color: var(--white) !important;
+}
+
+.button.button--outline:hover {
+    color: var(--ifm-color-gray-1000) !important;
+    --ifm-button-background-color: var(--white);
 }
 
 .navbar {

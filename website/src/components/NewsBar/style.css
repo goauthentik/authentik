@@ -3,6 +3,7 @@
     flex-direction: row;
     width: 100%;
     font-size: 1.25rem;
+    font-weight: 800;
 }
 
 .news-bar-container .items {
@@ -10,4 +11,10 @@
     flex-direction: row;
     justify-content: space-around;
     width: 100%;
+}
+
+.news-bar-container .items a {
+    color: var(--ifm-color-secondary-contrast-background);
+    text-decoration: underline;
+    text-decoration-color: var(--ifm-color-primary);
 }

@@ -56,16 +56,23 @@ function Home() {
                                 </div>
                                 <div>with a unified platform.</div>
                             </h1>
-                            <p className="hero__subtitle">TODO: Tana</p>
+                            <p className="hero__subtitle">TODO</p>
                             <div className={styles.buttons}>
                                 <Link
                                     className={clsx(
                                         "button button--outline button--primary button--lg",
-                                        styles.getStarted,
                                     )}
                                     to={useBaseUrl("docs/installation/")}
                                 >
                                     Get Started
+                                </Link>
+                                <Link
+                                    className={clsx(
+                                        "button button--outline button--primary button--lg",
+                                    )}
+                                    to="#comparison"
+                                >
+                                    TODO Copy
                                 </Link>
                             </div>
                         </div>
@@ -112,7 +119,14 @@ function Home() {
                             />
                         </div>
                     </div>
-                    <div className={clsx("row", styles.rowDark)}>
+                    <div
+                        className={clsx(
+                            "row",
+                            styles.rowDark,
+                            styles.rowFullWidth,
+                            styles.newsBar,
+                        )}
+                    >
                         <div className="container">
                             <NewsBar />
                         </div>
@@ -197,6 +211,35 @@ function Home() {
                 </section>
                 <section>
                     <Comparison></Comparison>
+                </section>
+                <section>
+                    <div
+                        class={clsx(
+                            styles.footerCTA,
+                            styles.rowAuthentik,
+                            styles.rowFullWidth,
+                        )}
+                    >
+                        <h1>Try authentik now!</h1>
+                        <div className={styles.buttons}>
+                            <Link
+                                className={clsx(
+                                    "button button--outline button--primary button--lg",
+                                )}
+                                to={useBaseUrl("docs/installation/")}
+                            >
+                                Get Started
+                            </Link>
+                            <Link
+                                className={clsx(
+                                    "button button--outline button--primary button--lg",
+                                )}
+                                to={useBaseUrl("docs/installation/")}
+                            >
+                                Learn about enterprise
+                            </Link>
+                        </div>
+                    </div>
                 </section>
             </main>
         </Layout>

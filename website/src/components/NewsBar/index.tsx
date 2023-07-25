@@ -1,6 +1,7 @@
 import React from "react";
 import sidebar from "../../../sidebars";
 import "./style.css";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
 interface ItemLink {
     label: string;
@@ -32,7 +33,9 @@ export function NewsBar() {
             <span>News</span>
             <div className="items">
                 {getReleases().map((version) => {
-                    return <a href={version.link}>{version.label}</a>;
+                    return (
+                        <a href={useBaseUrl(version.link)}>{version.label}</a>
+                    );
                 })}
             </div>
         </div>

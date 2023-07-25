@@ -5,6 +5,7 @@
     position: relative;
     overflow: hidden;
     overflow-wrap: normal;
+    color: var(--white);
 }
 
 @media (max-width: 996px) {
@@ -24,6 +25,9 @@
     align-items: center;
     justify-content: center;
 }
+.buttons > * {
+    margin: 0 0.25rem;
+}
 
 .features {
     display: flex;
@@ -37,11 +41,26 @@
     padding-bottom: 2rem;
 }
 
-.rowDark {
-    background-color: black;
-    color: white;
+.rowFullWidth {
     width: 100%;
     padding: 1rem 3rem;
-    font-weight: 800;
+}
+
+.rowDark {
+    background-color: var(--ifm-color-secondary-contrast-foreground);
+    color: var(--ifm-color-secondary-contrast-background);
+}
+
+.rowAuthentik {
+    color: var(--white);
+    background-color: var(--ifm-color-primary);
+}
+
+.newsBar {
     margin-bottom: 4rem;
+}
+
+.footerCTA {
+    padding: 5rem;
+    text-align: center;
 }
