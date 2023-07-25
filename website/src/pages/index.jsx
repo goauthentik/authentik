@@ -44,15 +44,22 @@ function Home() {
             </Head>
             <header className={clsx("hero hero--primary", styles.heroBanner)}>
                 <div className="container">
-                    <div className="row headerRow">
+                    <div className={clsx("row", styles.headerRow)}>
                         <div className="col padding-top--lg">
                             <h1 className="hero__title">
                                 <div>Replace</div>
-                                <TextSlide words={["Active Directory", "Okta", "Auth0"]}></TextSlide>
+                                <TextSlide
+                                    words={[
+                                        "Active Directory",
+                                        "Okta",
+                                        "Auth0",
+                                    ]}
+                                ></TextSlide>
                                 <div>with a unified platform.</div>
                             </h1>
                             <p className="hero__subtitle">
-                                Bring all your identity needs into a unified place, employees, customers, todo
+                                Bring all your identity needs into a unified
+                                place, employees, customers, todo
                             </p>
                             <div className={styles.buttons}>
                                 <Link
@@ -73,7 +80,13 @@ function Home() {
                                 </Link>
                             </div>
                         </div>
-                        <div className="col text--center hero_image">
+                        <div
+                            className={clsx(
+                                "col text--center",
+                                styles.heroImage,
+                                styles.hiddenOnMobile,
+                            )}
+                        >
                             <img
                                 alt="authentik logo"
                                 src={useBaseUrl("img/login.png")}
@@ -85,7 +98,7 @@ function Home() {
             <main>
                 <section className={styles.features}>
                     <div className="container">
-                        <div className={clsx("row", styles.rowFeatures)}>
+                        <div className={clsx("row", styles.row)}>
                             <Feature
                                 title="Easy to use"
                                 description={
@@ -122,6 +135,7 @@ function Home() {
                             styles.rowDark,
                             styles.rowFullWidth,
                             styles.newsBar,
+                            styles.hiddenOnMobile,
                         )}
                     >
                         <div className="container">
@@ -129,7 +143,7 @@ function Home() {
                         </div>
                     </div>
                     <div className="container">
-                        <div className="row">
+                        <div className={clsx("row", styles.row)}>
                             <div className="col col--5">
                                 <BrowserOnly>
                                     {() => {
@@ -166,7 +180,7 @@ function Home() {
                                 </p>
                             </div>
                         </div>
-                        <div className="row">
+                        <div className={clsx("row", styles.row)}>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
                                 <h2>Utmost flexibility</h2>
                                 <p>

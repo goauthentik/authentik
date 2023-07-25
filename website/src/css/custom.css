@@ -43,31 +43,6 @@
     clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 3vw));
 }
 
-.headerRow {
-    margin-bottom: -10rem;
-}
-
-.hero_image {
-    flex-direction: column;
-    justify-items: center;
-}
-
-.hero_image > img {
-    filter: drop-shadow(5px 5px 25px rgba(0, 0, 0, 0.6));
-}
-
-@media (max-width: 996px) {
-    .hero_image > img {
-        display: none;
-    }
-}
-
-@media (max-width: 430px) {
-    .hero__title {
-        font-size: 2rem;
-    }
-}
-
 .before-after-slider img {
     max-width: none;
 }
