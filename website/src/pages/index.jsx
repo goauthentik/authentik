@@ -10,36 +10,6 @@ import styles from "./styles.module.css";
 import Comparison from "../components/Comparison";
 import "react-before-after-slider-component/dist/build.css";
 
-const features = [
-    {
-        title: "Easy to use",
-        description: (
-            <>
-                Identity made easy. authentik makes single-sign on (SSO), user
-                enrollment, and access control simple.
-            </>
-        ),
-    },
-    {
-        title: "Realize your workflow",
-        description: (
-            <>
-                authentik lets you build your workflow as you need it, no
-                limitations.
-            </>
-        ),
-    },
-    {
-        title: "Powered by Python",
-        description: (
-            <>
-                Implement custom verification or access control logic using
-                Python code.
-            </>
-        ),
-    },
-];
-
 function Feature({ imageUrl, title, description }) {
     const imgUrl = useBaseUrl(imageUrl);
     return (
@@ -111,9 +81,34 @@ function Home() {
                 <section className={styles.features}>
                     <div className="container">
                         <div className={clsx("row", styles.rowFeatures)}>
-                            {features.map((props, idx) => (
-                                <Feature key={idx} {...props} />
-                            ))}
+                            <Feature
+                                title="Easy to use"
+                                description={
+                                    <>
+                                        Identity made easy. authentik makes
+                                        single-sign on (SSO), user enrollment,
+                                        and access control simple.
+                                    </>
+                                }
+                            />
+                            <Feature
+                                title="Realize your workflow"
+                                description={
+                                    <>
+                                        authentik lets you build your workflow
+                                        as you need it, no limitations.
+                                    </>
+                                }
+                            />
+                            <Feature
+                                title="Powered by Python"
+                                description={
+                                    <>
+                                        Implement custom verification or access
+                                        control logic using Python code.
+                                    </>
+                                }
+                            />
                         </div>
                     </div>
                     <div className={clsx("row", styles.rowDark)}>
