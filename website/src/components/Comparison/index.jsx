@@ -4,10 +4,10 @@ import "./style.css";
 
 function Comparison() {
     return (
-        <section>
+        <>
             <a name="comparison"></a>
-            <div className="container">
-                <h1 className="header">Why authentik?</h1>
+            <h1 className="header">Why authentik?</h1>
+            <div class="table-responsive">
                 <div className="table">
                     <table className="comparison">
                         <thead>
@@ -491,7 +491,7 @@ function Comparison() {
                     </table>
                 </div>
             </div>
-        </section>
+        </>
     );
 }
 

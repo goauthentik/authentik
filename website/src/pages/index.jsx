@@ -56,7 +56,9 @@ function Home() {
                                 </div>
                                 <div>with a unified platform.</div>
                             </h1>
-                            <p className="hero__subtitle">TODO</p>
+                            <p className="hero__subtitle">
+                                Bring all your identity needs into a unified place, employees, customers, todo
+                            </p>
                             <div className={styles.buttons}>
                                 <Link
                                     className={clsx(
@@ -210,7 +212,9 @@ function Home() {
                     </div>
                 </section>
                 <section>
-                    <Comparison></Comparison>
+                    <div className="container">
+                        <Comparison></Comparison>
+                    </div>
                 </section>
                 <section>
                     <div
