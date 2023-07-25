@@ -1,9 +1,9 @@
 """API URLs"""
-from authentik.stages.authenticator_mobile.api import (
+from authentik.stages.authenticator_mobile.api.device import (
     AdminMobileDeviceViewSet,
-    AuthenticatorMobileStageViewSet,
     MobileDeviceViewSet,
 )
+from authentik.stages.authenticator_mobile.api.stage import AuthenticatorMobileStageViewSet
 
 api_urlpatterns = [
     ("authenticators/mobile", MobileDeviceViewSet),

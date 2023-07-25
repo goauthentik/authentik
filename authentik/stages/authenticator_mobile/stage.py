@@ -56,7 +56,7 @@ class AuthenticatorMobileStageView(ChallengeStageView):
         payload = AuthenticatorMobilePayloadChallenge(
             data={
                 # TODO: use cloud gateway?
-                "u": self.request.get_host(),
+                "u": self.request.build_absolute_uri("/"),
                 "s": str(stage.stage_uuid),
                 "t": self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL].token,
             }
