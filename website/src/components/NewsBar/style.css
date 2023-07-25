@@ -1,0 +1,13 @@
+.news-bar-container {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    font-size: 1.25rem;
+}
+
+.news-bar-container .items {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+}

@@ -9,6 +9,7 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
 import Comparison from "../components/Comparison";
 import "react-before-after-slider-component/dist/build.css";
+import { NewsBar } from "../components/NewsBar";
 
 function Feature({ imageUrl, title, description }) {
     const imgUrl = useBaseUrl(imageUrl);
@@ -46,12 +47,12 @@ function Home() {
                         <div className="col padding-top--lg">
                             <h1 className="hero__title">
                                 <div>Replace</div>
-                                <div class="slider">
-                                    <div class="slider-text-1">
+                                <div className="slider">
+                                    <div className="slider-text-1">
                                         Active Directory
                                     </div>
-                                    <div class="slider-text-2">Auth0</div>
-                                    <div class="slider-text-3">Okta</div>
+                                    <div className="slider-text-2">Auth0</div>
+                                    <div className="slider-text-3">Okta</div>
                                 </div>
                                 <div>with a unified platform.</div>
                             </h1>
@@ -113,40 +114,33 @@ function Home() {
                     </div>
                     <div className={clsx("row", styles.rowDark)}>
                         <div className="container">
-                            TODO: Add 3 last releases here Lorem ipsum dolor sit
-                            amet consectetur adipisicing elit. Temporibus
-                            aliquam eum animi laboriosam porro quisquam
-                            molestiae, nemo earum perferendis quidem, eaque
-                            molestias consectetur cum similique? Quasi sunt
-                            maxime nihil numquam.
+                            <NewsBar />
                         </div>
                     </div>
                     <div className="container">
                         <div className="row">
                             <div className="col col--5">
-                                <div>
-                                    <BrowserOnly>
-                                        {() => {
-                                            const ReactBeforeSliderComponent = require("react-before-after-slider-component");
-                                            return (
-                                                <ReactBeforeSliderComponent
-                                                    firstImage={{
-                                                        id: 1,
-                                                        imageUrl: useBaseUrl(
-                                                            "img/screen_apps_dark.jpg",
-                                                        ),
-                                                    }}
-                                                    secondImage={{
-                                                        id: 2,
-                                                        imageUrl: useBaseUrl(
-                                                            "img/screen_apps_light.jpg",
-                                                        ),
-                                                    }}
-                                                />
-                                            );
-                                        }}
-                                    </BrowserOnly>
-                                </div>
+                                <BrowserOnly>
+                                    {() => {
+                                        const ReactBeforeSliderComponent = require("react-before-after-slider-component");
+                                        return (
+                                            <ReactBeforeSliderComponent
+                                                firstImage={{
+                                                    id: 1,
+                                                    imageUrl: useBaseUrl(
+                                                        "img/screen_apps_dark.jpg",
+                                                    ),
+                                                }}
+                                                secondImage={{
+                                                    id: 2,
+                                                    imageUrl: useBaseUrl(
+                                                        "img/screen_apps_light.jpg",
+                                                    ),
+                                                }}
+                                            />
+                                        );
+                                    }}
+                                </BrowserOnly>
                             </div>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
                                 <h2>What is authentik?</h2>
@@ -176,29 +170,27 @@ function Home() {
                                 </p>
                             </div>
                             <div className="col col--5">
-                                <div>
-                                    <BrowserOnly>
-                                        {() => {
-                                            const ReactBeforeSliderComponent = require("react-before-after-slider-component");
-                                            return (
-                                                <ReactBeforeSliderComponent
-                                                    firstImage={{
-                                                        id: 1,
-                                                        imageUrl: useBaseUrl(
-                                                            "img/screen_admin_dark.jpg",
-                                                        ),
-                                                    }}
-                                                    secondImage={{
-                                                        id: 2,
-                                                        imageUrl: useBaseUrl(
-                                                            "img/screen_admin_light.jpg",
-                                                        ),
-                                                    }}
-                                                />
-                                            );
-                                        }}
-                                    </BrowserOnly>
-                                </div>
+                                <BrowserOnly>
+                                    {() => {
+                                        const ReactBeforeSliderComponent = require("react-before-after-slider-component");
+                                        return (
+                                            <ReactBeforeSliderComponent
+                                                firstImage={{
+                                                    id: 1,
+                                                    imageUrl: useBaseUrl(
+                                                        "img/screen_admin_dark.jpg",
+                                                    ),
+                                                }}
+                                                secondImage={{
+                                                    id: 2,
+                                                    imageUrl: useBaseUrl(
+                                                        "img/screen_admin_light.jpg",
+                                                    ),
+                                                }}
+                                            />
+                                        );
+                                    }}
+                                </BrowserOnly>
                             </div>
                         </div>
                     </div>
