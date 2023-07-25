@@ -7,7 +7,7 @@ import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
-import Comparison from "../components/comparison";
+import Comparison from "../components/Comparison";
 import "react-before-after-slider-component/dist/build.css";
 
 const features = [

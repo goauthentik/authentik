@@ -1,12 +1,14 @@
 import React from "react";
 import { Check, X, AlertTriangle } from "react-feather";
+import clsx from "clsx";
+import "./style.css";
 
 function Comparison() {
     return (
         <section className="">
             <div className="container">
-                <h2 id="correctness">Why authentik?</h2>
-                <div className="table-responsive">
+                <h1 className="header">Why authentik?</h1>
+                <div className="table">
                     <table className="comparison">
                         <thead>
                             <tr>
