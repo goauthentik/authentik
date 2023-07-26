@@ -81,7 +81,7 @@ function Home() {
                                     )}
                                     to="#comparison"
                                 >
-                                    TODO Copy
+                                    Reasons to switch
                                 </Link>
                             </div>
                         </div>
@@ -232,7 +232,7 @@ function Home() {
                 </section>
                 <section>
                     <div
-                        class={clsx(
+                        className={clsx(
                             styles.footerCTA,
                             styles.rowAuthentik,
                             styles.rowFullWidth,
@@ -252,7 +252,7 @@ function Home() {
                                 className={clsx(
                                     "button button--outline button--primary button--lg",
                                 )}
-                                to={useBaseUrl("docs/installation/")}
+                                to={useBaseUrl("pricing/")}
                             >
                                 Learn about enterprise
                             </Link>
