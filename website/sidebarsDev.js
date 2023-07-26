@@ -63,7 +63,7 @@ module.exports = {
                 id: "docs/templates_docs",
             },
             items: [
-                "/template_docs/procedural",
+                "template_docs/procedural",
               
             ],
         },
