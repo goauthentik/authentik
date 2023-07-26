@@ -55,8 +55,17 @@ module.exports = {
             id: "translation",
         },
         {
-            type: "doc",
-            id: "docs/writing-documentation",
+            type: "category",
+            label: "Writing documentation",
+            collapsed: false,
+            link: {
+                type: "doc",
+                id: "docs/templates_docs",
+            },
+            items: [
+                "/template_docs/procedural",
+              
+            ],
         },
         {
             type: "doc",

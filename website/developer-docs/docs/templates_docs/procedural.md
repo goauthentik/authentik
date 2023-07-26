@@ -1,7 +1,7 @@
 ---
-title: 'Writing template (Procedural topic)'
-metaTitle: 'Writing template (Procedural topic)'
-metaDescription: 'A template for writing procedural documentation topics.'
+title: "Writing template (Procedural topic)"
+metaTitle: "Writing template (Procedural topic)"
+metaDescription: "A template for writing procedural documentation topics."
 ---
 
 Use a title that focuses on the task you are writing about... for example, "Add a new Group" or "Edit user profiles". For procedural docs, there should be a verb in the tilte, and usually the noun (the th8ing you are working on).
@@ -30,7 +30,7 @@ EXAMPLE: To define a new port number, navigate to the Admin interface, and then 
 
 ## next step of grouped steps
 
-Continue with the steps... 
+Continue with the steps...
 
 Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words.
 
