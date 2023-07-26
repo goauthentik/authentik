@@ -11,11 +11,11 @@ jobs:
     steps:
       - run: |
           set -xe
-          echo "${{ github.event.sender.login }}"
+          echo "${{ github.event.pull_request.user.login }}"
           echo "${{ github.event.sender }}"
   rename_pr:
     runs-on: ubuntu-latest
-    if: ${{ github.event.sender.login == 'transifex-integration[bot]'}}
+    if: ${{ github.event.pull_request.user.login == 'transifex-integration[bot]'}}
     steps:
       - id: generate_token
         uses: tibdex/github-app-token@v1
