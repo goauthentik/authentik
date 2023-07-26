@@ -60,10 +60,10 @@ module.exports = {
             collapsed: false,
             link: {
                 type: "doc",
-                id: "docs/templates_docs",
+                id: "docs/writing-documentation",
             },
             items: [
-                "template_docs/procedural",
+                "docs/templates/index",
               
             ],
         },

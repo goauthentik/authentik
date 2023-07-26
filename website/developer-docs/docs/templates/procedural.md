@@ -1,16 +1,16 @@
 ---
-title: "Writing template (Procedural topic)"
-metaTitle: "Writing template (Procedural topic)"
-metaDescription: "A template for writing procedural documentation topics."
+title: "Procedural topic"
 ---
 
-Use a title that focuses on the task you are writing about... for example, "Add a new Group" or "Edit user profiles". For procedural docs, there should be a verb in the tilte, and usually the noun (the th8ing you are working on).
+Use a title that focuses on the task you are writing about... for example, "Add a new Group" or "Edit user profiles". For procedural docs, there should be a verb in the tilte, and usually the noun (the thing you are working on).
 
-In this first section write one or two sentences about the task. Keep it brief; if it goes on too long, then create a separate conceptual topic, in a separate `.md` file. We don;t want readers to have to scroll through paragraphs of conceptual info before they get to Step 1.
+Use the infinitive form of the verb (i.e. "add") not the gerund form (i.e. "adding").
+
+In this first section write one or two sentences about the task. Keep it brief; if it goes on too long, then create a separate conceptual topic, in a separate `.md` file. We don't want readers to have to scroll through paragraphs of conceptual info before they get to Step 1.
 
 ## Prerequisites (optional section)
 
-In this section, inform the reader of anythng they need to do, or have configured or installed, before they start following the procedural instructions below.
+In this section, inform the reader of anything they need to do, or have configured or installed, before they start following the procedural instructions below.
 
 ## Overview of steps/workflow (optional section)
 
