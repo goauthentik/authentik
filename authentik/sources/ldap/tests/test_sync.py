@@ -8,12 +8,14 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
+from authentik.events.monitored_tasks import TaskInfo, TaskResultStatus
 from authentik.lib.generators import generate_key
+from authentik.lib.utils.reflection import class_to_path
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.sources.ldap.tasks import ldap_sync_all
+from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_all
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
 from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
 
@@ -32,6 +34,14 @@ class LDAPSyncTests(TestCase):
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
+
+    def test_sync_missing_page(self):
+        """Test sync with missing page"""
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.delay(self.source.pk, class_to_path(UserLDAPSynchronizer), "foo").get()
+        status = TaskInfo.by_name("ldap_sync:ldap:users:foo")
+        self.assertEqual(status.result.status, TaskResultStatus.ERROR)
 
     def test_sync_error(self):
         """Test user sync"""
