@@ -92,7 +92,7 @@ export class UserInterface extends Interface {
                 .background-wrapper {
                     height: 100vh;
                     width: 100%;
-                    position: absolute;
+                    position: fixed;
                     z-index: -1;
                     top: 0;
                     left: 0;
