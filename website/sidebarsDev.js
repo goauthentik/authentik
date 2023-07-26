@@ -57,12 +57,21 @@ module.exports = {
         {
             type: "category",
             label: "Writing documentation",
-            collapsed: false,
             link: {
                 type: "doc",
                 id: "docs/writing-documentation",
             },
-            items: ["docs/templates/index"],
+            items: [
+                {
+                    type: "category",
+                    label: "Templates",
+                    link: {
+                        type: "doc",
+                        id: "docs/templates/index",
+                    },
+                    items: ["docs/templates/procedural"],
+                },
+            ],
         },
         {
             type: "doc",
