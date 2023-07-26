@@ -6,13 +6,6 @@ on:
     types: [opened, reopened]
 
 jobs:
-  debug:
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          set -xe
-          echo "${{ github.event.pull_request.user.login }}"
-          echo "${{ github.event.sender }}"
   rename_pr:
     runs-on: ubuntu-latest
     if: ${{ github.event.pull_request.user.login == 'transifex-integration[bot]'}}
