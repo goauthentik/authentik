@@ -76,9 +76,20 @@ class TaskInfo:
             return cache.get_many(cache.keys(CACHE_KEY_PREFIX + name)).values()
         return cache.get(CACHE_KEY_PREFIX + name, None)
 
+    @property
+    def full_name(self) -> str:
+        """Get the full cache key with task name and UID"""
+        key = CACHE_KEY_PREFIX + self.task_name
+        if self.result.uid:
+            uid_suffix = f":{self.result.uid}"
+            key += uid_suffix
+            if not self.task_name.endswith(uid_suffix):
+                self.task_name += uid_suffix
+        return key
+
     def delete(self):
         """Delete task info from cache"""
-        return cache.delete(CACHE_KEY_PREFIX + self.task_name)
+        return cache.delete(self.full_name)
 
     def update_metrics(self):
         """Update prometheus metrics"""
@@ -97,12 +108,8 @@ class TaskInfo:
 
     def save(self, timeout_hours=6):
         """Save task into cache"""
-        key = CACHE_KEY_PREFIX + self.task_name
-        if self.result.uid:
-            key += f":{self.result.uid}"
-            self.task_name += f":{self.result.uid}"
         self.update_metrics()
-        cache.set(key, self, timeout=timeout_hours * 60 * 60)
+        cache.set(self.full_name, self, timeout=timeout_hours * 60 * 60)
 
 
 class MonitoredTask(Task):
