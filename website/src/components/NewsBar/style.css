@@ -15,6 +15,13 @@
 
 .news-bar-container .items a {
     color: var(--ifm-color-secondary-contrast-background);
-    text-decoration: underline;
-    text-decoration-color: var(--ifm-color-primary);
+    -moz-transition: all .1s ease-in;
+    -o-transition: all .1s ease-in;
+    -webkit-transition: all .1s ease-in;
+    transition: all .1s ease-in;
+}
+
+.news-bar-container .items a:hover {
+    color: var(--ifm-color-primary);
+    text-decoration: none;
 }
