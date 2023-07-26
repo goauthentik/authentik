@@ -325,6 +325,7 @@ class Rfc8009(EncryptionType):
 class Aes128CtsHmacSha196(Rfc3962):
     ENC_TYPE = iana.EncryptionType.AES128_CTS_HMAC_SHA1_96
     CHECKSUM_TYPE = iana.ChecksumType.HMAC_SHA1_96_AES128
+    ENC_NAME = "aes128-cts-hmac-sha1-96"
 
     KEY_BYTES = algorithms.AES128.key_size // 8
     KEY_SEED_BITS = KEY_BYTES * 8
@@ -343,6 +344,7 @@ class Aes128CtsHmacSha196(Rfc3962):
 class Aes256CtsHmacSha196(Rfc3962):
     ENC_TYPE = iana.EncryptionType.AES256_CTS_HMAC_SHA1_96
     CHECKSUM_TYPE = iana.ChecksumType.HMAC_SHA1_96_AES256
+    ENC_NAME = "aes256-cts-hmac-sha1-96"
 
     KEY_BYTES = algorithms.AES256.key_size // 8
     KEY_SEED_BITS = KEY_BYTES * 8
@@ -394,3 +396,10 @@ class Aes256CtsHmacSha384192(Rfc8009):
     MESSAGE_BLOCK_BYTES = 1
     CYPHER_BLOCK_BITS = algorithms.AES256.block_size
     CONFOUNDER_BYTES = CYPHER_BLOCK_BITS // 8
+
+SUPPORTED_ENCTYPES = (
+    Aes128CtsHmacSha196,
+    Aes256CtsHmacSha196,
+    Aes128CtsHmacSha256128,
+    Aes256CtsHmacSha384192,
+)
