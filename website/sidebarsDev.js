@@ -62,10 +62,7 @@ module.exports = {
                 type: "doc",
                 id: "docs/writing-documentation",
             },
-            items: [
-                "docs/templates/index",
-              
-            ],
+            items: ["docs/templates/index"],
         },
         {
             type: "doc",
