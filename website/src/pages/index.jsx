@@ -46,7 +46,12 @@ function Home() {
                 <div className="container">
                     <div className={clsx("row", styles.headerRow)}>
                         <div className="col padding-top--lg">
-                            <h1 className="hero__title">
+                            <h1
+                                className={clsx(
+                                    "hero__title",
+                                    styles.ak_hero__title,
+                                )}
+                            >
                                 <div>Replace</div>
                                 <TextSlide
                                     words={[

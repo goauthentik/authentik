@@ -1,5 +1,9 @@
 .slider {
-    height: 60px;
+    --height: 1.25em;
+}
+
+.slider {
+    height: var(--height);
     overflow: hidden;
 }
 
@@ -8,30 +12,30 @@
 }
 
 .sliderEntry {
-    height: 60px;
+    height: var(--height);
     padding: 0px 15px;
     text-align: center;
-    margin-bottom: 60px;
+    margin-bottom: var(--height);
     box-sizing: border-box;
 }
 
 @keyframes slide {
     0% {
-        margin-top: calc(6 * -60px);
+        margin-top: calc(-6 * var(--height));
     }
     5% {
         /* For stopping effect */
-        margin-top: calc(4 * -60px);
+        margin-top: calc(-4 * var(--height));
     }
     33% {
-        margin-top: calc(4 * -60px);
+        margin-top: calc(-4 * var(--height));
     }
     38% {
         /* For stopping effect */
-        margin-top: calc(2 * -60px);
+        margin-top: calc(-2 * var(--height));
     }
     66% {
-        margin-top: calc(2 * -60px);
+        margin-top: calc(-2 * var(--height));
     }
     71% {
         /* For stopping effect */

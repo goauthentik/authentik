@@ -33,9 +33,19 @@
     }
 }
 
-@media (max-width: 430px) {
-    .hero__title {
+.ak_hero__title {
+    font-size: 1.75rem;
+}
+
+@media (min-width: 388px) {
+    .ak_hero__title {
         font-size: 2rem;
+    }
+}
+
+@media (min-width: 520px) {
+    .ak_hero__title {
+        font-size: 3rem;
     }
 }
 
