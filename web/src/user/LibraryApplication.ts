@@ -34,6 +34,7 @@ export class LibraryApplication extends AKElement {
             css`
                 .pf-c-card {
                     height: 100%;
+                    --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
                 }
                 i.pf-icon {
                     height: 36px;
@@ -82,7 +83,7 @@ export class LibraryApplication extends AKElement {
             class="pf-c-card pf-m-hoverable pf-m-compact ${this.selected
                 ? "pf-m-selectable pf-m-selected"
                 : ""}"
-            style="background: ${this.background} !important"
+            style=${this.background !== "" ? `background: ${this.background} !important` : ""}
         >
             <div class="pf-c-card__header">
                 <a
