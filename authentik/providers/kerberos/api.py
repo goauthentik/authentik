@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ListField
+from rest_framework.fields import CharField, ListField, ReadOnlyField
 from rest_framework.request import Request
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
@@ -61,10 +61,13 @@ class KerberosRealmViewSet(UsedByMixin, ModelViewSet):
 class KerberosProviderSerializer(ProviderSerializer):
     """KerberosProvider Serializer"""
 
+    realm_name = ReadOnlyField(source="realm.name")
+
     class Meta:
         model = KerberosProvider
         fields = ProviderSerializer.Meta.fields + [
             "realm",
+            "realm_name",
             "service_principal_name",
             "set_ok_as_delegate",
             "uuid",
