@@ -34,7 +34,9 @@ export function NewsBar() {
             <div className="items">
                 {getReleases().map((version) => {
                     return (
-                        <a key={version.link} href={useBaseUrl(version.link)}>{version.label}</a>
+                        <a key={version.link} href={useBaseUrl(version.link)}>
+                            {version.label}
+                        </a>
                     );
                 })}
             </div>
