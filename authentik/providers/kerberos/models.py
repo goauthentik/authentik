@@ -89,8 +89,22 @@ class KerberosServiceMixin(models.Model):
         default=generate_key, help_text=_("The secret value from which Kerberos keys are derived.")
     )
 
+    kvno = models.PositiveIntegerField(default=1)
+
     class Meta:
         abstract = True
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._secret = self.secret
+
+    def save(self, *args, **kwargs):
+        if self.secret != self._secret:
+            self.kvno = (self.kvno + 1) % 2**32
+            if self.kvno % 2**8 == 0:
+                # Avoid having kvno8 == 0
+                self.kvno += 1
+        return super().save(*args, **kwargs)
 
     @cached_property
     def keys(self) -> dict[int, bytes]:
@@ -98,7 +112,7 @@ class KerberosServiceMixin(models.Model):
         return {
             enctype.ENC_TYPE: enctype.string_to_key(
                 password=self.secret.encode("utf-8"),
-                salt=int(self.pk).to_bytes(8, byteorder="big"),
+                salt=str(self.pk).encode("utf-8"),
             )
             for enctype in SUPPORTED_ENCTYPES
             if enctype.ENC_TYPE.value in self.allowed_enctypes

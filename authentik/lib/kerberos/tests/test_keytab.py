@@ -25,7 +25,6 @@ class TestKeytab(TestCase):
                                 ),
                             ),
                             timestamp=datetime(2023, 5, 22, 1, 8, 0),
-                            kvno8=1,
                             key=keytab.EncryptionKey(
                                 key_type=iana.EncryptionType.AES128_CTS_HMAC_SHA1_96,
                                 key=crypto.Aes128CtsHmacSha196.string_to_key(
@@ -33,6 +32,7 @@ class TestKeytab(TestCase):
                                     "b17700c3-230e-4f4b-97ec-bcab98f59e9e".encode(),
                                 ),
                             ),
+                            kvno=1,
                         )
                     ]
                 ),
@@ -119,7 +119,6 @@ class TestKeytab(TestCase):
                                 ),
                             ),
                             timestamp=datetime(2023, 5, 26, 20, 44, 40),
-                            kvno8=3,
                             key=keytab.EncryptionKey(
                                 key_type=enc_type.ENC_TYPE,
                                 key=enc_type.string_to_key(
@@ -128,6 +127,7 @@ class TestKeytab(TestCase):
                                     "b03d4083-c0c0-4866-bda8-39b980588a9d".encode(),
                                 ),
                             ),
+                            kvno=3,
                         )
                         for enc_type in [
                             crypto.Aes128CtsHmacSha196,

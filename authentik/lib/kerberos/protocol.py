@@ -3,6 +3,7 @@ from typing import Self
 
 from django.utils.translation import gettext_lazy as _
 from pyasn1.codec.der.decoder import decode as der_decode
+from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1.error import PyAsn1Error
 from pyasn1.type import base, char, constraint, namedtype, tag, univ, useful
 
@@ -243,6 +244,21 @@ def _kvno_component(name: str, tag_value: int) -> namedtype.NamedType:
     )
 
 
+class Asn1LeafMixin:
+    @classmethod
+    def from_bytes(cls, data: bytes) -> Self:
+        try:
+            req, tail = der_decode(data, asn1Spec=cls())
+        except PyAsn1Error as exc:
+            raise KerberosParsingException(f"Fail parsing {cls.__name__}") from exc
+        if tail:
+            raise KerberosParsingException("Extra data found when parsing {cls.__name__}")
+        return req
+
+    def to_bytes(self) -> bytes:
+        return der_encode(self)
+
+
 class Int32(univ.Integer):
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         -2147483648, 2147483647
@@ -301,6 +317,23 @@ class AuthorizationData(univ.SequenceOf):
         )
     )
 
+class PaDataEncTsEnc(Asn1LeafMixin, univ.Sequence):
+    componentType = namedtype.NamedTypes(
+        _sequence_component("patimestamp", 0, KerberosTime()),
+        _sequence_optional_component("pausec", 1, Microseconds()),
+    )
+
+
+class PaDataEtypeInfo2Entry(univ.Sequence):
+    componentType = namedtype.NamedTypes(
+        _sequence_component("etype", 0, Int32()),
+        _sequence_optional_component("salt", 1, KerberosString()),
+        _sequence_optional_component("s2kparams", 2, univ.OctetString()),
+    )
+
+class PaDataEtypeInfo2(Asn1LeafMixin, univ.SequenceOf):
+    componentType = PaDataEtypeInfo2Entry()
+
 
 class PaData(univ.Sequence):
     """Kerberos PA Data ASN.1 representation"""
@@ -337,7 +370,7 @@ class Checksum(univ.Sequence):
     )
 
 
-class Ticket(univ.Sequence):
+class Ticket(Asn1LeafMixin, univ.Sequence):
     tagSet = _application_tag(ApplicationTag.TICKET)
     componentType = namedtype.NamedTypes(
         _kvno_component("tkt-vno", 0),
@@ -435,7 +468,7 @@ class TgsReq(KdcReq):
     tagSet = _application_tag(ApplicationTag.TGS_REQ)
 
 
-class KdcRep(univ.Sequence):
+class KdcRep(Asn1LeafMixin, univ.Sequence):
     componentType = namedtype.NamedTypes(
         _kvno_component("pvno", 0),
         _sequence_component(
@@ -465,7 +498,7 @@ class TgsRep(KdcRep):
     tagSet = _application_tag(ApplicationTag.TGS_REP)
 
 
-class KrbError(univ.Sequence):
+class KrbError(Asn1LeafMixin, univ.Sequence):
     tagSet = _application_tag(ApplicationTag.KRB_ERROR)
     componentType = namedtype.NamedTypes(
         _kvno_component("pvno", 0),
@@ -489,19 +522,9 @@ class KrbError(univ.Sequence):
     )
 
 
-class KdcProxyMessage(univ.Sequence):
+class KdcProxyMessage(Asn1LeafMixin, univ.Sequence):
     componentType = namedtype.NamedTypes(
         _sequence_component("message", 0, univ.OctetString()),
         _sequence_optional_component("target-domain", 1, Realm()),
         _sequence_optional_component("dclocator-hint", 2, univ.Integer()),
     )
-
-    @classmethod
-    def from_bytes(cls, data: bytes) -> Self:
-        try:
-            req, tail = der_decode(data, asn1Spec=cls())
-        except PyAsn1Error as exc:
-            raise KerberosParsingException("Error parsing KdcProxyMessage") from exc
-        if tail:
-            raise KerberosParsingException("Extra data found when parsing KdcProxyMessage")
-        return req

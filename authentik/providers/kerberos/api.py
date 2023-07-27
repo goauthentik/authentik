@@ -126,12 +126,11 @@ class KerberosProviderViewSet(UsedByMixin, ModelViewSet):
                         realm=provider.realm.name,
                     ),
                     timestamp=now(),
-                    kvno8=1,
                     key=keytab.EncryptionKey(
                         key_type=keytype,
                         key=key,
                     ),
-                    kvno=None,
+                    kvno=provider.kvno,
                 )
                 for keytype, key in provider.keys.items()
             ]

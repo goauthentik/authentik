@@ -91,20 +91,20 @@ class KeytabEntry:
 
     principal: Principal
     timestamp: datetime
-    kvno8: int
     key: EncryptionKey
-    kvno: int | None = None
+    kvno: int
+    kvno8: int | None = None
 
     def to_bytes(self) -> bytes:
         """Export to bytes"""
+        if self.kvno8 is None:
+            self.kvno8 = self.kvno % 2**8
         data = (
             self.principal.to_bytes()
             + int(self.timestamp.timestamp()).to_bytes(4, byteorder="big")
             + self.kvno8.to_bytes(1, byteorder="big")
             + self.key.to_bytes()
         )
-        if self.kvno is None:
-            self.kvno = self.kvno8
         data += self.kvno.to_bytes(4, byteorder="big")
         return len(data).to_bytes(4, byteorder="big") + data
 
@@ -121,9 +121,9 @@ class KeytabEntry:
             cls(
                 principal=principal,
                 timestamp=timestamp,
-                kvno8=kvno8,
                 key=key,
                 kvno=kvno,
+                kvno8=kvno8,
             ),
             final_remainder,
         )
