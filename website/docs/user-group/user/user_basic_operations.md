@@ -10,8 +10,6 @@ In this section, we will describe the procedure to add a user manually.
 
 If you are looking for a way to automate those steps, you can do that either by [invitations](./invitation.md), [user write stage](../../flow/stages/user_write.md) or by [looking at the API](../../../developer-docs/api/browser.mdx).
 
-### Steps
-
 -   In the Admin interface of your Authentik instance, select Directory > Users on the left menu.
 
 -   Select the user folder where you want to create your user.
@@ -22,18 +20,20 @@ If you are looking for a way to automate those steps, you can do that either by 
 
     -   Username: Username of the user. This value must be unique across your user folders
     -   Path: The path where the user will be created. It will be automatically filled with the folder you selected in the previous step.
-    -   Attributes: Custon attributes defintion for the user, in YAML or JSON format. The value is an empty dictionnary by default.
-        You can also set optionnal values:
+    -   Attributes: Custom attributes defintion for the user, in YAML or JSON format. They can be used to enforce additionnal prompts on authentication stages or define specific contitions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionnary by default.
+
+-   Fill the optionnal fields if needed:
+
     -   Name: The display name of the user.
-    -   Email: The email of the user, that will be used if there is a [notification rule](../../events/notifications.md) triggered or for [email stages](../../flow/stages/email/index.mdx).
+    -   Email: The email of the user. That will be used if there is a [notification rule](../../events/notifications.md) triggered or for [email stages](../../flow/stages/email/index.mdx).
     -   Is active: Define is the newly created user accound is active. Selected by default.
 
 -   Click "Create"
 
 You should see a confirmation pop-up on the top-right of the screen that the user has been created, and see the new user in the user list.
-You can directly click on the username if you want to [modify your user](./modify_user.md).
+You can directly click on the username if you want to [modify your user](./user_basic_operations.md#modify-a-user).
 
-## User details
+## View user details
 
 In the Directory > Users menu, you can browse all the users created in your Authentik instance. If you need more details about a user, you can do it either:
 
