@@ -9,6 +9,9 @@
     --ak-dark-background-light: #1c1e21;
     --ak-dark-background-light-ish: #212427;
     --ak-dark-background-lighter: #2b2e33;
+
+    /* PatternFly likes to override global variables for some reason */
+    --ak-global--Color--100: var(--pf-global--Color--100);
 }
 
 ::-webkit-scrollbar {

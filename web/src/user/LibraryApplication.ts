@@ -1,5 +1,6 @@
 import { truncateWords } from "@goauthentik/common/utils";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/Expand";
 import { UserInterface } from "@goauthentik/user/UserInterface";
 
 import { msg } from "@lit/localize";
@@ -32,27 +33,47 @@ export class LibraryApplication extends AKElement {
             PFButton,
             PFAvatar,
             css`
-                .pf-c-card {
-                    height: 100%;
+                :host {
+                    --icon-height: 4rem;
+                    --icon-border: 0.25rem;
                 }
-                i.pf-icon {
-                    height: 36px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
+                .pf-c-card {
+                    --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
                 }
                 .pf-c-avatar {
                     --pf-c-avatar--BorderRadius: 0;
+                    --pf-c-avatar--Height: calc(
+                        var(--icon-height) + var(--icon-border) + var(--icon-border)
+                    );
+                    --pf-c-avatar--Width: calc(
+                        var(--icon-height) + var(--icon-border) + var(--icon-border)
+                    );
                 }
                 .pf-c-card__header {
-                    min-height: 60px;
                     justify-content: space-between;
+                    flex-direction: column;
                 }
                 .pf-c-card__header a {
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
-                    margin-right: 0.25em;
+                }
+                .icon {
+                    font-size: var(--icon-height);
+                    color: var(--ak-global--Color--100);
+                    padding: var(--icon-border);
+                    max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+                    line-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+                }
+                .expander {
+                    flex-grow: 1;
+                }
+                .pf-c-card__title {
+                    text-align: center;
+                    /* This is not ideal as it hard limits us to 2 lines of text for the title
+                    of the application. In theory that should be fine for most cases, but ideally
+                    we don't do this */
+                    height: 48px;
                 }
             `,
         ];
@@ -62,7 +83,7 @@ export class LibraryApplication extends AKElement {
         if (this.application?.metaIcon) {
             if (this.application.metaIcon.startsWith("fa://")) {
                 const icon = this.application.metaIcon.replaceAll("fa://", "");
-                return html`<i class="fas ${icon}"></i>`;
+                return html`<i class="icon fas ${icon}"></i>`;
             }
             return html`<img
                 class="app-icon pf-c-avatar"
@@ -70,7 +91,7 @@ export class LibraryApplication extends AKElement {
                 alt="${msg("Application Icon")}"
             />`;
         }
-        return html`<i class="fas fa-share-square"></i>`;
+        return html`<span class="icon">${this.application?.name.charAt(0).toUpperCase()}</span>`;
     }
 
     render(): TemplateResult {
@@ -82,7 +103,7 @@ export class LibraryApplication extends AKElement {
             class="pf-c-card pf-m-hoverable pf-m-compact ${this.selected
                 ? "pf-m-selectable pf-m-selected"
                 : ""}"
-            style="background: ${this.background} !important"
+            style=${this.background !== "" ? `background: ${this.background} !important` : ""}
         >
             <div class="pf-c-card__header">
                 <a
@@ -91,32 +112,31 @@ export class LibraryApplication extends AKElement {
                 >
                     ${this.renderIcon()}
                 </a>
-                ${rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
-                    ? html`
-                          <a
-                              class="pf-c-button pf-m-control pf-m-small"
-                              href="/if/admin/#/core/applications/${this.application?.slug}"
-                          >
-                              <i class="fas fa-pencil-alt"></i>
-                          </a>
-                      `
-                    : html``}
             </div>
             <div class="pf-c-card__title">
-                <p>
-                    <a
-                        href="${ifDefined(this.application.launchUrl ?? "")}"
-                        target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
-                        >${this.application.name}</a
-                    >
-                </p>
+                <a
+                    href="${ifDefined(this.application.launchUrl ?? "")}"
+                    target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
+                    >${this.application.name}</a
+                >
+            </div>
+            <div class="expander"></div>
+            <ak-expand>
                 <div class="pf-c-content">
                     <small>${this.application.metaPublisher}</small>
                 </div>
-            </div>
-            <div class="pf-c-card__body">
-                ${truncateWords(this.application.metaDescription || "", 35)}
-            </div>
+                ${truncateWords(this.application.metaDescription || "", 10)}
+                ${rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
+                    ? html`
+                          <a
+                              class="pf-c-button pf-m-control pf-m-small pf-m-block"
+                              href="/if/admin/#/core/applications/${this.application?.slug}"
+                          >
+                              <i class="fas fa-pencil-alt"></i>&nbsp;${msg("Edit")}
+                          </a>
+                      `
+                    : html``}
+            </ak-expand>
         </div>`;
     }
 }
