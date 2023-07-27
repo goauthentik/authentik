@@ -1,11 +1,21 @@
 import React from "react";
 import { Check, X, AlertTriangle } from "react-feather";
 import "./style.css";
+import "react-tooltip/dist/react-tooltip.css";
+import { Tooltip } from "react-tooltip";
 
-function Comparison() {
+export default function Comparison() {
+    const tooltipAvailableThirdParty = "Available as a third-party extension";
+    const tooltipPlanned = "Planned as a future feature";
+    const tooltipRequiresLicense =
+        "Requires additional licenses/not included in base tier";
+    const toolRequiresProductAADS =
+        "Requires additional product: Azure AD Domain Services";
+    const toolRequiresProductWAP =
+        "Requires additional product: Web Application Proxy";
     return (
         <>
-            <a name="comparison"></a>
+            <a id="comparison"></a>
             <h1 className="header">Why authentik?</h1>
             <div className="table-responsive">
                 <div className="table">
@@ -89,7 +99,12 @@ function Comparison() {
                                     <Check></Check>
                                 </td>
                                 <td className="result warning">
-                                    <AlertTriangle></AlertTriangle>
+                                    <AlertTriangle
+                                        className="tooltip"
+                                        data-tooltip-content={
+                                            tooltipAvailableThirdParty
+                                        }
+                                    ></AlertTriangle>
                                 </td>
                                 <td className="result failed">
                                     <X></X>
@@ -119,7 +134,12 @@ function Comparison() {
                                     <X></X>
                                 </td>
                                 <td className="result warning">
-                                    <AlertTriangle></AlertTriangle>
+                                    <AlertTriangle
+                                        className="tooltip"
+                                        data-tooltip-content={
+                                            toolRequiresProductAADS
+                                        }
+                                    ></AlertTriangle>
                                 </td>
                                 <td className="result passed">
                                     <Check></Check>
@@ -137,7 +157,12 @@ function Comparison() {
                                     <Check></Check>
                                 </td>
                                 <td className="result warning">
-                                    <AlertTriangle></AlertTriangle>
+                                    <AlertTriangle
+                                        className="tooltip"
+                                        data-tooltip-content={
+                                            tooltipAvailableThirdParty
+                                        }
+                                    ></AlertTriangle>
                                 </td>
                                 <td className="result failed">
                                     <X></X>
@@ -268,10 +293,18 @@ function Comparison() {
                             <tr>
                                 <td className="row-label">SCIM</td>
                                 <td className="result warning authentik">
-                                    <AlertTriangle></AlertTriangle>
+                                    <AlertTriangle
+                                        className="tooltip"
+                                        data-tooltip-content={tooltipPlanned}
+                                    ></AlertTriangle>
                                 </td>
                                 <td className="result warning">
-                                    <AlertTriangle></AlertTriangle>
+                                    <AlertTriangle
+                                        className="tooltip"
+                                        data-tooltip-content={
+                                            tooltipAvailableThirdParty
+                                        }
+                                    ></AlertTriangle>
                                 </td>
                                 <td className="result failed">
                                     <X></X>
@@ -427,13 +460,23 @@ function Comparison() {
                                     <Check></Check>
                                 </td>
                                 <td className="result warning">
-                                    <AlertTriangle></AlertTriangle>
+                                    <AlertTriangle
+                                        className="tooltip"
+                                        data-tooltip-content={
+                                            tooltipRequiresLicense
+                                        }
+                                    ></AlertTriangle>
                                 </td>
                                 <td className="result passed">
                                     <Check></Check>
                                 </td>
                                 <td className="result warning">
-                                    <AlertTriangle></AlertTriangle>
+                                    <AlertTriangle
+                                        className="tooltip"
+                                        data-tooltip-content={
+                                            tooltipRequiresLicense
+                                        }
+                                    ></AlertTriangle>
                                 </td>
                                 <td className="result passed">
                                     <Check></Check>
@@ -469,10 +512,20 @@ function Comparison() {
                                     <Check></Check>
                                 </td>
                                 <td className="result warning">
-                                    <AlertTriangle></AlertTriangle>
+                                    <AlertTriangle
+                                        className="tooltip"
+                                        data-tooltip-content={
+                                            tooltipAvailableThirdParty
+                                        }
+                                    ></AlertTriangle>
                                 </td>
                                 <td className="result warning">
-                                    <AlertTriangle></AlertTriangle>
+                                    <AlertTriangle
+                                        className="tooltip"
+                                        data-tooltip-content={
+                                            toolRequiresProductWAP
+                                        }
+                                    ></AlertTriangle>
                                 </td>
                                 <td className="result passed">
                                     <Check></Check>
@@ -483,16 +536,15 @@ function Comparison() {
                                 <td className="result failed">
                                     <X></X>
                                 </td>
-                                <td className="result warning">
-                                    <AlertTriangle></AlertTriangle>
+                                <td className="result passed">
+                                    <Check></Check>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
+                    <Tooltip anchorSelect=".tooltip" place="top" />
                 </div>
             </div>
         </>
     );
 }
-
-export default Comparison;
