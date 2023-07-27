@@ -4,8 +4,8 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import PFAlertGroup from "@patternfly/patternfly/components/Alert/alert-group.css";
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
-import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 

@@ -12,7 +12,7 @@ import { APIMessage } from "@goauthentik/elements/messages/Message";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import PFAlertGroup from "@patternfly/patternfly/components/AlertGroup/alert-group.css";
+import PFAlertGroup from "@patternfly/patternfly/components/Alert/alert-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 export function showMessage(message: APIMessage, unique = false): void {
