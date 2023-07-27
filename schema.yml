@@ -15396,7 +15396,7 @@ paths:
   /providers/kerberos/{id}/keytab/:
     get:
       operationId: providers_kerberos_keytab_retrieve
-      description: KerberosProvider Viewset
+      description: Retrieve the provider keytab
       parameters:
       - in: path
         name: id
@@ -31629,6 +31629,10 @@ components:
           readOnly: true
         realm:
           type: integer
+        realm_name:
+          type: string
+          description: Kerberos realm name.
+          readOnly: true
         service_principal_name:
           type: string
           description: The Kerberos principal used to designate this provider, without
@@ -31690,6 +31694,7 @@ components:
       - name
       - pk
       - realm
+      - realm_name
       - service_principal_name
       - url_download_keytab
       - verbose_name

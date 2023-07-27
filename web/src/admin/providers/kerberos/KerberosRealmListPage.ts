@@ -1,5 +1,5 @@
-import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/admin/providers/kerberos/KerberosRealmForm";
+import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -13,7 +13,7 @@ import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { KerberosRealm, KerberosApi } from "@goauthentik/api";
+import { KerberosApi, KerberosRealm } from "@goauthentik/api";
 
 @customElement("ak-kerberos-realm-list")
 export class KerberosRealmListPage extends TablePage<KerberosRealm> {
@@ -45,10 +45,7 @@ export class KerberosRealmListPage extends TablePage<KerberosRealm> {
     }
 
     columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "name"),
-            new TableColumn(msg("Actions")),
-        ];
+        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -84,7 +81,7 @@ export class KerberosRealmListPage extends TablePage<KerberosRealm> {
                     .args=${{
                         instancePk: item.pk,
                     }}
-                    type=ak-kerberos-realm-form
+                    type="ak-kerberos-realm-form"
                 >
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">

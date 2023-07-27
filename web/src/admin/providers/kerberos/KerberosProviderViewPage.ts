@@ -2,18 +2,14 @@ import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/kerberos/KerberosProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { convertToSlug } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
-import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Markdown";
-import { Replacer } from "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -31,7 +27,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ProvidersApi, KerberosApi, KerberosRealm, KerberosProvider } from "@goauthentik/api";
+import { KerberosProvider, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-provider-kerberos-view")
 export class KerberosProviderViewPage extends AKElement {
@@ -130,7 +126,9 @@ export class KerberosProviderViewPage extends AKElement {
                             </div>
                             <div class="pf-c-description-list__group">
                                 <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Service Principal Name")}</span>
+                                    <span class="pf-c-description-list__text"
+                                        >${msg("Service Principal Name")}</span
+                                    >
                                 </dt>
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
@@ -176,27 +174,21 @@ export class KerberosProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`
-            <section
-                slot="page-credentials"
-                data-tab-title="${msg("Credentials")}"
-            >
-                <div
-                    class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
-                >
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Keytab")}</div>
-                        <div class="pf-c-card__body">
-                            <a
-                                class="pf-c-button pf-m-primary"
-                                target="_blank"
-                                href=${this.provider.urlDownloadKeytab}
-                            >
-                                ${msg("Download Keytab")}
-                            </a>
-                        </div>
+        return html` <section slot="page-credentials" data-tab-title="${msg("Credentials")}">
+            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                    <div class="pf-c-card__title">${msg("Keytab")}</div>
+                    <div class="pf-c-card__body">
+                        <a
+                            class="pf-c-button pf-m-primary"
+                            target="_blank"
+                            href=${this.provider.urlDownloadKeytab}
+                        >
+                            ${msg("Download Keytab")}
+                        </a>
                     </div>
                 </div>
-            </section>`;
+            </div>
+        </section>`;
     }
 }

@@ -9,7 +9,7 @@ import "@goauthentik/elements/utils/TimeDeltaHelp";
 import { msg } from "@lit/localize";
 import { CSSResult, css } from "lit";
 import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -17,15 +17,7 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import {
-    CertificateKeyPair,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
-    ProvidersApi,
-    KerberosApi,
-    KerberosRealm,
-    KerberosProvider,
-} from "@goauthentik/api";
+import { KerberosApi, KerberosProvider, KerberosRealm, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-provider-kerberos-form")
 export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number> {
@@ -80,7 +72,11 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Service Principal Name")} ?required=${true} name="servicePrincipalName">
+            <ak-form-element-horizontal
+                label=${msg("Service Principal Name")}
+                ?required=${true}
+                name="servicePrincipalName"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.servicePrincipalName)}"
@@ -88,11 +84,7 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Realm")}
-                ?required=${true}
-                name="realm"
-            >
+            <ak-form-element-horizontal label=${msg("Realm")} ?required=${true} name="realm">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<KerberosRealm[]> => {
                         const args: KerberosRealmListRequest = {
@@ -101,7 +93,9 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const realms = await new KerberosApi(DEFAULT_CONFIG).kerberosRealmsList(args);
+                        const realms = await new KerberosApi(DEFAULT_CONFIG).kerberosRealmsList(
+                            args,
+                        );
                         return realms.results;
                     }}
                     .renderElement=${(realm: KerberosRealm): string => {
@@ -115,15 +109,16 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                     }}
                 >
                 </ak-search-select>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Realm to attach this provider to.")}
-                </p>
+                <p class="pf-c-form__helper-text">${msg("Realm to attach this provider to.")}</p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Maximum ticket lifetime")} name="maximumTicketLifetime">
+                    <ak-form-element-horizontal
+                        label=${msg("Maximum ticket lifetime")}
+                        name="maximumTicketLifetime"
+                    >
                         <input
                             type="text"
                             value="${first(this.instance?.maximumTicketLifetime, "days=1")}"
@@ -134,7 +129,10 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Maximum ticket renew lifetime")} name="maximumTicketRenewLifetime">
+                    <ak-form-element-horizontal
+                        label=${msg("Maximum ticket renew lifetime")}
+                        name="maximumTicketRenewLifetime"
+                    >
                         <input
                             type="text"
                             value="${first(this.instance?.maximumTicketRenewLifetime, "weeks=1")}"
@@ -167,7 +165,7 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Should the user be able to request a ticket with a start time in the future."
+                                "Should the user be able to request a ticket with a start time in the future.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -187,7 +185,7 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Should the service getting the ticket be able to use it on behalf of the user."
+                                "Should the service getting the ticket be able to use it on behalf of the user.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -207,7 +205,7 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Should the service getting the ticket be able to use it on behalf of the user."
+                                "Should the service getting the ticket be able to use it on behalf of the user.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -227,7 +225,7 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Should the service getting the ticket be able to request a TGT on behalf of the user."
+                                "Should the service getting the ticket be able to request a TGT on behalf of the user.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -243,12 +241,12 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Requires preauthentication")}</span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Requires preauthentication")}</span
+                            >
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Should tickets only be issued to preauthenticated clients."
-                            )}
+                            ${msg("Should tickets only be issued to preauthenticated clients.")}
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="setOkAsDelegate">
@@ -267,7 +265,7 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Should the tickets issued for this provider have the ok-as-delegate flag set."
+                                "Should the tickets issued for this provider have the ok-as-delegate flag set.",
                             )}
                         </p>
                     </ak-form-element-horizontal>

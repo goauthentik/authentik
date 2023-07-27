@@ -45,7 +45,7 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
             });
         } else {
             return new KerberosApi(DEFAULT_CONFIG).kerberosRealmsCreate({
-                kerberosRealmRequest: data
+                kerberosRealmRequest: data,
             });
         }
     }
@@ -97,11 +97,7 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                 </ak-search-select>
                 <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("Secret")}
-                ?required=${true}
-                name="secret"
-            >
+            <ak-form-element-horizontal label=${msg("Secret")} ?required=${true} name="secret">
                 <input
                     type="text"
                     value="${first(
@@ -116,7 +112,10 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Maximum ticket lifetime")} name="maximumTicketLifetime">
+                    <ak-form-element-horizontal
+                        label=${msg("Maximum ticket lifetime")}
+                        name="maximumTicketLifetime"
+                    >
                         <input
                             type="text"
                             value="${first(this.instance?.maximumTicketLifetime, "days=1")}"
@@ -127,7 +126,10 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal label=${msg("Maximum ticket renew lifetime")} name="maximumTicketRenewLifetime">
+                    <ak-form-element-horizontal
+                        label=${msg("Maximum ticket renew lifetime")}
+                        name="maximumTicketRenewLifetime"
+                    >
                         <input
                             type="text"
                             value="${first(this.instance?.maximumTicketRenewLifetime, "weeks=1")}"
@@ -151,7 +153,9 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg("Maximum allowed clock drift between the client and the server (Format: hours=1;minutes=2;seconds=3).")}
+                            ${msg(
+                                "Maximum allowed clock drift between the client and the server (Format: hours=1;minutes=2;seconds=3).",
+                            )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
@@ -171,7 +175,7 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Should the user be able to request a ticket with a start time in the future."
+                                "Should the user be able to request a ticket with a start time in the future.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -191,7 +195,7 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Should the service getting the ticket be able to use it on behalf of the user."
+                                "Should the service getting the ticket be able to use it on behalf of the user.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -211,7 +215,7 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Should the service getting the ticket be able to use it on behalf of the user."
+                                "Should the service getting the ticket be able to use it on behalf of the user.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -231,7 +235,7 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Should the service getting the ticket be able to request a TGT on behalf of the user."
+                                "Should the service getting the ticket be able to request a TGT on behalf of the user.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -247,12 +251,12 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Requires preauthentication")}</span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Requires preauthentication")}</span
+                            >
                         </label>
                         <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Should tickets only be issued to preauthenticated clients."
-                            )}
+                            ${msg("Should tickets only be issued to preauthenticated clients.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
