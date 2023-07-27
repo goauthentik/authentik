@@ -1,5 +1,4 @@
-from datetime import datetime
-
+"""Kerberos Principal tests"""
 from django.test import TestCase
 
 from authentik.lib.kerberos.exceptions import KerberosException
@@ -7,7 +6,10 @@ from authentik.lib.kerberos.principal import PrincipalName, PrincipalNameType
 
 
 class TestPrincipal(TestCase):
+    """Kerberos Principal tests"""
+
     def test_from_spn_valid(self):
+        """Test Principal creation from a valid service principal name"""
         data = (
             (
                 "test@EXAMPLE.ORG",
@@ -59,6 +61,7 @@ class TestPrincipal(TestCase):
             self.assertEqual(result.realm, expected.realm)
 
     def test_from_spn_invalid(self):
+        """Test Principal creation from an invalid service principal name"""
         with self.assertRaises(KerberosException):
             PrincipalName.from_spn("")
         with self.assertRaises(KerberosException):

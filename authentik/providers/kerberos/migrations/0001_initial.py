@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
                                 (20, "aes256-cts-hmac-sha384-192"),
                             ]
                         ),
-                        default=authentik.providers.kerberos.models.get_default_enctypes,
+                        default=authentik.providers.kerberos.models._get_default_enctypes,
                         help_text="Allowed enctypes.",
                         size=None,
                     ),
@@ -163,7 +163,7 @@ class Migration(migrations.Migration):
                                 (20, "aes256-cts-hmac-sha384-192"),
                             ]
                         ),
-                        default=authentik.providers.kerberos.models.get_default_enctypes,
+                        default=authentik.providers.kerberos.models._get_default_enctypes,
                         help_text="Allowed enctypes.",
                         size=None,
                     ),

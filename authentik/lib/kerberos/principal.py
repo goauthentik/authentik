@@ -1,3 +1,4 @@
+"""Kerberos principal representation"""
 from dataclasses import dataclass
 from enum import UNIQUE, Enum, verify
 from typing import Self
@@ -10,7 +11,8 @@ class PrincipalNameType(Enum):
     """
     Kerberos principal name types as defined by RFC 4120 and RFC 6111.
 
-    See https://www.rfc-editor.org/rfc/rfc4120#section-6.2 and https://www.rfc-editor.org/rfc/rfc6111.html#section-3.1
+    See https://www.rfc-editor.org/rfc/rfc4120#section-6.2
+    and https://www.rfc-editor.org/rfc/rfc6111.html#section-3.1
     """
 
     # Name type not known
@@ -37,12 +39,15 @@ class PrincipalNameType(Enum):
 
 @dataclass
 class PrincipalName:
+    """Kerberos principal name representation"""
+
     name_type: PrincipalNameType
     name: list[str]
     realm: str | None = None
 
     @classmethod
     def from_spn(cls, spn: str) -> Self:
+        """Create a principal name from a service principal name."""
         name, realm, *_ = spn.rsplit("@", maxsplit=1) + [None]
         components = name.split("/")
         if realm == "":

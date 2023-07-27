@@ -1,3 +1,4 @@
+"""Kerberos cryptography primitives tests"""
 from django.test import TestCase
 
 from authentik.lib.kerberos.crypto import (
@@ -10,6 +11,8 @@ from authentik.lib.kerberos.crypto import (
 
 
 class TestNfold(TestCase):
+    """N-fold tests"""
+
     def test_nfold(self):
         """
         Test cases from https://www.rfc-editor.org/rfc/rfc3961#appendix-A.1
@@ -42,6 +45,8 @@ class TestNfold(TestCase):
 
 
 class TestAes128CtsHmacSha196(TestCase):
+    """aes128-cts-hmac-sha1-96 tests"""
+
     def test_string_to_key(self):
         """
         Test cases from RFC 3962, Appendix B.
@@ -94,6 +99,8 @@ class TestAes128CtsHmacSha196(TestCase):
 
 
 class TestAes256CtsHmacSha196(TestCase):
+    """aes256-cts-hmac-sha1-96 tests"""
+
     def test_string_to_key(self):
         """
         Test cases from RFC 3962, Appendix B.
@@ -156,6 +163,8 @@ class TestAes256CtsHmacSha196(TestCase):
 
 
 class TestAes128CtsHmacSha256128(TestCase):
+    """aes128-cts-hmac-sha256-128 tests"""
+
     def test_derive_key(self):
         """
         Test cases from RFC 8009, Appendix A.
@@ -204,6 +213,8 @@ class TestAes128CtsHmacSha256128(TestCase):
 
 
 class TestAes256CtsHmacSha384192(TestCase):
+    """aes256-cts-hmac-sha384-192 tests"""
+
     def test_derive_key(self):
         """
         Test cases from RFC 8009, Appendix A.

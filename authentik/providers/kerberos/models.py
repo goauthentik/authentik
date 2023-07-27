@@ -10,18 +10,18 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Provider
-from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.generators import generate_key
 from authentik.lib.kerberos.crypto import SUPPORTED_ENCTYPES
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
 
-def get_kerberos_enctypes():
+def _get_kerberos_enctypes():
     """Get supported Kerberos encryption types as a model choices list"""
     return [(enctype.ENC_TYPE.value, enctype.ENC_NAME) for enctype in SUPPORTED_ENCTYPES]
 
 
-def get_default_enctypes():
+def _get_default_enctypes():
     return [enctype.ENC_TYPE.value for enctype in SUPPORTED_ENCTYPES]
 
 
@@ -33,6 +33,8 @@ validate_spn = RegexValidator(
 
 
 class KerberosServiceMixin(models.Model):
+    """Common fields and methods for Kerberos services"""
+
     uuid = models.UUIDField(
         primary_key=True,
         default=uuid4,
@@ -55,8 +57,8 @@ class KerberosServiceMixin(models.Model):
     )
 
     allowed_enctypes = ArrayField(
-        models.IntegerField(choices=get_kerberos_enctypes()),
-        default=get_default_enctypes,
+        models.IntegerField(choices=_get_kerberos_enctypes()),
+        default=_get_default_enctypes,
         help_text=_("Allowed enctypes."),
     )
 
@@ -79,7 +81,7 @@ class KerberosServiceMixin(models.Model):
     allow_proxiable = models.BooleanField(
         default=True,
         help_text=_(
-            "Should the service getting the ticket be able to use it on behalf " "of the user."
+            "Should the service getting the ticket be able to use it on behalf of the user."
         ),
     )
 
@@ -104,6 +106,7 @@ class KerberosServiceMixin(models.Model):
 
     @cached_property
     def keys(self) -> dict[int, bytes]:
+        """Get service keys from its secret."""
         return {
             enctype.ENC_TYPE: enctype.string_to_key(
                 password=self.secret.encode("utf-8"),
@@ -115,6 +118,8 @@ class KerberosServiceMixin(models.Model):
 
 
 class KerberosRealm(KerberosServiceMixin, SerializerModel):
+    """Kerberos Realm"""
+
     name = models.TextField(
         help_text=_("Kerberos realm name."),
         unique=True,
@@ -162,16 +167,14 @@ class KerberosProvider(KerberosServiceMixin, Provider):
     realm = models.ForeignKey(KerberosRealm, on_delete=models.CASCADE)
 
     service_principal_name = models.TextField(
-        help_text=_(
-            "The Kerberos principal used to designate this provider, without the " "realm."
-        ),
+        help_text=_("The Kerberos principal used to designate this provider, without the realm."),
         validators=[validate_spn],
     )
 
     set_ok_as_delegate = models.BooleanField(
         default=False,
         help_text=_(
-            "Should the tickets issued for this provider have the " "ok-as-delegate flag set."
+            "Should the tickets issued for this provider have the ok-as-delegate flag set."
         ),
     )
 

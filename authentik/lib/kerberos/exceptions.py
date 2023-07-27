@@ -1,2 +1,5 @@
+"""Kerberos exceptions"""
+
+
 class KerberosException(Exception):
-    pass
+    """Kerberos generic exception"""

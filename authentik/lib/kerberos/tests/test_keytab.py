@@ -1,3 +1,4 @@
+"""Kerberos Keytab tests"""
 from datetime import datetime
 
 from django.test import TestCase
@@ -6,7 +7,10 @@ from authentik.lib.kerberos import crypto, iana, keytab, principal
 
 
 class TestKeytab(TestCase):
+    """Kerberos Keytab tests"""
+
     def test_to_bytes(self):
+        """Kerberos Keytab export test"""
         data = (
             # keytab to export, result
             (
@@ -119,7 +123,8 @@ class TestKeytab(TestCase):
                             key=keytab.EncryptionKey(
                                 key_type=enc_type.ENC_TYPE,
                                 key=enc_type.string_to_key(
-                                    "iw6ubo6quo9ahB0phueB2cuuKeeMaec2vea2theiqu6boeDaiguchoo5chai4Aix".encode(),
+                                    "iw6ubo6quo9ahB0phueB2cuuKeeMaec2vea2theiqu6boe"
+                                    "Daiguchoo5chai4Aix".encode(),
                                     "b03d4083-c0c0-4866-bda8-39b980588a9d".encode(),
                                 ),
                             ),
@@ -457,6 +462,6 @@ class TestKeytab(TestCase):
             ),
         )
 
-        for kt, result in data:
+        for kt, result in data:  # pylint: disable=invalid-name
             print(zip(kt.to_bytes(), result))
             self.assertEqual(kt.to_bytes(), result)

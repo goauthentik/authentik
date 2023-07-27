@@ -25,6 +25,7 @@ class TestKerberosProviderKeytab(APITestCase):
         self.client.force_login(self.user)
 
     def test_keytab(self) -> None:
+        """Test provider keytab retrieval"""
         response = self.client.get(
             reverse("authentik_api:kerberosprovider-keytab", kwargs={"pk": self.provider.uuid})
         )

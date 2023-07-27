@@ -1,3 +1,4 @@
+"""Kerberos cryptography primitives"""
 import math
 
 from cryptography.hazmat.primitives import hashes, hmac
@@ -9,12 +10,12 @@ from authentik.lib.kerberos.exceptions import KerberosException
 
 
 class KerberosCryptoValueError(ValueError, KerberosException):
-    pass
+    """Kerberos cryptography value error"""
 
 
 def nfold(data: bytes, size: int) -> bytes:
     """
-    Streches data to be of length `size`. Size must be in bytes.
+    Stretches data to be of length `size`. Size must be in bytes.
 
     See https://www.rfc-editor.org/rfc/rfc3961#section-5.1
 
@@ -49,8 +50,8 @@ def nfold(data: bytes, size: int) -> bytes:
             )
         size = len(lhs)
 
-        result = [l + r for l, r in zip(lhs, rhs)]
-        while any(l & ~0xFF for l in result):
+        result = [left + right for left, right in zip(lhs, rhs)]
+        while any(digit & ~0xFF for digit in result):
             result = [(result[i - size + 1] >> 8) + (result[i] & 0xFF) for i in range(size)]
         return bytes(result)
 
@@ -59,7 +60,9 @@ def nfold(data: bytes, size: int) -> bytes:
     #     One's complement addition (without end-around carry).
     #     """
     #     if len(add1) != len(add2):
-    #         raise KerberosCryptoValueError("Cannot one's complement add two numbers of different size")
+    #         raise KerberosCryptoValueError(
+    #             "Cannot one's complement add two numbers of different size"
+    #         )
     #     size = len(add1)
     #     mod = 1 << (size * 8)
     #     result = int.from_bytes(add1, byteorder="big") + int.from_bytes(add2, byteorder="big")
@@ -85,6 +88,8 @@ def nfold(data: bytes, size: int) -> bytes:
 
 
 class EncryptionType:
+    """Kerberos generic encryption type"""
+
     ENC_TYPE: iana.EncryptionType
     CHECKSUM_TYPE: iana.ChecksumType
 
@@ -103,50 +108,85 @@ class EncryptionType:
 
     @classmethod
     def random_to_key(cls, data: bytes) -> bytes:
-        raise NotImplemented
+        """
+        Derive a protocol key from random data.
+        """
+        raise NotImplementedError
 
     @classmethod
     def derive_random(cls, key: bytes, usage: bytes) -> bytes:
-        raise NotImplemented
+        """
+        Derive random data from a protocol key and a usage.
+        """
+        raise NotImplementedError
 
     @classmethod
     def derive_key(cls, key: bytes, usage: bytes) -> bytes:
-        raise NotImplemented
+        """
+        Derive data from a protocol key and a usage.
+        """
+        raise NotImplementedError
 
     @classmethod
     def string_to_key(cls, password: bytes, salt: bytes, params: str | None = None) -> bytes:
-        raise NotImplemented
+        """
+        Derive a protocol key from a password and a salt.
+        """
+        raise NotImplementedError
 
     @classmethod
     def encrypt_data(cls, key: bytes, data: bytes) -> bytes:
-        raise NotImplemented
+        """
+        Encrypt data with a procotol key.
+        """
+        raise NotImplementedError
 
     @classmethod
     def encrypt_message(cls, key: bytes, message: bytes, usage: int) -> bytes:
-        raise NotImplemented
+        """
+        Encrypt a message with a procotol key.
+        """
+        raise NotImplementedError
 
     @classmethod
     def decrypt_data(cls, key: bytes, data: bytes) -> bytes:
-        raise NotImplemented
+        """
+        Decrypt data with a procotol key.
+        """
+        raise NotImplementedError
 
     @classmethod
     def decrypt_message(cls, key: bytes, ciphertext: bytes, usage: int) -> bytes:
-        raise NotImplemented
+        """
+        Decrypt a message with a procotol key.
+        """
+        raise NotImplementedError
 
-    # TODO: verify_integrity(key: bytes, ciphertext: bytes, pt: bytes, usage: int) -> bool
+    @classmethod
+    def verify_integrity(cls, key: bytes, ciphertext: bytes, usage: int) -> bool:
+        """
+        Verify ciphertext integrity with a protocol key.
+        """
+        raise NotImplementedError
 
     @classmethod
     def get_checksum_hash(cls, key: bytes, data: bytes, usage: int) -> bytes:
-        raise NotImplemented
+        """
+        Compute data checksum hash with a procotol key.
+        """
+        raise NotImplementedError
 
     @classmethod
     def verify_checksum(cls, key: bytes, data: bytes, checksum: bytes, usage: int) -> bytes:
-        raise NotImplemented
+        """
+        Verify a data checksum with a procotol key.
+        """
+        raise NotImplementedError
 
 
 class Rfc3961(EncryptionType):
     """
-    Encryption and checksuming method as defined in RFC 3961.
+    Encryption and checksumming method as defined in RFC 3961.
 
     We only implement methods that are re-used in Rfc3962, as that RFC depends
     on this one, and we're not implementing DES3 as that has been deprecated by
@@ -191,7 +231,7 @@ class Rfc3961(EncryptionType):
 
 class Rfc3962(Rfc3961):
     """
-    Encryption and checksuming method as defined in RFC 3962.
+    Encryption and checksumming method as defined in RFC 3962.
 
     See https://www.rfc-editor.org/rfc/rfc3962
     """
@@ -225,15 +265,15 @@ class Rfc3962(Rfc3961):
 
         See https://www.rfc-editor.org/rfc/rfc3962#section-6
         """
-        iv = bytes([0] * (cls.CYPHER_BLOCK_BITS // 8))
-        cipher = Cipher(algorithms.AES(key), modes.CBC(iv))
+        initialization_vector = bytes([0] * (cls.CYPHER_BLOCK_BITS // 8))
+        cipher = Cipher(algorithms.AES(key), modes.CBC(initialization_vector))
         encryptor = cipher.encryptor()
         return encryptor.update(data) + encryptor.finalize()
 
 
 class Rfc8009(EncryptionType):
     """
-    Encryption and checksuming methods as defined in RFC 8009.
+    Encryption and checksumming methods as defined in RFC 8009.
 
     See https://www.rfc-editor.org/rfc/rfc8009
     """
@@ -256,16 +296,16 @@ class Rfc8009(EncryptionType):
         Context is optional and can be `bytes()`.
         Size is in bits.
         """
-        c = (
+        data = (
             0x00000001.to_bytes(4, byteorder="big")
             + label
             + 0x00.to_bytes(1, byteorder="big")
             + context
             + size.to_bytes(4, byteorder="big")
         )
-        h = hmac.HMAC(key, cls.HASH_ALGORITHM())
-        h.update(c)
-        return h.finalize()[: size // 8]
+        hasher = hmac.HMAC(key, cls.HASH_ALGORITHM())
+        hasher.update(data)
+        return hasher.finalize()[: size // 8]
 
     @classmethod
     def derive_random(cls, key: bytes, usage: bytes) -> bytes:
@@ -323,6 +363,12 @@ class Rfc8009(EncryptionType):
 
 
 class Aes128CtsHmacSha196(Rfc3962):
+    """
+    aes128-cts-hmac-sha1-96 encryption type as defined in RFC 3962.
+
+    See https://www.rfc-editor.org/rfc/rfc3962#section-6
+    """
+
     ENC_TYPE = iana.EncryptionType.AES128_CTS_HMAC_SHA1_96
     CHECKSUM_TYPE = iana.ChecksumType.HMAC_SHA1_96_AES128
     ENC_NAME = "aes128-cts-hmac-sha1-96"
@@ -342,6 +388,12 @@ class Aes128CtsHmacSha196(Rfc3962):
 
 
 class Aes256CtsHmacSha196(Rfc3962):
+    """
+    aes256-cts-hmac-sha1-96 encryption type as defined in RFC 3962.
+
+    See https://www.rfc-editor.org/rfc/rfc3962#section-6
+    """
+
     ENC_TYPE = iana.EncryptionType.AES256_CTS_HMAC_SHA1_96
     CHECKSUM_TYPE = iana.ChecksumType.HMAC_SHA1_96_AES256
     ENC_NAME = "aes256-cts-hmac-sha1-96"
@@ -361,6 +413,12 @@ class Aes256CtsHmacSha196(Rfc3962):
 
 
 class Aes128CtsHmacSha256128(Rfc8009):
+    """
+    aes128-cts-hmac-sha256-128 encryption type as defined in RFC 8009.
+
+    See https://www.rfc-editor.org/rfc/rfc8009
+    """
+
     ENC_TYPE = iana.EncryptionType.AES128_CTS_HMAC_SHA256_128
     CHECKSUM_TYPE = iana.ChecksumType.HMAC_SHA256_128_AES128
     ENC_NAME = "aes128-cts-hmac-sha256-128"
@@ -380,6 +438,12 @@ class Aes128CtsHmacSha256128(Rfc8009):
 
 
 class Aes256CtsHmacSha384192(Rfc8009):
+    """
+    aes256-cts-hmac-sha384-192 encryption type as defined in RFC 8009.
+
+    See https://www.rfc-editor.org/rfc/rfc8009
+    """
+
     ENC_TYPE = iana.EncryptionType.AES256_CTS_HMAC_SHA384_192
     CHECKSUM_TYPE = iana.ChecksumType.HMAC_SHA384_192_AES256
     ENC_NAME = "aes256-cts-hmac-sha384-192"
