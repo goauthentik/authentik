@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/usr/bin/env -S bash -e
 MODE_FILE="${TMPDIR}/authentik-mode"
 
 function log {

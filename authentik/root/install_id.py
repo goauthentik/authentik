@@ -2,7 +2,7 @@
 from functools import lru_cache
 from uuid import uuid4
 
-from psycopg2 import connect
+from psycopg import connect
 
 from authentik.lib.config import CONFIG
 

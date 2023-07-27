@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     "authentik.policies.password",
     "authentik.policies.reputation",
     "authentik.policies",
+    "authentik.providers.kerberos",
     "authentik.providers.ldap",
     "authentik.providers.oauth2",
     "authentik.providers.proxy",
