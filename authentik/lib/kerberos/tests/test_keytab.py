@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from authentik.lib.kerberos import constants, crypto, iana, keytab, principal
+from authentik.lib.kerberos import crypto, iana, keytab, principal
 
 
 class TestKeytab(TestCase):
@@ -16,7 +16,7 @@ class TestKeytab(TestCase):
                             principal=keytab.Principal(
                                 realm="AUTHENTIK.COMPANY",
                                 name=principal.PrincipalName(
-                                    name_type=constants.PrincipalNameType.NT_PRINCIPAL,
+                                    name_type=principal.PrincipalNameType.NT_PRINCIPAL,
                                     name=["user"],
                                 ),
                             ),
@@ -110,7 +110,7 @@ class TestKeytab(TestCase):
                             principal=keytab.Principal(
                                 realm="EXAMPLE.ORG",
                                 name=principal.PrincipalName(
-                                    name_type=constants.PrincipalNameType.NT_SRV_HST,
+                                    name_type=principal.PrincipalNameType.NT_SRV_HST,
                                     name=["http", "example.org"],
                                 ),
                             ),

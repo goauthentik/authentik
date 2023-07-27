@@ -1,21 +1,19 @@
 """KerberosProvider API Views"""
 from django.http import HttpResponse
 from django.utils.timezone import now
-
-from rest_framework.fields import CharField, ListField
-from rest_framework.serializers import ModelSerializer
+from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
+from rest_framework.fields import CharField, ListField
 from rest_framework.request import Request
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-
-from drf_spectacular.utils import extend_schema, OpenApiResponse
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.providers.kerberos.models import KerberosRealm, KerberosProvider
 from authentik.lib.kerberos import keytab
-from authentik.lib.kerberos.principal import PrincipalName
 from authentik.lib.kerberos.crypto import SUPPORTED_ENCTYPES
+from authentik.lib.kerberos.principal import PrincipalName
+from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
 
 
 class KerberosRealmSerializer(ModelSerializer):

@@ -397,6 +397,7 @@ class Aes256CtsHmacSha384192(Rfc8009):
     CYPHER_BLOCK_BITS = algorithms.AES256.block_size
     CONFOUNDER_BYTES = CYPHER_BLOCK_BITS // 8
 
+
 SUPPORTED_ENCTYPES = (
     Aes128CtsHmacSha196,
     Aes256CtsHmacSha196,

@@ -2,19 +2,18 @@
 from typing import Optional, Type
 from uuid import uuid4
 
-from django.db import models
-from django.core.validators import RegexValidator
-from django.utils.translation import gettext_lazy as _
-from django.utils.functional import cached_property
 from django.contrib.postgres.fields import ArrayField
+from django.core.validators import RegexValidator
+from django.db import models
+from django.utils.functional import cached_property
+from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Provider
-from authentik.lib.generators import generate_id
-from authentik.lib.utils.time import timedelta_string_validator
-from authentik.lib.models import SerializerModel
-from authentik.lib.generators import generate_key
+from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.kerberos.crypto import SUPPORTED_ENCTYPES
+from authentik.lib.models import SerializerModel
+from authentik.lib.utils.time import timedelta_string_validator
 
 
 def get_kerberos_enctypes():
