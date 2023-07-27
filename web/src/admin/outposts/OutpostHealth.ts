@@ -39,25 +39,25 @@ export class OutpostHealthElement extends AKElement {
                 8,
             )})`;
         }
-        return html`<dl class="pf-c-description-list pf-m-compact">
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Last seen")}</span>
+        return html`<dl class="pf-v5-c-description-list pf-m-compact">
+            <div class="pf-v5-c-description-list__group">
+                <dt class="pf-v5-c-description-list__term">
+                    <span class="pf-v5-c-description-list__text">${msg("Last seen")}</span>
                 </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
+                <dd class="pf-v5-c-description-list__description">
+                    <div class="pf-v5-c-description-list__text">
                         <ak-label color=${PFColor.Green} ?compact=${true}>
                             ${this.outpostHealth.lastSeen?.toLocaleTimeString()}
                         </ak-label>
                     </div>
                 </dd>
             </div>
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Version")}</span>
+            <div class="pf-v5-c-description-list__group">
+                <dt class="pf-v5-c-description-list__term">
+                    <span class="pf-v5-c-description-list__text">${msg("Version")}</span>
                 </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
+                <dd class="pf-v5-c-description-list__description">
+                    <div class="pf-v5-c-description-list__text">
                         ${this.outpostHealth.versionOutdated
                             ? html`<ak-label color=${PFColor.Red} ?compact=${true}
                                   >${msg(
@@ -70,12 +70,12 @@ export class OutpostHealthElement extends AKElement {
                     </div>
                 </dd>
             </div>
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Hostname")}</span>
+            <div class="pf-v5-c-description-list__group">
+                <dt class="pf-v5-c-description-list__term">
+                    <span class="pf-v5-c-description-list__text">${msg("Hostname")}</span>
                 </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">${this.outpostHealth.hostname}</div>
+                <dd class="pf-v5-c-description-list__description">
+                    <div class="pf-v5-c-description-list__text">${this.outpostHealth.hostname}</div>
                 </dd>
             </div>
         </dl> `;

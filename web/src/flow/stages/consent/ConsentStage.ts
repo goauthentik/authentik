@@ -39,16 +39,16 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
 
     renderNoPrevious(): TemplateResult {
         return html`
-            <div class="pf-c-form__group">
-                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">
+            <div class="pf-v5-c-form__group">
+                <h3 id="header-text" class="pf-v5-c-title pf-m-xl pf-v5-u-mb-xl">
                     ${this.challenge.headerText}
                 </h3>
                 ${this.challenge.permissions.length > 0
                     ? html`
-                          <p class="pf-u-mb-sm">
+                          <p class="pf-v5-u-mb-sm">
                               ${msg("Application requires following permissions:")}
                           </p>
-                          <ul class="pf-c-list" id="permissions">
+                          <ul class="pf-v5-c-list" id="permissions">
                               ${this.renderPermissions(this.challenge.permissions)}
                           </ul>
                       `
@@ -59,28 +59,28 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
 
     renderAdditional(): TemplateResult {
         return html`
-            <div class="pf-c-form__group">
-                <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">
+            <div class="pf-v5-c-form__group">
+                <h3 id="header-text" class="pf-v5-c-title pf-m-xl pf-v5-u-mb-xl">
                     ${this.challenge.headerText}
                 </h3>
                 ${this.challenge.permissions.length > 0
                     ? html`
-                          <p class="pf-u-mb-sm">
+                          <p class="pf-v5-u-mb-sm">
                               ${msg("Application already has access to the following permissions:")}
                           </p>
-                          <ul class="pf-c-list" id="permissions">
+                          <ul class="pf-v5-c-list" id="permissions">
                               ${this.renderPermissions(this.challenge.permissions)}
                           </ul>
                       `
                     : html``}
             </div>
-            <div class="pf-c-form__group pf-u-mt-md">
+            <div class="pf-v5-c-form__group pf-v5-u-mt-md">
                 ${this.challenge.additionalPermissions.length > 0
                     ? html`
-                          <strong class="pf-u-mb-sm">
+                          <strong class="pf-v5-u-mb-sm">
                               ${msg("Application requires following new permissions:")}
                           </strong>
-                          <ul class="pf-c-list" id="permissions">
+                          <ul class="pf-v5-c-list" id="permissions">
                               ${this.renderPermissions(this.challenge.additionalPermissions)}
                           </ul>
                       `
@@ -94,12 +94,12 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
-            <div class="pf-c-login__main-body">
+            <div class="pf-v5-c-login__main-body">
                 <form
-                    class="pf-c-form"
+                    class="pf-v5-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e, {
                             token: this.challenge.token,
@@ -107,7 +107,7 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                     }}
                 >
                     <ak-form-static
-                        class="pf-c-form__group"
+                        class="pf-v5-c-form__group"
                         userAvatar="${this.challenge.pendingUserAvatar}"
                         user=${this.challenge.pendingUser}
                     >
@@ -121,15 +121,15 @@ export class ConsentStage extends BaseStage<ConsentChallenge, ConsentChallengeRe
                         ? this.renderAdditional()
                         : this.renderNoPrevious()}
 
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    <div class="pf-v5-c-form__group pf-m-action">
+                        <button type="submit" class="pf-v5-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}
                         </button>
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

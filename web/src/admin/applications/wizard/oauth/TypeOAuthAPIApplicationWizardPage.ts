@@ -19,7 +19,7 @@ export class TypeOAuthAPIApplicationWizardPage extends WizardPage {
     sidebarLabel = () => msg("Method details");
 
     render(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <p>
                 ${msg(
                     "This configuration can be used to authenticate to authentik with other APIs other otherwise programmatically.",

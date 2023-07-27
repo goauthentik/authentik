@@ -15,7 +15,7 @@ export class UserSettingsPromptStage extends PromptStage {
             case PromptTypeEnum.Checkbox:
                 return html`<input
                     type="checkbox"
-                    class="pf-c-check__input"
+                    class="pf-v5-c-check__input"
                     name="${prompt.fieldKey}"
                     ?checked=${prompt.initialValue !== ""}
                     ?required=${prompt.required}
@@ -47,13 +47,13 @@ export class UserSettingsPromptStage extends PromptStage {
     }
 
     renderContinue(): TemplateResult {
-        return html` <div class="pf-c-form__group pf-m-action">
-            <div class="pf-c-form__horizontal-group">
-                <div class="pf-c-form__actions">
-                    <button type="submit" class="pf-c-button pf-m-primary">${msg("Save")}</button>
+        return html` <div class="pf-v5-c-form__group pf-m-action">
+            <div class="pf-v5-c-form__horizontal-group">
+                <div class="pf-v5-c-form__actions">
+                    <button type="submit" class="pf-v5-c-button pf-m-primary">${msg("Save")}</button>
                     ${this.host.tenant?.flowUnenrollment
                         ? html` <a
-                              class="pf-c-button pf-m-danger"
+                              class="pf-v5-c-button pf-m-danger"
                               href="/if/flow/${this.host.tenant.flowUnenrollment}/"
                           >
                               ${msg("Delete account")}
@@ -69,9 +69,9 @@ export class UserSettingsPromptStage extends PromptStage {
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<div class="pf-c-login__main-body">
+        return html`<div class="pf-v5-c-login__main-body">
                 <form
-                    class="pf-c-form"
+                    class="pf-v5-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e);
                     }}
@@ -87,8 +87,8 @@ export class UserSettingsPromptStage extends PromptStage {
                     ${this.renderContinue()}
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

@@ -40,38 +40,38 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                 ?required=${true}
                 name="name"
             >
-                <input type="text" value="" class="pf-c-form-control" required />
-                <p class="pf-c-form__helper-text">
+                <input type="text" value="" class="pf-v5-c-form-control" required />
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("User's primary identifier. 150 characters or fewer.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="createGroup">
-                <label class="pf-c-switch">
-                    <input class="pf-c-switch__input" type="checkbox" ?checked=${true} />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                <label class="pf-v5-c-switch">
+                    <input class="pf-v5-c-switch__input" type="checkbox" ?checked=${true} />
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${msg("Create group")}</span>
+                    <span class="pf-v5-c-switch__label">${msg("Create group")}</span>
                 </label>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "Enabling this toggle will create a group named after the user, with the user as member.",
                     )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="expiring">
-                <label class="pf-c-switch">
-                    <input class="pf-c-switch__input" type="checkbox" ?checked=${true} />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                <label class="pf-v5-c-switch">
+                    <input class="pf-v5-c-switch__input" type="checkbox" ?checked=${true} />
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${msg("Expiring")}</span>
+                    <span class="pf-v5-c-switch__label">${msg("Expiring")}</span>
                 </label>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "If this is selected, the token will expire. Upon expiration, the token will be rotated.",
                     )}
@@ -82,7 +82,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                     type="datetime-local"
                     data-type="datetime-local"
                     value="${dateTimeLocal(new Date(Date.now() + 1000 * 60 ** 2 * 24 * 360))}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                 />
             </ak-form-element-horizontal>`;
     }
@@ -93,13 +93,13 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                     "Use the username and password below to authenticate. The password can be retrieved later on the Tokens page.",
                 )}
             </p>
-            <form class="pf-c-form pf-m-horizontal">
+            <form class="pf-v5-c-form pf-m-horizontal">
                 <ak-form-element-horizontal label=${msg("Username")}>
                     <input
                         type="text"
                         readonly
                         value=${ifDefined(this.result?.username)}
-                        class="pf-c-form-control"
+                        class="pf-v5-c-form-control"
                     />
                 </ak-form-element-horizontal>
                 <ak-form-element-horizontal label=${msg("Password")}>
@@ -107,9 +107,9 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
                         type="text"
                         readonly
                         value=${ifDefined(this.result?.token)}
-                        class="pf-c-form-control"
+                        class="pf-v5-c-form-control"
                     />
-                    <p class="pf-c-form__helper-text">
+                    <p class="pf-v5-c-form__helper-text">
                         ${msg(
                             "Valid for 360 days, after which the password will automatically rotate. You can copy the password from the Token List.",
                         )}

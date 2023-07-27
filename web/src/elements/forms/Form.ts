@@ -283,7 +283,7 @@ export abstract class Form<T> extends AKElement {
     renderForm(): TemplateResult {
         const inline = this.renderInlineForm();
         if (inline) {
-            return html`<form class="pf-c-form pf-m-horizontal" @submit=${this.submit}>
+            return html`<form class="pf-v5-c-form pf-m-horizontal" @submit=${this.submit}>
                 ${inline}
             </form>`;
         }
@@ -302,13 +302,13 @@ export abstract class Form<T> extends AKElement {
         if (!this.nonFieldErrors) {
             return html``;
         }
-        return html`<div class="pf-c-form__alert">
+        return html`<div class="pf-v5-c-form__alert">
             ${this.nonFieldErrors.map((err) => {
-                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
-                    <div class="pf-c-alert__icon">
+                return html`<div class="pf-v5-c-alert pf-m-inline pf-m-danger">
+                    <div class="pf-v5-c-alert__icon">
                         <i class="fas fa-exclamation-circle"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">${err}</h4>
+                    <h4 class="pf-v5-c-alert__title">${err}</h4>
                 </div>`;
             })}
         </div>`;

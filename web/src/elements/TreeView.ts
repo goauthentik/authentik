@@ -71,13 +71,13 @@ export class TreeViewNode extends AKElement {
         const shouldRenderChildren = (this.item?.childItems || []).length > 0 && this.open;
         return html`
             <li
-                class="pf-c-tree-view__list-item ${this.open ? "pf-m-expanded" : ""}"
+                class="pf-v5-c-tree-view__list-item ${this.open ? "pf-m-expanded" : ""}"
                 role="treeitem"
                 tabindex="0"
             >
-                <div class="pf-c-tree-view__content">
+                <div class="pf-v5-c-tree-view__content">
                     <button
-                        class="pf-c-tree-view__node ${this.host?.activeNode === this
+                        class="pf-v5-c-tree-view__node ${this.host?.activeNode === this
                             ? "pf-m-current"
                             : ""}"
                         @click=${() => {
@@ -93,10 +93,10 @@ export class TreeViewNode extends AKElement {
                             );
                         }}
                     >
-                        <div class="pf-c-tree-view__node-container">
+                        <div class="pf-v5-c-tree-view__node-container">
                             ${this.openable
                                 ? html` <button
-                                      class="pf-c-tree-view__node-toggle"
+                                      class="pf-v5-c-tree-view__node-toggle"
                                       @click=${(e: Event) => {
                                           if (this.openable) {
                                               this.open = !this.open;
@@ -104,22 +104,22 @@ export class TreeViewNode extends AKElement {
                                           }
                                       }}
                                   >
-                                      <span class="pf-c-tree-view__node-toggle-icon">
+                                      <span class="pf-v5-c-tree-view__node-toggle-icon">
                                           <i class="fas fa-angle-right" aria-hidden="true"></i>
                                       </span>
                                   </button>`
                                 : html``}
-                            <span class="pf-c-tree-view__node-icon">
+                            <span class="pf-v5-c-tree-view__node-icon">
                                 <i
                                     class="fas ${this.open ? "fa-folder-open" : "fa-folder"}"
                                     aria-hidden="true"
                                 ></i>
                             </span>
-                            <span class="pf-c-tree-view__node-text">${this.item?.label}</span>
+                            <span class="pf-v5-c-tree-view__node-text">${this.item?.label}</span>
                         </div>
                     </button>
                 </div>
-                <ul class="pf-c-tree-view__list" role="group" ?hidden=${!shouldRenderChildren}>
+                <ul class="pf-v5-c-tree-view__list" role="group" ?hidden=${!shouldRenderChildren}>
                     ${this.item?.childItems.map((item) => {
                         return html`<ak-treeview-node
                             .item=${item}
@@ -193,8 +193,8 @@ export class TreeView extends AKElement {
 
     render(): TemplateResult {
         const rootItem = this.parse(this.items);
-        return html`<div class="pf-c-tree-view pf-m-guides">
-            <ul class="pf-c-tree-view__list" role="tree">
+        return html`<div class="pf-v5-c-tree-view pf-m-guides">
+            <ul class="pf-v5-c-tree-view__list" role="tree">
                 <ak-treeview-node
                     .item=${rootItem}
                     activePath=${this.activePath}

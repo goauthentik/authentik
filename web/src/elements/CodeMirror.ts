@@ -98,7 +98,7 @@ export class CodeMirrorTextarea<T> extends AKElement {
         this.themeLight = EditorView.theme(
             {
                 "&": {
-                    backgroundColor: "var(--pf-global--BackgroundColor--light-300)",
+                    backgroundColor: "var(--pf-v5-global--BackgroundColor--light-300)",
                 },
             },
             { dark: false },

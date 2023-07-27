@@ -25,13 +25,13 @@ export class DebugPage extends AKElement {
     render(): TemplateResult {
         return html`
             <ak-page-header icon="pf-icon pf-icon-user" header="Debug"> </ak-page-header>
-            <section class="pf-c-page__main-section">
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-l-grid__item pf-m-3-col pf-c-card">
-                        <div class="pf-c-card__title">Sentry</div>
-                        <div class="pf-c-card__body">
+            <section class="pf-v5-c-page__main-section">
+                <div class="pf-v5-l-grid pf-m-gutter">
+                    <div class="pf-v5-l-grid__item pf-m-3-col pf-v5-c-card">
+                        <div class="pf-v5-c-card__title">Sentry</div>
+                        <div class="pf-v5-c-card__body">
                             <button
-                                class="pf-c-button pf-m-primary"
+                                class="pf-v5-c-button pf-m-primary"
                                 @click=${() => {
                                     Sentry.captureException(new Error("test error"));
                                 }}
@@ -40,11 +40,11 @@ export class DebugPage extends AKElement {
                             </button>
                         </div>
                     </div>
-                    <div class="pf-l-grid__item pf-m-3-col pf-c-card">
-                        <div class="pf-c-card__title">Misc</div>
-                        <div class="pf-c-card__body">
+                    <div class="pf-v5-l-grid__item pf-m-3-col pf-v5-c-card">
+                        <div class="pf-v5-c-card__title">Misc</div>
+                        <div class="pf-v5-c-card__body">
                             <button
-                                class="pf-c-button pf-m-primary"
+                                class="pf-v5-c-button pf-m-primary"
                                 @click=${() => {
                                     new AdminApi(DEFAULT_CONFIG)
                                         .adminSystemCreate()

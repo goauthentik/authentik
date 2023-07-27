@@ -110,12 +110,12 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-login__main-body">
+        return html`<div class="pf-v5-c-login__main-body">
                 ${this.authenticateMessage
-                    ? html`<div class="pf-c-form__group pf-m-action">
+                    ? html`<div class="pf-v5-c-form__group pf-m-action">
                           <p class="pf-m-block">${this.authenticateMessage}</p>
                           <button
-                              class="pf-c-button pf-m-primary pf-m-block"
+                              class="pf-v5-c-button pf-m-primary pf-m-block"
                               @click=${() => {
                                   this.authenticateWrapper();
                               }}
@@ -123,18 +123,18 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
                               ${msg("Retry authentication")}
                           </button>
                       </div>`
-                    : html`<div class="pf-c-form__group pf-m-action">
+                    : html`<div class="pf-v5-c-form__group pf-m-action">
                           <p class="pf-m-block">&nbsp;</p>
                           <p class="pf-m-block">&nbsp;</p>
                           <p class="pf-m-block">&nbsp;</p>
                       </div> `}
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links">
                     ${this.showBackButton
-                        ? html`<li class="pf-c-login__main-footer-links-item">
+                        ? html`<li class="pf-v5-c-login__main-footer-links-item">
                               <button
-                                  class="pf-c-button pf-m-secondary pf-m-block"
+                                  class="pf-v5-c-button pf-m-secondary pf-m-block"
                                   @click=${() => {
                                       if (!this.host) return;
                                       (

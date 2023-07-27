@@ -21,7 +21,7 @@ export class ChipGroup extends AKElement {
                 ::slotted(*) {
                     margin: 0 2px;
                 }
-                .pf-c-chip-group {
+                .pf-v5-c-chip-group {
                     margin-bottom: 8px;
                 }
             `,
@@ -44,9 +44,9 @@ export class ChipGroup extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-chip-group">
-            <div class="pf-c-chip-group__main">
-                <ul class="pf-c-chip-group__list" role="list">
+        return html`<div class="pf-v5-c-chip-group">
+            <div class="pf-v5-c-chip-group__main">
+                <ul class="pf-v5-c-chip-group__list" role="list">
                     <slot></slot>
                 </ul>
             </div>

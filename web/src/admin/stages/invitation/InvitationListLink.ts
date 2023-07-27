@@ -34,14 +34,14 @@ export class InvitationListLink extends AKElement {
     }
 
     renderFlowSelector(): TemplateResult {
-        return html`<div class="pf-c-description-list__group">
-            <dt class="pf-c-description-list__term">
-                <span class="pf-c-description-list__text">${msg("Select an enrollment flow")}</span>
+        return html`<div class="pf-v5-c-description-list__group">
+            <dt class="pf-v5-c-description-list__term">
+                <span class="pf-v5-c-description-list__text">${msg("Select an enrollment flow")}</span>
             </dt>
-            <dd class="pf-c-description-list__description">
-                <div class="pf-c-description-list__text">
+            <dd class="pf-v5-c-description-list__description">
+                <div class="pf-v5-c-description-list__text">
                     <select
-                        class="pf-c-form-control"
+                        class="pf-v5-c-form-control"
                         @change=${(ev: Event) => {
                             const current = (ev.target as HTMLInputElement).value;
                             this.selectedFlow = current;
@@ -86,18 +86,18 @@ export class InvitationListLink extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<dl class="pf-c-description-list pf-m-horizontal">
+        return html`<dl class="pf-v5-c-description-list pf-m-horizontal">
             ${this.invitation?.flow === undefined ? this.renderFlowSelector() : html``}
-            <div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text"
+            <div class="pf-v5-c-description-list__group">
+                <dt class="pf-v5-c-description-list__term">
+                    <span class="pf-v5-c-description-list__text"
                         >${msg("Link to use the invitation.")}</span
                     >
                 </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
+                <dd class="pf-v5-c-description-list__description">
+                    <div class="pf-v5-c-description-list__text">
                         <input
-                            class="pf-c-form-control"
+                            class="pf-v5-c-form-control"
                             readonly
                             type="text"
                             value=${this.renderLink()}

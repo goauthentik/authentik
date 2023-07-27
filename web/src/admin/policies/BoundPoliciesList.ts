@@ -85,7 +85,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     type=${ifDefined(item.policyObj?.component)}
                 >
                 </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                <button slot="trigger" class="pf-v5-c-button pf-m-secondary">
                     ${msg("Edit Policy")}
                 </button>
             </ak-forms-modal>`;
@@ -94,7 +94,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <span slot="submit"> ${msg("Update")} </span>
                 <span slot="header"> ${msg("Update Group")} </span>
                 <ak-group-form slot="form" .instancePk=${item.groupObj?.pk}> </ak-group-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                <button slot="trigger" class="pf-v5-c-button pf-m-secondary">
                     ${msg("Edit Group")}
                 </button>
             </ak-forms-modal>`;
@@ -103,7 +103,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 <span slot="submit"> ${msg("Update")} </span>
                 <span slot="header"> ${msg("Update User")} </span>
                 <ak-user-form slot="form" .instancePk=${item.userObj?.pk}> </ak-user-form>
-                <button slot="trigger" class="pf-c-button pf-m-secondary">
+                <button slot="trigger" class="pf-v5-c-button pf-m-secondary">
                     ${msg("Edit User")}
                 </button>
             </ak-forms-modal>`;
@@ -137,7 +137,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                 });
             }}
         >
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+            <button ?disabled=${disabled} slot="trigger" class="pf-v5-c-button pf-m-danger">
                 ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;
@@ -162,7 +162,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                         ?policyOnly=${this.policyOnly}
                     >
                     </ak-policy-binding-form>
-                    <button slot="trigger" class="pf-c-button pf-m-secondary">
+                    <button slot="trigger" class="pf-v5-c-button pf-m-secondary">
                         ${msg("Edit Binding")}
                     </button>
                 </ak-forms-modal>`,
@@ -183,7 +183,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                             ?policyOnly=${this.policyOnly}
                         >
                         </ak-policy-binding-form>
-                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                        <button slot="trigger" class="pf-v5-c-button pf-m-primary">
                             ${msg("Create Binding")}
                         </button>
                     </ak-forms-modal>
@@ -207,7 +207,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
                     ?policyOnly=${this.policyOnly}
                 >
                 </ak-policy-binding-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">
+                <button slot="trigger" class="pf-v5-c-button pf-m-primary">
                     ${msg("Bind existing policy")}
                 </button>
             </ak-forms-modal> `;

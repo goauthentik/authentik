@@ -18,14 +18,14 @@ export class Router404 extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-empty-state pf-m-full-height">
-            <div class="pf-c-empty-state__content">
-                <i class="fas fa-question-circle pf-c-empty-state__icon" aria-hidden="true"></i>
-                <h1 class="pf-c-title pf-m-lg">${msg("Not found")}</h1>
-                <div class="pf-c-empty-state__body">
+        return html`<div class="pf-v5-c-empty-state pf-m-full-height">
+            <div class="pf-v5-c-empty-state__content">
+                <i class="fas fa-question-circle pf-v5-c-empty-state__icon" aria-hidden="true"></i>
+                <h1 class="pf-v5-c-title pf-m-lg">${msg("Not found")}</h1>
+                <div class="pf-v5-c-empty-state__body">
                     ${msg(str`The URL "${this.url}" was not found.`)}
                 </div>
-                <a href="#/" class="pf-c-button pf-m-primary" type="button"
+                <a href="#/" class="pf-v5-c-button pf-m-primary" type="button"
                     >${msg("Return home")}</a
                 >
             </div>

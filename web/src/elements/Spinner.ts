@@ -24,13 +24,13 @@ export class Spinner extends AKElement {
 
     render(): TemplateResult {
         return html`<span
-            class="pf-c-spinner ${this.size.toString()}"
+            class="pf-v5-c-spinner ${this.size.toString()}"
             role="progressbar"
             aria-valuetext="${msg("Loading...")}"
         >
-            <span class="pf-c-spinner__clipper"></span>
-            <span class="pf-c-spinner__lead-ball"></span>
-            <span class="pf-c-spinner__tail-ball"></span>
+            <span class="pf-v5-c-spinner__clipper"></span>
+            <span class="pf-v5-c-spinner__lead-ball"></span>
+            <span class="pf-v5-c-spinner__tail-ball"></span>
         </span>`;
     }
 }

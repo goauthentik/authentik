@@ -46,7 +46,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
         }
         if (this.connectionPk > 0) {
             return html`<button
-                class="pf-c-button pf-m-danger"
+                class="pf-v5-c-button pf-m-danger"
                 @click=${() => {
                     return new SourcesApi(DEFAULT_CONFIG)
                         .sourcesUserConnectionsPlexDestroy({
@@ -77,7 +77,7 @@ export class SourceSettingsPlex extends BaseUserSettings {
                 ${msg("Disconnect")}
             </button>`;
         }
-        return html`<button @click=${this.doPlex} class="pf-c-button pf-m-primary">
+        return html`<button @click=${this.doPlex} class="pf-v5-c-button pf-m-primary">
             ${msg("Connect")}
         </button>`;
     }

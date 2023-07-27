@@ -26,7 +26,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
         }
         if (this.connectionPk > 0) {
             return html`<button
-                class="pf-c-button pf-m-danger"
+                class="pf-v5-c-button pf-m-danger"
                 @click=${() => {
                     return new SourcesApi(DEFAULT_CONFIG)
                         .sourcesUserConnectionsOauthDestroy({
@@ -58,7 +58,7 @@ export class SourceSettingsOAuth extends BaseUserSettings {
             </button>`;
         }
         return html`<a
-            class="pf-c-button pf-m-primary"
+            class="pf-v5-c-button pf-m-primary"
             href="${ifDefined(this.configureUrl)}${AndNext(
                 `/if/user/#/settings;${JSON.stringify({ page: "page-sources" })}`,
             )}"

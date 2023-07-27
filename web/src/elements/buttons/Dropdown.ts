@@ -10,8 +10,8 @@ export class DropdownButton extends AKElement {
 
     constructor() {
         super();
-        this.menu = this.querySelector<HTMLElement>(".pf-c-dropdown__menu");
-        this.querySelectorAll("button.pf-c-dropdown__toggle").forEach((btn) => {
+        this.menu = this.querySelector<HTMLElement>(".pf-v5-c-dropdown__menu");
+        this.querySelectorAll("button.pf-v5-c-dropdown__toggle").forEach((btn) => {
             btn.addEventListener("click", () => {
                 if (!this.menu) return;
                 this.menu.hidden = !this.menu.hidden;

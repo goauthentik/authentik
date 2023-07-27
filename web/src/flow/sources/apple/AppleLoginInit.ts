@@ -52,15 +52,15 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
     }
 
     render(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${msg("Authenticating with Apple...")}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${msg("Authenticating with Apple...")}</h1>
             </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
+            <div class="pf-v5-c-login__main-body">
+                <form class="pf-v5-c-form">
                     <ak-empty-state ?loading="${true}"> </ak-empty-state>
                     ${!this.isModalShown
                         ? html`<button
-                              class="pf-c-button pf-m-primary pf-m-block"
+                              class="pf-v5-c-button pf-m-primary pf-m-block"
                               @click=${() => {
                                   AppleID.auth.signIn();
                               }}
@@ -70,8 +70,8 @@ export class AppleLoginInit extends BaseStage<AppleLoginChallenge, AppleChalleng
                         : html``}
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

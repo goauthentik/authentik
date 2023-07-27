@@ -24,7 +24,7 @@ export class SidebarUser extends AKElement {
                     flex-direction: row;
                     justify-content: space-between;
                 }
-                .pf-c-nav__link {
+                .pf-v5-c-nav__link {
                     align-items: center;
                     display: flex;
                     justify-content: center;
@@ -35,11 +35,11 @@ export class SidebarUser extends AKElement {
 
     render(): TemplateResult {
         return html`
-            <a href="/if/user/#/settings" class="pf-c-nav__link user-avatar" id="user-settings">
+            <a href="/if/user/#/settings" class="pf-v5-c-nav__link user-avatar" id="user-settings">
                 ${until(
                     me().then((u) => {
                         return html`<img
-                            class="pf-c-avatar"
+                            class="pf-v5-c-avatar"
                             src="${ifDefined(u.user.avatar)}"
                             alt=""
                         />`;
@@ -47,7 +47,7 @@ export class SidebarUser extends AKElement {
                     html``,
                 )}
             </a>
-            <a href="/flows/-/default/invalidation/" class="pf-c-nav__link user-logout" id="logout">
+            <a href="/flows/-/default/invalidation/" class="pf-v5-c-nav__link user-logout" id="logout">
                 <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
             </a>
         `;

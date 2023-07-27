@@ -174,7 +174,7 @@ export class ProxyProviderViewPage extends AKElement {
                 return html`<section
                     slot="page-${convertToSlug(server.label)}"
                     data-tab-title="${server.label}"
-                    class="pf-c-page__main-section pf-m-light pf-m-no-padding-mobile"
+                    class="pf-v5-c-page__main-section pf-m-light pf-m-no-padding-mobile"
                 >
                     <ak-markdown .replacers=${replacers} .md=${server.md}></ak-markdown>
                 </section>`;
@@ -196,10 +196,10 @@ export class ProxyProviderViewPage extends AKElement {
             <section
                 slot="page-changelog"
                 data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
+                <div class="pf-v5-c-card">
+                    <div class="pf-v5-c-card__body">
                         <ak-object-changelog
                             targetModelPk=${this.provider?.pk || ""}
                             targetModelName=${this.provider?.metaModelName || ""}
@@ -216,17 +216,17 @@ export class ProxyProviderViewPage extends AKElement {
             return html``;
         }
         return html`<div
-            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+            class="pf-v5-c-page__main-section pf-m-no-padding-mobile pf-v5-l-grid pf-m-gutter"
         >
-            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                <div class="pf-c-card__body">
-                    <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Client ID")}</span>
+            <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                <div class="pf-v5-c-card__body">
+                    <dl class="pf-v5-c-description-list pf-m-3-col-on-lg">
+                        <div class="pf-v5-c-description-list__group">
+                            <dt class="pf-v5-c-description-list__term">
+                                <span class="pf-v5-c-description-list__text">${msg("Client ID")}</span>
                             </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
+                            <dd class="pf-v5-c-description-list__description">
+                                <div class="pf-v5-c-description-list__text">
                                     <pre>${this.provider.clientId}</pre>
                                 </div>
                             </dd>
@@ -234,8 +234,8 @@ export class ProxyProviderViewPage extends AKElement {
                     </dl>
                 </div>
             </div>
-            <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                <div class="pf-c-card__body">
+            <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                <div class="pf-v5-c-card__body">
                     <ak-markdown .md=${MDHeaderAuthentication}></ak-markdown>
                 </div>
             </div>
@@ -248,76 +248,76 @@ export class ProxyProviderViewPage extends AKElement {
         }
         return html`${this.provider?.assignedApplicationName
                 ? html``
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                : html`<div slot="header" class="pf-v5-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
                   </div>`}
             ${this.provider?.outpostSet.length < 1
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                ? html`<div slot="header" class="pf-v5-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by any Outpost.")}
                   </div>`
                 : html``}
-            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
+            <div class="pf-v5-c-page__main-section pf-m-no-padding-mobile pf-v5-l-grid pf-m-gutter">
+                <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                    <div class="pf-v5-c-card__body">
+                        <dl class="pf-v5-c-description-list pf-m-3-col-on-lg">
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text">${msg("Name")}</span>
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.name}
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Assigned to application")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         <ak-provider-related-application
                                             .provider=${this.provider}
                                         ></ak-provider-related-application>
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Internal Host")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.internalHost}
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("External Host")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         <a target="_blank" href="${this.provider.externalHost}"
                                             >${this.provider.externalHost}</a
                                         >
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Basic-Auth")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         <ak-label
                                             color=${this.provider.basicAuthEnabled
                                                 ? PFColor.Green
@@ -330,19 +330,19 @@ export class ProxyProviderViewPage extends AKElement {
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Mode")}</span>
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text">${msg("Mode")}</span>
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${ModeToLabel(this.provider.mode || ProxyMode.Proxy)}
                                     </div>
                                 </dd>
                             </div>
                         </dl>
                     </div>
-                    <div class="pf-c-card__footer">
+                    <div class="pf-v5-c-card__footer">
                         <ak-forms-modal>
                             <span slot="submit"> ${msg("Update")} </span>
                             <span slot="header"> ${msg("Update Proxy Provider")} </span>
@@ -351,25 +351,25 @@ export class ProxyProviderViewPage extends AKElement {
                                 .instancePk=${this.provider.pk || 0}
                             >
                             </ak-provider-proxy-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
+                            <button slot="trigger" class="pf-v5-c-button pf-m-primary">
                                 ${msg("Edit")}
                             </button>
                         </ak-forms-modal>
                     </div>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">${msg("Protocol Settings")}</div>
-                    <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                    <div class="pf-v5-c-card__title">${msg("Protocol Settings")}</div>
+                    <div class="pf-v5-c-card__body">
+                        <dl class="pf-v5-c-description-list pf-m-3-col-on-lg">
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Allowed Redirect URIs")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ul class="pf-c-list">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
+                                        <ul class="pf-v5-c-list">
                                             ${this.provider.redirectUris.split("\n").map((url) => {
                                                 return html`<li><pre>${url}</pre></li>`;
                                             })}
@@ -380,9 +380,9 @@ export class ProxyProviderViewPage extends AKElement {
                         </dl>
                     </div>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">${msg("Setup")}</div>
-                    <div class="pf-c-card__body">
+                <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                    <div class="pf-v5-c-card__title">${msg("Setup")}</div>
+                    <div class="pf-v5-c-card__body">
                         ${isForward(this.provider?.mode || ProxyMode.Proxy)
                             ? html` ${this.renderConfig()} `
                             : html` <p>${msg("No additional setup is required.")}</p> `}

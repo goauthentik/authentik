@@ -101,10 +101,10 @@ export class SCIMProviderViewPage extends AKElement {
             <section
                 slot="page-changelog"
                 data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
+                <div class="pf-v5-c-card">
+                    <div class="pf-v5-c-card__body">
                         <ak-object-changelog
                             targetModelPk=${this.provider?.pk || ""}
                             targetModelName=${this.provider?.metaModelName || ""}
@@ -120,66 +120,66 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`<div slot="header" class="pf-c-banner pf-m-info">
+        return html`<div slot="header" class="pf-v5-c-banner pf-m-info">
                 ${msg("SCIM provider is in preview.")}
             </div>
             ${!this.provider?.assignedBackchannelApplicationName
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                ? html`<div slot="header" class="pf-v5-c-banner pf-m-warning">
                       ${msg(
                           "Warning: Provider is not assigned to an application as backchannel provider.",
                       )}
                   </div>`
                 : html``}
-            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-l-grid__item pf-m-7-col pf-l-stack pf-m-gutter">
-                    <div class="pf-c-card pf-m-12-col pf-l-stack__item">
-                        <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+            <div class="pf-v5-c-page__main-section pf-m-no-padding-mobile pf-v5-l-grid pf-m-gutter">
+                <div class="pf-v5-l-grid__item pf-m-7-col pf-v5-l-stack pf-m-gutter">
+                    <div class="pf-v5-c-card pf-m-12-col pf-v5-l-stack__item">
+                        <div class="pf-v5-c-card__body">
+                            <dl class="pf-v5-c-description-list pf-m-3-col-on-lg">
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Name")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             ${this.provider.name}
                                         </div>
                                     </dd>
                                 </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("URL")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             ${this.provider.url}
                                         </div>
                                     </dd>
                                 </div>
                             </dl>
                         </div>
-                        <div class="pf-c-card__footer">
+                        <div class="pf-v5-c-card__footer">
                             <ak-forms-modal>
                                 <span slot="submit"> ${msg("Update")} </span>
                                 <span slot="header"> ${msg("Update SCIM Provider")} </span>
                                 <ak-provider-scim-form slot="form" .instancePk=${this.provider.pk}>
                                 </ak-provider-scim-form>
-                                <button slot="trigger" class="pf-c-button pf-m-primary">
+                                <button slot="trigger" class="pf-v5-c-button pf-m-primary">
                                     ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-l-stack__item">
-                        <div class="pf-c-card__title">
+                    <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col pf-v5-l-stack__item">
+                        <div class="pf-v5-c-card__title">
                             <p>${msg("Sync status")}</p>
                         </div>
-                        <div class="pf-c-card__body">
+                        <div class="pf-v5-c-card__body">
                             ${this.syncState
-                                ? html` <ul class="pf-c-list">
+                                ? html` <ul class="pf-v5-c-list">
                                       ${this.syncState.messages.map((m) => {
                                           return html`<li>${m}</li>`;
                                       })}
@@ -187,7 +187,7 @@ export class SCIMProviderViewPage extends AKElement {
                                 : html` ${msg("Sync not run yet.")} `}
                         </div>
 
-                        <div class="pf-c-card__footer">
+                        <div class="pf-v5-c-card__footer">
                             <ak-action-button
                                 class="pf-m-secondary"
                                 .apiRequest=${() => {
@@ -211,8 +211,8 @@ export class SCIMProviderViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-5-col">
-                    <div class="pf-c-card__body">
+                <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-5-col">
+                    <div class="pf-v5-c-card__body">
                         <ak-markdown .md=${MDSCIMProvider}></ak-markdown>
                     </div>
                 </div>

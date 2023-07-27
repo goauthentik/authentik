@@ -30,16 +30,16 @@ export class UserSourceSettingsPage extends AKElement {
             PFDataList,
             PFContent,
             css`
-                .pf-c-data-list__cell {
+                .pf-v5-c-data-list__cell {
                     display: flex;
                     align-items: center;
                 }
-                .pf-c-data-list__cell img {
+                .pf-v5-c-data-list__cell img {
                     max-width: 48px;
                     width: 48px;
                     margin-right: 16px;
                 }
-                :host([theme="dark"]) .pf-c-data-list__cell img {
+                :host([theme="dark"]) .pf-v5-c-data-list__cell img {
                     filter: invert(1);
                 }
                 .pf-c-data-list__item {
@@ -79,7 +79,7 @@ export class UserSourceSettingsPage extends AKElement {
         switch (source.component) {
             case "ak-user-settings-source-oauth":
                 return html`<ak-user-settings-source-oauth
-                    class="pf-c-data-list__item-row"
+                    class="pf-v5-c-data-list__item-row"
                     objectId=${source.objectUid}
                     title=${source.title}
                     connectionPk=${connectionPk}
@@ -88,7 +88,7 @@ export class UserSourceSettingsPage extends AKElement {
                 </ak-user-settings-source-oauth>`;
             case "ak-user-settings-source-plex":
                 return html`<ak-user-settings-source-plex
-                    class="pf-c-data-list__item-row"
+                    class="pf-v5-c-data-list__item-row"
                     objectId=${source.objectUid}
                     title=${source.title}
                     connectionPk=${connectionPk}
@@ -97,7 +97,7 @@ export class UserSourceSettingsPage extends AKElement {
                 </ak-user-settings-source-plex>`;
             case "ak-user-settings-source-saml":
                 return html`<ak-user-settings-source-saml
-                    class="pf-c-data-list__item-row"
+                    class="pf-v5-c-data-list__item-row"
                     objectId=${source.objectUid}
                     title=${source.title}
                     connectionPk=${connectionPk}
@@ -112,14 +112,14 @@ export class UserSourceSettingsPage extends AKElement {
     }
 
     render(): TemplateResult {
-        return html` <div class="pf-c-content">
+        return html` <div class="pf-v5-c-content">
                 <p>
                     ${msg(
                         "Connect your user account to the services listed below, to allow you to login using the service instead of traditional credentials.",
                     )}
                 </p>
             </div>
-            <ul class="pf-c-data-list" role="list">
+            <ul class="pf-v5-c-data-list" role="list">
                 ${this.sourceSettings
                     ? html`
                           ${this.sourceSettings.length < 1
@@ -128,16 +128,16 @@ export class UserSourceSettingsPage extends AKElement {
                                 ></ak-empty-state>`
                               : html`
                                     ${this.sourceSettings.map((source) => {
-                                        return html`<li class="pf-c-data-list__item">
-                                            <div class="pf-c-data-list__item-content">
-                                                <div class="pf-c-data-list__cell">
+                                        return html`<li class="pf-v5-c-data-list__item">
+                                            <div class="pf-v5-c-data-list__item-content">
+                                                <div class="pf-v5-c-data-list__cell">
                                                     ${renderSourceIcon(
                                                         source.title,
                                                         source.iconUrl,
                                                     )}
                                                     ${source.title}
                                                 </div>
-                                                <div class="pf-c-data-list__cell">
+                                                <div class="pf-v5-c-data-list__cell">
                                                     ${this.renderSourceSettings(source)}
                                                 </div>
                                             </div>

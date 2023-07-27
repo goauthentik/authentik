@@ -65,7 +65,7 @@ export class MessageContainer extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<ul class="pf-c-alert-group pf-m-toast">
+        return html`<ul class="pf-v5-c-alert-group pf-m-toast">
             ${this.messages.map((m) => {
                 return html`<ak-message
                     .message=${m}

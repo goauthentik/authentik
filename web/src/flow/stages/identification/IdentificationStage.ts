@@ -46,18 +46,18 @@ export class IdentificationStage extends BaseStage<
     static get styles(): CSSResult[] {
         return [PFBase, PFAlert, PFLogin, PFForm, PFFormControl, PFTitle, PFButton].concat(css`
             /* login page's icons */
-            .pf-c-login__main-footer-links-item button {
+            .pf-v5-c-login__main-footer-links-item button {
                 background-color: transparent;
                 border: 0;
                 display: flex;
                 align-items: stretch;
             }
-            .pf-c-login__main-footer-links-item img {
-                fill: var(--pf-c-login__main-footer-links-item-link-svg--Fill);
+            .pf-v5-c-login__main-footer-links-item img {
+                fill: var(--pf-v5-c-login__main-footer-links-item-link-svg--Fill);
                 width: 100px;
-                max-width: var(--pf-c-login__main-footer-links-item-link-svg--Width);
+                max-width: var(--pf-v5-c-login__main-footer-links-item-link-svg--Width);
                 height: 100%;
-                max-height: var(--pf-c-login__main-footer-links-item-link-svg--Height);
+                max-height: var(--pf-v5-c-login__main-footer-links-item-link-svg--Height);
             }
         `);
     }
@@ -162,16 +162,16 @@ export class IdentificationStage extends BaseStage<
 
     renderSource(source: LoginSource): TemplateResult {
         const icon = renderSourceIcon(source.name, source.iconUrl);
-        return html`<li class="pf-c-login__main-footer-links-item">
+        return html`<li class="pf-v5-c-login__main-footer-links-item">
             <button
                 type="button"
                 @click=${() => {
                     if (!this.host) return;
                     this.host.challenge = source.challenge;
                 }}
-                class=${this.challenge.showSourceLabels ? "pf-c-button pf-m-link" : ""}
+                class=${this.challenge.showSourceLabels ? "pf-v5-c-button pf-m-link" : ""}
             >
-                <span class="pf-c-button__icon pf-m-start">${icon}</span>
+                <span class="pf-v5-c-button__icon pf-m-start">${icon}</span>
                 ${this.challenge.showSourceLabels ? source.name : ""}
             </button>
         </li>`;
@@ -181,15 +181,15 @@ export class IdentificationStage extends BaseStage<
         if (!this.challenge?.enrollUrl && !this.challenge?.recoveryUrl) {
             return html``;
         }
-        return html`<div class="pf-c-login__main-footer-band">
+        return html`<div class="pf-v5-c-login__main-footer-band">
             ${this.challenge.enrollUrl
-                ? html`<p class="pf-c-login__main-footer-band-item">
+                ? html`<p class="pf-v5-c-login__main-footer-band-item">
                       ${msg("Need an account?")}
                       <a id="enroll" href="${this.challenge.enrollUrl}">${msg("Sign up.")}</a>
                   </p>`
                 : html``}
             ${this.challenge.recoveryUrl
-                ? html`<p class="pf-c-login__main-footer-band-item">
+                ? html`<p class="pf-v5-c-login__main-footer-band-item">
                       <a id="recovery" href="${this.challenge.recoveryUrl}"
                           >${msg("Forgot username or password?")}</a
                       >
@@ -217,7 +217,7 @@ export class IdentificationStage extends BaseStage<
         return html`<ak-form-element
                 label=${label}
                 ?required="${true}"
-                class="pf-c-form__group"
+                class="pf-v5-c-form__group"
                 .errors=${(this.challenge.responseErrors || {})["uid_field"]}
             >
                 <input
@@ -226,7 +226,7 @@ export class IdentificationStage extends BaseStage<
                     placeholder=${label}
                     autofocus=""
                     autocomplete="username"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element>
@@ -235,7 +235,7 @@ export class IdentificationStage extends BaseStage<
                       <ak-form-element
                           label="${msg("Password")}"
                           ?required="${true}"
-                          class="pf-c-form__group"
+                          class="pf-v5-c-form__group"
                           .errors=${(this.challenge.responseErrors || {})["password"]}
                       >
                           <input
@@ -243,7 +243,7 @@ export class IdentificationStage extends BaseStage<
                               name="password"
                               placeholder="${msg("Password")}"
                               autocomplete="current-password"
-                              class="pf-c-form-control"
+                              class="pf-v5-c-form-control"
                               required
                               value=${PasswordManagerPrefill.password || ""}
                           />
@@ -253,8 +253,8 @@ export class IdentificationStage extends BaseStage<
             ${"non_field_errors" in (this.challenge?.responseErrors || {})
                 ? this.renderNonFieldErrors(this.challenge?.responseErrors?.non_field_errors || [])
                 : html``}
-            <div class="pf-c-form__group pf-m-action">
-                <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+            <div class="pf-v5-c-form__group pf-m-action">
+                <button type="submit" class="pf-v5-c-button pf-m-primary pf-m-block">
                     ${this.challenge.primaryAction}
                 </button>
             </div>
@@ -263,7 +263,7 @@ export class IdentificationStage extends BaseStage<
                       <div>
                           <a
                               href=${this.challenge.passwordlessUrl}
-                              class="pf-c-button pf-m-secondary pf-m-block"
+                              class="pf-v5-c-button pf-m-secondary pf-m-block"
                           >
                               ${msg("Use a security key")}
                           </a>
@@ -276,12 +276,12 @@ export class IdentificationStage extends BaseStage<
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
-            <div class="pf-c-login__main-body">
+            <div class="pf-v5-c-login__main-body">
                 <form
-                    class="pf-c-form"
+                    class="pf-v5-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e);
                     }}
@@ -294,8 +294,8 @@ export class IdentificationStage extends BaseStage<
                     ${this.renderInput()}
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links">
                     ${(this.challenge.sources || []).map((source) => {
                         return this.renderSource(source);
                     })}

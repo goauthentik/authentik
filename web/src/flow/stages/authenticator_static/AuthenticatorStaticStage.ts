@@ -40,10 +40,10 @@ export class AuthenticatorStaticStage extends BaseStage<
                     columns: 2;
                     -webkit-columns: 2;
                     -moz-columns: 2;
-                    margin-left: var(--pf-global--spacer--xs);
+                    margin-left: var(--pf-v5-global--spacer--xs);
                 }
                 ul li {
-                    font-size: var(--pf-global--FontSize--2xl);
+                    font-size: var(--pf-v5-global--FontSize--2xl);
                     font-family: monospace;
                     margin: 0 2rem;
                 }
@@ -56,18 +56,18 @@ export class AuthenticatorStaticStage extends BaseStage<
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
-            <div class="pf-c-login__main-body">
+            <div class="pf-v5-c-login__main-body">
                 <form
-                    class="pf-c-form"
+                    class="pf-v5-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e);
                     }}
                 >
                     <ak-form-static
-                        class="pf-c-form__group"
+                        class="pf-v5-c-form__group"
                         userAvatar="${this.challenge.pendingUserAvatar}"
                         user=${this.challenge.pendingUser}
                     >
@@ -77,7 +77,7 @@ export class AuthenticatorStaticStage extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    <ak-form-element label="" class="pf-c-form__group">
+                    <ak-form-element label="" class="pf-v5-c-form__group">
                         <ul>
                             ${this.challenge.codes.map((token) => {
                                 return html`<li>${token}</li>`;
@@ -86,15 +86,15 @@ export class AuthenticatorStaticStage extends BaseStage<
                     </ak-form-element>
                     <p>${msg("Make sure to keep these tokens in a safe place.")}</p>
 
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    <div class="pf-v5-c-form__group pf-m-action">
+                        <button type="submit" class="pf-v5-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}
                         </button>
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

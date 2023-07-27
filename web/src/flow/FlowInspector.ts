@@ -86,20 +86,20 @@ export class FlowInspector extends AKElement {
     }
 
     renderAccessDenied(): TemplateResult {
-        return html`<div class="pf-c-drawer__body pf-m-no-padding">
-            <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
+        return html`<div class="pf-v5-c-drawer__body pf-m-no-padding">
+            <div class="pf-v5-c-notification-drawer">
+                <div class="pf-v5-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
+                        <h1 class="pf-v5-c-notification-drawer__header-title">
                             ${msg("Flow inspector")}
                         </h1>
                     </div>
                 </div>
-                <div class="pf-c-notification-drawer__body">
-                    <div class="pf-l-stack pf-m-gutter">
-                        <div class="pf-l-stack__item">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__body">${this.error?.statusText}</div>
+                <div class="pf-v5-c-notification-drawer__body">
+                    <div class="pf-v5-l-stack pf-m-gutter">
+                        <div class="pf-v5-l-stack__item">
+                            <div class="pf-v5-c-card">
+                                <div class="pf-v5-c-card__body">${this.error?.statusText}</div>
                             </div>
                         </div>
                     </div>
@@ -116,16 +116,16 @@ export class FlowInspector extends AKElement {
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<div class="pf-c-drawer__body pf-m-no-padding">
-            <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
+        return html`<div class="pf-v5-c-drawer__body pf-m-no-padding">
+            <div class="pf-v5-c-notification-drawer">
+                <div class="pf-v5-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
+                        <h1 class="pf-v5-c-notification-drawer__header-title">
                             ${msg("Flow inspector")}
                         </h1>
                     </div>
-                    <div class="pf-c-notification-drawer__header-action">
-                        <div class="pf-c-notification-drawer__header-action-close">
+                    <div class="pf-v5-c-notification-drawer__header-action">
+                        <div class="pf-v5-c-notification-drawer__header-action-close">
                             <button
                                 @click=${() => {
                                     this.dispatchEvent(
@@ -135,7 +135,7 @@ export class FlowInspector extends AKElement {
                                         }),
                                     );
                                 }}
-                                class="pf-c-button pf-m-plain"
+                                class="pf-v5-c-button pf-m-plain"
                                 type="button"
                                 aria-label=${msg("Close")}
                             >
@@ -144,56 +144,56 @@ export class FlowInspector extends AKElement {
                         </div>
                     </div>
                 </div>
-                <div class="pf-c-notification-drawer__body">
-                    <div class="pf-l-stack pf-m-gutter">
-                        <div class="pf-l-stack__item">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${msg("Next stage")}</div>
+                <div class="pf-v5-c-notification-drawer__body">
+                    <div class="pf-v5-l-stack pf-m-gutter">
+                        <div class="pf-v5-l-stack__item">
+                            <div class="pf-v5-c-card">
+                                <div class="pf-v5-c-card__header">
+                                    <div class="pf-v5-c-card__title">${msg("Next stage")}</div>
                                 </div>
-                                <div class="pf-c-card__body">
-                                    <dl class="pf-c-description-list">
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-card__body">
+                                    <dl class="pf-v5-c-description-list">
+                                        <div class="pf-v5-c-description-list__group">
+                                            <dt class="pf-v5-c-description-list__term">
+                                                <span class="pf-v5-c-description-list__text"
                                                     >${msg("Stage name")}</span
                                                 >
                                             </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
+                                            <dd class="pf-v5-c-description-list__description">
+                                                <div class="pf-v5-c-description-list__text">
                                                     ${this.state.currentPlan?.nextPlannedStage
                                                         ?.stageObj?.name || "-"}
                                                 </div>
                                             </dd>
                                         </div>
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text"
+                                        <div class="pf-v5-c-description-list__group">
+                                            <dt class="pf-v5-c-description-list__term">
+                                                <span class="pf-v5-c-description-list__text"
                                                     >${msg("Stage kind")}</span
                                                 >
                                             </dt>
-                                            <dd class="pf-c-description-list__description">
-                                                <div class="pf-c-description-list__text">
+                                            <dd class="pf-v5-c-description-list__description">
+                                                <div class="pf-v5-c-description-list__text">
                                                     ${this.state.currentPlan?.nextPlannedStage
                                                         ?.stageObj?.verboseName || "-"}
                                                 </div>
                                             </dd>
                                         </div>
-                                        <div class="pf-c-description-list__group">
-                                            <dt class="pf-c-description-list__term">
-                                                <span class="pf-c-description-list__text"
+                                        <div class="pf-v5-c-description-list__group">
+                                            <dt class="pf-v5-c-description-list__term">
+                                                <span class="pf-v5-c-description-list__text"
                                                     >${msg("Stage object")}</span
                                                 >
                                             </dt>
-                                            <dd class="pf-c-description-list__description">
+                                            <dd class="pf-v5-c-description-list__description">
                                                 ${this.state.isCompleted
                                                     ? html` <div
-                                                          class="pf-c-description-list__text"
+                                                          class="pf-v5-c-description-list__text"
                                                       >
                                                           ${msg("This flow is completed.")}
                                                       </div>`
                                                     : html`<ak-expand>
-                                                          <pre class="pf-c-description-list__text">
+                                                          <pre class="pf-v5-c-description-list__text">
 ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageObj), null, 4)}</pre
                                                           >
                                                       </ak-expand>`}
@@ -203,31 +203,31 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                 </div>
                             </div>
                         </div>
-                        <div class="pf-l-stack__item">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${msg("Plan history")}</div>
+                        <div class="pf-v5-l-stack__item">
+                            <div class="pf-v5-c-card">
+                                <div class="pf-v5-c-card__header">
+                                    <div class="pf-v5-c-card__title">${msg("Plan history")}</div>
                                 </div>
-                                <div class="pf-c-card__body">
-                                    <ol class="pf-c-progress-stepper pf-m-vertical">
+                                <div class="pf-v5-c-card__body">
+                                    <ol class="pf-v5-c-progress-stepper pf-m-vertical">
                                         ${this.state.plans.map((plan) => {
                                             return html`<li
-                                                class="pf-c-progress-stepper__step pf-m-success"
+                                                class="pf-v5-c-progress-stepper__step pf-m-success"
                                             >
-                                                <div class="pf-c-progress-stepper__step-connector">
-                                                    <span class="pf-c-progress-stepper__step-icon">
+                                                <div class="pf-v5-c-progress-stepper__step-connector">
+                                                    <span class="pf-v5-c-progress-stepper__step-icon">
                                                         <i
                                                             class="fas fa-check-circle"
                                                             aria-hidden="true"
                                                         ></i>
                                                     </span>
                                                 </div>
-                                                <div class="pf-c-progress-stepper__step-main">
-                                                    <div class="pf-c-progress-stepper__step-title">
+                                                <div class="pf-v5-c-progress-stepper__step-main">
+                                                    <div class="pf-v5-c-progress-stepper__step-title">
                                                         ${plan.currentStage.stageObj?.name}
                                                     </div>
                                                     <div
-                                                        class="pf-c-progress-stepper__step-description"
+                                                        class="pf-v5-c-progress-stepper__step-description"
                                                     >
                                                         ${plan.currentStage.stageObj?.verboseName}
                                                     </div>
@@ -237,13 +237,13 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                         ${this.state.currentPlan?.currentStage &&
                                         !this.state.isCompleted
                                             ? html` <li
-                                                  class="pf-c-progress-stepper__step pf-m-current pf-m-info"
+                                                  class="pf-v5-c-progress-stepper__step pf-m-current pf-m-info"
                                               >
                                                   <div
-                                                      class="pf-c-progress-stepper__step-connector"
+                                                      class="pf-v5-c-progress-stepper__step-connector"
                                                   >
                                                       <span
-                                                          class="pf-c-progress-stepper__step-icon"
+                                                          class="pf-v5-c-progress-stepper__step-icon"
                                                       >
                                                           <i
                                                               class="pficon pf-icon-resources-full"
@@ -251,15 +251,15 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                                           ></i>
                                                       </span>
                                                   </div>
-                                                  <div class="pf-c-progress-stepper__step-main">
+                                                  <div class="pf-v5-c-progress-stepper__step-main">
                                                       <div
-                                                          class="pf-c-progress-stepper__step-title"
+                                                          class="pf-v5-c-progress-stepper__step-title"
                                                       >
                                                           ${this.state.currentPlan?.currentStage
                                                               ?.stageObj?.name}
                                                       </div>
                                                       <div
-                                                          class="pf-c-progress-stepper__step-description"
+                                                          class="pf-v5-c-progress-stepper__step-description"
                                                       >
                                                           ${this.state.currentPlan?.currentStage
                                                               ?.stageObj?.verboseName}
@@ -270,24 +270,24 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                         ${this.state.currentPlan?.nextPlannedStage &&
                                         !this.state.isCompleted
                                             ? html`<li
-                                                  class="pf-c-progress-stepper__step pf-m-pending"
+                                                  class="pf-v5-c-progress-stepper__step pf-m-pending"
                                               >
                                                   <div
-                                                      class="pf-c-progress-stepper__step-connector"
+                                                      class="pf-v5-c-progress-stepper__step-connector"
                                                   >
                                                       <span
-                                                          class="pf-c-progress-stepper__step-icon"
+                                                          class="pf-v5-c-progress-stepper__step-icon"
                                                       ></span>
                                                   </div>
-                                                  <div class="pf-c-progress-stepper__step-main">
+                                                  <div class="pf-v5-c-progress-stepper__step-main">
                                                       <div
-                                                          class="pf-c-progress-stepper__step-title"
+                                                          class="pf-v5-c-progress-stepper__step-title"
                                                       >
                                                           ${this.state.currentPlan.nextPlannedStage
                                                               .stageObj?.name}
                                                       </div>
                                                       <div
-                                                          class="pf-c-progress-stepper__step-description"
+                                                          class="pf-v5-c-progress-stepper__step-description"
                                                       >
                                                           ${this.state.currentPlan?.nextPlannedStage
                                                               ?.stageObj?.verboseName}
@@ -299,26 +299,26 @@ ${JSON.stringify(this.getStage(this.state.currentPlan?.nextPlannedStage?.stageOb
                                 </div>
                             </div>
                         </div>
-                        <div class="pf-l-stack__item">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">
+                        <div class="pf-v5-l-stack__item">
+                            <div class="pf-v5-c-card">
+                                <div class="pf-v5-c-card__header">
+                                    <div class="pf-v5-c-card__title">
                                         ${msg("Current plan context")}
                                     </div>
                                 </div>
-                                <div class="pf-c-card__body">
+                                <div class="pf-v5-c-card__body">
                                     <pre>
 ${JSON.stringify(this.state.currentPlan?.planContext, null, 4)}</pre
                                     >
                                 </div>
                             </div>
                         </div>
-                        <div class="pf-l-stack__item">
-                            <div class="pf-c-card">
-                                <div class="pf-c-card__header">
-                                    <div class="pf-c-card__title">${msg("Session ID")}</div>
+                        <div class="pf-v5-l-stack__item">
+                            <div class="pf-v5-c-card">
+                                <div class="pf-v5-c-card__header">
+                                    <div class="pf-v5-c-card__title">${msg("Session ID")}</div>
                                 </div>
-                                <div class="pf-c-card__body">
+                                <div class="pf-v5-c-card__body">
                                     <code class="break">${this.state.currentPlan?.sessionId}</code>
                                 </div>
                             </div>

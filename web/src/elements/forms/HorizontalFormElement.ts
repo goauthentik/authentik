@@ -23,14 +23,14 @@ export class HorizontalFormElement extends AKElement {
             PFForm,
             PFFormControl,
             css`
-                .pf-c-form__group {
+                .pf-v5-c-form__group {
                     display: grid;
                     grid-template-columns:
-                        var(--pf-c-form--m-horizontal__group-label--md--GridColumnWidth)
-                        var(--pf-c-form--m-horizontal__group-control--md--GridColumnWidth);
+                        var(--pf-v5-c-form--m-horizontal__group-label--md--GridColumnWidth)
+                        var(--pf-v5-c-form--m-horizontal__group-control--md--GridColumnWidth);
                 }
-                .pf-c-form__group-label {
-                    padding-top: var(--pf-c-form--m-horizontal__group-label--md--PaddingTop);
+                .pf-v5-c-form__group-label {
+                    padding-top: var(--pf-v5-c-form--m-horizontal__group-label--md--PaddingTop);
                 }
             `,
         ];
@@ -116,35 +116,35 @@ export class HorizontalFormElement extends AKElement {
 
     render(): TemplateResult {
         this.updated();
-        return html`<div class="pf-c-form__group">
-            <div class="pf-c-form__group-label">
-                <label class="pf-c-form__label">
-                    <span class="pf-c-form__label-text">${this.label}</span>
+        return html`<div class="pf-v5-c-form__group">
+            <div class="pf-v5-c-form__group-label">
+                <label class="pf-v5-c-form__label">
+                    <span class="pf-v5-c-form__label-text">${this.label}</span>
                     ${this.required
-                        ? html`<span class="pf-c-form__label-required" aria-hidden="true">*</span>`
+                        ? html`<span class="pf-v5-c-form__label-required" aria-hidden="true">*</span>`
                         : html``}
                 </label>
             </div>
-            <div class="pf-c-form__group-control">
+            <div class="pf-v5-c-form__group-control">
                 ${this.writeOnly && !this.writeOnlyActivated
-                    ? html`<div class="pf-c-form__horizontal-group">
+                    ? html`<div class="pf-v5-c-form__horizontal-group">
                           <input
-                              class="pf-c-form-control"
+                              class="pf-v5-c-form-control"
                               type="password"
                               disabled
                               value="**************"
                           />
                       </div>`
                     : html``}
-                <slot class="pf-c-form__horizontal-group"></slot>
-                <div class="pf-c-form__horizontal-group">
+                <slot class="pf-v5-c-form__horizontal-group"></slot>
+                <div class="pf-v5-c-form__horizontal-group">
                     ${this.writeOnly
-                        ? html`<p class="pf-c-form__helper-text" aria-live="polite">
+                        ? html`<p class="pf-v5-c-form__helper-text" aria-live="polite">
                               ${msg("Click to change value")}
                           </p>`
                         : html``}
                     ${this.errorMessages.map((message) => {
-                        return html`<p class="pf-c-form__helper-text pf-m-error" aria-live="polite">
+                        return html`<p class="pf-v5-c-form__helper-text pf-m-error" aria-live="polite">
                             ${message}
                         </p>`;
                     })}

@@ -61,12 +61,12 @@ export class TableColumn {
 
     renderSortable(table: Table<unknown>): TemplateResult {
         return html` <button
-            class="pf-c-table__button"
+            class="pf-v5-c-table__button"
             @click=${() => this.headerClickHandler(table)}
         >
-            <div class="pf-c-table__button-content">
-                <span class="pf-c-table__text">${this.title}</span>
-                <span class="pf-c-table__sort-indicator">
+            <div class="pf-v5-c-table__button-content">
+                <span class="pf-v5-c-table__text">${this.title}</span>
+                <span class="pf-v5-c-table__sort-indicator">
                     <i class="fas ${this.getSortIndicator(table)}"></i>
                 </span>
             </div>
@@ -78,7 +78,7 @@ export class TableColumn {
             role="columnheader"
             scope="col"
             class="
-                ${this.orderBy ? "pf-c-table__sort " : " "}
+                ${this.orderBy ? "pf-v5-c-table__sort " : " "}
                 ${table.order === this.orderBy || table.order === `-${this.orderBy}`
                 ? "pf-m-selected "
                 : ""}
@@ -161,11 +161,11 @@ export abstract class Table<T> extends AKElement {
             PFDropdown,
             PFPagination,
             css`
-                .pf-c-table thead .pf-c-table__check {
+                .pf-v5-c-table thead .pf-v5-c-table__check {
                     min-width: 3rem;
                 }
-                .pf-c-table tbody .pf-c-table__check input {
-                    margin-top: calc(var(--pf-c-table__check--input--MarginTop) + 1px);
+                .pf-v5-c-table tbody .pf-v5-c-table__check input {
+                    margin-top: calc(var(--pf-v5-c-table__check--input--MarginTop) + 1px);
                 }
             `,
         ];
@@ -235,7 +235,7 @@ export abstract class Table<T> extends AKElement {
     private renderLoading(): TemplateResult {
         return html`<tr role="row">
             <td role="cell" colspan="25">
-                <div class="pf-l-bullseye">
+                <div class="pf-v5-l-bullseye">
                     <ak-empty-state ?loading="${true}" header=${msg("Loading")}> </ak-empty-state>
                 </div>
             </td>
@@ -246,7 +246,7 @@ export abstract class Table<T> extends AKElement {
         return html`<tbody role="rowgroup">
             <tr role="row">
                 <td role="cell" colspan="8">
-                    <div class="pf-l-bullseye">
+                    <div class="pf-v5-l-bullseye">
                         ${inner
                             ? inner
                             : html`<ak-empty-state
@@ -338,7 +338,7 @@ export abstract class Table<T> extends AKElement {
                     @click=${itemSelectHandler}
                 >
                     ${this.checkbox
-                        ? html`<td class="pf-c-table__check" role="cell">
+                        ? html`<td class="pf-v5-c-table__check" role="cell">
                               <label class="ignore-click"
                                   ><input
                                       type="checkbox"
@@ -352,9 +352,9 @@ export abstract class Table<T> extends AKElement {
                           </td>`
                         : html``}
                     ${this.expandable
-                        ? html`<td class="pf-c-table__toggle" role="cell">
+                        ? html`<td class="pf-v5-c-table__toggle" role="cell">
                               <button
-                                  class="pf-c-button pf-m-plain ${this.expandedElements.indexOf(
+                                  class="pf-v5-c-button pf-m-plain ${this.expandedElements.indexOf(
                                       item,
                                   ) > -1
                                       ? "pf-m-expanded"
@@ -372,7 +372,7 @@ export abstract class Table<T> extends AKElement {
                                       this.requestUpdate();
                                   }}
                               >
-                                  <div class="pf-c-table__toggle-icon">
+                                  <div class="pf-v5-c-table__toggle-icon">
                                       &nbsp;<i class="fas fa-angle-down" aria-hidden="true"></i
                                       >&nbsp;
                                   </div>
@@ -384,7 +384,7 @@ export abstract class Table<T> extends AKElement {
                     })}
                 </tr>
                 <tr
-                    class="pf-c-table__expandable-row ${this.expandedElements.indexOf(item) > -1
+                    class="pf-v5-c-table__expandable-row ${this.expandedElements.indexOf(item) > -1
                         ? "pf-m-expanded"
                         : ""}"
                     role="row"
@@ -420,7 +420,7 @@ export abstract class Table<T> extends AKElement {
             return html``;
         }
         return html`<ak-table-search
-            class="pf-c-toolbar__item pf-m-search-filter"
+            class="pf-v5-c-toolbar__item pf-m-search-filter"
             value=${ifDefined(this.search)}
             .onSearch=${(value: string) => {
                 this.search = value;
@@ -439,15 +439,15 @@ export abstract class Table<T> extends AKElement {
     }
 
     renderToolbarContainer(): TemplateResult {
-        return html`<div class="pf-c-toolbar">
-            <div class="pf-c-toolbar__content">
-                <div class="pf-c-toolbar__group pf-m-search-filter">${this.renderSearch()}</div>
-                <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
-                <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
-                <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>
+        return html`<div class="pf-v5-c-toolbar">
+            <div class="pf-v5-c-toolbar__content">
+                <div class="pf-v5-c-toolbar__group pf-m-search-filter">${this.renderSearch()}</div>
+                <div class="pf-v5-c-toolbar__bulk-select">${this.renderToolbar()}</div>
+                <div class="pf-v5-c-toolbar__group">${this.renderToolbarAfter()}</div>
+                <div class="pf-v5-c-toolbar__group">${this.renderToolbarSelected()}</div>
                 ${this.paginated
                     ? html`<ak-table-pagination
-                          class="pf-c-toolbar__item pf-m-pagination"
+                          class="pf-v5-c-toolbar__item pf-m-pagination"
                           .pages=${this.data?.pagination}
                           .pageChangeHandler=${(page: number) => {
                               this.page = page;
@@ -474,11 +474,11 @@ export abstract class Table<T> extends AKElement {
                   </ak-chip-group>`
                 : html``}
             ${this.renderToolbarContainer()}
-            <table class="pf-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
+            <table class="pf-v5-c-table pf-m-compact pf-m-grid-md pf-m-expandable">
                 <thead>
                     <tr role="row">
                         ${this.checkbox
-                            ? html`<td class="pf-c-table__check" role="cell">
+                            ? html`<td class="pf-v5-c-table__check" role="cell">
                                   <input
                                       name="select-all"
                                       type="checkbox"
@@ -504,9 +504,9 @@ export abstract class Table<T> extends AKElement {
                 ${this.renderRows()}
             </table>
             ${this.paginated
-                ? html` <div class="pf-c-pagination pf-m-bottom">
+                ? html` <div class="pf-v5-c-pagination pf-m-bottom">
                       <ak-table-pagination
-                          class="pf-c-toolbar__item pf-m-pagination"
+                          class="pf-v5-c-toolbar__item pf-m-pagination"
                           .pages=${this.data?.pagination}
                           .pageChangeHandler=${(page: number) => {
                               this.page = page;

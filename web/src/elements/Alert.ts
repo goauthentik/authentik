@@ -26,11 +26,11 @@ export class Alert extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-alert ${this.inline ? "pf-m-inline" : ""} ${this.level}">
-            <div class="pf-c-alert__icon">
+        return html`<div class="pf-v5-c-alert ${this.inline ? "pf-m-inline" : ""} ${this.level}">
+            <div class="pf-v5-c-alert__icon">
                 <i class="fas fa-exclamation-circle"></i>
             </div>
-            <h4 class="pf-c-alert__title">
+            <h4 class="pf-v5-c-alert__title">
                 <slot></slot>
             </h4>
         </div>`;

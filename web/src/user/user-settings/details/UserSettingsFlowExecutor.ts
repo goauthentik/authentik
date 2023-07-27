@@ -148,7 +148,7 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
                 if ((this.challenge as RedirectChallenge).to !== "/") {
                     return html`<a
                         href="${(this.challenge as RedirectChallenge).to}"
-                        class="pf-c-button pf-m-primary"
+                        class="pf-v5-c-button pf-m-primary"
                         >${"Edit settings"}</a
                     >`;
                 }
@@ -177,7 +177,7 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
                             `authentik/user/flows: unsupported stage type ${this.challenge.component}`,
                         );
                         return html`
-                            <a href="/if/flow/${this.flowSlug}" class="pf-c-button pf-m-primary">
+                            <a href="/if/flow/${this.flowSlug}" class="pf-v5-c-button pf-m-primary">
                                 ${msg("Open settings")}
                             </a>
                         `;
@@ -201,9 +201,9 @@ export class UserSettingsFlowExecutor extends AKElement implements StageHost {
     }
 
     render(): TemplateResult {
-        return html` <div class="pf-c-card">
-            <div class="pf-c-card__title">${msg("Update details")}</div>
-            <div class="pf-c-card__body">${this.renderChallengeWrapper()}</div>
+        return html` <div class="pf-v5-c-card">
+            <div class="pf-v5-c-card__title">${msg("Update details")}</div>
+            <div class="pf-v5-c-card__body">${this.renderChallengeWrapper()}</div>
         </div>`;
     }
 }

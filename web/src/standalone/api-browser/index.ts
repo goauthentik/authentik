@@ -41,9 +41,9 @@ export class APIBrowser extends Interface {
             const style = getComputedStyle(document.documentElement);
             if (ev.detail === UiThemeEnum.Light) {
                 this.bgColor = style
-                    .getPropertyValue("--pf-global--BackgroundColor--light-300")
+                    .getPropertyValue("--pf-v5-global--BackgroundColor--light-300")
                     .trim();
-                this.textColor = style.getPropertyValue("--pf-global--Color--300").trim();
+                this.textColor = style.getPropertyValue("--pf-v5-global--Color--300").trim();
             } else {
                 this.bgColor = style.getPropertyValue("--ak-dark-background").trim();
                 this.textColor = style.getPropertyValue("--ak-dark-foreground").trim();

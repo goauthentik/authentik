@@ -46,16 +46,16 @@ export class InitialProviderWizardPage extends WizardPage {
     };
 
     renderHint(): TemplateResult {
-        return html`<div class="pf-c-hint">
-                <div class="pf-c-hint__title">${msg("Try the new application wizard")}</div>
-                <div class="pf-c-hint__body">
+        return html`<div class="pf-v5-c-hint">
+                <div class="pf-v5-c-hint__title">${msg("Try the new application wizard")}</div>
+                <div class="pf-v5-c-hint__body">
                     ${msg(
                         "The new application wizard greatly simplifies the steps required to create applications and providers.",
                     )}
                 </div>
-                <div class="pf-c-hint__footer">
+                <div class="pf-v5-c-hint__footer">
                     <a
-                        class="pf-c-button pf-m-link pf-m-inline"
+                        class="pf-v5-c-button pf-m-link pf-m-inline"
                         href=${paramURL("/core/applications", {
                             createForm: true,
                         })}
@@ -67,11 +67,11 @@ export class InitialProviderWizardPage extends WizardPage {
     }
 
     render(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             ${this.providerTypes.map((type) => {
-                return html`<div class="pf-c-radio">
+                return html`<div class="pf-v5-c-radio">
                     <input
-                        class="pf-c-radio__input"
+                        class="pf-v5-c-radio__input"
                         type="radio"
                         name="type"
                         id=${type.component}
@@ -80,8 +80,8 @@ export class InitialProviderWizardPage extends WizardPage {
                             this.host.isValid = true;
                         }}
                     />
-                    <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
-                    <span class="pf-c-radio__description">${type.description}</span>
+                    <label class="pf-v5-c-radio__label" for=${type.component}>${type.name}</label>
+                    <span class="pf-v5-c-radio__description">${type.description}</span>
                 </div>`;
             })}
         </form>`;
@@ -133,7 +133,7 @@ export class ProviderWizard extends AKElement {
                         </ak-wizard-page-form>
                     `;
                 })}
-                <button slot="trigger" class="pf-c-button pf-m-primary">${this.createText}</button>
+                <button slot="trigger" class="pf-v5-c-button pf-m-primary">${this.createText}</button>
             </ak-wizard>
         `;
     }

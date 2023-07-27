@@ -58,12 +58,12 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
@@ -91,7 +91,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                     ?blankable=${true}
                 >
                 </ak-search-select>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "Select the group of users which the alerts are sent to. If no group is selected the rule is disabled.",
                     )}
@@ -102,7 +102,7 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 ?required=${true}
                 name="transports"
             >
-                <select class="pf-c-form-control" multiple>
+                <select class="pf-v5-c-form-control" multiple>
                     ${this.eventTransports?.results.map((transport) => {
                         const selected = Array.from(this.instance?.transports || []).some((su) => {
                             return su == transport.pk;
@@ -112,12 +112,12 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                         </option>`;
                     })}
                 </select>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "Select which transports should be used to notify the user. If none are selected, the notification will only be shown in the authentik UI.",
                     )}
                 </p>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Hold control/command to select multiple items.")}
                 </p>
             </ak-form-element-horizontal>

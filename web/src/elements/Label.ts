@@ -44,9 +44,9 @@ export class Label extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<span class="pf-c-label ${this.color} ${this.compact ? "pf-m-compact" : ""}">
-            <span class="pf-c-label__content">
-                <span class="pf-c-label__icon">
+        return html`<span class="pf-v5-c-label ${this.color} ${this.compact ? "pf-m-compact" : ""}">
+            <span class="pf-v5-c-label__content">
+                <span class="pf-v5-c-label__icon">
                     <i
                         class="fas fa-fw ${this.icon || this.getDefaultIcon()}"
                         aria-hidden="true"

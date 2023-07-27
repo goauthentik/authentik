@@ -36,7 +36,7 @@ export class TableSearch extends AKElement {
 
     render(): TemplateResult {
         return html`<form
-            class="pf-c-input-group"
+            class="pf-v5-c-input-group"
             method="GET"
             @submit=${(e: Event) => {
                 e.preventDefault();
@@ -48,7 +48,7 @@ export class TableSearch extends AKElement {
             }}
         >
             <input
-                class="pf-c-form-control"
+                class="pf-v5-c-form-control"
                 name="search"
                 type="search"
                 placeholder=${msg("Search...")}
@@ -59,7 +59,7 @@ export class TableSearch extends AKElement {
                 }}
             />
             <button
-                class="pf-c-button pf-m-control"
+                class="pf-v5-c-button pf-m-control"
                 type="reset"
                 @click=${() => {
                     if (!this.onSearch) return;
@@ -68,7 +68,7 @@ export class TableSearch extends AKElement {
             >
                 <i class="fas fa-times" aria-hidden="true"></i>
             </button>
-            <button class="pf-c-button pf-m-control" type="submit">
+            <button class="pf-v5-c-button pf-m-control" type="submit">
                 <i class="fas fa-search" aria-hidden="true"></i>
             </button>
         </form>`;

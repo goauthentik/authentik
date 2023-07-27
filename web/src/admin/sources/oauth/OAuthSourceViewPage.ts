@@ -95,82 +95,82 @@ export class OAuthSourceViewPage extends AKElement {
             <section
                 slot="page-overview"
                 data-tab-title="${msg("Overview")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Details")}</div>
-                        <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                <div class="pf-v5-l-grid pf-m-gutter">
+                    <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                        <div class="pf-v5-c-card__title">${msg("Details")}</div>
+                        <div class="pf-v5-c-card__body">
+                            <dl class="pf-v5-c-description-list pf-m-2-col-on-lg">
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Name")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             ${this.source.name}
                                         </div>
                                     </dd>
                                 </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Provider Type")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             ${ProviderToLabel(this.source.providerType)}
                                         </div>
                                     </dd>
                                 </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Callback URL")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <code class="pf-c-description-list__text"
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <code class="pf-v5-c-description-list__text"
                                             >${this.source.callbackUrl}</code
                                         >
                                     </dd>
                                 </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Access Key")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             ${this.source.consumerKey}
                                         </div>
                                     </dd>
                                 </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Authorization URL")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             ${this.source.type?.authorizationUrl ||
                                             this.source.authorizationUrl}
                                         </div>
                                     </dd>
                                 </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Token URL")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             ${this.source.type?.accessTokenUrl ||
                                             this.source.accessTokenUrl}
                                         </div>
@@ -178,21 +178,21 @@ export class OAuthSourceViewPage extends AKElement {
                                 </div>
                             </dl>
                         </div>
-                        <div class="pf-c-card__footer">
+                        <div class="pf-v5-c-card__footer">
                             <ak-forms-modal>
                                 <span slot="submit"> ${msg("Update")} </span>
                                 <span slot="header"> ${msg("Update OAuth Source")} </span>
                                 <ak-source-oauth-form slot="form" .instancePk=${this.source.slug}>
                                 </ak-source-oauth-form>
-                                <button slot="trigger" class="pf-c-button pf-m-primary">
+                                <button slot="trigger" class="pf-v5-c-button pf-m-primary">
                                     ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Diagram")}</div>
-                        <div class="pf-c-card__body">
+                    <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                        <div class="pf-v5-c-card__title">${msg("Diagram")}</div>
+                        <div class="pf-v5-c-card__body">
                             <ak-source-oauth-diagram
                                 .source=${this.source}
                             ></ak-source-oauth-diagram>
@@ -203,11 +203,11 @@ export class OAuthSourceViewPage extends AKElement {
             <section
                 slot="page-changelog"
                 data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">
+                <div class="pf-v5-l-grid pf-m-gutter">
+                    <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                        <div class="pf-v5-c-card__body">
                             <ak-object-changelog
                                 targetModelPk=${this.source.pk || ""}
                                 targetModelApp="authentik_sources_oauth"
@@ -221,17 +221,17 @@ export class OAuthSourceViewPage extends AKElement {
             <div
                 slot="page-policy-binding"
                 data-tab-title="${msg("Policy Bindings")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">
+                <div class="pf-v5-l-grid pf-m-gutter">
+                    <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                        <div class="pf-v5-c-card__title">
                             ${msg(
                                 `These bindings control which users can access this source.
             You can only use policies here as access is checked before the user is authenticated.`,
                             )}
                         </div>
-                        <div class="pf-c-card__body">
+                        <div class="pf-v5-c-card__body">
                             <ak-bound-policies-list .target=${this.source.pk} ?policyOnly=${true}>
                             </ak-bound-policies-list>
                         </div>

@@ -121,14 +121,14 @@ export class SAMLProviderViewPage extends AKElement {
         const relatedObjects = [];
         if (this.provider?.assignedApplicationName) {
             relatedObjects.push(
-                html`<div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text">${msg("Metadata")}</span>
+                html`<div class="pf-v5-c-description-list__group">
+                    <dt class="pf-v5-c-description-list__term">
+                        <span class="pf-v5-c-description-list__text">${msg("Metadata")}</span>
                     </dt>
-                    <dd class="pf-c-description-list__description">
-                        <div class="pf-c-description-list__text">
+                    <dd class="pf-v5-c-description-list__description">
+                        <div class="pf-v5-c-description-list__text">
                             <a
-                                class="pf-c-button pf-m-primary"
+                                class="pf-v5-c-button pf-m-primary"
                                 target="_blank"
                                 href=${ifDefined(this.provider?.urlDownloadMetadata)}
                             >
@@ -159,16 +159,16 @@ export class SAMLProviderViewPage extends AKElement {
         }
         if (this.signer) {
             relatedObjects.push(
-                html`<div class="pf-c-description-list__group">
-                    <dt class="pf-c-description-list__term">
-                        <span class="pf-c-description-list__text"
+                html`<div class="pf-v5-c-description-list__group">
+                    <dt class="pf-v5-c-description-list__term">
+                        <span class="pf-v5-c-description-list__text"
                             >${msg("Download signing certificate")}</span
                         >
                     </dt>
-                    <dd class="pf-c-description-list__description">
-                        <div class="pf-c-description-list__text">
+                    <dd class="pf-v5-c-description-list__description">
+                        <div class="pf-v5-c-description-list__text">
                             <a
-                                class="pf-c-button pf-m-primary"
+                                class="pf-v5-c-button pf-m-primary"
                                 href=${this.signer.certificateDownloadUrl}
                                 >${msg("Download")}</a
                             >
@@ -177,10 +177,10 @@ export class SAMLProviderViewPage extends AKElement {
                 </div>`,
             );
         }
-        return html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-            <div class="pf-c-card__title">${msg("Related objects")}</div>
-            <div class="pf-c-card__body">
-                <dl class="pf-c-description-list pf-m-2-col">
+        return html` <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+            <div class="pf-v5-c-card__title">${msg("Related objects")}</div>
+            <div class="pf-v5-c-card__body">
+                <dl class="pf-v5-c-description-list pf-m-2-col">
                     ${relatedObjects.length > 0 ? relatedObjects : html`-`}
                 </dl>
             </div>
@@ -214,10 +214,10 @@ export class SAMLProviderViewPage extends AKElement {
             <section
                 slot="page-changelog"
                 data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
+                <div class="pf-v5-c-card">
+                    <div class="pf-v5-c-card__body">
                         <ak-object-changelog
                             targetModelPk=${this.provider?.pk || ""}
                             targetModelName=${this.provider?.metaModelName || ""}
@@ -236,83 +236,83 @@ export class SAMLProviderViewPage extends AKElement {
         return html`${
             this.provider?.assignedApplicationName
                 ? html``
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                : html`<div slot="header" class="pf-v5-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
                   </div>`
         }
-            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
+            <div class="pf-v5-c-page__main-section pf-m-no-padding-mobile pf-v5-l-grid pf-m-gutter">
+                <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                    <div class="pf-v5-c-card__body">
+                        <dl class="pf-v5-c-description-list pf-m-3-col-on-lg">
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text">${msg("Name")}</span>
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.name}
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Assigned to application")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         <ak-provider-related-application
                                             .provider=${this.provider}
                                         ></ak-provider-related-application>
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text">${msg(
                                         "ACS URL",
                                     )}</span>
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.acsUrl}
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text">${msg(
                                         "Audience",
                                     )}</span>
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.audience || "-"}
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg(
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text">${msg(
                                         "Issuer",
                                     )}</span>
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.issuer}
                                     </div>
                                 </dd>
                             </div>
                         </dl>
                     </div>
-                    <div class="pf-c-card__footer">
+                    <div class="pf-v5-c-card__footer">
                         <ak-forms-modal>
                             <span slot="submit"> ${msg("Update")} </span>
                             <span slot="header"> ${msg("Update SAML Provider")} </span>
                             <ak-provider-saml-form slot="form" .instancePk=${this.provider.pk || 0}>
                             </ak-provider-saml-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
+                            <button slot="trigger" class="pf-v5-c-button pf-m-primary">
                                 ${msg("Edit")}
                             </button>
                         </ak-forms-modal>
@@ -321,83 +321,83 @@ export class SAMLProviderViewPage extends AKElement {
                 ${this.renderRelatedObjects()}
                 ${
                     this.provider.assignedApplicationName
-                        ? html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__title">${msg("SAML Configuration")}</div>
-                              <div class="pf-c-card__body">
-                                  <form class="pf-c-form">
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
+                        ? html` <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                              <div class="pf-v5-c-card__title">${msg("SAML Configuration")}</div>
+                              <div class="pf-v5-c-card__body">
+                                  <form class="pf-v5-c-form">
+                                      <div class="pf-v5-c-form__group">
+                                          <label class="pf-v5-c-form__label">
+                                              <span class="pf-v5-c-form__label-text"
                                                   >${msg("EntityID/Issuer")}</span
                                               >
                                           </label>
                                           <input
-                                              class="pf-c-form-control"
+                                              class="pf-v5-c-form-control"
                                               readonly
                                               type="text"
                                               value="${ifDefined(this.provider?.issuer)}"
                                           />
                                       </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
+                                      <div class="pf-v5-c-form__group">
+                                          <label class="pf-v5-c-form__label">
+                                              <span class="pf-v5-c-form__label-text"
                                                   >${msg("SSO URL (Post)")}</span
                                               >
                                           </label>
                                           <input
-                                              class="pf-c-form-control"
+                                              class="pf-v5-c-form-control"
                                               readonly
                                               type="text"
                                               value="${ifDefined(this.provider.urlSsoPost)}"
                                           />
                                       </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
+                                      <div class="pf-v5-c-form__group">
+                                          <label class="pf-v5-c-form__label">
+                                              <span class="pf-v5-c-form__label-text"
                                                   >${msg("SSO URL (Redirect)")}</span
                                               >
                                           </label>
                                           <input
-                                              class="pf-c-form-control"
+                                              class="pf-v5-c-form-control"
                                               readonly
                                               type="text"
                                               value="${ifDefined(this.provider.urlSsoRedirect)}"
                                           />
                                       </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
+                                      <div class="pf-v5-c-form__group">
+                                          <label class="pf-v5-c-form__label">
+                                              <span class="pf-v5-c-form__label-text"
                                                   >${msg("SSO URL (IdP-initiated Login)")}</span
                                               >
                                           </label>
                                           <input
-                                              class="pf-c-form-control"
+                                              class="pf-v5-c-form-control"
                                               readonly
                                               type="text"
                                               value="${ifDefined(this.provider.urlSsoInit)}"
                                           />
                                       </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
+                                      <div class="pf-v5-c-form__group">
+                                          <label class="pf-v5-c-form__label">
+                                              <span class="pf-v5-c-form__label-text"
                                                   >${msg("SLO URL (Post)")}</span
                                               >
                                           </label>
                                           <input
-                                              class="pf-c-form-control"
+                                              class="pf-v5-c-form-control"
                                               readonly
                                               type="text"
                                               value="${ifDefined(this.provider.urlSloPost)}"
                                           />
                                       </div>
-                                      <div class="pf-c-form__group">
-                                          <label class="pf-c-form__label">
-                                              <span class="pf-c-form__label-text"
+                                      <div class="pf-v5-c-form__group">
+                                          <label class="pf-v5-c-form__label">
+                                              <span class="pf-v5-c-form__label-text"
                                                   >${msg("SLO URL (Redirect)")}</span
                                               >
                                           </label>
                                           <input
-                                              class="pf-c-form-control"
+                                              class="pf-v5-c-form-control"
                                               readonly
                                               type="text"
                                               value="${ifDefined(this.provider.urlSloRedirect)}"
@@ -430,13 +430,13 @@ export class SAMLProviderViewPage extends AKElement {
                       }}
                   >
                       <div
-                          class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+                          class="pf-v5-c-page__main-section pf-m-no-padding-mobile pf-v5-l-grid pf-m-gutter"
                       >
-                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__title">${msg("SAML Metadata")}</div>
-                              <div class="pf-c-card__body">
+                          <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                              <div class="pf-v5-c-card__title">${msg("SAML Metadata")}</div>
+                              <div class="pf-v5-c-card__body">
                                   <a
-                                      class="pf-c-button pf-m-primary"
+                                      class="pf-v5-c-button pf-m-primary"
                                       target="_blank"
                                       href=${this.provider.urlDownloadMetadata}
                                   >
@@ -462,7 +462,7 @@ export class SAMLProviderViewPage extends AKElement {
                                       ${msg("Copy download URL")}
                                   </ak-action-button>
                               </div>
-                              <div class="pf-c-card__footer">
+                              <div class="pf-v5-c-card__footer">
                                   <ak-codemirror
                                       mode="xml"
                                       ?readOnly=${true}
@@ -481,36 +481,36 @@ export class SAMLProviderViewPage extends AKElement {
             return html`<ak-empty-state ?loading=${true}></ak-empty-state>`;
         }
         return html` <div
-            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+            class="pf-v5-c-page__main-section pf-m-no-padding-mobile pf-v5-l-grid pf-m-gutter"
         >
-            <div class="pf-c-card">
-                <div class="pf-c-card__title">${msg("Example SAML attributes")}</div>
-                <div class="pf-c-card__body">
-                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text"
+            <div class="pf-v5-c-card">
+                <div class="pf-v5-c-card__title">${msg("Example SAML attributes")}</div>
+                <div class="pf-v5-c-card__body">
+                    <dl class="pf-v5-c-description-list pf-m-2-col-on-lg">
+                        <div class="pf-v5-c-description-list__group">
+                            <dt class="pf-v5-c-description-list__term">
+                                <span class="pf-v5-c-description-list__text"
                                     >${msg("NameID attribute")}</span
                                 >
                             </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
+                            <dd class="pf-v5-c-description-list__description">
+                                <div class="pf-v5-c-description-list__text">
                                     ${this.preview?.nameID}
                                 </div>
                             </dd>
                         </div>
                     </dl>
                 </div>
-                <div class="pf-c-card__body">
-                    <dl class="pf-c-description-list pf-m-2-col-on-lg">
+                <div class="pf-v5-c-card__body">
+                    <dl class="pf-v5-c-description-list pf-m-2-col-on-lg">
                         ${this.preview?.attributes.map((attr) => {
-                            return html` <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${attr.Name}</span>
+                            return html` <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text">${attr.Name}</span>
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ul class="pf-c-list">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
+                                        <ul class="pf-v5-c-list">
                                             ${attr.Value.map((value) => {
                                                 return html` <li><pre>${value}</pre></li> `;
                                             })}

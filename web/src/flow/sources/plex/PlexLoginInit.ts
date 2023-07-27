@@ -66,11 +66,11 @@ export class PlexLoginInit extends BaseStage<
     }
 
     render(): TemplateResult {
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${msg("Authenticating with Plex...")}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${msg("Authenticating with Plex...")}</h1>
             </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
+            <div class="pf-v5-c-login__main-body">
+                <form class="pf-v5-c-form">
                     <ak-empty-state
                         ?loading="${true}"
                         header=${msg("Waiting for authentication...")}
@@ -79,7 +79,7 @@ export class PlexLoginInit extends BaseStage<
                     <hr />
                     <p>${msg("If no Plex popup opens, click the button below.")}</p>
                     <button
-                        class="pf-c-button pf-m-block pf-m-primary"
+                        class="pf-v5-c-button pf-m-block pf-m-primary"
                         type="button"
                         @click=${() => {
                             window.open(this.authUrl, "_blank");
@@ -89,8 +89,8 @@ export class PlexLoginInit extends BaseStage<
                     </button>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

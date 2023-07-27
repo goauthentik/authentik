@@ -54,7 +54,7 @@ export class ApplicationWizard extends AKElement {
                 }}
             >
                 ${this.showButton
-                    ? html`<button slot="trigger" class="pf-c-button pf-m-primary">
+                    ? html`<button slot="trigger" class="pf-v5-c-button pf-m-primary">
                           ${this.createText}
                       </button>`
                     : html``}

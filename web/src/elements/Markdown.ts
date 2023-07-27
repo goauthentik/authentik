@@ -58,7 +58,7 @@ export class Markdown extends AKElement {
     }
 
     replaceList(input: string): string {
-        return input.replace("<ul>", "<ul class='pf-c-list'>");
+        return input.replace("<ul>", "<ul class='pf-v5-c-list'>");
     }
 
     replaceRelativeLinks(input: string, md: MarkdownDocument): string {

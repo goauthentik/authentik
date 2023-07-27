@@ -17,10 +17,10 @@ export class TypeLinkApplicationWizardPage extends WizardFormPage {
 
     renderForm(): TemplateResult {
         return html`
-            <form class="pf-c-form pf-m-horizontal">
+            <form class="pf-v5-c-form pf-m-horizontal">
                 <ak-form-element-horizontal label=${msg("Link")} ?required=${true} name="link">
-                    <input type="text" value="" class="pf-c-form-control" required />
-                    <p class="pf-c-form__helper-text">
+                    <input type="text" value="" class="pf-v5-c-form-control" required />
+                    <p class="pf-v5-c-form__helper-text">
                         ${msg("URL which will be opened when a user clicks on the application.")}
                     </p>
                 </ak-form-element-horizontal>

@@ -66,16 +66,16 @@ export abstract class TableModal<T> extends Table<T> {
 
     renderModal(): TemplateResult {
         return html`<div
-            class="pf-c-backdrop"
+            class="pf-v5-c-backdrop"
             @click=${(e: PointerEvent) => {
                 e.stopPropagation();
             }}
         >
-            <div class="pf-l-bullseye">
-                <div class="pf-c-modal-box ${this.size}" role="dialog" aria-modal="true">
+            <div class="pf-v5-l-bullseye">
+                <div class="pf-v5-c-modal-box ${this.size}" role="dialog" aria-modal="true">
                     <button
                         @click=${() => (this.open = false)}
-                        class="pf-c-button pf-m-plain"
+                        class="pf-v5-c-button pf-m-plain"
                         type="button"
                         aria-label="Close dialog"
                     >

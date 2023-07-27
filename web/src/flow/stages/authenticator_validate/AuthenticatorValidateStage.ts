@@ -150,7 +150,7 @@ export class AuthenticatorValidateStage
             ${this.challenge?.deviceChallenges.map((challenges) => {
                 return html`<li>
                     <button
-                        class="pf-c-button authenticator-button"
+                        class="pf-v5-c-button authenticator-button"
                         type="button"
                         @click=${() => {
                             this.selectedDeviceChallenge = challenges;
@@ -168,7 +168,7 @@ export class AuthenticatorValidateStage
             ${this.challenge?.configurationStages.map((stage) => {
                 return html`<li>
                     <button
-                        class="pf-c-button authenticator-button"
+                        class="pf-v5-c-button authenticator-button"
                         type="button"
                         @click=${() => {
                             this.submit({
@@ -243,15 +243,15 @@ export class AuthenticatorValidateStage
             );
             this.selectedDeviceChallenge = totpChallenge;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
             ${this.selectedDeviceChallenge
                 ? this.renderDeviceChallenge()
-                : html`<div class="pf-c-login__main-body">
-                          <form class="pf-c-form">
+                : html`<div class="pf-v5-c-login__main-body">
+                          <form class="pf-v5-c-form">
                               <ak-form-static
-                                  class="pf-c-form__group"
+                                  class="pf-v5-c-form__group"
                                   userAvatar="${this.challenge.pendingUserAvatar}"
                                   user=${this.challenge.pendingUser}
                               >
@@ -276,8 +276,8 @@ export class AuthenticatorValidateStage
                           </form>
                           ${this.renderDevicePicker()}
                       </div>
-                      <footer class="pf-c-login__main-footer">
-                          <ul class="pf-c-login__main-footer-links"></ul>
+                      <footer class="pf-v5-c-login__main-footer">
+                          <ul class="pf-v5-c-login__main-footer-links"></ul>
                       </footer>`}`;
     }
 }

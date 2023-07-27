@@ -129,7 +129,7 @@ export class LibraryPageApplicationList extends AKElement {
             @input=${this.onInput}
             @keydown=${this.onKeyDown}
             type="text"
-            class="pf-u-display-none pf-u-display-block-on-md"
+            class="pf-v5-u-display-none pf-v5-u-display-block-on-md"
             autofocus
             placeholder=${msg("Search...")}
             value=${ifDefined(this.query)}

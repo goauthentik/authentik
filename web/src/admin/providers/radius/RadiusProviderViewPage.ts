@@ -76,59 +76,59 @@ export class RadiusProviderViewPage extends AKElement {
             <section
                 slot="page-overview"
                 data-tab-title="${msg("Overview")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
                 ${this.provider?.outpostSet.length < 1
-                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                    ? html`<div slot="header" class="pf-v5-c-banner pf-m-warning">
                           ${msg("Warning: Provider is not used by any Outpost.")}
                       </div>`
                     : html``}
-                <div class="pf-u-display-flex pf-u-justify-content-center">
-                    <div class="pf-u-w-75">
-                        <div class="pf-c-card">
-                            <div class="pf-c-card__body">
-                                <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
+                <div class="pf-v5-u-display-flex pf-v5-u-justify-content-center">
+                    <div class="pf-v5-u-w-75">
+                        <div class="pf-v5-c-card">
+                            <div class="pf-v5-c-card__body">
+                                <dl class="pf-v5-c-description-list pf-m-3-col-on-lg">
+                                    <div class="pf-v5-c-description-list__group">
+                                        <dt class="pf-v5-c-description-list__term">
+                                            <span class="pf-v5-c-description-list__text"
                                                 >${msg("Name")}</span
                                             >
                                         </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
+                                        <dd class="pf-v5-c-description-list__description">
+                                            <div class="pf-v5-c-description-list__text">
                                                 ${this.provider.name}
                                             </div>
                                         </dd>
                                     </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
+                                    <div class="pf-v5-c-description-list__group">
+                                        <dt class="pf-v5-c-description-list__term">
+                                            <span class="pf-v5-c-description-list__text"
                                                 >${msg("Assigned to application")}</span
                                             >
                                         </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
+                                        <dd class="pf-v5-c-description-list__description">
+                                            <div class="pf-v5-c-description-list__text">
                                                 <ak-provider-related-application
                                                     .provider=${this.provider}
                                                 ></ak-provider-related-application>
                                             </div>
                                         </dd>
                                     </div>
-                                    <div class="pf-c-description-list__group">
-                                        <dt class="pf-c-description-list__term">
-                                            <span class="pf-c-description-list__text"
+                                    <div class="pf-v5-c-description-list__group">
+                                        <dt class="pf-v5-c-description-list__term">
+                                            <span class="pf-v5-c-description-list__text"
                                                 >${msg("Client Networks")}</span
                                             >
                                         </dt>
-                                        <dd class="pf-c-description-list__description">
-                                            <div class="pf-c-description-list__text">
+                                        <dd class="pf-v5-c-description-list__description">
+                                            <div class="pf-v5-c-description-list__text">
                                                 ${this.provider.clientNetworks}
                                             </div>
                                         </dd>
                                     </div>
                                 </dl>
                             </div>
-                            <div class="pf-c-card__footer">
+                            <div class="pf-v5-c-card__footer">
                                 <ak-forms-modal>
                                     <span slot="submit"> ${msg("Update")} </span>
                                     <span slot="header"> ${msg("Update Radius Provider")} </span>
@@ -137,7 +137,7 @@ export class RadiusProviderViewPage extends AKElement {
                                         .instancePk=${this.provider.pk}
                                     >
                                     </ak-provider-radius-form>
-                                    <button slot="trigger" class="pf-c-button pf-m-primary">
+                                    <button slot="trigger" class="pf-v5-c-button pf-m-primary">
                                         ${msg("Edit")}
                                     </button>
                                 </ak-forms-modal>
@@ -149,10 +149,10 @@ export class RadiusProviderViewPage extends AKElement {
             <section
                 slot="page-changelog"
                 data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
+                <div class="pf-v5-c-card">
+                    <div class="pf-v5-c-card__body">
                         <ak-object-changelog
                             targetModelPk=${this.provider.pk || ""}
                             targetModelApp="authentik_providers_radius"

@@ -47,24 +47,24 @@ export class Message extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<li class="pf-c-alert-group__item">
+        return html`<li class="pf-v5-c-alert-group__item">
             <div
-                class="pf-c-alert pf-m-${this.message?.level} ${this.message?.level ===
+                class="pf-v5-c-alert pf-m-${this.message?.level} ${this.message?.level ===
                 MessageLevel.error
                     ? "pf-m-danger"
                     : ""}"
             >
-                <div class="pf-c-alert__icon">
+                <div class="pf-v5-c-alert__icon">
                     <i class="${this.message ? LEVEL_ICON_MAP[this.message.level] : ""}"></i>
                 </div>
-                <p class="pf-c-alert__title">${this.message?.message}</p>
+                <p class="pf-v5-c-alert__title">${this.message?.message}</p>
                 ${this.message?.description &&
-                html`<div class="pf-c-alert__description">
+                html`<div class="pf-v5-c-alert__description">
                     <p>${this.message.description}</p>
                 </div>`}
-                <div class="pf-c-alert__action">
+                <div class="pf-v5-c-alert__action">
                     <button
-                        class="pf-c-button pf-m-plain"
+                        class="pf-v5-c-button pf-m-plain"
                         type="button"
                         @click=${() => {
                             if (!this.message) return;

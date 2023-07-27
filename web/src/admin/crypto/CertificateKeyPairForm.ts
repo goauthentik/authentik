@@ -40,12 +40,12 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} name="name" ?required=${true}>
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
@@ -55,16 +55,16 @@ export class CertificateKeyPairForm extends ModelForm<CertificateKeyPair, string
                 ?writeOnly=${this.instance !== undefined}
                 ?required=${true}
             >
-                <textarea class="pf-c-form-control" required></textarea>
-                <p class="pf-c-form__helper-text">${msg("PEM-encoded Certificate data.")}</p>
+                <textarea class="pf-v5-c-form-control" required></textarea>
+                <p class="pf-v5-c-form__helper-text">${msg("PEM-encoded Certificate data.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 name="keyData"
                 ?writeOnly=${this.instance !== undefined}
                 label=${msg("Private Key")}
             >
-                <textarea class="pf-c-form-control"></textarea>
-                <p class="pf-c-form__helper-text">
+                <textarea class="pf-v5-c-form-control"></textarea>
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "Optional Private Key. If this is set, you can use this keypair for encryption.",
                     )}

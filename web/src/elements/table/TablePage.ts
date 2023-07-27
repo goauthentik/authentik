@@ -64,7 +64,7 @@ export abstract class TablePage<T> extends Table<T> {
                     search: "",
                 });
             }}
-            class="pf-c-button pf-m-link"
+            class="pf-v5-c-button pf-m-link"
         >
             ${msg("Clear search")}
         </button>`;
@@ -86,12 +86,12 @@ export abstract class TablePage<T> extends Table<T> {
             >
             </ak-page-header>
             ${this.renderSectionBefore()}
-            <section class="pf-c-page__main-section pf-m-no-padding-mobile">
-                <div class="pf-c-sidebar pf-m-gutter">
-                    <div class="pf-c-sidebar__main">
+            <section class="pf-v5-c-page__main-section pf-m-no-padding-mobile">
+                <div class="pf-v5-c-sidebar pf-m-gutter">
+                    <div class="pf-v5-c-sidebar__main">
                         ${this.renderSidebarBefore()}
-                        <div class="pf-c-sidebar__content">
-                            <div class="pf-c-card">${this.renderTable()}</div>
+                        <div class="pf-v5-c-sidebar__content">
+                            <div class="pf-v5-c-card">${this.renderTable()}</div>
                         </div>
                         ${this.renderSidebarAfter()}
                     </div>

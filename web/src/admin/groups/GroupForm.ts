@@ -20,10 +20,10 @@ import { CoreApi, CoreGroupsListRequest, Group } from "@goauthentik/api";
 export class GroupForm extends ModelForm<Group, string> {
     static get styles(): CSSResult[] {
         return super.styles.concat(css`
-            .pf-c-button.pf-m-control {
+            .pf-v5-c-button.pf-m-control {
                 height: 100%;
             }
-            .pf-c-form-control {
+            .pf-v5-c-form-control {
                 height: auto !important;
             }
         `);
@@ -58,30 +58,30 @@ export class GroupForm extends ModelForm<Group, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="isSuperuser">
-                <label class="pf-c-switch">
+                <label class="pf-v5-c-switch">
                     <input
-                        class="pf-c-switch__input"
+                        class="pf-v5-c-switch__input"
                         type="checkbox"
                         ?checked=${first(this.instance?.isSuperuser, false)}
                     />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${msg("Is superuser")}</span>
+                    <span class="pf-v5-c-switch__label">${msg("Is superuser")}</span>
                 </label>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Users added to this group will be superusers.")}
                 </p>
             </ak-form-element-horizontal>
@@ -123,7 +123,7 @@ export class GroupForm extends ModelForm<Group, string> {
                     value="${YAML.stringify(first(this.instance?.attributes, {}))}"
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>

@@ -57,16 +57,16 @@ export class ModalForm extends ModalButton {
         return html`${this.loading
                 ? html`<ak-loading-overlay ?topMost=${true}></ak-loading-overlay>`
                 : html``}
-            <section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">
+            <section class="pf-v5-c-modal-box__header pf-v5-c-page__main-section pf-m-light">
+                <div class="pf-v5-c-content">
+                    <h1 class="pf-v5-c-title pf-m-2xl">
                         <slot name="header"></slot>
                     </h1>
                 </div>
             </section>
             <slot name="above-form"></slot>
             <section
-                class="pf-c-modal-box__body"
+                class="pf-v5-c-modal-box__body"
                 @scroll=${() => {
                     window.dispatchEvent(
                         new CustomEvent("scroll", {
@@ -77,7 +77,7 @@ export class ModalForm extends ModalButton {
             >
                 <slot name="form"></slot>
             </section>
-            <footer class="pf-c-modal-box__footer">
+            <footer class="pf-v5-c-modal-box__footer">
                 ${this.showSubmitButton
                     ? html`<ak-spinner-button
                               .callAction=${() => {

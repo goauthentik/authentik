@@ -43,7 +43,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal
                 label=${msg("Identifier")}
                 ?required=${true}
@@ -52,7 +52,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.identifier)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
@@ -60,7 +60,7 @@ export class UserTokenForm extends ModelForm<Token, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.description)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                 />
             </ak-form-element-horizontal>
         </form>`;

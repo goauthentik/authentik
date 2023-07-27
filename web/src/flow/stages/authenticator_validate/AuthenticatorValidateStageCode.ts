@@ -61,15 +61,15 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<div class="pf-c-login__main-body">
+        return html`<div class="pf-v5-c-login__main-body">
                 <form
-                    class="pf-c-form"
+                    class="pf-v5-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e);
                     }}
                 >
                     <ak-form-static
-                        class="pf-c-form__group"
+                        class="pf-v5-c-form__group"
                         userAvatar="${this.challenge.pendingUserAvatar}"
                         user=${this.challenge.pendingUser}
                     >
@@ -99,7 +99,7 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                             ? msg("Static token")
                             : msg("Authentication code")}"
                         ?required="${true}"
-                        class="pf-c-form__group"
+                        class="pf-v5-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["code"]}
                     >
                         <!-- @ts-ignore -->
@@ -117,25 +117,25 @@ export class AuthenticatorValidateStageWebCode extends BaseStage<
                             placeholder="${msg("Please enter your code")}"
                             autofocus=""
                             autocomplete="one-time-code"
-                            class="pf-c-form-control"
+                            class="pf-v5-c-form-control"
                             value="${PasswordManagerPrefill.totp || ""}"
                             required
                         />
                     </ak-form-element>
 
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    <div class="pf-v5-c-form__group pf-m-action">
+                        <button type="submit" class="pf-v5-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}
                         </button>
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links">
                     ${this.showBackButton
-                        ? html`<li class="pf-c-login__main-footer-links-item">
+                        ? html`<li class="pf-v5-c-login__main-footer-links-item">
                               <button
-                                  class="pf-c-button pf-m-secondary pf-m-block"
+                                  class="pf-v5-c-button pf-m-secondary pf-m-block"
                                   @click=${() => {
                                       if (!this.host) return;
                                       (

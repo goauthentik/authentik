@@ -22,19 +22,19 @@ export class Sidebar extends AKElement {
                 :host {
                     z-index: 100;
                 }
-                .pf-c-nav__link.pf-m-current::after,
-                .pf-c-nav__link.pf-m-current:hover::after,
-                .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
-                    --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
+                .pf-v5-c-nav__link.pf-m-current::after,
+                .pf-v5-c-nav__link.pf-m-current:hover::after,
+                .pf-v5-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-v5-c-nav__link::after {
+                    --pf-v5-c-nav__link--m-current--after--BorderColor: #fd4b2d;
                 }
                 :host([theme="light"]) {
                     border-right-color: transparent !important;
                 }
 
-                .pf-c-nav__section + .pf-c-nav__section {
-                    --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
+                .pf-v5-c-nav__section + .pf-v5-c-nav__section {
+                    --pf-v5-c-nav__section--section--MarginTop: var(--pf-v5-global--spacer--sm);
                 }
-                .pf-c-nav__list .sidebar-brand {
+                .pf-v5-c-nav__list .sidebar-brand {
                     max-height: 82px;
                     margin-bottom: -0.5rem;
                 }
@@ -45,21 +45,21 @@ export class Sidebar extends AKElement {
                     height: 100%;
                     overflow-y: hidden;
                 }
-                .pf-c-nav__list {
+                .pf-v5-c-nav__list {
                     flex-grow: 1;
                     overflow-y: auto;
                 }
 
-                .pf-c-nav__link {
-                    --pf-c-nav__link--PaddingTop: 0.5rem;
-                    --pf-c-nav__link--PaddingRight: 0.5rem;
-                    --pf-c-nav__link--PaddingBottom: 0.5rem;
+                .pf-v5-c-nav__link {
+                    --pf-v5-c-nav__link--PaddingTop: 0.5rem;
+                    --pf-v5-c-nav__link--PaddingRight: 0.5rem;
+                    --pf-v5-c-nav__link--PaddingBottom: 0.5rem;
                 }
-                .pf-c-nav__section-title {
+                .pf-v5-c-nav__section-title {
                     font-size: 12px;
                 }
-                .pf-c-nav__item {
-                    --pf-c-nav__item--MarginTop: 0px;
+                .pf-v5-c-nav__item {
+                    --pf-v5-c-nav__item--MarginTop: 0px;
                 }
             `,
         ];
@@ -67,11 +67,11 @@ export class Sidebar extends AKElement {
 
     render(): TemplateResult {
         return html`<nav
-            class="pf-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
+            class="pf-v5-c-nav ${this.activeTheme === UiThemeEnum.Light ? "pf-m-light" : ""}"
             aria-label="Global"
         >
             <ak-sidebar-brand></ak-sidebar-brand>
-            <ul class="pf-c-nav__list">
+            <ul class="pf-v5-c-nav__list">
                 <slot></slot>
             </ul>
             <ak-sidebar-user></ak-sidebar-user>

@@ -42,12 +42,12 @@ export class SidebarBrand extends AKElement {
                     height: 114px;
                     min-height: 114px;
                 }
-                .pf-c-brand img {
+                .pf-v5-c-brand img {
                     width: 100%;
                     padding: 0 0.5rem;
                     height: 42px;
                 }
-                button.pf-c-button.sidebar-trigger {
+                button.pf-v5-c-button.sidebar-trigger {
                     background-color: transparent;
                     border-radius: 0px;
                     height: 100%;
@@ -68,7 +68,7 @@ export class SidebarBrand extends AKElement {
         return html` ${window.innerWidth <= MIN_WIDTH
                 ? html`
                       <button
-                          class="sidebar-trigger pf-c-button"
+                          class="sidebar-trigger pf-v5-c-button"
                           @click=${() => {
                               this.dispatchEvent(
                                   new CustomEvent(EVENT_SIDEBAR_TOGGLE, {
@@ -82,8 +82,8 @@ export class SidebarBrand extends AKElement {
                       </button>
                   `
                 : html``}
-            <a href="#/" class="pf-c-page__header-brand-link">
-                <div class="pf-c-brand ak-brand">
+            <a href="#/" class="pf-v5-c-page__header-brand-link">
+                <div class="pf-v5-c-brand ak-brand">
                     <img
                         src="${first(
                             rootInterface()?.tenant?.brandingLogo,

@@ -73,19 +73,19 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
         if (this.startedRedirect || !this.promptUser) {
             return this.renderLoading();
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${msg("Redirect")}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${msg("Redirect")}</h1>
             </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
-                    <div class="pf-c-form__group">
+            <div class="pf-v5-c-login__main-body">
+                <form class="pf-v5-c-form">
+                    <div class="pf-v5-c-form__group">
                         <p>${msg("You're about to be redirect to the following URL.")}</p>
                         <code>${this.getURL()}</code>
                     </div>
-                    <div class="pf-c-form__group pf-m-action">
+                    <div class="pf-v5-c-form__group pf-m-action">
                         <a
                             type="submit"
-                            class="pf-c-button pf-m-primary pf-m-block"
+                            class="pf-v5-c-button pf-m-primary pf-m-block"
                             href=${this.challenge.to}
                             @click=${() => {
                                 this.startedRedirect = true;
@@ -96,8 +96,8 @@ export class RedirectStage extends BaseStage<RedirectChallenge, FlowChallengeRes
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer> `;
     }
 }

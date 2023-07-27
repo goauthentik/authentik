@@ -70,13 +70,13 @@ export class DeleteForm extends ModalButton {
         } else {
             objName = "";
         }
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${msg(str`Delete ${this.objectLabel}`)}</h1>
+        return html`<section class="pf-v5-c-modal-box__header pf-v5-c-page__main-section pf-m-light">
+                <div class="pf-v5-c-content">
+                    <h1 class="pf-v5-c-title pf-m-2xl">${msg(str`Delete ${this.objectLabel}`)}</h1>
                 </div>
             </section>
-            <section class="pf-c-modal-box__body pf-m-light">
-                <form class="pf-c-form pf-m-horizontal">
+            <section class="pf-v5-c-modal-box__body pf-m-light">
+                <form class="pf-v5-c-form pf-m-horizontal">
                     <p>
                         ${msg(str`Are you sure you want to delete ${this.objectLabel} ${objName}?`)}
                     </p>
@@ -89,10 +89,10 @@ export class DeleteForm extends ModalButton {
                               return html``;
                           }
                           return html`
-                              <section class="pf-c-modal-box__body pf-m-light">
-                                  <form class="pf-c-form pf-m-horizontal">
+                              <section class="pf-v5-c-modal-box__body pf-m-light">
+                                  <form class="pf-v5-c-form pf-m-horizontal">
                                       <p>${msg(str`The following objects use ${objName}`)}</p>
-                                      <ul class="pf-c-list">
+                                      <ul class="pf-v5-c-list">
                                           ${usedBy.map((ub) => {
                                               let consequence = "";
                                               switch (ub.action) {
@@ -126,7 +126,7 @@ export class DeleteForm extends ModalButton {
                       }),
                   )
                 : html``}
-            <footer class="pf-c-modal-box__footer">
+            <footer class="pf-v5-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm();

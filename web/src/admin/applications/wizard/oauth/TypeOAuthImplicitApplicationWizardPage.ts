@@ -10,6 +10,6 @@ export class TypeOAuthImplicitApplicationWizardPage extends WizardFormPage {
     sidebarLabel = () => msg("Method details");
 
     render(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">some stuff idk</form> `;
+        return html`<form class="pf-v5-c-form pf-m-horizontal">some stuff idk</form> `;
     }
 }

@@ -32,10 +32,10 @@ export class Tabs extends AKElement {
                 :host([vertical]) {
                     display: flex;
                 }
-                :host([vertical]) .pf-c-tabs {
+                :host([vertical]) .pf-v5-c-tabs {
                     width: auto !important;
                 }
-                :host([vertical]) .pf-c-tabs__list {
+                :host([vertical]) .pf-v5-c-tabs__list {
                     height: 100%;
                 }
                 :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
@@ -81,9 +81,9 @@ export class Tabs extends AKElement {
 
     renderTab(page: Element): TemplateResult {
         const slot = page.attributes.getNamedItem("slot")?.value;
-        return html` <li class="pf-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
-            <button class="pf-c-tabs__link" @click=${() => this.onClick(slot)}>
-                <span class="pf-c-tabs__item-text"> ${page.getAttribute("data-tab-title")} </span>
+        return html` <li class="pf-v5-c-tabs__item ${slot === this.currentPage ? CURRENT_CLASS : ""}">
+            <button class="pf-v5-c-tabs__link" @click=${() => this.onClick(slot)}>
+                <span class="pf-v5-c-tabs__item-text"> ${page.getAttribute("data-tab-title")} </span>
             </button>
         </li>`;
     }
@@ -106,8 +106,8 @@ export class Tabs extends AKElement {
             const wantedPage = pages[0].attributes.getNamedItem("slot")?.value;
             this.onClick(wantedPage);
         }
-        return html`<div class="pf-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
-                <ul class="pf-c-tabs__list">
+        return html`<div class="pf-v5-c-tabs ${this.vertical ? "pf-m-vertical pf-m-box" : ""}">
+                <ul class="pf-v5-c-tabs__list">
                     ${pages.map((page) => this.renderTab(page))}
                 </ul>
             </div>

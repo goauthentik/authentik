@@ -48,9 +48,9 @@ export class TypeSAMLImportApplicationWizardPage extends WizardFormPage {
     };
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Metadata")} name="metadata">
-                <input type="file" value="" class="pf-c-form-control" />
+                <input type="file" value="" class="pf-v5-c-form-control" />
             </ak-form-element-horizontal>
         </form> `;
     }
