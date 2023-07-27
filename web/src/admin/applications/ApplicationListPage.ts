@@ -59,6 +59,10 @@ export class ApplicationListPage extends TablePage<Application> {
             PFAvatar,
             PFCard,
             css`
+                :host {
+                    --icon-height: 2rem;
+                    --icon-border: 0.25rem;
+                }
                 /* Fix alignment issues with images in tables */
                 .pf-c-table tbody > tr > * {
                     vertical-align: middle;
@@ -71,6 +75,14 @@ export class ApplicationListPage extends TablePage<Application> {
                 }
                 .pf-c-sidebar.pf-m-gutter > .pf-c-sidebar__main > * + * {
                     margin-left: calc(var(--pf-c-sidebar__main--child--MarginLeft) / 2);
+                }
+                .icon {
+                    font-size: var(--icon-height);
+                    color: var(--ak-global--Color--100);
+                    padding: var(--icon-border);
+                    max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+                    line-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+                    filter: drop-shadow(5px 5px 5px rgba(128, 128, 128, 0.25));
                 }
             `,
         );
@@ -129,15 +141,15 @@ export class ApplicationListPage extends TablePage<Application> {
         if (item?.metaIcon) {
             if (item.metaIcon.startsWith("fa://")) {
                 const icon = item.metaIcon.replaceAll("fa://", "");
-                return html`<i class="fas ${icon}"></i>`;
+                return html`<i class="icon fas ${icon}"></i>`;
             }
             return html`<img
-                class="app-icon pf-c-avatar"
+                class="icon pf-c-avatar"
                 src="${ifDefined(item.metaIcon)}"
                 alt="${msg("Application Icon")}"
             />`;
         }
-        return html`<i class="fas fa-share-square"></i>`;
+        return html`<span class="icon">${item?.name.charAt(0).toUpperCase()}</span>`;
     }
 
     row(item: Application): TemplateResult[] {
