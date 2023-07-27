@@ -7,38 +7,10 @@ import BrowserOnly from "@docusaurus/core/lib/client/exports/BrowserOnly";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
 import styles from "./styles.module.css";
-import Comparison from "../components/comparison";
+import Comparison from "../components/Comparison";
 import "react-before-after-slider-component/dist/build.css";
-
-const features = [
-    {
-        title: "Easy to Use",
-        description: (
-            <>
-                Identity made easy. authentik makes single-sign on (SSO), user
-                enrollment, and access control simple.
-            </>
-        ),
-    },
-    {
-        title: "Realise your workflow",
-        description: (
-            <>
-                authentik lets you build your workflow as you need it, no
-                limitations.
-            </>
-        ),
-    },
-    {
-        title: "Powered by Python",
-        description: (
-            <>
-                Implement custom verification or access control logic using
-                Python code.
-            </>
-        ),
-    },
-];
+import { NewsBar } from "../components/NewsBar";
+import { TextSlide } from "../components/TextSlide";
 
 function Feature({ imageUrl, title, description }) {
     const imgUrl = useBaseUrl(imageUrl);
@@ -72,10 +44,23 @@ function Home() {
             </Head>
             <header className={clsx("hero hero--primary", styles.heroBanner)}>
                 <div className="container">
-                    <div className="row">
+                    <div className={clsx("row", styles.headerRow)}>
                         <div className="col padding-top--lg">
-                            <h1 className="hero__title">
-                                Making authentication simple.
+                            <h1
+                                className={clsx(
+                                    "hero__title",
+                                    styles.ak_hero__title,
+                                )}
+                            >
+                                <div>Replace</div>
+                                <TextSlide
+                                    words={[
+                                        "Active Directory",
+                                        "Okta",
+                                        "Auth0",
+                                    ]}
+                                ></TextSlide>
+                                <div>with a unified platform.</div>
                             </h1>
                             <p className="hero__subtitle">
                                 authentik is an open-source Identity Provider
@@ -84,19 +69,32 @@ function Home() {
                             <div className={styles.buttons}>
                                 <Link
                                     className={clsx(
-                                        "button button--outline button--secondary button--lg",
-                                        styles.getStarted,
+                                        "button button--outline button--primary button--lg",
                                     )}
                                     to={useBaseUrl("docs/installation/")}
                                 >
                                     Get Started
                                 </Link>
+                                <Link
+                                    className={clsx(
+                                        "button button--outline button--primary button--lg",
+                                    )}
+                                    to="#comparison"
+                                >
+                                    Reasons to switch
+                                </Link>
                             </div>
                         </div>
-                        <div className="col text--center hero_image">
+                        <div
+                            className={clsx(
+                                "col text--center",
+                                styles.heroImage,
+                                styles.hiddenOnMobile,
+                            )}
+                        >
                             <img
                                 alt="authentik logo"
-                                src={useBaseUrl("img/icon_top_brand.svg")}
+                                src={useBaseUrl("img/landing_login_card.jpg")}
                             />
                         </div>
                     </div>
@@ -105,36 +103,74 @@ function Home() {
             <main>
                 <section className={styles.features}>
                     <div className="container">
-                        <div className={clsx("row", styles.rowFeatures)}>
-                            {features.map((props, idx) => (
-                                <Feature key={idx} {...props} />
-                            ))}
+                        <div className={clsx("row", styles.row)}>
+                            <Feature
+                                title="Easy to use"
+                                description={
+                                    <>
+                                        Identity made easy. authentik makes
+                                        single-sign on (SSO), user enrollment,
+                                        and access control simple.
+                                    </>
+                                }
+                            />
+                            <Feature
+                                title="Realize your workflow"
+                                description={
+                                    <>
+                                        authentik lets you build your workflow
+                                        as you need it, no limitations.
+                                    </>
+                                }
+                            />
+                            <Feature
+                                title="Powered by Python"
+                                description={
+                                    <>
+                                        Implement custom verification or access
+                                        control logic using Python code.
+                                    </>
+                                }
+                            />
                         </div>
-                        <div className="row">
+                    </div>
+                    <div
+                        className={clsx(
+                            "row",
+                            styles.rowDark,
+                            styles.rowFullWidth,
+                            styles.newsBar,
+                            styles.hiddenOnMobile,
+                        )}
+                    >
+                        <div className="container">
+                            <NewsBar />
+                        </div>
+                    </div>
+                    <div className="container">
+                        <div className={clsx("row", styles.row)}>
                             <div className="col col--5">
-                                <div>
-                                    <BrowserOnly>
-                                        {() => {
-                                            const ReactBeforeSliderComponent = require("react-before-after-slider-component");
-                                            return (
-                                                <ReactBeforeSliderComponent
-                                                    firstImage={{
-                                                        id: 1,
-                                                        imageUrl: useBaseUrl(
-                                                            "img/screen_apps_dark.jpg",
-                                                        ),
-                                                    }}
-                                                    secondImage={{
-                                                        id: 2,
-                                                        imageUrl: useBaseUrl(
-                                                            "img/screen_apps_light.jpg",
-                                                        ),
-                                                    }}
-                                                />
-                                            );
-                                        }}
-                                    </BrowserOnly>
-                                </div>
+                                <BrowserOnly>
+                                    {() => {
+                                        const ReactBeforeSliderComponent = require("react-before-after-slider-component");
+                                        return (
+                                            <ReactBeforeSliderComponent
+                                                firstImage={{
+                                                    id: 1,
+                                                    imageUrl: useBaseUrl(
+                                                        "img/landing_screen_apps_dark.jpg",
+                                                    ),
+                                                }}
+                                                secondImage={{
+                                                    id: 2,
+                                                    imageUrl: useBaseUrl(
+                                                        "img/landing_screen_apps_light.jpg",
+                                                    ),
+                                                }}
+                                            />
+                                        );
+                                    }}
+                                </BrowserOnly>
                             </div>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
                                 <h2>What is authentik?</h2>
@@ -149,7 +185,7 @@ function Home() {
                                 </p>
                             </div>
                         </div>
-                        <div className="row">
+                        <div className={clsx("row", styles.row)}>
                             <div className="col col--5 col--offset-2 padding-vert--xl">
                                 <h2>Utmost flexibility</h2>
                                 <p>
@@ -164,35 +200,64 @@ function Home() {
                                 </p>
                             </div>
                             <div className="col col--5">
-                                <div>
-                                    <BrowserOnly>
-                                        {() => {
-                                            const ReactBeforeSliderComponent = require("react-before-after-slider-component");
-                                            return (
-                                                <ReactBeforeSliderComponent
-                                                    firstImage={{
-                                                        id: 1,
-                                                        imageUrl: useBaseUrl(
-                                                            "img/screen_admin_dark.jpg",
-                                                        ),
-                                                    }}
-                                                    secondImage={{
-                                                        id: 2,
-                                                        imageUrl: useBaseUrl(
-                                                            "img/screen_admin_light.jpg",
-                                                        ),
-                                                    }}
-                                                />
-                                            );
-                                        }}
-                                    </BrowserOnly>
-                                </div>
+                                <BrowserOnly>
+                                    {() => {
+                                        const ReactBeforeSliderComponent = require("react-before-after-slider-component");
+                                        return (
+                                            <ReactBeforeSliderComponent
+                                                firstImage={{
+                                                    id: 1,
+                                                    imageUrl: useBaseUrl(
+                                                        "img/landing_screen_admin_dark.jpg",
+                                                    ),
+                                                }}
+                                                secondImage={{
+                                                    id: 2,
+                                                    imageUrl: useBaseUrl(
+                                                        "img/landing_screen_admin_light.jpg",
+                                                    ),
+                                                }}
+                                            />
+                                        );
+                                    }}
+                                </BrowserOnly>
                             </div>
                         </div>
                     </div>
                 </section>
                 <section>
-                    <Comparison></Comparison>
+                    <div className="container">
+                        <Comparison></Comparison>
+                    </div>
+                </section>
+                <section>
+                    <div
+                        className={clsx(
+                            styles.footerCTA,
+                            styles.rowAuthentik,
+                            styles.rowFullWidth,
+                        )}
+                    >
+                        <h1>Try authentik now!</h1>
+                        <div className={styles.buttons}>
+                            <Link
+                                className={clsx(
+                                    "button button--outline button--primary button--lg",
+                                )}
+                                to={useBaseUrl("docs/installation/")}
+                            >
+                                Get Started
+                            </Link>
+                            <Link
+                                className={clsx(
+                                    "button button--outline button--primary button--lg",
+                                )}
+                                to={useBaseUrl("pricing/")}
+                            >
+                                Learn about enterprise
+                            </Link>
+                        </div>
+                    </div>
                 </section>
             </main>
         </Layout>

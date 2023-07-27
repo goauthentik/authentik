@@ -13,7 +13,7 @@ module.exports = async function () {
     });
     return {
         title: "authentik",
-        tagline: "Making authentication simple.",
+        tagline: "Bring all of your authentication into a unified platform.",
         url: "https://goauthentik.io",
         baseUrl: "/",
         onBrokenLinks: "throw",
@@ -25,7 +25,7 @@ module.exports = async function () {
                 title: "authentik",
                 logo: {
                     alt: "authentik logo",
-                    src: "img/icon.svg",
+                    src: "img/icon_left_brand.svg",
                 },
                 items: [
                     { to: "blog", label: "Blog", position: "left" },

@@ -114,12 +114,12 @@ export default function pricingPage() {
 
             <section>
                 <div className="container" style={{ marginBottom: "3rem" }}>
-                    <div class="row">
+                    <div className="row">
                         <div className="col col--8 col--offset-2">
                             <h2 className="hero__subtitle margin--md">
                                 Frequently Asked Questions
                             </h2>
-                            <div class="card-demo margin--md">
+                            <div className="card-demo margin--md">
                                 <Card
                                     title="Will any feature of the open-source version ever become enterprise?"
                                     body="No. As part of our core principle, we will not move any features from the open source version to the enterprise version. Features from the enterprise version are periodically moved to the open source version."

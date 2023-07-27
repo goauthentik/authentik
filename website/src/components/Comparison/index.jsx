@@ -1,12 +1,14 @@
 import React from "react";
 import { Check, X, AlertTriangle } from "react-feather";
+import "./style.css";
 
 function Comparison() {
     return (
-        <section className="">
-            <div className="container">
-                <h2 id="correctness">Why authentik?</h2>
-                <div className="table-responsive">
+        <>
+            <a name="comparison"></a>
+            <h1 className="header">Why authentik?</h1>
+            <div className="table-responsive">
+                <div className="table">
                     <table className="comparison">
                         <thead>
                             <tr>
@@ -489,7 +491,7 @@ function Comparison() {
                     </table>
                 </div>
             </div>
-        </section>
+        </>
     );
 }
 
