@@ -173,6 +173,7 @@ wsproto = "*"
 xmlsec = "*"
 zxcvbn = "*"
 jsonpatch = "*"
+pyasn1 = "*"
 
 [tool.poetry.dev-dependencies]
 bandit = "*"
