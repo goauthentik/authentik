@@ -50,7 +50,6 @@ export class LibraryApplication extends AKElement {
                     );
                 }
                 .pf-c-card__header {
-                    min-height: 60px;
                     justify-content: space-between;
                     flex-direction: column;
                 }
@@ -69,8 +68,12 @@ export class LibraryApplication extends AKElement {
                 .expander {
                     flex-grow: 1;
                 }
-                .title {
+                .pf-c-card__title {
                     text-align: center;
+                    /* This is not ideal as it hard limits us to 2 lines of text for the title
+                    of the application. In theory that should be fine for most cases, but ideally
+                    we don't do this */
+                    height: 48px;
                 }
             `,
         ];
@@ -111,13 +114,11 @@ export class LibraryApplication extends AKElement {
                 </a>
             </div>
             <div class="pf-c-card__title">
-                <p class="title">
-                    <a
-                        href="${ifDefined(this.application.launchUrl ?? "")}"
-                        target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
-                        >${this.application.name}</a
-                    >
-                </p>
+                <a
+                    href="${ifDefined(this.application.launchUrl ?? "")}"
+                    target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
+                    >${this.application.name}</a
+                >
             </div>
             <div class="expander"></div>
             <ak-expand>
