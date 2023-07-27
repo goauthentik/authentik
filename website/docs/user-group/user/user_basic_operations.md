@@ -64,8 +64,12 @@ After the creation of the user, you can edit any parameter set during the creati
 
 I the user has lost its credentials, you can send a recovery link when selecting a user in list or detail view:
 
--   Generate a recover link by on the "Copy recover link" button. A notification will appear on your browser with the link to sent to the user.
--   Send an email with the recovery link to the user address by clicking on the "Email recovery link" button. This option will only work if you avec properly [configured a SMTP server during the installation](../../installation/docker-compose.md#email-configuration-optional-but-recommended) and set an email address for the user.
+-   Generate a recover link by on the "Copy recover link" button.
+    A notification will appear on your browser with the link to sent to the user.
+-   Send an email with the recovery link to the user address by clicking on the "Email recovery link" button.
+    This option will only work if you avec properly [configured a SMTP server during the installation](../../installation/docker-compose.md#email-configuration-optional-but-recommended) and set an email address for the user.
+
+    After clicking on the button, the user should have recieved the mail. If that's not the case, check if the mail server parameters [are properly configured](../../troubleshooting/emails.md).
 
 ## Deactivate/Delete user
 
