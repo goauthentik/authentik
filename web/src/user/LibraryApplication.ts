@@ -64,6 +64,7 @@ export class LibraryApplication extends AKElement {
                     padding: var(--icon-border);
                     max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
                     line-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+                    filter: drop-shadow(5px 5px 5px rgba(128, 128, 128, 0.25));
                 }
                 .expander {
                     flex-grow: 1;
@@ -86,7 +87,7 @@ export class LibraryApplication extends AKElement {
                 return html`<i class="icon fas ${icon}"></i>`;
             }
             return html`<img
-                class="app-icon pf-c-avatar"
+                class="icon pf-c-avatar"
                 src="${ifDefined(this.application.metaIcon)}"
                 alt="${msg("Application Icon")}"
             />`;
@@ -121,7 +122,7 @@ export class LibraryApplication extends AKElement {
                 >
             </div>
             <div class="expander"></div>
-            <ak-expand>
+            <ak-expand textOpen=${msg("Less details")} textClosed=${msg("More details")}>
                 <div class="pf-c-content">
                     <small>${this.application.metaPublisher}</small>
                 </div>
