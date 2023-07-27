@@ -41,6 +41,7 @@
             libxslt
             yarn
             golangci-lint
+            ruff
           ];
         };
       }
