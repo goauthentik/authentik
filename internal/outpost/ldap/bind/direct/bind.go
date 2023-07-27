@@ -52,11 +52,23 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"reason":       "flow_error",
 			"app":          db.si.GetAppSlug(),
 		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
+			"outpost_name": db.si.GetOutpostName(),
+			"type":         "bind",
+			"reason":       "flow_error",
+			"app":          db.si.GetAppSlug(),
+		}).Inc()
 		req.Log().WithError(err).Warning("failed to execute flow")
 		return ldap.LDAPResultInvalidCredentials, nil
 	}
 	if !passed {
 		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": db.si.GetOutpostName(),
+			"type":         "bind",
+			"reason":       "invalid_credentials",
+			"app":          db.si.GetAppSlug(),
+		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "invalid_credentials",
@@ -75,10 +87,22 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 			"reason":       "access_denied",
 			"app":          db.si.GetAppSlug(),
 		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
+			"outpost_name": db.si.GetOutpostName(),
+			"type":         "bind",
+			"reason":       "access_denied",
+			"app":          db.si.GetAppSlug(),
+		}).Inc()
 		return ldap.LDAPResultInsufficientAccessRights, nil
 	}
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": db.si.GetOutpostName(),
+			"type":         "bind",
+			"reason":       "access_check_fail",
+			"app":          db.si.GetAppSlug(),
+		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "access_check_fail",
@@ -93,6 +117,12 @@ func (db *DirectBinder) Bind(username string, req *bind.Request) (ldap.LDAPResul
 	userInfo, _, err := fe.ApiClient().CoreApi.CoreUsersMeRetrieve(context.Background()).Execute()
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": db.si.GetOutpostName(),
+			"type":         "bind",
+			"reason":       "user_info_fail",
+			"app":          db.si.GetAppSlug(),
+		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 			"outpost_name": db.si.GetOutpostName(),
 			"type":         "bind",
 			"reason":       "user_info_fail",

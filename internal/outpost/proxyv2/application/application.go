@@ -163,13 +163,19 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 			}
 			before := time.Now()
 			inner.ServeHTTP(rw, r)
-			after := time.Since(before)
+			elapsed := time.Since(before)
 			metrics.Requests.With(prometheus.Labels{
 				"outpost_name": a.outpostName,
 				"type":         "app",
 				"method":       r.Method,
 				"host":         web.GetHost(r),
-			}).Observe(float64(after))
+			}).Observe(float64(elapsed) / float64(time.Second))
+			metrics.RequestsLegacy.With(prometheus.Labels{
+				"outpost_name": a.outpostName,
+				"type":         "app",
+				"method":       r.Method,
+				"host":         web.GetHost(r),
+			}).Observe(float64(elapsed))
 		})
 	})
 	if server.API().GlobalConfig.ErrorReporting.Enabled {

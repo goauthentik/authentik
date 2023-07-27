@@ -2,6 +2,7 @@ package ldap
 
 import (
 	"net"
+	"time"
 
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
@@ -18,6 +19,11 @@ func (ls *LDAPServer) Search(bindDN string, searchReq ldap.SearchRequest, conn n
 	defer func() {
 		span.Finish()
 		metrics.Requests.With(prometheus.Labels{
+			"outpost_name": ls.ac.Outpost.Name,
+			"type":         "search",
+			"app":          selectedApp,
+		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
+		metrics.RequestsLegacy.With(prometheus.Labels{
 			"outpost_name": ls.ac.Outpost.Name,
 			"type":         "search",
 			"app":          selectedApp,
