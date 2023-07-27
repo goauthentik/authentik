@@ -1,5 +1,5 @@
-import "@goauthentik/admin/providers/ProviderWizard";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/admin/providers/kerberos/KerberosRealmForm";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";

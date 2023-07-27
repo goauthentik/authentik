@@ -120,20 +120,37 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group .expanded=${false}>
-                <span slot="header"> ${msg("Advanced protocol settings")} </span>
+            <ak-form-group .expanded=${true}>
+                <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal label=${msg("Maximum skew")} name="maximumSkew">
+                    <ak-form-element-horizontal label=${msg("Maximum ticket lifetime")} name="maximumTicketLifetime">
                         <input
                             type="text"
-                            value="${first(this.instance?.maximumSkew, "minutes=5")}"
+                            value="${first(this.instance?.maximumTicketLifetime, "days=1")}"
                             class="pf-c-form-control"
                         />
                         <p class="pf-c-form__helper-text">
-                            ${msg("Maximum allowed clock drift between the client and the server (Format: hours=1;minutes=2;seconds=3).")}
+                            ${msg("Maximum ticket lifetime (Format: hours=1;minutes=2;seconds=3).")}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal label=${msg("Maximum ticket renew lifetime")} name="maximumTicketRenewLifetime">
+                        <input
+                            type="text"
+                            value="${first(this.instance?.maximumTicketRenewLifetime, "weeks=1")}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Maximum ticket lifetime (Format: hours=1;minutes=2;seconds=3).")}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+
+            <ak-form-group .expanded=${false}>
+                <span slot="header"> ${msg("Advanced protocol settings")} </span>
+                <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal name="allowPostdateable">
                         <label class="pf-c-switch">
                             <input

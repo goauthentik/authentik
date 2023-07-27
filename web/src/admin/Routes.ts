@@ -125,7 +125,7 @@ export const ROUTES: Route[] = [
         return html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`;
     }),
     new Route(new RegExp("^/kerberos/realms$"), async () => {
-        await import("@goauthentik/admin/providers/kerberos/RealmListPage");
+        await import("@goauthentik/admin/providers/kerberos/KerberosRealmListPage");
         return html`<ak-kerberos-realm-list></ak-kerberos-realm-list>`;
     }),
     new Route(new RegExp("^/crypto/certificates$"), async () => {
