@@ -22,11 +22,11 @@ for _authentik_app in get_apps():
     try:
         api_urls = import_module(f"{_authentik_app.name}.urls")
     except (ModuleNotFoundError, ImportError) as exc:
-        LOGGER.debug("Could not import app", app_name=_authentik_app.name, exception=exc)
+        LOGGER.warning("Could not import app's URLs", app_name=_authentik_app.name, exception=exc)
         continue
     if not hasattr(api_urls, "api_urlpatterns"):
         LOGGER.debug(
-            "Could not import app API URL patterns",
+            "App does not define API URLs",
             app_name=_authentik_app.name,
         )
         continue
