@@ -14,7 +14,7 @@ import TabItem from "@theme/TabItem";
 <Tabs
   defaultValue="docker-compose"
   values={[
-    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Docker Compose', value: 'docker-compose'},
     {label: 'Kubernetes', value: 'kubernetes'},
   ]}>
   <TabItem value="docker-compose">
@@ -28,9 +28,11 @@ AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(b
 
 The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
 
-Next, run the upgrade commands from the latest [Release Notes](../releases).
+Next, run the upgrade commands below.
 
   </TabItem>
+
+
   <TabItem value="kubernetes">
 Add the following block to your `values.yml` file:
 
@@ -47,7 +49,37 @@ image:
 
 The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
 
-Next, run the upgrade commands from the latest [Release Notes](../releases).
+Next, run the upgrade commands below.
 
   </TabItem>
 </Tabs>
+
+
+<Tabs
+  defaultValue="docker-compose"
+  values={[
+    {label: 'Docker Compose', value: 'docker-compose'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}>
+  <TabItem value="docker-compose">
+
+```shell
+docker-compose pull
+docker-compose up -d
+```
+
+  </TabItem>
+
+
+  <TabItem value="kubernetes">
+
+```yaml
+image:
+    repository: ghcr.io/goauthentik/server
+    tag: 2023.6.0
+```
+  </TabItem>
+
+</Tabs>
+
+To verify that your upgrade was successful go to your Admin panel, and view the Overview dashboard and look at the version number.
