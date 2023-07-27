@@ -38,7 +38,6 @@ export class LibraryApplication extends AKElement {
                     --icon-border: 0.25rem;
                 }
                 .pf-c-card {
-                    height: 100%;
                     --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
                 }
                 .pf-c-avatar {
@@ -62,6 +61,7 @@ export class LibraryApplication extends AKElement {
                 }
                 .icon {
                     font-size: var(--icon-height);
+                    color: var(--ak-global--Color--100);
                     padding: var(--icon-border);
                     max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
                     line-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
