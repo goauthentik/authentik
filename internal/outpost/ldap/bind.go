@@ -2,6 +2,7 @@ package ldap
 
 import (
 	"net"
+	"time"
 
 	"beryju.io/ldap"
 	"github.com/getsentry/sentry-go"
@@ -17,6 +18,11 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	defer func() {
 		span.Finish()
 		metrics.Requests.With(prometheus.Labels{
+			"outpost_name": ls.ac.Outpost.Name,
+			"type":         "bind",
+			"app":          selectedApp,
+		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
+		metrics.RequestsLegacy.With(prometheus.Labels{
 			"outpost_name": ls.ac.Outpost.Name,
 			"type":         "bind",
 			"app":          selectedApp,
@@ -44,6 +50,12 @@ func (ls *LDAPServer) Bind(bindDN string, bindPW string, conn net.Conn) (ldap.LD
 	}
 	req.Log().WithField("request", "bind").Warning("No provider found for request")
 	metrics.RequestsRejected.With(prometheus.Labels{
+		"outpost_name": ls.ac.Outpost.Name,
+		"type":         "bind",
+		"reason":       "no_provider",
+		"app":          "",
+	}).Inc()
+	metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 		"outpost_name": ls.ac.Outpost.Name,
 		"type":         "bind",
 		"reason":       "no_provider",

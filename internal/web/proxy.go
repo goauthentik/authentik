@@ -34,9 +34,13 @@ func (ws *WebServer) configureProxy() {
 		if ws.ProxyServer != nil {
 			before := time.Now()
 			ws.ProxyServer.Handle(rw, r)
+			elapsed := time.Since(before)
 			Requests.With(prometheus.Labels{
 				"dest": "embedded_outpost",
-			}).Observe(float64(time.Since(before)))
+			}).Observe(float64(elapsed) / float64(time.Second))
+			RequestsLegacy.With(prometheus.Labels{
+				"dest": "embedded_outpost",
+			}).Observe(float64(elapsed))
 			return
 		}
 		ws.proxyErrorHandler(rw, r, fmt.Errorf("proxy not running"))
@@ -52,15 +56,23 @@ func (ws *WebServer) configureProxy() {
 		before := time.Now()
 		if ws.ProxyServer != nil {
 			if ws.ProxyServer.HandleHost(rw, r) {
+				elapsed := time.Since(before)
 				Requests.With(prometheus.Labels{
 					"dest": "embedded_outpost",
-				}).Observe(float64(time.Since(before)))
+				}).Observe(float64(elapsed) / float64(time.Second))
+				RequestsLegacy.With(prometheus.Labels{
+					"dest": "embedded_outpost",
+				}).Observe(float64(elapsed))
 				return
 			}
 		}
+		elapsed := time.Since(before)
 		Requests.With(prometheus.Labels{
 			"dest": "core",
-		}).Observe(float64(time.Since(before)))
+		}).Observe(float64(elapsed) / float64(time.Second))
+		RequestsLegacy.With(prometheus.Labels{
+			"dest": "core",
+		}).Observe(float64(elapsed))
 		r.Body = http.MaxBytesReader(rw, r.Body, 32*1024*1024)
 		rp.ServeHTTP(rw, r)
 	}))
