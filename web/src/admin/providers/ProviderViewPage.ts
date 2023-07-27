@@ -1,6 +1,7 @@
 import "@goauthentik/admin/providers/ldap/LDAPProviderViewPage";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderViewPage";
 import "@goauthentik/admin/providers/proxy/ProxyProviderViewPage";
+import "@goauthentik/admin/providers/kerberos/KerberosProviderViewPage";
 import "@goauthentik/admin/providers/radius/RadiusProviderViewPage";
 import "@goauthentik/admin/providers/saml/SAMLProviderViewPage";
 import "@goauthentik/admin/providers/scim/SCIMProviderViewPage";
@@ -53,6 +54,10 @@ export class ProviderViewPage extends AKElement {
                 return html`<ak-provider-proxy-view
                     providerID=${ifDefined(this.provider.pk)}
                 ></ak-provider-proxy-view>`;
+            case "ak-provider-kerberos-form":
+                return html`<ak-provider-kerberos-view
+                    providerID=${ifDefined(this.provider.pk)}
+                ></ak-provider-kerberos-view>`;
             case "ak-provider-ldap-form":
                 return html`<ak-provider-ldap-view
                     providerID=${ifDefined(this.provider.pk)}

@@ -733,6 +733,78 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_providers_kerberos.kerberosrealm"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_kerberos.kerberosrealm"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_kerberos.kerberosrealm"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_providers_kerberos.kerberosprovider"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_kerberos.kerberosprovider"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_kerberos.kerberosprovider"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_providers_ldap.ldapprovider"
                             },
                             "id": {
@@ -3222,6 +3294,7 @@
                         "authentik.policies.password",
                         "authentik.policies.reputation",
                         "authentik.policies",
+                        "authentik.providers.kerberos",
                         "authentik.providers.ldap",
                         "authentik.providers.oauth2",
                         "authentik.providers.proxy",
@@ -3286,6 +3359,8 @@
                         "authentik_policies_reputation.reputationpolicy",
                         "authentik_policies_reputation.reputation",
                         "authentik_policies.policybinding",
+                        "authentik_providers_kerberos.kerberosrealm",
+                        "authentik_providers_kerberos.kerberosprovider",
                         "authentik_providers_ldap.ldapprovider",
                         "authentik_providers_oauth2.scopemapping",
                         "authentik_providers_oauth2.oauth2provider",
@@ -3580,6 +3655,188 @@
                     "maximum": 2147483647,
                     "title": "Timeout",
                     "description": "Timeout after which Policy execution is terminated."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_kerberos.kerberosrealm": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "Kerberos realm name."
+                },
+                "authentication_flow": {
+                    "type": "integer",
+                    "title": "Authentication flow",
+                    "description": "Flow used for authentication when a TGT for the associated realm is requested by a user."
+                },
+                "maximum_skew": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Maximum skew",
+                    "description": "Maximum allowed clock drift between the client and the server (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "maximum_ticket_lifetime": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Maximum ticket lifetime",
+                    "description": "Maximum Ticket lifetime (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "maximum_ticket_renew_lifetime": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Maximum ticket renew lifetime",
+                    "description": "Maximum Ticket renew lifetime (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "allowed_enctypes": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "enum": [
+                            17,
+                            18,
+                            19,
+                            20
+                        ],
+                        "title": "Allowed enctypes"
+                    },
+                    "title": "Allowed enctypes",
+                    "description": "Allowed encryption types."
+                },
+                "allow_postdateable": {
+                    "type": "boolean",
+                    "title": "Allow postdateable",
+                    "description": "Should the user be able to request a ticket with a start time in the future."
+                },
+                "allow_renewable": {
+                    "type": "boolean",
+                    "title": "Allow renewable",
+                    "description": "Should the user getting the ticket be able to renew it."
+                },
+                "allow_proxiable": {
+                    "type": "boolean",
+                    "title": "Allow proxiable",
+                    "description": "Should the service getting the ticket be able to use it on behalf of the user."
+                },
+                "allow_forwardable": {
+                    "type": "boolean",
+                    "title": "Allow forwardable",
+                    "description": "Should the service getting the ticket be able to request a TGT on behalf of the user."
+                },
+                "requires_preauth": {
+                    "type": "boolean",
+                    "title": "Requires preauth",
+                    "description": "Should tickets only be issued to preauthenticated clients."
+                },
+                "secret": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Secret",
+                    "description": "The secret value from which Kerberos keys are derived."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_kerberos.kerberosprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "authentication_flow": {
+                    "type": "integer",
+                    "title": "Authentication flow",
+                    "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
+                },
+                "authorization_flow": {
+                    "type": "integer",
+                    "title": "Authorization flow",
+                    "description": "Flow used when authorizing this provider."
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Property mappings"
+                },
+                "realm": {
+                    "type": "integer",
+                    "title": "Realm"
+                },
+                "service_principal_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Service principal name",
+                    "description": "The Kerberos principal used to designate this provider, without the realm."
+                },
+                "set_ok_as_delegate": {
+                    "type": "boolean",
+                    "title": "Set ok as delegate",
+                    "description": "Should the tickets issued for this provider have the ok-as-delegate flag set."
+                },
+                "maximum_ticket_lifetime": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Maximum ticket lifetime",
+                    "description": "Maximum Ticket lifetime (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "maximum_ticket_renew_lifetime": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Maximum ticket renew lifetime",
+                    "description": "Maximum Ticket renew lifetime (Format: hours=1;minutes=2;seconds=3)."
+                },
+                "allowed_enctypes": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer",
+                        "enum": [
+                            17,
+                            18,
+                            19,
+                            20
+                        ],
+                        "title": "Allowed enctypes"
+                    },
+                    "title": "Allowed enctypes",
+                    "description": "Allowed encryption types."
+                },
+                "allow_postdateable": {
+                    "type": "boolean",
+                    "title": "Allow postdateable",
+                    "description": "Should the user be able to request a ticket with a start time in the future."
+                },
+                "allow_renewable": {
+                    "type": "boolean",
+                    "title": "Allow renewable",
+                    "description": "Should the user getting the ticket be able to renew it."
+                },
+                "allow_proxiable": {
+                    "type": "boolean",
+                    "title": "Allow proxiable",
+                    "description": "Should the service getting the ticket be able to use it on behalf of the user."
+                },
+                "allow_forwardable": {
+                    "type": "boolean",
+                    "title": "Allow forwardable",
+                    "description": "Should the service getting the ticket be able to request a TGT on behalf of the user."
+                },
+                "requires_preauth": {
+                    "type": "boolean",
+                    "title": "Requires preauth",
+                    "description": "Should tickets only be issued to preauthenticated clients."
+                },
+                "secret": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Secret",
+                    "description": "The secret value from which Kerberos keys are derived."
                 }
             },
             "required": []

@@ -1,9 +1,10 @@
 """KerberosProvider API Views"""
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpRequest
+from django.urls import reverse
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ListField, ReadOnlyField
+from rest_framework.fields import CharField, ListField, ReadOnlyField, SerializerMethodField
 from rest_framework.request import Request
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
@@ -31,7 +32,6 @@ class KerberosRealmSerializer(ModelSerializer):
             "name",
             "authentication_flow",
             "maximum_skew",
-            "uuid",
             "maximum_ticket_lifetime",
             "maximum_ticket_renew_lifetime",
             "allowed_enctypes",
@@ -62,6 +62,7 @@ class KerberosProviderSerializer(ProviderSerializer):
     """KerberosProvider Serializer"""
 
     realm_name = ReadOnlyField(source="realm.name")
+    url_download_keytab = SerializerMethodField()
 
     class Meta:
         model = KerberosProvider
@@ -70,7 +71,6 @@ class KerberosProviderSerializer(ProviderSerializer):
             "realm_name",
             "service_principal_name",
             "set_ok_as_delegate",
-            "uuid",
             "maximum_ticket_lifetime",
             "maximum_ticket_renew_lifetime",
             "allowed_enctypes",
@@ -80,8 +80,18 @@ class KerberosProviderSerializer(ProviderSerializer):
             "allow_forwardable",
             "requires_preauth",
             "secret",
+            "url_download_keytab",
+            "full_spn",
         ]
-        extra_kwargs = ProviderSerializer.Meta.extra_kwargs
+        extra_kwargs = {}
+
+    def get_url_download_keytab(self, instance: KerberosProvider) -> str:
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        return request.build_absolute_uri(
+            reverse("authentik_api:kerberosprovider-keytab", kwargs={"pk": instance.pk})
+        )
 
 
 class KerberosProviderViewSet(UsedByMixin, ModelViewSet):

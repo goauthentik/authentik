@@ -231,6 +231,9 @@ export class AdminInterface extends Interface {
                 <ak-sidebar-item path="/outpost/outposts">
                     <span slot="label">${msg("Outposts")}</span>
                 </ak-sidebar-item>
+                <ak-sidebar-item path="/kerberos/realms">
+                    <span slot="label">${msg("Kerberos Realms")}</span>
+                </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
                 <span slot="label">${msg("Events")}</span>

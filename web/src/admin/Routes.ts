@@ -124,6 +124,10 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/outposts/ServiceConnectionListPage");
         return html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`;
     }),
+    new Route(new RegExp("^/kerberos/realms$"), async () => {
+        await import("@goauthentik/admin/providers/kerberos/RealmListPage");
+        return html`<ak-kerberos-realm-list></ak-kerberos-realm-list>`;
+    }),
     new Route(new RegExp("^/crypto/certificates$"), async () => {
         await import("@goauthentik/admin/crypto/CertificateKeyPairListPage");
         return html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`;

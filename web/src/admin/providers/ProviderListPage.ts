@@ -3,6 +3,7 @@ import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/providers/radius/RadiusProviderForm";
+import "@goauthentik/admin/providers/kerberos/KerberosProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";

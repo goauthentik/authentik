@@ -1,6 +1,5 @@
 """Kerberos Provider"""
 from typing import Optional, Type
-from uuid import uuid4
 
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import RegexValidator
@@ -35,14 +34,9 @@ validate_spn = RegexValidator(
 class KerberosServiceMixin(models.Model):
     """Common fields and methods for Kerberos services"""
 
-    uuid = models.UUIDField(
-        primary_key=True,
-        default=uuid4,
-    )
-
     maximum_ticket_lifetime = models.TextField(
         help_text=_("Maximum Ticket lifetime (Format: hours=1;minutes=2;seconds=3)."),
-        default="hours=0",
+        default="days=1",
         validators=[
             timedelta_string_validator,
         ],
@@ -59,23 +53,17 @@ class KerberosServiceMixin(models.Model):
     allowed_enctypes = ArrayField(
         models.IntegerField(choices=_get_kerberos_enctypes()),
         default=_get_default_enctypes,
-        help_text=_("Allowed enctypes."),
+        help_text=_("Allowed encryption types."),
     )
 
     allow_postdateable = models.BooleanField(
         default=True,
-        help_text=_(
-            "Should the service getting the ticket be able to request a "
-            "TGT with a start time in the future."
-        ),
+        help_text=_("Should the user be able to request a ticket with a start time in the future."),
     )
 
     allow_renewable = models.BooleanField(
         default=True,
-        help_text=_(
-            "Should the user getting the ticket be able to renew it without "
-            "presenting a valid TGT."
-        ),
+        help_text=_("Should the user getting the ticket be able to renew it."),
     )
 
     allow_proxiable = models.BooleanField(
@@ -110,7 +98,7 @@ class KerberosServiceMixin(models.Model):
         return {
             enctype.ENC_TYPE: enctype.string_to_key(
                 password=self.secret.encode("utf-8"),
-                salt=self.uuid.bytes,
+                salt=int(self.pk).to_bytes(8, byteorder="big"),
             )
             for enctype in SUPPORTED_ENCTYPES
             if enctype.ENC_TYPE.value in self.allowed_enctypes
@@ -192,6 +180,10 @@ class KerberosProvider(KerberosServiceMixin, Provider):
         from authentik.providers.kerberos.api import KerberosProviderSerializer
 
         return KerberosProviderSerializer
+
+    @property
+    def full_spn(self) -> str:
+        return f"{self.service_principal_name}@{self.realm.name}"
 
     def __str__(self):
         return f"Kerberos Provider {self.name}"
