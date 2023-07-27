@@ -8,3 +8,6 @@ class AuthentikProviderKerberosConfig(AppConfig):
     name = "authentik.providers.kerberos"
     label = "authentik_providers_kerberos"
     verbose_name = "authentik Providers.Kerberos"
+    mountpoints = {
+        "authentik.providers.kerberos.urls": "application/k/",
+    }

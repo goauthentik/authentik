@@ -1,6 +1,16 @@
 from enum import UNIQUE, Enum, verify
+from typing import Self
 
+from django.utils.translation import gettext_lazy as _
+from pyasn1.codec.der.decoder import decode as der_decode
+from pyasn1.error import PyAsn1Error
 from pyasn1.type import base, char, constraint, namedtype, tag, univ, useful
+
+from authentik.lib.kerberos.exceptions import KerberosException
+
+
+class KerberosParsingException(KerberosException):
+    pass
 
 
 @verify(UNIQUE)
@@ -115,83 +125,87 @@ class ErrorCode(Enum):
 
 
 ERROR_MESSAGES = {
-    ErrorCode.KDC_ERR_NONE: "No error",
-    ErrorCode.KDC_ERR_NAME_EXP: "Client's entry in database has expired",
-    ErrorCode.KDC_ERR_SERVICE_EXP: "Server's entry in database has expired",
-    ErrorCode.KDC_ERR_BAD_PVNO: "Requested protocol version number not supported",
-    ErrorCode.KDC_ERR_C_OLD_MAST_KVNO: "Client's key encrypted in old master key",
-    ErrorCode.KDC_ERR_S_OLD_MAST_KVNO: "Server's key encrypted in old master key",
-    ErrorCode.KDC_ERR_C_PRINCIPAL_UNKNOWN: "Client not found in Kerberos database",
-    ErrorCode.KDC_ERR_S_PRINCIPAL_UNKNOWN: "Server not found in Kerberos database",
-    ErrorCode.KDC_ERR_PRINCIPAL_NOT_UNIQUE: "Multiple principal entries in database",
-    ErrorCode.KDC_ERR_NULL_KEY: "The client or server has a null key",
-    ErrorCode.KDC_ERR_CANNOT_POSTDATE: "Ticket not eligible for postdating",
-    ErrorCode.KDC_ERR_NEVER_VALID: "Requested starttime is later than end time",
-    ErrorCode.KDC_ERR_POLICY: "KDC policy rejects request",
-    ErrorCode.KDC_ERR_BADOPTION: "KDC cannot accommodate requested option",
-    ErrorCode.KDC_ERR_ETYPE_NOSUPP: "KDC has no support for encryption type",
-    ErrorCode.KDC_ERR_SUMTYPE_NOSUPP: "KDC has no support for checksum type",
-    ErrorCode.KDC_ERR_PADATA_TYPE_NOSUPP: "KDC has no support for padata type",
-    ErrorCode.KDC_ERR_TRTYPE_NOSUPP: "KDC has no support for transited type",
-    ErrorCode.KDC_ERR_CLIENT_REVOKED: "Clients credentials have been revoked",
-    ErrorCode.KDC_ERR_SERVICE_REVOKED: "Credentials for server have been revoked",
-    ErrorCode.KDC_ERR_TGT_REVOKED: "TGT has been revoked",
-    ErrorCode.KDC_ERR_CLIENT_NOTYET: "Client not yet valid; try again later",
-    ErrorCode.KDC_ERR_SERVICE_NOTYET: "Server not yet valid; try again later",
-    ErrorCode.KDC_ERR_KEY_EXPIRED: "Password has expired; change password to reset",
-    ErrorCode.KDC_ERR_PREAUTH_FAILED: "Pre-authentication information was invalid",
-    ErrorCode.KDC_ERR_PREAUTH_REQUIRED: "Additional pre-authentication required",
-    ErrorCode.KDC_ERR_SERVER_NOMATCH: "Requested server and ticket don't match",
-    ErrorCode.KDC_ERR_MUST_USE_USER2USER: "Server principal valid for user2user only",
-    ErrorCode.KDC_ERR_PATH_NOT_ACCEPTED: "KDC Policy rejects transited path",
-    ErrorCode.KDC_ERR_SVC_UNAVAILABLE: "A service is not available",
-    ErrorCode.KRB_AP_ERR_BAD_INTEGRITY: "Integrity check on decrypted field failed",
-    ErrorCode.KRB_AP_ERR_TKT_EXPIRED: "Ticket expired",
-    ErrorCode.KRB_AP_ERR_TKT_NYV: "Ticket not yet valid",
-    ErrorCode.KRB_AP_ERR_REPEAT: "Request is a replay",
-    ErrorCode.KRB_AP_ERR_NOT_US: "The ticket isn't for us",
-    ErrorCode.KRB_AP_ERR_BADMATCH: "Ticket and authenticator don't match",
-    ErrorCode.KRB_AP_ERR_SKEW: "Clock skew too great",
-    ErrorCode.KRB_AP_ERR_BADADDR: "Incorrect net address",
-    ErrorCode.KRB_AP_ERR_BADVERSION: "Protocol version mismatch",
-    ErrorCode.KRB_AP_ERR_MSG_TYPE: "Invalid msg type",
-    ErrorCode.KRB_AP_ERR_MODIFIED: "Message stream modified",
-    ErrorCode.KRB_AP_ERR_BADORDER: "Message out of order",
-    ErrorCode.KRB_AP_ERR_BADKEYVER: "Specified version of key is not available",
-    ErrorCode.KRB_AP_ERR_NOKEY: "Service key not available",
-    ErrorCode.KRB_AP_ERR_MUT_FAIL: "Mutual authentication failed",
-    ErrorCode.KRB_AP_ERR_BADDIRECTION: "Incorrect message direction",
-    ErrorCode.KRB_AP_ERR_METHOD: "Alternative authentication method required",
-    ErrorCode.KRB_AP_ERR_BADSEQ: "Incorrect sequence number in message",
-    ErrorCode.KRB_AP_ERR_INAPP_CKSUM: "Inappropriate type of checksum in message",
-    ErrorCode.KRB_AP_PATH_NOT_ACCEPTED: "Policy rejects transited path",
-    ErrorCode.KRB_ERR_RESPONSE_TOO_BIG: "Response too big for UDP; retry with TCP",
-    ErrorCode.KRB_ERR_GENERIC: "Generic error (description in e-text)",
-    ErrorCode.KRB_ERR_FIELD_TOOLONG: "Field is too long for this implementation",
-    ErrorCode.KDC_ERROR_CLIENT_NOT_TRUSTED: "Reserved for PKINIT",
-    ErrorCode.KDC_ERROR_KDC_NOT_TRUSTED: "Reserved for PKINIT",
-    ErrorCode.KDC_ERROR_INVALID_SIG: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_KEY_TOO_WEAK: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_CERTIFICATE_MISMATCH: "Reserved for PKINIT",
-    ErrorCode.KRB_AP_ERR_NO_TGT: "No TGT available to validate USER-TO-USER",
-    ErrorCode.KDC_ERR_WRONG_REALM: "Reserved for future use",
-    ErrorCode.KRB_AP_ERR_USER_TO_USER_REQUIRED: "Ticket must be for USER-TO-USER",
-    ErrorCode.KDC_ERR_CANT_VERIFY_CERTIFICATE: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_INVALID_CERTIFICATE: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_REVOKED_CERTIFICATE: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_REVOCATION_STATUS_UNKNOWN: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_REVOCATION_STATUS_UNAVAILABLE: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_CLIENT_NAME_MISMATCH: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_KDC_NAME_MISMATCH: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_INCONSISTENT_KEY_PURPOSE: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_DIGEST_IN_CERT_NOT_ACCEPTED: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_PA_CHECKSUM_MUST_BE_INCLUDED: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_DIGEST_IN_SIGNED_DATA_NOT_ACCEPTED: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_PUBLIC_KEY_ENCRYPTION_NOT_SUPPORTED: "Reserved for PKINIT",
-    ErrorCode.KDC_ERR_PREAUTH_EXPIRED: "Pre-authentication has expired",
-    ErrorCode.KDC_ERR_MORE_PREAUTH_DATA_REQUIRED: "Additional pre-authentication data is required",
-    ErrorCode.KDC_ERR_PREAUTH_BAD_AUTHENTICATION_SET: "KDC cannot accommodate requested pre-authentication data element",
-    ErrorCode.KDC_ERR_UNKNOWN_CRITICAL_FAST_OPTIONS: "Reserved for PKINIT",
+    ErrorCode.KDC_ERR_NONE: _("No error"),
+    ErrorCode.KDC_ERR_NAME_EXP: _("Client's entry in database has expired"),
+    ErrorCode.KDC_ERR_SERVICE_EXP: _("Server's entry in database has expired"),
+    ErrorCode.KDC_ERR_BAD_PVNO: _("Requested protocol version number not supported"),
+    ErrorCode.KDC_ERR_C_OLD_MAST_KVNO: _("Client's key encrypted in old master key"),
+    ErrorCode.KDC_ERR_S_OLD_MAST_KVNO: _("Server's key encrypted in old master key"),
+    ErrorCode.KDC_ERR_C_PRINCIPAL_UNKNOWN: _("Client not found in Kerberos database"),
+    ErrorCode.KDC_ERR_S_PRINCIPAL_UNKNOWN: _("Server not found in Kerberos database"),
+    ErrorCode.KDC_ERR_PRINCIPAL_NOT_UNIQUE: _("Multiple principal entries in database"),
+    ErrorCode.KDC_ERR_NULL_KEY: _("The client or server has a null key"),
+    ErrorCode.KDC_ERR_CANNOT_POSTDATE: _("Ticket not eligible for postdating"),
+    ErrorCode.KDC_ERR_NEVER_VALID: _("Requested starttime is later than end time"),
+    ErrorCode.KDC_ERR_POLICY: _("KDC policy rejects request"),
+    ErrorCode.KDC_ERR_BADOPTION: _("KDC cannot accommodate requested option"),
+    ErrorCode.KDC_ERR_ETYPE_NOSUPP: _("KDC has no support for encryption type"),
+    ErrorCode.KDC_ERR_SUMTYPE_NOSUPP: _("KDC has no support for checksum type"),
+    ErrorCode.KDC_ERR_PADATA_TYPE_NOSUPP: _("KDC has no support for padata type"),
+    ErrorCode.KDC_ERR_TRTYPE_NOSUPP: _("KDC has no support for transited type"),
+    ErrorCode.KDC_ERR_CLIENT_REVOKED: _("Clients credentials have been revoked"),
+    ErrorCode.KDC_ERR_SERVICE_REVOKED: _("Credentials for server have been revoked"),
+    ErrorCode.KDC_ERR_TGT_REVOKED: _("TGT has been revoked"),
+    ErrorCode.KDC_ERR_CLIENT_NOTYET: _("Client not yet valid; try again later"),
+    ErrorCode.KDC_ERR_SERVICE_NOTYET: _("Server not yet valid; try again later"),
+    ErrorCode.KDC_ERR_KEY_EXPIRED: _("Password has expired; change password to reset"),
+    ErrorCode.KDC_ERR_PREAUTH_FAILED: _("Pre-authentication information was invalid"),
+    ErrorCode.KDC_ERR_PREAUTH_REQUIRED: _("Additional pre-authentication required"),
+    ErrorCode.KDC_ERR_SERVER_NOMATCH: _("Requested server and ticket don't match"),
+    ErrorCode.KDC_ERR_MUST_USE_USER2USER: _("Server principal valid for user2user only"),
+    ErrorCode.KDC_ERR_PATH_NOT_ACCEPTED: _("KDC Policy rejects transited path"),
+    ErrorCode.KDC_ERR_SVC_UNAVAILABLE: _("A service is not available"),
+    ErrorCode.KRB_AP_ERR_BAD_INTEGRITY: _("Integrity check on decrypted field failed"),
+    ErrorCode.KRB_AP_ERR_TKT_EXPIRED: _("Ticket expired"),
+    ErrorCode.KRB_AP_ERR_TKT_NYV: _("Ticket not yet valid"),
+    ErrorCode.KRB_AP_ERR_REPEAT: _("Request is a replay"),
+    ErrorCode.KRB_AP_ERR_NOT_US: _("The ticket isn't for us"),
+    ErrorCode.KRB_AP_ERR_BADMATCH: _("Ticket and authenticator don't match"),
+    ErrorCode.KRB_AP_ERR_SKEW: _("Clock skew too great"),
+    ErrorCode.KRB_AP_ERR_BADADDR: _("Incorrect net address"),
+    ErrorCode.KRB_AP_ERR_BADVERSION: _("Protocol version mismatch"),
+    ErrorCode.KRB_AP_ERR_MSG_TYPE: _("Invalid msg type"),
+    ErrorCode.KRB_AP_ERR_MODIFIED: _("Message stream modified"),
+    ErrorCode.KRB_AP_ERR_BADORDER: _("Message out of order"),
+    ErrorCode.KRB_AP_ERR_BADKEYVER: _("Specified version of key is not available"),
+    ErrorCode.KRB_AP_ERR_NOKEY: _("Service key not available"),
+    ErrorCode.KRB_AP_ERR_MUT_FAIL: _("Mutual authentication failed"),
+    ErrorCode.KRB_AP_ERR_BADDIRECTION: _("Incorrect message direction"),
+    ErrorCode.KRB_AP_ERR_METHOD: _("Alternative authentication method required"),
+    ErrorCode.KRB_AP_ERR_BADSEQ: _("Incorrect sequence number in message"),
+    ErrorCode.KRB_AP_ERR_INAPP_CKSUM: _("Inappropriate type of checksum in message"),
+    ErrorCode.KRB_AP_PATH_NOT_ACCEPTED: _("Policy rejects transited path"),
+    ErrorCode.KRB_ERR_RESPONSE_TOO_BIG: _("Response too big for UDP; retry with TCP"),
+    ErrorCode.KRB_ERR_GENERIC: _("Generic error (description in e-text)"),
+    ErrorCode.KRB_ERR_FIELD_TOOLONG: _("Field is too long for this implementation"),
+    ErrorCode.KDC_ERROR_CLIENT_NOT_TRUSTED: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERROR_KDC_NOT_TRUSTED: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERROR_INVALID_SIG: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_KEY_TOO_WEAK: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_CERTIFICATE_MISMATCH: _("Reserved for PKINIT"),
+    ErrorCode.KRB_AP_ERR_NO_TGT: _("No TGT available to validate USER-TO-USER"),
+    ErrorCode.KDC_ERR_WRONG_REALM: _("Reserved for future use"),
+    ErrorCode.KRB_AP_ERR_USER_TO_USER_REQUIRED: _("Ticket must be for USER-TO-USER"),
+    ErrorCode.KDC_ERR_CANT_VERIFY_CERTIFICATE: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_INVALID_CERTIFICATE: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_REVOKED_CERTIFICATE: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_REVOCATION_STATUS_UNKNOWN: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_REVOCATION_STATUS_UNAVAILABLE: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_CLIENT_NAME_MISMATCH: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_KDC_NAME_MISMATCH: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_INCONSISTENT_KEY_PURPOSE: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_DIGEST_IN_CERT_NOT_ACCEPTED: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_PA_CHECKSUM_MUST_BE_INCLUDED: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_DIGEST_IN_SIGNED_DATA_NOT_ACCEPTED: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_PUBLIC_KEY_ENCRYPTION_NOT_SUPPORTED: _("Reserved for PKINIT"),
+    ErrorCode.KDC_ERR_PREAUTH_EXPIRED: _("Pre-authentication has expired"),
+    ErrorCode.KDC_ERR_MORE_PREAUTH_DATA_REQUIRED: _(
+        "Additional pre-authentication data is required"
+    ),
+    ErrorCode.KDC_ERR_PREAUTH_BAD_AUTHENTICATION_SET: _(
+        "KDC cannot accommodate requested pre-authentication data element"
+    ),
+    ErrorCode.KDC_ERR_UNKNOWN_CRITICAL_FAST_OPTIONS: _("Reserved for PKINIT"),
 }
 
 
@@ -202,22 +216,24 @@ def _application_tag(tag_: ApplicationTag) -> tag.TagSet:
 
 
 def _sequence_component(
-    name: str, tag_value: int, type_: base.Asn1Type, **kwargs
+    name: str, tag_value: int, type_: base.Asn1Type, **subkwargs
 ) -> namedtype.NamedType:
     return namedtype.NamedType(
         name,
-        type_.subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, tag_value)),
-        **kwargs,
+        type_.subtype(
+            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, tag_value), **subkwargs
+        ),
     )
 
 
 def _sequence_optional_component(
-    name: str, tag_value: int, type_: base.Asn1Type, **kwargs
+    name: str, tag_value: int, type_: base.Asn1Type, **subkwargs
 ) -> namedtype.OptionalNamedType:
     return namedtype.OptionalNamedType(
         name,
-        type_.subtype(explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, tag_value)),
-        **kwargs,
+        type_.subtype(
+            explicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, tag_value), **subkwargs
+        ),
     )
 
 
@@ -398,6 +414,18 @@ class KdcReq(univ.Sequence):
         _sequence_component("req-body", 4, KdcReqBody()),
     )
 
+    @classmethod
+    def from_bytes(cls, data: bytes) -> Self:
+        for subcls in cls.__subclasses__():  # AsReq and TgsReq
+            try:
+                req, tail = der_decode(data, asn1Spec=subcls())
+            except PyAsn1Error:
+                continue
+            if tail:
+                raise KerberosParsingException("Extra data found when parsing KdcReq")
+            return req
+        raise KerberosParsingException("Error parsing KdcReq")
+
 
 class AsReq(KdcReq):
     tagSet = _application_tag(ApplicationTag.AS_REQ)
@@ -467,3 +495,13 @@ class KdcProxyMessage(univ.Sequence):
         _sequence_optional_component("target-domain", 1, Realm()),
         _sequence_optional_component("dclocator-hint", 2, univ.Integer()),
     )
+
+    @classmethod
+    def from_bytes(cls, data: bytes) -> Self:
+        try:
+            req, tail = der_decode(data, asn1Spec=cls())
+        except PyAsn1Error as exc:
+            raise KerberosParsingException("Error parsing KdcProxyMessage") from exc
+        if tail:
+            raise KerberosParsingException("Extra data found when parsing KdcProxyMessage")
+        return req
