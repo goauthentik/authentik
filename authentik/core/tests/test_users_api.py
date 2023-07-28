@@ -17,7 +17,7 @@ from authentik.core.models import (
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
-from authentik.lib.kerberos import keytab, principal
+from authentik.lib.kerberos import keytab, protocol
 from authentik.providers.kerberos.models import KerberosRealm
 from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant
@@ -66,12 +66,12 @@ class TestUsersAPI(APITestCase):
         )
         for entry in kt.entries:
             self.assertEqual(
-                entry.principal.name.name,
+                entry.principal.name["name-string"],
                 [self.user.username],
             )
             self.assertEqual(
-                entry.principal.name.name_type,
-                principal.PrincipalNameType.NT_PRINCIPAL,
+                entry.principal.name["name_type"],
+                protocol.PrincipalNameType.NT_PRINCIPAL,
             )
             self.assertEqual(
                 entry.principal.realm,

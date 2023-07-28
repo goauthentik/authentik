@@ -1,18 +1,46 @@
 from enum import UNIQUE, Enum, verify
 from typing import Self
 
-from django.utils.translation import gettext_lazy as _
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1.error import PyAsn1Error
-from pyasn1.type import base, char, constraint, namedtype, tag, univ, useful
+from pyasn1.type import base, char, constraint, namedtype, namedval, tag, univ, useful
 
-from authentik.lib.kerberos.exceptions import KerberosException
+from authentik.lib.kerberos.exceptions import KerberosError
+
+from structlog.stdlib import get_logger
+LOGGER = get_logger()
 
 
-class KerberosParsingException(KerberosException):
-    pass
+@verify(UNIQUE)
+class PrincipalNameType(Enum):
+    """
+    Kerberos principal name types as defined by RFC 4120 and RFC 6111.
 
+    See https://www.rfc-editor.org/rfc/rfc4120#section-6.2
+    and https://www.rfc-editor.org/rfc/rfc6111.html#section-3.1
+    """
+
+    # Name type not known
+    NT_UNKNOWN = 0
+    # Just the name of the principal as in DCE, or for users
+    NT_PRINCIPAL = 1
+    # Service and other unique instance (krbtgt)
+    NT_SRV_INST = 2
+    # Service with host name as instance (telnet, rcommands)
+    NT_SRV_HST = 3
+    # Service with host as remaining components
+    NT_SRV_XHST = 4
+    # Unique ID
+    NT_UID = 5
+    # Encoded X.509 Distinguished Name
+    NT_X500_PRINCIPAL = 6
+    # Name in form of SMTP email name (e.g., user@example.com)
+    NT_SMTP_NAME = 7
+    # Enterprise name
+    NT_ENTERPRISE = 10
+    # Name considered well-known
+    NT_WELLKNOWN = 11
 
 @verify(UNIQUE)
 class ApplicationTag(Enum):
@@ -40,174 +68,6 @@ class ApplicationTag(Enum):
     ENC_KRB_PRIV_PART = 28  # non-PDU
     ENC_KRB_CRED_PART = 29  # non-PDU
     KRB_ERROR = 30  # PDU
-
-
-@verify(UNIQUE)
-class ErrorCode(Enum):
-    KDC_ERR_NONE = 0  # No error
-    KDC_ERR_NAME_EXP = 1  # Client's entry in database has expired
-    KDC_ERR_SERVICE_EXP = 2  # Server's entry in database has expired
-    KDC_ERR_BAD_PVNO = 3  # Requested protocol version number not supported
-    KDC_ERR_C_OLD_MAST_KVNO = 4  # Client's key encrypted in old master key
-    KDC_ERR_S_OLD_MAST_KVNO = 5  # Server's key encrypted in old master key
-    KDC_ERR_C_PRINCIPAL_UNKNOWN = 6  # Client not found in Kerberos database
-    KDC_ERR_S_PRINCIPAL_UNKNOWN = 7  # Server not found in Kerberos database
-    KDC_ERR_PRINCIPAL_NOT_UNIQUE = 8  # Multiple principal entries in database
-    KDC_ERR_NULL_KEY = 9  # The client or server has a null key
-    KDC_ERR_CANNOT_POSTDATE = 10  # Ticket not eligible for postdating
-    KDC_ERR_NEVER_VALID = 11  # Requested starttime is later than end time
-    KDC_ERR_POLICY = 12  # KDC policy rejects request
-    KDC_ERR_BADOPTION = 13  # KDC cannot accommodate requested option
-    KDC_ERR_ETYPE_NOSUPP = 14  # KDC has no support for encryption type
-    KDC_ERR_SUMTYPE_NOSUPP = 15  # KDC has no support for checksum type
-    KDC_ERR_PADATA_TYPE_NOSUPP = 16  # KDC has no support for padata type
-    KDC_ERR_TRTYPE_NOSUPP = 17  # KDC has no support for transited type
-    KDC_ERR_CLIENT_REVOKED = 18  # Clients credentials have been revoked
-    KDC_ERR_SERVICE_REVOKED = 19  # Credentials for server have been revoked
-    KDC_ERR_TGT_REVOKED = 20  # TGT has been revoked
-    KDC_ERR_CLIENT_NOTYET = 21  # Client not yet valid; try again later
-    KDC_ERR_SERVICE_NOTYET = 22  # Server not yet valid; try again later
-    KDC_ERR_KEY_EXPIRED = 23  # Password has expired; change password to reset
-    KDC_ERR_PREAUTH_FAILED = 24  # Pre-authentication information was invalid
-    KDC_ERR_PREAUTH_REQUIRED = 25  # Additional pre-authentication required
-    KDC_ERR_SERVER_NOMATCH = 26  # Requested server and ticket don't match
-    KDC_ERR_MUST_USE_USER2USER = 27  # Server principal valid for user2user only
-    KDC_ERR_PATH_NOT_ACCEPTED = 28  # KDC Policy rejects transited path
-    KDC_ERR_SVC_UNAVAILABLE = 29  # A service is not available
-    KRB_AP_ERR_BAD_INTEGRITY = 31  # Integrity check on decrypted field failed
-    KRB_AP_ERR_TKT_EXPIRED = 32  # Ticket expired
-    KRB_AP_ERR_TKT_NYV = 33  # Ticket not yet valid
-    KRB_AP_ERR_REPEAT = 34  # Request is a replay
-    KRB_AP_ERR_NOT_US = 35  # The ticket isn't for us
-    KRB_AP_ERR_BADMATCH = 36  # Ticket and authenticator don't match
-    KRB_AP_ERR_SKEW = 37  # Clock skew too great
-    KRB_AP_ERR_BADADDR = 38  # Incorrect net address
-    KRB_AP_ERR_BADVERSION = 39  # Protocol version mismatch
-    KRB_AP_ERR_MSG_TYPE = 40  # Invalid msg type
-    KRB_AP_ERR_MODIFIED = 41  # Message stream modified
-    KRB_AP_ERR_BADORDER = 42  # Message out of order
-    KRB_AP_ERR_BADKEYVER = 44  # Specified version of key is not available
-    KRB_AP_ERR_NOKEY = 45  # Service key not available
-    KRB_AP_ERR_MUT_FAIL = 46  # Mutual authentication failed
-    KRB_AP_ERR_BADDIRECTION = 47  # Incorrect message direction
-    KRB_AP_ERR_METHOD = 48  # Alternative authentication method required
-    KRB_AP_ERR_BADSEQ = 49  # Incorrect sequence number in message
-    KRB_AP_ERR_INAPP_CKSUM = 50  # Inappropriate type of checksum in message
-    KRB_AP_PATH_NOT_ACCEPTED = 51  # Policy rejects transited path
-    KRB_ERR_RESPONSE_TOO_BIG = 52  # Response too big for UDP; retry with TCP
-    KRB_ERR_GENERIC = 60  # Generic error (description in e-text)
-    KRB_ERR_FIELD_TOOLONG = 61  # Field is too long for this implementation
-    KDC_ERROR_CLIENT_NOT_TRUSTED = 62  # Reserved for PKINIT
-    KDC_ERROR_KDC_NOT_TRUSTED = 63  # Reserved for PKINIT
-    KDC_ERROR_INVALID_SIG = 64  # Reserved for PKINIT
-    KDC_ERR_KEY_TOO_WEAK = 65  # Reserved for PKINIT
-    KDC_ERR_CERTIFICATE_MISMATCH = 66  # Reserved for PKINIT
-    KRB_AP_ERR_NO_TGT = 67  # No TGT available to validate USER-TO-USER
-    KDC_ERR_WRONG_REALM = 68  # Reserved for future use
-    KRB_AP_ERR_USER_TO_USER_REQUIRED = 69  # Ticket must be for USER-TO-USER
-    KDC_ERR_CANT_VERIFY_CERTIFICATE = 70  # Reserved for PKINIT
-    KDC_ERR_INVALID_CERTIFICATE = 71  # Reserved for PKINIT
-    KDC_ERR_REVOKED_CERTIFICATE = 72  # Reserved for PKINIT
-    KDC_ERR_REVOCATION_STATUS_UNKNOWN = 73  # Reserved for PKINIT
-    KDC_ERR_REVOCATION_STATUS_UNAVAILABLE = 74  # Reserved for PKINIT
-    KDC_ERR_CLIENT_NAME_MISMATCH = 75  # Reserved for PKINIT
-    KDC_ERR_KDC_NAME_MISMATCH = 76  # Reserved for PKINIT
-    KDC_ERR_INCONSISTENT_KEY_PURPOSE = 77  # Reserved for PKINIT
-    KDC_ERR_DIGEST_IN_CERT_NOT_ACCEPTED = 78  # Reserved for PKINIT
-    KDC_ERR_PA_CHECKSUM_MUST_BE_INCLUDED = 79  # Reserved for PKINIT
-    KDC_ERR_DIGEST_IN_SIGNED_DATA_NOT_ACCEPTED = 80  # Reserved for PKINIT
-    KDC_ERR_PUBLIC_KEY_ENCRYPTION_NOT_SUPPORTED = 81  # Reserved for PKINIT
-    KDC_ERR_PREAUTH_EXPIRED = 90  # Pre-authentication has expired
-    KDC_ERR_MORE_PREAUTH_DATA_REQUIRED = 91  # Additional pre-authentication data is required
-    KDC_ERR_PREAUTH_BAD_AUTHENTICATION_SET = (
-        92  # KDC cannot accommodate requested pre-authentication data element
-    )
-    KDC_ERR_UNKNOWN_CRITICAL_FAST_OPTIONS = 93  # Reserved for PKINIT
-
-
-ERROR_MESSAGES = {
-    ErrorCode.KDC_ERR_NONE: _("No error"),
-    ErrorCode.KDC_ERR_NAME_EXP: _("Client's entry in database has expired"),
-    ErrorCode.KDC_ERR_SERVICE_EXP: _("Server's entry in database has expired"),
-    ErrorCode.KDC_ERR_BAD_PVNO: _("Requested protocol version number not supported"),
-    ErrorCode.KDC_ERR_C_OLD_MAST_KVNO: _("Client's key encrypted in old master key"),
-    ErrorCode.KDC_ERR_S_OLD_MAST_KVNO: _("Server's key encrypted in old master key"),
-    ErrorCode.KDC_ERR_C_PRINCIPAL_UNKNOWN: _("Client not found in Kerberos database"),
-    ErrorCode.KDC_ERR_S_PRINCIPAL_UNKNOWN: _("Server not found in Kerberos database"),
-    ErrorCode.KDC_ERR_PRINCIPAL_NOT_UNIQUE: _("Multiple principal entries in database"),
-    ErrorCode.KDC_ERR_NULL_KEY: _("The client or server has a null key"),
-    ErrorCode.KDC_ERR_CANNOT_POSTDATE: _("Ticket not eligible for postdating"),
-    ErrorCode.KDC_ERR_NEVER_VALID: _("Requested starttime is later than end time"),
-    ErrorCode.KDC_ERR_POLICY: _("KDC policy rejects request"),
-    ErrorCode.KDC_ERR_BADOPTION: _("KDC cannot accommodate requested option"),
-    ErrorCode.KDC_ERR_ETYPE_NOSUPP: _("KDC has no support for encryption type"),
-    ErrorCode.KDC_ERR_SUMTYPE_NOSUPP: _("KDC has no support for checksum type"),
-    ErrorCode.KDC_ERR_PADATA_TYPE_NOSUPP: _("KDC has no support for padata type"),
-    ErrorCode.KDC_ERR_TRTYPE_NOSUPP: _("KDC has no support for transited type"),
-    ErrorCode.KDC_ERR_CLIENT_REVOKED: _("Clients credentials have been revoked"),
-    ErrorCode.KDC_ERR_SERVICE_REVOKED: _("Credentials for server have been revoked"),
-    ErrorCode.KDC_ERR_TGT_REVOKED: _("TGT has been revoked"),
-    ErrorCode.KDC_ERR_CLIENT_NOTYET: _("Client not yet valid; try again later"),
-    ErrorCode.KDC_ERR_SERVICE_NOTYET: _("Server not yet valid; try again later"),
-    ErrorCode.KDC_ERR_KEY_EXPIRED: _("Password has expired; change password to reset"),
-    ErrorCode.KDC_ERR_PREAUTH_FAILED: _("Pre-authentication information was invalid"),
-    ErrorCode.KDC_ERR_PREAUTH_REQUIRED: _("Additional pre-authentication required"),
-    ErrorCode.KDC_ERR_SERVER_NOMATCH: _("Requested server and ticket don't match"),
-    ErrorCode.KDC_ERR_MUST_USE_USER2USER: _("Server principal valid for user2user only"),
-    ErrorCode.KDC_ERR_PATH_NOT_ACCEPTED: _("KDC Policy rejects transited path"),
-    ErrorCode.KDC_ERR_SVC_UNAVAILABLE: _("A service is not available"),
-    ErrorCode.KRB_AP_ERR_BAD_INTEGRITY: _("Integrity check on decrypted field failed"),
-    ErrorCode.KRB_AP_ERR_TKT_EXPIRED: _("Ticket expired"),
-    ErrorCode.KRB_AP_ERR_TKT_NYV: _("Ticket not yet valid"),
-    ErrorCode.KRB_AP_ERR_REPEAT: _("Request is a replay"),
-    ErrorCode.KRB_AP_ERR_NOT_US: _("The ticket isn't for us"),
-    ErrorCode.KRB_AP_ERR_BADMATCH: _("Ticket and authenticator don't match"),
-    ErrorCode.KRB_AP_ERR_SKEW: _("Clock skew too great"),
-    ErrorCode.KRB_AP_ERR_BADADDR: _("Incorrect net address"),
-    ErrorCode.KRB_AP_ERR_BADVERSION: _("Protocol version mismatch"),
-    ErrorCode.KRB_AP_ERR_MSG_TYPE: _("Invalid msg type"),
-    ErrorCode.KRB_AP_ERR_MODIFIED: _("Message stream modified"),
-    ErrorCode.KRB_AP_ERR_BADORDER: _("Message out of order"),
-    ErrorCode.KRB_AP_ERR_BADKEYVER: _("Specified version of key is not available"),
-    ErrorCode.KRB_AP_ERR_NOKEY: _("Service key not available"),
-    ErrorCode.KRB_AP_ERR_MUT_FAIL: _("Mutual authentication failed"),
-    ErrorCode.KRB_AP_ERR_BADDIRECTION: _("Incorrect message direction"),
-    ErrorCode.KRB_AP_ERR_METHOD: _("Alternative authentication method required"),
-    ErrorCode.KRB_AP_ERR_BADSEQ: _("Incorrect sequence number in message"),
-    ErrorCode.KRB_AP_ERR_INAPP_CKSUM: _("Inappropriate type of checksum in message"),
-    ErrorCode.KRB_AP_PATH_NOT_ACCEPTED: _("Policy rejects transited path"),
-    ErrorCode.KRB_ERR_RESPONSE_TOO_BIG: _("Response too big for UDP; retry with TCP"),
-    ErrorCode.KRB_ERR_GENERIC: _("Generic error (description in e-text)"),
-    ErrorCode.KRB_ERR_FIELD_TOOLONG: _("Field is too long for this implementation"),
-    ErrorCode.KDC_ERROR_CLIENT_NOT_TRUSTED: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERROR_KDC_NOT_TRUSTED: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERROR_INVALID_SIG: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_KEY_TOO_WEAK: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_CERTIFICATE_MISMATCH: _("Reserved for PKINIT"),
-    ErrorCode.KRB_AP_ERR_NO_TGT: _("No TGT available to validate USER-TO-USER"),
-    ErrorCode.KDC_ERR_WRONG_REALM: _("Reserved for future use"),
-    ErrorCode.KRB_AP_ERR_USER_TO_USER_REQUIRED: _("Ticket must be for USER-TO-USER"),
-    ErrorCode.KDC_ERR_CANT_VERIFY_CERTIFICATE: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_INVALID_CERTIFICATE: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_REVOKED_CERTIFICATE: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_REVOCATION_STATUS_UNKNOWN: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_REVOCATION_STATUS_UNAVAILABLE: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_CLIENT_NAME_MISMATCH: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_KDC_NAME_MISMATCH: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_INCONSISTENT_KEY_PURPOSE: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_DIGEST_IN_CERT_NOT_ACCEPTED: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_PA_CHECKSUM_MUST_BE_INCLUDED: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_DIGEST_IN_SIGNED_DATA_NOT_ACCEPTED: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_PUBLIC_KEY_ENCRYPTION_NOT_SUPPORTED: _("Reserved for PKINIT"),
-    ErrorCode.KDC_ERR_PREAUTH_EXPIRED: _("Pre-authentication has expired"),
-    ErrorCode.KDC_ERR_MORE_PREAUTH_DATA_REQUIRED: _(
-        "Additional pre-authentication data is required"
-    ),
-    ErrorCode.KDC_ERR_PREAUTH_BAD_AUTHENTICATION_SET: _(
-        "KDC cannot accommodate requested pre-authentication data element"
-    ),
-    ErrorCode.KDC_ERR_UNKNOWN_CRITICAL_FAST_OPTIONS: _("Reserved for PKINIT"),
-}
 
 
 def _application_tag(tag_: ApplicationTag) -> tag.TagSet:
@@ -250,9 +110,9 @@ class Asn1LeafMixin:
         try:
             req, tail = der_decode(data, asn1Spec=cls())
         except PyAsn1Error as exc:
-            raise KerberosParsingException(f"Fail parsing {cls.__name__}") from exc
+            raise KerberosError(message=f"Fail parsing {cls.__name__}") from exc
         if tail:
-            raise KerberosParsingException("Extra data found when parsing {cls.__name__}")
+            raise KerberosError(message=f"Extra data found when parsing {cls.__name__}")
         return req
 
     def to_bytes(self) -> bytes:
@@ -264,10 +124,11 @@ class Int32(univ.Integer):
         -2147483648, 2147483647
     )
 
+    def to_bytes(self, *args, **kwargs) -> bytes:
+        return int(self).to_bytes(*args, **kwargs)
 
 class UInt32(univ.Integer):
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(0, 4294967295)
-
 
 class Microseconds(univ.Integer):
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(0, 999999)
@@ -289,9 +150,38 @@ class PrincipalName(univ.Sequence):
         _sequence_component("name-string", 1, univ.SequenceOf(componentType=KerberosString())),
     )
 
+    def to_string(self):
+        return "/".join([str(name) for name in self["name-string"]])
+
+    @classmethod
+    def from_components(cls, name_type: PrincipalNameType, name: list[str]) -> Self:
+        obj = cls()
+        obj["name-type"] = name_type.value
+        obj["name-string"].extend(name)
+        return obj
+
+    @classmethod
+    def from_spn(cls, spn: str) -> Self:
+        """Create a principal name from a service principal name."""
+        name, realm, *_ = spn.rsplit("@", maxsplit=1) + [None]
+        components = name.split("/")
+        if realm == "":
+            raise ValueError("Empty realms are not allowed")
+        if not all(components):
+            raise ValueError("Empty names are not allowed")
+        match len(components):
+            case 1:
+                name_type = PrincipalNameType.NT_SRV_INST
+            case 2:
+                name_type = PrincipalNameType.NT_SRV_HST
+            case _:
+                name_type = PrincipalNameType.NT_SRV_XHST
+        return cls.from_components(name_type, components)
 
 class KerberosTime(useful.GeneralizedTime):
     """Kerberos time ASN.1 representation"""
+
+    _hasSubsecond = False
 
 
 class HostAddress(univ.Sequence):
@@ -316,6 +206,16 @@ class AuthorizationData(univ.SequenceOf):
             _sequence_component("ad-data", 1, univ.OctetString()),
         )
     )
+
+
+class LastReq(univ.SequenceOf):
+    componentType = univ.Sequence(
+        componentType=namedtype.NamedTypes(
+            _sequence_component("lr-type", 0, Int32()),
+            _sequence_component("lr-data", 1, KerberosTime()),
+        )
+    )
+
 
 class PaDataEncTsEnc(Asn1LeafMixin, univ.Sequence):
     componentType = namedtype.NamedTypes(
@@ -343,12 +243,15 @@ class PaData(univ.Sequence):
         _sequence_component("padata-value", 2, univ.OctetString()),
     )
 
+class MethodData(Asn1LeafMixin, univ.SequenceOf):
+    componentType = PaData()
+
 
 class KerberosFlags(univ.BitString):
     """Kerberos flags ASN.1 representation"""
 
 
-class EncryptedData(univ.Sequence):
+class EncryptedData(Asn1LeafMixin, univ.Sequence):
     componentType = namedtype.NamedTypes(
         _sequence_component("etype", 0, Int32()),
         _sequence_optional_component("kvno", 1, UInt32()),
@@ -381,7 +284,22 @@ class Ticket(Asn1LeafMixin, univ.Sequence):
 
 
 class TicketFlags(KerberosFlags):
-    pass
+    namedValues = namedval.NamedValues(
+        ("reserved", 0),
+        ("forwardable", 1),
+        ("forwarded", 2),
+        ("proxiable", 3),
+        ("proxy", 4),
+        ("may-postdate", 5),
+        ("postdated", 6),
+        ("invalid", 7),
+        ("renewable", 8),
+        ("initial", 9),
+        ("pre-authent", 10),
+        ("hw-authent", 11),
+        ("transited-policy-checked", 12),
+        ("ok-as-delefate", 13),
+    )
 
 
 class TransitedEncoding(univ.Sequence):
@@ -400,16 +318,37 @@ class EncTicketPart(univ.Sequence):
         _sequence_component("cname", 3, PrincipalName()),
         _sequence_component("transited", 4, TransitedEncoding()),
         _sequence_component("authtime", 5, KerberosTime()),
-        _sequence_component("starttime", 6, KerberosTime()),
+        _sequence_optional_component("starttime", 6, KerberosTime()),
         _sequence_component("endtime", 7, KerberosTime()),
-        _sequence_component("renew-till", 8, KerberosTime()),
-        _sequence_component("caddr", 9, HostAddresses()),
-        _sequence_component("authorization-data", 10, AuthorizationData()),
+        _sequence_optional_component("renew-till", 8, KerberosTime()),
+        _sequence_optional_component("caddr", 9, HostAddresses()),
+        _sequence_optional_component("authorization-data", 10, AuthorizationData()),
     )
 
 
 class KdcOptions(KerberosFlags):
-    pass
+    namedValues = namedval.NamedValues(
+        ("reserved", 0),
+        ("forwardable", 1),
+        ("forwarded", 2),
+        ("proxiable", 3),
+        ("proxy", 4),
+        ("allow-postdate", 5),
+        ("postdated", 6),
+        ("unused7", 7),
+        ("renewable", 8),
+        ("unused9", 9),
+        ("unused10", 10),
+        ("opt-hardware-auth", 11),
+        ("unused12", 12),
+        ("unused13", 13),
+        ("unused15", 15),
+        ("disable-transited-check", 26),
+        ("renewable-ok", 27),
+        ("enc-tkt-in-skey", 28),
+        ("renew", 30),
+        ("validate", 31),
+    )
 
 
 class KdcReqBody(univ.Sequence):
@@ -417,15 +356,15 @@ class KdcReqBody(univ.Sequence):
         _sequence_component("kdc-options", 0, KdcOptions()),
         _sequence_component("cname", 1, PrincipalName()),
         _sequence_component("realm", 2, Realm()),
-        _sequence_component("sname", 3, PrincipalName()),
-        _sequence_component("from", 4, KerberosTime()),
+        _sequence_optional_component("sname", 3, PrincipalName()),
+        _sequence_optional_component("from", 4, KerberosTime()),
         _sequence_component("till", 5, KerberosTime()),
-        _sequence_component("rtime", 6, KerberosTime()),
+        _sequence_optional_component("rtime", 6, KerberosTime()),
         _sequence_component("nonce", 7, UInt32()),
         _sequence_component("etype", 8, univ.SequenceOf(componentType=Int32())),
-        _sequence_component("addresses", 9, HostAddresses()),
-        _sequence_component("enc-authorization-data", 10, EncryptedData()),
-        _sequence_component("additional-tickets", 11, univ.SequenceOf(componentType=Ticket())),
+        _sequence_optional_component("addresses", 9, HostAddresses()),
+        _sequence_optional_component("enc-authorization-data", 10, EncryptedData()),
+        _sequence_optional_component("additional-tickets", 11, univ.SequenceOf(componentType=Ticket())),
     )
 
 
@@ -452,12 +391,13 @@ class KdcReq(univ.Sequence):
         for subcls in cls.__subclasses__():  # AsReq and TgsReq
             try:
                 req, tail = der_decode(data, asn1Spec=subcls())
-            except PyAsn1Error:
+            except PyAsn1Error as exc:
+                LOGGER.debug("failed to parse Kerberos request", exc=exc)
                 continue
             if tail:
-                raise KerberosParsingException("Extra data found when parsing KdcReq")
+                raise KerberosError(message="Invalid KdcReq: extra data found")
             return req
-        raise KerberosParsingException("Error parsing KdcReq")
+        raise KerberosError(message="Invalid KdcReq: unknown MSG_TYPE")
 
 
 class AsReq(KdcReq):
@@ -498,6 +438,30 @@ class TgsRep(KdcRep):
     tagSet = _application_tag(ApplicationTag.TGS_REP)
 
 
+class EncKdcRepPart(Asn1LeafMixin, univ.Sequence):
+    componentType = namedtype.NamedTypes(
+        _sequence_component("key", 0, EncryptionKey()),
+        _sequence_component("last-req", 1, LastReq()),
+        _sequence_component("nonce", 2, UInt32()),
+        _sequence_optional_component("key-expiration", 3, KerberosTime()),
+        _sequence_component("flags", 4, TicketFlags()),
+        _sequence_component("authtime", 5, KerberosTime()),
+        _sequence_optional_component("starttime", 6, KerberosTime()),
+        _sequence_component("endtime", 7, KerberosTime()),
+        _sequence_optional_component("renew-till", 8, KerberosTime()),
+        _sequence_component("srealm", 9, Realm()),
+        _sequence_component("sname", 10, PrincipalName()),
+        _sequence_optional_component("caddr", 11, HostAddresses()),
+    )
+
+class EncAsRepPart(EncKdcRepPart):
+    tagSet = _application_tag(ApplicationTag.ENC_AS_REP_PART)
+
+
+class EncTgsRepPart(EncKdcRepPart):
+    tagSet = _application_tag(ApplicationTag.ENC_TGS_REP_PART)
+
+
 class KrbError(Asn1LeafMixin, univ.Sequence):
     tagSet = _application_tag(ApplicationTag.KRB_ERROR)
     componentType = namedtype.NamedTypes(
@@ -512,7 +476,7 @@ class KrbError(Asn1LeafMixin, univ.Sequence):
         _sequence_optional_component("cusec", 3, Microseconds()),
         _sequence_component("stime", 4, KerberosTime()),
         _sequence_component("susec", 5, Microseconds()),
-        _sequence_component("error-core", 6, Int32()),
+        _sequence_component("error-code", 6, Int32()),
         _sequence_optional_component("crealm", 7, Realm()),
         _sequence_optional_component("cname", 8, PrincipalName()),
         _sequence_component("realm", 9, Realm()),

@@ -1,8 +1,7 @@
 """Kerberos Principal tests"""
 from django.test import TestCase
 
-from authentik.lib.kerberos.exceptions import KerberosException
-from authentik.lib.kerberos.principal import PrincipalName, PrincipalNameType
+from authentik.lib.kerberos.protocol import PrincipalName, PrincipalNameType
 
 
 class TestPrincipal(TestCase):
@@ -13,64 +12,59 @@ class TestPrincipal(TestCase):
         data = (
             (
                 "test@EXAMPLE.ORG",
-                PrincipalName(
-                    name_type=PrincipalNameType.NT_SRV_INST, name=["test"], realm="EXAMPLE.ORG"
+                PrincipalName.from_components(
+                    name_type=PrincipalNameType.NT_SRV_INST, name=["test"],
                 ),
             ),
             (
                 "host/test.example.org@EXAMPLE.ORG",
-                PrincipalName(
+                PrincipalName.from_components(
                     name_type=PrincipalNameType.NT_SRV_HST,
                     name=["host", "test.example.org"],
-                    realm="EXAMPLE.ORG",
                 ),
             ),
             (
                 "test1/test2/test.example.org@EXAMPLE.ORG",
-                PrincipalName(
+                PrincipalName.from_components(
                     name_type=PrincipalNameType.NT_SRV_XHST,
                     name=["test1", "test2", "test.example.org"],
-                    realm="EXAMPLE.ORG",
                 ),
             ),
             (
                 "test",
-                PrincipalName(name_type=PrincipalNameType.NT_SRV_INST, name=["test"], realm=None),
+                PrincipalName.from_components(name_type=PrincipalNameType.NT_SRV_INST, name=["test"]),
             ),
             (
                 "host/test.example.org",
-                PrincipalName(
+                PrincipalName.from_components(
                     name_type=PrincipalNameType.NT_SRV_HST,
                     name=["host", "test.example.org"],
-                    realm=None,
                 ),
             ),
             (
                 "test1/test2/test.example.org",
-                PrincipalName(
+                PrincipalName.from_components(
                     name_type=PrincipalNameType.NT_SRV_XHST,
                     name=["test1", "test2", "test.example.org"],
-                    realm=None,
                 ),
             ),
         )
         for spn, expected in data:
             result = PrincipalName.from_spn(spn)
-            self.assertEqual(result.name_type, expected.name_type)
-            self.assertEqual(result.name, expected.name)
-            self.assertEqual(result.realm, expected.realm)
+            self.assertEqual(result["name-type"], expected["name-type"])
+            self.assertEqual(result["name-string"], expected["name-string"])
 
     def test_from_spn_invalid(self):
         """Test Principal creation from an invalid service principal name"""
-        with self.assertRaises(KerberosException):
+        with self.assertRaises(ValueError):
             PrincipalName.from_spn("")
-        with self.assertRaises(KerberosException):
+        with self.assertRaises(ValueError):
             PrincipalName.from_spn("/")
-        with self.assertRaises(KerberosException):
+        with self.assertRaises(ValueError):
             PrincipalName.from_spn("@")
-        with self.assertRaises(KerberosException):
+        with self.assertRaises(ValueError):
             PrincipalName.from_spn("/@")
-        with self.assertRaises(KerberosException):
+        with self.assertRaises(ValueError):
             PrincipalName.from_spn("@EXAMPLE.ORG")
-        with self.assertRaises(KerberosException):
+        with self.assertRaises(ValueError):
             PrincipalName.from_spn("test@")

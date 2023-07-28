@@ -6,11 +6,6 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 from authentik.lib.kerberos import iana
-from authentik.lib.kerberos.exceptions import KerberosException
-
-
-class KerberosCryptoValueError(ValueError, KerberosException):
-    """Kerberos cryptography value error"""
 
 
 def nfold(data: bytes, size: int) -> bytes:
@@ -45,7 +40,7 @@ def nfold(data: bytes, size: int) -> bytes:
         One's complement addition (with end-around carry).
         """
         if len(lhs) != len(rhs):
-            raise KerberosCryptoValueError(
+            raise ValueError(
                 "Cannot one's complement add two numbers of different size"
             )
         size = len(lhs)
@@ -246,7 +241,7 @@ class Rfc3962(Rfc3961):
         if params is None:
             params = cls.DEFAULT_STRING_TO_KEY_PARAMS
         if len(params) != 8:
-            raise KerberosCryptoValueError("Invalid params length")
+            raise ValueError("Invalid params length")
         iterations = int(params, base=16)
 
         kdf = PBKDF2HMAC(
@@ -341,7 +336,7 @@ class Rfc8009(EncryptionType):
         if params is None:
             params = cls.DEFAULT_STRING_TO_KEY_PARAMS
         if len(params) != 8:
-            raise KerberosCryptoValueError("Invalid params length")
+            raise ValueError("Invalid params length")
         iterations = int(params, base=16)
 
         salt = cls.ENC_NAME.encode() + bytes([0]) + salt
@@ -468,3 +463,9 @@ SUPPORTED_ENCTYPES = (
     Aes128CtsHmacSha256128,
     Aes256CtsHmacSha384192,
 )
+
+def get_enctype_from_value(value: int) -> EncryptionType:
+    for enctype in SUPPORTED_ENCTYPES:
+        if enctype.ENC_TYPE.value == value:
+            return enctype
+    raise IndexError("No matching enctype found")

@@ -76,7 +76,7 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.config import CONFIG
-from authentik.lib.kerberos import iana, keytab, principal
+from authentik.lib.kerberos import iana, keytab, protocol
 from authentik.providers.kerberos.models import KerberosRealm
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
@@ -540,10 +540,9 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             entries=[
                 keytab.KeytabEntry(
                     principal=keytab.Principal(
-                        name=principal.PrincipalName(
-                            name_type=principal.PrincipalNameType.NT_PRINCIPAL,
+                        name=protocol.PrincipalName.from_components(
+                            name_type=protocol.PrincipalNameType.NT_PRINCIPAL,
                             name=[user.username],
-                            realm=realm.name,
                         ),
                         realm=realm.name,
                     ),

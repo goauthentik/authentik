@@ -4,7 +4,7 @@ from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.kerberos.keytab import Keytab
-from authentik.lib.kerberos.principal import PrincipalName
+from authentik.lib.kerberos.protocol import PrincipalName
 from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
 
 
@@ -42,12 +42,12 @@ class TestKerberosProviderKeytab(APITestCase):
         )
         for entry in keytab.entries:
             self.assertEqual(
-                entry.principal.name.name,
-                PrincipalName.from_spn(self.provider.service_principal_name).name,
+                entry.principal.name["name-string"],
+                PrincipalName.from_spn(self.provider.service_principal_name)["name-string"],
             )
             self.assertEqual(
-                entry.principal.name.name_type,
-                PrincipalName.from_spn(self.provider.service_principal_name).name_type,
+                entry.principal.name["name_type"],
+                PrincipalName.from_spn(self.provider.service_principal_name)["name_type"],
             )
             self.assertEqual(
                 entry.principal.realm,

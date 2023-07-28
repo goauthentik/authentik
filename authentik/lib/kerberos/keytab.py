@@ -4,8 +4,7 @@ from datetime import datetime
 from typing import Self, Tuple
 
 from authentik.lib.kerberos import iana
-from authentik.lib.kerberos.exceptions import KerberosException
-from authentik.lib.kerberos.principal import PrincipalName, PrincipalNameType
+from authentik.lib.kerberos.protocol import PrincipalName, PrincipalNameType
 
 
 def _to_bytes_with_length(data: str | bytes, size: int = 2) -> bytes:
@@ -53,12 +52,12 @@ class Principal:
 
     def to_bytes(self) -> bytes:
         """Export to bytes"""
-        result = len(self.name.name).to_bytes(2, byteorder="big") + _to_bytes_with_length(
-            self.name.realm if self.name.realm is not None else self.realm
+        result = len(self.name["name-string"]).to_bytes(2, byteorder="big") + _to_bytes_with_length(
+            self.realm
         )
-        for name in self.name.name:
-            result += _to_bytes_with_length(name)
-        result += self.name.name_type.value.to_bytes(4, byteorder="big")
+        for name in self.name["name-string"]:
+            result += _to_bytes_with_length(str(name))
+        result += self.name["name-type"].to_bytes(4, byteorder="big")
         return result
 
     @classmethod
@@ -75,10 +74,9 @@ class Principal:
         return (
             cls(
                 realm=realm,
-                name=PrincipalName(
+                name=PrincipalName.from_components(
                     name=names,
                     name_type=PrincipalNameType(name_type),
-                    realm=realm,
                 ),
             ),
             remainder[4:],
@@ -149,7 +147,7 @@ class Keytab:
         header = data[0]
         version = data[1]
         if (header, version) != (0x05, 0x02):
-            raise KerberosException("Unsupported keytab format")
+            raise ValueError("Unsupported keytab format")
         remainder = data[2:]
         entries = []
         while remainder:

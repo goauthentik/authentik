@@ -13,7 +13,7 @@ from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer
 from authentik.lib.kerberos import keytab
-from authentik.lib.kerberos.principal import PrincipalName
+from authentik.lib.kerberos.protocol import PrincipalName
 from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
 
 
