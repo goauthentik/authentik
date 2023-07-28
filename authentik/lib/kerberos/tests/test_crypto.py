@@ -313,6 +313,99 @@ class TestAes128CtsHmacSha256128(TestCase):
                 key.to_bytes(16, byteorder="big"),
             )
 
+    def test_encrypt_decrypt(self):
+        """
+        Test cases from RFC 8009, Appendix A.
+
+        See https://www.rfc-editor.org/rfc/rfc8009#appendix-A
+        """
+        key = 0x3705D96080C17728A0E800EAB6E0D23C.to_bytes(16, byteorder="big")
+        # plaintext, confounder, Ke, Ki, encrypted w/o hmac, hash, ciphertext
+        data = (
+            (
+                bytes(),
+                0x7E5895EAF2672435BAD817F545A37148.to_bytes(16, byteorder="big"),
+                0x9B197DD1E8C5609D6E67C3E37C62C72E.to_bytes(16, byteorder="big"),
+                0x9FDA0E56AB2D85E1569A688696C26A6C.to_bytes(16, byteorder="big"),
+                0xEF85FB890BB8472F4DAB20394DCA781D.to_bytes(16, byteorder="big"),
+                0xAD877EDA39D50C870C0D5A0A8E48C718.to_bytes(16, byteorder="big"),
+                0xEF85FB890BB8472F4DAB20394DCA781DAD877EDA39D50C870C0D5A0A8E48C718.to_bytes(
+                    32, byteorder="big"
+                ),
+            ),
+            (
+                0x000102030405.to_bytes(6, byteorder="big"),
+                0x7BCA285E2FD4130FB55B1A5C83BC5B24.to_bytes(16, byteorder="big"),
+                0x9B197DD1E8C5609D6E67C3E37C62C72E.to_bytes(16, byteorder="big"),
+                0x9FDA0E56AB2D85E1569A688696C26A6C.to_bytes(16, byteorder="big"),
+                0x84D7F30754ED987BAB0BF3506BEB09CFB55402CEF7E6.to_bytes(22, byteorder="big"),
+                0x877CE99E247E52D16ED4421DFDF8976C.to_bytes(16, byteorder="big"),
+                0x84D7F30754ED987BAB0BF3506BEB09CFB55402CEF7E6877CE99E247E52D16ED4421DFDF8976C.to_bytes(
+                    38, byteorder="big"
+                ),
+            ),
+            (
+                0x000102030405060708090A0B0C0D0E0F.to_bytes(16, byteorder="big"),
+                0x56AB21713FF62C0A1457200F6FA9948F.to_bytes(16, byteorder="big"),
+                0x9B197DD1E8C5609D6E67C3E37C62C72E.to_bytes(16, byteorder="big"),
+                0x9FDA0E56AB2D85E1569A688696C26A6C.to_bytes(16, byteorder="big"),
+                0x3517D640F50DDC8AD3628722B3569D2AE07493FA8263254080EA65C1008E8FC2.to_bytes(
+                    32, byteorder="big"
+                ),
+                0x95FB4852E7D83E1E7C48C37EEBE6B0D3.to_bytes(16, byteorder="big"),
+                0x3517D640F50DDC8AD3628722B3569D2AE07493FA8263254080EA65C1008E8FC295FB4852E7D83E1E7C48C37EEBE6B0D3.to_bytes(
+                    48, byteorder="big"
+                ),
+            ),
+            (
+                0x000102030405060708090A0B0C0D0E0F1011121314.to_bytes(21, byteorder="big"),
+                0xA7A4E29A4728CE10664FB64E49AD3FAC.to_bytes(16, byteorder="big"),
+                0x9B197DD1E8C5609D6E67C3E37C62C72E.to_bytes(16, byteorder="big"),
+                0x9FDA0E56AB2D85E1569A688696C26A6C.to_bytes(16, byteorder="big"),
+                0x720F73B18D9859CD6CCB4346115CD336C70F58EDC0C4437C5573544C31C813BCE1E6D072C1.to_bytes(
+                    37, byteorder="big"
+                ),
+                0x86B39A413C2F92CA9B8334A287FFCBFC.to_bytes(16, byteorder="big"),
+                0x720F73B18D9859CD6CCB4346115CD336C70F58EDC0C4437C5573544C31C813BCE1E6D072C186B39A413C2F92CA9B8334A287FFCBFC.to_bytes(
+                    53, byteorder="big"
+                ),
+            ),
+        )
+
+        for plaintext, confounder, ke, ki, encrypted, hash_, ciphertext in data:
+            self.assertEqual(
+                Aes128CtsHmacSha256128.encrypt_data(ke, confounder + plaintext),
+                encrypted,
+            )
+
+            self.assertEqual(
+                Aes128CtsHmacSha256128.decrypt_data(ke, encrypted),
+                confounder + plaintext,
+            )
+
+            self.assertTrue(
+                Aes128CtsHmacSha256128.verify_integrity(
+                    key,
+                    ciphertext,
+                    bytes([0] * (Aes128CtsHmacSha256128.CIPHER_BLOCK_BITS // 8)) + encrypted,
+                    2,
+                )
+            )
+
+            self.assertEqual(
+                Aes128CtsHmacSha256128.decrypt_message(
+                    key, Aes128CtsHmacSha256128.encrypt_message(key, plaintext, 2), 2
+                ),
+                plaintext,
+            )
+
+            self.assertEqual(
+                Aes128CtsHmacSha256128.integrity_hash(
+                    key, bytes([0] * (Aes128CtsHmacSha256128.CIPHER_BLOCK_BITS // 8)) + encrypted, 2
+                ),
+                hash_,
+            )
+
 
 class TestAes256CtsHmacSha384192(TestCase):
     """aes256-cts-hmac-sha384-192 tests"""
@@ -363,4 +456,107 @@ class TestAes256CtsHmacSha384192(TestCase):
                     password.encode(), salt, "{:08x}".format(iterations)
                 ),
                 key.to_bytes(32, byteorder="big"),
+            )
+
+    def test_encrypt_decrypt(self):
+        """
+        Test cases from RFC 8009, Appendix A.
+
+        See https://www.rfc-editor.org/rfc/rfc8009#appendix-A
+        """
+        key = 0x6D404D37FAF79F9DF0D33568D320669800EB4836472EA8A026D16B7182460C52.to_bytes(
+            32, byteorder="big"
+        )
+        # plaintext, confounder, Ke, Ki, encrypted w/o hmac, hash, ciphertext
+        data = (
+            (
+                bytes(),
+                0xF764E9FA15C276478B2C7D0C4E5F58E4.to_bytes(16, byteorder="big"),
+                0x56AB22BEE63D82D7BC5227F6773F8EA7A5EB1C825160C38312980C442E5C7E49.to_bytes(
+                    32, byteorder="big"
+                ),
+                0x69B16514E3CD8E56B82010D5C73012B622C4D00FFC23ED1F.to_bytes(24, byteorder="big"),
+                0x41F53FA5BFE7026D91FAF9BE959195A0.to_bytes(16, byteorder="big"),
+                0x58707273A96A40F0A01960621AC612748B9BBFBE7EB4CE3C.to_bytes(24, byteorder="big"),
+                0x41F53FA5BFE7026D91FAF9BE959195A058707273A96A40F0A01960621AC612748B9BBFBE7EB4CE3C.to_bytes(
+                    40, byteorder="big"
+                ),
+            ),
+            (
+                0x000102030405.to_bytes(6, byteorder="big"),
+                0xB80D3251C1F6471494256FFE712D0B9A.to_bytes(16, byteorder="big"),
+                0x56AB22BEE63D82D7BC5227F6773F8EA7A5EB1C825160C38312980C442E5C7E49.to_bytes(
+                    32, byteorder="big"
+                ),
+                0x69B16514E3CD8E56B82010D5C73012B622C4D00FFC23ED1F.to_bytes(24, byteorder="big"),
+                0x4ED7B37C2BCAC8F74F23C1CF07E62BC7B75FB3F637B9.to_bytes(22, byteorder="big"),
+                0xF559C7F664F69EAB7B6092237526EA0D1F61CB20D69D10F2.to_bytes(24, byteorder="big"),
+                0x4ED7B37C2BCAC8F74F23C1CF07E62BC7B75FB3F637B9F559C7F664F69EAB7B6092237526EA0D1F61CB20D69D10F2.to_bytes(
+                    46, byteorder="big"
+                ),
+            ),
+            (
+                0x000102030405060708090A0B0C0D0E0F.to_bytes(16, byteorder="big"),
+                0x53BF8A0D105265D4E276428624CE5E63.to_bytes(16, byteorder="big"),
+                0x56AB22BEE63D82D7BC5227F6773F8EA7A5EB1C825160C38312980C442E5C7E49.to_bytes(
+                    32, byteorder="big"
+                ),
+                0x69B16514E3CD8E56B82010D5C73012B622C4D00FFC23ED1F.to_bytes(24, byteorder="big"),
+                0xBC47FFEC7998EB91E8115CF8D19DAC4BBBE2E163E87DD37F49BECA92027764F6.to_bytes(
+                    32, byteorder="big"
+                ),
+                0x8CF51F14D798C2273F35DF574D1F932E40C4FF255B36A266.to_bytes(24, byteorder="big"),
+                0xBC47FFEC7998EB91E8115CF8D19DAC4BBBE2E163E87DD37F49BECA92027764F68CF51F14D798C2273F35DF574D1F932E40C4FF255B36A266.to_bytes(
+                    56, byteorder="big"
+                ),
+            ),
+            (
+                0x000102030405060708090A0B0C0D0E0F1011121314.to_bytes(21, byteorder="big"),
+                0x763E65367E864F02F55153C7E3B58AF1.to_bytes(16, byteorder="big"),
+                0x56AB22BEE63D82D7BC5227F6773F8EA7A5EB1C825160C38312980C442E5C7E49.to_bytes(
+                    32, byteorder="big"
+                ),
+                0x69B16514E3CD8E56B82010D5C73012B622C4D00FFC23ED1F.to_bytes(24, byteorder="big"),
+                0x40013E2DF58E8751957D2878BCD2D6FE101CCFD556CB1EAE79DB3C3EE86429F2B2A602AC86.to_bytes(
+                    37, byteorder="big"
+                ),
+                0xFEF6ECB647D6295FAE077A1FEB517508D2C16B4192E01F62.to_bytes(24, byteorder="big"),
+                0x40013E2DF58E8751957D2878BCD2D6FE101CCFD556CB1EAE79DB3C3EE86429F2B2A602AC86FEF6ECB647D6295FAE077A1FEB517508D2C16B4192E01F62.to_bytes(
+                    61, byteorder="big"
+                ),
+            ),
+        )
+
+        for plaintext, confounder, ke, ki, encrypted, hash_, ciphertext in data:
+            self.assertEqual(
+                Aes256CtsHmacSha384192.encrypt_data(ke, confounder + plaintext),
+                encrypted,
+            )
+
+            self.assertEqual(
+                Aes256CtsHmacSha384192.decrypt_data(ke, encrypted),
+                confounder + plaintext,
+            )
+
+            self.assertTrue(
+                Aes256CtsHmacSha384192.verify_integrity(
+                    key,
+                    ciphertext,
+                    bytes([0] * (Aes256CtsHmacSha384192.CIPHER_BLOCK_BITS // 8)) + encrypted,
+                    2,
+                )
+            )
+
+            self.assertEqual(
+                Aes256CtsHmacSha384192.decrypt_message(
+                    key, Aes256CtsHmacSha384192.encrypt_message(key, plaintext, 2), 2
+                ),
+                plaintext,
+            )
+
+            self.assertEqual(
+                Aes256CtsHmacSha384192.integrity_hash(
+                    key, bytes([0] * (Aes256CtsHmacSha384192.CIPHER_BLOCK_BITS // 8)) + encrypted, 2
+                ),
+                hash_,
             )
