@@ -1,6 +1,7 @@
 import { truncateWords } from "@goauthentik/common/utils";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
+import "@goauthentik/user/LibraryApplication/AppIcon";
 import { UserInterface } from "@goauthentik/user/UserInterface";
 
 import { msg } from "@lit/localize";
@@ -8,7 +9,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -31,23 +31,9 @@ export class LibraryApplication extends AKElement {
             PFBase,
             PFCard,
             PFButton,
-            PFAvatar,
             css`
-                :host {
-                    --icon-height: 4rem;
-                    --icon-border: 0.25rem;
-                }
                 .pf-c-card {
                     --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
-                }
-                .pf-c-avatar {
-                    --pf-c-avatar--BorderRadius: 0;
-                    --pf-c-avatar--Height: calc(
-                        var(--icon-height) + var(--icon-border) + var(--icon-border)
-                    );
-                    --pf-c-avatar--Width: calc(
-                        var(--icon-height) + var(--icon-border) + var(--icon-border)
-                    );
                 }
                 .pf-c-card__header {
                     justify-content: space-between;
@@ -57,16 +43,6 @@ export class LibraryApplication extends AKElement {
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
-                }
-                .icon {
-                    font-size: var(--icon-height);
-                    color: var(--ak-global--Color--100);
-                    padding: var(--icon-border);
-                    max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
-                    line-height: calc(
-                        var(--icon-height) + var(--icon-border) + var(--icon-border) - 6px
-                    );
-                    filter: drop-shadow(5px 5px 5px rgba(128, 128, 128, 0.25));
                 }
                 a:hover {
                     text-decoration: none;
@@ -85,21 +61,6 @@ export class LibraryApplication extends AKElement {
         ];
     }
 
-    renderIcon(): TemplateResult {
-        if (this.application?.metaIcon) {
-            if (this.application.metaIcon.startsWith("fa://")) {
-                const icon = this.application.metaIcon.replaceAll("fa://", "");
-                return html`<i class="icon fas ${icon}"></i>`;
-            }
-            return html`<img
-                class="icon pf-c-avatar"
-                src="${ifDefined(this.application.metaIcon)}"
-                alt="${msg("Application Icon")}"
-            />`;
-        }
-        return html`<span class="icon">${this.application?.name.charAt(0).toUpperCase()}</span>`;
-    }
-
     render(): TemplateResult {
         if (!this.application) {
             return html`<ak-spinner></ak-spinner>`;
@@ -116,7 +77,7 @@ export class LibraryApplication extends AKElement {
                     href="${ifDefined(this.application.launchUrl ?? "")}"
                     target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
                 >
-                    ${this.renderIcon()}
+                    <ak-app-icon .app=${this.application}></ak-app-icon>
                 </a>
             </div>
             <div class="pf-c-card__title">

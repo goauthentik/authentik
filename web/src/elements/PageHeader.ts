@@ -147,8 +147,8 @@ export class PageHeader extends AKElement {
                 <section class="pf-c-page__main-section pf-m-light">
                     <div class="pf-c-content">
                         <h1>
-                            ${this.renderIcon()}
-                            <slot name="header"> ${this.header} </slot>
+                            <slot name="icon">${this.renderIcon()}</slot>
+                            <slot name="header">${this.header}</slot>
                         </h1>
                         ${this.description ? html`<p>${this.description}</p>` : html``}
                     </div>

@@ -9,6 +9,7 @@ import "@goauthentik/elements/PageHeader";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
+import "@goauthentik/user/LibraryApplication/AppIcon";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -80,11 +81,11 @@ export class ApplicationViewPage extends AKElement {
 
     render(): TemplateResult {
         return html`<ak-page-header
-                icon=${this.application?.metaIcon || ""}
                 header=${this.application?.name || msg("Loading")}
                 description=${ifDefined(this.application?.metaPublisher)}
                 .iconImage=${true}
             >
+                <ak-app-icon slot="icon" .app=${this.application}></ak-app-icon>
             </ak-page-header>
             ${this.renderApp()}`;
     }
