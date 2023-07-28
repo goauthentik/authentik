@@ -145,7 +145,7 @@ export class UserForm extends ModelForm<User, number> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Attributes")}
-                ?required=${true}
+                ?required=${false}
                 name="attributes"
             >
                 <ak-codemirror
