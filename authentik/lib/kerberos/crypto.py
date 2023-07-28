@@ -9,12 +9,15 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 from authentik.lib.kerberos import iana
 
+
 def _zeropad(data: bytes, padsize: int) -> bytes:
     padlen = (padsize - (len(data) % padsize)) % padsize
     return data + bytes([0] * padlen)
 
+
 def _xorbytes(lhs: bytes, rhs: bytes) -> bytes:
     return bytes([left ^ right for left, right in zip(lhs, rhs)])
+
 
 def nfold(data: bytes, size: int) -> bytes:
     """
@@ -88,12 +91,12 @@ def nfold(data: bytes, size: int) -> bytes:
     return result
 
 
-def _usage(un: int, o: bytes) -> bytes:
+def _usage(un: int, o: int) -> bytes:
     """
     See https://www.rfc-editor.org/rfc/rfc3961#section-5.3
     and https://www.rfc-editor.org/rfc/rfc8009#section-5
     """
-    return un.to_bytes(1, byteorder="big") + o
+    return un.to_bytes(4, byteorder="big") + o.to_bytes(1, byteorder="big")
 
 
 def usage_kc(un: int) -> bytes:
@@ -101,7 +104,7 @@ def usage_kc(un: int) -> bytes:
     See https://www.rfc-editor.org/rfc/rfc3961#section-5.3
     and https://www.rfc-editor.org/rfc/rfc8009#section-5
     """
-    return _usage(un, bytes([0x99]))
+    return _usage(un, 0x99)
 
 
 def usage_ke(un: int) -> bytes:
@@ -109,7 +112,7 @@ def usage_ke(un: int) -> bytes:
     See https://www.rfc-editor.org/rfc/rfc3961#section-5.3
     and https://www.rfc-editor.org/rfc/rfc8009#section-5
     """
-    return _usage(un, bytes([0xAA]))
+    return _usage(un, 0xAA)
 
 
 def usage_ki(un: int) -> bytes:
@@ -117,7 +120,7 @@ def usage_ki(un: int) -> bytes:
     See https://www.rfc-editor.org/rfc/rfc3961#section-5.3
     and https://www.rfc-editor.org/rfc/rfc8009#section-5
     """
-    return _usage(un, bytes([0x55]))
+    return _usage(un, 0x55)
 
 
 class EncryptionType:
@@ -130,6 +133,7 @@ class EncryptionType:
     KEY_BYTES: int
     KEY_SEED_BITS: int
 
+    CIPHER_ALGORITHM: algorithms.CipherAlgorithm
     HASH_ALGORITHM: hashes.HashAlgorithm
 
     DEFAULT_STRING_TO_KEY_PARAMS: str
@@ -190,13 +194,17 @@ class EncryptionType:
         ciphertext = encryptor.update(_zeropad(data, BLOCK_SIZE)) + encryptor.finalize()
         if len(data) > BLOCK_SIZE:
             lastlen = len(data) % BLOCK_SIZE or BLOCK_SIZE
-            ciphertext = (ciphertext[:-BLOCK_SIZE * 2] +
-                         ciphertext[-BLOCK_SIZE:] +
-                         ciphertext[-2*BLOCK_SIZE:-BLOCK_SIZE][:lastlen])
+            ciphertext = (
+                ciphertext[: -BLOCK_SIZE * 2]
+                + ciphertext[-BLOCK_SIZE:]
+                + ciphertext[-2 * BLOCK_SIZE : -BLOCK_SIZE][:lastlen]
+            )
         return ciphertext
 
     @classmethod
-    def encrypt_message(cls, key: bytes, message: bytes, usage: int) -> bytes:
+    def encrypt_message(
+        cls, key: bytes, message: bytes, usage: int, confounder: bytes | None = None
+    ) -> bytes:
         """
         Encrypt a message with a procotol key.
         """
@@ -217,7 +225,7 @@ class EncryptionType:
         if len(data) == BLOCK_SIZE:
             return ecb_decryptor.update(data) + ecb_decryptor.finalize()
 
-        blocks = [data[p:p + BLOCK_SIZE] for p in range(0, len(data), BLOCK_SIZE)]
+        blocks = [data[p : p + BLOCK_SIZE] for p in range(0, len(data), BLOCK_SIZE)]
         lastlen = len(blocks[-1])
 
         prev_block = bytes([0] * BLOCK_SIZE)
@@ -227,11 +235,10 @@ class EncryptionType:
             prev_block = block
 
         next_to_last_plaintext = ecb_decryptor.update(blocks[-2])
-        last_plaintext =_xorbytes(next_to_last_plaintext[:lastlen], blocks[-1])
+        last_plaintext = _xorbytes(next_to_last_plaintext[:lastlen], blocks[-1])
         omitted = next_to_last_plaintext[lastlen:]
         plaintext += _xorbytes(ecb_decryptor.update(blocks[-1] + omitted), prev_block)
         return plaintext + last_plaintext
-
 
     @classmethod
     def decrypt_message(cls, key: bytes, ciphertext: bytes, usage: int) -> bytes:
@@ -274,12 +281,9 @@ class EncryptionType:
         See https://www.rfc-editor.org/rfc/rfc8009#section-6
         """
         a = cls.integrity_hash(key, message, usage)
-        b = ciphertext[-cls.HMAC_BITS // 8:]
-        #TODO: raise ValueError()
-        return (
-            cls.integrity_hash(key, message, usage)
-            == ciphertext[-cls.HMAC_BITS // 8:]
-        )
+        b = ciphertext[-cls.HMAC_BITS // 8 :]
+        # TODO: raise ValueError()
+        return cls.integrity_hash(key, message, usage) == ciphertext[-cls.HMAC_BITS // 8 :]
 
 
 class Rfc3961(EncryptionType):
@@ -348,13 +352,16 @@ class Rfc3962(Rfc3961):
         return cls.derive_key(tmp_key, "kerberos".encode())
 
     @classmethod
-    def encrypt_message(cls, key: bytes, message: bytes, usage: int) -> bytes:
+    def encrypt_message(
+        cls, key: bytes, message: bytes, usage: int, confounder: bytes | None = None
+    ) -> bytes:
         """
         Encrypt a message with a procotol key as refined in RFC 3962.
 
         See https://www.rfc-editor.org/rfc/rfc3962#section-5
         """
-        confounder = secrets.token_bytes(cls.CONFOUNDER_BYTES)
+        if not confounder:
+            confounder = secrets.token_bytes(cls.CONFOUNDER_BYTES)
         plain_bytes = confounder + message
 
         encryption_key = bytes()
@@ -373,9 +380,7 @@ class Rfc3962(Rfc3961):
         """
         decryption_key = cls.derive_key(key, usage_ke(usage))
         # Remove the checksum at the end
-        message = cls.decrypt_data(
-            decryption_key, ciphertext[:-cls.HMAC_BITS // 8]
-        )
+        message = cls.decrypt_data(decryption_key, ciphertext[: -cls.HMAC_BITS // 8])
 
         if not cls.verify_integrity(key, ciphertext, message, usage):
             raise ValueError("Message is not honest")
@@ -463,11 +468,14 @@ class Rfc8009(EncryptionType):
         return cls.derive_key(tmp_key, "kerberos".encode())
 
     @classmethod
-    def encrypt_message(cls, key: bytes, message: bytes, usage: int) -> bytes:
+    def encrypt_message(
+        cls, key: bytes, message: bytes, usage: int, confounder: bytes | None = None
+    ) -> bytes:
         """
         Encrypt a message with a procotol key.
         """
-        confounder = secrets.token_bytes(cls.CONFOUNDER_BYTES)
+        if not confounder:
+            confounder = secrets.token_bytes(cls.CONFOUNDER_BYTES)
         plain_bytes = confounder + message
 
         encryption_key = bytes()
@@ -490,14 +498,13 @@ class Rfc8009(EncryptionType):
         """
         decryption_key = cls.derive_key(key, usage_ke(usage))
         # Remove checksum at the end
-        message = cls.decrypt_data(
-            decryption_key, ciphertext[:-cls.HMAC_BITS // 8]
-        )
+        message = cls.decrypt_data(decryption_key, ciphertext[: -cls.HMAC_BITS // 8])
 
         if not cls.verify_integrity(
-            key, ciphertext,
-            bytes([0] * (cls.CIPHER_BLOCK_BITS // 8)) + ciphertext[:-cls.HMAC_BITS // 8],
-            usage
+            key,
+            ciphertext,
+            bytes([0] * (cls.CIPHER_BLOCK_BITS // 8)) + ciphertext[: -cls.HMAC_BITS // 8],
+            usage,
         ):
             raise ValueError("Message is not honest")
 
@@ -520,7 +527,6 @@ class Aes128CtsHmacSha196(Rfc3962):
     KEY_SEED_BITS = KEY_BYTES * 8
 
     CIPHER_ALGORITHM = algorithms.AES128
-    CIPHER_MODE = modes.CBC
     HASH_ALGORITHM = hashes.SHA1
 
     DEFAULT_STRING_TO_KEY_PARAMS = "00001000"
@@ -547,7 +553,6 @@ class Aes256CtsHmacSha196(Rfc3962):
     KEY_SEED_BITS = KEY_BYTES * 8
 
     CIPHER_ALGORITHM = algorithms.AES256
-    CIPHER_MODE = modes.CBC
     HASH_ALGORITHM = hashes.SHA1
 
     DEFAULT_STRING_TO_KEY_PARAMS = "00001000"
@@ -574,7 +579,6 @@ class Aes128CtsHmacSha256128(Rfc8009):
     KEY_SEED_BITS = KEY_BYTES * 8
 
     CIPHER_ALGORITHM = algorithms.AES128
-    CIPHER_MODE = modes.CBC
     HASH_ALGORITHM = hashes.SHA256
 
     DEFAULT_STRING_TO_KEY_PARAMS = "00008000"
@@ -601,7 +605,6 @@ class Aes256CtsHmacSha384192(Rfc8009):
     KEY_SEED_BITS = KEY_BYTES * 8
 
     CIPHER_ALGORITHM = algorithms.AES256
-    CIPHER_MODE = modes.CBC
     HASH_ALGORITHM = hashes.SHA384
 
     DEFAULT_STRING_TO_KEY_PARAMS = "00008000"
