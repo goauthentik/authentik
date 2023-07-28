@@ -2,6 +2,7 @@ import "@goauthentik/admin/applications/ApplicationAuthorizeChart";
 import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
 import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
+import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/EmptyState";
@@ -85,7 +86,11 @@ export class ApplicationViewPage extends AKElement {
                 description=${ifDefined(this.application?.metaPublisher)}
                 .iconImage=${true}
             >
-                <ak-app-icon slot="icon" .app=${this.application}></ak-app-icon>
+                <ak-app-icon
+                    size=${PFSize.Small}
+                    slot="icon"
+                    .app=${this.application}
+                ></ak-app-icon>
             </ak-page-header>
             ${this.renderApp()}`;
     }

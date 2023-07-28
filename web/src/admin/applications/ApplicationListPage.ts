@@ -1,5 +1,6 @@
 import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/applications/wizard/ApplicationWizard";
+import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import MDApplication from "@goauthentik/docs/core/applications.md";
@@ -125,7 +126,7 @@ export class ApplicationListPage extends TablePage<Application> {
 
     row(item: Application): TemplateResult[] {
         return [
-            html`<ak-app-icon .app=${item}></ak-app-icon>`,
+            html`<ak-app-icon size=${PFSize.Medium} .app=${item}></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}

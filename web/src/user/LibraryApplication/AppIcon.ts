@@ -1,4 +1,5 @@
 import { AKElement } from "@goauthentik/app/elements/Base";
+import { PFSize } from "@goauthentik/app/elements/Spinner";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -15,14 +16,25 @@ export class AppIcon extends AKElement {
     @property({ attribute: false })
     app?: Application;
 
+    @property()
+    size: PFSize = PFSize.Large;
+
     static get styles(): CSSResult[] {
         return [
             PFFAIcons,
             PFAvatar,
             css`
-                :host {
+                :host([size="pf-m-lg"]) {
                     --icon-height: 4rem;
                     --icon-border: 0.25rem;
+                }
+                :host([size="pf-m-md"]) {
+                    --icon-height: 2rem;
+                    --icon-border: 0.125rem;
+                }
+                :host([size="pf-m-sm"]) {
+                    --icon-height: 1rem;
+                    --icon-border: 0.125rem;
                 }
                 .pf-c-avatar {
                     --pf-c-avatar--BorderRadius: 0;
