@@ -24,6 +24,9 @@ export class AppIcon extends AKElement {
             PFFAIcons,
             PFAvatar,
             css`
+                :host {
+                    max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+                }
                 :host([size="pf-m-lg"]) {
                     --icon-height: 4rem;
                     --icon-border: 0.25rem;
