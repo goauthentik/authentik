@@ -1,9 +1,8 @@
 """Test Users Avatars"""
 
-from authentik.core.models import User
-from authentik.lib.config import CONFIG
-
 from django.test import TestCase
+
+from authentik.core.models import User
 
 
 class TestUserKrb5(TestCase):
@@ -23,12 +22,10 @@ class TestUserKrb5(TestCase):
         """Test avatars none"""
         self.user.krb5_kvno = 2**32 - 1
         self.user.set_password("test3")
-        kvno = self.user.krb5_kvno
         self.assertEqual(self.user.krb5_kvno, 1)
 
     def test_kvno_skip_mod256(self):
         """Test avatars none"""
         self.user.krb5_kvno = 2**8 - 1
         self.user.set_password("test4")
-        kvno = self.user.krb5_kvno
         self.assertEqual(self.user.krb5_kvno, 2**8 + 1)

@@ -17,6 +17,8 @@ from authentik.core.models import (
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.kerberos import keytab, principal
+from authentik.providers.kerberos.models import KerberosRealm
 from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant
 
@@ -27,6 +29,7 @@ class TestUsersAPI(APITestCase):
     def setUp(self) -> None:
         self.admin = create_test_admin_user()
         self.user = User.objects.create(username="test-user")
+        self.realm = KerberosRealm.objects.create(name="EXAMPLE.ORG")
 
     def test_metrics(self):
         """Test user's metrics"""
@@ -43,6 +46,70 @@ class TestUsersAPI(APITestCase):
             reverse("authentik_api:user-metrics", kwargs={"pk": self.user.pk})
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_keytab(self) -> None:
+        """Test user keytab retrieval"""
+        self.client.force_login(self.admin)
+        response = self.client.get(
+            reverse("authentik_api:user-keytab", kwargs={"pk": self.user.pk})
+            + f"?realm_pk={self.realm.pk}"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.headers.get("Content-Type"),
+            "application/octet-stream",
+        )
+        kt = keytab.Keytab.from_bytes(response.content)  # pylint: disable=invalid-name
+        self.assertEqual(
+            set(str(e.key.key_type) for e in kt.entries),
+            set(self.user.krb5_keys.keys()),
+        )
+        for entry in kt.entries:
+            self.assertEqual(
+                entry.principal.name.name,
+                [self.user.username],
+            )
+            self.assertEqual(
+                entry.principal.name.name_type,
+                principal.PrincipalNameType.NT_PRINCIPAL,
+            )
+            self.assertEqual(
+                entry.principal.realm,
+                self.realm.name,
+            )
+            self.assertEqual(
+                entry.kvno,
+                self.user.krb5_kvno,
+            )
+            self.assertEqual(
+                entry.kvno8,
+                self.user.krb5_kvno % 2**8,
+            )
+            self.assertEqual(
+                entry.key.key,
+                self.user.krb5_keys[str(entry.key.key_type)],
+            )
+
+    def test_keytab_kvno_mod256(self) -> None:
+        """Test provider keytab retrieval"""
+        self.user.krb5_kvno = 2**8 + 1
+        self.user.save()
+        self.client.force_login(self.admin)
+        response = self.client.get(
+            reverse("authentik_api:user-keytab", kwargs={"pk": self.user.pk})
+            + f"?realm_pk={self.realm.pk}"
+        )
+        self.assertEqual(response.status_code, 200)
+        kt = keytab.Keytab.from_bytes(response.content)  # pylint: disable=invalid-name
+        for entry in kt.entries:
+            self.assertEqual(
+                entry.kvno,
+                self.user.krb5_kvno,
+            )
+            self.assertEqual(
+                entry.kvno8,
+                self.user.krb5_kvno % 2**8,
+            )
 
     def test_recovery_no_flow(self):
         """Test user recovery link (no recovery flow set)"""

@@ -88,6 +88,7 @@ class KerberosProviderSerializer(ProviderSerializer):
         extra_kwargs = {}
 
     def get_url_download_keytab(self, instance: KerberosProvider) -> str:
+        """Get URL where to download provider's keytab"""
         if "request" not in self._context:
             return ""
         request: HttpRequest = self._context["request"]._request
@@ -113,7 +114,6 @@ class KerberosProviderViewSet(UsedByMixin, ModelViewSet):
     @extend_schema(
         responses={
             200: OpenApiResponse(description="Service keytab"),
-            404: OpenApiResponse(description="Provider not found"),
         }
     )
     @action(detail=True, methods=["GET"])
@@ -129,19 +129,18 @@ class KerberosProviderViewSet(UsedByMixin, ModelViewSet):
                     ),
                     timestamp=now(),
                     key=keytab.EncryptionKey(
-                        key_type=keytype,
+                        key_type=key_type,
                         key=key,
                     ),
                     kvno=provider.kvno,
                 )
-                for keytype, key in provider.keys.items()
+                for key_type, key in provider.keys.items()
             ]
         )
-        response = HttpResponse(
+        return HttpResponse(
             kt.to_bytes(),
             content_type="application/octet-stream",
             headers={
                 "Content-Disposition": "attachment; filename=krb5.keytab",
             },
         )
-        return response

@@ -1,4 +1,5 @@
 """User API Views"""
+from base64 import b64decode
 from datetime import timedelta
 from json import loads
 from typing import Any, Optional
@@ -10,6 +11,7 @@ from django.db.models.functions import ExtractHour
 from django.db.models.query import QuerySet
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
+from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
@@ -74,6 +76,8 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.config import CONFIG
+from authentik.lib.kerberos import iana, keytab, principal
+from authentik.providers.kerberos.models import KerberosRealm
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -381,7 +385,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         except FlowNonApplicableException:
             LOGGER.warning("Recovery flow not applicable to user")
             return None, None
-        token, __ = FlowToken.objects.update_or_create(
+        token, _ = FlowToken.objects.update_or_create(
             identifier=f"{user.uid}-password-reset",
             defaults={
                 "user": user,
@@ -509,6 +513,58 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             LOGGER.debug("Updating session hash after password change")
             update_session_auth_hash(self.request, user)
         return Response(status=204)
+
+    @permission_required("authentik_core.reset_user_password")
+    @extend_schema(
+        parameters=[
+            OpenApiParameter(
+                name="realm_pk",
+                location=OpenApiParameter.QUERY,
+                type=OpenApiTypes.INT,
+                required=True,
+            )
+        ],
+        responses={
+            200: OpenApiResponse(description="User keytab"),
+            404: OpenApiResponse(description="User or realm not found"),
+        },
+    )
+    @action(detail=True, pagination_class=None, filter_backends=[])
+    def keytab(self, request: Request, pk: int) -> Response:
+        """Generate keytab for user and realm"""
+        user: User = self.get_object()
+        realm = KerberosRealm.objects.filter(pk=request.query_params.get("realm_pk")).first()
+        if not realm:
+            return Response(status=404)
+        kt = keytab.Keytab(  # pylint: disable=invalid-name
+            entries=[
+                keytab.KeytabEntry(
+                    principal=keytab.Principal(
+                        name=principal.PrincipalName(
+                            name_type=principal.PrincipalNameType.NT_PRINCIPAL,
+                            name=[user.username],
+                            realm=realm.name,
+                        ),
+                        realm=realm.name,
+                    ),
+                    timestamp=now(),
+                    key=keytab.EncryptionKey(
+                        # Needs int conversion because it's stored as a JSON key, and thus a string
+                        key_type=iana.EncryptionType(int(key_type)),
+                        key=b64decode(key.encode()),
+                    ),
+                    kvno=user.krb5_kvno,
+                )
+                for key_type, key in user.krb5_keys.items()
+            ]
+        )
+        return HttpResponse(
+            kt.to_bytes(),
+            content_type="application/octet-stream",
+            headers={
+                "Content-Disposition": "attachment; filename=krb5.keytab",
+            },
+        )
 
     @permission_required("authentik_core.view_user", ["authentik_events.view_event"])
     @extend_schema(responses={200: UserMetricsSerializer(many=False)})

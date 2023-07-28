@@ -197,6 +197,7 @@ class KerberosProvider(KerberosServiceMixin, Provider):
 
     @property
     def full_spn(self) -> str:
+        """Provider service principal name with realm included"""
         return f"{self.service_principal_name}@{self.realm.name}"
 
     def __str__(self):
