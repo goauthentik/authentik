@@ -1,4 +1,3 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -11,11 +10,9 @@ import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import {
-    Flow,
     FlowStageBinding,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     InvalidResponseActionEnum,
     PolicyEngineMode,
     Stage,
@@ -86,32 +83,11 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
             ?required=${true}
             name="target"
         >
-            <ak-search-select
-                .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                    const args: FlowsInstancesListRequest = {
-                        ordering: "slug",
-                        designation: FlowsInstancesListDesignationEnum.Authorization,
-                    };
-                    if (query !== undefined) {
-                        args.search = query;
-                    }
-                    const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                    return flows.results;
-                }}
-                .renderElement=${(flow: Flow): string => {
-                    return RenderFlowOption(flow);
-                }}
-                .renderDescription=${(flow: Flow): TemplateResult => {
-                    return html`${flow.name}`;
-                }}
-                .value=${(flow: Flow | undefined): string | undefined => {
-                    return flow?.pk;
-                }}
-                .selected=${(flow: Flow): boolean => {
-                    return flow.pk === this.instance?.target;
-                }}
-            >
-            </ak-search-select>
+            <ak-flow-search
+                flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                .currentFlow=${this.instance?.target}
+                required
+            ></ak-flow-search>
         </ak-form-element-horizontal>`;
     }
 

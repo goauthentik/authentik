@@ -1,4 +1,4 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
@@ -18,10 +18,7 @@ import {
     CoreApi,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
-    Flow,
-    FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     Tenant,
 } from "@goauthentik/api";
 
@@ -154,35 +151,10 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${msg("Authentication flow")}
                         name="flowAuthentication"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Authentication,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.flowAuthentication === flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.flowAuthentication}
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.",
@@ -193,35 +165,10 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${msg("Invalidation flow")}
                         name="flowInvalidation"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Invalidation,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.flowInvalidation === flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Invalidation}
+                            .currentFlow=${this.instance?.flowInvalidation}
+                        ></ak-flow-search>
 
                         <p class="pf-c-form__helper-text">
                             ${msg(
@@ -230,35 +177,10 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="flowRecovery">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Recovery,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.flowRecovery === flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Recovery}
+                            .currentFlow=${this.instance?.flowRecovery}
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Recovery flow. If left empty, the first applicable flow sorted by the slug is used.",
@@ -269,35 +191,10 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${msg("Unenrollment flow")}
                         name="flowUnenrollment"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Unenrollment,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.flowUnenrollment === flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Unenrollment}
+                            .currentFlow=${this.instance?.flowUnenrollment}
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.",
@@ -308,36 +205,10 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${msg("User settings flow")}
                         name="flowUserSettings"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.flowUserSettings === flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            .currentFlow=${this.instance?.flowUserSettings}
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("If set, users are able to configure details of their profile.")}
                         </p>
@@ -346,36 +217,10 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${msg("Device code flow")}
                         name="flowDeviceCode"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.flowDeviceCode === flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            .currentFlow=${this.instance?.flowDeviceCode}
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "If set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code.",

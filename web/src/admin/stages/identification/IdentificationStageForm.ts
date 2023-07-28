@@ -1,4 +1,4 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
@@ -12,10 +12,7 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    Flow,
-    FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     IdentificationStage,
     PaginatedSourceList,
     SourcesApi,
@@ -265,35 +262,10 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         label=${msg("Passwordless flow")}
                         name="passwordlessFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Authentication,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.passwordlessFlow == flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.passwordlessFlow}
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Optional passwordless flow, which is linked at the bottom of the page. When configured, users can use this flow to authenticate with a WebAuthn authenticator, without entering any details.",
@@ -304,35 +276,11 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         label=${msg("Enrollment flow")}
                         name="enrollmentFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Enrollment,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return flow.slug;
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.enrollmentFlow == flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            .currentFlow=${this.instance?.enrollmentFlow}
+                        ></ak-flow-search>
+
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Optional enrollment flow, which is linked at the bottom of the page.",
@@ -340,35 +288,10 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Recovery flow")} name="recoveryFlow">
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Recovery,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return flow.slug;
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                return this.instance?.recoveryFlow == flow.pk;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Recovery}
+                            .currentFlow=${this.instance?.recoveryFlow}
+                        ></ak-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Optional recovery flow, which is linked at the bottom of the page.",
