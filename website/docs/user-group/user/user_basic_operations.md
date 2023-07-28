@@ -19,8 +19,8 @@ If you are looking for a way to automate those steps, you can do that either by 
 -   Fill the required fields:
 
     -   Username: Username of the user. This value must be unique across your user folders
-    -   Path: The path where the user will be created. It will be automatically filled with the folder you selected in the previous step.
-    -   Attributes: Custom attributes defintion for the user, in YAML or JSON format. They can be used to enforce additionnal prompts on authentication stages or define specific contitions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionnary by default.
+    -   Path: The path where the user will be created. It will be automatically populated with the folder you selected in the previous step.
+    -   Attributes: Custom attributes defintion for the user, in YAML or JSON format. They can be used to enforce additionnal prompts on authentication stages or define specific conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 
 -   Fill the optionnal fields if needed:
 
