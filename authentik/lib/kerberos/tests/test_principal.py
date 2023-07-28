@@ -13,7 +13,8 @@ class TestPrincipal(TestCase):
             (
                 "test@EXAMPLE.ORG",
                 PrincipalName.from_components(
-                    name_type=PrincipalNameType.NT_SRV_INST, name=["test"],
+                    name_type=PrincipalNameType.NT_SRV_INST,
+                    name=["test"],
                 ),
             ),
             (
@@ -32,7 +33,9 @@ class TestPrincipal(TestCase):
             ),
             (
                 "test",
-                PrincipalName.from_components(name_type=PrincipalNameType.NT_SRV_INST, name=["test"]),
+                PrincipalName.from_components(
+                    name_type=PrincipalNameType.NT_SRV_INST, name=["test"]
+                ),
             ),
             (
                 "host/test.example.org",

@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 
 from structlog.stdlib import get_logger
 
+
 @verify(UNIQUE)
 class ErrorCode(Enum):
     KDC_ERR_NONE = 0  # No error
@@ -90,6 +91,7 @@ class ErrorCode(Enum):
         92  # KDC cannot accommodate requested pre-authentication data element
     )
     KDC_ERR_UNKNOWN_CRITICAL_FAST_OPTIONS = 93  # Reserved for PKINIT
+
 
 ERROR_MESSAGES = {
     ErrorCode.KDC_ERR_NONE: _("No error"),
@@ -175,12 +177,18 @@ ERROR_MESSAGES = {
     ErrorCode.KDC_ERR_UNKNOWN_CRITICAL_FAST_OPTIONS: _("Reserved for PKINIT"),
 }
 
+
 class KerberosError(Exception):
     """Kerberos generic exception"""
 
     Code = ErrorCode
 
-    def __init__(self, code: ErrorCode = ErrorCode.KRB_ERR_GENERIC, context: dict[str, Any] | None=None, message: str | None=None):
+    def __init__(
+        self,
+        code: ErrorCode = ErrorCode.KRB_ERR_GENERIC,
+        context: dict[str, Any] | None = None,
+        message: str | None = None,
+    ):
         self.code = code
         self.context = context or {}
         self.message = message or ERROR_MESSAGES[code]
@@ -189,9 +197,10 @@ class KerberosError(Exception):
     # We cannot type annotate classes in protocol.py because of circular imports
     def to_krberror(self, realm: str, sname: Any, **context) -> Any:
         from authentik.lib.kerberos import protocol
+
         self.context.update(context)
         obj = protocol.KrbError()
-        obj["pvno"] = 5 # TODO: make constant
+        obj["pvno"] = 5  # TODO: make constant
         obj["msg-type"] = protocol.ApplicationTag.KRB_ERROR.value
         obj["stime"] = str(obj["stime"].fromDateTime(now()))
         obj["susec"] = now().microsecond

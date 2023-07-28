@@ -5,6 +5,7 @@ from django.test import TestCase
 
 from authentik.lib.kerberos import crypto, iana, keytab, protocol
 
+
 class TestKeytab(TestCase):
     """Kerberos Keytab tests"""
 

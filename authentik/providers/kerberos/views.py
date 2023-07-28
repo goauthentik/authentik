@@ -3,6 +3,8 @@ from dataclasses import dataclass, field
 from base64 import b64decode
 from datetime import timedelta
 
+from pyasn1.type import univ
+
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
@@ -25,7 +27,11 @@ from authentik.lib.kerberos.protocol import (
     PaData,
     TgsRep,
     TgsReq,
+    Ticket,
     EncryptedData,
+    EncryptionKey,
+    EncTicketPart,
+    EncAsRepPart,
     PaDataEncTsEnc,
     PaDataEtypeInfo2,
     PaDataEtypeInfo2Entry,
@@ -91,7 +97,7 @@ class PaEtypeInfo2(PaHandler):
         entries = PaDataEtypeInfo2()
         if self.ctx.encrypted_part_enctype:
             entry = PaDataEtypeInfo2Entry()
-            entry["etype"] = self.ctx.encrypted_part_enctype.value
+            entry["etype"] = self.ctx.encrypted_part_enctype.ENC_TYPE.value
             entry["salt"] = str(self.ctx.user.uuid).encode("utf-8")
             entry["s2kparams"] = self.ctx.encrypted_part_enctype.s2k_params()
         else:
@@ -152,16 +158,16 @@ class PaEncTimestampHandler(PaHandler):
         except IndexError as exc:
             raise KerberosError(code=KerberosError.Code.KDC_ERR_ETYPE_NOSUPP) from exc
 
-        paenctsenc = PaDataEncTsEnc.from_bytes(
-            enctype.decrypt_message(
-                key=key,
-                ciphertext=bytes(encdata["cipher"]),
-                usage=KeyUsageNumbers.AS_REQ_PA_ENC_TIMESTAMP.value,
-            )
-        )
+        # paenctsenc = PaDataEncTsEnc.from_bytes(
+        #    enctype.decrypt_message(
+        #        key=key,
+        #        ciphertext=bytes(encdata["cipher"]),
+        #        usage=KeyUsageNumbers.AS_REQ_PA_ENC_TIMESTAMP.value,
+        #    )
+        # )
 
-        if not self._check_padata_timestamp(self, paenctsenc):
-            raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED)
+        # if not self._check_padata_timestamp(self, paenctsenc):
+        #    raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED)
 
         self.ctx.encrypted_part_key = key
         self.ctx.encrypted_part_enctype = enctype
@@ -201,7 +207,7 @@ class MessageHandler:
 
     def handle(self) -> KdcRep | KrbError:
         try:
-            if self.ctx.message["pvno"] != 5: # TODO: make constant
+            if self.ctx.message["pvno"] != 5:  # TODO: make constant
                 raise KerberosError(code=KerberosError.Code.KDC_ERR_BAD_PVNO)
             self.pre_validate()
             self.query_pre_validate()
@@ -213,7 +219,7 @@ class MessageHandler:
         except KerberosError as exc:
             return exc.to_krberror(
                 realm=self.ctx.realm.name,
-                crealm=self.ctx.realm.name, # TODO: use crealm
+                crealm=self.ctx.realm.name,  # TODO: use crealm
                 cname=self.ctx.cname,
                 sname=self.ctx.sname,
             )
@@ -234,54 +240,68 @@ class AsMessageHandler(MessageHandler):
                 },
             )
 
+        key = EncryptionKey()
+        key["keytype"] = self.ctx.encrypted_part_enctype.ENC_TYPE.value
+        key["keyvalue"] = self.ctx.encrypted_part_key  # TODO: use true random key
+
         enc_ticket_part = EncTicketPart()
-        enc_ticket_part["flags"] = 0 # TODO: flags
-        enc_ticket_part["key"] = None # TODO: session key
+        enc_ticket_part["flags"] = 0  # TODO: flags
+        enc_ticket_part["key"].setComponents(*key.components)
         enc_ticket_part["crealm"] = self.ctx.realm.name
-        enc_ticket_part["cname"] = self.ctx.cname
-        enc_ticket_part["transited"] = [] # TODO
-        enc_ticket_part["authtime"] = now() # TODO: handle renew
-        enc_ticket_part["starttime"] = now() # TODO: handle postdated
-        enc_ticket_part["endtime"] = self.ctx.message["req-body"]["till"] # TODO: bound, time in the past, after from
-        #enc_ticket_part["renew-till"] = now() # TODO
+        enc_ticket_part["cname"].setComponents(*self.ctx.cname.components)
+        # enc_ticket_part["transited"] = [] # TODO
+        enc_ticket_part["authtime"] = now()  # TODO: handle renew
+        # enc_ticket_part["starttime"] = now() # TODO: handle postdated
+        # enc_ticket_part["endtime"] = self.ctx.message["req-body"]["till"] # TODO: bound, time in the past, after from
+        enc_ticket_part["endtime"] = now()
+        # enc_ticket_part["renew-till"] = now() # TODO
 
-        if "addresses" in self.ctx.message["req-body"]:
-            enc_ticket_part["caddr"] = self.ctx.message["req-body"]["addresses"]
-        if "authorization-data" in self.ctx.message["req-body"]:
-            enc_ticket_part["caddr"] = self.ctx.message["req-body"]["authorization-data"]
+        # if "addresses" in self.ctx.message["req-body"]:
+        #    enc_ticket_part["caddr"] = self.ctx.message["req-body"]["addresses"]
+        # if "authorization-data" in self.ctx.message["req-body"]:
+        #    enc_ticket_part["caddr"] = self.ctx.message["req-body"]["authorization-data"]
 
-
-        ticket = Ticket()
-        ticket["tkt-vno"] = 5 # make constant
-        ticket["realm"] = self.ctx.realm.name
-        ticket["sname"] = self.ctx.sname
-        ticket["enc-part"] = self.ctx.encrypted_part_enctype.encrypt_data(
-            self.ctx.realm.keys[self.ctx.encrypted_part_enctype],
-            enc_ticket_part.to_bytes(),
+        ticket_enc_part = EncryptedData()
+        ticket_enc_part["etype"] = self.ctx.encrypted_part_enctype.ENC_TYPE.value
+        ticket_enc_part["cipher"] = self.ctx.encrypted_part_enctype.encrypt_data(
+            self.ctx.realm.keys[self.ctx.encrypted_part_enctype.ENC_TYPE],
+            # enc_ticket_part.to_bytes(),
+            bytes([0] * 56),
         )
 
+        ticket = Ticket()
+        ticket["tkt-vno"] = 5  # make constant
+        ticket["realm"] = self.ctx.realm.name
+        ticket["sname"].setComponents(*self.ctx.sname.components)
+        ticket["enc-part"].setComponents(*ticket_enc_part.components)
+
         enc_as_rep_part = EncAsRepPart()
-        enc_as_rep_part["last-req"] = []
-        enc_as_rep_part["nonce"] = self.ctx.message["req-body"]["nonce"]
+        # enc_as_rep_part["last-req"] = []
+        enc_as_rep_part["nonce"] = int(self.ctx.message["req-body"]["nonce"])
         enc_as_rep_part["srealm"] = self.ctx.realm.name
-        enc_as_rep_part["sname"] = self.ctx.sname
-        for k in ("flags", "authtime", "starttime", "endtime", "renew-till",
-                  "caddr", "key"):
-            enc_as_rep_part[k] = enc_ticket_part[k]
+        enc_as_rep_part["sname"].setComponents(*self.ctx.sname.components)
+        for k in ("flags", "authtime", "starttime", "endtime", "renew-till", "caddr", "key"):
+            if isinstance(enc_as_rep_part[k], univ.Sequence):
+                enc_as_rep_part[k].setComponents(*enc_ticket_part[k].components)
+            else:
+                enc_as_rep_part[k] = enc_ticket_part[k]
 
-
-        rep = AsRep()
-        rep["pvno"] = 5 # TODO: make constant
-        rep["msg-type"] = ApplicationTag.AS_REP.value
-        if self.ctx.pa_data:
-            rep["padata"] = self.ctx.padata
-        rep["crealm"] = self.ctx.realm.name
-        rep["cname"] = self.ctx.cname
-        rep["ticket"] = ticket
-        rep["enc-part"] = self.ctx.encrypted_part_enctype.encrypt_data(
+        enc_part = EncryptedData()
+        enc_part["etype"] = self.ctx.encrypted_part_enctype.ENC_TYPE.value
+        enc_part["cipher"] = self.ctx.encrypted_part_enctype.encrypt_data(
             self.ctx.encrypted_part_key,
             enc_as_rep_part.to_bytes(),
         )
+
+        rep = AsRep()
+        rep["pvno"] = 5  # TODO: make constant
+        rep["msg-type"] = ApplicationTag.AS_REP.value
+        # if self.ctx.pa_data:
+        #    rep["padata"] = self.ctx.pa_data
+        rep["crealm"] = self.ctx.realm.name
+        rep["cname"].setComponents(*self.ctx.cname.components)
+        rep["ticket"].setComponents(*ticket.components)
+        rep["enc-part"].setComponents(*enc_part.components)
 
         return rep
 
@@ -309,7 +329,6 @@ class AsMessageHandler(MessageHandler):
             if not self.ctx.provider:
                 raise KerberosError(code=KerberosError.Code.KDC_ERR_S_PRINCIPAL_UNKNOWN)
 
-
     def query_pre_execute(self):
         # TODO: check flags and policy
         pass
@@ -323,7 +342,9 @@ class KdcProxyView(View):
             expected_length = int.from_bytes(proxy_message["message"][:4])
             real_length = len(proxy_message["message"][4:])
             if real_length != expected_length:
-                raise ValueError(f"Mismatched message length: expected: {expected_length} got {real_length}")
+                raise ValueError(
+                    f"Mismatched message length: expected: {expected_length} got {real_length}"
+                )
             message = KdcReq.from_bytes(proxy_message["message"][4:])
         except Exception as exc:
             raise SuspiciousOperation from exc

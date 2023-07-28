@@ -27,8 +27,7 @@ class TestKerberosProviderKeytab(APITestCase):
     def test_keytab(self) -> None:
         """Test provider keytab retrieval"""
         response = self.client.get(
-            reverse("authentik_api:kerberosprovider-keytab", kwargs={"pk":
-                                                                     self.provider.pk})
+            reverse("authentik_api:kerberosprovider-keytab", kwargs={"pk": self.provider.pk})
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -66,14 +65,12 @@ class TestKerberosProviderKeytab(APITestCase):
                 self.provider.keys[entry.key.key_type],
             )
 
-
     def test_keytab_kvno_mod256(self) -> None:
         """Test provider keytab retrieval"""
         self.provider.kvno = 2**8 + 1
         self.provider.save()
         response = self.client.get(
-            reverse("authentik_api:kerberosprovider-keytab", kwargs={"pk":
-                                                                     self.provider.pk})
+            reverse("authentik_api:kerberosprovider-keytab", kwargs={"pk": self.provider.pk})
         )
         self.assertEqual(response.status_code, 200)
         keytab = Keytab.from_bytes(response.content)
