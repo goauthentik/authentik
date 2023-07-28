@@ -1,3 +1,4 @@
+import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { truncateWords } from "@goauthentik/common/utils";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Expand";
@@ -77,7 +78,7 @@ export class LibraryApplication extends AKElement {
                     href="${ifDefined(this.application.launchUrl ?? "")}"
                     target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
                 >
-                    <ak-app-icon .app=${this.application}></ak-app-icon>
+                    <ak-app-icon size=${PFSize.Large} .app=${this.application}></ak-app-icon>
                 </a>
             </div>
             <div class="pf-c-card__title">

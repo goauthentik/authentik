@@ -17,7 +17,7 @@ export class AppIcon extends AKElement {
     app?: Application;
 
     @property()
-    size: PFSize = PFSize.Large;
+    size?: PFSize;
 
     static get styles(): CSSResult[] {
         return [
