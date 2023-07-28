@@ -101,6 +101,62 @@ class TestAes128CtsHmacSha196(TestCase):
 class TestAes256CtsHmacSha196(TestCase):
     """aes256-cts-hmac-sha1-96 tests"""
 
+    def test_encrypt_data(self):
+        key = 0xFE697B52BC0D3CE14432BA036A92E65BBB52280990A2FA27883998D72AF30161.to_bytes(32, byteorder="big")
+        plaintext = b"TESTTESTTESTTEST" * 16
+        expected_ciphertext = b'\x192=\x99\xa7.t\xf2\xd4GtH\xbb[\x16\xa4\x8dN\x01/\x83f&\x0e\xba\xe7\xbd%\xb3\xd1\xa5\x9d\xed\xd4\x9f\x18\xe5\x0b\xe6\x82\xc3\x90\x96\xda&\xbe\xbd\x94\x17\x14\xf4\x92X\xfb >5a\xa0\x1f\xf5\xc1C\x19\x90\xcb\x11\x97\x9ak\x9d\xb2\xee\xefQ\xe71\xa7\xcc*\xf2\xf9I\x857.\xe5R>\xa8\x19X\xa8-\xa7v\x0f\x9f\xc2k\xdb\x0f\xd3\xc0*\xc9;\xbf\x933![\xb3\x9a\x9c\x89N\xe5wL*\xd43\xd6&\xe1G\xb7+0d\xcf\x96\xda}\xcan\x18\xb63\xa3\xe1\x15\x8e\x88\x92\xeb*ny\x06\x8b\x91F\x0ff_\x9a\x0c\xa2\xdc\x8f_\x8aJ\xd1^\xc9\xdc\xeb\xa6j\x08#\t\x1f\x96\r\x95\xe62L\x90\xb7\xd5\'\xef+\xce\xa8+\x0bg_\xba\xe6b\xaf\xccO:_\xab\xa4\xe3\xf4\xfb\xdb\xb3\xa8\x1b\xf2^\x82\x16\xf4\xe0\x9fX+q\xd6\x01\xc1\x1a\x9f\xa0\x9c"<\xc7+\x9a|~\xd9}\x8f\xc7\x04\x98\x06o|T\xc4N\xf9\xd7\x08\x862\xa6\xbc\xa0\x89'
+        self.assertEqual(
+            Aes256CtsHmacSha196.encrypt_data(
+                key,
+                plaintext,
+            ),
+            expected_ciphertext,
+        )
+
+    def test_encrypt_data(self):
+        key = 0xFE697B52BC0D3CE14432BA036A92E65BBB52280990A2FA27883998D72AF30161.to_bytes(32, byteorder="big")
+        expected_plaintext = b"TESTTESTTESTTEST" * 16
+        ciphertext = b'\x192=\x99\xa7.t\xf2\xd4GtH\xbb[\x16\xa4\x8dN\x01/\x83f&\x0e\xba\xe7\xbd%\xb3\xd1\xa5\x9d\xed\xd4\x9f\x18\xe5\x0b\xe6\x82\xc3\x90\x96\xda&\xbe\xbd\x94\x17\x14\xf4\x92X\xfb >5a\xa0\x1f\xf5\xc1C\x19\x90\xcb\x11\x97\x9ak\x9d\xb2\xee\xefQ\xe71\xa7\xcc*\xf2\xf9I\x857.\xe5R>\xa8\x19X\xa8-\xa7v\x0f\x9f\xc2k\xdb\x0f\xd3\xc0*\xc9;\xbf\x933![\xb3\x9a\x9c\x89N\xe5wL*\xd43\xd6&\xe1G\xb7+0d\xcf\x96\xda}\xcan\x18\xb63\xa3\xe1\x15\x8e\x88\x92\xeb*ny\x06\x8b\x91F\x0ff_\x9a\x0c\xa2\xdc\x8f_\x8aJ\xd1^\xc9\xdc\xeb\xa6j\x08#\t\x1f\x96\r\x95\xe62L\x90\xb7\xd5\'\xef+\xce\xa8+\x0bg_\xba\xe6b\xaf\xccO:_\xab\xa4\xe3\xf4\xfb\xdb\xb3\xa8\x1b\xf2^\x82\x16\xf4\xe0\x9fX+q\xd6\x01\xc1\x1a\x9f\xa0\x9c"<\xc7+\x9a|~\xd9}\x8f\xc7\x04\x98\x06o|T\xc4N\xf9\xd7\x08\x862\xa6\xbc\xa0\x89'
+        self.assertEqual(
+            Aes256CtsHmacSha196.decrypt_data(
+                key,
+                ciphertext,
+            ),
+            expected_plaintext,
+        )
+
+
+    def test_encrypt_decrypt_data(self):
+        key = 0xFE697B52BC0D3CE14432BA036A92E65BBB52280990A2FA27883998D72AF30161.to_bytes(32, byteorder="big")
+        plaintext = b"TESTTESTTESTTEST" * 16
+        self.assertEqual(
+            Aes256CtsHmacSha196.decrypt_data(
+                key,
+                Aes256CtsHmacSha196.encrypt_data(
+                    key,
+                    plaintext,
+                ),
+            ),
+            plaintext
+        )
+
+    def test_encrypt_decrypt_message(self):
+        key = 0xFE697B52BC0D3CE14432BA036A92E65BBB52280990A2FA27883998D72AF30161.to_bytes(32, byteorder="big")
+        plaintext = b"TESTTESTTESTTEST" * 16
+        self.assertEqual(
+            Aes256CtsHmacSha196.decrypt_message(
+                key,
+                Aes256CtsHmacSha196.encrypt_message(
+                    key,
+                    plaintext,
+                    1,
+                ),
+                1,
+            ),
+            plaintext
+        )
+
+
     def test_string_to_key(self):
         """
         Test cases from RFC 3962, Appendix B.

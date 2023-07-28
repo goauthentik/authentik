@@ -9,6 +9,12 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
 from authentik.lib.kerberos import iana
 
+def _zeropad(data: bytes, padsize: int) -> bytes:
+    padlen = (padsize - (len(data) % padsize)) % padsize
+    return data + bytes([0] * padlen)
+
+def _xorbytes(lhs: bytes, rhs: bytes) -> bytes:
+    return bytes([left ^ right for left, right in zip(lhs, rhs)])
 
 def nfold(data: bytes, size: int) -> bytes:
     """
@@ -135,6 +141,10 @@ class EncryptionType:
     CONFOUNDER_BYTES: int
 
     @classmethod
+    def s2k_params(cls) -> bytes:
+        return int(cls.DEFAULT_STRING_TO_KEY_PARAMS, 16).to_bytes(4, byteorder="big")
+
+    @classmethod
     def random_to_key(cls, data: bytes) -> bytes:
         """
         Derive a protocol key from random data as defined in RFC 3961 and 8009.
@@ -173,10 +183,17 @@ class EncryptionType:
         See https://www.rfc-editor.org/rfc/rfc3962#section-6
         and https://www.rfc-editor.org/rfc/rfc8009#section-5
         """
+        BLOCK_SIZE = cls.CIPHER_BLOCK_BITS // 8
         initialization_vector = bytes([0] * (cls.CIPHER_BLOCK_BITS // 8))
-        cipher = Cipher(cls.CIPHER_ALGORITHM(key), cls.CIPHER_MODE(initialization_vector))
+        cipher = Cipher(cls.CIPHER_ALGORITHM(key), modes.CBC(initialization_vector))
         encryptor = cipher.encryptor()
-        return encryptor.update(data) + encryptor.finalize()
+        ciphertext = encryptor.update(_zeropad(data, BLOCK_SIZE)) + encryptor.finalize()
+        if len(data) > BLOCK_SIZE:
+            lastlen = len(data) % BLOCK_SIZE or BLOCK_SIZE
+            ciphertext = (ciphertext[:-BLOCK_SIZE * 2] +
+                         ciphertext[-BLOCK_SIZE:] +
+                         ciphertext[-2*BLOCK_SIZE:-BLOCK_SIZE][:lastlen])
+        return ciphertext
 
     @classmethod
     def encrypt_message(cls, key: bytes, message: bytes, usage: int) -> bytes:
@@ -193,10 +210,28 @@ class EncryptionType:
         See https://www.rfc-editor.org/rfc/rfc3962#section-6
         and https://www.rfc-editor.org/rfc/rfc8009#section-5
         """
-        initialization_vector = bytes([0] * (cls.CIPHER_BLOCK_BITS // 8))
-        cipher = Cipher(cls.CIPHER_ALGORITHM(key), cls.CIPHER_MODE(initialization_vector))
-        decryptor = cipher.decryptor()
-        return decryptor.update(data) + decryptor.finalize()
+        BLOCK_SIZE = cls.CIPHER_BLOCK_BITS // 8
+        ecb_cipher = Cipher(cls.CIPHER_ALGORITHM(key), modes.ECB())
+        ecb_decryptor = ecb_cipher.decryptor()
+
+        if len(data) == BLOCK_SIZE:
+            return ecb_decryptor.update(data) + ecb_decryptor.finalize()
+
+        blocks = [data[p:p + BLOCK_SIZE] for p in range(0, len(data), BLOCK_SIZE)]
+        lastlen = len(blocks[-1])
+
+        prev_block = bytes([0] * BLOCK_SIZE)
+        plaintext = bytes()
+        for block in blocks[:-2]:
+            plaintext += _xorbytes(ecb_decryptor.update(block), prev_block)
+            prev_block = block
+
+        next_to_last_plaintext = ecb_decryptor.update(blocks[-2])
+        last_plaintext =_xorbytes(next_to_last_plaintext[:lastlen], blocks[-1])
+        omitted = next_to_last_plaintext[lastlen:]
+        plaintext += _xorbytes(ecb_decryptor.update(blocks[-1] + omitted), prev_block)
+        return plaintext + last_plaintext
+
 
     @classmethod
     def decrypt_message(cls, key: bytes, ciphertext: bytes, usage: int) -> bytes:
@@ -206,22 +241,22 @@ class EncryptionType:
         raise NotImplementedError
 
     @classmethod
-    def hash(cls, data: bytes, key: bytes, usage: bytes) -> bytes:
+    def hash(cls, key: bytes, data: bytes, usage: bytes) -> bytes:
         hash_key = cls.derive_key(key, usage)
         hasher = hmac.HMAC(hash_key, cls.HASH_ALGORITHM())
         hasher.update(data)
         return hasher.finalize()[: cls.HMAC_BITS // 8]
 
     @classmethod
-    def integrity_hash(cls, data: bytes, key: bytes, usage: int) -> bytes:
-        return cls.hash(data, key, usage_ki(usage))
+    def integrity_hash(cls, key: bytes, data: bytes, usage: int) -> bytes:
+        return cls.hash(key, data, usage_ki(usage))
 
     @classmethod
     def checksum_hash(cls, key: bytes, data: bytes, usage: int) -> bytes:
         """
         Compute data checksum hash with a procotol key.
         """
-        return cls.hash(data, key, usage_kc(usage))
+        return cls.hash(key, data, usage_kc(usage))
 
     @classmethod
     def verify_checksum(cls, key: bytes, data: bytes, checksum: bytes, usage: int) -> bool:
@@ -238,9 +273,12 @@ class EncryptionType:
         See https://www.rfc-editor.org/rfc/rfc3961#section-5.3
         See https://www.rfc-editor.org/rfc/rfc8009#section-6
         """
+        a = cls.integrity_hash(key, message, usage)
+        b = ciphertext[-cls.HMAC_BITS // 8:]
+        #TODO: raise ValueError()
         return (
             cls.integrity_hash(key, message, usage)
-            == ciphertext[len(ciphertext) - cls.HMAC_BITS // 8 :]
+            == ciphertext[-cls.HMAC_BITS // 8:]
         )
 
 
@@ -324,7 +362,7 @@ class Rfc3962(Rfc3961):
             encryption_key = cls.derive_key(key, usage_ke(usage))
 
         encrypted_bytes = cls.encrypt_data(encryption_key, plain_bytes)
-        integrity_hash = cls.integrity_hash(plain_bytes, key, usage)
+        integrity_hash = cls.integrity_hash(key, plain_bytes, usage)
 
         return encrypted_bytes + integrity_hash
 
@@ -336,7 +374,7 @@ class Rfc3962(Rfc3961):
         decryption_key = cls.derive_key(key, usage_ke(usage))
         # Remove the checksum at the end
         message = cls.decrypt_data(
-            decryption_key, ciphertext[: len(ciphertext) - cls.HMAC_BITS // 8]
+            decryption_key, ciphertext[:-cls.HMAC_BITS // 8]
         )
 
         if not cls.verify_integrity(key, ciphertext, message, usage):
@@ -438,7 +476,9 @@ class Rfc8009(EncryptionType):
 
         encrypted_bytes = cls.encrypt_data(encryption_key, plain_bytes)
         integrity_hash = cls.integrity_hash(
-            bytes([0] * (cls.CIPHER_BLOCK_BITS // 8)) + encrypted_bytes, key, usage
+            key,
+            bytes([0] * (cls.CIPHER_BLOCK_BITS // 8)) + encrypted_bytes,
+            usage,
         )
 
         return encrypted_bytes + integrity_hash
@@ -451,11 +491,13 @@ class Rfc8009(EncryptionType):
         decryption_key = cls.derive_key(key, usage_ke(usage))
         # Remove checksum at the end
         message = cls.decrypt_data(
-            decryption_key, ciphertext[: len(ciphertext) - cls.HMAC_BITS // 8]
+            decryption_key, ciphertext[:-cls.HMAC_BITS // 8]
         )
 
         if not cls.verify_integrity(
-            key, ciphertext, bytes([0] * (cls.CIPHER_BLOCK_BITS // 8)) + message, usage
+            key, ciphertext,
+            bytes([0] * (cls.CIPHER_BLOCK_BITS // 8)) + ciphertext[:-cls.HMAC_BITS // 8],
+            usage
         ):
             raise ValueError("Message is not honest")
 

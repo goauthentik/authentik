@@ -21,11 +21,14 @@ from authentik.lib.kerberos.protocol import (
     KdcRep,
     KdcReq,
     KrbError,
+    KeyUsageNumbers,
     PaData,
     TgsRep,
     TgsReq,
     EncryptedData,
     PaDataEncTsEnc,
+    PaDataEtypeInfo2,
+    PaDataEtypeInfo2Entry,
     ApplicationTag,
     PrincipalNameType,
     PrincipalName,
@@ -78,6 +81,33 @@ class PaHandler:
         pass
 
 
+class PaEtypeInfo2(PaHandler):
+    PRE_AUTHENTICATION_TYPE = iana.PreAuthenticationType.PA_ETYPE_INFO2
+
+    def post_validate(self):
+        if not self.ctx.user:
+            return
+
+        entries = PaDataEtypeInfo2()
+        if self.ctx.encrypted_part_enctype:
+            entry = PaDataEtypeInfo2Entry()
+            entry["etype"] = self.ctx.encrypted_part_enctype.value
+            entry["salt"] = str(self.ctx.user.uuid).encode("utf-8")
+            entry["s2kparams"] = self.ctx.encrypted_part_enctype.s2k_params()
+        else:
+            for enctype_value in map(int, self.ctx.user.krb5_keys.keys()):
+                entry = PaDataEtypeInfo2Entry()
+                entry["etype"] = enctype_value
+                entry["salt"] = str(self.ctx.user.uuid).encode("utf-8")
+                entry["s2kparams"] = crypto.get_enctype_from_value(enctype_value).s2k_params()
+                entries.append(entry)
+
+        padata = PaData()
+        padata["padata-type"] = self.PRE_AUTHENTICATION_TYPE.value
+        padata["padata-value"] = entries.to_bytes()
+        self.ctx.pa_data.append(padata)
+
+
 class PaEncTimestampHandler(PaHandler):
     PRE_AUTHENTICATION_TYPE = iana.PreAuthenticationType.PA_ENC_TIMESTAMP
 
@@ -91,7 +121,7 @@ class PaEncTimestampHandler(PaHandler):
     def _check_padata_timestamp(self, paenctsenc: PaDataEncTsEnc) -> bool:
         patimestamp = paenctsenc["patimestamp"]
         pausec = paenctsenc.getComponentByName("pausec", 0)
-        dt = patimestamp.asDateTime + timedelta(microseconds=pausec)
+        dt = patimestamp.asDateTime() + timedelta(microseconds=pausec)
         target_entity = self.ctx.provider or self.ctx.realm
         skew = timedelta_from_string(target_entity.maximum_skew)
         return now() - skew < dt < now() + skew
@@ -104,7 +134,7 @@ class PaEncTimestampHandler(PaHandler):
 
         if padata is None:
             padata = PaData()
-            padata["padata-type"] = iana.PreAuthenticationType.PA_ENC_TIMESTAMP.value
+            padata["padata-type"] = self.PRE_AUTHENTICATION_TYPE.value
             padata["padata-value"] = bytes()
             self.ctx.pa_data.append(padata)
             return
@@ -120,11 +150,17 @@ class PaEncTimestampHandler(PaHandler):
         try:
             key = b64decode(self.ctx.user.krb5_keys[str(enctype_value)].encode())
         except IndexError as exc:
-            raise KerberosError(code=KerberosError.Code.KDC_ERR_NULL_KEY) from exc
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_ETYPE_NOSUPP) from exc
 
-        paenctsenc = PaDataEncTsEnc.from_bytes(enctype.decrypt_data(key, encdata["cipher"]))
+        paenctsenc = PaDataEncTsEnc.from_bytes(
+            enctype.decrypt_message(
+                key=key,
+                ciphertext=bytes(encdata["cipher"]),
+                usage=KeyUsageNumbers.AS_REQ_PA_ENC_TIMESTAMP.value,
+            )
+        )
 
-        if not self._check_timestamp(self, paenctsenc):
+        if not self._check_padata_timestamp(self, paenctsenc):
             raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED)
 
         self.ctx.encrypted_part_key = key
@@ -150,6 +186,10 @@ class MessageHandler:
         for handler in self.pa_handlers:
             handler.validate()
 
+    def post_validate(self) -> KrbError:
+        for handler in self.pa_handlers:
+            handler.post_validate()
+
     def validate_ticket_request(self):
         pass
 
@@ -166,6 +206,7 @@ class MessageHandler:
             self.pre_validate()
             self.query_pre_validate()
             self.process_pre_auth()
+            self.post_validate()
             self.validate_ticket_request()
             self.query_pre_execute()
             return self.execute()
@@ -181,6 +222,7 @@ class MessageHandler:
 class AsMessageHandler(MessageHandler):
     PA_HANDLERS = [
         PaEncTimestampHandler,
+        PaEtypeInfo2,
     ]
 
     def execute(self) -> KdcRep | KrbError:
