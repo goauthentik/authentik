@@ -5,7 +5,6 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Markdown";
-import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -133,6 +132,18 @@ export class KerberosProviderViewPage extends AKElement {
                                 <dd class="pf-c-description-list__description">
                                     <div class="pf-c-description-list__text">
                                         ${this.provider.fullSpn}
+                                    </div>
+                                </dd>
+                            </div>
+                            <div class="pf-c-description-list__group">
+                                <dt class="pf-c-description-list__term">
+                                    <span class="pf-c-description-list__text">${msg("Realm")}</span>
+                                </dt>
+                                <dd class="pf-c-description-list__description">
+                                    <div class="pf-c-description-list__text">
+                                        <a href="#/kerberos/realms/${this.provider.realm}">
+                                            ${this.provider.realmName}
+                                        </a>
                                     </div>
                                 </dd>
                             </div>

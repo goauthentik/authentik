@@ -70,7 +70,7 @@ export class KerberosRealmListPage extends TablePage<KerberosRealm> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: KerberosReaom): TemplateResult[] {
+    row(item: KerberosRealm): TemplateResult[] {
         return [
             html`<a href="#/kerberos/realms/${item.pk}"> ${item.name} </a>`,
             html`<ak-forms-modal>

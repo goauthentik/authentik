@@ -15,9 +15,9 @@ from authentik.lib.kerberos.protocol import (
     KdcRep,
     KdcReq,
     KrbError,
+    PaData,
     TgsRep,
     TgsReq,
-    PaData,
 )
 from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
 
@@ -29,6 +29,7 @@ class Context:
     request: HttpRequest
     message: KdcReq
 
+
 class PaHandler:
     def __init__(self, ctx: Context):
         self.ctx = ctx
@@ -36,24 +37,25 @@ class PaHandler:
     def pre_validate(self):
         raise NotImplemented
 
-    def validate(self) -> PaData
+    def validate(self) -> PaData:
         raise NotImplemented
 
     def post_validate(self):
         raise NotImplemented
+
 
 class PaEncTimestampHandler(PaHandler):
     pass
 
 
 class MessageHandler:
-    PREAUTH_HANDLERS = []
+    PREAUTH_HANDLERS: list[PaHandler]
 
     def __init__(self, ctx: Context):
         self.ctx = ctx
 
     def pre_validate(self) -> KrbError:
-        for handler in PREAUTH_HANDLERS:
+        for handler in self.PREAUTH_HANDLERS:
             handler.pre_validate()
 
     def query_pre_validate(self):
@@ -67,6 +69,7 @@ class MessageHandler:
         self.query_pre_validate()
         self.pre_auth()
         return self.execute()
+
 
 class AsMessageHandler(MessageHandler):
     PREAUTH_HANDLERS = [
@@ -96,7 +99,7 @@ class KdcProxyView(View):
         if isinstance(message, AsReq):
             rep = AsMessageHandler(Context(request=request, message=message)).handle()
         if isinstance(message, TgsReq):
-            #return TgsMessageHandler(Context(request=request, message=message)).handle()
+            # return TgsMessageHandler(Context(request=request, message=message)).handle()
             raise NotImplemented
 
         return HttpResponse(

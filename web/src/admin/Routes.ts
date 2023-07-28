@@ -128,6 +128,10 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/providers/kerberos/KerberosRealmListPage");
         return html`<ak-kerberos-realm-list></ak-kerberos-realm-list>`;
     }),
+    new Route(new RegExp(`^/kerberos/realms/(?<id>${ID_REGEX})$`), async (args) => {
+        await import("@goauthentik/admin/providers/kerberos/KerberosRealmViewPage");
+        return html`<ak-kerberos-realm-view .realmID=${args.id}></ak-kerberos-realm-view>`;
+    }),
     new Route(new RegExp("^/crypto/certificates$"), async () => {
         await import("@goauthentik/admin/crypto/CertificateKeyPairListPage");
         return html`<ak-crypto-certificate-list></ak-crypto-certificate-list>`;

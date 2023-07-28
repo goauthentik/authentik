@@ -1,5 +1,5 @@
 """KerberosProvider API Views"""
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema
@@ -11,12 +11,13 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import MetaNameSerializer
 from authentik.lib.kerberos import keytab
 from authentik.lib.kerberos.principal import PrincipalName
 from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
 
 
-class KerberosRealmSerializer(ModelSerializer):
+class KerberosRealmSerializer(ModelSerializer, MetaNameSerializer):
     """KerberosRealm Serializer"""
 
     provider_set = ListField(
@@ -42,6 +43,7 @@ class KerberosRealmSerializer(ModelSerializer):
             "requires_preauth",
             "secret",
             "provider_set",
+            "meta_model_name",
         ]
 
 

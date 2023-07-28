@@ -17,7 +17,13 @@ import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
-import { KerberosApi, KerberosProvider, KerberosRealm, ProvidersApi } from "@goauthentik/api";
+import {
+    KerberosApi,
+    KerberosProvider,
+    KerberosRealm,
+    KerberosRealmsListRequest,
+    ProvidersApi,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-kerberos-form")
 export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number> {
@@ -87,7 +93,7 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
             <ak-form-element-horizontal label=${msg("Realm")} ?required=${true} name="realm">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<KerberosRealm[]> => {
-                        const args: KerberosRealmListRequest = {
+                        const args: KerberosRealmsListRequest = {
                             ordering: "slug",
                         };
                         if (query !== undefined) {
@@ -101,7 +107,7 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
                     .renderElement=${(realm: KerberosRealm): string => {
                         return realm.name;
                     }}
-                    .value=${(realm: KerberosRealm | undefined): string | undefined => {
+                    .value=${(realm: KerberosRealm | undefined): number | undefined => {
                         return realm?.pk;
                     }}
                     .selected=${(realm: KerberosRealm): boolean => {

@@ -31837,7 +31837,12 @@ components:
           items:
             type: string
           readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
       required:
+      - meta_model_name
       - name
       - pk
       - provider_set
