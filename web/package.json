@@ -47,7 +47,7 @@
         "chartjs-adapter-moment": "^1.0.1",
         "codemirror": "^6.0.1",
         "construct-style-sheets-polyfill": "^3.1.0",
-        "core-js": "^3.31.1",
+        "core-js": "^3.32.0",
         "country-flag-icons": "^1.5.7",
         "fuse.js": "^6.6.2",
         "lit": "^2.7.6",
