@@ -4,6 +4,10 @@ title: Hackathon 2023
 
 ![hackathon-image](./horizontal-brandon-frie-rdHeGGn7rwQ-unsplash.jpg)
 
+**REGISTRATION NOW CLOSED! PLEASE JOIN US FOR A FUTURE AUTHENTIK HACKATHON.**
+
+^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^ ^
+
 ## Join us for our first authentik hackathon!
 
 Everyone welcome; we will work on code, docs, and anything else that looks interesting and challenging.
@@ -24,10 +28,6 @@ July 26-30, 2023
 ## Where
 
 Online, in our [GitHub repo](https://github.com/goauthentik/authentik), and on Discord in our [#hackathon23 channel](https://discord.com/channels/809154715984199690/1110948434552299673) for our Kickoff call, checkins, and the wrap-up and awards events. We will also use the #hackathon23 channel throughout the entire five days, for questions and general chatting. Be sure to first visit our [welcome-info-rules channel](https://discord.com/channels/809154715984199690/813452440660606986), to review our code of conduct and see the latest posts about the hackathon.
-
-## Registration form
-
-Use the [Hackathon 2023 Registration Form](https://docs.google.com/forms/d/e/1FAIpQLSc10MiK4li-SIY8SidhwFEwFbDcna-fio1xFY2nmimqXPPvLA/viewform) to let us know that you'll join us!
 
 ## Take a look on GitHub
 
