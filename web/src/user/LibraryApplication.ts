@@ -63,8 +63,13 @@ export class LibraryApplication extends AKElement {
                     color: var(--ak-global--Color--100);
                     padding: var(--icon-border);
                     max-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
-                    line-height: calc(var(--icon-height) + var(--icon-border) + var(--icon-border));
+                    line-height: calc(
+                        var(--icon-height) + var(--icon-border) + var(--icon-border) - 6px
+                    );
                     filter: drop-shadow(5px 5px 5px rgba(128, 128, 128, 0.25));
+                }
+                a:hover {
+                    text-decoration: none;
                 }
                 .expander {
                     flex-grow: 1;
