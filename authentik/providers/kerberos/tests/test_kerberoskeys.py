@@ -1,4 +1,5 @@
 """authentik Kerberos provider tests"""
+# pylint: disable=duplicate-code
 from django.test import TestCase
 
 from authentik.core.tests.utils import create_test_flow

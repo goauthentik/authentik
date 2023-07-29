@@ -1,7 +1,7 @@
 """Kerberos cryptography primitives"""
 import math
 import secrets
-from typing import Tuple, Type
+from typing import Type
 
 from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
@@ -91,6 +91,7 @@ def nfold(data: bytes, size: int) -> bytes:
     return result
 
 
+# pylint: disable=invalid-name
 def _usage(un: int, o: int) -> bytes:
     """
     See https://www.rfc-editor.org/rfc/rfc3961#section-5.3
@@ -99,6 +100,7 @@ def _usage(un: int, o: int) -> bytes:
     return un.to_bytes(4, byteorder="big") + o.to_bytes(1, byteorder="big")
 
 
+# pylint: disable=invalid-name
 def usage_kc(un: int) -> bytes:
     """
     See https://www.rfc-editor.org/rfc/rfc3961#section-5.3
@@ -107,6 +109,7 @@ def usage_kc(un: int) -> bytes:
     return _usage(un, 0x99)
 
 
+# pylint: disable=invalid-name
 def usage_ke(un: int) -> bytes:
     """
     See https://www.rfc-editor.org/rfc/rfc3961#section-5.3
@@ -115,6 +118,7 @@ def usage_ke(un: int) -> bytes:
     return _usage(un, 0xAA)
 
 
+# pylint: disable=invalid-name
 def usage_ki(un: int) -> bytes:
     """
     See https://www.rfc-editor.org/rfc/rfc3961#section-5.3
@@ -146,6 +150,7 @@ class EncryptionType:
 
     @classmethod
     def s2k_params(cls) -> bytes:
+        """Get encryption type string to key params"""
         return int(cls.DEFAULT_STRING_TO_KEY_PARAMS, 16).to_bytes(4, byteorder="big")
 
     @classmethod
@@ -187,17 +192,17 @@ class EncryptionType:
         See https://www.rfc-editor.org/rfc/rfc3962#section-6
         and https://www.rfc-editor.org/rfc/rfc8009#section-5
         """
-        BLOCK_SIZE = cls.CIPHER_BLOCK_BITS // 8
+        block_size = cls.CIPHER_BLOCK_BITS // 8
         initialization_vector = bytes([0] * (cls.CIPHER_BLOCK_BITS // 8))
         cipher = Cipher(cls.CIPHER_ALGORITHM(key), modes.CBC(initialization_vector))
         encryptor = cipher.encryptor()
-        ciphertext = encryptor.update(_zeropad(data, BLOCK_SIZE)) + encryptor.finalize()
-        if len(data) > BLOCK_SIZE:
-            lastlen = len(data) % BLOCK_SIZE or BLOCK_SIZE
+        ciphertext = encryptor.update(_zeropad(data, block_size)) + encryptor.finalize()
+        if len(data) > block_size:
+            lastlen = len(data) % block_size or block_size
             ciphertext = (
-                ciphertext[: -BLOCK_SIZE * 2]
-                + ciphertext[-BLOCK_SIZE:]
-                + ciphertext[-2 * BLOCK_SIZE : -BLOCK_SIZE][:lastlen]
+                ciphertext[: -block_size * 2]
+                + ciphertext[-block_size:]
+                + ciphertext[-2 * block_size : -block_size][:lastlen]
             )
         return ciphertext
 
@@ -218,17 +223,17 @@ class EncryptionType:
         See https://www.rfc-editor.org/rfc/rfc3962#section-6
         and https://www.rfc-editor.org/rfc/rfc8009#section-5
         """
-        BLOCK_SIZE = cls.CIPHER_BLOCK_BITS // 8
+        block_size = cls.CIPHER_BLOCK_BITS // 8
         ecb_cipher = Cipher(cls.CIPHER_ALGORITHM(key), modes.ECB())
         ecb_decryptor = ecb_cipher.decryptor()
 
-        if len(data) == BLOCK_SIZE:
+        if len(data) == block_size:
             return ecb_decryptor.update(data) + ecb_decryptor.finalize()
 
-        blocks = [data[p : p + BLOCK_SIZE] for p in range(0, len(data), BLOCK_SIZE)]
+        blocks = [data[p : p + block_size] for p in range(0, len(data), block_size)]
         lastlen = len(blocks[-1])
 
-        prev_block = bytes([0] * BLOCK_SIZE)
+        prev_block = bytes([0] * block_size)
         plaintext = bytes()
         for block in blocks[:-2]:
             plaintext += _xorbytes(ecb_decryptor.update(block), prev_block)
@@ -249,6 +254,9 @@ class EncryptionType:
 
     @classmethod
     def hash(cls, key: bytes, data: bytes, usage: bytes) -> bytes:
+        """
+        Hash data with a protocol key.
+        """
         hash_key = cls.derive_key(key, usage)
         hasher = hmac.HMAC(hash_key, cls.HASH_ALGORITHM())
         hasher.update(data)
@@ -256,6 +264,9 @@ class EncryptionType:
 
     @classmethod
     def integrity_hash(cls, key: bytes, data: bytes, usage: int) -> bytes:
+        """
+        Compute data integrity hash.
+        """
         return cls.hash(key, data, usage_ki(usage))
 
     @classmethod
@@ -275,17 +286,16 @@ class EncryptionType:
     @classmethod
     def verify_integrity(cls, key: bytes, ciphertext: bytes, message: bytes, usage: int) -> bool:
         """
-        Verify message integrity from its ciphertext a protocol key as defined in RFC 3961 and RFC 8009.
+        Verify message integrity from its ciphertext a protocol key
+        as defined in RFC 3961 and RFC 8009.
 
         See https://www.rfc-editor.org/rfc/rfc3961#section-5.3
         See https://www.rfc-editor.org/rfc/rfc8009#section-6
         """
-        a = cls.integrity_hash(key, message, usage)
-        b = ciphertext[-cls.HMAC_BITS // 8 :]
-        # TODO: raise ValueError()
         return cls.integrity_hash(key, message, usage) == ciphertext[-cls.HMAC_BITS // 8 :]
 
 
+# pylint: disable=abstract-method
 class Rfc3961(EncryptionType):
     """
     Encryption and checksumming method as defined in RFC 3961.
@@ -625,6 +635,7 @@ SUPPORTED_ENCTYPES = (
 
 
 def get_enctype_from_value(value: int) -> Type[EncryptionType]:
+    """Get an encryption type from it's IANA defined value."""
     for enctype in SUPPORTED_ENCTYPES:
         if enctype.ENC_TYPE.value == value:
             return enctype

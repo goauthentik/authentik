@@ -11,7 +11,6 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer
-from authentik.providers.kerberos.lib import keytab
 from authentik.providers.kerberos.lib.protocol import PrincipalName
 from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
 

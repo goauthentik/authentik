@@ -1,3 +1,11 @@
+"""
+Kerberos protocol primitives for ASN.1 encoding and decoding.
+
+Allows for decoding types specified in RFC 4120.
+
+See https://www.rfc-editor.org/rfc/rfc4120#section-3
+"""
+# pylint: disable=too-many-ancestors
 from datetime import datetime
 from enum import UNIQUE, Enum, verify
 from typing import Any, Self
@@ -94,6 +102,12 @@ class PrincipalNameType(Enum):
 
 @verify(UNIQUE)
 class ApplicationTag(Enum):
+    """
+    Kerberos messages ASN.1 application tags as defined by RFC 4120 and RFC 6111.
+
+    See https://www.rfc-editor.org/rfc/rfc4120#section-3
+    """
+
     # 0: Unused
     TICKET = 1  # PDU
     AUTHENTICATOR = 2  # non-PDU
@@ -155,14 +169,18 @@ def _kvno_component(name: str, tag_value: int) -> namedtype.NamedType:
 
 
 class Asn1SetValueMixin:
+    """pyasn1 Sequence mixin to allow for easier interaction with stored data."""
+
     @classmethod
     def from_values(cls, **kwargs) -> Self:
+        """Create ASN.1 object from arguments."""
         obj = cls()
         for name, value in kwargs.items():
             obj.set_value(name, value)
         return obj
 
     def set_value(self, name: str, value: Any) -> Any:
+        """Set an attribute, but do if without having to monkey around with tagsets."""
         if hasattr(self[name], "setComponents") and hasattr(value, "components"):
             self[name].setComponents(*value.components)
         elif hasattr(value, "tagSet"):
@@ -175,8 +193,11 @@ class Asn1SetValueMixin:
 
 
 class Asn1LeafMixin:
+    """pyasn1 mixin for exporting and importing data."""
+
     @classmethod
     def from_bytes(cls, data: bytes) -> Self:
+        """Decode data into an ASN.1 object."""
         try:
             req, tail = der_decode(data, asn1Spec=cls())
         except PyAsn1Error as exc:
@@ -186,23 +207,31 @@ class Asn1LeafMixin:
         return req
 
     def to_bytes(self) -> bytes:
+        """Encode an ASN.1 object."""
         return der_encode(self)
 
 
 class Int32(univ.Integer):
+    """Kerberos Int32 ASN.1 representation."""
+
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(
         -2147483648, 2147483647
     )
 
     def to_bytes(self, *args, **kwargs) -> bytes:
+        """Encode an ASN.1 object."""
         return int(self).to_bytes(*args, **kwargs)
 
 
 class UInt32(univ.Integer):
+    """Kerberos UInt32 ASN.1 representation."""
+
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(0, 4294967295)
 
 
 class Microseconds(univ.Integer):
+    """Kerberos Microseconds ASN.1 representation."""
+
     subtypeSpec = univ.Integer.subtypeSpec + constraint.ValueRangeConstraint(0, 999999)
 
 
@@ -223,10 +252,12 @@ class PrincipalName(Asn1SetValueMixin, univ.Sequence):
     )
 
     def to_string(self):
+        """Format the principal name."""
         return "/".join([str(name) for name in self["name-string"]])
 
     @classmethod
     def from_components(cls, name_type: PrincipalNameType, name: list[str]) -> Self:
+        """Create a principal name from name components."""
         obj = cls()
         obj["name-type"] = name_type.value
         obj["name-string"].extend(name)
@@ -273,6 +304,8 @@ class HostAddresses(univ.SequenceOf):
 
 
 class AuthorizationData(univ.SequenceOf):
+    """Kerberos Authorization Data ASN.1 representation."""
+
     componentType = univ.Sequence(
         componentType=namedtype.NamedTypes(
             _sequence_component("ad-type", 0, Int32()),
@@ -282,16 +315,19 @@ class AuthorizationData(univ.SequenceOf):
 
 
 class LastReq(univ.SequenceOf):
+    """Kerberos Last Req ASN.1 representation."""
+
     componentType = univ.Sequence(
         componentType=namedtype.NamedTypes(
             _sequence_component("lr-type", 0, Int32()),
             _sequence_component("lr-data", 1, KerberosTime()),
         )
     )
-    )
 
 
 class PaDataEncTsEnc(Asn1LeafMixin, univ.Sequence):
+    """Kerberos PaData EncTsEnc ASN.1 representation."""
+
     componentType = namedtype.NamedTypes(
         _sequence_component("patimestamp", 0, KerberosTime()),
         _sequence_optional_component("pausec", 1, Microseconds()),
@@ -299,6 +335,8 @@ class PaDataEncTsEnc(Asn1LeafMixin, univ.Sequence):
 
 
 class PaDataEtypeInfo2Entry(univ.Sequence):
+    """Kerberos PaData ETypeInfo2 Entry ASN.1 representation."""
+
     componentType = namedtype.NamedTypes(
         _sequence_component("etype", 0, Int32()),
         _sequence_optional_component("salt", 1, KerberosString()),
@@ -307,6 +345,8 @@ class PaDataEtypeInfo2Entry(univ.Sequence):
 
 
 class PaDataEtypeInfo2(Asn1LeafMixin, univ.SequenceOf):
+    """Kerberos PaData ETypeInfo2 ASN.1 representation."""
+
     componentType = PaDataEtypeInfo2Entry()
 
 
@@ -320,6 +360,8 @@ class PaData(univ.Sequence):
 
 
 class MethodData(Asn1LeafMixin, univ.SequenceOf):
+    """Kerberos Method Data ASN.1 representation."""
+
     componentType = PaData()
 
 
@@ -328,10 +370,10 @@ class KerberosFlags(univ.BitString):
 
     bitLength = 32
 
-    def __init__(self, value=univ.noValue, *args, **kwargs):
+    def __init__(self, value=univ.noValue, **kwargs):
         if value is univ.noValue:
             value = univ.SizedInteger(0).setBitLength(self.bitLength)
-        super().__init__(value, *args, **kwargs)
+        super().__init__(value, **kwargs)
         self._value.setBitLength(self.bitLength)
 
     def __getitem__(self, key):
@@ -354,6 +396,8 @@ class KerberosFlags(univ.BitString):
 
 
 class EncryptedData(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+    """Kerberos encrypted data ASN.1 representation"""
+
     componentType = namedtype.NamedTypes(
         _sequence_component("etype", 0, Int32()),
         _sequence_optional_component("kvno", 1, UInt32()),
@@ -362,6 +406,8 @@ class EncryptedData(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
 
 
 class EncryptionKey(Asn1SetValueMixin, univ.Sequence):
+    """Kerberos encryption key ASN.1 representation"""
+
     componentType = namedtype.NamedTypes(
         _sequence_component("keytype", 0, Int32()),
         _sequence_component("keyvalue", 1, univ.OctetString()),
@@ -369,6 +415,8 @@ class EncryptionKey(Asn1SetValueMixin, univ.Sequence):
 
 
 class Checksum(univ.Sequence):
+    """Kerberos checksum ASN.1 representation"""
+
     componentType = namedtype.NamedTypes(
         _sequence_component("cksumtype", 0, Int32()),
         _sequence_component("checksum", 1, univ.OctetString()),
@@ -376,6 +424,8 @@ class Checksum(univ.Sequence):
 
 
 class Ticket(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+    """Kerberos ticket ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.TICKET)
     componentType = namedtype.NamedTypes(
         _kvno_component("tkt-vno", 0),
@@ -386,6 +436,8 @@ class Ticket(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
 
 
 class TicketFlags(KerberosFlags):
+    """Kerberos ticket flags ASN.1 representation"""
+
     namedValues = namedval.NamedValues(
         ("reserved", 0),
         ("forwardable", 1),
@@ -405,6 +457,8 @@ class TicketFlags(KerberosFlags):
 
 
 class TransitedEncoding(Asn1SetValueMixin, univ.Sequence):
+    """Kerberos transited encoding ASN.1 representation"""
+
     componentType = namedtype.NamedTypes(
         _sequence_component("tr-type", 0, Int32()),
         _sequence_component("contents", 1, univ.OctetString()),
@@ -412,6 +466,8 @@ class TransitedEncoding(Asn1SetValueMixin, univ.Sequence):
 
 
 class EncTicketPart(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+    """Kerberos enc ticket part ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.ENC_TICKET_PART)
     componentType = namedtype.NamedTypes(
         _sequence_component("flags", 0, TicketFlags()),
@@ -429,6 +485,8 @@ class EncTicketPart(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
 
 
 class Authenticator(Asn1LeafMixin, univ.Sequence):
+    """Kerberos authenticator ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.AUTHENTICATOR)
     componentType = namedtype.NamedTypes(
         _kvno_component("authenticator-vno", 0),
@@ -443,7 +501,19 @@ class Authenticator(Asn1LeafMixin, univ.Sequence):
     )
 
 
+class ApOptions(KerberosFlags):
+    """Kerberos AP options ASN.1 representation"""
+
+    namedValues = namedval.NamedValues(
+        ("reserved", 0),
+        ("use-session-key", 1),
+        ("mutual-required", 2),
+    )
+
+
 class KdcOptions(KerberosFlags):
+    """Kerberos KDC options ASN.1 representation"""
+
     namedValues = namedval.NamedValues(
         ("reserved", 0),
         ("forwardable", 1),
@@ -469,6 +539,8 @@ class KdcOptions(KerberosFlags):
 
 
 class KdcReqBody(univ.Sequence):
+    """Kerberos KDC req body ASN.1 representation"""
+
     componentType = namedtype.NamedTypes(
         _sequence_component("kdc-options", 0, KdcOptions()),
         _sequence_component("cname", 1, PrincipalName()),
@@ -488,6 +560,8 @@ class KdcReqBody(univ.Sequence):
 
 
 class KdcReq(univ.Sequence):
+    """Kerberos KDC req ASN.1 representation"""
+
     componentType = namedtype.NamedTypes(
         _kvno_component("pvno", 1),
         _sequence_component(
@@ -507,6 +581,7 @@ class KdcReq(univ.Sequence):
 
     @classmethod
     def from_bytes(cls, data: bytes) -> Self:
+        """Decode a KDC REQ into either an AS REQ or a TGS REQ"""
         for subcls in cls.__subclasses__():  # AsReq and TgsReq
             try:
                 req, tail = der_decode(data, asn1Spec=subcls())
@@ -520,22 +595,20 @@ class KdcReq(univ.Sequence):
 
 
 class AsReq(KdcReq):
+    """Kerberos AS req ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.AS_REQ)
 
 
 class TgsReq(KdcReq):
+    """Kerberos TGS req ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.TGS_REQ)
 
 
-class ApOptions(KerberosFlags):
-    namedValues = namedval.NamedValues(
-        ("reserved", 0),
-        ("use-session-key", 1),
-        ("mutual-required", 2),
-    )
-
-
 class ApReq(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+    """Kerberos AP req ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.AP_REQ)
     componentType = namedtype.NamedTypes(
         _kvno_component("pvno", 0),
@@ -554,6 +627,8 @@ class ApReq(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
 
 
 class KdcRep(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+    """Kerberos Kdc rep ASN.1 representation"""
+
     componentType = namedtype.NamedTypes(
         _kvno_component("pvno", 0),
         _sequence_component(
@@ -576,14 +651,20 @@ class KdcRep(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
 
 
 class AsRep(KdcRep):
+    """Kerberos AS rep ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.AS_REP)
 
 
 class TgsRep(KdcRep):
+    """Kerberos TGS rep ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.TGS_REP)
 
 
 class EncKdcRepPart(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+    """Kerberos encrypted KDC rep part ASN.1 representation"""
+
     componentType = namedtype.NamedTypes(
         _sequence_component("key", 0, EncryptionKey()),
         _sequence_component("last-req", 1, LastReq()),
@@ -601,14 +682,20 @@ class EncKdcRepPart(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
 
 
 class EncAsRepPart(EncKdcRepPart):
+    """Kerberos encrypted AS rep part ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.ENC_AS_REP_PART)
 
 
 class EncTgsRepPart(EncKdcRepPart):
+    """Kerberos encrypted TGS rep part ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.ENC_TGS_REP_PART)
 
 
 class KrbError(Asn1LeafMixin, univ.Sequence):
+    """Kerberos error ASN.1 representation"""
+
     tagSet = _application_tag(ApplicationTag.KRB_ERROR)
     componentType = namedtype.NamedTypes(
         _kvno_component("pvno", 0),
@@ -633,6 +720,8 @@ class KrbError(Asn1LeafMixin, univ.Sequence):
 
 
 class KdcProxyMessage(Asn1LeafMixin, univ.Sequence):
+    """Kerberos proxy message ASN.1 representation"""
+
     componentType = namedtype.NamedTypes(
         _sequence_component("message", 0, univ.OctetString()),
         _sequence_optional_component("target-domain", 1, Realm()),

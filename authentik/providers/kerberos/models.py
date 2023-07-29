@@ -11,13 +11,17 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import KerberosKeyModel, Provider
+from authentik.core.models import KerberosKeyMixin, Provider
 from authentik.lib.generators import generate_id, generate_key
-from authentik.providers.kerberos.lib import keytab
-from authentik.providers.kerberos.lib.crypto import SUPPORTED_ENCTYPES, EncryptionType, get_enctype_from_value
-from authentik.providers.kerberos.lib.protocol import PrincipalName
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
+from authentik.providers.kerberos.lib import keytab
+from authentik.providers.kerberos.lib.crypto import (
+    SUPPORTED_ENCTYPES,
+    EncryptionType,
+    get_enctype_from_value,
+)
+from authentik.providers.kerberos.lib.protocol import PrincipalName
 
 
 def _get_kerberos_enctypes():
@@ -108,7 +112,7 @@ class KerberosServiceMixin(models.Model):
         super().save(*args, **kwargs)
 
 
-class KerberosRealm(KerberosServiceMixin, KerberosKeyModel, SerializerModel):
+class KerberosRealm(KerberosServiceMixin, KerberosKeyMixin, SerializerModel):
     """Kerberos Realm"""
 
     name = models.TextField(
@@ -151,7 +155,7 @@ class KerberosRealm(KerberosServiceMixin, KerberosKeyModel, SerializerModel):
         return KerberosRealmSerializer
 
 
-class KerberosProvider(KerberosServiceMixin, KerberosKeyModel, Provider):
+class KerberosProvider(KerberosServiceMixin, KerberosKeyMixin, Provider):
     """Allow applications to authenticate against authentik's users using
     Kerberos."""
 
@@ -209,6 +213,7 @@ class KerberosKeys(models.Model):
     kvno = models.PositiveBigIntegerField(default=0, help_text=_("Version number."))
 
     def set_secret(self, secret: str, salt: str | None = None):
+        """Set Kerberos-derived keys from a secret."""
         if salt is not None:
             self.salt = salt
 
@@ -227,8 +232,10 @@ class KerberosKeys(models.Model):
             # Avoid having kvno8 == 0
             self.kvno += 1
 
+    # pylint: disable=no-member
     @cached_property
     def keys(self) -> dict[EncryptionType, bytes]:
+        """Get keys in a well formatted dictionary"""
         if self.kvno == 0:
             return {}
         allowed_enctypes = (
@@ -248,7 +255,8 @@ class KerberosKeys(models.Model):
         realm: "KerberosRealm",
         timestamp: datetime | None = None,
     ) -> keytab.Keytab:
-        ts = timestamp or now()
+        """Generate a keytab from kerberos keys."""
+        ts = timestamp or now()  # pylint: disable=invalid-name
         return keytab.Keytab(
             entries=[
                 keytab.KeytabEntry(
@@ -269,18 +277,24 @@ class KerberosKeys(models.Model):
 
 
 class KerberosUserKeys(KerberosKeys):
+    """KerberosKeys for authentik_core.User"""
+
     target = models.OneToOneField(
         "authentik_core.User", on_delete=models.CASCADE, related_name="kerberoskeys"
     )
 
 
 class KerberosProviderKeys(KerberosKeys):
+    """KerberosKeys for KerberosProvider"""
+
     target = models.OneToOneField(
         KerberosProvider, on_delete=models.CASCADE, related_name="kerberoskeys"
     )
 
 
 class KerberosRealmKeys(KerberosKeys):
+    """KerberosKeys for KerberosRealm"""
+
     target = models.OneToOneField(
         KerberosRealm, on_delete=models.CASCADE, related_name="kerberoskeys"
     )

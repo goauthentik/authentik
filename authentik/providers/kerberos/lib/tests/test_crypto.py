@@ -1,4 +1,5 @@
 """Kerberos cryptography primitives tests"""
+# pylint: disable=line-too-long
 from django.test import TestCase
 
 from authentik.providers.kerberos.lib.crypto import (
@@ -91,13 +92,12 @@ class TestAes128CtsHmacSha196(TestCase):
 
         for iterations, password, salt, key in data:
             self.assertEqual(
-                Aes128CtsHmacSha196.string_to_key(
-                    password.encode(), salt, "{:08x}".format(iterations)
-                ),
+                Aes128CtsHmacSha196.string_to_key(password.encode(), salt, f"{iterations:08x}"),
                 key.to_bytes(16, byteorder="big"),
             )
 
     def test_encrypt_decrypt_data_identity(self):
+        """Test that encrypt and decrypt functions are identity"""
         key = 0x9062430C8CDA3388922E6D6A509F5B7A.to_bytes(16, byteorder="big")
         plaintext = ("TESTTESTTESTTEST" * 16).encode()
         self.assertEqual(
@@ -112,6 +112,7 @@ class TestAes128CtsHmacSha196(TestCase):
         )
 
     def test_encrypt_decrypt_message(self):
+        """Test message encryption and decryption"""
         key = 0x9062430C8CDA3388922E6D6A509F5B7A.to_bytes(16, byteorder="big")
         confounder = 0x94B491F481485B9A0678CD3C4EA386AD.to_bytes(16, byteorder="big")
         usage = 2
@@ -131,6 +132,7 @@ class TestAes128CtsHmacSha196(TestCase):
         )
 
     def test_encrypt_decrypt_message_identity(self):
+        """Test that encrypt and decrypt are identity"""
         key = 0xFE697B52BC0D3CE14432BA036A92E65B.to_bytes(16, byteorder="big")
         plaintext = ("TESTTESTTESTTEST" * 16).encode()
         self.assertEqual(
@@ -151,6 +153,7 @@ class TestAes256CtsHmacSha196(TestCase):
     """aes256-cts-hmac-sha1-96 tests"""
 
     def test_encrypt_decrypt_data_identity(self):
+        """Test that encrypt and decrypt functions are identity"""
         key = 0xFE697B52BC0D3CE14432BA036A92E65BBB52280990A2FA27883998D72AF30161.to_bytes(
             32, byteorder="big"
         )
@@ -167,13 +170,14 @@ class TestAes256CtsHmacSha196(TestCase):
         )
 
     def test_encrypt_decrypt_message(self):
+        """Test message encryption and decryption"""
         key = 0xF1C795E9248A09338D82C3F8D5B567040B0110736845041347235B1404231398.to_bytes(
             32, byteorder="big"
         )
         confounder = 0xE45CA518B42E266AD98E165E706FFB60.to_bytes(16, byteorder="big")
         usage = 4
         plaintext = "30 bytes bytes bytes bytes byt".encode()
-        ciphertext = 0xD1137A4D634CFECE924DBC3BF6790648BD5CFF7DE0E7B99460211D0DAEF3D79A295C688858F3B34B9CBD6EEBAE81DAF6B734D4D498B6714F1C1D.to_bytes(
+        ciphertext = 0xD1137A4D634CFECE924DBC3BF6790648BD5CFF7DE0E7B99460211D0DAEF3D79A295C688858F3B34B9CBD6EEBAE81DAF6B734D4D498B6714F1C1D.to_bytes(  # noqa: E501
             58, byteorder="big"
         )
         self.assertEqual(
@@ -186,6 +190,7 @@ class TestAes256CtsHmacSha196(TestCase):
         )
 
     def test_encrypt_decrypt_message_identity(self):
+        """Test that encrypt and decrypt are identity"""
         key = 0xFE697B52BC0D3CE14432BA036A92E65BBB52280990A2FA27883998D72AF30161.to_bytes(
             32, byteorder="big"
         )
@@ -257,9 +262,7 @@ class TestAes256CtsHmacSha196(TestCase):
 
         for iterations, password, salt, key in data:
             self.assertEqual(
-                Aes256CtsHmacSha196.string_to_key(
-                    password.encode(), salt, "{:08x}".format(iterations)
-                ),
+                Aes256CtsHmacSha196.string_to_key(password.encode(), salt, f"{iterations:08x}"),
                 key.to_bytes(32, byteorder="big"),
             )
 
@@ -307,9 +310,7 @@ class TestAes128CtsHmacSha256128(TestCase):
 
         for iterations, password, salt, key in data:
             self.assertEqual(
-                Aes128CtsHmacSha256128.string_to_key(
-                    password.encode(), salt, "{:08x}".format(iterations)
-                ),
+                Aes128CtsHmacSha256128.string_to_key(password.encode(), salt, f"{iterations:08x}"),
                 key.to_bytes(16, byteorder="big"),
             )
 
@@ -372,7 +373,8 @@ class TestAes128CtsHmacSha256128(TestCase):
             ),
         )
 
-        for plaintext, confounder, ke, ki, encrypted, hash_, ciphertext in data:
+        # pylint: disable=invalid-name
+        for plaintext, confounder, ke, _, encrypted, hash_, ciphertext in data:
             self.assertEqual(
                 Aes128CtsHmacSha256128.encrypt_data(ke, confounder + plaintext),
                 encrypted,
@@ -452,9 +454,7 @@ class TestAes256CtsHmacSha384192(TestCase):
 
         for iterations, password, salt, key in data:
             self.assertEqual(
-                Aes256CtsHmacSha384192.string_to_key(
-                    password.encode(), salt, "{:08x}".format(iterations)
-                ),
+                Aes256CtsHmacSha384192.string_to_key(password.encode(), salt, f"{iterations:08x}"),
                 key.to_bytes(32, byteorder="big"),
             )
 
@@ -527,7 +527,8 @@ class TestAes256CtsHmacSha384192(TestCase):
             ),
         )
 
-        for plaintext, confounder, ke, ki, encrypted, hash_, ciphertext in data:
+        # pylint: disable=invalid-name
+        for plaintext, confounder, ke, _, encrypted, hash_, ciphertext in data:
             self.assertEqual(
                 Aes256CtsHmacSha384192.encrypt_data(ke, confounder + plaintext),
                 encrypted,

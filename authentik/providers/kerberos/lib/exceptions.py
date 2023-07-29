@@ -2,16 +2,19 @@
 from enum import UNIQUE, Enum, verify
 from typing import Any
 
-from pyasn1.type import univ
-
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-
-from structlog.stdlib import get_logger
+from pyasn1.type import univ
 
 
 @verify(UNIQUE)
 class ErrorCode(Enum):
+    """
+    Kerberos error codes as defined by RFC 4120.
+
+    See https://www.rfc-editor.org/rfc/rfc4120#section-7.5.9
+    """
+
     KDC_ERR_NONE = 0  # No error
     KDC_ERR_NAME_EXP = 1  # Client's entry in database has expired
     KDC_ERR_SERVICE_EXP = 2  # Server's entry in database has expired
@@ -196,11 +199,13 @@ class KerberosError(Exception):
 
     # We cannot type annotate classes in protocol.py because of circular imports
     def to_krberror(self, realm: str, sname: Any, **context) -> Any:
+        """Convert exception to a protocol error."""
+        # pylint: disable=import-outside-toplevel
         from authentik.providers.kerberos.lib import protocol
 
         self.context.update(context)
         obj = protocol.KrbError()
-        obj["pvno"] = 5  # TODO: make constant
+        obj["pvno"] = protocol.KERBEROS_VERSION
         obj["msg-type"] = protocol.ApplicationTag.KRB_ERROR.value
         obj["stime"] = str(obj["stime"].fromDateTime(now()))
         obj["susec"] = now().microsecond

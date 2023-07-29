@@ -17,8 +17,8 @@ from authentik.core.models import (
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
-from authentik.lib.kerberos import keytab, protocol
-from authentik.lib.kerberos.crypto import get_enctype_from_value
+from authentik.providers.kerberos.lib import keytab, protocol
+from authentik.providers.kerberos.lib.crypto import get_enctype_from_value
 from authentik.providers.kerberos.models import KerberosRealm
 from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant

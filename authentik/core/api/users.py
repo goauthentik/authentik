@@ -1,5 +1,4 @@
 """User API Views"""
-from base64 import b64decode
 from datetime import timedelta
 from json import loads
 from typing import Any, Optional
@@ -76,7 +75,7 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.config import CONFIG
-from authentik.providers.kerberos.lib import iana, keytab, protocol
+from authentik.providers.kerberos.lib import protocol
 from authentik.providers.kerberos.models import KerberosRealm
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails

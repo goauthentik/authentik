@@ -1,4 +1,5 @@
 """KerberosProvider keytab tests"""
+# pylint: disable=duplicate-code
 from django.urls import reverse
 from rest_framework.test import APITestCase
 

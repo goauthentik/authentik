@@ -5,12 +5,10 @@ from datetime import datetime, timedelta
 
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest, HttpResponse
-from django.http.response import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from pyasn1.type import univ
 from structlog.stdlib import get_logger
 
 from authentik.core.models import User

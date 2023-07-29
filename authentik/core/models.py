@@ -1,5 +1,4 @@
 """authentik core models"""
-from base64 import b64encode
 from datetime import timedelta
 from hashlib import sha256
 from typing import Any, Optional
@@ -64,8 +63,14 @@ def default_token_key():
     return generate_id(int(CONFIG.get("default_token_length")))
 
 
-class KerberosKeyModel(models.Model):
+class KerberosKeyMixin:
+    """Mixin for models that are associated with KerberosKeys"""
+
     def set_kerberos_secret(self, secret):
+        """
+        Create KerberosKeys with the given secret.
+        Does not save the object.
+        """
         from authentik.providers.kerberos.models import KerberosKeys
 
         keys = None
@@ -79,12 +84,10 @@ class KerberosKeyModel(models.Model):
         self.kerberoskeys.set_secret(secret)
 
     def save(self, *args, **kwargs):
+        """Save the object as well as its KerberosKeys"""
         super().save(*args, **kwargs)
         if hasattr(self, "kerberoskeys"):
             self.kerberoskeys.save()
-
-    class Meta:
-        abstract = True
 
 
 class UserTypes(models.TextChoices):
@@ -179,7 +182,7 @@ class UserManager(DjangoUserManager):
         return self._create_user(username, email, password, **extra_fields)
 
 
-class User(SerializerModel, KerberosKeyModel, GuardianUserMixin, AbstractUser):
+class User(SerializerModel, KerberosKeyMixin, GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding of user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
