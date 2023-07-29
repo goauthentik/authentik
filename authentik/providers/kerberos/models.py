@@ -204,5 +204,6 @@ class KerberosProvider(KerberosServiceMixin, Provider):
         return f"Kerberos Provider {self.name}"
 
     class Meta:
+        unique_together = (("realm", "service_principal_name"),)
         verbose_name = _("Kerberos Provider")
         verbose_name_plural = _("Kerberos Providers")
