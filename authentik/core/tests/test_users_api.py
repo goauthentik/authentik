@@ -70,7 +70,7 @@ class TestUsersAPI(APITestCase):
                 [self.user.username],
             )
             self.assertEqual(
-                entry.principal.name["name_type"],
+                entry.principal.name["name-type"],
                 protocol.PrincipalNameType.NT_PRINCIPAL,
             )
             self.assertEqual(

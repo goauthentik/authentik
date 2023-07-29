@@ -45,8 +45,8 @@ class TestKerberosProviderKeytab(APITestCase):
                 PrincipalName.from_spn(self.provider.service_principal_name)["name-string"],
             )
             self.assertEqual(
-                entry.principal.name["name_type"],
-                PrincipalName.from_spn(self.provider.service_principal_name)["name_type"],
+                entry.principal.name["name-type"],
+                PrincipalName.from_spn(self.provider.service_principal_name)["name-type"],
             )
             self.assertEqual(
                 entry.principal.realm,
