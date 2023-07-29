@@ -71,14 +71,16 @@ class KerberosKeyModel(models.Model):
         keys = None
         for subcls in KerberosKeys.__subclasses__():
             if isinstance(self, subcls.target.field.related_model):
-                keys = subcls(target=self)
-        if keys is not None:
+                keys = subcls.objects.filter(target_id=self.pk).first() or subcls(target=self)
+        if keys is None:
             return
-        keys.set_secret(secret)
+        if not hasattr(self, "kerberoskeys"):
+            self.kerberoskeys = keys
+        self.kerberoskeys.set_secret(secret)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        if self.kerberoskeys:
+        if hasattr(self, "kerberoskeys"):
             self.kerberoskeys.save()
 
     class Meta:

@@ -15,6 +15,7 @@ class TestUserKrb5(TestCase):
     def test_set_password_increment_kvno(self):
         """Test avatars none"""
         kvno = self.user.kerberoskeys.kvno
+        self.user.kerberoskeys.save()
         self.user.set_password("test2")
         self.assertLess(kvno, self.user.kerberoskeys.kvno)
 
