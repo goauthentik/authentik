@@ -279,7 +279,15 @@ class PrincipalName(Asn1SetValueMixin, univ.Sequence):
                 name_type = PrincipalNameType.NT_SRV_HST
             case _:
                 name_type = PrincipalNameType.NT_SRV_XHST
+        # Special case for krbtgt
+        if components[0] == "krbtgt":
+            name_type = PrincipalNameType.NT_SRV_INST
         return cls.from_components(name_type, components)
+
+    @classmethod
+    def krbtgt(cls, realm: str) -> Self:
+        """Create a krbtgt principal name from a realm."""
+        return cls.from_components(PrincipalNameType.NT_SRV_INST, ["krbtgt", realm])
 
 
 class KerberosTime(useful.GeneralizedTime):

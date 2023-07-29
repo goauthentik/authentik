@@ -525,7 +525,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         ],
         responses={
             200: OpenApiResponse(description="User keytab"),
-            404: OpenApiResponse(description="User or realm not found"),
         },
     )
     @action(detail=True, pagination_class=None, filter_backends=[])
@@ -540,7 +539,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 name_type=protocol.PrincipalNameType.NT_PRINCIPAL,
                 name=[user.username],
             ),
-            realm,
+            [realm],
         )
         return HttpResponse(
             keytab.to_bytes(),

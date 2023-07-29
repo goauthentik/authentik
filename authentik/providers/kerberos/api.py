@@ -15,21 +15,16 @@ from authentik.providers.kerberos.lib.protocol import PrincipalName
 from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
 
 
-class KerberosRealmSerializer(ModelSerializer, MetaNameSerializer):
-    """KerberosRealm Serializer"""
+class KerberosProviderSerializer(ProviderSerializer):
+    """KerberosProvider Serializer"""
 
-    provider_set = ListField(
-        child=CharField(),
-        read_only=True,
-        source="kerberosprovider_set.all",
-    )
+    url_download_keytab = SerializerMethodField()
 
     class Meta:
-        model = KerberosRealm
-        fields = [
-            "pk",
-            "name",
-            "authentication_flow",
+        model = KerberosProvider
+        fields = ProviderSerializer.Meta.fields + [
+            "spn",
+            "realms",
             "maximum_skew",
             "maximum_ticket_lifetime",
             "maximum_ticket_renew_lifetime",
@@ -39,49 +34,10 @@ class KerberosRealmSerializer(ModelSerializer, MetaNameSerializer):
             "allow_proxiable",
             "allow_forwardable",
             "requires_preauth",
-            "secret",
-            "provider_set",
-            "meta_model_name",
-        ]
-
-
-class KerberosRealmViewSet(UsedByMixin, ModelViewSet):
-    """KerberosRealm Viewset"""
-
-    queryset = KerberosRealm.objects.all()
-    serializer_class = KerberosRealmSerializer
-    ordering = ["name"]
-    search_fields = ["name"]
-    filterset_fields = {
-        "name": ["iexact"],
-        "authentication_flow__slug": ["iexact"],
-    }
-
-
-class KerberosProviderSerializer(ProviderSerializer):
-    """KerberosProvider Serializer"""
-
-    realm_name = ReadOnlyField(source="realm.name")
-    url_download_keytab = SerializerMethodField()
-
-    class Meta:
-        model = KerberosProvider
-        fields = ProviderSerializer.Meta.fields + [
-            "realm",
-            "realm_name",
-            "service_principal_name",
             "set_ok_as_delegate",
-            "maximum_ticket_lifetime",
-            "maximum_ticket_renew_lifetime",
-            "allowed_enctypes",
-            "allow_postdateable",
-            "allow_renewable",
-            "allow_proxiable",
-            "allow_forwardable",
-            "requires_preauth",
             "secret",
             "url_download_keytab",
-            "full_spn",
+            "is_tgs",
         ]
         extra_kwargs = {}
 
@@ -98,15 +54,14 @@ class KerberosProviderSerializer(ProviderSerializer):
 class KerberosProviderViewSet(UsedByMixin, ModelViewSet):
     """KerberosProvider Viewset"""
 
-    queryset = KerberosProvider.objects.all()
+    queryset = KerberosProvider.objects.filter(kerberosrealm__isnull=True)
     serializer_class = KerberosProviderSerializer
     ordering = ["name"]
-    search_fields = ["name", "realm__name"]
+    search_fields = ["name", "spn", "realms__spn"]
     filterset_fields = {
         "application": ["isnull"],
         "name": ["iexact"],
         "authorization_flow__slug": ["iexact"],
-        "realm__name": ["iexact"],
     }
 
     @extend_schema(
@@ -118,9 +73,7 @@ class KerberosProviderViewSet(UsedByMixin, ModelViewSet):
     def keytab(self, request: Request, pk: str) -> HttpResponse:
         """Retrieve the provider keytab"""
         provider: KerberosProvider = self.get_object()
-        keytab = provider.kerberoskeys.keytab(
-            PrincipalName.from_spn(provider.service_principal_name), provider.realm
-        )
+        keytab = provider.kerberoskeys.keytab(provider.principal_name, provider.realms.all())
         return HttpResponse(
             keytab.to_bytes(),
             content_type="application/octet-stream",
@@ -128,3 +81,23 @@ class KerberosProviderViewSet(UsedByMixin, ModelViewSet):
                 "Content-Disposition": "attachment; filename=krb5.keytab",
             },
         )
+
+
+class KerberosRealmSerializer(KerberosProviderSerializer):
+    """KerberosRealm Serializer"""
+
+    class Meta:
+        model = KerberosRealm
+        fields = KerberosProviderSerializer.Meta.fields + [
+            "realm_name",
+        ]
+        extra_kwargs = {
+            "authentication_flow": {"required": True, "allow_null": False},
+        }
+
+
+class KerberosRealmViewSet(KerberosProviderViewSet):
+    """KerberosRealm Viewset"""
+
+    queryset = KerberosRealm.objects.all()
+    serializer_class = KerberosRealmSerializer

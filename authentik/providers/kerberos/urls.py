@@ -9,6 +9,6 @@ urlpatterns = [
 ]
 
 api_urlpatterns = [
-    ("kerberos/realms", KerberosRealmViewSet),
+    ("providers/kerberos/realms", KerberosRealmViewSet),
     ("providers/kerberos", KerberosProviderViewSet),
 ]

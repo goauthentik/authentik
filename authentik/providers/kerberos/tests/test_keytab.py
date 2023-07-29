@@ -14,15 +14,13 @@ class TestKerberosProviderKeytab(APITestCase):
     """Test KerberosProvider keytab route"""
 
     def setUp(self) -> None:
-        self.realm: KerberosRealm = KerberosRealm.objects.create(
-            name="EXAMPLE.ORG",
-        )
+        self.realm: KerberosRealm = KerberosRealm.objects.create(name="EXAMPLE.ORG")
         self.provider: KerberosProvider = KerberosProvider.objects.create(
             name="test",
             authorization_flow=create_test_flow(),
-            realm=self.realm,
-            service_principal_name="test",
+            spn="test",
         )
+        self.provider.realms.add(self.realm)
         self.user = create_test_admin_user()
         self.client.force_login(self.user)
 
@@ -44,15 +42,15 @@ class TestKerberosProviderKeytab(APITestCase):
         for entry in keytab.entries:
             self.assertEqual(
                 entry.principal.name["name-string"],
-                PrincipalName.from_spn(self.provider.service_principal_name)["name-string"],
+                self.provider.principal_name["name-string"],
             )
             self.assertEqual(
                 entry.principal.name["name-type"],
-                PrincipalName.from_spn(self.provider.service_principal_name)["name-type"],
+                self.provider.principal_name["name-type"],
             )
             self.assertEqual(
                 entry.principal.realm,
-                self.realm.name,
+                self.realm.realm_name,
             )
             self.assertEqual(
                 entry.kvno,

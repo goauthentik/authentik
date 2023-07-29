@@ -17,6 +17,7 @@ from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import MetaNameSerializer, TypeCreateSerializer
 from authentik.core.models import Provider
 from authentik.lib.utils.reflection import all_subclasses
+from authentik.providers.kerberos.models import KerberosRealm
 
 
 class ProviderSerializer(ModelSerializer, MetaNameSerializer):
@@ -96,7 +97,9 @@ class ProviderViewSet(
     ]
 
     def get_queryset(self):  # pragma: no cover
-        return Provider.objects.select_subclasses()
+        return Provider.objects.select_subclasses().filter(
+            kerberosprovider__kerberosrealm__isnull=True
+        )
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})
     @action(detail=False, pagination_class=None, filter_backends=[])
@@ -105,7 +108,7 @@ class ProviderViewSet(
         data = []
         for subclass in all_subclasses(self.queryset.model):
             subclass: Provider
-            if subclass._meta.abstract:
+            if subclass._meta.abstract or subclass is KerberosRealm:
                 continue
             data.append(
                 {

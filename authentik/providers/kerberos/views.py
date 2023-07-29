@@ -18,9 +18,9 @@ from authentik.providers.kerberos.lib.exceptions import KerberosError
 from authentik.providers.kerberos.lib.protocol import (
     KERBEROS_VERSION,
     ApplicationTag,
+    ApReq,
     AsRep,
     AsReq,
-    ApReq,
     AuthorizationData,
     EncAsRepPart,
     EncryptedData,
@@ -113,7 +113,7 @@ class TicketRequest:
             kvno = ctx.realm.kerberoskeys.kvno
 
         return Ticket.from_values(
-            realm=ctx.realm.name,
+            realm=ctx.realm.realm_name,
             sname=ctx.sname,
             **{
                 "tkt-vno": KERBEROS_VERSION,
@@ -154,7 +154,7 @@ class Context:
         return self.encrypted_part_key is not None
 
     def __post_init__(self):
-        self.realm = KerberosRealm(name=self.message["req-body"]["realm"])
+        self.realm = KerberosRealm(realm_name=self.message["req-body"]["realm"])
         self.sname = self.message["req-body"]["sname"]
         self.cname = self.message["req-body"].getComponentByName("cname", None)
 
@@ -202,6 +202,7 @@ class PaEtypeInfo2(PaHandler):
         padata["padata-value"] = entries.to_bytes()
         self.ctx.pa_data.append(padata)
 
+
 class PaTgsReq(PaHandler):
     PRE_AUTHENTICATION_TYPE = iana.PreAuthenticationType.PA_TGS_REQ
 
@@ -234,21 +235,21 @@ class PaTgsReq(PaHandler):
 
     def _check_tgt(self):
         if self.ctx.tgt["tkt-vno"] != KERBEROS_VERSION:
-            raise ValueError # TODO
+            raise ValueError  # TODO
 
         tgs_name = PrincipalName.from_components(
             name_type=PrincipalNameType.NT_SRV_INST,
-            name=["krbtgt", self.ctx.realm.name],
+            name=["krbtgt", self.ctx.realm.realm_name],
         )
         if self.ctx.tgt["sname"] != tgs_name:
-            raise ValueError # TODO
+            raise ValueError  # TODO
 
-        if self.ctx.tgt["realm"] != self.ctx.realm.name:
-            raise ValueError # TODO
+        if self.ctx.tgt["realm"] != self.ctx.realm.realm_name:
+            raise ValueError  # TODO
 
         self.ctx.tgt_enc_part = self._decrypt_tgt_encpart()
 
-        if self.ctx.tgt_enc_part["crealm"] != self.ctx.realm.name:
+        if self.ctx.tgt_enc_part["crealm"] != self.ctx.realm.realm_name:
             raise ValueError
 
         self.ctx.cname = self.ctx.tgt_enc_part["cname"]
@@ -358,7 +359,7 @@ class MessageHandler:
         self.pa_handlers = [handler(ctx) for handler in self.PA_HANDLERS]
 
         self.ctx.realm = KerberosRealm.objects.filter(
-            name=self.ctx.message["req-body"]["realm"]
+            realm_name=self.ctx.message["req-body"]["realm"]
         ).first()
         if not self.ctx.realm:
             raise KerberosError("realm not found")
@@ -400,8 +401,8 @@ class MessageHandler:
             return self.execute()
         except KerberosError as exc:
             return exc.to_krberror(
-                realm=self.ctx.realm.name,
-                crealm=self.ctx.realm.name,  # TODO: use crealm
+                realm=self.ctx.realm.realm_name,
+                crealm=self.ctx.realm.realm_name,  # TODO: use crealm
                 cname=self.ctx.cname,
                 sname=self.ctx.sname,
             )
@@ -429,7 +430,7 @@ class AsMessageHandler(MessageHandler):
         )
         ticket_request = TicketRequest(
             key=key,
-            crealm=self.ctx.realm.name,
+            crealm=self.ctx.realm.realm_name,
             cname=self.ctx.cname,
             starttime=now(),  # TODO: handle postdated
             endtime=str(
@@ -448,7 +449,7 @@ class AsMessageHandler(MessageHandler):
 
         enc_as_rep_part = EncAsRepPart.from_values(
             nonce=int(self.ctx.message["req-body"]["nonce"]),
-            srealm=self.ctx.realm.name,
+            srealm=self.ctx.realm.realm_name,
             sname=self.ctx.sname,
         )
         # enc_as_rep_part["last-req"] = []
@@ -476,7 +477,7 @@ class AsMessageHandler(MessageHandler):
 
         rep = AsRep.from_values(
             pvno=KERBEROS_VERSION,
-            crealm=self.ctx.realm.name,
+            crealm=self.ctx.realm.realm_name,
             cname=self.ctx.cname,
             ticket=ticket,
             **{
@@ -500,11 +501,11 @@ class AsMessageHandler(MessageHandler):
 
         tgs_name = PrincipalName.from_components(
             name_type=PrincipalNameType.NT_SRV_INST,
-            name=["krbtgt", self.ctx.realm.name],
+            name=["krbtgt", self.ctx.realm.realm_name],
         )
         if self.ctx.sname != tgs_name:
             self.ctx.provider = KerberosProvider.objects.filter(
-                service_principal_name=self.ctx.message["req-body"]["sname"].to_string()
+                spn=self.ctx.message["req-body"]["sname"].to_string()
             ).first()
             if not self.ctx.provider:
                 raise KerberosError(code=KerberosError.Code.KDC_ERR_S_PRINCIPAL_UNKNOWN)
@@ -512,6 +513,7 @@ class AsMessageHandler(MessageHandler):
     def query_pre_execute(self):
         # TODO: check flags and policy
         pass
+
 
 class TgsMessageHandler(MessageHandler):
     PA_HANDLERS = [
@@ -522,7 +524,7 @@ class TgsMessageHandler(MessageHandler):
         super().query_pre_validate()
 
         self.ctx.provider = KerberosProvider.objects.filter(
-            service_principal_name=self.ctx.message["req-body"]["sname"].to_string()
+            spn=self.ctx.message["req-body"]["sname"].to_string()
         ).first()
         if not self.ctx.provider:
             raise KerberosError(code=KerberosError.Code.KDC_ERR_S_PRINCIPAL_UNKNOWN)
@@ -535,7 +537,7 @@ class TgsMessageHandler(MessageHandler):
         )
         ticket_request = TicketRequest(
             key=key,
-            crealm=self.ctx.realm.name,
+            crealm=self.ctx.realm.realm_name,
             cname=self.ctx.cname,
             starttime=now(),  # TODO: handle postdated
             endtime=str(
@@ -553,7 +555,7 @@ class TgsMessageHandler(MessageHandler):
 
         enc_as_rep_part = EncAsRepPart.from_values(
             nonce=int(self.ctx.message["req-body"]["nonce"]),
-            srealm=self.ctx.realm.name,
+            srealm=self.ctx.realm.realm_name,
             sname=self.ctx.sname,
         )
         # enc_as_rep_part["last-req"] = []
@@ -581,7 +583,7 @@ class TgsMessageHandler(MessageHandler):
 
         rep = TgsRep.from_values(
             pvno=KERBEROS_VERSION,
-            crealm=self.ctx.realm.name,
+            crealm=self.ctx.realm.realm_name,
             cname=self.ctx.cname,
             ticket=ticket,
             **{
@@ -593,6 +595,7 @@ class TgsMessageHandler(MessageHandler):
             rep.set_value("padata", self.ctx.pa_data)
 
         return rep
+
 
 @method_decorator(csrf_exempt, name="dispatch")
 class KdcProxyView(View):

@@ -30,7 +30,7 @@ class EncryptionKey:
         return self.key_type.value.to_bytes(2, byteorder="big") + _to_bytes_with_length(self.key)
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> (Self, bytes):
+    def from_bytes(cls, data: bytes) -> Tuple[Self, bytes]:
         """Import from bytes"""
         key_type = iana.EncryptionType(int.from_bytes(data[:2], byteorder="big"))
         key, remainder = _from_bytes_with_length(data[2:])
@@ -61,11 +61,10 @@ class Principal:
         return result
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> (Self, bytes):
+    def from_bytes(cls, data: bytes) -> Tuple[Self, bytes]:
         """Import from bytes"""
         name_count = int.from_bytes(data[:2], byteorder="big")
         realm, remainder = _from_bytes_with_length(data[2:])
-        realm = realm.decode()
         names = []
         for _ in range(name_count):
             name, remainder = _from_bytes_with_length(remainder)
@@ -73,7 +72,7 @@ class Principal:
         name_type = int.from_bytes(remainder[:4], byteorder="big")
         return (
             cls(
-                realm=realm,
+                realm=realm.decode(),
                 name=PrincipalName.from_components(
                     name=names,
                     name_type=PrincipalNameType(name_type),
@@ -107,7 +106,7 @@ class KeytabEntry:
         return len(data).to_bytes(4, byteorder="big") + data
 
     @classmethod
-    def from_bytes(cls, data: bytes) -> (Self, bytes):
+    def from_bytes(cls, data: bytes) -> Tuple[Self, bytes]:
         """Import from bytes"""
         data, final_remainder = _from_bytes_with_length(data, size=4)
         principal, remainder = Principal.from_bytes(data)

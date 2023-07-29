@@ -3,21 +3,17 @@
 from django.test import TestCase
 
 from authentik.core.tests.utils import create_test_flow
-from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
+from authentik.providers.kerberos.models import KerberosProvider
 
 
 class TestKerberosKeys(TestCase):
     """Test KerberosKeys"""
 
     def setUp(self) -> None:
-        self.realm: KerberosRealm = KerberosRealm.objects.create(
-            name="EXAMPLE.ORG",
-        )
         self.provider: KerberosProvider = KerberosProvider.objects.create(
             name="test",
             authorization_flow=create_test_flow(),
-            realm=self.realm,
-            service_principal_name="test",
+            spn="test",
         )
 
     def test_keytab_kvno_increment(self) -> None:

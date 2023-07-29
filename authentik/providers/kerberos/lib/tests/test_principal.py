@@ -51,6 +51,13 @@ class TestPrincipal(TestCase):
                     name=["test1", "test2", "test.example.org"],
                 ),
             ),
+            (
+                "krbtgt/test.example.org",
+                PrincipalName.from_components(
+                    name_type=PrincipalNameType.NT_SRV_INST,
+                    name=["krbtgt", "test.example.org"],
+                ),
+            ),
         )
         for spn, expected in data:
             result = PrincipalName.from_spn(spn)

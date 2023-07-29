@@ -4834,6 +4834,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /core/users/{id}/keytab/:
+    get:
+      operationId: core_users_keytab_retrieve
+      description: Generate keytab for user and realm
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      - in: query
+        name: realm_pk
+        schema:
+          type: integer
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: User keytab
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /core/users/{id}/metrics/:
     get:
       operationId: core_users_metrics_retrieve
@@ -8132,274 +8167,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FlowImportResult'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /kerberos/realms/:
-    get:
-      operationId: kerberos_realms_list
-      description: KerberosRealm Viewset
-      parameters:
-      - in: query
-        name: authentication_flow__slug__iexact
-        schema:
-          type: string
-      - in: query
-        name: name__iexact
-        schema:
-          type: string
-      - name: ordering
-        required: false
-        in: query
-        description: Which field to use when ordering the results.
-        schema:
-          type: string
-      - name: page
-        required: false
-        in: query
-        description: A page number within the paginated result set.
-        schema:
-          type: integer
-      - name: page_size
-        required: false
-        in: query
-        description: Number of results to return per page.
-        schema:
-          type: integer
-      - name: search
-        required: false
-        in: query
-        description: A search term.
-        schema:
-          type: string
-      tags:
-      - kerberos
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/PaginatedKerberosRealmList'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    post:
-      operationId: kerberos_realms_create
-      description: KerberosRealm Viewset
-      tags:
-      - kerberos
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/KerberosRealmRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/KerberosRealm'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /kerberos/realms/{id}/:
-    get:
-      operationId: kerberos_realms_retrieve
-      description: KerberosRealm Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Kerberos Realm.
-        required: true
-      tags:
-      - kerberos
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/KerberosRealm'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    put:
-      operationId: kerberos_realms_update
-      description: KerberosRealm Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Kerberos Realm.
-        required: true
-      tags:
-      - kerberos
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/KerberosRealmRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/KerberosRealm'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    patch:
-      operationId: kerberos_realms_partial_update
-      description: KerberosRealm Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Kerberos Realm.
-        required: true
-      tags:
-      - kerberos
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedKerberosRealmRequest'
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/KerberosRealm'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-    delete:
-      operationId: kerberos_realms_destroy
-      description: KerberosRealm Viewset
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Kerberos Realm.
-        required: true
-      tags:
-      - kerberos
-      security:
-      - authentik: []
-      responses:
-        '204':
-          description: No response body
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
-  /kerberos/realms/{id}/used_by/:
-    get:
-      operationId: kerberos_realms_used_by_list
-      description: Get a list of all objects that use this object
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Kerberos Realm.
-        required: true
-      tags:
-      - kerberos
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UsedBy'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
           description: ''
         '403':
           content:
@@ -15188,10 +14955,6 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - in: query
-        name: realm__name__iexact
-        schema:
-          type: string
       - name: search
         required: false
         in: query
@@ -15411,8 +15174,6 @@ paths:
       responses:
         '200':
           description: Service keytab
-        '404':
-          description: Provider not found
         '400':
           content:
             application/json:
@@ -15435,6 +15196,308 @@ paths:
         schema:
           type: integer
         description: A unique integer value identifying this Kerberos Provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/kerberos/realms/:
+    get:
+      operationId: providers_kerberos_realms_list
+      description: KerberosRealm Viewset
+      parameters:
+      - in: query
+        name: application__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: authorization_flow__slug__iexact
+        schema:
+          type: string
+      - in: query
+        name: name__iexact
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedKerberosRealmList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_kerberos_realms_create
+      description: KerberosRealm Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KerberosRealmRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosRealm'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/kerberos/realms/{id}/:
+    get:
+      operationId: providers_kerberos_realms_retrieve
+      description: KerberosRealm Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this kerberos realm.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosRealm'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: providers_kerberos_realms_update
+      description: KerberosRealm Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this kerberos realm.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KerberosRealmRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosRealm'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: providers_kerberos_realms_partial_update
+      description: KerberosRealm Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this kerberos realm.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedKerberosRealmRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosRealm'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_kerberos_realms_destroy
+      description: KerberosRealm Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this kerberos realm.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/kerberos/realms/{id}/keytab/:
+    get:
+      operationId: providers_kerberos_realms_keytab_retrieve
+      description: Retrieve the provider keytab
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this kerberos realm.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          description: Service keytab
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/kerberos/realms/{id}/used_by/:
+    get:
+      operationId: providers_kerberos_realms_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this kerberos realm.
         required: true
       tags:
       - providers
@@ -30103,8 +30166,8 @@ components:
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
             * `authentik_policies_reputation.reputation` - reputation
             * `authentik_policies.policybinding` - Policy Binding
-            * `authentik_providers_kerberos.kerberosrealm` - Kerberos Realm
             * `authentik_providers_kerberos.kerberosprovider` - Kerberos Provider
+            * `authentik_providers_kerberos.kerberosrealm` - kerberos realm
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
             * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
@@ -30297,8 +30360,8 @@ components:
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
             * `authentik_policies_reputation.reputation` - reputation
             * `authentik_policies.policybinding` - Policy Binding
-            * `authentik_providers_kerberos.kerberosrealm` - Kerberos Realm
             * `authentik_providers_kerberos.kerberosprovider` - Kerberos Provider
+            * `authentik_providers_kerberos.kerberosrealm` - kerberos realm
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
             * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
@@ -31627,21 +31690,20 @@ components:
           type: string
           description: Return internal model name
           readOnly: true
-        realm:
-          type: integer
-        realm_name:
-          type: string
-          description: Kerberos realm name.
-          readOnly: true
-        service_principal_name:
+        spn:
           type: string
           description: The Kerberos principal used to designate this provider, without
             the realm.
           pattern: '@.+$'
-        set_ok_as_delegate:
-          type: boolean
-          description: Should the tickets issued for this provider have the ok-as-delegate
-            flag set.
+        realms:
+          type: array
+          items:
+            type: integer
+          description: Realm associated with this provider.
+        maximum_skew:
+          type: string
+          description: 'Maximum allowed clock drift between the client and the server
+            (Format: hours=1;minutes=2;seconds=3).'
         maximum_ticket_lifetime:
           type: string
           description: 'Maximum Ticket lifetime (Format: hours=1;minutes=2;seconds=3).'
@@ -31674,14 +31736,19 @@ components:
         requires_preauth:
           type: boolean
           description: Should tickets only be issued to preauthenticated clients.
+        set_ok_as_delegate:
+          type: boolean
+          description: Should the tickets issued for this provider have the ok-as-delegate
+            flag set.
         secret:
           type: string
           description: The secret value from which Kerberos keys are derived.
         url_download_keytab:
           type: string
+          description: Get URL where to download provider's keytab
           readOnly: true
-        full_spn:
-          type: string
+        is_tgs:
+          type: boolean
           readOnly: true
       required:
       - assigned_application_name
@@ -31689,13 +31756,11 @@ components:
       - assigned_backchannel_application_name
       - assigned_backchannel_application_slug
       - component
-      - full_spn
+      - is_tgs
       - meta_model_name
       - name
       - pk
-      - realm
-      - realm_name
-      - service_principal_name
+      - spn
       - url_download_keytab
       - verbose_name
       - verbose_name_plural
@@ -31722,18 +31787,22 @@ components:
           items:
             type: string
             format: uuid
-        realm:
-          type: integer
-        service_principal_name:
+        spn:
           type: string
           minLength: 1
           description: The Kerberos principal used to designate this provider, without
             the realm.
           pattern: '@.+$'
-        set_ok_as_delegate:
-          type: boolean
-          description: Should the tickets issued for this provider have the ok-as-delegate
-            flag set.
+        realms:
+          type: array
+          items:
+            type: integer
+          description: Realm associated with this provider.
+        maximum_skew:
+          type: string
+          minLength: 1
+          description: 'Maximum allowed clock drift between the client and the server
+            (Format: hours=1;minutes=2;seconds=3).'
         maximum_ticket_lifetime:
           type: string
           minLength: 1
@@ -31768,14 +31837,17 @@ components:
         requires_preauth:
           type: boolean
           description: Should tickets only be issued to preauthenticated clients.
+        set_ok_as_delegate:
+          type: boolean
+          description: Should the tickets issued for this provider have the ok-as-delegate
+            flag set.
         secret:
           type: string
           minLength: 1
           description: The secret value from which Kerberos keys are derived.
       required:
       - name
-      - realm
-      - service_principal_name
+      - spn
     KerberosRealm:
       type: object
       description: KerberosRealm Serializer
@@ -31786,13 +31858,63 @@ components:
           title: ID
         name:
           type: string
-          description: Kerberos realm name.
         authentication_flow:
           type: string
           format: uuid
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
           nullable: true
-          description: Flow used for authentication when a TGT for the associated
-            realm is requested by a user.
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        spn:
+          type: string
+          description: The Kerberos principal used to designate this provider, without
+            the realm.
+          pattern: '@.+$'
+        realms:
+          type: array
+          items:
+            type: integer
+          description: Realm associated with this provider.
         maximum_skew:
           type: string
           description: 'Maximum allowed clock drift between the client and the server
@@ -31829,23 +31951,39 @@ components:
         requires_preauth:
           type: boolean
           description: Should tickets only be issued to preauthenticated clients.
+        set_ok_as_delegate:
+          type: boolean
+          description: Should the tickets issued for this provider have the ok-as-delegate
+            flag set.
         secret:
           type: string
           description: The secret value from which Kerberos keys are derived.
-        provider_set:
-          type: array
-          items:
-            type: string
-          readOnly: true
-        meta_model_name:
+        url_download_keytab:
           type: string
-          description: Return internal model name
+          description: Get URL where to download provider's keytab
           readOnly: true
+        is_tgs:
+          type: boolean
+          readOnly: true
+        realm_name:
+          type: string
+          description: The Kerberos realm name.
       required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - authentication_flow
+      - component
+      - is_tgs
       - meta_model_name
       - name
       - pk
-      - provider_set
+      - realm_name
+      - spn
+      - url_download_keytab
+      - verbose_name
+      - verbose_name_plural
     KerberosRealmRequest:
       type: object
       description: KerberosRealm Serializer
@@ -31853,13 +31991,32 @@ components:
         name:
           type: string
           minLength: 1
-          description: Kerberos realm name.
         authentication_flow:
           type: string
           format: uuid
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
           nullable: true
-          description: Flow used for authentication when a TGT for the associated
-            realm is requested by a user.
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        spn:
+          type: string
+          minLength: 1
+          description: The Kerberos principal used to designate this provider, without
+            the realm.
+          pattern: '@.+$'
+        realms:
+          type: array
+          items:
+            type: integer
+          description: Realm associated with this provider.
         maximum_skew:
           type: string
           minLength: 1
@@ -31899,12 +32056,23 @@ components:
         requires_preauth:
           type: boolean
           description: Should tickets only be issued to preauthenticated clients.
+        set_ok_as_delegate:
+          type: boolean
+          description: Should the tickets issued for this provider have the ok-as-delegate
+            flag set.
         secret:
           type: string
           minLength: 1
           description: The secret value from which Kerberos keys are derived.
+        realm_name:
+          type: string
+          minLength: 1
+          description: The Kerberos realm name.
       required:
+      - authentication_flow
       - name
+      - realm_name
+      - spn
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -32792,8 +32960,8 @@ components:
       - authentik_policies_reputation.reputationpolicy
       - authentik_policies_reputation.reputation
       - authentik_policies.policybinding
-      - authentik_providers_kerberos.kerberosrealm
       - authentik_providers_kerberos.kerberosprovider
+      - authentik_providers_kerberos.kerberosrealm
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.scopemapping
       - authentik_providers_oauth2.oauth2provider
@@ -32866,8 +33034,8 @@ components:
         * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
         * `authentik_policies_reputation.reputation` - reputation
         * `authentik_policies.policybinding` - Policy Binding
-        * `authentik_providers_kerberos.kerberosrealm` - Kerberos Realm
         * `authentik_providers_kerberos.kerberosprovider` - Kerberos Provider
+        * `authentik_providers_kerberos.kerberosrealm` - kerberos realm
         * `authentik_providers_ldap.ldapprovider` - LDAP Provider
         * `authentik_providers_oauth2.scopemapping` - Scope Mapping
         * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
@@ -37807,8 +37975,8 @@ components:
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
             * `authentik_policies_reputation.reputation` - reputation
             * `authentik_policies.policybinding` - Policy Binding
-            * `authentik_providers_kerberos.kerberosrealm` - Kerberos Realm
             * `authentik_providers_kerberos.kerberosprovider` - Kerberos Provider
+            * `authentik_providers_kerberos.kerberosrealm` - kerberos realm
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
             * `authentik_providers_oauth2.oauth2provider` - OAuth2/OpenID Provider
@@ -38128,70 +38296,17 @@ components:
           items:
             type: string
             format: uuid
-        realm:
-          type: integer
-        service_principal_name:
+        spn:
           type: string
           minLength: 1
           description: The Kerberos principal used to designate this provider, without
             the realm.
           pattern: '@.+$'
-        set_ok_as_delegate:
-          type: boolean
-          description: Should the tickets issued for this provider have the ok-as-delegate
-            flag set.
-        maximum_ticket_lifetime:
-          type: string
-          minLength: 1
-          description: 'Maximum Ticket lifetime (Format: hours=1;minutes=2;seconds=3).'
-        maximum_ticket_renew_lifetime:
-          type: string
-          minLength: 1
-          description: 'Maximum Ticket renew lifetime (Format: hours=1;minutes=2;seconds=3).'
-        allowed_enctypes:
+        realms:
           type: array
           items:
-            allOf:
-            - $ref: '#/components/schemas/AllowedEnctypesEnum'
-            minimum: -2147483648
-            maximum: 2147483647
-          description: Allowed encryption types.
-        allow_postdateable:
-          type: boolean
-          description: Should the user be able to request a ticket with a start time
-            in the future.
-        allow_renewable:
-          type: boolean
-          description: Should the user getting the ticket be able to renew it.
-        allow_proxiable:
-          type: boolean
-          description: Should the service getting the ticket be able to use it on
-            behalf of the user.
-        allow_forwardable:
-          type: boolean
-          description: Should the service getting the ticket be able to request a
-            TGT on behalf of the user.
-        requires_preauth:
-          type: boolean
-          description: Should tickets only be issued to preauthenticated clients.
-        secret:
-          type: string
-          minLength: 1
-          description: The secret value from which Kerberos keys are derived.
-    PatchedKerberosRealmRequest:
-      type: object
-      description: KerberosRealm Serializer
-      properties:
-        name:
-          type: string
-          minLength: 1
-          description: Kerberos realm name.
-        authentication_flow:
-          type: string
-          format: uuid
-          nullable: true
-          description: Flow used for authentication when a TGT for the associated
-            realm is requested by a user.
+            type: integer
+          description: Realm associated with this provider.
         maximum_skew:
           type: string
           minLength: 1
@@ -38231,10 +38346,98 @@ components:
         requires_preauth:
           type: boolean
           description: Should tickets only be issued to preauthenticated clients.
+        set_ok_as_delegate:
+          type: boolean
+          description: Should the tickets issued for this provider have the ok-as-delegate
+            flag set.
         secret:
           type: string
           minLength: 1
           description: The secret value from which Kerberos keys are derived.
+    PatchedKerberosRealmRequest:
+      type: object
+      description: KerberosRealm Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        spn:
+          type: string
+          minLength: 1
+          description: The Kerberos principal used to designate this provider, without
+            the realm.
+          pattern: '@.+$'
+        realms:
+          type: array
+          items:
+            type: integer
+          description: Realm associated with this provider.
+        maximum_skew:
+          type: string
+          minLength: 1
+          description: 'Maximum allowed clock drift between the client and the server
+            (Format: hours=1;minutes=2;seconds=3).'
+        maximum_ticket_lifetime:
+          type: string
+          minLength: 1
+          description: 'Maximum Ticket lifetime (Format: hours=1;minutes=2;seconds=3).'
+        maximum_ticket_renew_lifetime:
+          type: string
+          minLength: 1
+          description: 'Maximum Ticket renew lifetime (Format: hours=1;minutes=2;seconds=3).'
+        allowed_enctypes:
+          type: array
+          items:
+            allOf:
+            - $ref: '#/components/schemas/AllowedEnctypesEnum'
+            minimum: -2147483648
+            maximum: 2147483647
+          description: Allowed encryption types.
+        allow_postdateable:
+          type: boolean
+          description: Should the user be able to request a ticket with a start time
+            in the future.
+        allow_renewable:
+          type: boolean
+          description: Should the user getting the ticket be able to renew it.
+        allow_proxiable:
+          type: boolean
+          description: Should the service getting the ticket be able to use it on
+            behalf of the user.
+        allow_forwardable:
+          type: boolean
+          description: Should the service getting the ticket be able to request a
+            TGT on behalf of the user.
+        requires_preauth:
+          type: boolean
+          description: Should tickets only be issued to preauthenticated clients.
+        set_ok_as_delegate:
+          type: boolean
+          description: Should the tickets issued for this provider have the ok-as-delegate
+            flag set.
+        secret:
+          type: string
+          minLength: 1
+          description: The secret value from which Kerberos keys are derived.
+        realm_name:
+          type: string
+          minLength: 1
+          description: The Kerberos realm name.
     PatchedKubernetesServiceConnectionRequest:
       type: object
       description: KubernetesServiceConnection Serializer

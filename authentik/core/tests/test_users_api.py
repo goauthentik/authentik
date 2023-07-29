@@ -32,7 +32,7 @@ class TestUsersAPI(APITestCase):
         self.user = User.objects.create(username="test-user")
         self.user.set_password(generate_id(20))
         self.user.save()
-        self.realm = KerberosRealm.objects.create(name="EXAMPLE.ORG")
+        self.realm = KerberosRealm.objects.create(name="EXAMPLE.ORG", spn="krbtgt/EXAMPLE.ORG")
 
     def test_metrics(self):
         """Test user's metrics"""
@@ -78,7 +78,7 @@ class TestUsersAPI(APITestCase):
             )
             self.assertEqual(
                 entry.principal.realm,
-                self.realm.name,
+                self.realm.realm_name,
             )
             self.assertEqual(
                 entry.kvno,

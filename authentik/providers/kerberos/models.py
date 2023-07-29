@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Optional, Type
 
 from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.functional import cached_property
@@ -40,8 +41,37 @@ validate_spn = RegexValidator(
 )
 
 
-class KerberosServiceMixin(models.Model):
-    """Common fields and methods for Kerberos services"""
+class KerberosProvider(KerberosKeyMixin, Provider):
+    """
+    Allow applications to authenticate against authentik's users using Kerberos.
+    """
+
+    spn = models.TextField(
+        unique=True,
+        help_text=_(
+            "The Kerberos principal used to designate this provider, without the realm."
+            # Not supported yet
+            # "For cross-realm authentication, set this as krbtgt/FOREIGN_REALM and select your own realm below."
+        ),
+        validators=[validate_spn],
+    )
+
+    realms = models.ManyToManyField(
+        "authentik_providers_kerberos.KerberosRealm",
+        blank=True,
+        help_text=_("Realm associated with this provider."),
+    )
+
+    maximum_skew = models.TextField(
+        help_text=_(
+            "Maximum allowed clock drift between the client and the server "
+            "(Format: hours=1;minutes=2;seconds=3)."
+        ),
+        default="minutes=5",
+        validators=[
+            timedelta_string_validator,
+        ],
+    )
 
     maximum_ticket_lifetime = models.TextField(
         help_text=_("Maximum Ticket lifetime (Format: hours=1;minutes=2;seconds=3)."),
@@ -94,12 +124,20 @@ class KerberosServiceMixin(models.Model):
         default=True, help_text=_("Should tickets only be issued to preauthenticated clients.")
     )
 
+    set_ok_as_delegate = models.BooleanField(
+        default=False,
+        help_text=_(
+            "Should the tickets issued for this provider have the ok-as-delegate flag set."
+        ),
+    )
+
     secret = models.TextField(
         default=generate_key, help_text=_("The secret value from which Kerberos keys are derived.")
     )
 
     class Meta:
-        abstract = True
+        verbose_name = _("Kerberos Provider")
+        verbose_name_plural = _("Kerberos Providers")
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -110,68 +148,19 @@ class KerberosServiceMixin(models.Model):
         if not self.pk or self.secret != self._secret:
             self.set_kerberos_secret(self.secret)
         super().save(*args, **kwargs)
-
-
-class KerberosRealm(KerberosServiceMixin, KerberosKeyMixin, SerializerModel):
-    """Kerberos Realm"""
-
-    name = models.TextField(
-        help_text=_("Kerberos realm name."),
-        unique=True,
-    )
-
-    authentication_flow = models.ForeignKey(
-        "authentik_flows.Flow",
-        null=True,
-        on_delete=models.SET_NULL,
-        help_text=_(
-            "Flow used for authentication when a TGT for the associated realm is "
-            "requested by a user."
-        ),
-    )
-
-    maximum_skew = models.TextField(
-        help_text=_(
-            "Maximum allowed clock drift between the client and the server "
-            "(Format: hours=1;minutes=2;seconds=3)."
-        ),
-        default="minutes=5",
-        validators=[
-            timedelta_string_validator,
-        ],
-    )
+        if self.is_tgs:
+            self.realms.add(self.kerberosrealm)
 
     def __str__(self):
-        return str(self.name)
+        return f"Kerberos Provider {self.name}"
 
-    class Meta:
-        verbose_name = _("Kerberos Realm")
-        verbose_name_plural = _("Kerberos Realms")
+    @cached_property
+    def is_tgs(self) -> bool:
+        return hasattr(self, "kerberosrealm")
 
-    @property
-    def serializer(self) -> Type[Serializer]:
-        from authentik.providers.kerberos.api import KerberosRealmSerializer
-
-        return KerberosRealmSerializer
-
-
-class KerberosProvider(KerberosServiceMixin, KerberosKeyMixin, Provider):
-    """Allow applications to authenticate against authentik's users using
-    Kerberos."""
-
-    realm = models.ForeignKey(KerberosRealm, on_delete=models.CASCADE)
-
-    service_principal_name = models.TextField(
-        help_text=_("The Kerberos principal used to designate this provider, without the realm."),
-        validators=[validate_spn],
-    )
-
-    set_ok_as_delegate = models.BooleanField(
-        default=False,
-        help_text=_(
-            "Should the tickets issued for this provider have the ok-as-delegate flag set."
-        ),
-    )
+    @cached_property
+    def principal_name(self) -> PrincipalName:
+        return PrincipalName.from_spn(self.spn)
 
     @property
     def launch_url(self) -> Optional[str]:
@@ -188,22 +177,20 @@ class KerberosProvider(KerberosServiceMixin, KerberosKeyMixin, Provider):
 
         return KerberosProviderSerializer
 
-    @property
-    def full_spn(self) -> str:
-        """Provider service principal name with realm included"""
-        return f"{self.service_principal_name}@{self.realm.name}"
 
-    def __str__(self):
-        return f"Kerberos Provider {self.name}"
+class KerberosRealm(KerberosProvider):
+    realm_name = models.TextField(
+        unique=True,
+        help_text=_("The Kerberos realm name."),
+    )
 
-    class Meta:
-        unique_together = (("realm", "service_principal_name"),)
-        verbose_name = _("Kerberos Provider")
-        verbose_name_plural = _("Kerberos Providers")
+    def save(self, *args, **kwargs):
+        self.spn = PrincipalName.krbtgt(self.realm_name).to_string()
+        super().save(*args, **kwargs)
 
 
 class KerberosKeys(models.Model):
-    """Kerberos keys associated with a principal (User, KerberosProvider and Realm)"""
+    """Kerberos keys associated with a principal"""
 
     # Cannot be changed without also changing the secret
     salt = models.TextField(default=generate_id, help_text=_("Salt used to derive Kerberos keys."))
@@ -252,7 +239,7 @@ class KerberosKeys(models.Model):
     def keytab(
         self,
         principal_name: PrincipalName,
-        realm: "KerberosRealm",
+        realms: list[KerberosRealm],
         timestamp: datetime | None = None,
     ) -> keytab.Keytab:
         """Generate a keytab from kerberos keys."""
@@ -262,7 +249,7 @@ class KerberosKeys(models.Model):
                 keytab.KeytabEntry(
                     principal=keytab.Principal(
                         name=principal_name,
-                        realm=realm.name,
+                        realm=realm.realm_name,
                     ),
                     timestamp=ts,
                     key=keytab.EncryptionKey(
@@ -272,6 +259,7 @@ class KerberosKeys(models.Model):
                     kvno=self.kvno,
                 )
                 for enctype, key in self.keys.items()
+                for realm in realms
             ]
         )
 
@@ -289,12 +277,4 @@ class KerberosProviderKeys(KerberosKeys):
 
     target = models.OneToOneField(
         KerberosProvider, on_delete=models.CASCADE, related_name="kerberoskeys"
-    )
-
-
-class KerberosRealmKeys(KerberosKeys):
-    """KerberosKeys for KerberosRealm"""
-
-    target = models.OneToOneField(
-        KerberosRealm, on_delete=models.CASCADE, related_name="kerberoskeys"
     )
