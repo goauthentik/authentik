@@ -1,6 +1,5 @@
 """authentik Kerberos views"""
 import secrets
-from base64 import b64decode
 from dataclasses import dataclass, field, fields
 from datetime import datetime, timedelta
 
@@ -114,9 +113,9 @@ class TicketRequest:
                 "tkt-vno": KERBEROS_VERSION,
                 "enc-part": EncryptedData.from_values(
                     etype=ctx.encrypted_part_enctype.ENC_TYPE.value,
-                    kvno=ctx.realm.kvno,
+                    kvno=ctx.realm.kerberoskeys.kvno,
                     cipher=ctx.encrypted_part_enctype.encrypt_message(
-                        key=ctx.realm.keys[ctx.encrypted_part_enctype.ENC_TYPE],
+                        key=ctx.realm.kerberoskeys.keys[ctx.encrypted_part_enctype],
                         message=enc_ticket_part.to_bytes(),
                         usage=KeyUsageNumbers.KDC_REP_TICKET.value,
                     ),
@@ -136,6 +135,7 @@ class Context:
     provider: KerberosProvider | None = None
     pa_data: MethodData = field(default_factory=MethodData)
     encrypted_part_key: bytes | None = None
+    encrypted_part_salt: bytes | None = None
     encrypted_part_kvno: int | None = None
     encrypted_part_enctype: crypto.EncryptionType | None = None
     client_authority: iana.PreAuthenticationType | None = None
@@ -177,15 +177,15 @@ class PaEtypeInfo2(PaHandler):
         if self.ctx.encrypted_part_enctype:
             entry = PaDataEtypeInfo2Entry()
             entry["etype"] = self.ctx.encrypted_part_enctype.ENC_TYPE.value
-            entry["salt"] = str(self.ctx.user.uuid).encode("utf-8")
+            entry["salt"] = self.ctx.encrypted_part_salt
             entry["s2kparams"] = self.ctx.encrypted_part_enctype.s2k_params()
             entries.append(entry)
         else:
-            for enctype_value in map(int, self.ctx.user.krb5_keys.keys()):
+            for enctype in self.ctx.user.kerberoskeys.keys:
                 entry = PaDataEtypeInfo2Entry()
-                entry["etype"] = enctype_value
-                entry["salt"] = str(self.ctx.user.uuid).encode("utf-8")
-                entry["s2kparams"] = crypto.get_enctype_from_value(enctype_value).s2k_params()
+                entry["etype"] = enctype.ENC_TYPE.value
+                entry["salt"] = self.ctx.user.kerberoskeys.salt
+                entry["s2kparams"] = enctype.s2k_params()
                 entries.append(entry)
 
         padata = PaData()
@@ -230,11 +230,7 @@ class PaEncTimestampHandler(PaHandler):
 
         try:
             enctype = crypto.get_enctype_from_value(enctype_value)
-        except IndexError as exc:
-            raise KerberosError(code=KerberosError.Code.KDC_ERR_ETYPE_NOSUPP) from exc
-
-        try:
-            key = b64decode(self.ctx.user.krb5_keys[str(enctype_value)].encode())
+            key = self.ctx.user.kerberoskeys.keys[enctype]
         except IndexError as exc:
             raise KerberosError(code=KerberosError.Code.KDC_ERR_ETYPE_NOSUPP) from exc
 
@@ -253,7 +249,8 @@ class PaEncTimestampHandler(PaHandler):
             raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED)
 
         self.ctx.encrypted_part_key = key
-        self.ctx.encrypted_part_kvno = self.ctx.user.krb5_kvno
+        self.ctx.encrypted_part_kvno = self.ctx.user.kerberoskeys.kvno
+        self.ctx.encrypted_part_salt = self.ctx.user.kerberoskeys.salt
         self.ctx.encrypted_part_enctype = enctype
         self.ctx.client_authority = self.PRE_AUTHENTICATION_TYPE
 

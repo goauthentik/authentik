@@ -13,9 +13,9 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import KerberosKeyModel, Provider
 from authentik.lib.generators import generate_id, generate_key
-from authentik.lib.kerberos import keytab
-from authentik.lib.kerberos.crypto import SUPPORTED_ENCTYPES, EncryptionType, get_enctype_from_value
-from authentik.lib.kerberos.protocol import PrincipalName
+from authentik.providers.kerberos.lib import keytab
+from authentik.providers.kerberos.lib.crypto import SUPPORTED_ENCTYPES, EncryptionType, get_enctype_from_value
+from authentik.providers.kerberos.lib.protocol import PrincipalName
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
