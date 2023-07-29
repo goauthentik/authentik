@@ -36,7 +36,7 @@ def context_processor(request: HttpRequest) -> dict[str, Any]:
         trace = span.to_traceparent()
     return {
         "tenant": tenant,
-        "footer_links": CONFIG.y("footer_links"),
+        "footer_links": CONFIG.get("footer_links"),
         "sentry_trace": trace,
         "version": get_full_version(),
     }

@@ -25,7 +25,7 @@ class Migration(BaseMigration):
             # If we already have migrations in the database, assume we're upgrading an existing install
             # and set the install id to the secret key
             self.cur.execute(
-                "INSERT INTO authentik_install_id (id) VALUES (%s)", (CONFIG.y("secret_key"),)
+                "INSERT INTO authentik_install_id (id) VALUES (%s)", (CONFIG.get("secret_key"),)
             )
         else:
             # Otherwise assume a new install, generate an install ID based on a UUID

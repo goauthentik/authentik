@@ -8,11 +8,11 @@ from django.urls.base import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import (
-    USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     AuthenticatedSession,
     Token,
     User,
+    UserTypes,
 )
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
@@ -141,7 +141,8 @@ class TestUsersAPI(APITestCase):
 
         user_filter = User.objects.filter(
             username="test-sa",
-            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True, USER_ATTRIBUTE_SA: True},
+            type=UserTypes.SERVICE_ACCOUNT,
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True},
         )
         self.assertTrue(user_filter.exists())
         user: User = user_filter.first()
@@ -166,7 +167,8 @@ class TestUsersAPI(APITestCase):
 
         user_filter = User.objects.filter(
             username="test-sa",
-            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: False, USER_ATTRIBUTE_SA: True},
+            type=UserTypes.SERVICE_ACCOUNT,
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: False},
         )
         self.assertTrue(user_filter.exists())
         user: User = user_filter.first()
@@ -192,7 +194,8 @@ class TestUsersAPI(APITestCase):
 
         user_filter = User.objects.filter(
             username="test-sa",
-            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True, USER_ATTRIBUTE_SA: True},
+            type=UserTypes.SERVICE_ACCOUNT,
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True},
         )
         self.assertTrue(user_filter.exists())
         user: User = user_filter.first()
@@ -218,7 +221,8 @@ class TestUsersAPI(APITestCase):
 
         user_filter = User.objects.filter(
             username="test-sa",
-            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True, USER_ATTRIBUTE_SA: True},
+            type=UserTypes.SERVICE_ACCOUNT,
+            attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: True},
         )
         self.assertTrue(user_filter.exists())
         user: User = user_filter.first()

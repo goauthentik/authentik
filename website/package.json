@@ -20,15 +20,16 @@
         "@docusaurus/preset-classic": "^2.4.1",
         "@docusaurus/theme-mermaid": "^2.4.1",
         "@mdx-js/react": "^1.6.22",
-        "clsx": "^1.2.1",
+        "clsx": "^2.0.0",
         "disqus-react": "^1.1.5",
-        "postcss": "^8.4.25",
+        "postcss": "^8.4.27",
         "rapidoc": "^9.3.4",
         "react": "^17.0.2",
         "react-before-after-slider-component": "^1.1.8",
         "react-dom": "^17.0.2",
         "react-feather": "^2.0.10",
         "react-toggle": "^4.1.3",
+        "react-tooltip": "^5.19.0",
         "remark-github": "^11.2.4"
     },
     "browserslist": {

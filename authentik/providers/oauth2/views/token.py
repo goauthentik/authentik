@@ -459,13 +459,13 @@ class TokenView(View):
                 if self.params.grant_type == GRANT_TYPE_REFRESH_TOKEN:
                     LOGGER.debug("Refreshing refresh token")
                     return TokenResponse(self.create_refresh_response())
-                if self.params.grant_type == GRANT_TYPE_CLIENT_CREDENTIALS:
-                    LOGGER.debug("Client credentials grant")
+                if self.params.grant_type in [GRANT_TYPE_CLIENT_CREDENTIALS, GRANT_TYPE_PASSWORD]:
+                    LOGGER.debug("Client credentials/password grant")
                     return TokenResponse(self.create_client_credentials_response())
                 if self.params.grant_type == GRANT_TYPE_DEVICE_CODE:
                     LOGGER.debug("Device code grant")
                     return TokenResponse(self.create_device_code_response())
-                raise ValueError(f"Invalid grant_type: {self.params.grant_type}")
+                raise TokenError("unsupported_grant_type")
         except (TokenError, DeviceCodeError) as error:
             return TokenResponse(error.create_dict(), status=400)
         except UserAuthError as error:

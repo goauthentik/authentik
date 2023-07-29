@@ -94,4 +94,4 @@ As always, we would be interested in hearing your thoughts on JWTs, in general a
 
 Let us know how our authentik users are implementing JWTs, and you are doing any type of customization, based on OpenID Connect. For example, the [machine-to-machine authentication feature](/docs/providers/oauth2/client_credentials) in authentik enables you to get a pre-configured JWT and use it in authentik to then get another JWT that is specifically for use within authentik.
 
-Leave us a comment below, reach out to us at hello@authentik, and visit our [GitHub repository](https://github.com/goauthentik/authentik].
+Leave us a comment below, reach out to us at hello@authentik, and visit our [GitHub repository](https://github.com/goauthentik/authentik).

@@ -1,7 +1,7 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Iterable, Optional
+from typing import Any, Iterable, Optional
 from uuid import uuid4
 
 from dacite.core import from_dict
@@ -20,13 +20,12 @@ from structlog.stdlib import get_logger
 from authentik import __version__, get_build_hash
 from authentik.blueprints.models import ManagedModel
 from authentik.core.models import (
-    USER_ATTRIBUTE_CAN_OVERRIDE_IP,
-    USER_ATTRIBUTE_SA,
     USER_PATH_SYSTEM_PREFIX,
     Provider,
     Token,
     TokenIntents,
     User,
+    UserTypes,
 )
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
@@ -59,7 +58,7 @@ class OutpostConfig:
     authentik_host_insecure: bool = False
     authentik_host_browser: str = ""
 
-    log_level: str = CONFIG.y("log_level")
+    log_level: str = CONFIG.get("log_level")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
 
     container_image: Optional[str] = field(default=None)
@@ -76,6 +75,7 @@ class OutpostConfig:
     kubernetes_service_type: str = field(default="ClusterIP")
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
+    kubernetes_json_patches: Optional[dict[str, list[dict[str, Any]]]] = field(default=None)
 
 
 class OutpostModel(Model):
@@ -346,8 +346,7 @@ class Outpost(SerializerModel, ManagedModel):
             user: User = User.objects.create(username=self.user_identifier)
             user.set_unusable_password()
             user_created = True
-        user.attributes[USER_ATTRIBUTE_SA] = True
-        user.attributes[USER_ATTRIBUTE_CAN_OVERRIDE_IP] = True
+        user.type = UserTypes.INTERNAL_SERVICE_ACCOUNT
         user.name = f"Outpost {self.name} Service-Account"
         user.path = USER_PATH_OUTPOSTS
         user.save()

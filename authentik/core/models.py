@@ -36,7 +36,6 @@ from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
-USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
 USER_ATTRIBUTE_GENERATED = "goauthentik.io/user/generated"
 USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
 USER_ATTRIBUTE_DELETE_ON_LOGOUT = "goauthentik.io/user/delete-on-logout"
@@ -45,8 +44,6 @@ USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
 USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
 USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
 USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
-USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
-
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
@@ -63,7 +60,22 @@ def default_token_key():
     """Default token key"""
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
-    return generate_id(int(CONFIG.y("default_token_length")))
+    return generate_id(int(CONFIG.get("default_token_length")))
+
+
+class UserTypes(models.TextChoices):
+    """User types, both for grouping, licensing and permissions in the case
+    of the internal_service_account"""
+
+    INTERNAL = "internal"
+    EXTERNAL = "external"
+
+    # User-created service accounts
+    SERVICE_ACCOUNT = "service_account"
+
+    # Special user type for internally managed and created service
+    # accounts, such as outpost users
+    INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
 class Group(SerializerModel):
@@ -149,6 +161,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
     path = models.TextField(default="users")
+    type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")

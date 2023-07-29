@@ -49,7 +49,7 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
             uniq = self._flatten(attributes[self._source.object_uniqueness_field])
             try:
                 defaults = self.build_user_properties(user_dn, **attributes)
-                self._logger.debug("Creating user with attributes", **defaults)
+                self._logger.debug("Writing user with attributes", **defaults)
                 if "username" not in defaults:
                     raise IntegrityError("Username was not set by propertymappings")
                 ak_user, created = self.update_or_create_attributes(

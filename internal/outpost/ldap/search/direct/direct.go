@@ -45,10 +45,22 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"reason":       "empty_bind_dn",
 			"app":          ds.si.GetAppSlug(),
 		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
+			"outpost_name": ds.si.GetOutpostName(),
+			"type":         "search",
+			"reason":       "empty_bind_dn",
+			"app":          ds.si.GetAppSlug(),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, fmt.Errorf("Search Error: Anonymous BindDN not allowed %s", req.BindDN)
 	}
 	if !utils.HasSuffixNoCase(req.BindDN, ","+baseDN) {
 		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": ds.si.GetOutpostName(),
+			"type":         "search",
+			"reason":       "invalid_bind_dn",
+			"app":          ds.si.GetAppSlug(),
+		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 			"outpost_name": ds.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "invalid_bind_dn",
@@ -66,6 +78,12 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 			"reason":       "user_info_not_cached",
 			"app":          ds.si.GetAppSlug(),
 		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
+			"outpost_name": ds.si.GetOutpostName(),
+			"type":         "search",
+			"reason":       "user_info_not_cached",
+			"app":          ds.si.GetAppSlug(),
+		}).Inc()
 		return ldap.ServerSearchResult{ResultCode: ldap.LDAPResultInsufficientAccessRights}, errors.New("access denied")
 	}
 	accsp.Finish()
@@ -73,6 +91,12 @@ func (ds *DirectSearcher) Search(req *search.Request) (ldap.ServerSearchResult, 
 	parsedFilter, err := ldap.CompileFilter(req.Filter)
 	if err != nil {
 		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": ds.si.GetOutpostName(),
+			"type":         "search",
+			"reason":       "filter_parse_fail",
+			"app":          ds.si.GetAppSlug(),
+		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 			"outpost_name": ds.si.GetOutpostName(),
 			"type":         "search",
 			"reason":       "filter_parse_fail",

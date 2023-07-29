@@ -1,4 +1,4 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import { rootInterface } from "@goauthentik/elements/Base";
@@ -19,10 +19,7 @@ import {
     CoreGroupsListRequest,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
-    Flow,
-    FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     Group,
     LDAPAPIAccessMode,
     LDAPProvider,
@@ -58,6 +55,12 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
         }
     }
 
+    // All Provider objects have an Authorization flow, but not all providers have an Authentication
+    // flow. LDAP needs only one field, but it is not an Authorization field, it is an
+    // Authentication field. So, yeah, we're using the authorization field to store the
+    // authentication information, which is why the ak-tenanted-flow-search call down there looks so
+    // weird-- we're looking up Authentication flows, but we're storing them in the Authorization
+    // field of the target Provider.
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
@@ -73,36 +76,12 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Authentication,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.slug}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        let selected = flow.pk === rootInterface()?.tenant?.flowAuthentication;
-                        if (this.instance?.authorizationFlow === flow.pk) {
-                            selected = true;
-                        }
-                        return selected;
-                    }}
-                >
-                </ak-search-select>
+                <ak-tenanted-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                    .currentFlow=${this.instance?.authorizationFlow}
+                    .tenantFlow=${rootInterface()?.tenant?.flowAuthentication}
+                    required
+                ></ak-tenanted-flow-search>
                 <p class="pf-c-form__helper-text">${msg("Flow used for users to authenticate.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Search group")} name="searchGroup">

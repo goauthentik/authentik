@@ -32,9 +32,8 @@ The following outpost settings are used:
     -   'prometheus servicemonitor'
     -   'ingress'
     -   'traefik middleware'
--   `kubernetes_image_pull_secrets`: If the above docker image is in a private repository, use these secrets to pull.
-
-    NOTE: The secret must be created manually in the namespace first.
+-   `kubernetes_image_pull_secrets`: If the above docker image is in a private repository, use these secrets to pull. (NOTE: The secret must be created manually in the namespace first.)
+-   `kubernetes_json_patches`: Applies an RFC 6902 compliant JSON patch to the Kubernetes objects.
 
 ## Permissions
 

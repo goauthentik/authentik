@@ -3213,7 +3213,6 @@
                         "authentik.crypto",
                         "authentik.events",
                         "authentik.flows",
-                        "authentik.lib",
                         "authentik.outposts",
                         "authentik.policies.dummy",
                         "authentik.policies.event_matcher",
@@ -3980,6 +3979,16 @@
                             "type": "string",
                             "minLength": 1,
                             "title": "Path"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "internal",
+                                "external",
+                                "service_account",
+                                "internal_service_account"
+                            ],
+                            "title": "Type"
                         }
                     },
                     "required": [
@@ -4171,6 +4180,16 @@
                             "type": "string",
                             "minLength": 1,
                             "title": "Path"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "internal",
+                                "external",
+                                "service_account",
+                                "internal_service_account"
+                            ],
+                            "title": "Type"
                         }
                     },
                     "required": [
@@ -4366,6 +4385,16 @@
                             "type": "string",
                             "minLength": 1,
                             "title": "Path"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "internal",
+                                "external",
+                                "service_account",
+                                "internal_service_account"
+                            ],
+                            "title": "Type"
                         }
                     },
                     "required": [
@@ -6522,6 +6551,16 @@
                             "type": "string",
                             "minLength": 1,
                             "title": "Path"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "internal",
+                                "external",
+                                "service_account",
+                                "internal_service_account"
+                            ],
+                            "title": "Type"
                         }
                     },
                     "required": [
@@ -7257,6 +7296,16 @@
                             "type": "string",
                             "minLength": 1,
                             "title": "Path"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "internal",
+                                "external",
+                                "service_account",
+                                "internal_service_account"
+                            ],
+                            "title": "Type"
                         }
                     },
                     "required": [
@@ -8333,6 +8382,16 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Path"
+                },
+                "type": {
+                    "type": "string",
+                    "enum": [
+                        "internal",
+                        "external",
+                        "service_account",
+                        "internal_service_account"
+                    ],
+                    "title": "Type"
                 },
                 "password": {
                     "type": "string",

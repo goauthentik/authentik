@@ -26,8 +26,8 @@ BASE_DIR = Path(__file__).absolute().parent.parent.parent
 STATICFILES_DIRS = [BASE_DIR / Path("web")]
 MEDIA_ROOT = BASE_DIR / Path("media")
 
-DEBUG = CONFIG.y_bool("debug")
-SECRET_KEY = CONFIG.y("secret_key")
+DEBUG = CONFIG.get_bool("debug")
+SECRET_KEY = CONFIG.get("secret_key")
 
 INTERNAL_IPS = ["127.0.0.1"]
 ALLOWED_HOSTS = ["*"]
@@ -42,7 +42,7 @@ CSRF_COOKIE_NAME = "authentik_csrf"
 CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
 LANGUAGE_COOKIE_NAME = "authentik_language"
 SESSION_COOKIE_NAME = "authentik_session"
-SESSION_COOKIE_DOMAIN = CONFIG.y("cookie_domain", None)
+SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -68,7 +68,6 @@ INSTALLED_APPS = [
     "authentik.crypto",
     "authentik.events",
     "authentik.flows",
-    "authentik.lib",
     "authentik.outposts",
     "authentik.policies.dummy",
     "authentik.policies.event_matcher",
@@ -148,6 +147,7 @@ SPECTACULAR_SETTINGS = {
         "PromptTypeEnum": "authentik.stages.prompt.models.FieldTypes",
         "LDAPAPIAccessMode": "authentik.providers.ldap.models.APIAccessMode",
         "UserVerificationEnum": "authentik.stages.authenticator_webauthn.models.UserVerification",
+        "UserTypeEnum": "authentik.core.models.UserTypes",
     },
     "ENUM_ADD_EXPLICIT_BLANK_NULL_CHOICE": False,
     "POSTPROCESSING_HOOKS": [
@@ -180,7 +180,7 @@ REST_FRAMEWORK = {
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
     "DEFAULT_THROTTLE_CLASSES": ["rest_framework.throttling.AnonRateThrottle"],
     "DEFAULT_THROTTLE_RATES": {
-        "anon": CONFIG.y("throttle.default"),
+        "anon": CONFIG.get("throttle.default"),
     },
 }
 
@@ -219,7 +219,7 @@ MIDDLEWARE = [
     "authentik.events.middleware.AuditMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
+    "authentik.root.middleware.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "authentik.core.middleware.ImpersonateMiddleware",
@@ -231,7 +231,7 @@ ROOT_URLCONF = "authentik.root.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [CONFIG.y("email.template_dir")],
+        "DIRS": [CONFIG.get("email.template_dir")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -264,34 +264,37 @@ CHANNEL_LAYERS = {
 
 DATABASES = {
     "default": {
-        "ENGINE": "django_prometheus.db.backends.postgresql",
-        "HOST": CONFIG.y("postgresql.host"),
-        "NAME": CONFIG.y("postgresql.name"),
-        "USER": CONFIG.y("postgresql.user"),
-        "PASSWORD": CONFIG.y("postgresql.password"),
-        "PORT": int(CONFIG.y("postgresql.port")),
-        "SSLMODE": CONFIG.y("postgresql.sslmode"),
-        "SSLROOTCERT": CONFIG.y("postgresql.sslrootcert"),
-        "SSLCERT": CONFIG.y("postgresql.sslcert"),
-        "SSLKEY": CONFIG.y("postgresql.sslkey"),
+        "ENGINE": "authentik.root.db",
+        "HOST": CONFIG.get("postgresql.host"),
+        "NAME": CONFIG.get("postgresql.name"),
+        "USER": CONFIG.get("postgresql.user"),
+        "PASSWORD": CONFIG.get("postgresql.password"),
+        "PORT": int(CONFIG.get("postgresql.port")),
+        "SSLMODE": CONFIG.get("postgresql.sslmode"),
+        "SSLROOTCERT": CONFIG.get("postgresql.sslrootcert"),
+        "SSLCERT": CONFIG.get("postgresql.sslcert"),
+        "SSLKEY": CONFIG.get("postgresql.sslkey"),
     }
 }
 
-if CONFIG.y_bool("postgresql.use_pgbouncer", False):
+if CONFIG.get_bool("postgresql.use_pgbouncer", False):
     # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
     DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
     # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
     DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
 
 # Email
-EMAIL_HOST = CONFIG.y("email.host")
-EMAIL_PORT = int(CONFIG.y("email.port"))
-EMAIL_HOST_USER = CONFIG.y("email.username")
-EMAIL_HOST_PASSWORD = CONFIG.y("email.password")
-EMAIL_USE_TLS = CONFIG.y_bool("email.use_tls", False)
-EMAIL_USE_SSL = CONFIG.y_bool("email.use_ssl", False)
-EMAIL_TIMEOUT = int(CONFIG.y("email.timeout"))
-DEFAULT_FROM_EMAIL = CONFIG.y("email.from")
+# These values should never actually be used, emails are only sent from email stages, which
+# loads the config directly from CONFIG
+# See authentik/stages/email/models.py, line 105
+EMAIL_HOST = CONFIG.get("email.host")
+EMAIL_PORT = int(CONFIG.get("email.port"))
+EMAIL_HOST_USER = CONFIG.get("email.username")
+EMAIL_HOST_PASSWORD = CONFIG.get("email.password")
+EMAIL_USE_TLS = CONFIG.get_bool("email.use_tls", False)
+EMAIL_USE_SSL = CONFIG.get_bool("email.use_ssl", False)
+EMAIL_TIMEOUT = int(CONFIG.get("email.timeout"))
+DEFAULT_FROM_EMAIL = CONFIG.get("email.from")
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_SUBJECT_PREFIX = "[authentik] "
 
@@ -345,9 +348,9 @@ CELERY = {
 
 # Sentry integration
 env = get_env()
-_ERROR_REPORTING = CONFIG.y_bool("error_reporting.enabled", False)
+_ERROR_REPORTING = CONFIG.get_bool("error_reporting.enabled", False)
 if _ERROR_REPORTING:
-    sentry_env = CONFIG.y("error_reporting.environment", "customer")
+    sentry_env = CONFIG.get("error_reporting.environment", "customer")
     sentry_init()
     set_tag("authentik.uuid", sha512(str(SECRET_KEY).encode("ascii")).hexdigest()[:16])
 
@@ -361,7 +364,7 @@ MEDIA_URL = "/media/"
 TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
 # We can't check TEST here as its set later by the test runner
-LOG_LEVEL = CONFIG.y("log_level").upper() if "TF_BUILD" not in os.environ else "DEBUG"
+LOG_LEVEL = CONFIG.get("log_level").upper() if "TF_BUILD" not in os.environ else "DEBUG"
 # We could add a custom level to stdlib logging and structlog, but it's not easy or clean
 # https://stackoverflow.com/questions/54505487/custom-log-level-not-working-with-structlog
 # Additionally, the entire code uses debug as highest level so that would have to be re-written too

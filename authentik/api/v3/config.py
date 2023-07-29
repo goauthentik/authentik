@@ -3,6 +3,7 @@ from pathlib import Path
 
 from django.conf import settings
 from django.db import models
+from django.dispatch import Signal
 from drf_spectacular.utils import extend_schema
 from rest_framework.fields import (
     BooleanField,
@@ -20,6 +21,8 @@ from rest_framework.views import APIView
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.geo import GEOIP_READER
 from authentik.lib.config import CONFIG
+
+capabilities = Signal()
 
 
 class Capabilities(models.TextChoices):
@@ -67,12 +70,15 @@ class ConfigView(APIView):
             caps.append(Capabilities.CAN_SAVE_MEDIA)
         if GEOIP_READER.enabled:
             caps.append(Capabilities.CAN_GEO_IP)
-        if CONFIG.y_bool("impersonation"):
+        if CONFIG.get_bool("impersonation"):
             caps.append(Capabilities.CAN_IMPERSONATE)
         if settings.DEBUG:  # pragma: no cover
             caps.append(Capabilities.CAN_DEBUG)
         if "authentik.enterprise" in settings.INSTALLED_APPS:
             caps.append(Capabilities.IS_ENTERPRISE)
+        for _, result in capabilities.send(sender=self):
+            if result:
+                caps.append(result)
         return caps
 
     def get_config(self) -> ConfigSerializer:
@@ -80,11 +86,11 @@ class ConfigView(APIView):
         return ConfigSerializer(
             {
                 "error_reporting": {
-                    "enabled": CONFIG.y("error_reporting.enabled"),
-                    "sentry_dsn": CONFIG.y("error_reporting.sentry_dsn"),
-                    "environment": CONFIG.y("error_reporting.environment"),
-                    "send_pii": CONFIG.y("error_reporting.send_pii"),
-                    "traces_sample_rate": float(CONFIG.y("error_reporting.sample_rate", 0.4)),
+                    "enabled": CONFIG.get("error_reporting.enabled"),
+                    "sentry_dsn": CONFIG.get("error_reporting.sentry_dsn"),
+                    "environment": CONFIG.get("error_reporting.environment"),
+                    "send_pii": CONFIG.get("error_reporting.send_pii"),
+                    "traces_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.4)),
                 },
                 "capabilities": self.get_capabilities(),
                 "cache_timeout": int(CONFIG.y("cache.timeout")),

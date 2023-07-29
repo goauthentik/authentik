@@ -191,9 +191,8 @@ export class LDAPProviderViewPage extends AKElement {
                                     class="pf-c-form-control"
                                     readonly
                                     type="text"
-                                    value=${`cn=${
-                                        this.me?.user.username
-                                    },ou=users,${this.provider?.baseDn?.toLowerCase()}`}
+                                    value=${`cn=${this.me?.user
+                                        .username},ou=users,${this.provider?.baseDn?.toLowerCase()}`}
                                 />
                             </div>
                             <div class="pf-c-form__group">

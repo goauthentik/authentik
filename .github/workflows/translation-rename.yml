@@ -1,0 +1,39 @@
+# Rename transifex pull requests to have a correct naming
+name: authentik-translation-transifex-rename
+
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  rename_pr:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.pull_request.user.login == 'transifex-integration[bot]'}}
+    steps:
+      - id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - name: Get current title
+        id: title
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          title=$(curl -q -L \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }} | jq -r .title)
+          echo "title=${title}" >> "$GITHUB_OUTPUT"
+      - name: Rename
+        env:
+          GH_TOKEN: ${{ steps.generate_token.outputs.token }}
+        run: |
+          curl -L \
+            -X PATCH \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }} \
+            -d "{\"title\":\"translate: ${{ steps.title.outputs.title }}\"}"

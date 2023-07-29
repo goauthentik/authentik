@@ -13,7 +13,7 @@ from authentik.lib.utils.parser import parse_url
 CONFIG.log("info", "Starting authentik bootstrap")
 
 # Sanity check, ensure SECRET_KEY is set before we even check for database connectivity
-if CONFIG.y("secret_key") is None or len(CONFIG.y("secret_key")) == 0:
+if CONFIG.get("secret_key") is None or len(CONFIG.get("secret_key")) == 0:
     CONFIG.log("info", "----------------------------------------------------------------------")
     CONFIG.log("info", "Secret key missing, check https://goauthentik.io/docs/installation/.")
     CONFIG.log("info", "----------------------------------------------------------------------")
@@ -23,15 +23,15 @@ if CONFIG.y("secret_key") is None or len(CONFIG.y("secret_key")) == 0:
 while True:
     try:
         conn = connect(
-            dbname=CONFIG.y("postgresql.name"),
-            user=CONFIG.y("postgresql.user"),
-            password=CONFIG.y("postgresql.password"),
-            host=CONFIG.y("postgresql.host"),
-            port=int(CONFIG.y("postgresql.port")),
-            sslmode=CONFIG.y("postgresql.sslmode"),
-            sslrootcert=CONFIG.y("postgresql.sslrootcert"),
-            sslcert=CONFIG.y("postgresql.sslcert"),
-            sslkey=CONFIG.y("postgresql.sslkey"),
+            dbname=CONFIG.get("postgresql.name"),
+            user=CONFIG.get("postgresql.user"),
+            password=CONFIG.get("postgresql.password"),
+            host=CONFIG.get("postgresql.host"),
+            port=int(CONFIG.get("postgresql.port")),
+            sslmode=CONFIG.get("postgresql.sslmode"),
+            sslrootcert=CONFIG.get("postgresql.sslrootcert"),
+            sslcert=CONFIG.get("postgresql.sslcert"),
+            sslkey=CONFIG.get("postgresql.sslkey"),
         )
         conn.cursor()
         break

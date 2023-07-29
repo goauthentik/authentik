@@ -59,7 +59,7 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
     signatures = []
     for page in sync_inst.get_objects():
         page_cache_key = CACHE_KEY_PREFIX + str(uuid4())
-        cache.set(page_cache_key, page)
+        cache.set(page_cache_key, page, 60 * 60 * int(CONFIG.get("ldap.task_timeout_hours")))
         page_sync = ldap_sync.si(source.pk, class_to_path(sync), page_cache_key)
         signatures.append(page_sync)
     return signatures
@@ -68,12 +68,12 @@ def ldap_sync_paginator(source: LDAPSource, sync: type[BaseLDAPSynchronizer]) ->
 @CELERY_APP.task(
     bind=True,
     base=MonitoredTask,
-    soft_time_limit=60 * 60 * int(CONFIG.y("ldap.task_timeout_hours")),
-    task_time_limit=60 * 60 * int(CONFIG.y("ldap.task_timeout_hours")),
+    soft_time_limit=60 * 60 * int(CONFIG.get("ldap.task_timeout_hours")),
+    task_time_limit=60 * 60 * int(CONFIG.get("ldap.task_timeout_hours")),
 )
 def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, page_cache_key: str):
     """Synchronization of an LDAP Source"""
-    self.result_timeout_hours = int(CONFIG.y("ldap.task_timeout_hours"))
+    self.result_timeout_hours = int(CONFIG.get("ldap.task_timeout_hours"))
     source: LDAPSource = LDAPSource.objects.filter(pk=source_pk).first()
     if not source:
         # Because the source couldn't be found, we don't have a UID
@@ -86,6 +86,12 @@ def ldap_sync(self: MonitoredTask, source_pk: str, sync_class: str, page_cache_k
         sync_inst: BaseLDAPSynchronizer = sync(source)
         page = cache.get(page_cache_key)
         if not page:
+            error_message = (
+                f"Could not find page in cache: {page_cache_key}. "
+                + "Try increasing ldap.task_timeout_hours"
+            )
+            LOGGER.warning(error_message)
+            self.set_status(TaskResult(TaskResultStatus.ERROR, [error_message]))
             return
         cache.touch(page_cache_key)
         count = sync_inst.sync(page)

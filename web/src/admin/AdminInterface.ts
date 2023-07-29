@@ -11,6 +11,7 @@ import { me } from "@goauthentik/common/users";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/ak-locale-context";
+import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
@@ -30,7 +31,14 @@ import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { AdminApi, CoreApi, SessionUser, UiThemeEnum, Version } from "@goauthentik/api";
+import {
+    AdminApi,
+    CapabilitiesEnum,
+    CoreApi,
+    SessionUser,
+    UiThemeEnum,
+    Version,
+} from "@goauthentik/api";
 
 @customElement("ak-interface-admin")
 export class AdminInterface extends Interface {
@@ -112,8 +120,8 @@ export class AdminInterface extends Interface {
     }
 
     render(): TemplateResult {
-        return html` <ak-locale-context
-            ><div class="pf-c-page">
+        return html` <ak-locale-context>
+            <div class="pf-c-page">
                 <ak-sidebar
                     class="pf-c-page__sidebar ${this.sidebarOpen
                         ? "pf-m-expanded"
@@ -308,6 +316,16 @@ export class AdminInterface extends Interface {
                     <span slot="label">${msg("Outpost Integrations")}</span>
                 </ak-sidebar-item>
             </ak-sidebar-item>
+            ${this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
+                ? html`
+                      <ak-sidebar-item>
+                          <span slot="label">${msg("Enterprise")}</span>
+                          <ak-sidebar-item path="/enterprise/licenses">
+                              <span slot="label">${msg("Licenses")}</span>
+                          </ak-sidebar-item>
+                      </ak-sidebar-item>
+                  `
+                : html``}
         `;
     }
 }

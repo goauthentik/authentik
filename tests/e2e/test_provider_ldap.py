@@ -226,103 +226,106 @@ class TestProviderLDAP(SeleniumTestCase):
             search_scope=SUBTREE,
             attributes=[ALL_ATTRIBUTES, ALL_OPERATIONAL_ATTRIBUTES],
         )
-        response: dict = _connection.response
+        response: list = _connection.response
         # Remove raw_attributes to make checking easier
         for obj in response:
             del obj["raw_attributes"]
             del obj["raw_dn"]
         o_user = outpost.user
-        self.assertCountEqual(
-            response,
-            [
-                {
-                    "dn": f"cn={o_user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
-                    "attributes": {
-                        "cn": o_user.username,
-                        "sAMAccountName": o_user.username,
-                        "uid": o_user.uid,
-                        "name": o_user.name,
-                        "displayName": o_user.name,
-                        "sn": o_user.name,
-                        "mail": "",
-                        "objectClass": [
-                            "user",
-                            "organizationalPerson",
-                            "inetOrgPerson",
-                            "goauthentik.io/ldap/user",
-                            "posixAccount",
-                        ],
-                        "uidNumber": 2000 + o_user.pk,
-                        "gidNumber": 2000 + o_user.pk,
-                        "memberOf": [],
-                        "homeDirectory": f"/home/{o_user.username}",
-                        "ak-active": True,
-                        "ak-superuser": False,
-                        "goauthentikio-user-override-ips": True,
-                        "goauthentikio-user-service-account": True,
-                    },
-                    "type": "searchResEntry",
+        expected = [
+            {
+                "dn": f"cn={o_user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                "attributes": {
+                    "cn": o_user.username,
+                    "sAMAccountName": o_user.username,
+                    "uid": o_user.uid,
+                    "name": o_user.name,
+                    "displayName": o_user.name,
+                    "sn": o_user.name,
+                    "mail": "",
+                    "objectClass": [
+                        "user",
+                        "organizationalPerson",
+                        "inetOrgPerson",
+                        "goauthentik.io/ldap/user",
+                        "posixAccount",
+                    ],
+                    "uidNumber": 2000 + o_user.pk,
+                    "gidNumber": 2000 + o_user.pk,
+                    "memberOf": [],
+                    "homeDirectory": f"/home/{o_user.username}",
+                    "ak-active": True,
+                    "ak-superuser": False,
                 },
-                {
-                    "dn": f"cn={embedded_account.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
-                    "attributes": {
-                        "cn": embedded_account.username,
-                        "sAMAccountName": embedded_account.username,
-                        "uid": embedded_account.uid,
-                        "name": embedded_account.name,
-                        "displayName": embedded_account.name,
-                        "sn": embedded_account.name,
-                        "mail": "",
-                        "objectClass": [
-                            "user",
-                            "organizationalPerson",
-                            "inetOrgPerson",
-                            "goauthentik.io/ldap/user",
-                            "posixAccount",
-                        ],
-                        "uidNumber": 2000 + embedded_account.pk,
-                        "gidNumber": 2000 + embedded_account.pk,
-                        "memberOf": [],
-                        "homeDirectory": f"/home/{embedded_account.username}",
-                        "ak-active": True,
-                        "ak-superuser": False,
-                        "goauthentikio-user-override-ips": True,
-                        "goauthentikio-user-service-account": True,
-                    },
-                    "type": "searchResEntry",
+                "type": "searchResEntry",
+            },
+            {
+                "dn": f"cn={embedded_account.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                "attributes": {
+                    "cn": embedded_account.username,
+                    "sAMAccountName": embedded_account.username,
+                    "uid": embedded_account.uid,
+                    "name": embedded_account.name,
+                    "displayName": embedded_account.name,
+                    "sn": embedded_account.name,
+                    "mail": "",
+                    "objectClass": [
+                        "user",
+                        "organizationalPerson",
+                        "inetOrgPerson",
+                        "goauthentik.io/ldap/user",
+                        "posixAccount",
+                    ],
+                    "uidNumber": 2000 + embedded_account.pk,
+                    "gidNumber": 2000 + embedded_account.pk,
+                    "memberOf": [],
+                    "homeDirectory": f"/home/{embedded_account.username}",
+                    "ak-active": True,
+                    "ak-superuser": False,
                 },
-                {
-                    "dn": f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
-                    "attributes": {
-                        "cn": self.user.username,
-                        "sAMAccountName": self.user.username,
-                        "uid": self.user.uid,
-                        "name": self.user.name,
-                        "displayName": self.user.name,
-                        "sn": self.user.name,
-                        "mail": self.user.email,
-                        "objectClass": [
-                            "user",
-                            "organizationalPerson",
-                            "inetOrgPerson",
-                            "goauthentik.io/ldap/user",
-                            "posixAccount",
-                        ],
-                        "uidNumber": 2000 + self.user.pk,
-                        "gidNumber": 2000 + self.user.pk,
-                        "memberOf": [
-                            f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
-                            for group in self.user.ak_groups.all()
-                        ],
-                        "homeDirectory": f"/home/{self.user.username}",
-                        "ak-active": True,
-                        "ak-superuser": True,
-                        "extraAttribute": ["bar"],
-                    },
-                    "type": "searchResEntry",
+                "type": "searchResEntry",
+            },
+            {
+                "dn": f"cn={self.user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
+                "attributes": {
+                    "cn": self.user.username,
+                    "sAMAccountName": self.user.username,
+                    "uid": self.user.uid,
+                    "name": self.user.name,
+                    "displayName": self.user.name,
+                    "sn": self.user.name,
+                    "mail": self.user.email,
+                    "objectClass": [
+                        "user",
+                        "organizationalPerson",
+                        "inetOrgPerson",
+                        "goauthentik.io/ldap/user",
+                        "posixAccount",
+                    ],
+                    "uidNumber": 2000 + self.user.pk,
+                    "gidNumber": 2000 + self.user.pk,
+                    "memberOf": [
+                        f"cn={group.name},ou=groups,dc=ldap,dc=goauthentik,dc=io"
+                        for group in self.user.ak_groups.all()
+                    ],
+                    "homeDirectory": f"/home/{self.user.username}",
+                    "ak-active": True,
+                    "ak-superuser": True,
+                    "extraAttribute": ["bar"],
                 },
-            ],
-        )
+                "type": "searchResEntry",
+            },
+        ]
+        self.assert_list_dict_equal(expected, response)
+
+    def assert_list_dict_equal(self, expected: list[dict], actual: list[dict], match_key="dn"):
+        """Assert a list of dictionaries is identical, ignoring the ordering of items"""
+        self.assertEqual(len(expected), len(actual))
+        for res_item in actual:
+            all_matching = [x for x in expected if x[match_key] == res_item[match_key]]
+            self.assertEqual(len(all_matching), 1)
+            matching = all_matching[0]
+            self.assertDictEqual(res_item, matching)
 
     @retry()
     @apply_blueprint(
@@ -385,14 +388,13 @@ class TestProviderLDAP(SeleniumTestCase):
             search_scope=SUBTREE,
             attributes=["cn"],
         )
-        response: dict = _connection.response
+        response: list = _connection.response
         # Remove raw_attributes to make checking easier
         for obj in response:
             del obj["raw_attributes"]
             del obj["raw_dn"]
         o_user = outpost.user
-        self.assertCountEqual(
-            response,
+        self.assert_list_dict_equal(
             [
                 {
                     "dn": f"cn={o_user.username},ou=users,dc=ldap,dc=goauthentik,dc=io",
@@ -416,4 +418,5 @@ class TestProviderLDAP(SeleniumTestCase):
                     "type": "searchResEntry",
                 },
             ],
+            response,
         )

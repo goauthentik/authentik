@@ -11,6 +11,8 @@ import { first } from "@goauthentik/common/utils";
 import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/ak-locale-context";
+import "@goauthentik/elements/buttons/ActionButton";
+import "@goauthentik/elements/enterprise/EnterpriseStatusBanner";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/notifications/APIDrawer";
 import "@goauthentik/elements/notifications/NotificationDrawer";
@@ -35,7 +37,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
-import { EventsApi, SessionUser } from "@goauthentik/api";
+import { CoreApi, EventsApi, SessionUser } from "@goauthentik/api";
 
 @customElement("ak-interface-user")
 export class UserInterface extends Interface {
@@ -71,11 +73,21 @@ export class UserInterface extends Interface {
                     z-index: auto !important;
                     background-color: transparent !important;
                 }
+                .pf-c-page__header {
+                    background-color: transparent !important;
+                    box-shadow: none !important;
+                    color: black !important;
+                }
+                :host([theme="dark"]) .pf-c-page__header {
+                    color: var(--ak-dark-foreground) !important;
+                }
+                .pf-c-page__header-tools-item .fas,
+                .pf-c-notification-badge__count,
+                .pf-c-page__header-tools-group .pf-c-button {
+                    color: var(--ak-global--Color--100) !important;
+                }
                 .pf-c-page {
                     background-color: transparent;
-                }
-                .background-wrapper {
-                    background-color: var(--pf-c-page--BackgroundColor) !important;
                 }
                 .display-none {
                     display: none;
@@ -89,9 +101,24 @@ export class UserInterface extends Interface {
                 }
                 .background-wrapper {
                     height: 100vh;
-                    width: 100vw;
-                    position: absolute;
+                    width: 100%;
+                    position: fixed;
                     z-index: -1;
+                    top: 0;
+                    left: 0;
+                    background-color: var(--pf-c-page--BackgroundColor) !important;
+                }
+                .background-default-slant {
+                    background-color: white; /*var(--ak-accent);*/
+                    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 5vw));
+                    height: 50vh;
+                }
+                :host([theme="dark"]) .background-default-slant {
+                    background-color: black;
+                }
+                ak-locale-context {
+                    display: flex;
+                    flex-direction: column;
                 }
             `,
         ];
@@ -148,8 +175,13 @@ export class UserInterface extends Interface {
                 userDisplay = this.me.user.username;
         }
         return html` <ak-locale-context>
+            <ak-enterprise-status interface="user"></ak-enterprise-status>
             <div class="pf-c-page">
-                <div class="background-wrapper" style="${this.uiConfig.theme.background}"></div>
+                <div class="background-wrapper" style="${this.uiConfig.theme.background}">
+                    ${this.uiConfig.theme.background === ""
+                        ? html`<div class="background-default-slant"></div>`
+                        : html``}
+                </div>
                 <header class="pf-c-page__header">
                     <div class="pf-c-page__header-brand">
                         <a href="#/" class="pf-c-page__header-brand-link">
@@ -206,7 +238,7 @@ export class UserInterface extends Interface {
                                                   ? "pf-m-unread"
                                                   : ""}"
                                           >
-                                              <i class="pf-icon-bell" aria-hidden="true"></i>
+                                              <i class="fas fa-bell" aria-hidden="true"></i>
                                               <span class="pf-c-notification-badge__count"
                                                   >${this.notificationsCount}</span
                                               >
@@ -235,7 +267,7 @@ export class UserInterface extends Interface {
                             </div>
                             ${this.me.user.isSuperuser
                                 ? html`<a
-                                      class="pf-c-button pf-m-primary pf-m-small pf-u-display-none pf-u-display-block-on-md"
+                                      class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
                                       href="/if/admin"
                                   >
                                       ${msg("Admin interface")}
@@ -243,18 +275,23 @@ export class UserInterface extends Interface {
                                 : html``}
                         </div>
                         ${this.me.original
-                            ? html`<div class="pf-c-page__header-tools">
-                                  <div class="pf-c-page__header-tools-group">
-                                      <a
-                                          class="pf-c-button pf-m-warning pf-m-small"
-                                          href=${`/-/impersonation/end/?back=${encodeURIComponent(
-                                              `${window.location.pathname}#${window.location.hash}`,
-                                          )}`}
-                                      >
-                                          ${msg("Stop impersonation")}
-                                      </a>
-                                  </div>
-                              </div>`
+                            ? html`&nbsp;
+                                  <div class="pf-c-page__header-tools">
+                                      <div class="pf-c-page__header-tools-group">
+                                          <ak-action-button
+                                              class="pf-m-warning pf-m-small"
+                                              .apiRequest=${() => {
+                                                  return new CoreApi(DEFAULT_CONFIG)
+                                                      .coreUsersImpersonateEndRetrieve()
+                                                      .then(() => {
+                                                          window.location.reload();
+                                                      });
+                                              }}
+                                          >
+                                              ${msg("Stop impersonation")}
+                                          </ak-action-button>
+                                      </div>
+                                  </div>`
                             : html``}
                         <div class="pf-c-page__header-tools-group">
                             <div

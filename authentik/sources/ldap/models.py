@@ -136,7 +136,7 @@ class LDAPSource(Source):
                 chmod(private_key_file, 0o600)
             tls_kwargs["local_private_key_file"] = private_key_file
             tls_kwargs["local_certificate_file"] = certificate_file
-        if ciphers := CONFIG.y("ldap.tls.ciphers", None):
+        if ciphers := CONFIG.get("ldap.tls.ciphers", None):
             tls_kwargs["ciphers"] = ciphers.strip()
         if self.sni:
             tls_kwargs["sni"] = self.server_uri.split(",", maxsplit=1)[0].strip()

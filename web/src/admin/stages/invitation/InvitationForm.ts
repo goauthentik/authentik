@@ -1,4 +1,4 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { dateTimeLocal, first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
@@ -11,14 +11,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import {
-    Flow,
-    FlowsApi,
-    FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
-    Invitation,
-    StagesApi,
-} from "@goauthentik/api";
+import { FlowsInstancesListDesignationEnum, Invitation, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-invitation-form")
 export class InvitationForm extends ModelForm<Invitation, string> {
@@ -75,33 +68,10 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Flow")} ?required=${true} name="flow">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Enrollment,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.flow;
-                    }}
-                    ?blankable=${true}
-                >
-                </ak-search-select>
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                    .currentFlow=${this.instance?.flow}
+                ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg(
                         "When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.",

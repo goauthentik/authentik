@@ -13,7 +13,7 @@ module.exports = async function () {
     });
     return {
         title: "authentik",
-        tagline: "Making authentication simple.",
+        tagline: "Bring all of your authentication into a unified platform.",
         url: "https://goauthentik.io",
         baseUrl: "/",
         onBrokenLinks: "throw",
@@ -25,7 +25,7 @@ module.exports = async function () {
                 title: "authentik",
                 logo: {
                     alt: "authentik logo",
-                    src: "img/icon.svg",
+                    src: "img/icon_left_brand.svg",
                 },
                 items: [
                     { to: "blog", label: "Blog", position: "left" },
@@ -82,13 +82,6 @@ module.exports = async function () {
                         position: "right",
                     },
                 ],
-            },
-            announcementBar: {
-                id: "hackathon",
-                content: `We're hosting a hackathon with a total prize pool of $5000 in July! Sign up <a href="https://goauthentik.io/developer-docs/hackathon/">here</a>!`,
-                backgroundColor: "#ffffff",
-                textColor: "#000000",
-                isCloseable: false,
             },
             footer: {
                 links: [

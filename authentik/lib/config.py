@@ -2,13 +2,15 @@
 import os
 from collections.abc import Mapping
 from contextlib import contextmanager
+from dataclasses import dataclass, field
+from enum import Enum
 from glob import glob
-from json import dumps, loads
+from json import JSONEncoder, dumps, loads
 from json.decoder import JSONDecodeError
 from pathlib import Path
 from sys import argv, stderr
 from time import time
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import parse_qsl, quote_plus, urlencode, urlparse
 
 import yaml
@@ -43,6 +45,37 @@ def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
     return root
 
 
+@dataclass
+class Attr:
+    """Single configuration attribute"""
+
+    class Source(Enum):
+        """Sources a configuration attribute can come from, determines what should be done with
+        Attr.source (and if it's set at all)"""
+
+        UNSPECIFIED = "unspecified"
+        ENV = "env"
+        CONFIG_FILE = "config_file"
+        URI = "uri"
+
+    value: Any
+
+    source_type: Source = field(default=Source.UNSPECIFIED)
+
+    # depending on source_type, might contain the environment variable or the path
+    # to the config file containing this change or the file containing this value
+    source: Optional[str] = field(default=None)
+
+
+class AttrEncoder(JSONEncoder):
+    """JSON encoder that can deal with `Attr` classes"""
+
+    def default(self, o: Any) -> Any:
+        if isinstance(o, Attr):
+            return o.value
+        return super().default(o)
+
+
 class UNSET:
     """Used to test whether configuration key has not been set."""
 
@@ -53,9 +86,7 @@ class ConfigLoader:
 
     A variable like AUTHENTIK_POSTGRESQL__HOST would translate to postgresql.host"""
 
-    loaded_file = []
-
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__()
         self.__config = {}
         base_dir = Path(__file__).parent.joinpath(Path("../..")).resolve()
@@ -195,22 +226,34 @@ class ConfigLoader:
             else:
                 if isinstance(value, str):
                     value = self.parse_uri(value)
+                elif isinstance(value, Attr) and isinstance(value.value, str):
+                    value = self.parse_uri(value.value)
+                elif not isinstance(value, Attr):
+                    value = Attr(value)
                 root[key] = value
         return root
 
-    def parse_uri(self, value: str) -> str:
+    def refresh(self, key: str):
+        """Update a single value"""
+        attr: Attr = get_path_from_dict(self.raw, key)
+        if attr.source_type != Attr.Source.URI:
+            return
+        attr.value = self.parse_uri(attr.source).value
+
+    def parse_uri(self, value: str) -> Attr:
         """Parse string values which start with a URI"""
         url = urlparse(value)
+        parsed_value = value
         if url.scheme == "env":
-            value = os.getenv(url.netloc, url.query)
+            parsed_value = os.getenv(url.netloc, url.query)
         if url.scheme == "file":
             try:
                 with open(url.path, "r", encoding="utf8") as _file:
-                    value = _file.read().strip()
+                    parsed_value = _file.read().strip()
             except OSError as exc:
                 self.log("error", f"Failed to read config value from {url.path}: {exc}")
-                value = url.query
-        return value
+                parsed_value = url.query
+        return Attr(parsed_value, Attr.Source.URI, value)
 
     def update_from_file(self, path: Path):
         """Update config from file contents"""
@@ -219,7 +262,6 @@ class ConfigLoader:
                 try:
                     self.update(self.__config, yaml.safe_load(file))
                     self.log("debug", "Loaded config", file=str(path))
-                    self.loaded_file.append(path)
                 except yaml.YAMLError as exc:
                     raise ImproperlyConfigured from exc
         except PermissionError as exc:
@@ -267,28 +309,32 @@ class ConfigLoader:
     @contextmanager
     def patch(self, path: str, value: Any):
         """Context manager for unittests to patch a value"""
-        original_value = self.y(path)
-        self.y_set(path, value)
+        original_value = self.get(path)
+        self.set(path, value)
         try:
             yield
         finally:
-            self.y_set(path, original_value)
+            self.set(path, original_value)
 
     @property
     def raw(self) -> dict:
         """Get raw config dictionary"""
         return self.__config
 
-    # pylint: disable=invalid-name
-    def y(self, path: str, default=None, sep=".") -> Any:
+    def get(self, path: str, default=None, sep=".") -> Any:
         """Access attribute by using yaml path"""
         # Walk sub_dicts before parsing path
         root = self.raw
         # Walk each component of the path
-        return get_path_from_dict(root, path, sep=sep, default=default)
+        attr: Attr = get_path_from_dict(root, path, sep=sep, default=Attr(default))
+        return attr.value
 
-    def y_set(self, path: str, value: Any, sep="."):
-        """Set value using same syntax as y()"""
+    def get_bool(self, path: str, default=False) -> bool:
+        """Wrapper for get that converts value into boolean"""
+        return str(self.get(path, default)).lower() == "true"
+
+    def set(self, path: str, value: Any, sep="."):
+        """Set value using same syntax as get()"""
         # Walk sub_dicts before parsing path
         self._set_value_for_key_path(self.raw, path, value, sep)
 
@@ -299,8 +345,9 @@ class ConfigLoader:
 
 CONFIG = ConfigLoader()
 
+
 if __name__ == "__main__":
     if len(argv) < 2:
-        print(dumps(CONFIG.raw, indent=4))
+        print(dumps(CONFIG.raw, indent=4, cls=AttrEncoder))
     else:
-        print(CONFIG.y(argv[1]))
+        print(CONFIG.get(argv[1]))

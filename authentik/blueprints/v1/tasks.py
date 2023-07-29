@@ -62,7 +62,7 @@ def start_blueprint_watcher():
     if _file_watcher_started:
         return
     observer = Observer()
-    observer.schedule(BlueprintEventHandler(), CONFIG.y("blueprints_dir"), recursive=True)
+    observer.schedule(BlueprintEventHandler(), CONFIG.get("blueprints_dir"), recursive=True)
     observer.start()
     _file_watcher_started = True
 
@@ -80,7 +80,7 @@ class BlueprintEventHandler(FileSystemEventHandler):
             blueprints_discovery.delay()
         if isinstance(event, FileModifiedEvent):
             path = Path(event.src_path)
-            root = Path(CONFIG.y("blueprints_dir")).absolute()
+            root = Path(CONFIG.get("blueprints_dir")).absolute()
             rel_path = str(path.relative_to(root))
             for instance in BlueprintInstance.objects.filter(path=rel_path):
                 LOGGER.debug("modified blueprint file, starting apply", instance=instance)
@@ -101,7 +101,7 @@ def blueprints_find_dict():
 def blueprints_find():
     """Find blueprints and return valid ones"""
     blueprints = []
-    root = Path(CONFIG.y("blueprints_dir"))
+    root = Path(CONFIG.get("blueprints_dir"))
     for path in root.rglob("**/*.yaml"):
         # Check if any part in the path starts with a dot and assume a hidden file
         if any(part for part in path.parts if part.startswith(".")):

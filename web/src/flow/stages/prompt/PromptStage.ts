@@ -200,12 +200,13 @@ ${prompt.initialValue}</textarea
                     ? LOCALES
                     : LOCALES.filter((locale) => locale.code !== "debug");
                 const options = locales.map(
-                    (locale) => html`<option
-                        value=${locale.code}
-                        ?selected=${locale.code === prompt.initialValue}
-                    >
-                        ${locale.code.toUpperCase()} - ${locale.label()}
-                    </option> `,
+                    (locale) =>
+                        html`<option
+                            value=${locale.code}
+                            ?selected=${locale.code === prompt.initialValue}
+                        >
+                            ${locale.code.toUpperCase()} - ${locale.label()}
+                        </option> `,
                 );
 
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">

@@ -20,6 +20,7 @@ class FreeIPA(BaseLDAPSynchronizer):
 
     def sync(self, attributes: dict[str, Any], user: User, created: bool):
         self.check_pwd_last_set(attributes, user, created)
+        self.check_nsaccountlock(attributes, user)
 
     def check_pwd_last_set(self, attributes: dict[str, Any], user: User, created: bool):
         """Check krbLastPwdChange"""
@@ -36,4 +37,15 @@ class FreeIPA(BaseLDAPSynchronizer):
                 pwd_last_set=pwd_last_set,
             )
             user.set_unusable_password()
+            user.save()
+
+    def check_nsaccountlock(self, attributes: dict[str, Any], user: User):
+        """https://www.port389.org/docs/389ds/howto/howto-account-inactivation.html"""
+        # This is more of a 389-ds quirk rather than FreeIPA, but FreeIPA uses
+        # 389-ds and this will trigger regardless
+        if "nsaccountlock" not in attributes:
+            return
+        is_active = attributes.get("nsaccountlock", False)
+        if is_active != user.is_active:
+            user.is_active = is_active
             user.save()
