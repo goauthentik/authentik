@@ -1,4 +1,5 @@
 """authentik Kerberos views"""
+import secrets
 from base64 import b64decode
 from dataclasses import dataclass, field, fields
 from datetime import datetime, timedelta
@@ -323,10 +324,10 @@ class AsMessageHandler(MessageHandler):
                 },
             )
 
-        # TODO: use session key
+        # TODO: check that we're using the proper enctype, as we don't have to use the client's
         key = EncryptionKey.from_values(
             keytype=self.ctx.encrypted_part_enctype.ENC_TYPE.value,
-            keyvalue=self.ctx.encrypted_part_key,
+            keyvalue=secrets.token_bytes(self.ctx.encrypted_part_enctype.KEY_SEED_BITS // 8),
         )
         ticket_request = TicketRequest(
             key=key,
