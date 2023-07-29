@@ -42,6 +42,7 @@
             yarn
             golangci-lint
             ruff
+            redis
           ];
         };
       }
