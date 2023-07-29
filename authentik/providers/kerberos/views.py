@@ -1,51 +1,127 @@
 """authentik Kerberos views"""
-from dataclasses import dataclass, field
 from base64 import b64decode
-from datetime import timedelta
+from dataclasses import dataclass, field, fields
+from datetime import datetime, timedelta
 
-from pyasn1.type import univ
-
+from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest, HttpResponse
 from django.http.response import HttpResponseBadRequest
 from django.utils.decorators import method_decorator
 from django.utils.timezone import now
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from django.core.exceptions import SuspiciousOperation
+from pyasn1.type import univ
 from structlog.stdlib import get_logger
 
+from authentik.core.models import User
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.kerberos.lib import crypto, iana
 from authentik.providers.kerberos.lib.exceptions import KerberosError
 from authentik.providers.kerberos.lib.protocol import (
+    KERBEROS_VERSION,
+    ApplicationTag,
     AsRep,
     AsReq,
-    KdcProxyMessage,
-    KdcRep,
-    KdcReq,
-    KrbError,
-    KeyUsageNumbers,
-    PaData,
-    TgsRep,
-    TgsReq,
-    Ticket,
-    TransitedEncoding,
+    AuthorizationData,
+    EncAsRepPart,
     EncryptedData,
     EncryptionKey,
     EncTicketPart,
-    EncAsRepPart,
+    HostAddresses,
+    KdcProxyMessage,
+    KdcRep,
+    KdcReq,
+    KeyUsageNumbers,
+    KrbError,
+    MethodData,
+    PaData,
     PaDataEncTsEnc,
     PaDataEtypeInfo2,
     PaDataEtypeInfo2Entry,
-    ApplicationTag,
-    PrincipalNameType,
     PrincipalName,
-    MethodData,
+    PrincipalNameType,
+    TgsRep,
+    TgsReq,
+    Ticket,
+    TicketFlags,
+    TransitedEncoding,
 )
-from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
-from authentik.core.models import User
 
 LOGGER = get_logger()
+
+
+@dataclass
+class TicketRequest:
+    @dataclass
+    class Flags:
+        reserved: bool = False
+        forwardable: bool = False
+        forwarded: bool = False
+        proxiable: bool = False
+        proxy: bool = False
+        may_postdate: bool = False
+        postdated: bool = False
+        invalid: bool = False
+        renewable: bool = False
+        initial: bool = False
+        pre_authent: bool = False
+        hw_authent: bool = False
+        transited_policy_checked: bool = False
+        ok_as_delefate: bool = False
+
+        def to_ticket_flags(self) -> TicketFlags:
+            flags = TicketFlags()
+            for f in fields(self):
+                flags[f.name.replace("_", "-")] = getattr(self, f.name)
+            return flags
+
+    key: EncryptionKey
+    crealm: KerberosRealm
+    cname: PrincipalName
+    endtime: datetime
+
+    transited: TransitedEncoding = field(
+        default_factory=lambda: TransitedEncoding.from_values(
+            contents=bytes(),
+            **{"tr-type": 1},
+        )
+    )
+    flags: Flags = field(default_factory=Flags)
+
+    authtime: datetime = field(default_factory=now)
+    starttime: datetime | None = None
+    renew_till: datetime | None = None
+    caddr: HostAddresses | None = None
+    autorization_data: AuthorizationData | None = None
+
+    def to_ticket(self, ctx: "Context") -> Ticket:
+        enc_ticket_part_values = {}
+        for f in fields(self):
+            value = getattr(self, f.name)
+            if value is None:
+                continue
+            if f.name == "flags":
+                value = value.to_ticket_flags()
+            enc_ticket_part_values[f.name.replace("_", "-")] = value
+        enc_ticket_part = EncTicketPart.from_values(**enc_ticket_part_values)
+
+        return Ticket.from_values(
+            realm=ctx.realm.name,
+            sname=ctx.sname,
+            **{
+                "tkt-vno": KERBEROS_VERSION,
+                "enc-part": EncryptedData.from_values(
+                    etype=ctx.encrypted_part_enctype.ENC_TYPE.value,
+                    kvno=ctx.realm.kvno,
+                    cipher=ctx.encrypted_part_enctype.encrypt_message(
+                        key=ctx.realm.keys[ctx.encrypted_part_enctype.ENC_TYPE],
+                        message=enc_ticket_part.to_bytes(),
+                        usage=KeyUsageNumbers.KDC_REP_TICKET.value,
+                    ),
+                ),
+            },
+        )
 
 
 @dataclass
@@ -163,17 +239,17 @@ class PaEncTimestampHandler(PaHandler):
 
         try:
             paenctsenc = PaDataEncTsEnc.from_bytes(
-               enctype.decrypt_message(
-                   key=key,
-                   ciphertext=bytes(encdata["cipher"]),
-                   usage=KeyUsageNumbers.AS_REQ_PA_ENC_TIMESTAMP.value,
-               )
+                enctype.decrypt_message(
+                    key=key,
+                    ciphertext=bytes(encdata["cipher"]),
+                    usage=KeyUsageNumbers.AS_REQ_PA_ENC_TIMESTAMP.value,
+                )
             )
         except ValueError as exc:
-           raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED) from exc
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED) from exc
 
         if not self._check_padata_timestamp(paenctsenc):
-           raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED)
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED)
 
         self.ctx.encrypted_part_key = key
         self.ctx.encrypted_part_kvno = self.ctx.user.krb5_kvno
@@ -214,7 +290,7 @@ class MessageHandler:
 
     def handle(self) -> KdcRep | KrbError:
         try:
-            if self.ctx.message["pvno"] != 5:  # TODO: make constant
+            if self.ctx.message["pvno"] != KERBEROS_VERSION:
                 raise KerberosError(code=KerberosError.Code.KDC_ERR_BAD_PVNO)
             self.pre_validate()
             self.query_pre_validate()
@@ -247,59 +323,29 @@ class AsMessageHandler(MessageHandler):
                 },
             )
 
+        # TODO: use session key
         key = EncryptionKey.from_values(
             keytype=self.ctx.encrypted_part_enctype.ENC_TYPE.value,
             keyvalue=self.ctx.encrypted_part_key,
         )
-
-        transited = TransitedEncoding.from_values(
-            contents=bytes(),
-            **{"tr-type": 1},
-        )
-
-        enc_ticket_part = EncTicketPart.from_values(
+        ticket_request = TicketRequest(
             key=key,
             crealm=self.ctx.realm.name,
             cname=self.ctx.cname,
-            transited=transited,
-            authtime=now(),
             starttime=now(),  # TODO: handle postdated
-            endtime=str(self.ctx.message["req-body"]["till"]), # TODO: bound, time in the past, after from
-        )
-        # enc_ticket_part["renew-till"] = now() # TODO
-        enc_ticket_part["flags"]["initial"] = True
-        enc_ticket_part["flags"]["pre-authent"] = True
-
-        # TODO: handle empty addresses policy
-       #if "addresses" in self.ctx.message["req-body"]:
-       #    enc_ticket_part.set_value(
-       #        "caddr",
-       #        self.ctx.message["req-body"]["addresses"],
-       #    )
-       #if "authorization-data" in self.ctx.message["req-body"]:
-       #    enc_ticket_part.set_value(
-       #        "authorization-data",
-       #        self.ctx.message["req-body"]["authorization-data"],
-       #    )
-
-        ticket_enc_part = EncryptedData.from_values(
-            etype=self.ctx.encrypted_part_enctype.ENC_TYPE.value,
-            kvno=self.ctx.realm.kvno,
-            cipher=self.ctx.encrypted_part_enctype.encrypt_message(
-                key=self.ctx.realm.keys[self.ctx.encrypted_part_enctype.ENC_TYPE],
-                message=enc_ticket_part.to_bytes(),
-                usage=KeyUsageNumbers.KDC_REP_TICKET.value,
+            endtime=str(
+                self.ctx.message["req-body"]["till"]
+            ),  # TODO: bound, time in the past, after from
+            flags=TicketRequest.Flags(
+                initial=True,
+                pre_authent=True,
             ),
         )
+        # TODO: handle empty addresses policy
 
-        ticket = Ticket.from_values(
-            realm=self.ctx.realm.name,
-            sname=self.ctx.sname,
-            **{
-                "enc-part": ticket_enc_part,
-                "tkt-vno": 5,  # make constant
-            },
-        )
+        # TODO: feed ticket_request to flow
+
+        ticket = ticket_request.to_ticket(self.ctx)
 
         enc_as_rep_part = EncAsRepPart.from_values(
             nonce=int(self.ctx.message["req-body"]["nonce"]),
@@ -307,13 +353,21 @@ class AsMessageHandler(MessageHandler):
             sname=self.ctx.sname,
         )
         # enc_as_rep_part["last-req"] = []
-        for k in ("authtime", "starttime", "endtime", "key", "flags"): # TODO: "renew-till", "caddr"
-            enc_as_rep_part.set_value(k, enc_ticket_part[k])
+        for k in (
+            "authtime",
+            "starttime",
+            "endtime",
+            "key",
+            "flags",
+        ):  # TODO: "renew-till", "caddr"
+            value = getattr(ticket_request, k)
+            if k == "flags":
+                value = value.to_ticket_flags()
+            enc_as_rep_part.set_value(k, value)
 
-        #raise ValueError(enc_as_rep_part["flags"])
-        #self.ctx.message["req-body"]["kdc-options"]["forwardable"] = True
-        #raise ValueError(self.ctx.message["req-body"]["kdc-options"]["forwardable"])
-
+        # raise ValueError(enc_as_rep_part["flags"])
+        # self.ctx.message["req-body"]["kdc-options"]["forwardable"] = True
+        # raise ValueError(self.ctx.message["req-body"]["kdc-options"]["forwardable"])
 
         enc_part = EncryptedData()
         enc_part["etype"] = self.ctx.encrypted_part_enctype.ENC_TYPE.value
@@ -325,7 +379,7 @@ class AsMessageHandler(MessageHandler):
         )
 
         rep = AsRep.from_values(
-            pvno=5,  # TODO: make constant
+            pvno=KERBEROS_VERSION,
             crealm=self.ctx.realm.name,
             cname=self.ctx.cname,
             ticket=ticket,
@@ -335,7 +389,7 @@ class AsMessageHandler(MessageHandler):
             },
         )
         if self.ctx.pa_data:
-           rep.set_value("padata", self.ctx.pa_data)
+            rep.set_value("padata", self.ctx.pa_data)
 
         return rep
 

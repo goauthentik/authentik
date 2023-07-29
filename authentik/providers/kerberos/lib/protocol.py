@@ -1,17 +1,19 @@
-from enum import UNIQUE, Enum, verify
-from typing import Self, Any
 from datetime import datetime
+from enum import UNIQUE, Enum, verify
+from typing import Any, Self
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1.error import PyAsn1Error
 from pyasn1.type import base, char, constraint, namedtype, namedval, tag, univ, useful
+from structlog.stdlib import get_logger
 
 from authentik.providers.kerberos.lib.exceptions import KerberosError
 
-from structlog.stdlib import get_logger
-
 LOGGER = get_logger()
+
+
+KERBEROS_VERSION = 5
 
 
 @verify(UNIQUE)
@@ -151,6 +153,7 @@ def _kvno_component(name: str, tag_value: int) -> namedtype.NamedType:
         name, tag_value, univ.Integer(), subtypeSpec=constraint.ValueRangeConstraint(5, 5)
     )
 
+
 class Asn1SetValueMixin:
     @classmethod
     def from_values(cls, **kwargs) -> Self:
@@ -169,6 +172,7 @@ class Asn1SetValueMixin:
         else:
             self[name] = value
         return self[name]
+
 
 class Asn1LeafMixin:
     @classmethod
@@ -320,6 +324,7 @@ class MethodData(Asn1LeafMixin, univ.SequenceOf):
 
 class KerberosFlags(univ.BitString):
     """Kerberos flags ASN.1 representation"""
+
     bitLength = 32
 
     def __init__(self, value=univ.noValue, *args, **kwargs):
@@ -337,7 +342,7 @@ class KerberosFlags(univ.BitString):
         if isinstance(key, str):
             key = dict(self.namedValues)[key]
         if key > len(self._value) or key < 0:
-            raise IndexError('bit index out of range')
+            raise IndexError("bit index out of range")
         if value:
             newval = univ.SizedInteger(self._value | (1 << (self.bitLength - key - 1)))
         else:
