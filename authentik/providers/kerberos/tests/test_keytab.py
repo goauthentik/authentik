@@ -3,8 +3,8 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
-from authentik.lib.kerberos.keytab import Keytab
-from authentik.lib.kerberos.protocol import PrincipalName
+from authentik.providers.kerberos.lib.keytab import Keytab
+from authentik.providers.kerberos.lib.protocol import PrincipalName
 from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
 
 

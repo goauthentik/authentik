@@ -14,9 +14,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.core.exceptions import SuspiciousOperation
 from structlog.stdlib import get_logger
 
-from authentik.lib.kerberos import crypto, iana
-from authentik.lib.kerberos.exceptions import KerberosError
-from authentik.lib.kerberos.protocol import (
+from authentik.providers.kerberos.lib import crypto, iana
+from authentik.providers.kerberos.lib.exceptions import KerberosError
+from authentik.providers.kerberos.lib.protocol import (
     AsRep,
     AsReq,
     KdcProxyMessage,

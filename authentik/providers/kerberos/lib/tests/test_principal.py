@@ -1,7 +1,7 @@
 """Kerberos Principal tests"""
 from django.test import TestCase
 
-from authentik.lib.kerberos.protocol import PrincipalName, PrincipalNameType
+from authentik.providers.kerberos.lib.protocol import PrincipalName, PrincipalNameType
 
 
 class TestPrincipal(TestCase):

@@ -1,7 +1,7 @@
 """Kerberos cryptography primitives tests"""
 from django.test import TestCase
 
-from authentik.lib.kerberos.crypto import (
+from authentik.providers.kerberos.lib.crypto import (
     Aes128CtsHmacSha196,
     Aes128CtsHmacSha256128,
     Aes256CtsHmacSha196,

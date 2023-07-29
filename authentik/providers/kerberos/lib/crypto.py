@@ -7,7 +7,7 @@ from cryptography.hazmat.primitives import hashes, hmac
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 
-from authentik.lib.kerberos import iana
+from authentik.providers.kerberos.lib import iana
 
 
 def _zeropad(data: bytes, padsize: int) -> bytes:

@@ -3,7 +3,7 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from authentik.lib.kerberos import crypto, iana, keytab, protocol
+from authentik.providers.kerberos.lib import crypto, iana, keytab, protocol
 
 
 class TestKeytab(TestCase):

@@ -10,7 +10,7 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import Provider
 from authentik.lib.generators import generate_key
-from authentik.lib.kerberos.crypto import SUPPORTED_ENCTYPES
+from authentik.providers.kerberos.lib.crypto import SUPPORTED_ENCTYPES
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 

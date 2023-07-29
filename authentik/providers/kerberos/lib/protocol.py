@@ -7,7 +7,7 @@ from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1.error import PyAsn1Error
 from pyasn1.type import base, char, constraint, namedtype, namedval, tag, univ, useful
 
-from authentik.lib.kerberos.exceptions import KerberosError
+from authentik.providers.kerberos.lib.exceptions import KerberosError
 
 from structlog.stdlib import get_logger
 

@@ -196,7 +196,7 @@ class KerberosError(Exception):
 
     # We cannot type annotate classes in protocol.py because of circular imports
     def to_krberror(self, realm: str, sname: Any, **context) -> Any:
-        from authentik.lib.kerberos import protocol
+        from authentik.providers.kerberos.lib import protocol
 
         self.context.update(context)
         obj = protocol.KrbError()

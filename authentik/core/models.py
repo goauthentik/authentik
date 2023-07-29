@@ -32,7 +32,7 @@ from authentik.lib.models import (
     SerializerModel,
 )
 from authentik.lib.utils.http import get_client_ip
-from authentik.lib.kerberos.crypto import SUPPORTED_ENCTYPES
+from authentik.providers.kerberos.lib.crypto import SUPPORTED_ENCTYPES
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
 

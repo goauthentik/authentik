@@ -3,8 +3,8 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Self, Tuple
 
-from authentik.lib.kerberos import iana
-from authentik.lib.kerberos.protocol import PrincipalName, PrincipalNameType
+from authentik.providers.kerberos.lib import iana
+from authentik.providers.kerberos.lib.protocol import PrincipalName, PrincipalNameType
 
 
 def _to_bytes_with_length(data: str | bytes, size: int = 2) -> bytes:
