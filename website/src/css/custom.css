@@ -85,7 +85,7 @@
 }
 
 @media (min-width: 1416px) {
-    .docPage_node_modules-\@docusaurus-theme-classic-lib-theme-DocPage-Layout-styles-module {
+    #__docusaurus_skipToContent_fallback > div {
         align-self: center;
         max-width: 1600px;
         width: 1600px;
