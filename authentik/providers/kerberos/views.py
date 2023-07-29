@@ -20,6 +20,7 @@ from authentik.providers.kerberos.lib.protocol import (
     ApplicationTag,
     AsRep,
     AsReq,
+    ApReq,
     AuthorizationData,
     EncAsRepPart,
     EncryptedData,
@@ -104,6 +105,13 @@ class TicketRequest:
             enc_ticket_part_values[f.name.replace("_", "-")] = value
         enc_ticket_part = EncTicketPart.from_values(**enc_ticket_part_values)
 
+        if ctx.provider:
+            key = ctx.provider.kerberoskeys.keys[ctx.encrypted_part_enctype]
+            kvno = ctx.provider.kerberoskeys.kvno
+        else:
+            key = ctx.realm.kerberoskeys.keys[ctx.encrypted_part_enctype]
+            kvno = ctx.realm.kerberoskeys.kvno
+
         return Ticket.from_values(
             realm=ctx.realm.name,
             sname=ctx.sname,
@@ -111,9 +119,9 @@ class TicketRequest:
                 "tkt-vno": KERBEROS_VERSION,
                 "enc-part": EncryptedData.from_values(
                     etype=ctx.encrypted_part_enctype.ENC_TYPE.value,
-                    kvno=ctx.realm.kerberoskeys.kvno,
+                    kvno=kvno,
                     cipher=ctx.encrypted_part_enctype.encrypt_message(
-                        key=ctx.realm.kerberoskeys.keys[ctx.encrypted_part_enctype],
+                        key=key,
                         message=enc_ticket_part.to_bytes(),
                         usage=KeyUsageNumbers.KDC_REP_TICKET.value,
                     ),
@@ -137,6 +145,9 @@ class Context:
     encrypted_part_kvno: int | None = None
     encrypted_part_enctype: crypto.EncryptionType | None = None
     client_authority: iana.PreAuthenticationType | None = None
+    apreq: ApReq | None = None
+    tgt: Ticket | None = None
+    tgt_enc_part: EncTicketPart | None = None
 
     @property
     def preauth_satisfied(self) -> bool:
@@ -145,7 +156,7 @@ class Context:
     def __post_init__(self):
         self.realm = KerberosRealm(name=self.message["req-body"]["realm"])
         self.sname = self.message["req-body"]["sname"]
-        self.cname = self.message["req-body"]["cname"]
+        self.cname = self.message["req-body"].getComponentByName("cname", None)
 
 
 class PaHandler:
@@ -191,13 +202,99 @@ class PaEtypeInfo2(PaHandler):
         padata["padata-value"] = entries.to_bytes()
         self.ctx.pa_data.append(padata)
 
+class PaTgsReq(PaHandler):
+    PRE_AUTHENTICATION_TYPE = iana.PreAuthenticationType.PA_TGS_REQ
+
+    def _get_padata_tgsreq(self):
+        for padata in self.ctx.message.getComponentByName("padata", []):
+            if padata["padata-type"] != self.PRE_AUTHENTICATION_TYPE.value:
+                continue
+            return padata
+        return None
+
+    def _decrypt_tgt_encpart(self) -> EncTicketPart:
+        try:
+            enctype = crypto.get_enctype_from_value(self.ctx.tgt["enc-part"]["etype"])
+        except IndexError:
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_ETYPE_NOSUPP) from exc
+
+        if self.ctx.realm.kerberoskeys.kvno != self.ctx.tgt["enc-part"]["kvno"]:
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_S_OLD_MAST_KVNO)
+
+        try:
+            return EncTicketPart.from_bytes(
+                enctype.decrypt_message(
+                    key=self.ctx.realm.kerberoskeys.keys[enctype],
+                    ciphertext=bytes(self.ctx.tgt["enc-part"]["cipher"]),
+                    usage=KeyUsageNumbers.KDC_REP_TICKET.value,
+                )
+            )
+        except ValueError:
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED) from exc
+
+    def _check_tgt(self):
+        if self.ctx.tgt["tkt-vno"] != KERBEROS_VERSION:
+            raise ValueError # TODO
+
+        tgs_name = PrincipalName.from_components(
+            name_type=PrincipalNameType.NT_SRV_INST,
+            name=["krbtgt", self.ctx.realm.name],
+        )
+        if self.ctx.tgt["sname"] != tgs_name:
+            raise ValueError # TODO
+
+        if self.ctx.tgt["realm"] != self.ctx.realm.name:
+            raise ValueError # TODO
+
+        self.ctx.tgt_enc_part = self._decrypt_tgt_encpart()
+
+        if self.ctx.tgt_enc_part["crealm"] != self.ctx.realm.name:
+            raise ValueError
+
+        self.ctx.cname = self.ctx.tgt_enc_part["cname"]
+        self.ctx.user = User.objects.filter(
+            username=self.ctx.cname.to_string(),
+        ).first()
+        if not self.ctx.user:
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_C_PRINCIPAL_UNKNOWN)
+
+        # TODO: check validity
+
+        # TODO: Check authenticator
+
+        if not self.ctx.tgt_enc_part["flags"]["initial"]:
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED)
+
+        if self.ctx.realm.requires_preauth and not self.ctx.tgt_enc_part["flags"]["pre-authent"]:
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_PREAUTH_FAILED)
+
+        self.ctx.encrypted_part_key = bytes(self.ctx.tgt_enc_part["key"]["keyvalue"])
+        self.ctx.encrypted_part_enctype = crypto.get_enctype_from_value(
+            self.ctx.tgt_enc_part["key"]["keytype"],
+        )
+
+    def _extract_apreq(self) -> ApReq:
+        try:
+            return ApReq.from_bytes(self.padata["padata-value"])
+        except:
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_PADATA_TYPE_NOSUPP)
+
+    def pre_validate(self):
+        self.padata = self._get_padata_tgsreq()
+        if not self.padata:
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_PADATA_TYPE_NOSUPP)
+        self.ctx.apreq = self._extract_apreq()
+        self.ctx.tgt = self.ctx.apreq["ticket"]
+        self._decrypt_tgt_encpart()
+        self._check_tgt()
+
 
 class PaEncTimestampHandler(PaHandler):
     PRE_AUTHENTICATION_TYPE = iana.PreAuthenticationType.PA_ENC_TIMESTAMP
 
     def _get_padata_timestamp(self):
         for padata in self.ctx.message.getComponentByName("padata", []):
-            if padata["padata-type"] != iana.PreAuthenticationType.PA_ENC_TIMESTAMP.value:
+            if padata["padata-type"] != self.PRE_AUTHENTICATION_TYPE.value:
                 continue
             return padata
         return None
@@ -260,12 +357,18 @@ class MessageHandler:
         self.ctx = ctx
         self.pa_handlers = [handler(ctx) for handler in self.PA_HANDLERS]
 
+        self.ctx.realm = KerberosRealm.objects.filter(
+            name=self.ctx.message["req-body"]["realm"]
+        ).first()
+        if not self.ctx.realm:
+            raise KerberosError("realm not found")
+
     def pre_validate(self) -> KrbError:
         for handler in self.pa_handlers:
             handler.pre_validate()
 
     def query_pre_validate(self):
-        raise NotImplementedError
+        pass
 
     def process_pre_auth(self):
         for handler in self.pa_handlers:
@@ -361,13 +464,10 @@ class AsMessageHandler(MessageHandler):
                 value = value.to_ticket_flags()
             enc_as_rep_part.set_value(k, value)
 
-        # raise ValueError(enc_as_rep_part["flags"])
-        # self.ctx.message["req-body"]["kdc-options"]["forwardable"] = True
-        # raise ValueError(self.ctx.message["req-body"]["kdc-options"]["forwardable"])
-
         enc_part = EncryptedData()
         enc_part["etype"] = self.ctx.encrypted_part_enctype.ENC_TYPE.value
-        enc_part["kvno"] = self.ctx.encrypted_part_kvno
+        if self.ctx.encrypted_part_kvno:
+            enc_part["kvno"] = self.ctx.encrypted_part_kvno
         enc_part["cipher"] = self.ctx.encrypted_part_enctype.encrypt_message(
             key=self.ctx.encrypted_part_key,
             message=enc_as_rep_part.to_bytes(),
@@ -390,11 +490,7 @@ class AsMessageHandler(MessageHandler):
         return rep
 
     def query_pre_validate(self):
-        self.ctx.realm = KerberosRealm.objects.filter(
-            name=self.ctx.message["req-body"]["realm"]
-        ).first()
-        if not self.ctx.realm:
-            raise KerberosError("realm not found")
+        super().query_pre_validate()
 
         self.ctx.user = User.objects.filter(
             username=self.ctx.message["req-body"]["cname"].to_string(),
@@ -417,6 +513,86 @@ class AsMessageHandler(MessageHandler):
         # TODO: check flags and policy
         pass
 
+class TgsMessageHandler(MessageHandler):
+    PA_HANDLERS = [
+        PaTgsReq,
+    ]
+
+    def query_pre_validate(self):
+        super().query_pre_validate()
+
+        self.ctx.provider = KerberosProvider.objects.filter(
+            service_principal_name=self.ctx.message["req-body"]["sname"].to_string()
+        ).first()
+        if not self.ctx.provider:
+            raise KerberosError(code=KerberosError.Code.KDC_ERR_S_PRINCIPAL_UNKNOWN)
+
+    def execute(self) -> KdcRep | KrbError:
+        # TODO: check that we're using the proper enctype, as we don't have to use the client's
+        key = EncryptionKey.from_values(
+            keytype=self.ctx.encrypted_part_enctype.ENC_TYPE.value,
+            keyvalue=secrets.token_bytes(self.ctx.encrypted_part_enctype.KEY_SEED_BITS // 8),
+        )
+        ticket_request = TicketRequest(
+            key=key,
+            crealm=self.ctx.realm.name,
+            cname=self.ctx.cname,
+            starttime=now(),  # TODO: handle postdated
+            endtime=str(
+                self.ctx.message["req-body"]["till"]
+            ),  # TODO: bound, time in the past, after from
+            flags=TicketRequest.Flags(
+                pre_authent=self.ctx.tgt_enc_part["flags"]["pre-authent"],
+            ),
+        )
+        # TODO: handle empty addresses policy
+
+        # TODO: feed ticket_request to flow
+
+        ticket = ticket_request.to_ticket(self.ctx)
+
+        enc_as_rep_part = EncAsRepPart.from_values(
+            nonce=int(self.ctx.message["req-body"]["nonce"]),
+            srealm=self.ctx.realm.name,
+            sname=self.ctx.sname,
+        )
+        # enc_as_rep_part["last-req"] = []
+        for k in (
+            "authtime",
+            "starttime",
+            "endtime",
+            "key",
+            "flags",
+        ):  # TODO: "renew-till", "caddr"
+            value = getattr(ticket_request, k)
+            if k == "flags":
+                value = value.to_ticket_flags()
+            enc_as_rep_part.set_value(k, value)
+
+        enc_part = EncryptedData()
+        enc_part["etype"] = self.ctx.encrypted_part_enctype.ENC_TYPE.value
+        if self.ctx.encrypted_part_kvno:
+            enc_part["kvno"] = self.ctx.encrypted_part_kvno
+        enc_part["cipher"] = self.ctx.encrypted_part_enctype.encrypt_message(
+            key=self.ctx.encrypted_part_key,
+            message=enc_as_rep_part.to_bytes(),
+            usage=KeyUsageNumbers.TGS_REP_ENCPART_SESSION_KEY.value,
+        )
+
+        rep = TgsRep.from_values(
+            pvno=KERBEROS_VERSION,
+            crealm=self.ctx.realm.name,
+            cname=self.ctx.cname,
+            ticket=ticket,
+            **{
+                "msg-type": ApplicationTag.TGS_REP.value,
+                "enc-part": enc_part,
+            },
+        )
+        if self.ctx.pa_data.isValue:
+            rep.set_value("padata", self.ctx.pa_data)
+
+        return rep
 
 @method_decorator(csrf_exempt, name="dispatch")
 class KdcProxyView(View):
@@ -441,8 +617,7 @@ class KdcProxyView(View):
         if isinstance(message, AsReq):
             rep = AsMessageHandler(ctx).handle()
         if isinstance(message, TgsReq):
-            # return TgsMessageHandler(ctx).handle()
-            raise NotImplementedError
+            rep = TgsMessageHandler(ctx).handle()
 
         content = rep.to_bytes()
         response = KdcProxyMessage()

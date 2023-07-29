@@ -543,7 +543,7 @@ class KdcReqBody(univ.Sequence):
 
     componentType = namedtype.NamedTypes(
         _sequence_component("kdc-options", 0, KdcOptions()),
-        _sequence_component("cname", 1, PrincipalName()),
+        _sequence_optional_component("cname", 1, PrincipalName()),
         _sequence_component("realm", 2, Realm()),
         _sequence_optional_component("sname", 3, PrincipalName()),
         _sequence_optional_component("from", 4, KerberosTime()),
@@ -693,7 +693,7 @@ class EncTgsRepPart(EncKdcRepPart):
     tagSet = _application_tag(ApplicationTag.ENC_TGS_REP_PART)
 
 
-class KrbError(Asn1LeafMixin, univ.Sequence):
+class KrbError(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
     """Kerberos error ASN.1 representation"""
 
     tagSet = _application_tag(ApplicationTag.KRB_ERROR)

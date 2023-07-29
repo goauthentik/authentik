@@ -204,19 +204,19 @@ class KerberosError(Exception):
         from authentik.providers.kerberos.lib import protocol
 
         self.context.update(context)
-        obj = protocol.KrbError()
-        obj["pvno"] = protocol.KERBEROS_VERSION
-        obj["msg-type"] = protocol.ApplicationTag.KRB_ERROR.value
-        obj["stime"] = str(obj["stime"].fromDateTime(now()))
-        obj["susec"] = now().microsecond
-        obj["error-code"] = self.code.value
-        obj["realm"] = realm
-        obj["sname"].setComponents(*sname.components)
-        obj["e-text"] = self.message
+        obj = protocol.KrbError.from_values(
+            pvno = protocol.KERBEROS_VERSION,  # TODO: make constant
+            stime=now(),
+            susec=now().microsecond,
+            realm=realm,
+            sname=sname,
+            **{
+                "msg-type": protocol.ApplicationTag.KRB_ERROR.value,
+                "error-code": self.code.value,
+                "e-text": self.message,
+            },
+        )
         for k in ("ctime", "cusec", "crealm", "cname", "e-data"):
-            if k in self.context:
-                if isinstance(obj[k], univ.Sequence):
-                    obj[k].setComponents(*self.context[k].components)
-                else:
-                    obj[k] = self.context[k]
+            if k in self.context and self.context[k]:
+                obj.set_value(k, self.context[k])
         return obj
