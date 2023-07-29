@@ -1,4 +1,4 @@
--   `user`: The current user. This may be `None` if there is no contextual user. See ([User](../user-group/user/indexmd#object-attributes))
+-   `user`: The current user. This may be `None` if there is no contextual user. See ([User](../user-group/user/index.md#object-attributes))
 
 Example:
 

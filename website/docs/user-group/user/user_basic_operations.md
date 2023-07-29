@@ -8,7 +8,7 @@ title: User basic operations
 
 In this section, we will describe the procedure to add a user manually.
 
-If you are looking for a way to automate those steps, you can do that either by [invitations](./invitation.md), [user write stage](../../flow/stages/user_write.md) or by [looking at the API](../../../developer-docs/api/browser.mdx).
+If you are looking for a way to automate those steps, you can do that either by [invitations](./invitation.md), [user write stage](../../flow/stages/user_write.md) or by [looking at the API](../../../developer-docs/api/browser).
 
 -   In the Admin interface of your Authentik instance, select Directory > Users on the left menu.
 
