@@ -1,7 +1,6 @@
 """KerberosProvider API Views"""
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
-from django.utils.timezone import now
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ListField, ReadOnlyField, SerializerMethodField
@@ -120,25 +119,11 @@ class KerberosProviderViewSet(UsedByMixin, ModelViewSet):
     def keytab(self, request: Request, pk: str) -> HttpResponse:
         """Retrieve the provider keytab"""
         provider: KerberosProvider = self.get_object()
-        kt = keytab.Keytab(  # pylint: disable=invalid-name
-            entries=[
-                keytab.KeytabEntry(
-                    principal=keytab.Principal(
-                        name=PrincipalName.from_spn(provider.service_principal_name),
-                        realm=provider.realm.name,
-                    ),
-                    timestamp=now(),
-                    key=keytab.EncryptionKey(
-                        key_type=key_type,
-                        key=key,
-                    ),
-                    kvno=provider.kvno,
-                )
-                for key_type, key in provider.keys.items()
-            ]
+        keytab = provider.kerberoskeys.keytab(
+            PrincipalName.from_spn(provider.service_principal_name), provider.realm
         )
         return HttpResponse(
-            kt.to_bytes(),
+            keytab.to_bytes(),
             content_type="application/octet-stream",
             headers={
                 "Content-Disposition": "attachment; filename=krb5.keytab",

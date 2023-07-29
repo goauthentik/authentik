@@ -1,16 +1,21 @@
 """Kerberos Provider"""
+from base64 import b64decode, b64encode
+from datetime import datetime
 from typing import Optional, Type
 
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.functional import cached_property
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
 
-from authentik.core.models import Provider
-from authentik.lib.generators import generate_key
-from authentik.providers.kerberos.lib.crypto import SUPPORTED_ENCTYPES
+from authentik.core.models import KerberosKeyModel, Provider
+from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.kerberos import keytab
+from authentik.lib.kerberos.crypto import SUPPORTED_ENCTYPES, EncryptionType, get_enctype_from_value
+from authentik.lib.kerberos.protocol import PrincipalName
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 
@@ -89,37 +94,21 @@ class KerberosServiceMixin(models.Model):
         default=generate_key, help_text=_("The secret value from which Kerberos keys are derived.")
     )
 
-    kvno = models.PositiveIntegerField(default=1)
-
     class Meta:
         abstract = True
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._secret = self.secret
+        self._allowed_enctypes = self.allowed_enctypes
 
     def save(self, *args, **kwargs):
-        if self.secret != self._secret:
-            self.kvno = (self.kvno + 1) % 2**32
-            if self.kvno % 2**8 == 0:
-                # Avoid having kvno8 == 0
-                self.kvno += 1
-        return super().save(*args, **kwargs)
-
-    @cached_property
-    def keys(self) -> dict[int, bytes]:
-        """Get service keys from its secret."""
-        return {
-            enctype.ENC_TYPE: enctype.string_to_key(
-                password=self.secret.encode("utf-8"),
-                salt=str(self.pk).encode("utf-8"),
-            )
-            for enctype in SUPPORTED_ENCTYPES
-            if enctype.ENC_TYPE.value in self.allowed_enctypes
-        }
+        if not self.pk or self.secret != self._secret:
+            self.set_kerberos_secret(self.secret)
+        super().save(*args, **kwargs)
 
 
-class KerberosRealm(KerberosServiceMixin, SerializerModel):
+class KerberosRealm(KerberosServiceMixin, KerberosKeyModel, SerializerModel):
     """Kerberos Realm"""
 
     name = models.TextField(
@@ -162,7 +151,7 @@ class KerberosRealm(KerberosServiceMixin, SerializerModel):
         return KerberosRealmSerializer
 
 
-class KerberosProvider(KerberosServiceMixin, Provider):
+class KerberosProvider(KerberosServiceMixin, KerberosKeyModel, Provider):
     """Allow applications to authenticate against authentik's users using
     Kerberos."""
 
@@ -207,3 +196,91 @@ class KerberosProvider(KerberosServiceMixin, Provider):
         unique_together = (("realm", "service_principal_name"),)
         verbose_name = _("Kerberos Provider")
         verbose_name_plural = _("Kerberos Providers")
+
+
+class KerberosKeys(models.Model):
+    """Kerberos keys associated with a principal (User, KerberosProvider and Realm)"""
+
+    # Cannot be changed without also changing the secret
+    salt = models.TextField(default=generate_id, help_text=_("Salt used to derive Kerberos keys."))
+
+    keys_raw = models.JSONField(default=dict, help_text=_("Kerberos keys stored raw."))
+
+    kvno = models.PositiveBigIntegerField(default=0, help_text=_("Version number."))
+
+    def set_secret(self, secret: str, salt: str | None = None):
+        if salt is not None:
+            self.salt = salt
+
+        self.keys_raw = {
+            str(enctype.ENC_TYPE.value): b64encode(
+                enctype.string_to_key(
+                    password=secret.encode(),
+                    salt=self.salt.encode(),
+                )
+            ).decode()
+            for enctype in SUPPORTED_ENCTYPES
+        }
+
+        self.kvno = (self.kvno + 1) % 2**32
+        if self.kvno % 2**8 == 0:
+            # Avoid having kvno8 == 0
+            self.kvno += 1
+
+    @cached_property
+    def keys(self) -> dict[EncryptionType, bytes]:
+        if self.kvno == 0:
+            return {}
+        allowed_enctypes = (
+            self.target.allowed_enctypes
+            if hasattr(self.target, "allowed_enctypes")
+            else _get_default_enctypes()
+        )
+        return {
+            get_enctype_from_value(enctype): b64decode(self.keys_raw[str(enctype)].encode())
+            for enctype in allowed_enctypes
+            if str(enctype) in self.keys_raw
+        }
+
+    def keytab(
+        self,
+        principal_name: PrincipalName,
+        realm: "KerberosRealm",
+        timestamp: datetime | None = None,
+    ) -> keytab.Keytab:
+        ts = timestamp or now()
+        return keytab.Keytab(
+            entries=[
+                keytab.KeytabEntry(
+                    principal=keytab.Principal(
+                        name=principal_name,
+                        realm=realm.name,
+                    ),
+                    timestamp=ts,
+                    key=keytab.EncryptionKey(
+                        key_type=enctype.ENC_TYPE,
+                        key=key,
+                    ),
+                    kvno=self.kvno,
+                )
+                for enctype, key in self.keys.items()
+            ]
+        )
+
+
+class KerberosUserKeys(KerberosKeys):
+    target = models.OneToOneField(
+        "authentik_core.User", on_delete=models.CASCADE, related_name="kerberoskeys"
+    )
+
+
+class KerberosProviderKeys(KerberosKeys):
+    target = models.OneToOneField(
+        KerberosProvider, on_delete=models.CASCADE, related_name="kerberoskeys"
+    )
+
+
+class KerberosRealmKeys(KerberosKeys):
+    target = models.OneToOneField(
+        KerberosRealm, on_delete=models.CASCADE, related_name="kerberoskeys"
+    )

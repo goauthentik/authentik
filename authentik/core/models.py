@@ -1,9 +1,9 @@
 """authentik core models"""
+from base64 import b64encode
 from datetime import timedelta
 from hashlib import sha256
 from typing import Any, Optional
 from uuid import uuid4
-from base64 import b64encode
 
 from deepmerge import always_merger
 from django.contrib.auth.hashers import check_password
@@ -32,7 +32,6 @@ from authentik.lib.models import (
     SerializerModel,
 )
 from authentik.lib.utils.http import get_client_ip
-from authentik.providers.kerberos.lib.crypto import SUPPORTED_ENCTYPES
 from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
 
@@ -63,6 +62,27 @@ def default_token_key():
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
     return generate_id(int(CONFIG.get("default_token_length")))
+
+
+class KerberosKeyModel(models.Model):
+    def set_kerberos_secret(self, secret):
+        from authentik.providers.kerberos.models import KerberosKeys
+
+        keys = None
+        for subcls in KerberosKeys.__subclasses__():
+            if isinstance(self, subcls.target.field.related_model):
+                keys = subcls(target=self)
+        if keys is not None:
+            return
+        keys.set_secret(secret)
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.kerberoskeys:
+            self.kerberoskeys.save()
+
+    class Meta:
+        abstract = True
 
 
 class UserTypes(models.TextChoices):
@@ -157,7 +177,7 @@ class UserManager(DjangoUserManager):
         return self._create_user(username, email, password, **extra_fields)
 
 
-class User(SerializerModel, GuardianUserMixin, AbstractUser):
+class User(SerializerModel, KerberosKeyModel, GuardianUserMixin, AbstractUser):
     """Custom User model to allow easier adding of user-based settings"""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
@@ -168,9 +188,6 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")
     password_change_date = models.DateTimeField(auto_now_add=True)
-
-    krb5_keys = models.JSONField(blank=True, default=dict)
-    krb5_kvno = models.PositiveIntegerField(default=1)
 
     attributes = models.JSONField(default=dict, blank=True)
 
@@ -214,19 +231,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
 
             password_changed.send(sender=self, user=self, password=raw_password)
         self.password_change_date = now()
-        self.krb5_keys = {
-            enctype.ENC_TYPE.value: b64encode(
-                enctype.string_to_key(
-                    password=raw_password.encode("utf-8"),
-                    salt=str(self.uuid).encode("utf-8"),
-                )
-            ).decode()
-            for enctype in SUPPORTED_ENCTYPES
-        }
-        self.krb5_kvno = (self.krb5_kvno + 1) % 2**32
-        if self.krb5_kvno % 2**8 == 0:
-            # Avoid having kvno8 == 0
-            self.krb5_kvno += 1
+        self.set_kerberos_secret(raw_password)
         return super().set_password(raw_password)
 
     def check_password(self, raw_password: str) -> bool:

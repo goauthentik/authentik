@@ -5,8 +5,8 @@ from authentik.core.tests.utils import create_test_flow
 from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
 
 
-class TestKerberosProvider(TestCase):
-    """Test KerberosProvider keytab route"""
+class TestKerberosKeys(TestCase):
+    """Test KerberosKeys"""
 
     def setUp(self) -> None:
         self.realm: KerberosRealm = KerberosRealm.objects.create(
@@ -21,21 +21,23 @@ class TestKerberosProvider(TestCase):
 
     def test_keytab_kvno_increment(self) -> None:
         """Test provider keytab kvno increment"""
-        kvno = self.provider.kvno
+        kvno = self.provider.kerberoskeys.kvno
         self.provider.secret = "test1"
         self.provider.save()
-        self.assertLess(kvno, self.provider.kvno)
+        self.assertLess(kvno, self.provider.kerberoskeys.kvno)
 
     def test_keytab_kvno_increment_maxvalue(self) -> None:
         """Test provider keytab kvno wrap after max value"""
-        self.provider.kvno = 2**32 - 1
+        self.provider.kerberoskeys.kvno = 2**32 - 1
+        self.provider.kerberoskeys.save()
         self.provider.secret = "test2"
         self.provider.save()
-        self.assertEqual(self.provider.kvno, 1)
+        self.assertEqual(self.provider.kerberoskeys.kvno, 1)
 
     def test_keytab_kvno_increment_mod256(self) -> None:
         """Test provider keytab skip of mod 2**8"""
-        self.provider.kvno = 2**8 - 1
+        self.provider.kerberoskeys.kvno = 2**8 - 1
+        self.provider.kerberoskeys.save()
         self.provider.secret = "test3"
         self.provider.save()
-        self.assertEqual(self.provider.kvno, 2**8 + 1)
+        self.assertEqual(self.provider.kerberoskeys.kvno, 2**8 + 1)

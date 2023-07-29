@@ -536,29 +536,15 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         realm = KerberosRealm.objects.filter(pk=request.query_params.get("realm_pk")).first()
         if not realm:
             return Response(status=404)
-        kt = keytab.Keytab(  # pylint: disable=invalid-name
-            entries=[
-                keytab.KeytabEntry(
-                    principal=keytab.Principal(
-                        name=protocol.PrincipalName.from_components(
-                            name_type=protocol.PrincipalNameType.NT_PRINCIPAL,
-                            name=[user.username],
-                        ),
-                        realm=realm.name,
-                    ),
-                    timestamp=now(),
-                    key=keytab.EncryptionKey(
-                        # Needs int conversion because it's stored as a JSON key, and thus a string
-                        key_type=iana.EncryptionType(int(key_type)),
-                        key=b64decode(key.encode()),
-                    ),
-                    kvno=user.krb5_kvno,
-                )
-                for key_type, key in user.krb5_keys.items()
-            ]
+        keytab = user.kerberoskeys.keytab(
+            protocol.PrincipalName.from_components(
+                name_type=protocol.PrincipalNameType.NT_PRINCIPAL,
+                name=[user.username],
+            ),
+            realm,
         )
         return HttpResponse(
-            kt.to_bytes(),
+            keytab.to_bytes(),
             content_type="application/octet-stream",
             headers={
                 "Content-Disposition": "attachment; filename=krb5.keytab",

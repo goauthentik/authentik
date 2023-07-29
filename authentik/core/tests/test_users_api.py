@@ -17,7 +17,8 @@ from authentik.core.models import (
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow, create_test_tenant
 from authentik.flows.models import FlowDesignation
 from authentik.lib.generators import generate_id, generate_key
-from authentik.providers.kerberos.lib import keytab, protocol
+from authentik.lib.kerberos import keytab, protocol
+from authentik.lib.kerberos.crypto import get_enctype_from_value
 from authentik.providers.kerberos.models import KerberosRealm
 from authentik.stages.email.models import EmailStage
 from authentik.tenants.models import Tenant
@@ -29,6 +30,8 @@ class TestUsersAPI(APITestCase):
     def setUp(self) -> None:
         self.admin = create_test_admin_user()
         self.user = User.objects.create(username="test-user")
+        self.user.set_password(generate_id(20))
+        self.user.save()
         self.realm = KerberosRealm.objects.create(name="EXAMPLE.ORG")
 
     def test_metrics(self):
@@ -61,8 +64,8 @@ class TestUsersAPI(APITestCase):
         )
         kt = keytab.Keytab.from_bytes(response.content)  # pylint: disable=invalid-name
         self.assertEqual(
-            set(str(e.key.key_type) for e in kt.entries),
-            set(self.user.krb5_keys.keys()),
+            set(e.key.key_type for e in kt.entries),
+            set(enctype.ENC_TYPE for enctype in self.user.kerberoskeys.keys.keys()),
         )
         for entry in kt.entries:
             self.assertEqual(
@@ -70,8 +73,8 @@ class TestUsersAPI(APITestCase):
                 [self.user.username],
             )
             self.assertEqual(
-                entry.principal.name["name-type"],
-                protocol.PrincipalNameType.NT_PRINCIPAL,
+                int(entry.principal.name["name-type"]),
+                protocol.PrincipalNameType.NT_PRINCIPAL.value,
             )
             self.assertEqual(
                 entry.principal.realm,
@@ -79,21 +82,21 @@ class TestUsersAPI(APITestCase):
             )
             self.assertEqual(
                 entry.kvno,
-                self.user.krb5_kvno,
+                self.user.kerberoskeys.kvno,
             )
             self.assertEqual(
                 entry.kvno8,
-                self.user.krb5_kvno % 2**8,
+                self.user.kerberoskeys.kvno % 2**8,
             )
             self.assertEqual(
                 entry.key.key,
-                self.user.krb5_keys[str(entry.key.key_type)],
+                self.user.kerberoskeys.keys[get_enctype_from_value(entry.key.key_type.value)],
             )
 
     def test_keytab_kvno_mod256(self) -> None:
         """Test provider keytab retrieval"""
-        self.user.krb5_kvno = 2**8 + 1
-        self.user.save()
+        self.user.kerberoskeys.kvno = 2**8 + 1
+        self.user.kerberoskeys.save()
         self.client.force_login(self.admin)
         response = self.client.get(
             reverse("authentik_api:user-keytab", kwargs={"pk": self.user.pk})
@@ -104,11 +107,11 @@ class TestUsersAPI(APITestCase):
         for entry in kt.entries:
             self.assertEqual(
                 entry.kvno,
-                self.user.krb5_kvno,
+                self.user.kerberoskeys.kvno,
             )
             self.assertEqual(
                 entry.kvno8,
-                self.user.krb5_kvno % 2**8,
+                self.user.kerberoskeys.kvno % 2**8,
             )
 
     def test_recovery_no_flow(self):
