@@ -1,5 +1,6 @@
 from enum import UNIQUE, Enum, verify
-from typing import Self
+from typing import Self, Any
+from datetime import datetime
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
@@ -150,6 +151,24 @@ def _kvno_component(name: str, tag_value: int) -> namedtype.NamedType:
         name, tag_value, univ.Integer(), subtypeSpec=constraint.ValueRangeConstraint(5, 5)
     )
 
+class Asn1SetValueMixin:
+    @classmethod
+    def from_values(cls, **kwargs) -> Self:
+        obj = cls()
+        for name, value in kwargs.items():
+            obj.set_value(name, value)
+        return obj
+
+    def set_value(self, name: str, value: Any) -> Any:
+        if hasattr(self[name], "setComponents") and hasattr(value, "components"):
+            self[name].setComponents(*value.components)
+        elif hasattr(value, "tagSet"):
+            self[name] = value.clone(tagSet=self[name].tagSet)
+        elif isinstance(value, datetime):
+            self[name] = str(self[name].fromDateTime(value))
+        else:
+            self[name] = value
+        return self[name]
 
 class Asn1LeafMixin:
     @classmethod
@@ -191,7 +210,7 @@ class Realm(KerberosString):
     """Kerberos Realm ASN.1 representation"""
 
 
-class PrincipalName(univ.Sequence):
+class PrincipalName(Asn1SetValueMixin, univ.Sequence):
     """Kerberos principal name ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
@@ -301,9 +320,34 @@ class MethodData(Asn1LeafMixin, univ.SequenceOf):
 
 class KerberosFlags(univ.BitString):
     """Kerberos flags ASN.1 representation"""
+    bitLength = 32
+
+    def __init__(self, value=univ.noValue, *args, **kwargs):
+        if value is univ.noValue:
+            value = univ.SizedInteger(0).setBitLength(self.bitLength)
+        super().__init__(value, *args, **kwargs)
+        self._value.setBitLength(self.bitLength)
+
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            key = dict(self.namedValues)[key]
+        return bool(super().__getitem__(key))
+
+    def __setitem__(self, key, value):
+        if isinstance(key, str):
+            key = dict(self.namedValues)[key]
+        if key > len(self._value) or key < 0:
+            raise IndexError('bit index out of range')
+        if value:
+            newval = univ.SizedInteger(self._value | (1 << (self.bitLength - key - 1)))
+        else:
+            newval = univ.SizedInteger(self._value & ~(1 << (self.bitLength - key - 1)))
+        newval.setBitLength(self.bitLength)
+        self._value = newval
+        return self
 
 
-class EncryptedData(Asn1LeafMixin, univ.Sequence):
+class EncryptedData(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
     componentType = namedtype.NamedTypes(
         _sequence_component("etype", 0, Int32()),
         _sequence_optional_component("kvno", 1, UInt32()),
@@ -311,7 +355,7 @@ class EncryptedData(Asn1LeafMixin, univ.Sequence):
     )
 
 
-class EncryptionKey(univ.Sequence):
+class EncryptionKey(Asn1SetValueMixin, univ.Sequence):
     componentType = namedtype.NamedTypes(
         _sequence_component("keytype", 0, Int32()),
         _sequence_component("keyvalue", 1, univ.OctetString()),
@@ -325,7 +369,7 @@ class Checksum(univ.Sequence):
     )
 
 
-class Ticket(Asn1LeafMixin, univ.Sequence):
+class Ticket(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
     tagSet = _application_tag(ApplicationTag.TICKET)
     componentType = namedtype.NamedTypes(
         _kvno_component("tkt-vno", 0),
@@ -354,14 +398,14 @@ class TicketFlags(KerberosFlags):
     )
 
 
-class TransitedEncoding(univ.Sequence):
+class TransitedEncoding(Asn1SetValueMixin, univ.Sequence):
     componentType = namedtype.NamedTypes(
         _sequence_component("tr-type", 0, Int32()),
         _sequence_component("contents", 1, univ.OctetString()),
     )
 
 
-class EncTicketPart(Asn1LeafMixin, univ.Sequence):
+class EncTicketPart(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
     tagSet = _application_tag(ApplicationTag.ENC_TICKET_PART)
     componentType = namedtype.NamedTypes(
         _sequence_component("flags", 0, TicketFlags()),
@@ -462,7 +506,7 @@ class TgsReq(KdcReq):
     tagSet = _application_tag(ApplicationTag.TGS_REQ)
 
 
-class KdcRep(Asn1LeafMixin, univ.Sequence):
+class KdcRep(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
     componentType = namedtype.NamedTypes(
         _kvno_component("pvno", 0),
         _sequence_component(
@@ -492,7 +536,7 @@ class TgsRep(KdcRep):
     tagSet = _application_tag(ApplicationTag.TGS_REP)
 
 
-class EncKdcRepPart(Asn1LeafMixin, univ.Sequence):
+class EncKdcRepPart(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
     componentType = namedtype.NamedTypes(
         _sequence_component("key", 0, EncryptionKey()),
         _sequence_component("last-req", 1, LastReq()),
