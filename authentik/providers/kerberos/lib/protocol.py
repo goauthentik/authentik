@@ -288,6 +288,7 @@ class LastReq(univ.SequenceOf):
             _sequence_component("lr-data", 1, KerberosTime()),
         )
     )
+    )
 
 
 class PaDataEncTsEnc(Asn1LeafMixin, univ.Sequence):
@@ -427,6 +428,21 @@ class EncTicketPart(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
     )
 
 
+class Authenticator(Asn1LeafMixin, univ.Sequence):
+    tagSet = _application_tag(ApplicationTag.AUTHENTICATOR)
+    componentType = namedtype.NamedTypes(
+        _kvno_component("authenticator-vno", 0),
+        _sequence_component("crealm", 1, Realm()),
+        _sequence_component("cname", 2, PrincipalName()),
+        _sequence_optional_component("cksum", 3, Checksum()),
+        _sequence_component("cusec", 4, Microseconds()),
+        _sequence_component("ctime", 5, KerberosTime()),
+        _sequence_optional_component("subkey", 6, EncryptionKey()),
+        _sequence_optional_component("seq-number", 7, UInt32()),
+        _sequence_optional_component("authorization-data", 8, AuthorizationData()),
+    )
+
+
 class KdcOptions(KerberosFlags):
     namedValues = namedval.NamedValues(
         ("reserved", 0),
@@ -509,6 +525,32 @@ class AsReq(KdcReq):
 
 class TgsReq(KdcReq):
     tagSet = _application_tag(ApplicationTag.TGS_REQ)
+
+
+class ApOptions(KerberosFlags):
+    namedValues = namedval.NamedValues(
+        ("reserved", 0),
+        ("use-session-key", 1),
+        ("mutual-required", 2),
+    )
+
+
+class ApReq(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+    tagSet = _application_tag(ApplicationTag.AP_REQ)
+    componentType = namedtype.NamedTypes(
+        _kvno_component("pvno", 0),
+        _sequence_component(
+            "msg-type",
+            1,
+            univ.Integer(),
+            subtypeSpec=constraint.ConstraintsUnion(
+                *(constraint.SingleValueConstraint(v) for v in [ApplicationTag.AP_REQ.value])
+            ),
+        ),
+        _sequence_component("ap-options", 2, ApOptions()),
+        _sequence_component("ticket", 3, Ticket()),
+        _sequence_component("authenticator", 4, EncryptedData()),
+    )
 
 
 class KdcRep(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
