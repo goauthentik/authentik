@@ -5,6 +5,13 @@ import { Form } from "@goauthentik/elements/forms/Form";
 import { TemplateResult, html } from "lit";
 import { property } from "lit/decorators.js";
 
+/**
+ * Model form
+ *
+ * A base form that automatically tracks the server-side object (instance)
+ * that we're interested in.  Handles loading and tracking of the instance.
+ */
+
 export abstract class ModelForm<T, PKT extends string | number> extends Form<T> {
     abstract loadInstance(pk: PKT): Promise<T>;
 
