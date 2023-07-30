@@ -12,6 +12,8 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+/* NOT USED */
+
 @customElement("ak-wizard-form")
 export abstract class WizardForm extends Form<KeyUnknown> {
     viewportCheck = false;
