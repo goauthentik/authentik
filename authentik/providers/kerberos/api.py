@@ -2,22 +2,42 @@
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
+from drf_spectacular.utils import (
+    OpenApiParameter,
+    OpenApiResponse,
+    extend_schema,
+    extend_schema_field,
+    extend_schema_serializer,
+)
 from rest_framework import serializers
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ListField, ReadOnlyField, SerializerMethodField
+from rest_framework.fields import (
+    CharField,
+    IntegerField,
+    ListField,
+    ReadOnlyField,
+    SerializerMethodField,
+)
 from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
+from rest_framework.serializers import ModelSerializer, Serializer
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from authentik.core.api.providers import ProviderSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.providers.kerberos.lib.crypto import SUPPORTED_ENCTYPES
 from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
+
+
+class KerberosProviderRealmNamesSerializer(PassiveSerializer):
+    """Realm names returned with a KerberosProvider query"""
+
+    pk = IntegerField()
+    name = CharField()
+    realm_name = CharField()
 
 
 class KerberosProviderSerializer(ProviderSerializer):
@@ -57,8 +77,16 @@ class KerberosProviderSerializer(ProviderSerializer):
             reverse("authentik_api:kerberosprovider-keytab", kwargs={"pk": instance.pk})
         )
 
-    def get_realm_names(self, instance: KerberosProvider) -> dict[int, str]:
-        return {realm.pk: realm.realm_name for realm in instance.realms.all()}
+    @extend_schema_field(KerberosProviderRealmNamesSerializer(many=True))
+    def get_realm_names(self, instance: KerberosProvider) -> list[dict[str, str | int]]:
+        return [
+            {
+                "pk": realm.pk,
+                "name": realm.name,
+                "realm_name": realm.realm_name,
+            }
+            for realm in instance.realms.all()
+        ]
 
 
 class EnctypeSerializer(Serializer):
@@ -110,6 +138,9 @@ class KerberosProviderViewSet(UsedByMixin, ModelViewSet):
 class KerberosRealmSerializer(KerberosProviderSerializer):
     """KerberosRealm Serializer"""
 
+    outpost_set = ListField(child=CharField(), read_only=True, source="outpost_set.all")
+
+    url_kdc_proxy = SerializerMethodField()
     url_download_dns_records = SerializerMethodField()
     url_download_krb5_conf = SerializerMethodField()
 
@@ -117,6 +148,8 @@ class KerberosRealmSerializer(KerberosProviderSerializer):
         model = KerberosRealm
         fields = KerberosProviderSerializer.Meta.fields + [
             "realm_name",
+            "outpost_set",
+            "url_kdc_proxy",
             "url_download_dns_records",
             "url_download_krb5_conf",
         ]
@@ -124,6 +157,16 @@ class KerberosRealmSerializer(KerberosProviderSerializer):
             "authentication_flow": {"required": True, "allow_null": False},
             "spn": {"required": False, "allow_null": True},
         }
+
+    def get_url_kdc_proxy(self, instance: KerberosProvider) -> str:
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        return request.build_absolute_uri(
+            reverse(
+                "authentik_providers_kerberos:kdc-proxy", kwargs={"realm_name": instance.realm_name}
+            )
+        )
 
     def get_url_download_dns_records(self, instance: KerberosProvider) -> str:
         """Get URL where to download the realm DNS records"""
@@ -229,3 +272,26 @@ class KerberosRealmViewSet(KerberosProviderViewSet):
             response["Content-Disposition"] = f'attachment; filename="krb5.conf"'
             return response
         return Response({"krb5_conf": krb5_conf})
+
+
+class KerberosOutpostConfigSerializer(KerberosRealmSerializer):
+    """KerberosOutpostConfig serializer"""
+
+    class Meta:
+        model = KerberosRealm
+        fields = [
+            "pk",
+            "name",
+            "realm_name",
+            "url_kdc_proxy",
+        ]
+
+
+class KerberosOutpostConfigViewSet(ReadOnlyModelViewSet):
+    """KerberosOutpostConfig Viewset"""
+
+    queryset = KerberosRealm.objects.all()
+    serializer_class = KerberosOutpostConfigSerializer
+    ordering = ["name"]
+    search_fields = ["name"]
+    filterset_fields = ["name"]

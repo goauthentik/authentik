@@ -102,7 +102,6 @@ export class KerberosProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        console.log(this.provider.realmNames);
         return html`<div slot="header" class="pf-c-banner pf-m-info">
                 ${msg("Kerberos provider is in preview.")}
             </div>
@@ -190,8 +189,8 @@ export class KerberosProviderViewPage extends AKElement {
                     </div>
                     <div class="pf-c-card__body">
                         <ul class="pf-c-list">
-                            ${Object.keys(this.provider.realmNames).map((pk) => {
-                                return html`<li><a href=#/providers/kerberos/realms/${pk}>${this.provider?.realmNames[pk]}</a></li>`;
+                            ${this.provider.realmNames.map((realm) => {
+                                return html`<li><a href=#/providers/kerberos/realms/${realm.pk}>${realm.name} (${realm.realmName})</a></li>`;
                             })}
                         </ul>
                     </div>

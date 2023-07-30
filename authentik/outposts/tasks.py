@@ -38,6 +38,8 @@ from authentik.outposts.models import (
     OutpostType,
     ServiceConnectionInvalid,
 )
+from authentik.providers.kerberos.controllers.docker import KerberosDockerController
+from authentik.providers.kerberos.controllers.kubernetes import KerberosKubernetesController
 from authentik.providers.ldap.controllers.docker import LDAPDockerController
 from authentik.providers.ldap.controllers.kubernetes import LDAPKubernetesController
 from authentik.providers.proxy.controllers.docker import ProxyDockerController
@@ -71,6 +73,11 @@ def controller_for_outpost(outpost: Outpost) -> Optional[type[BaseController]]:
             return RadiusDockerController
         if isinstance(service_connection, KubernetesServiceConnection):
             return RadiusKubernetesController
+    if outpost.type == OutpostType.KERBEROS:
+        if isinstance(service_connection, DockerServiceConnection):
+            return KerberosDockerController
+        if isinstance(service_connection, KubernetesServiceConnection):
+            return KerberosKubernetesController
     return None
 
 

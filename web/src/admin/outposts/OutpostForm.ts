@@ -13,11 +13,13 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
+    KerberosRealm,
     Outpost,
     OutpostDefaultConfig,
     OutpostTypeEnum,
     OutpostsApi,
     OutpostsServiceConnectionsAllListRequest,
+    PaginatedKerberosRealmList,
     PaginatedLDAPProviderList,
     PaginatedProxyProviderList,
     PaginatedRadiusProviderList,
@@ -37,7 +39,8 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     providers?:
         | PaginatedProxyProviderList
         | PaginatedLDAPProviderList
-        | PaginatedRadiusProviderList;
+        | PaginatedRadiusProviderList
+        | PaginatedKerberosRealmList;
 
     defaultConfig?: OutpostDefaultConfig;
 
@@ -71,6 +74,13 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     ordering: "name",
                     applicationIsnull: false,
                 });
+                break;
+            case OutpostTypeEnum.Kerberos:
+                this.providers = await new ProvidersApi(DEFAULT_CONFIG).providersKerberosRealmsList(
+                    {
+                        ordering: "name",
+                    },
+                );
                 break;
             case OutpostTypeEnum.UnknownDefaultOpenApi:
                 this.providers = undefined;
@@ -135,6 +145,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     >
                         ${msg("Radius")}
                     </option>
+                    <option
+                        value=${OutpostTypeEnum.Kerberos}
+                        ?selected=${this.instance?.type === OutpostTypeEnum.Kerberos}
+                    >
+                        ${msg("Kerberos")}
+                    </option>
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Integration")} name="serviceConnection">
@@ -183,7 +199,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
-                label=${msg("Applications")}
+                label=${this.type !== OutpostTypeEnum.Kerberos
+                    ? msg("Applications")
+                    : msg("Realms")}
                 ?required=${!this.embedded}
                 name="providers"
             >
@@ -197,7 +215,9 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                             appName = provider.assignedBackchannelApplicationName;
                         }
                         return html`<option value=${ifDefined(provider.pk)} ?selected=${selected}>
-                            ${appName} (${provider.name})
+                            ${this.type !== OutpostTypeEnum.Kerberos
+                                ? html`${appName} (${provider.name})`
+                                : html`${provider.name} (${(provider as KerberosRealm).realmName})`}
                         </option>`;
                     })}
                 </select>

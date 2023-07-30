@@ -26,6 +26,7 @@ from authentik.outposts.models import (
     OutpostType,
     default_outpost_config,
 )
+from authentik.providers.kerberos.models import KerberosProvider
 from authentik.providers.ldap.models import LDAPProvider
 from authentik.providers.proxy.models import ProxyProvider
 from authentik.providers.radius.models import RadiusProvider
@@ -51,6 +52,7 @@ class OutpostSerializer(ModelSerializer):
         """Check that all providers match the type of the outpost"""
         type_map = {
             OutpostType.LDAP: LDAPProvider,
+            OutpostType.KERBEROS: KerberosProvider,
             OutpostType.PROXY: ProxyProvider,
             OutpostType.RADIUS: RadiusProvider,
             None: Provider,
@@ -65,6 +67,14 @@ class OutpostSerializer(ModelSerializer):
             return providers
         if len(providers) < 1:
             raise ValidationError("This list may not be empty.")
+        if self.initial_data.get("type") == OutpostType.KERBEROS:
+            if len(providers) > 1:
+                raise ValidationError("Only one realm is supported for Kerberos outposts.")
+            # We've checked that we only have one provider at this point
+            if not providers[0].is_tgs:
+                raise ValidationError(
+                    "Cannot use a Kerberos provider for a Kerberos outpost. Use a Kerberos realm."
+                )
         return providers
 
     def validate_config(self, config) -> dict:

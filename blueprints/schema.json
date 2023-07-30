@@ -3148,7 +3148,8 @@
                     "enum": [
                         "proxy",
                         "ldap",
-                        "radius"
+                        "radius",
+                        "kerberos"
                     ],
                     "title": "Type"
                 },

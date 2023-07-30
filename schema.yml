@@ -9401,6 +9401,96 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /outposts/kerberos/:
+    get:
+      operationId: outposts_kerberos_list
+      description: KerberosOutpostConfig Viewset
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedKerberosOutpostConfigList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /outposts/kerberos/{id}/:
+    get:
+      operationId: outposts_kerberos_retrieve
+      description: KerberosOutpostConfig Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this kerberos realm.
+        required: true
+      tags:
+      - outposts
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosOutpostConfig'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /outposts/ldap/:
     get:
       operationId: outposts_ldap_list
@@ -31774,6 +31864,27 @@ components:
       description: |-
         * `global` - Same identifier is used for all providers
         * `per_provider` - Each provider has a different issuer, based on the application slug.
+    KerberosOutpostConfig:
+      type: object
+      description: KerberosOutpostConfig serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        realm_name:
+          type: string
+          description: The Kerberos realm name.
+        url_kdc_proxy:
+          type: string
+          readOnly: true
+      required:
+      - name
+      - pk
+      - realm_name
+      - url_kdc_proxy
     KerberosProvider:
       type: object
       description: KerberosProvider Serializer
@@ -31893,9 +32004,9 @@ components:
           description: Get URL where to download provider's keytab
           readOnly: true
         realm_names:
-          type: object
-          additionalProperties:
-            type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosProviderRealmNames'
           readOnly: true
       required:
       - assigned_application_name
@@ -31912,6 +32023,20 @@ components:
       - url_download_keytab
       - verbose_name
       - verbose_name_plural
+    KerberosProviderRealmNames:
+      type: object
+      description: Realm names returned with a KerberosProvider query
+      properties:
+        pk:
+          type: integer
+        name:
+          type: string
+        realm_name:
+          type: string
+      required:
+      - name
+      - pk
+      - realm_name
     KerberosProviderRequest:
       type: object
       description: KerberosProvider Serializer
@@ -32115,13 +32240,21 @@ components:
           description: Get URL where to download provider's keytab
           readOnly: true
         realm_names:
-          type: object
-          additionalProperties:
-            type: string
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosProviderRealmNames'
           readOnly: true
         realm_name:
           type: string
           description: The Kerberos realm name.
+        outpost_set:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        url_kdc_proxy:
+          type: string
+          readOnly: true
         url_download_dns_records:
           type: string
           description: Get URL where to download the realm DNS records
@@ -32140,12 +32273,14 @@ components:
       - is_tgs
       - meta_model_name
       - name
+      - outpost_set
       - pk
       - realm_name
       - realm_names
       - url_download_dns_records
       - url_download_keytab
       - url_download_krb5_conf
+      - url_kdc_proxy
       - verbose_name
       - verbose_name_plural
     KerberosRealmDnsRecords:
@@ -34247,11 +34382,13 @@ components:
       - proxy
       - ldap
       - radius
+      - kerberos
       type: string
       description: |-
         * `proxy` - Proxy
         * `ldap` - Ldap
         * `radius` - Radius
+        * `kerberos` - Kerberos
     PaginatedApplicationList:
       type: object
       properties:
@@ -35229,6 +35366,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InvitationStage'
+      required:
+      - pagination
+      - results
+    PaginatedKerberosOutpostConfigList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosOutpostConfig'
       required:
       - pagination
       - results

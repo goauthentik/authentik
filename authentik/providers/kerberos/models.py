@@ -4,7 +4,6 @@ from datetime import datetime
 from typing import Optional, Type
 
 from django.contrib.postgres.fields import ArrayField
-from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.functional import cached_property
@@ -14,7 +13,6 @@ from rest_framework.serializers import Serializer
 
 from authentik.core.models import KerberosKeyMixin, Provider
 from authentik.lib.generators import generate_id, generate_key
-from authentik.lib.models import SerializerModel
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.kerberos.lib import keytab
 from authentik.providers.kerberos.lib.crypto import (
