@@ -186,9 +186,9 @@ REST_FRAMEWORK = {
 
 CACHES = {
     "default": {
-        "BACKEND": CONFIG.y("cache.backend", "django_redis.cache.RedisCache"),
-        "LOCATION": CONFIG.y("cache.url", CONFIG.y("redis.url")),
-        "TIMEOUT": int(CONFIG.y("cache.timeout") or 300),
+        "BACKEND": CONFIG.get("cache.backend", "django_redis.cache.RedisCache"),
+        "LOCATION": CONFIG.get("cache.url", CONFIG.get("redis.url")),
+        "TIMEOUT": int(CONFIG.get("cache.timeout") or 300),
         "OPTIONS": {
             "CLIENT_CLASS": "authentik.root.redis_middleware_django.CustomClient",
         },
@@ -249,10 +249,10 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": CONFIG.y("channel.backend")
+        "BACKEND": CONFIG.get("channel.backend")
         or "authentik.root.redis_middleware_channels.CustomChannelLayer",
         "CONFIG": {
-            "url": CONFIG.y("channel.url") or CONFIG.y("redis.url"),
+            "url": CONFIG.get("channel.url") or CONFIG.get("redis.url"),
             "prefix": "authentik_channels",
         },
     },
@@ -342,8 +342,8 @@ CELERY = {
     },
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
-    "broker_url": CONFIG.y("broker.url") or CONFIG.y("redis.url"),
-    "result_backend": CONFIG.y("result_backend.url") or CONFIG.y("redis.url"),
+    "broker_url": CONFIG.get("broker.url") or CONFIG.get("redis.url"),
+    "result_backend": CONFIG.get("result_backend.url") or CONFIG.get("redis.url"),
 }
 
 # Sentry integration

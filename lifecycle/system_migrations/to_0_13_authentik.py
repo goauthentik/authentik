@@ -106,5 +106,5 @@ class Migration(BaseMigration):
         self.cur.execute(SQL_STATEMENT)
         self.con.commit()
         # We also need to clean the cache to make sure no pickeled objects still exist
-        _, redis = parse_url(CONFIG.y("redis.url"))
+        _, redis = parse_url(CONFIG.get("redis.url"))
         redis.flushall()

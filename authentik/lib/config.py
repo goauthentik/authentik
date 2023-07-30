@@ -125,8 +125,8 @@ class ConfigLoader:
         redis_db = 0
         redis_credentials = {}
 
-        if self.y("redis.url", UNSET) is not UNSET:
-            redis_url_old = urlparse(self.y("redis.url"))
+        if self.get("redis.url", UNSET) is not UNSET:
+            redis_url_old = urlparse(self.get("redis.url"))
             redis_url_query = dict(parse_qsl(redis_url_old.query))
             redis_addrs = get_addrs_from_url(redis_url_old)
             redis_addr = redis_addrs[0].rsplit(":", 1)
@@ -138,12 +138,12 @@ class ConfigLoader:
                 redis_url_query["addrs"] = ",".join(redis_addrs[1:])
             if redis_url_old.path[1:].isdigit():
                 redis_db = redis_url_old.path[1:]
-            if self.y("redis.tls", UNSET) is UNSET:
+            if self.get("redis.tls", UNSET) is UNSET:
                 redis_url = redis_url_old.scheme
-        if self.y_bool("redis.tls", False):
+        if self.get_bool("redis.tls", False):
             redis_url = "rediss"
-        if self.y("redis.tls_reqs", UNSET) is not UNSET:
-            redis_tls_reqs = self.y("redis.tls_reqs")
+        if self.get("redis.tls_reqs", UNSET) is not UNSET:
+            redis_tls_reqs = self.get("redis.tls_reqs")
             match redis_tls_reqs.lower():
                 case "none":
                     redis_url_query.pop("skipverify", None)
@@ -159,18 +159,18 @@ class ConfigLoader:
                         f"Unsupported Redis TLS requirements option '{redis_tls_reqs}'! "
                         "Using default option 'required'.",
                     )
-        if self.y("redis.db", UNSET) is not UNSET:
-            redis_db = int(self.y("redis.db"))
-        if self.y("redis.host", UNSET) is not UNSET:
-            redis_host = self.y("redis.host")
-        if self.y("redis.port", UNSET) is not UNSET:
-            redis_port = int(self.y("redis.port"))
-        if self.y("redis.username", UNSET) is not UNSET:
-            redis_url_query["username"] = self.y("redis.username")
+        if self.get("redis.db", UNSET) is not UNSET:
+            redis_db = int(self.get("redis.db"))
+        if self.get("redis.host", UNSET) is not UNSET:
+            redis_host = self.get("redis.host")
+        if self.get("redis.port", UNSET) is not UNSET:
+            redis_port = int(self.get("redis.port"))
+        if self.get("redis.username", UNSET) is not UNSET:
+            redis_url_query["username"] = self.get("redis.username")
         elif "username" in redis_credentials:
             redis_url_query["username"] = redis_credentials["username"]
-        if self.y("redis.password", UNSET) is not UNSET:
-            redis_url_query["password"] = self.y("redis.password")
+        if self.get("redis.password", UNSET) is not UNSET:
+            redis_url_query["password"] = self.get("redis.password")
         elif "password" in redis_credentials:
             redis_url_query["password"] = redis_credentials["password"]
         redis_url += f"://{quote_plus(redis_host)}:{redis_port}/{redis_db}"
@@ -178,7 +178,7 @@ class ConfigLoader:
         redis_url_query = urlencode(dict(sorted(redis_url_query.items())))
         if redis_url_query != "":
             redis_url += f"?{redis_url_query}"
-        self.y_set("redis.url", redis_url)
+        self.set("redis.url", redis_url)
 
     def check_deprecations(self):
         """Warn if any deprecated configuration options are used"""
@@ -196,7 +196,7 @@ class ConfigLoader:
             return None
 
         for deprecation, replacement in DEPRECATIONS.items():
-            if self.y(deprecation, default=UNSET) is not UNSET:
+            if self.get(deprecation, default=UNSET) is not UNSET:
                 self.log(
                     "warning",
                     f"'{deprecation}' has been deprecated in favor of '{replacement}'! "
@@ -204,7 +204,7 @@ class ConfigLoader:
                 )
 
                 deprecated_value = _pop_deprecated_key(self.__config, deprecation.split("."), 0)
-                self.y_set(replacement, deprecated_value)
+                self.set(replacement, deprecated_value)
 
     def log(self, level: str, message: str, **kwargs):
         """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
@@ -340,7 +340,7 @@ class ConfigLoader:
 
     def y_bool(self, path: str, default=False) -> bool:
         """Wrapper for y that converts value into boolean"""
-        return str(self.y(path, default)).lower() == "true"
+        return str(self.get(path, default)).lower() == "true"
 
 
 CONFIG = ConfigLoader()
