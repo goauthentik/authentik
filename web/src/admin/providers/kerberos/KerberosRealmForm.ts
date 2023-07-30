@@ -1,6 +1,6 @@
 import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import { ascii_letters, digits, first, punctuation, randomString } from "@goauthentik/common/utils";
 import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -13,21 +13,28 @@ import { ifDefined } from "lit-html/directives/if-defined.js";
 import { customElement } from "lit/decorators.js";
 
 import {
+    Enctype,
     Flow,
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
-    KerberosApi,
     KerberosRealm,
+    ProvidersApi,
 } from "@goauthentik/api";
 
 @customElement("ak-kerberos-realm-form")
 export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
     loadInstance(pk: number): Promise<KerberosRealm> {
-        return new KerberosApi(DEFAULT_CONFIG).kerberosRealmsRetrieve({
+        return new ProvidersApi(DEFAULT_CONFIG).providersKerberosRealmsRetrieve({
             id: pk,
         });
     }
+
+    async load(): Promise<void> {
+        this.enctypes = await new ProvidersApi(DEFAULT_CONFIG).providersKerberosEnctypesList();
+    }
+
+    enctypes?: Array<Enctype>;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -39,12 +46,12 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
 
     async send(data: KerberosRealm): Promise<KerberosRealm> {
         if (this.instance) {
-            return new KerberosApi(DEFAULT_CONFIG).kerberosRealmsUpdate({
+            return new ProvidersApi(DEFAULT_CONFIG).providersKerberosRealmsUpdate({
                 id: this.instance.pk || 0,
                 kerberosRealmRequest: data,
             });
         } else {
-            return new KerberosApi(DEFAULT_CONFIG).kerberosRealmsCreate({
+            return new ProvidersApi(DEFAULT_CONFIG).providersKerberosRealmsCreate({
                 kerberosRealmRequest: data,
             });
         }
@@ -59,6 +66,22 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                     class="pf-c-form-control"
                     required
                 />
+                <p class="pf-c-form__helper-text">
+                    ${msg("Used for display and for your convenience")}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal
+                label=${msg("Realm name")}
+                ?required=${true}
+                name="realmName"
+            >
+                <input
+                    type="text"
+                    value="${ifDefined(this.instance?.realmName)}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">${msg("Name of the realm")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Authentication flow")}
@@ -102,11 +125,14 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                     type="text"
                     value="${first(
                         this.instance?.secret,
-                        randomString(128, ascii_letters + digits),
+                        randomString(128, ascii_letters + digits + punctuation),
                     )}"
                     class="pf-c-form-control"
                     required
                 />
+                <p class="pf-c-form__helper-text">
+                    ${msg("Secret key used by the KDC to encrypt responses and TGT.")}
+                </p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
@@ -158,6 +184,37 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                             )}
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Allowed encryption types")}
+                        ?required=${false}
+                        name="allowedEnctypes"
+                    >
+                        <select class="pf-c-form-control" multiple>
+                            ${this.enctypes?.map((enctype) => {
+                                let selected = Array.from(
+                                    this.instance?.allowedEnctypes || [],
+                                ).some((e) => {
+                                    return e == enctype.id;
+                                });
+                                // Creating a new instance, auto-select everything
+                                if (!this.instance) {
+                                    selected = true;
+                                }
+                                return html`<option
+                                    value=${ifDefined(enctype.id)}
+                                    ?selected=${selected}
+                                >
+                                    ${enctype.name}
+                                </option>`;
+                            })}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Which encryption types are allowed.")}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Hold control/command to select multiple items.")}
+                        </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="allowPostdateable">
                         <label class="pf-c-switch">
@@ -257,6 +314,26 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg("Should tickets only be issued to preauthenticated clients.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="setOkAsDelegate">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.setOkAsDelegate, false)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label">${msg("Set ok as delegeate")}</span>
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Should the tickets issued for this realm have the ok-as-delegate flag set.",
+                            )}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

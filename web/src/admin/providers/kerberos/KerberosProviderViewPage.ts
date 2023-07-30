@@ -2,6 +2,7 @@ import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/kerberos/KerberosProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import MDKerberosProvider from "@goauthentik/docs/providers/kerberos/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Markdown";
@@ -79,9 +80,6 @@ export class KerberosProviderViewPage extends AKElement {
             <section slot="page-overview" data-tab-title="${msg("Overview")}">
                 ${this.renderTabOverview()}
             </section>
-            <section slot="page-credentials" data-tab-title="${msg("Credentials")}">
-                ${this.renderTabCredentials()}
-            </section>
             <section
                 slot="page-changelog"
                 data-tab-title="${msg("Changelog")}"
@@ -104,102 +102,100 @@ export class KerberosProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`${this.provider?.assignedApplicationName
+        console.log(this.provider.realmNames);
+        return html`<div slot="header" class="pf-c-banner pf-m-info">
+                ${msg("Kerberos provider is in preview.")}
+            </div>
+            ${this.provider?.assignedApplicationName
                 ? html``
                 : html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
                   </div>`}
             <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.name}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Service Principal Name")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        ${this.provider.fullSpn}
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Realm")}</span>
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <a href="#/kerberos/realms/${this.provider.realm}">
-                                            ${this.provider.realmName}
-                                        </a>
-                                    </div>
-                                </dd>
-                            </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
-                                        >${msg("Assigned to application")}</span
-                                    >
-                                </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
-                                        <ak-provider-related-application
-                                            .provider=${this.provider}
-                                        ></ak-provider-related-application>
-                                    </div>
-                                </dd>
-                            </div>
-                        </dl>
-                    </div>
-                    <div class="pf-c-card__footer">
-                        <ak-forms-modal>
-                            <span slot="submit"> ${msg("Update")} </span>
-                            <span slot="header"> ${msg("Update Kerberos Provider")} </span>
-                            <ak-provider-kerberos-form
-                                slot="form"
-                                .instancePk=${this.provider.pk || 0}
+                <div class="pf-l-grid__item pf-m-7-col pf-l-stack pf-m-gutter">
+                    <div class="pf-c-card pf-m-12-col pf-l-stack__item">
+                        <div class="pf-c-card__body">
+                            <dl class="pf-c-description-list pf-m-3-col-on-lg">
+                                <div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Name")}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            ${this.provider.name}
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Service Principal Name")}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            ${this.provider.spn}
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Assigned to application")}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            <ak-provider-related-application
+                                                .provider=${this.provider}
+                                            ></ak-provider-related-application>
+                                        </div>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                        <div class="pf-c-card__footer">
+                            <ak-forms-modal>
+                                <span slot="submit"> ${msg("Update")} </span>
+                                <span slot="header"> ${msg("Update Kerberos Provider")} </span>
+                                <ak-provider-kerberos-form
+                                    slot="form"
+                                    .instancePk=${this.provider.pk || 0}
+                                >
+                                </ak-provider-kerberos-form>
+                                <button slot="trigger" class="pf-c-button pf-m-primary">
+                                    ${msg("Edit")}
+                                </button>
+                            </ak-forms-modal>
+                            <a
+                                class="pf-c-button pf-m-primary"
+                                target="_blank"
+                                href=${this.provider.urlDownloadKeytab}
                             >
-                            </ak-provider-kerberos-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
-                                ${msg("Edit")}
-                            </button>
-                        </ak-forms-modal>
+                                ${msg("Download Keytab")}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="pf-c-card pf-l-grid__item pf-m-5-col">
+                    <div class="pf-c-card__body">
+                        <ak-markdown .md=${MDKerberosProvider}></ak-markdown>
+                    </div>
+                </div>
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                    <div class="pf-c-card__title">
+                        <p>${msg("Realms")}</p>
+                    </div>
+                    <div class="pf-c-card__body">
+                        <ul class="pf-c-list">
+                            ${Object.keys(this.provider.realmNames).map((pk) => {
+                                return html`<li><a href=#/providers/kerberos/realms/${pk}>${this.provider?.realmNames[pk]}</a></li>`;
+                            })}
+                        </ul>
                     </div>
                 </div>
             </div>`;
-    }
-
-    renderTabCredentials(): TemplateResult {
-        if (!this.provider) {
-            return html``;
-        }
-        return html` <section slot="page-credentials" data-tab-title="${msg("Credentials")}">
-            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">${msg("Keytab")}</div>
-                    <div class="pf-c-card__body">
-                        <a
-                            class="pf-c-button pf-m-primary"
-                            target="_blank"
-                            href=${this.provider.urlDownloadKeytab}
-                        >
-                            ${msg("Download Keytab")}
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>`;
     }
 }

@@ -15222,6 +15222,35 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/kerberos/enctypes/:
+    get:
+      operationId: providers_kerberos_enctypes_list
+      description: KerberosProvider Viewset
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Enctype'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/kerberos/realms/:
     get:
       operationId: providers_kerberos_realms_list
@@ -15458,6 +15487,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/kerberos/realms/{id}/dnsrecords/:
+    get:
+      operationId: providers_kerberos_realms_dnsrecords_retrieve
+      description: Return dns records for a realm
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this kerberos realm.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosRealmDnsRecords'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/kerberos/realms/{id}/keytab/:
     get:
       operationId: providers_kerberos_realms_keytab_retrieve
@@ -15476,6 +15540,45 @@ paths:
       responses:
         '200':
           description: Service keytab
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/kerberos/realms/{id}/krb5conf/:
+    get:
+      operationId: providers_kerberos_realms_krb5conf_retrieve
+      description: Return krb5.conf for a realm
+      parameters:
+      - in: query
+        name: download
+        schema:
+          type: boolean
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this kerberos realm.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosRealmKrb5Conf'
+          description: ''
         '400':
           content:
             application/json:
@@ -15511,6 +15614,35 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/kerberos/realms/enctypes/:
+    get:
+      operationId: providers_kerberos_realms_enctypes_list
+      description: KerberosRealm Viewset
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Enctype'
           description: ''
         '400':
           content:
@@ -29878,6 +30010,16 @@ components:
           description: Activate users upon completion of stage.
       required:
       - name
+    Enctype:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+      - id
+      - name
     ErrorDetail:
       type: object
       description: Serializer for rest_framework's error messages
@@ -31743,12 +31885,17 @@ components:
         secret:
           type: string
           description: The secret value from which Kerberos keys are derived.
+        is_tgs:
+          type: boolean
+          readOnly: true
         url_download_keytab:
           type: string
           description: Get URL where to download provider's keytab
           readOnly: true
-        is_tgs:
-          type: boolean
+        realm_names:
+          type: object
+          additionalProperties:
+            type: string
           readOnly: true
       required:
       - assigned_application_name
@@ -31760,6 +31907,7 @@ components:
       - meta_model_name
       - name
       - pk
+      - realm_names
       - spn
       - url_download_keytab
       - verbose_name
@@ -31907,6 +32055,7 @@ components:
           readOnly: true
         spn:
           type: string
+          nullable: true
           description: The Kerberos principal used to designate this provider, without
             the realm.
           pattern: '@.+$'
@@ -31958,16 +32107,29 @@ components:
         secret:
           type: string
           description: The secret value from which Kerberos keys are derived.
+        is_tgs:
+          type: boolean
+          readOnly: true
         url_download_keytab:
           type: string
           description: Get URL where to download provider's keytab
           readOnly: true
-        is_tgs:
-          type: boolean
+        realm_names:
+          type: object
+          additionalProperties:
+            type: string
           readOnly: true
         realm_name:
           type: string
           description: The Kerberos realm name.
+        url_download_dns_records:
+          type: string
+          description: Get URL where to download the realm DNS records
+          readOnly: true
+        url_download_krb5_conf:
+          type: string
+          description: Get URL where to download the realm krb5.conf
+          readOnly: true
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -31980,10 +32142,30 @@ components:
       - name
       - pk
       - realm_name
-      - spn
+      - realm_names
+      - url_download_dns_records
       - url_download_keytab
+      - url_download_krb5_conf
       - verbose_name
       - verbose_name_plural
+    KerberosRealmDnsRecords:
+      type: object
+      description: Kerberos realm DNS records serializer
+      properties:
+        dns_records:
+          type: string
+          readOnly: true
+      required:
+      - dns_records
+    KerberosRealmKrb5Conf:
+      type: object
+      description: Kerberos realm krb5.conf serializer
+      properties:
+        krb5_conf:
+          type: string
+          readOnly: true
+      required:
+      - krb5_conf
     KerberosRealmRequest:
       type: object
       description: KerberosRealm Serializer
@@ -32008,6 +32190,7 @@ components:
             format: uuid
         spn:
           type: string
+          nullable: true
           minLength: 1
           description: The Kerberos principal used to designate this provider, without
             the realm.
@@ -32072,7 +32255,6 @@ components:
       - authentication_flow
       - name
       - realm_name
-      - spn
     KubernetesServiceConnection:
       type: object
       description: KubernetesServiceConnection Serializer
@@ -38378,6 +38560,7 @@ components:
             format: uuid
         spn:
           type: string
+          nullable: true
           minLength: 1
           description: The Kerberos principal used to designate this provider, without
             the realm.

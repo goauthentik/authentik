@@ -100,6 +100,14 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/flows/FlowViewPage");
         return html`<ak-flow-view .flowSlug=${args.slug}></ak-flow-view>`;
     }),
+    new Route(new RegExp("^/providers/kerberos/realms$"), async () => {
+        await import("@goauthentik/admin/providers/kerberos/KerberosRealmListPage");
+        return html`<ak-kerberos-realm-list></ak-kerberos-realm-list>`;
+    }),
+    new Route(new RegExp(`^/providers/kerberos/realms/(?<id>${ID_REGEX})$`), async (args) => {
+        await import("@goauthentik/admin/providers/kerberos/KerberosRealmViewPage");
+        return html`<ak-kerberos-realm-view .realmID=${args.id}></ak-kerberos-realm-view>`;
+    }),
     new Route(new RegExp("^/events/log$"), async () => {
         await import("@goauthentik/admin/events/EventListPage");
         return html`<ak-event-list></ak-event-list>`;
@@ -123,14 +131,6 @@ export const ROUTES: Route[] = [
     new Route(new RegExp("^/outpost/integrations$"), async () => {
         await import("@goauthentik/admin/outposts/ServiceConnectionListPage");
         return html`<ak-outpost-service-connection-list></ak-outpost-service-connection-list>`;
-    }),
-    new Route(new RegExp("^/kerberos/realms$"), async () => {
-        await import("@goauthentik/admin/providers/kerberos/KerberosRealmListPage");
-        return html`<ak-kerberos-realm-list></ak-kerberos-realm-list>`;
-    }),
-    new Route(new RegExp(`^/kerberos/realms/(?<id>${ID_REGEX})$`), async (args) => {
-        await import("@goauthentik/admin/providers/kerberos/KerberosRealmViewPage");
-        return html`<ak-kerberos-realm-view .realmID=${args.id}></ak-kerberos-realm-view>`;
     }),
     new Route(new RegExp("^/crypto/certificates$"), async () => {
         await import("@goauthentik/admin/crypto/CertificateKeyPairListPage");

@@ -1,5 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
-import { first } from "@goauthentik/common/utils";
+import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -18,10 +18,9 @@ import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import {
-    KerberosApi,
+    Enctype,
     KerberosProvider,
-    KerberosRealm,
-    KerberosRealmsListRequest,
+    PaginatedKerberosRealmList,
     ProvidersApi,
 } from "@goauthentik/api";
 
@@ -46,6 +45,16 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
             id: pk,
         });
     }
+
+    async load(): Promise<void> {
+        this.realms = await new ProvidersApi(DEFAULT_CONFIG).providersKerberosRealmsList({
+            ordering: "name",
+        });
+        this.enctypes = await new ProvidersApi(DEFAULT_CONFIG).providersKerberosEnctypesList();
+    }
+
+    realms?: PaginatedKerberosRealmList;
+    enctypes?: Array<Enctype>;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -81,41 +90,46 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
             <ak-form-element-horizontal
                 label=${msg("Service Principal Name")}
                 ?required=${true}
-                name="servicePrincipalName"
+                name="spn"
             >
                 <input
                     type="text"
-                    value="${ifDefined(this.instance?.servicePrincipalName)}"
+                    value="${ifDefined(this.instance?.spn)}"
                     class="pf-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Realm")} ?required=${true} name="realm">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<KerberosRealm[]> => {
-                        const args: KerberosRealmsListRequest = {
-                            ordering: "slug",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const realms = await new KerberosApi(DEFAULT_CONFIG).kerberosRealmsList(
-                            args,
-                        );
-                        return realms.results;
-                    }}
-                    .renderElement=${(realm: KerberosRealm): string => {
-                        return realm.name;
-                    }}
-                    .value=${(realm: KerberosRealm | undefined): number | undefined => {
-                        return realm?.pk;
-                    }}
-                    .selected=${(realm: KerberosRealm): boolean => {
-                        return realm.pk === this.instance?.realm;
-                    }}
-                >
-                </ak-search-select>
-                <p class="pf-c-form__helper-text">${msg("Realm to attach this provider to.")}</p>
+            <ak-form-element-horizontal label=${msg("Realms")} ?required=${true} name="realms">
+                <select class="pf-c-form-control" multiple>
+                    ${this.realms?.results.map((realm) => {
+                        const selected = Array.from(this.instance?.realms || []).some((r) => {
+                            return r == realm.pk;
+                        });
+                        return html`<option value=${ifDefined(realm.pk)} ?selected=${selected}>
+                            ${realm.name}
+                        </option>`;
+                    })}
+                </select>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Select realms to attach this provider to.")}
+                </p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Hold control/command to select multiple items.")}
+                </p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("Secret")} ?required=${true} name="secret">
+                <input
+                    type="text"
+                    value="${first(
+                        this.instance?.secret,
+                        randomString(128, ascii_letters + digits),
+                    )}"
+                    class="pf-c-form-control"
+                    required
+                />
+                <p class="pf-c-form__helper-text">
+                    ${msg("Secret key used by the KDC to encrypt TGS.")}
+                </p>
             </ak-form-element-horizontal>
 
             <ak-form-group .expanded=${true}>
@@ -155,6 +169,50 @@ export class KerberosProviderFormPage extends ModelForm<KerberosProvider, number
             <ak-form-group .expanded=${false}>
                 <span slot="header"> ${msg("Advanced protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal label=${msg("Maximum skew")} name="maximumSkew">
+                        <input
+                            type="text"
+                            value="${first(this.instance?.maximumSkew, "minutes=5")}"
+                            class="pf-c-form-control"
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Maximum allowed clock drift between the client and the server (Format: hours=1;minutes=2;seconds=3).",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Allowed encryption types")}
+                        ?required=${false}
+                        name="allowedEnctypes"
+                    >
+                        <select class="pf-c-form-control" multiple>
+                            ${this.enctypes?.map((enctype) => {
+                                let selected = Array.from(
+                                    this.instance?.allowedEnctypes || [],
+                                ).some((e) => {
+                                    return e == enctype.id;
+                                });
+                                // Creating a new instance, auto-select everything
+                                if (!this.instance) {
+                                    selected = true;
+                                }
+                                return html`<option
+                                    value=${ifDefined(enctype.id)}
+                                    ?selected=${selected}
+                                >
+                                    ${enctype.name}
+                                </option>`;
+                            })}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Which encryption types are allowed.")}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Hold control/command to select multiple items.")}
+                        </p>
+                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="allowPostdateable">
                         <label class="pf-c-switch">
                             <input

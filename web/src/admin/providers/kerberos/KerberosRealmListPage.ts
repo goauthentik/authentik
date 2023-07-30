@@ -13,7 +13,7 @@ import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { KerberosApi, KerberosRealm } from "@goauthentik/api";
+import { KerberosRealm, ProvidersApi } from "@goauthentik/api";
 
 @customElement("ak-kerberos-realm-list")
 export class KerberosRealmListPage extends TablePage<KerberosRealm> {
@@ -36,7 +36,7 @@ export class KerberosRealmListPage extends TablePage<KerberosRealm> {
     order = "name";
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<KerberosRealm>> {
-        return new KerberosApi(DEFAULT_CONFIG).kerberosRealmsList({
+        return new ProvidersApi(DEFAULT_CONFIG).providersKerberosRealmsList({
             ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
@@ -45,7 +45,11 @@ export class KerberosRealmListPage extends TablePage<KerberosRealm> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn(msg("Name"), "name"), new TableColumn(msg("Actions"))];
+        return [
+            new TableColumn(msg("Name"), "name"),
+            new TableColumn(msg("Realm name"), "realmName"),
+            new TableColumn(msg("Actions")),
+        ];
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -54,12 +58,12 @@ export class KerberosRealmListPage extends TablePage<KerberosRealm> {
             objectLabel=${msg("Realm(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: KerberosRealm) => {
-                return new KerberosApi(DEFAULT_CONFIG).kerberosRealmsUsedByList({
+                return new ProvidersApi(DEFAULT_CONFIG).providersKerberosRealmsUsedByList({
                     id: item.pk,
                 });
             }}
             .delete=${(item: KerberosRealm) => {
-                return new KerberosApi(DEFAULT_CONFIG).kerberosRealmsDestroy({
+                return new ProvidersApi(DEFAULT_CONFIG).providersKerberosRealmsDestroy({
                     id: item.pk,
                 });
             }}
@@ -72,7 +76,8 @@ export class KerberosRealmListPage extends TablePage<KerberosRealm> {
 
     row(item: KerberosRealm): TemplateResult[] {
         return [
-            html`<a href="#/kerberos/realms/${item.pk}"> ${item.name} </a>`,
+            html`<a href="#/providers/kerberos/realms/${item.pk}"> ${item.name} </a>`,
+            html`${item.realmName}`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
                 <span slot="header"> ${msg(str`Update ${item.name}`)} </span>
