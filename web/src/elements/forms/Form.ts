@@ -68,11 +68,9 @@ export interface KeyUnknown {
  *    Consider refactoring serializeForm() so that the conversions are on
  *    the input types, rather than here. (i.e. "Polymorphism is better than
  *    switch.")
- * 
- * 
+ *
+ *
  */
-  
-   
 
 @customElement("ak-form")
 export abstract class Form<T> extends AKElement {

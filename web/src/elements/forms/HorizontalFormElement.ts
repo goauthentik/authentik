@@ -16,7 +16,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
  * Horizontal Form Element Container.
  *
  * This element provides the interface between elements of our forms and the
- * form itself.  
+ * form itself.
  * @custom-element ak-form-element-horizontal
  */
 
@@ -79,7 +79,7 @@ export class HorizontalFormElement extends AKElement {
 
     /* If this property changes, we want to make sure the parent control is "opened" so
      * that users can see the change.[1]
-     */ 
+     */
     @property({ type: Boolean })
     set invalid(v: boolean) {
         this._invalid = v;
