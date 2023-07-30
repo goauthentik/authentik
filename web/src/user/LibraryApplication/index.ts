@@ -1,5 +1,8 @@
+import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { truncateWords } from "@goauthentik/common/utils";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import "@goauthentik/elements/Expand";
+import "@goauthentik/user/LibraryApplication/AppIcon";
 import { UserInterface } from "@goauthentik/user/UserInterface";
 
 import { msg } from "@lit/localize";
@@ -7,7 +10,6 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
@@ -30,47 +32,34 @@ export class LibraryApplication extends AKElement {
             PFBase,
             PFCard,
             PFButton,
-            PFAvatar,
             css`
                 .pf-c-card {
-                    height: 100%;
-                }
-                i.pf-icon {
-                    height: 36px;
-                    display: flex;
-                    flex-direction: column;
-                    justify-content: center;
-                }
-                .pf-c-avatar {
-                    --pf-c-avatar--BorderRadius: 0;
+                    --pf-c-card--BoxShadow: var(--pf-global--BoxShadow--md);
                 }
                 .pf-c-card__header {
-                    min-height: 60px;
                     justify-content: space-between;
+                    flex-direction: column;
                 }
                 .pf-c-card__header a {
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
-                    margin-right: 0.25em;
+                }
+                a:hover {
+                    text-decoration: none;
+                }
+                .expander {
+                    flex-grow: 1;
+                }
+                .pf-c-card__title {
+                    text-align: center;
+                    /* This is not ideal as it hard limits us to 2 lines of text for the title
+                    of the application. In theory that should be fine for most cases, but ideally
+                    we don't do this */
+                    height: 48px;
                 }
             `,
         ];
-    }
-
-    renderIcon(): TemplateResult {
-        if (this.application?.metaIcon) {
-            if (this.application.metaIcon.startsWith("fa://")) {
-                const icon = this.application.metaIcon.replaceAll("fa://", "");
-                return html`<i class="fas ${icon}"></i>`;
-            }
-            return html`<img
-                class="app-icon pf-c-avatar"
-                src="${ifDefined(this.application.metaIcon)}"
-                alt="${msg("Application Icon")}"
-            />`;
-        }
-        return html`<i class="fas fa-share-square"></i>`;
     }
 
     render(): TemplateResult {
@@ -82,41 +71,40 @@ export class LibraryApplication extends AKElement {
             class="pf-c-card pf-m-hoverable pf-m-compact ${this.selected
                 ? "pf-m-selectable pf-m-selected"
                 : ""}"
-            style="background: ${this.background} !important"
+            style=${this.background !== "" ? `background: ${this.background} !important` : ""}
         >
             <div class="pf-c-card__header">
                 <a
                     href="${ifDefined(this.application.launchUrl ?? "")}"
                     target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
                 >
-                    ${this.renderIcon()}
+                    <ak-app-icon size=${PFSize.Large} .app=${this.application}></ak-app-icon>
                 </a>
-                ${rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
-                    ? html`
-                          <a
-                              class="pf-c-button pf-m-control pf-m-small"
-                              href="/if/admin/#/core/applications/${this.application?.slug}"
-                          >
-                              <i class="fas fa-pencil-alt"></i>
-                          </a>
-                      `
-                    : html``}
             </div>
             <div class="pf-c-card__title">
-                <p>
-                    <a
-                        href="${ifDefined(this.application.launchUrl ?? "")}"
-                        target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
-                        >${this.application.name}</a
-                    >
-                </p>
+                <a
+                    href="${ifDefined(this.application.launchUrl ?? "")}"
+                    target="${ifDefined(this.application.openInNewTab ? "_blank" : undefined)}"
+                    >${this.application.name}</a
+                >
+            </div>
+            <div class="expander"></div>
+            <ak-expand textOpen=${msg("Less details")} textClosed=${msg("More details")}>
                 <div class="pf-c-content">
                     <small>${this.application.metaPublisher}</small>
                 </div>
-            </div>
-            <div class="pf-c-card__body">
-                ${truncateWords(this.application.metaDescription || "", 35)}
-            </div>
+                ${truncateWords(this.application.metaDescription || "", 10)}
+                ${rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
+                    ? html`
+                          <a
+                              class="pf-c-button pf-m-control pf-m-small pf-m-block"
+                              href="/if/admin/#/core/applications/${this.application?.slug}"
+                          >
+                              <i class="fas fa-pencil-alt"></i>&nbsp;${msg("Edit")}
+                          </a>
+                      `
+                    : html``}
+            </ak-expand>
         </div>`;
     }
 }

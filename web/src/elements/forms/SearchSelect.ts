@@ -2,6 +2,7 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
 import { PreventFormSubmit } from "@goauthentik/elements/forms/Form";
+import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html, render } from "lit";
@@ -14,7 +15,7 @@ import PFSelect from "@patternfly/patternfly/components/Select/select.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-search-select")
-export class SearchSelect<T> extends AKElement {
+export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     @property()
     query?: string;
 
@@ -89,6 +90,16 @@ export class SearchSelect<T> extends AKElement {
         });
         this.observer.observe(this);
         this.dropdownUID = `dropdown-${randomString(10, ascii_letters + digits)}`;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    shouldUpdate(changedProperties: Map<string, any>) {
+        if (changedProperties.has("selectedObject")) {
+            this.dispatchCustomEvent("ak-change", {
+                value: this.selectedObject,
+            });
+        }
+        return true;
     }
 
     toForm(): unknown {

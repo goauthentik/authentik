@@ -1,4 +1,4 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
@@ -22,10 +22,7 @@ import {
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
     DigestAlgorithmEnum,
-    Flow,
-    FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     NameIdPolicyEnum,
     SAMLSource,
     SignatureAlgorithmEnum,
@@ -521,44 +518,12 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         ?required=${true}
                         name="preAuthenticationFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation:
-                                        FlowsInstancesListDesignationEnum.StageConfiguration,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                let selected = this.instance?.preAuthenticationFlow === flow.pk;
-                                if (
-                                    !this.instance?.pk &&
-                                    !this.instance?.preAuthenticationFlow &&
-                                    flow.slug === "default-source-pre-authentication"
-                                ) {
-                                    selected = true;
-                                }
-                                return selected;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-source-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.StageConfiguration}
+                            .currentFlow=${this.instance?.preAuthenticationFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-pre-authentication"
+                        ></ak-source-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow used before authentication.")}
                         </p>
@@ -568,43 +533,12 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         ?required=${true}
                         name="authenticationFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Authentication,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                let selected = this.instance?.authenticationFlow === flow.pk;
-                                if (
-                                    !this.instance?.pk &&
-                                    !this.instance?.authenticationFlow &&
-                                    flow.slug === "default-source-authentication"
-                                ) {
-                                    selected = true;
-                                }
-                                return selected;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-source-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                            .currentFlow=${this.instance?.authenticationFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-authentication"
+                        ></ak-source-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow to use when authenticating existing users.")}
                         </p>
@@ -614,43 +548,12 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         ?required=${true}
                         name="enrollmentFlow"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                                const args: FlowsInstancesListRequest = {
-                                    ordering: "slug",
-                                    designation: FlowsInstancesListDesignationEnum.Enrollment,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(
-                                    args,
-                                );
-                                return flows.results;
-                            }}
-                            .renderElement=${(flow: Flow): string => {
-                                return RenderFlowOption(flow);
-                            }}
-                            .renderDescription=${(flow: Flow): TemplateResult => {
-                                return html`${flow.name}`;
-                            }}
-                            .value=${(flow: Flow | undefined): string | undefined => {
-                                return flow?.pk;
-                            }}
-                            .selected=${(flow: Flow): boolean => {
-                                let selected = this.instance?.enrollmentFlow === flow.pk;
-                                if (
-                                    !this.instance?.pk &&
-                                    !this.instance?.enrollmentFlow &&
-                                    flow.slug === "default-source-enrollment"
-                                ) {
-                                    selected = true;
-                                }
-                                return selected;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-source-flow-search
+                            flowType=${FlowsInstancesListDesignationEnum.Enrollment}
+                            .currentFlow=${this.instance?.enrollmentFlow}
+                            .instanceId=${this.instance?.pk}
+                            fallback="default-source-enrollment"
+                        ></ak-source-flow-search>
                         <p class="pf-c-form__helper-text">
                             ${msg("Flow to use when enrolling new users.")}
                         </p>

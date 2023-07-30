@@ -2,9 +2,10 @@ package ldap
 
 import (
 	"net"
+	"time"
 
-	"github.com/getsentry/sentry-go"
 	"beryju.io/ldap"
+	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
 	log "github.com/sirupsen/logrus"
 	"goauthentik.io/internal/outpost/ldap/bind"
@@ -17,6 +18,11 @@ func (ls *LDAPServer) Unbind(boundDN string, conn net.Conn) (ldap.LDAPResultCode
 	defer func() {
 		span.Finish()
 		metrics.Requests.With(prometheus.Labels{
+			"outpost_name": ls.ac.Outpost.Name,
+			"type":         "unbind",
+			"app":          selectedApp,
+		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
+		metrics.RequestsLegacy.With(prometheus.Labels{
 			"outpost_name": ls.ac.Outpost.Name,
 			"type":         "unbind",
 			"app":          selectedApp,
@@ -44,6 +50,12 @@ func (ls *LDAPServer) Unbind(boundDN string, conn net.Conn) (ldap.LDAPResultCode
 	}
 	req.Log().WithField("request", "unbind").Warning("No provider found for request")
 	metrics.RequestsRejected.With(prometheus.Labels{
+		"outpost_name": ls.ac.Outpost.Name,
+		"type":         "unbind",
+		"reason":       "no_provider",
+		"app":          "",
+	}).Inc()
+	metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 		"outpost_name": ls.ac.Outpost.Name,
 		"type":         "unbind",
 		"reason":       "no_provider",

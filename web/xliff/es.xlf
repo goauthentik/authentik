@@ -5659,15 +5659,6 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s9f9492d30a96b9c6">
   <source>User type</source>
 </trans-unit>
-<trans-unit id="s0b9a40b7b2853c7d">
-  <source>Default user</source>
-</trans-unit>
-<trans-unit id="s35b9fa270f45b391">
-  <source>External user</source>
-</trans-unit>
-<trans-unit id="s1a635369edaf4dc3">
-  <source>Service account</source>
-</trans-unit>
 <trans-unit id="s0e427111d750cc02">
   <source>Successfully updated license.</source>
 </trans-unit>
@@ -5736,6 +5727,21 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s0285b4bd69130fa3">
   <source>Install License</source>
+</trans-unit>
+<trans-unit id="scef2eb6a2bfe3110">
+  <source>Internal users might be users such as company employees, which will get access to the full Enterprise feature set.</source>
+</trans-unit>
+<trans-unit id="sf66389b04fcc219c">
+  <source>External users might be external consultants or B2C customers. These users don't get access to enterprise features.</source>
+</trans-unit>
+<trans-unit id="s77e8668a27dbc402">
+  <source>Service accounts should be used for machine-to-machine authentication or other automations.</source>
+</trans-unit>
+<trans-unit id="s28cbd874ba450b4e">
+  <source>Less details</source>
+</trans-unit>
+<trans-unit id="s8fa26f65aed77c96">
+  <source>More details</source>
 </trans-unit>
     </body>
   </file>

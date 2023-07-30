@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-21 13:04+0000\n"
+"POT-Creation-Date: 2023-07-28 11:50+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -427,7 +427,7 @@ msgstr ""
 msgid "Webhook Mappings"
 msgstr ""
 
-#: authentik/events/monitored_tasks.py:198
+#: authentik/events/monitored_tasks.py:205
 msgid "Task has not been run yet."
 msgstr ""
 
@@ -585,65 +585,65 @@ msgstr ""
 msgid "Invalid kubeconfig"
 msgstr ""
 
-#: authentik/outposts/models.py:121
+#: authentik/outposts/models.py:122
 msgid ""
 "If enabled, use the local connection. Required Docker socket/Kubernetes "
 "Integration"
 msgstr ""
 
-#: authentik/outposts/models.py:151
+#: authentik/outposts/models.py:152
 msgid "Outpost Service-Connection"
 msgstr ""
 
-#: authentik/outposts/models.py:152
+#: authentik/outposts/models.py:153
 msgid "Outpost Service-Connections"
 msgstr ""
 
-#: authentik/outposts/models.py:160
+#: authentik/outposts/models.py:161
 msgid ""
 "Can be in the format of 'unix://<path>' when connecting to a local docker "
 "daemon, or 'https://<hostname>:2376' when connecting to a remote system."
 msgstr ""
 
-#: authentik/outposts/models.py:172
+#: authentik/outposts/models.py:173
 msgid ""
 "CA which the endpoint's Certificate is verified against. Can be left empty "
 "for no validation."
 msgstr ""
 
-#: authentik/outposts/models.py:184
+#: authentik/outposts/models.py:185
 msgid ""
 "Certificate/Key used for authentication. Can be left empty for no "
 "authentication."
 msgstr ""
 
-#: authentik/outposts/models.py:202
+#: authentik/outposts/models.py:203
 msgid "Docker Service-Connection"
 msgstr ""
 
-#: authentik/outposts/models.py:203
+#: authentik/outposts/models.py:204
 msgid "Docker Service-Connections"
 msgstr ""
 
-#: authentik/outposts/models.py:211
+#: authentik/outposts/models.py:212
 msgid ""
 "Paste your kubeconfig here. authentik will automatically use the currently "
 "selected context."
 msgstr ""
 
-#: authentik/outposts/models.py:217
+#: authentik/outposts/models.py:218
 msgid "Verify SSL Certificates of the Kubernetes API endpoint"
 msgstr ""
 
-#: authentik/outposts/models.py:234
+#: authentik/outposts/models.py:235
 msgid "Kubernetes Service-Connection"
 msgstr ""
 
-#: authentik/outposts/models.py:235
+#: authentik/outposts/models.py:236
 msgid "Kubernetes Service-Connections"
 msgstr ""
 
-#: authentik/outposts/models.py:251
+#: authentik/outposts/models.py:252
 msgid ""
 "Select Service-Connection authentik should use to manage this outpost. Leave "
 "empty if authentik should not handle the deployment."

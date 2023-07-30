@@ -1,4 +1,4 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
 import "@goauthentik/elements/forms/FormGroup";
@@ -18,10 +18,7 @@ import {
     ClientTypeEnum,
     CryptoApi,
     CryptoCertificatekeypairsListRequest,
-    Flow,
-    FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     IssuerModeEnum,
     OAuth2Provider,
     PaginatedOAuthSourceList,
@@ -95,32 +92,11 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                 label=${msg("Authentication flow")}
                 name="authenticationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Authentication,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.authenticationFlow;
-                    }}
-                >
-                </ak-search-select>
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                    .currentFlow=${this.instance?.authenticationFlow}
+                    required
+                ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when a user access this provider and is not authenticated.")}
                 </p>
@@ -130,32 +106,11 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Authorization,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.authorizationFlow;
-                    }}
-                >
-                </ak-search-select>
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    .currentFlow=${this.instance?.authorizationFlow}
+                    required
+                ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when authorizing this provider.")}
                 </p>

@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./waitlist.module.css";
+import styles from "./style.module.css";
 import clsx from "clsx";
 
 export function WaitListForm(props) {

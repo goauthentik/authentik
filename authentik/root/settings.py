@@ -66,7 +66,6 @@ INSTALLED_APPS = [
     "authentik.crypto",
     "authentik.events",
     "authentik.flows",
-    "authentik.lib",
     "authentik.outposts",
     "authentik.policies.dummy",
     "authentik.policies.event_matcher",

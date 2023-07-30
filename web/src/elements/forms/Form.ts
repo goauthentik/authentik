@@ -1,3 +1,4 @@
+import { FlowSearch } from "@goauthentik/admin/common/ak-flow-search/FlowSearch";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
@@ -178,6 +179,8 @@ export abstract class Form<T> extends AKElement {
                 inputElement.type === "checkbox"
             ) {
                 json[element.name] = inputElement.checked;
+            } else if (inputElement instanceof FlowSearch) {
+                json[element.name] = inputElement.value;
             } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
                 const select = inputElement as unknown as SearchSelect<unknown>;
                 try {

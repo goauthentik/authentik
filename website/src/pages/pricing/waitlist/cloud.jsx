@@ -1,5 +1,5 @@
 import React from "react";
-import { WaitListForm } from "../_waitlist.jsx";
+import { WaitListForm } from "../../../components/Waitlist";
 import Layout from "@theme/Layout";
 
 export default function waitlistCloud() {

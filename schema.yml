@@ -26665,7 +26665,6 @@ components:
       - authentik.crypto
       - authentik.events
       - authentik.flows
-      - authentik.lib
       - authentik.outposts
       - authentik.policies.dummy
       - authentik.policies.event_matcher
@@ -26715,7 +26714,6 @@ components:
         * `authentik.crypto` - authentik Crypto
         * `authentik.events` - authentik Events
         * `authentik.flows` - authentik Flows
-        * `authentik.lib` - authentik lib
         * `authentik.outposts` - authentik Outpost
         * `authentik.policies.dummy` - authentik Policies.Dummy
         * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
@@ -29442,7 +29440,6 @@ components:
             * `authentik.crypto` - authentik Crypto
             * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
-            * `authentik.lib` - authentik lib
             * `authentik.outposts` - authentik Outpost
             * `authentik.policies.dummy` - authentik Policies.Dummy
             * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
@@ -29633,7 +29630,6 @@ components:
             * `authentik.crypto` - authentik Crypto
             * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
-            * `authentik.lib` - authentik lib
             * `authentik.outposts` - authentik Outpost
             * `authentik.policies.dummy` - authentik Policies.Dummy
             * `authentik.policies.event_matcher` - authentik Policies.Event Matcher
@@ -36730,7 +36726,6 @@ components:
             * `authentik.crypto` - authentik Crypto
             * `authentik.events` - authentik Events
             * `authentik.flows` - authentik Flows
-            * `authentik.lib` - authentik lib
             * `authentik.outposts` - authentik Outpost
             * `authentik.policies.dummy` - authentik Policies.Dummy
             * `authentik.policies.event_matcher` - authentik Policies.Event Matcher

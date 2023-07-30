@@ -10,6 +10,7 @@ You can install authentik to run on Kubernetes using Helm Chart
 -   Helm
 
 ### Generate Passwords
+
 Start by generating passwords for the database and cache. You can use either of the following commands:
 
 ```
@@ -64,9 +65,11 @@ helm upgrade --install authentik authentik/authentik -f values.yaml
 During the installation process, the database migrations will be applied automatically on startup.
 
 ### Accessing authentik
+
 Once the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the akadmin user.
 
 ### Optional Step: Configure Global Email Credentials
+
 It is recommended to configure global email credentials as well. These are used by authentik to notify you about alerts and configuration issues. Additionally, they can be utilized by Email stages to send verification and recovery emails.
 
 By following these steps, you will successfully install and set up authentik on Kubernetes using Helm.

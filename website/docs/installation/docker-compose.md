@@ -14,6 +14,7 @@ This installation method is for test-setups and small-scale production setups.
 
 To download the latest `docker-compose.yml` open your terminal and navigate to the directory of your choice.
 Run the following command:
+
 ```shell
 wget https://goauthentik.io/docker-compose.yml
 ```

@@ -7585,18 +7585,6 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>User type</source>
   <target>用户类型</target>
 </trans-unit>
-<trans-unit id="s0b9a40b7b2853c7d">
-  <source>Default user</source>
-  <target>默认用户</target>
-</trans-unit>
-<trans-unit id="s35b9fa270f45b391">
-  <source>External user</source>
-  <target>外部用户</target>
-</trans-unit>
-<trans-unit id="s1a635369edaf4dc3">
-  <source>Service account</source>
-  <target>服务账户</target>
-</trans-unit>
 <trans-unit id="s0e427111d750cc02">
   <source>Successfully updated license.</source>
   <target>已成功更新许可证。</target>
@@ -7688,6 +7676,26 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s0285b4bd69130fa3">
   <source>Install License</source>
   <target>安装许可证</target>
+</trans-unit>
+<trans-unit id="scef2eb6a2bfe3110">
+  <source>Internal users might be users such as company employees, which will get access to the full Enterprise feature set.</source>
+  <target>内部用户可能是企业员工等，有权访问完整的企业版功能。</target>
+</trans-unit>
+<trans-unit id="sf66389b04fcc219c">
+  <source>External users might be external consultants or B2C customers. These users don't get access to enterprise features.</source>
+  <target>外部用户可能是外部顾问或 B2C 客户等。这些用户无权访问企业版功能。</target>
+</trans-unit>
+<trans-unit id="s77e8668a27dbc402">
+  <source>Service accounts should be used for machine-to-machine authentication or other automations.</source>
+  <target>服务账户应该用于机器到机器（M2M）身份验证或其他自动化操作。</target>
+</trans-unit>
+<trans-unit id="s28cbd874ba450b4e">
+  <source>Less details</source>
+  <target>显示更少</target>
+</trans-unit>
+<trans-unit id="s8fa26f65aed77c96">
+  <source>More details</source>
+  <target>显示更多</target>
 </trans-unit>
     </body>
   </file>
