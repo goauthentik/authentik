@@ -310,6 +310,7 @@ module.exports = {
                 "troubleshooting/csrf",
                 "troubleshooting/emails",
                 "troubleshooting/ldap_source",
+                "troubleshooting/whitelist_email",
             ],
         },
         {
