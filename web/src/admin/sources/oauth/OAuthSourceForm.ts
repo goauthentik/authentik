@@ -70,6 +70,9 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
 
     async send(data: OAuthSource): Promise<OAuthSource> {
         data.providerType = (this.providerType?.slug || "") as ProviderTypeEnum;
+        if (data.groupsClaim === "") {
+            data.groupsClaim = null;
+        }
         let source: OAuthSource;
         if (this.instance) {
             source = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthPartialUpdate({
@@ -185,6 +188,7 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                     : html``}
                 ${this.providerType.slug === ProviderTypeEnum.Openidconnect
                     ? html`
+
                           <ak-form-element-horizontal
                               label=${msg("OIDC Well-known URL")}
                               name="oidcWellKnownUrl"
@@ -216,6 +220,21 @@ export class OAuthSourceForm extends ModelForm<OAuthSource, string> {
                               </p>
                           </ak-form-element-horizontal>
 
+                          <ak-form-element-horizontal
+                              label=${msg("OIDC Groups claim")}
+                              name="groupsClaim"
+                          >
+                              <input
+                                  type="text"
+                                  value="${first(this.instance?.groupsClaim, "")}"
+                                  class="pf-c-form-control"
+                              />
+                              <p class="pf-c-form__helper-text">
+                                  ${msg(
+                                      "Sync groups and group membership from the source. Only use this option with sources that you control, as otherwise unwanted users might get added to groups with superuser permissions.",
+                                  )}
+                              </p>
+                          </ak-form-element-horizontal>
                           <ak-form-element-horizontal label=${msg("OIDC JWKS")} name="oidcJwks">
                               <ak-codemirror
                                   mode="javascript"

@@ -54,6 +54,16 @@ class OAuthSource(Source):
     oidc_jwks_url = models.TextField(default="", blank=True)
     oidc_jwks = models.JSONField(default=dict, blank=True)
 
+    groups_claim = models.TextField(
+        default=None,
+        null=True,
+        help_text=_(
+            "Sync groups and group membership from the source. Only use this option with "
+            "sources that you control, as otherwise unwanted users might get added to "
+            "groups with superuser permissions."
+        ),
+    )
+
     @property
     def type(self) -> type["SourceType"]:
         """Return the provider instance for this source"""

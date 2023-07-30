@@ -105,6 +105,7 @@ class OAuthSourceSerializer(SourceSerializer):
             "consumer_secret",
             "callback_url",
             "additional_scopes",
+            "groups_claim",
             "type",
             "oidc_well_known_url",
             "oidc_jwks_url",
@@ -137,6 +138,7 @@ class OAuthSourceFilter(FilterSet):
             "authorization_url",
             "access_token_url",
             "profile_url",
+            "groups_claim",
             "consumer_key",
             "additional_scopes",
         ]

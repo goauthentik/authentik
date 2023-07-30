@@ -35,6 +35,9 @@ class OpenIDConnectOAuth2Callback(OAuthCallback):
             "name": info.get("name"),
         }
 
+    def get_user_group_names(self, info: dict[str, Any]) -> list[str]:
+        return info.get(self.source.groups_claim, [])
+
 
 @registry.register()
 class OpenIDConnectType(SourceType):

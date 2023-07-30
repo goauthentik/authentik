@@ -5117,6 +5117,15 @@
                     "type": "string",
                     "title": "Additional Scopes"
                 },
+                "groups_claim": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Groups claim",
+                    "description": "Sync groups and group membership from the source. Only use this option with sources that you control, as otherwise unwanted users might get added to groups with superuser permissions."
+                },
                 "oidc_well_known_url": {
                     "type": "string",
                     "title": "Oidc well known url"
@@ -8305,7 +8314,6 @@
             "properties": {
                 "name": {
                     "type": "string",
-                    "maxLength": 80,
                     "minLength": 1,
                     "title": "Name"
                 },
