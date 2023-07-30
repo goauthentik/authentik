@@ -26,6 +26,8 @@ import {
     ProvidersApi,
 } from "@goauthentik/api";
 
+import { akText } from "./renderers";
+
 @customElement("ak-application-form")
 export class ApplicationForm extends ModelForm<Application, string> {
     async loadInstance(pk: string): Promise<Application> {
@@ -90,70 +92,28 @@ export class ApplicationForm extends ModelForm<Application, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">${msg("Application's display Name.")}</p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control"
-                    required
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg("Internal application name, used in URLs.")}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Group")} name="group">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.group)}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "Optionally enter a group name. Applications with identical groups are shown grouped together.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Provider")} name="provider">
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Provider[]> => {
-                        const args: ProvidersAllListRequest = {
-                            ordering: "name",
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const items = await new ProvidersApi(DEFAULT_CONFIG).providersAllList(args);
-                        return items.results;
-                    }}
-                    .renderElement=${(item: Provider): string => {
-                        return item.name;
-                    }}
-                    .value=${(item: Provider | undefined): number | undefined => {
-                        return item?.pk;
-                    }}
-                    .groupBy=${(items: Provider[]) => {
-                        return groupBy(items, (item) => item.verboseName);
-                    }}
-                    .selected=${(item: Provider): boolean => {
-                        return this.instance?.provider === item.pk;
-                    }}
-                    ?blankable=${true}
-                >
-                </ak-search-select>
-                <p class="pf-c-form__helper-text">
-                    ${msg("Select a provider that this application should use.")}
-                </p>
-            </ak-form-element-horizontal>
-
+            ${akText({
+                name: "name",
+                value: this.instance?.name,
+                label: msg("Name"),
+                required: true,
+                help: msg("Application's display Name."),
+            })}
+            ${akText({
+                name: "slug",
+                value: this.instance?.slug,
+                label: msg("Slug"),
+                required: true,
+                help: msg("Internal application name, used in URLs."),
+            })}
+            ${akText({
+                name: "group",
+                value: this.instance?.group,
+                label: msg("Group"),
+                help: msg(
+                    "Optionally enter a group name. Applications with identical groups are shown grouped together."
+                ),
+            })}
             <ak-form-element-horizontal
                 label=${msg("Backchannel providers")}
                 name="backchannelProviders"
@@ -191,7 +151,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 </div>
                 <p class="pf-c-form__helper-text">
                     ${msg(
-                        "Select backchannel providers which augment the functionality of the main provider.",
+                        "Select backchannel providers which augment the functionality of the main provider."
                     )}
                 </p>
             </ak-form-element-horizontal>
@@ -230,7 +190,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         />
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "If left empty, authentik will try to extract the launch URL based on the selected provider.",
+                                "If left empty, authentik will try to extract the launch URL based on the selected provider."
                             )}
                         </p>
                     </ak-form-element-horizontal>
@@ -250,61 +210,68 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         </label>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
+                                "If checked, the launch URL will open in a new browser tab or window from the user's application library."
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanSaveMedia)
-                        ? html`<ak-form-element-horizontal label="${msg("Icon")}" name="metaIcon">
-                                  <input type="file" value="" class="pf-c-form-control" />
+                    ${
+                        rootInterface()?.config?.capabilities.includes(
+                            CapabilitiesEnum.CanSaveMedia
+                        )
+                            ? html`<ak-form-element-horizontal
+                                      label="${msg("Icon")}"
+                                      name="metaIcon"
+                                  >
+                                      <input type="file" value="" class="pf-c-form-control" />
+                                      ${this.instance?.metaIcon
+                                          ? html`
+                                                <p class="pf-c-form__helper-text">
+                                                    ${msg("Currently set to:")}
+                                                    ${this.instance?.metaIcon}
+                                                </p>
+                                            `
+                                          : html``}
+                                  </ak-form-element-horizontal>
                                   ${this.instance?.metaIcon
                                       ? html`
-                                            <p class="pf-c-form__helper-text">
-                                                ${msg("Currently set to:")}
-                                                ${this.instance?.metaIcon}
-                                            </p>
-                                        `
-                                      : html``}
-                              </ak-form-element-horizontal>
-                              ${this.instance?.metaIcon
-                                  ? html`
-                                        <ak-form-element-horizontal>
-                                            <label class="pf-c-switch">
-                                                <input
-                                                    class="pf-c-switch__input"
-                                                    type="checkbox"
-                                                    @change=${(ev: Event) => {
-                                                        const target =
-                                                            ev.target as HTMLInputElement;
-                                                        this.clearIcon = target.checked;
-                                                    }}
-                                                />
-                                                <span class="pf-c-switch__toggle">
-                                                    <span class="pf-c-switch__toggle-icon">
-                                                        <i
-                                                            class="fas fa-check"
-                                                            aria-hidden="true"
-                                                        ></i>
+                                            <ak-form-element-horizontal>
+                                                <label class="pf-c-switch">
+                                                    <input
+                                                        class="pf-c-switch__input"
+                                                        type="checkbox"
+                                                        @change=${(ev: Event) => {
+                                                            const target =
+                                                                ev.target as HTMLInputElement;
+                                                            this.clearIcon = target.checked;
+                                                        }}
+                                                    />
+                                                    <span class="pf-c-switch__toggle">
+                                                        <span class="pf-c-switch__toggle-icon">
+                                                            <i
+                                                                class="fas fa-check"
+                                                                aria-hidden="true"
+                                                            ></i>
+                                                        </span>
                                                     </span>
-                                                </span>
-                                                <span class="pf-c-switch__label">
-                                                    ${msg("Clear icon")}
-                                                </span>
-                                            </label>
-                                            <p class="pf-c-form__helper-text">
-                                                ${msg("Delete currently set icon.")}
-                                            </p>
-                                        </ak-form-element-horizontal>
-                                    `
-                                  : html``}`
-                        : html`<ak-form-element-horizontal label=${msg("Icon")} name="metaIcon">
-                              <input
-                                  type="text"
-                                  value="${first(this.instance?.metaIcon, "")}"
-                                  class="pf-c-form-control"
-                              />
-                              <p class="pf-c-form__helper-text">${iconHelperText}</p>
-                          </ak-form-element-horizontal>`}
+                                                    <span class="pf-c-switch__label">
+                                                        ${msg("Clear icon")}
+                                                    </span>
+                                                </label>
+                                                <p class="pf-c-form__helper-text">
+                                                    ${msg("Delete currently set icon.")}
+                                                </p>
+                                            </ak-form-element-horizontal>
+                                        `
+                                      : html``}`
+                            : html`<ak-form-element-horizontal label=${msg("Icon")} name="metaIcon">
+                                  <input
+                                      type="text"
+                                      value="${first(this.instance?.metaIcon, "")}"
+                                      class="pf-c-form-control"
+                                  />
+                                  <p class="pf-c-form__helper-text">${iconHelperText}</p>
+                              </ak-form-element-horizontal>`
+                    }
                     <ak-form-element-horizontal label=${msg("Publisher")} name="metaPublisher">
                         <input
                             type="text"
