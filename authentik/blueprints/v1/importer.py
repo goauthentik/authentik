@@ -273,7 +273,11 @@ class Importer:
             state = entry.get_state(self.__import)
             if state in [BlueprintEntryDesiredState.PRESENT, BlueprintEntryDesiredState.CREATED]:
                 instance = serializer.instance
-                if serializer.instance and serializer.instance.pk and state == BlueprintEntryDesiredState.CREATED:
+                if (
+                    serializer.instance
+                    and serializer.instance.pk
+                    and state == BlueprintEntryDesiredState.CREATED
+                ):
                     self.logger.debug(
                         "instance exists, skipping",
                         model=model,

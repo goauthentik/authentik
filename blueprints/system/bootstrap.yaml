@@ -6,12 +6,15 @@ metadata:
 context:
   username: akadmin
   group_name: authentik Admins
+  email: !Env [AUTHENTIK_BOOTSTRAP_EMAIL, "root@example.com"]
+  password: !Env AUTHENTIK_BOOTSTRAP_PASSWORD
 entries:
   - model: authentik_core.group
     state: created
     identifiers:
       name: !Context group_name
     attrs:
+      name: !Context group_name
       is_superuser: true
     id: admin-group
   - model: authentik_core.user
@@ -19,17 +22,19 @@ entries:
     identifiers:
       username: !Context username
     attrs:
-      password: !Env AUTHENTIK_BOOTSTRAP_PASSWORD
+      password: !Context password
       name: authentik Default Admin
+      email: !Context email
       groups:
         - !KeyOf admin-group
   - model: authentik_blueprints.metausersetpassword
     conditions:
-      - !If [!Env AUTHENTIK_BOOTSTRAP_PASSWORD, True, False]
+      - !If [!Context password]
+      - !If [!Find [authentik_core.user, [username, !Context username]]]
     attrs:
       user_identifiers:
         username: !Context username
-      raw_password: !Env AUTHENTIK_BOOTSTRAP_PASSWORD
+      raw_password: !Context password
   - model: authentik_blueprints.blueprintinstance
     identifiers:
       metadata:

@@ -51,5 +51,4 @@ class MetaUserSetPassword(BaseMetaModel):
         return UserSetPasswordMetaSerializer
 
     class Meta:
-
         abstract = True

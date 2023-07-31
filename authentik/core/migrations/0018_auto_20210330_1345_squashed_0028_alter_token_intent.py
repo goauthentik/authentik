@@ -36,7 +36,6 @@ def fix_duplicates(apps: Apps, schema_editor: BaseDatabaseSchemaEditor):
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_core", "0018_auto_20210330_1345"),
         ("authentik_core", "0019_source_managed"),

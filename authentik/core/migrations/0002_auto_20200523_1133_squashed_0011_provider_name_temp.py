@@ -7,7 +7,6 @@ import authentik.core.models
 
 
 class Migration(migrations.Migration):
-
     replaces = [
         ("authentik_core", "0002_auto_20200523_1133"),
         ("authentik_core", "0003_default_user"),
