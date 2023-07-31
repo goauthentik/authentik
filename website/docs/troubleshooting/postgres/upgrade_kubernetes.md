@@ -1,21 +1,21 @@
 ---
-title: Upgrading PostgreSQL on Kubernetes
+title: Upgrade PostgreSQL on Kubernetes
 ---
 
 ## Placeholders
 
--   `authentik-postgresql-0` is the Kubernetes Pod running PostgreSQL
+-   `authentik-postgresql-0` is the Kubernetes Pod running PostgreSQL.
 
 ### Prerequisites
 
-This migration requires some downtime, in which authentik has to be stopped. To do this, run
+This migration requires some downtime, during which authentik must be stopped. To do this, run the following command:
 
 ```shell
 kubectl scale deploy --replicas 0 authentik-server
 kubectl scale deploy --replicas 0 authentik-worker
 ```
 
-### Dumping the current database
+### Dump the current database
 
 Run `kubectl exec -it authentik-postgresql-0 -- bash` to get a shell in the PostgreSQL pod.
 
@@ -30,7 +30,7 @@ export PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD
 pg_dump -U postgres $POSTGRES_DB > dump-11.sql
 ```
 
-### Stopping PostgreSQL and starting the upgrade
+### Stop PostgreSQL and start the upgrade
 
 To upgrade, change the following entries in your `values.yaml` used to deploy authentik:
 
@@ -42,13 +42,13 @@ postgresql:
         tag: 15.2.0-debian-11-r26
 ```
 
-And run `helm upgrade --install authentik authentik/authentik -f values.yaml` to apply these changes. Depending on your configuration, you might have to repeat the steps from [Prerequisites](#prerequisites).
+Now run `helm upgrade --install authentik authentik/authentik -f values.yaml` to apply these changes. Depending on your configuration, you might have to repeat the steps from [Prerequisites](#prerequisites).
 
 After the upgrade is finished, you should have a new PostgreSQL pod running with the updated image.
 
-### Removing the old data
+### Remove the old data
 
-As the PVC mounted by the PostgreSQL pod still contains the old data, we need to remove/rename that data, so that PostgreSQL can initialize it with the new version.
+Because the PVC mounted by the PostgreSQL pod still contains the old data, we need to remove/rename that data, so that PostgreSQL can initialize it with the new version.
 
 Run `kubectl exec -it authentik-postgresql-0 -- bash` to get a shell in the PostgreSQL pod.
 
@@ -57,15 +57,15 @@ Run the following commands to move the old data:
 ```shell
 # This is the path where the PVC is mounted
 cd /bitnami/postgresql/
-# Move Postgres' data folder to data-11, which is the version we're upgrading for
-# the data folder can also be deleted, however it is recommended to rename it first
-# in case the upgrade fails
+# Move Postgres' data folder to data-11, which is the version we're upgrading to.
+# The data folder can also be deleted; however it is recommended to rename it first
+# in case the upgrade fails.
 mv data data-11
 ```
 
-### Restarting PostgreSQL
+### Restart PostgreSQL
 
-In the step [Stopping PostgreSQL and starting the upgrade](#stopping-postgresql-and-starting-the-upgrade), we enabled the _diagnostic mode_, which means the PostgreSQL pod is running, but the actual postgres process isn't running. Now that we've removed the old data directory, we can disable the diagnostic mode.
+In the step [Stop PostgreSQL and start the upgrade](#stop-postgresql-and-start-the-upgrade), we enabled the _diagnostic mode_, which means the PostgreSQL pod is running, but the actual Postgres process isn't running. Now that we've removed the old data directory, we can disable the diagnostic mode.
 
 Once again, change the following entries in your `values.yaml` used to deploy authentik:
 
@@ -86,12 +86,12 @@ Run the following commands to restore the data:
 ```shell
 # This is the path where the PVC is mounted
 cd /bitnami/postgresql/
-# Set the postgres password based on the `POSTGRES_POSTGRES_PASSWORD` environment variable
+# Set the Postgres password based on the `POSTGRES_POSTGRES_PASSWORD` environment variable.
 export PGPASSWORD=$POSTGRES_POSTGRES_PASSWORD
 psql -U postgres $POSTGRES_DB < dump-11.sql
 ```
 
-After the last command finishes, all of the data is restored, and you can restart authentik
+After the last command finishes, all of the data is restored, and you can restart authentik.
 
 ### Restarting authentik
 
