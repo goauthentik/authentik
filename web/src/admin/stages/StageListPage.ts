@@ -109,7 +109,9 @@ export class StageListPage extends TablePage<Stage> {
                     >
                     </ak-stage-authenticator-duo-device-import-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-file-import"></i>
+                        <pf-tooltip position="top" content=${msg("Import devices")}>
+                            <i class="fas fa-file-import" aria-hidden="true"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>`;
             default:

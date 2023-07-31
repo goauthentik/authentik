@@ -165,7 +165,9 @@ export class UserTokenList extends Table<Token> {
                     class="pf-c-button pf-m-plain"
                     identifier="${item.identifier}"
                 >
-                    <i class="fas fa-copy"></i>
+                    <pf-tooltip position="top" content=${msg("Copy token")}>
+                        <i class="fas fa-copy"></i>
+                    </pf-tooltip>
                 </ak-token-copy-button>
             `,
         ];

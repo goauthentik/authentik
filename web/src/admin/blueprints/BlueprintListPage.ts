@@ -141,7 +141,7 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
             html`<ak-label color=${item.enabled ? PFColor.Green : PFColor.Red}>
                 ${item.enabled ? msg("Yes") : msg("No")}
             </ak-label>`,
-            html` <ak-forms-modal>
+            html`<ak-forms-modal>
                     <span slot="submit"> ${msg("Update")} </span>
                     <span slot="header"> ${msg("Update Blueprint")} </span>
                     <ak-blueprint-form slot="form" .instancePk=${item.pk}> </ak-blueprint-form>
@@ -149,8 +149,9 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                         <pf-tooltip position="top" content=${msg("Edit")}>
                             <i class="fas fa-edit"></i>
                         </pf-tooltip>
-                    </button> </ak-forms-modal
-                ><ak-action-button
+                    </button>
+                </ak-forms-modal>
+                <ak-action-button
                     class="pf-m-plain"
                     .apiRequest=${() => {
                         return new ManagedApi(DEFAULT_CONFIG)
@@ -167,7 +168,9 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                             });
                     }}
                 >
-                    <i class="fas fa-play" aria-hidden="true"></i>
+                    <pf-tooltip position="top" content=${msg("Apply")}>
+                        <i class="fas fa-play" aria-hidden="true"></i>
+                    </pf-tooltip>
                 </ak-action-button>`,
         ];
     }

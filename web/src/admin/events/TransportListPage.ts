@@ -98,7 +98,9 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                         });
                     }}
                 >
-                    <i class="fas fa-vial" aria-hidden="true"></i>
+                    <pf-tooltip position="top" content=${msg("Test")}>
+                        <i class="fas fa-vial" aria-hidden="true"></i>
+                    </pf-tooltip>
                 </ak-action-button>`,
         ];
     }

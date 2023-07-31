@@ -118,7 +118,9 @@ export class FlowListPage extends TablePage<Flow> {
                         window.open(finalURL, "_blank");
                     }}
                 >
-                    <i class="fas fa-play"></i>
+                    <pf-tooltip position="top" content=${msg("Execute")}>
+                        <i class="fas fa-play" aria-hidden="true"></i>
+                    </pf-tooltip>
                 </button>
                 <a class="pf-c-button pf-m-plain" href=${item.exportUrl}>
                     <i class="fas fa-download"></i>
