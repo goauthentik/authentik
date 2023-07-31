@@ -277,8 +277,8 @@ class Importer:
             if state in [BlueprintEntryDesiredState.PRESENT, BlueprintEntryDesiredState.CREATED]:
                 instance = serializer.instance
                 if (
-                    serializer.instance
-                    and serializer.instance.pk
+                    instance
+                    and not instance._state.adding
                     and state == BlueprintEntryDesiredState.CREATED
                 ):
                     self.logger.debug(
