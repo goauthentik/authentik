@@ -24,12 +24,11 @@ The `-O` flag retains the downloaded file's name, overwriting any existing local
 
 ### Kubernetes
 
-Update your values to use the new images:
+Upgrade the helm chart to the new version
 
-```yaml
-image:
-    repository: ghcr.io/goauthentik/server
-    tag: xxxx.x.0
+```shell
+helm repo update
+helm upgrade authentik authentik/authentik -f values.yaml --version ^xxxx.x
 ```
 
 ## Minor changes/fixes

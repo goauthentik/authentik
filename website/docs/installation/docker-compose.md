@@ -92,27 +92,8 @@ docker-compose up -d
 
 The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file. Each time you upgrade to a newer version of authentik, you download a new `docker-compose.yml` file, which points to the latest available version. For more information, refer to the **Upgrading** section in the [Release Notes](../releases).
 
-To start the initial setup, navigate to `https://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
+To start the initial setup, navigate to `http://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
 
 There you are prompted to set a password for the akadmin user (the default user).
 
-## Explanation
-
-:::warning
-The server assumes to have local timezone as UTC.
-All internals are handled in UTC; whenever a time is displayed to the user in UI it gets localized.
-Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers.
-This will not give any advantages.
-On the contrary, it will cause problems with OAuth and SAML authentication,
-e.g. [see this GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
-:::
-
-The Docker-Compose project contains the following containers:
-
--   **Server**: This is the backend service, which does all the logic, plus runs the API and the SSO functionality. It also runs the frontend, hosts the JS/CSS files, and serves the files you've uploaded for icons/etc.
-
--   **Worker**: This container executes background tasks, everything you can see on the _System Tasks_ page in the frontend.
-
--   **Redis**: For Cache
-
--   **Postgresql**: Default database
+An explanation about what each service in the docker compose file does, see [Architecture](../core/architecture.md).
