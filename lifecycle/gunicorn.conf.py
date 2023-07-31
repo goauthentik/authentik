@@ -80,8 +80,8 @@ if SERVICE_HOST_ENV_NAME in os.environ:
 else:
     default_workers = max(cpu_count() * 0.25, 1) + 1  # Minimum of 2 workers
 
-workers = int(CONFIG.get("web.workers", default_workers))
-threads = int(CONFIG.get("web.threads", 4))
+workers = CONFIG.get_int("web.workers", default_workers)
+threads = CONFIG.get_int("web.threads", 4)
 
 
 def post_fork(server: "Arbiter", worker: DjangoUvicornWorker):

@@ -13,7 +13,7 @@ from authentik.policies.reputation.tasks import save_reputation
 from authentik.stages.identification.signals import identification_failed
 
 LOGGER = get_logger()
-CACHE_TIMEOUT = int(CONFIG.get("redis.cache_timeout_reputation"))
+CACHE_TIMEOUT = CONFIG.get_int("redis.cache_timeout_reputation")
 
 
 def update_score(request: HttpRequest, identifier: str, amount: int):

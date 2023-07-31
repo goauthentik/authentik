@@ -33,7 +33,7 @@ PLAN_CONTEXT_SOURCE = "source"
 # Is set by the Flow Planner when a FlowToken was used, and the currently active flow plan
 # was restored.
 PLAN_CONTEXT_IS_RESTORED = "is_restored"
-CACHE_TIMEOUT = int(CONFIG.get("redis.cache_timeout_flows"))
+CACHE_TIMEOUT = CONFIG.get_int("redis.cache_timeout_flows")
 CACHE_PREFIX = "goauthentik.io/flows/planner/"
 
 

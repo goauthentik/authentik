@@ -93,7 +93,7 @@ class BaseLDAPSynchronizer:
         types_only=False,
         get_operational_attributes=False,
         controls=None,
-        paged_size=int(CONFIG.get("ldap.page_size", 50)),
+        paged_size=CONFIG.get_int("ldap.page_size", 50),
         paged_criticality=False,
     ):
         """Search in pages, returns each page"""

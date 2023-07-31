@@ -79,3 +79,15 @@ class TestConfig(TestCase):
         config.update_from_file(file2_name)
         unlink(file_name)
         unlink(file2_name)
+
+    def test_get_int(self):
+        """Test get_int"""
+        config = ConfigLoader()
+        config.set("foo", 1234)
+        self.assertEqual(config.get_int("foo"), 1234)
+
+    def test_get_int_invalid(self):
+        """Test get_int"""
+        config = ConfigLoader()
+        config.set("foo", "bar")
+        self.assertEqual(config.get_int("foo", 1234), 1234)
