@@ -7,7 +7,7 @@ entries:
   attrs:
     identifiers:
       path: system/bootstrap.yaml
-    required: true
+    required: false
 - model: authentik_events.notificationtransport
   id: default-email-transport
   attrs:
