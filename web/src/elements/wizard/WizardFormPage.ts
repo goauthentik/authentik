@@ -12,8 +12,6 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFInputGroup from "@patternfly/patternfly/components/InputGroup/input-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-/* NOT USED */
-
 @customElement("ak-wizard-form")
 export abstract class WizardForm extends Form<KeyUnknown> {
     viewportCheck = false;
@@ -21,6 +19,9 @@ export abstract class WizardForm extends Form<KeyUnknown> {
     @property({ attribute: false })
     nextDataCallback!: (data: KeyUnknown) => Promise<boolean>;
 
+    /* Override the traditional behavior of the form and instead simply serialize the form and push
+     * it's contents to the next page.
+     */
     async submit(): Promise<boolean | undefined> {
         const data = this.serializeForm();
         if (!data) {

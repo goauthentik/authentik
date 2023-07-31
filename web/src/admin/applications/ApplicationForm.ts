@@ -2,6 +2,11 @@ import "@goauthentik/admin/applications/ProviderSelectModal";
 import { iconHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG, config } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-file-input";
+import "@goauthentik/components/ak-radio-input";
+import "@goauthentik/components/ak-switch-input";
+import "@goauthentik/components/ak-text-input";
+import "@goauthentik/components/ak-textarea-input";
 import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -24,13 +29,8 @@ import {
     Provider,
 } from "@goauthentik/api";
 
-import "./renderers/ak-backchannel-input";
-import "./renderers/ak-file-input";
-import "./renderers/ak-provider-search-input";
-import "./renderers/ak-radio-input";
-import "./renderers/ak-switch-input";
-import "./renderers/ak-text-input";
-import "./renderers/ak-textarea-input";
+import "./components/ak-backchannel-input";
+import "./components/ak-provider-search-input";
 
 const policyOptions = [
     {
