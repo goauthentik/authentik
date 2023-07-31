@@ -22,6 +22,29 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+const steps = [
+    {
+        name: msg("Application Details"),
+        view: () =>
+            html`<ak-application-wizard-application-details></ak-application-wizard-application-details>`,
+    },
+    {
+        name: msg("Authentication Method"),
+        view: () =>
+            html`<ak-application-wizard-authentication-choice></ak-application-wizard-authentication-choice>`,
+    },
+    {
+        name: msg("Authentication Details"),
+        view: () =>
+            html`<ak-application-wizard-authentication-details></ak-application-wizard-authentication-details>`,
+    },
+    {
+        name: msg("Save Application"),
+        view: () =>
+            html`<ak-application-wizard-application-commit></ak-application-wizard-application-commit>`,
+    },
+];
+
 @customElement("ak-application-wizard")
 export class ApplicationWizard extends AKElement {
     static get styles(): CSSResult[] {

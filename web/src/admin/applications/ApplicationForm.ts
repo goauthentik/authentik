@@ -32,7 +32,7 @@ import {
 import "./components/ak-backchannel-input";
 import "./components/ak-provider-search-input";
 
-const policyOptions = [
+export const policyOptions = [
     {
         label: "any",
         value: PolicyEngineMode.Any,
