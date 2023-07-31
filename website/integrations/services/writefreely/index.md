@@ -6,10 +6,9 @@ title: Writefreely
 
 ## What is Writefreely
 
-From https://writefreely.org/
-:::note
-An open source platform for building a writing space on the web.
-:::
+> An open source platform for building a writing space on the web.
+>
+> -- https://writefreely.org/
 
 :::caution
 Currently it is not possible to connect writefreely to authentik without making an adjustment in the database. See [here](https://github.com/writefreely/writefreely/issues/516) and [Writefreely Setup](https://goauthentik.io/integrations/services/writefreely/#writefreely-setup)

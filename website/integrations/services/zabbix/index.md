@@ -6,13 +6,11 @@ title: Zabbix
 
 ## What is Zabbix
 
-From https://www.zabbix.com/features
-
-:::note
-Zabbix is the ultimate enterprise-level software designed for real-time monitoring of millions of metrics collected from tens of thousands of servers, virtual machines and network devices.
-
-Zabbix is Open Source and comes at no cost.
-:::
+> Zabbix is the ultimate enterprise-level software designed for real-time monitoring of millions of metrics collected from tens of thousands of servers, virtual machines and network devices.
+>
+> Zabbix is Open Source and comes at no cost.
+>
+> -- https://www.zabbix.com/features
 
 ## Preparation
 

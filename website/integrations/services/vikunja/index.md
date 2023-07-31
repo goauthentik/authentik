@@ -6,11 +6,9 @@ title: Vikunja
 
 ## What is Vikunja
 
-From https://vikunja.io/
-
-:::note
-Vikunja is an Open-Source, self-hosted To-Do list application for all platforms. It is licensed under the GPLv3.
-:::
+> Vikunja is an Open-Source, self-hosted To-Do list application for all platforms. It is licensed under the GPLv3.
+>
+> -- https://vikunja.io/
 
 :::note
 This is based on authentik 2021.7.3 and Vikunja V0.17.1 using the Docker-Compose install https://vikunja.io/docs/full-docker-example/. Instructions may differ between versions.

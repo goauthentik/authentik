@@ -6,10 +6,9 @@ title: Snipe-IT
 
 ## What is Snipe-IT
 
-From https://snipeitapp.com
-:::note
-A free open source IT asset/license management system.
-:::
+> A free open source IT asset/license management system.
+>
+> -- https://snipeitapp.com
 
 :::caution
 This setup assumes you will be using HTTPS as Snipe-It dynamically generates the ACS and other settings based on the complete URL.
