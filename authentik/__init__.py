@@ -1,4 +1,4 @@
-"""authentik"""
+"""authentik root module"""
 from os import environ
 from typing import Optional
 

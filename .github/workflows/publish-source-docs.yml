@@ -1,0 +1,25 @@
+name: authentik-publish-source-docs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish-source-docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
+      - name: generate docs
+        run: |
+          poetry run ak build_source_docs
+      - name: Publish
+        uses: netlify/actions/cli@master
+        with:
+          args: deploy --dir=source_docs --prod
+        env:
+          NETLIFY_SITE_ID: eb246b7b-1d83-4f69-89f7-01a936b4ca59
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
