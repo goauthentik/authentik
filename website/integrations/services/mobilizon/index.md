@@ -6,10 +6,9 @@ title: Mobilizon
 
 ## What is Mobilizon
 
-From https://joinmobilizon.org/
-:::note
-Gather, organize and mobilize yourselves with a convivial, ethical, and emancipating tool. https://joinmobilizon.org
-:::
+> Gather, organize and mobilize yourselves with a convivial, ethical, and emancipating tool. https://joinmobilizon.org
+>
+> -- https://joinmobilizon.org/
 
 ## Preparation
 

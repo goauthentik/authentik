@@ -6,11 +6,9 @@ title: Wiki.js
 
 ## What is Wiki.js
 
-From https://en.wikipedia.org/wiki/Wiki.js
-
-:::note
-Wiki.js is a wiki engine running on Node.js and written in JavaScript. It is free software released under the Affero GNU General Public License. It is available as a self-hosted solution or using "single-click" install on the DigitalOcean and AWS marketplace.
-:::
+> Wiki.js is a wiki engine running on Node.js and written in JavaScript. It is free software released under the Affero GNU General Public License. It is available as a self-hosted solution or using "single-click" install on the DigitalOcean and AWS marketplace.
+>
+> -- https://en.wikipedia.org/wiki/Wiki.js
 
 :::note
 This is based on authentik 2022.11 and Wiki.js 2.5. Instructions may differ between versions.

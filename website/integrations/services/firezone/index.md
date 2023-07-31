@@ -6,12 +6,10 @@ title: Firezone
 
 ## What is Firezone
 
-From https://www.firezone.dev
-
-:::note
-Firezone is an open-source remote access platform built on WireGuard?, a modern VPN protocol that's 4-6x faster than OpenVPN.
-Deploy on your infrastructure and start onboarding users in minutes.
-:::
+> Firezone is an open-source remote access platform built on WireGuard?, a modern VPN protocol that's 4-6x faster than OpenVPN.
+> Deploy on your infrastructure and start onboarding users in minutes.
+>
+> -- https://www.firezone.dev
 
 ## Preparation
 
