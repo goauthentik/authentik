@@ -108,12 +108,12 @@ class EmailStage(Stage):
             CONFIG.refresh("email.password")
             return self.backend_class(
                 host=CONFIG.get("email.host"),
-                port=int(CONFIG.get("email.port")),
+                port=CONFIG.get_int("email.port"),
                 username=CONFIG.get("email.username"),
                 password=CONFIG.get("email.password"),
                 use_tls=CONFIG.get_bool("email.use_tls", False),
                 use_ssl=CONFIG.get_bool("email.use_ssl", False),
-                timeout=int(CONFIG.get("email.timeout")),
+                timeout=CONFIG.get_int("email.timeout"),
             )
         return self.backend_class(
             host=self.host,
