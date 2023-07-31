@@ -71,6 +71,13 @@ See [Configuration](../installation/configuration) to change the internal ports.
 
 ## Startup
 
+:::warning
+The server assumes to have local timezone as UTC.
+All internals are handled in UTC; whenever a time is displayed to the user in UI, the time shown is localized.
+Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers.
+This will not give any advantages. It will cause problems with OAuth and SAML authentication, e.g. [see this GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
+:::
+
 Afterwards, run these commands to finish:
 
 ```shell
@@ -85,28 +92,3 @@ By default, authentik is reachable (by default) on port 9000 (HTTP) and port 944
 To start the initial setup, navigate to `https://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
 
 There you are prompted to set a password for the akadmin user (the default user).
-
-## Explanation
-
-:::warning
-The server assumes to have local timezone as UTC.
-All internals are handled in UTC; whenever a time is displayed to the user in UI it gets localized.
-Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers.
-This will not give any advantages.
-On the contrary, it will cause problems with OAuth and SAML authentication,
-e.g. [see this GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
-:::
-
-The Docker-Compose project contains the following containers:
-
--   server
-
-    This is the backend service, which does all the logic, plus runs the API and the SSO functionality. It also runs the frontend, hosts the JS/CSS files, and serves the files you've uploaded for icons/etc.
-
--   worker
-
-    This container executes background tasks, everything you can see on the _System Tasks_ page in the frontend.
-
--   redis (for cache)
-
--   postgresql (default database)
