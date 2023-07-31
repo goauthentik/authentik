@@ -33,6 +33,7 @@ module.exports = {
                 "core/tenants",
                 "core/certificates",
                 "core/geoip",
+                "core/architecture",
             ],
         },
         {

@@ -5835,6 +5835,51 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s8fa26f65aed77c96">
   <source>More details</source>
 </trans-unit>
+<trans-unit id="s08df8d0a773a3ea0">
+  <source>Remove item</source>
+</trans-unit>
+<trans-unit id="s364c4f177a2f8322">
+  <source>Open API drawer</source>
+</trans-unit>
+<trans-unit id="s9ba989e69344ff29">
+  <source>Open Notification drawer</source>
+</trans-unit>
+<trans-unit id="s14bf17e2a1a2c381">
+  <source>Restart task</source>
+</trans-unit>
+<trans-unit id="s19409e8712ddd369">
+  <source>Add provider</source>
+</trans-unit>
+<trans-unit id="s1f7698c061c208c9">
+  <source>Open</source>
+</trans-unit>
+<trans-unit id="scc3487e74c5a3e89">
+  <source>Copy token</source>
+</trans-unit>
+<trans-unit id="s424f57afae0caac4">
+  <source>Add users</source>
+</trans-unit>
+<trans-unit id="sd9f67fbf3f86efcf">
+  <source>Add group</source>
+</trans-unit>
+<trans-unit id="s254a9a23dc1635df">
+  <source>Import devices</source>
+</trans-unit>
+<trans-unit id="sc4fdeccf14be5378">
+  <source>Execute</source>
+</trans-unit>
+<trans-unit id="s3b3c333481944862">
+  <source>Show details</source>
+</trans-unit>
+<trans-unit id="sb8f855b49234b81b">
+  <source>Apply</source>
+</trans-unit>
+<trans-unit id="s9d8b8aa2b404c2c8">
+  <source>Settings</source>
+</trans-unit>
+<trans-unit id="s7cfe12cd14df9950">
+  <source>Sign out</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

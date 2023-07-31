@@ -49,7 +49,17 @@ Format a string using python's % formatting. First argument is the format string
 
 Minimal example:
 
-`required: !If [true, true, false] # !If [<condition>, <when true>, <when false>`
+```yaml
+# Short form
+# !If [<condition>]
+required: !If [true]
+```
+
+```yaml
+# Longer form
+# !If [<condition>, <when true>, <when false>]
+required: !If [true, true, false]
+```
 
 Full example:
 

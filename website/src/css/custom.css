@@ -84,7 +84,7 @@
         no-repeat;
 }
 
-@media (min-width: 1416px) {
+@media (min-width: 1600px) {
     #__docusaurus_skipToContent_fallback > div {
         align-self: center;
         max-width: 1600px;

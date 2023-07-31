@@ -19,7 +19,7 @@ from authentik.policies.types import CACHE_PREFIX, PolicyRequest, PolicyResult
 LOGGER = get_logger()
 
 FORK_CTX = get_context("fork")
-CACHE_TIMEOUT = int(CONFIG.get("redis.cache_timeout_policies"))
+CACHE_TIMEOUT = CONFIG.get_int("redis.cache_timeout_policies")
 PROCESS_CLASS = FORK_CTX.Process
 
 

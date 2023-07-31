@@ -10,6 +10,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -168,7 +169,9 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         }}
                     >
                         <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                            <i class="fas fa-plus" aria-hidden="true"></i>
+                            <pf-tooltip position="top" content=${msg("Add provider")}>
+                                <i class="fas fa-plus" aria-hidden="true"></i>
+                            </pf-tooltip>
                         </button>
                     </ak-provider-select-table>
                     <div class="pf-c-form-control">

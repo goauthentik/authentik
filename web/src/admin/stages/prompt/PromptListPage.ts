@@ -8,6 +8,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -91,7 +92,9 @@ export class PromptListPage extends TablePage<Prompt> {
                 <span slot="header"> ${msg("Update Prompt")} </span>
                 <ak-prompt-form slot="form" .instancePk=${item.pk}> </ak-prompt-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-edit"></i>
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit"></i>
+                    </pf-tooltip>
                 </button>
             </ak-forms-modal>`,
         ];

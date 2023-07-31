@@ -22,6 +22,7 @@ import "@goauthentik/elements/sidebar/Sidebar";
 import { DefaultTenant } from "@goauthentik/elements/sidebar/SidebarBrand";
 import "@goauthentik/elements/sidebar/SidebarItem";
 import { ROUTES } from "@goauthentik/user/Routes";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -211,7 +212,12 @@ export class UserInterface extends Interface {
                                               });
                                           }}
                                       >
-                                          <i class="fas fa-code" aria-hidden="true"></i>
+                                          <pf-tooltip
+                                              position="top"
+                                              content=${msg("Open API drawer")}
+                                          >
+                                              <i class="fas fa-code" aria-hidden="true"></i>
+                                          </pf-tooltip>
                                       </button>
                                   </div>`
                                 : html``}
@@ -238,7 +244,12 @@ export class UserInterface extends Interface {
                                                   ? "pf-m-unread"
                                                   : ""}"
                                           >
-                                              <i class="fas fa-bell" aria-hidden="true"></i>
+                                              <pf-tooltip
+                                                  position="top"
+                                                  content=${msg("Open Notification drawer")}
+                                              >
+                                                  <i class="fas fa-bell" aria-hidden="true"></i>
+                                              </pf-tooltip>
                                               <span class="pf-c-notification-badge__count"
                                                   >${this.notificationsCount}</span
                                               >
@@ -253,7 +264,9 @@ export class UserInterface extends Interface {
                                           type="button"
                                           href="#/settings"
                                       >
-                                          <i class="fas fa-cog" aria-hidden="true"></i>
+                                          <pf-tooltip position="top" content=${msg("Settings")}>
+                                              <i class="fas fa-cog" aria-hidden="true"></i>
+                                          </pf-tooltip>
                                       </a>
                                   </div>`
                                 : html``}
@@ -262,7 +275,9 @@ export class UserInterface extends Interface {
                                     href="/flows/-/default/invalidation/"
                                     class="pf-c-button pf-m-plain"
                                 >
-                                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                    <pf-tooltip position="top" content=${msg("Sign out")}>
+                                        <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                                    </pf-tooltip>
                                 </a>
                             </div>
                             ${this.me.user.isSuperuser

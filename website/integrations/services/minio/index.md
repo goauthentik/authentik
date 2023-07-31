@@ -6,11 +6,9 @@ title: MinIO
 
 ## What is MinIO
 
-From https://en.wikipedia.org/wiki/MinIO
-
-:::note
-MinIO is an Amazon S3 compatible object storage suite capable of handling structured and unstructured data including log files, artifacts, backups, container images, photos and videos. The current maximum supported object size is 5TB.
-:::
+> MinIO is an Amazon S3 compatible object storage suite capable of handling structured and unstructured data including log files, artifacts, backups, container images, photos and videos. The current maximum supported object size is 5TB.
+>
+> -- https://en.wikipedia.org/wiki/MinIO
 
 ## Preparation
 

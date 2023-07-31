@@ -38,6 +38,11 @@ updates:
         patterns:
           - "@babel/*"
           - "babel-*"
+      eslint:
+        patterns:
+          - "@typescript-eslint/eslint-*"
+          - "eslint"
+          - "eslint-*"
       storybook:
         patterns:
           - "@storybook/*"

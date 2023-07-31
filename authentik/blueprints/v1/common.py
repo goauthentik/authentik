@@ -249,6 +249,8 @@ class Context(YAMLTag):
         value = self.default
         if self.key in blueprint.context:
             value = blueprint.context[self.key]
+        if isinstance(value, YAMLTag):
+            return value.resolve(entry, blueprint)
         return value
 
 
@@ -372,8 +374,12 @@ class If(YAMLTag):
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.condition = loader.construct_object(node.value[0])
-        self.when_true = loader.construct_object(node.value[1])
-        self.when_false = loader.construct_object(node.value[2])
+        if len(node.value) == 1:
+            self.when_true = True
+            self.when_false = False
+        else:
+            self.when_true = loader.construct_object(node.value[1])
+            self.when_false = loader.construct_object(node.value[2])
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         if isinstance(self.condition, YAMLTag):

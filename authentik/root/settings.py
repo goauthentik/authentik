@@ -190,14 +190,14 @@ if CONFIG.get_bool("redis.tls", False):
 _redis_url = (
     f"{_redis_protocol_prefix}:"
     f"{quote_plus(CONFIG.get('redis.password'))}@{quote_plus(CONFIG.get('redis.host'))}:"
-    f"{int(CONFIG.get('redis.port'))}"
+    f"{CONFIG.get_int('redis.port')}"
 )
 
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": f"{_redis_url}/{CONFIG.get('redis.db')}",
-        "TIMEOUT": int(CONFIG.get("redis.cache_timeout", 300)),
+        "TIMEOUT": CONFIG.get_int("redis.cache_timeout", 300),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
         "KEY_PREFIX": "authentik_cache",
     }
@@ -274,7 +274,7 @@ DATABASES = {
         "NAME": CONFIG.get("postgresql.name"),
         "USER": CONFIG.get("postgresql.user"),
         "PASSWORD": CONFIG.get("postgresql.password"),
-        "PORT": int(CONFIG.get("postgresql.port")),
+        "PORT": CONFIG.get_int("postgresql.port"),
         "SSLMODE": CONFIG.get("postgresql.sslmode"),
         "SSLROOTCERT": CONFIG.get("postgresql.sslrootcert"),
         "SSLCERT": CONFIG.get("postgresql.sslcert"),
@@ -293,12 +293,12 @@ if CONFIG.get_bool("postgresql.use_pgbouncer", False):
 # loads the config directly from CONFIG
 # See authentik/stages/email/models.py, line 105
 EMAIL_HOST = CONFIG.get("email.host")
-EMAIL_PORT = int(CONFIG.get("email.port"))
+EMAIL_PORT = CONFIG.get_int("email.port")
 EMAIL_HOST_USER = CONFIG.get("email.username")
 EMAIL_HOST_PASSWORD = CONFIG.get("email.password")
 EMAIL_USE_TLS = CONFIG.get_bool("email.use_tls", False)
 EMAIL_USE_SSL = CONFIG.get_bool("email.use_ssl", False)
-EMAIL_TIMEOUT = int(CONFIG.get("email.timeout"))
+EMAIL_TIMEOUT = CONFIG.get_int("email.timeout")
 DEFAULT_FROM_EMAIL = CONFIG.get("email.from")
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_SUBJECT_PREFIX = "[authentik] "

@@ -6,6 +6,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -133,7 +134,9 @@ export class SystemTaskListPage extends TablePage<Task> {
                         });
                 }}
             >
-                <i class="fas fa-play" aria-hidden="true"></i>
+                <pf-tooltip position="top" content=${msg("Restart task")}>
+                    <i class="fas fa-redo" aria-hidden="true"></i>
+                </pf-tooltip>
             </ak-action-button>`,
         ];
     }

@@ -6,13 +6,11 @@ title: FortiManager
 
 ## What is FortiManager
 
-From https://www.fortinet.com/products/management/fortimanager
-
-:::note
-FortiManager supports network operations use cases for centralized management, best practices compliance, and workflow automation to provide better protection against breaches.
-
-FortiManager is a paid enterprise product.
-:::
+> FortiManager supports network operations use cases for centralized management, best practices compliance, and workflow automation to provide better protection against breaches.
+>
+> FortiManager is a paid enterprise product.
+>
+> -- https://www.fortinet.com/products/management/fortimanager
 
 ## Preparation
 
