@@ -18,7 +18,6 @@ entries:
     identifiers:
       name: !Context group_name
     attrs:
-      name: !Context group_name
       is_superuser: true
     id: admin-group
   - model: authentik_core.user

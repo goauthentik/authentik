@@ -319,5 +319,6 @@ class Importer:
                 self.logger.debug("Blueprint validation failed")
         for log in logs:
             getattr(self.logger, log.get("log_level"))(**log)
+        self.logger.debug("Finished blueprint import validation")
         self.__import = orig_import
         return successful, logs
