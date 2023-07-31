@@ -37,8 +37,8 @@ This container executes background tasks, such as sending emails, the event noti
 
 #### Persistence
 
--   `/certs` is used for authentik to import external certs, which in most cases shouldn't be used for SAML, but rather if you use authentik without a reverse proxy, this is used for the lets encrypt integration
--   `/templates` is used for custom email templates, and as with the other ones fully optional
+-   `/certs` is used for authentik to import external certs, which in most cases shouldn't be used for SAML, but rather if you use authentik without a reverse proxy, this can be used for example for the [Let's Encrypt integration](../core/certificates.md#lets-encrypt)
+-   `/templates` is used for [custom email templates](../flow/stages/email/index.mdx#custom-templates), and as with the other ones fully optional
 
 ### PostgreSQL
 
