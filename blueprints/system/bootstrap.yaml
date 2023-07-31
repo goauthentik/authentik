@@ -7,7 +7,8 @@ context:
   username: akadmin
   group_name: authentik Admins
   email: !Env [AUTHENTIK_BOOTSTRAP_EMAIL, "root@example.com"]
-  password: !Env AUTHENTIK_BOOTSTRAP_PASSWORD
+  password: !Env [AUTHENTIK_BOOTSTRAP_PASSWORD, null]
+  token: !Env [AUTHENTIK_BOOTSTRAP_TOKEN, null]
 entries:
   - model: authentik_core.group
     state: created
@@ -19,6 +20,7 @@ entries:
     id: admin-group
   - model: authentik_core.user
     state: created
+    id: admin-user
     identifiers:
       username: !Context username
     attrs:
@@ -26,14 +28,17 @@ entries:
       email: !Context email
       groups:
         - !KeyOf admin-group
-  - model: authentik_blueprints.metausersetpassword
+      password: !Context password
+  - model: authentik_core.token
+    state: created
     conditions:
-      - !If [!Context password]
-      - !If [!Find [authentik_core.user, [username, !Context username]]]
-    attrs:
-      user_identifiers:
-        username: !Context username
-      raw_password: !Context password
+      - !If [!Context token]
+    identifiers:
+      identifier: authentik-bootstrap-token
+      intent: api
+      expiring: false
+      key: !Context token
+      user: !KeyOf admin-user
   - model: authentik_blueprints.blueprintinstance
     identifiers:
       metadata:
