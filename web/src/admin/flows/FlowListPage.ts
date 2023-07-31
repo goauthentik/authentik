@@ -123,7 +123,9 @@ export class FlowListPage extends TablePage<Flow> {
                     </pf-tooltip>
                 </button>
                 <a class="pf-c-button pf-m-plain" href=${item.exportUrl}>
-                    <i class="fas fa-download"></i>
+                    <pf-tooltip position="top" content=${msg("Export")}>
+                        <i class="fas fa-download"></i>
+                    </pf-tooltip>
                 </a>`,
         ];
     }

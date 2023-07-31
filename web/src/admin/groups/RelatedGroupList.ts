@@ -57,7 +57,9 @@ export class RelatedGroupAdd extends Form<{ groups: string[] }> {
                     }}
                 >
                     <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                        <i class="fas fa-plus" aria-hidden="true"></i>
+                        <pf-tooltip position="top" content=${msg("Add group")}>
+                            <i class="fas fa-plus" aria-hidden="true"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-user-group-select-table>
                 <div class="pf-c-form-control">

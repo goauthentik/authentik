@@ -71,7 +71,9 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
                         }}
                     >
                         <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                            <i class="fas fa-plus" aria-hidden="true"></i>
+                            <pf-tooltip position="top" content=${msg("Add users")}>
+                                <i class="fas fa-plus" aria-hidden="true"></i>
+                            </pf-tooltip>
                         </button>
                     </ak-group-member-select-table>
                     <div class="pf-c-form-control">
