@@ -100,7 +100,7 @@ export class LibraryApplication extends AKElement {
                               class="pf-c-button pf-m-control pf-m-small pf-m-block"
                               href="/if/admin/#/core/applications/${this.application?.slug}"
                           >
-                              <i class="fas fa-pencil-alt"></i>&nbsp;${msg("Edit")}
+                              <i class="fas fa-edit"></i>&nbsp;${msg("Edit")}
                           </a>
                       `
                     : html``}
