@@ -249,6 +249,8 @@ class Context(YAMLTag):
         value = self.default
         if self.key in blueprint.context:
             value = blueprint.context[self.key]
+        if isinstance(value, YAMLTag):
+            return value.resolve(entry, blueprint)
         return value
 
 
