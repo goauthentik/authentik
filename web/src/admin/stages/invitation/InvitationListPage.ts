@@ -10,6 +10,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -127,7 +128,9 @@ export class InvitationListPage extends TablePage<Invitation> {
                 <span slot="header"> ${msg("Update Invitation")} </span>
                 <ak-invitation-form slot="form" .instancePk=${item.pk}> </ak-invitation-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-edit"></i>
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit"></i>
+                    </pf-tooltip>
                 </button>
             </ak-forms-modal>`,
         ];
