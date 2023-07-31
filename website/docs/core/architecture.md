@@ -48,6 +48,8 @@ authentik uses PostgreSQL to store all of its configuration and other data (excl
 
 -   `/var/lib/postgresql/data` is used to store the PostgreSQL database
 
+On Kubernetes, with the default Helm chart and using the packaged PostgreSQL sub-chart, persistent data is stored in a PVC.
+
 ### Redis
 
 authentik uses Redis as a message-queue and a cache. Data in Redis is not required to be persistent, however you should be aware that restarting Redis will cause the loss of all sessions.
@@ -55,3 +57,5 @@ authentik uses Redis as a message-queue and a cache. Data in Redis is not requir
 #### Persistence
 
 -   `/data` is used to store the Redis data
+
+On Kubernetes, with the default Helm chart and using the packaged Redis sub-chart, persistent data is stored in a PVC.
