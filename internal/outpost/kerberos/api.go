@@ -5,9 +5,12 @@ import (
 	"context"
 	"encoding/binary"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
+	"syscall"
+	"time"
 
 	"github.com/jcmturner/gofork/encoding/asn1"
 	log "github.com/sirupsen/logrus"
@@ -56,6 +59,54 @@ func (m *KdcProxyMessage) Marshal() ([]byte, error) {
 		return nil, err
 	}
 	return b, err
+}
+
+type PrincipalName struct {
+	NameType   int32    `asn1:"explicit,tag:0"`
+	NameString []string `asn1:"generalstring,explicit,tag:1"`
+}
+
+func (m *PrincipalName) Unmarshal(b []byte) error {
+	_, err := asn1.Unmarshal(b, m)
+	return err
+}
+
+func (m *PrincipalName) Marshal() ([]byte, error) {
+	b, err := asn1.Marshal(*m)
+	if err != nil {
+		return nil, err
+	}
+	return b, err
+}
+
+// Ignoring optional fields, we can't fill them anyway
+type KrbError struct {
+	Pvno      int           `asn1:"explicit,tag:0"`
+	MsgType   int           `asn1:"explicit,tag:1"`
+	Stime     time.Time     `asn1:"generalized,explicit,tag:4"`
+	Susec     int           `asn1:"explicit,tag:5"`
+	ErrorCode int32         `asn1:"explicit,tag:6"`
+	Realm     string        `asn1:"explicit,generalstring,tag:9"`
+	Sname     PrincipalName `asn1:"explicit,tag:10"`
+}
+
+func (m *KrbError) Unmarshal(b []byte) error {
+	_, err := asn1.UnmarshalWithParams(b, m, fmt.Sprintf("application,explicit,tag:%v", 30)) // KRB_ERROR
+	return err
+}
+
+func (m *KrbError) Marshal() ([]byte, error) {
+	b, err := asn1.Marshal(*m)
+	if err != nil {
+		return nil, err
+	}
+	r := asn1.RawValue{
+		Class:      asn1.ClassApplication,
+		IsCompound: true,
+		Tag:        30, // KRB_ERROR
+		Bytes:      b,
+	}
+	return asn1.Marshal(r)
 }
 
 func (ks *KerberosServer) handle(request []byte) ([]byte, error) {
@@ -119,6 +170,31 @@ func (ks *KerberosServer) StartUDPServer() error {
 			// And remove the message length when responding
 			_, err = ks.us.WriteToUDP(response[4:], remoteAddr)
 			if err != nil {
+				if errors.Is(err, syscall.EMSGSIZE) {
+					now := time.Now().UTC()
+					krbError := KrbError{
+						Pvno:      5,
+						MsgType:   30, // KRB_ERROR
+						Stime:     now,
+						Susec:     now.Nanosecond() / 1000000, // Nano to miliseconds
+						ErrorCode: 52,                         // KRB_ERR_RESPONSE_TOO_BIG, Response too big for UDP; retry with TCP
+						Realm:     ks.provider.realmName,
+						Sname: PrincipalName{
+							NameType:   2, // NT_SRV_INST
+							NameString: []string{"krbtgt", ks.provider.realmName},
+						},
+					}
+					e, err := krbError.Marshal()
+					if err != nil {
+						ks.log.WithError(err).Debug("failed to create krberror response")
+						return
+					}
+					_, err = ks.us.WriteToUDP(e, remoteAddr)
+					if err != nil {
+						ks.log.WithError(err).Info("failed to write response")
+						return
+					}
+				}
 				ks.log.WithError(err).Info("failed to write response")
 				return
 			}
