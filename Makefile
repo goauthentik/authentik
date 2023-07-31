@@ -140,6 +140,9 @@ web-watch:
 	touch web/dist/.gitkeep
 	cd web && npm run watch
 
+web-storybook-watch:
+	cd web && npm run storybook
+
 web-lint-fix:
 	cd web && npm run prettier
 
