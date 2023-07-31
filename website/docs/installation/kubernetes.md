@@ -2,7 +2,7 @@
 title: Kubernetes installation
 ---
 
-You can install authentik to run on Kubernetes using Helm Chart
+You can install authentik to run on Kubernetes using Helm Chart.
 
 ### Requirements
 
