@@ -22,7 +22,6 @@ entries:
     identifiers:
       username: !Context username
     attrs:
-      password: !Context password
       name: authentik Default Admin
       email: !Context email
       groups:

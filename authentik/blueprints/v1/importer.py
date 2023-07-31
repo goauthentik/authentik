@@ -265,6 +265,9 @@ class Importer:
             try:
                 serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
+                # For deleting objects we don't need the serializer to be valid
+                if entry.get_state(self.__import) == BlueprintEntryDesiredState.ABSENT:
+                    continue
                 self.logger.warning(f"entry invalid: {exc}", entry=entry, error=exc)
                 return False
             if not serializer:
