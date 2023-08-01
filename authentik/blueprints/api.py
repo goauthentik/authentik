@@ -1,9 +1,10 @@
 """Serializer mixin for managed models"""
+from django.apps import apps
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, DateTimeField, JSONField
+from rest_framework.fields import CharField, DateTimeField, DictField, JSONField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -12,7 +13,8 @@ from rest_framework.viewsets import ModelViewSet
 
 from authentik.api.decorators import permission_required
 from authentik.blueprints.models import BlueprintInstance
-from authentik.blueprints.v1.importer import StringImporter
+from authentik.blueprints.v1.common import Blueprint, BlueprintEntry, BlueprintEntryDesiredState
+from authentik.blueprints.v1.importer import StringImporter, is_model_allowed
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
@@ -84,6 +86,32 @@ class BlueprintInstanceSerializer(ModelSerializer):
         }
 
 
+class BlueprintEntrySerializer(PassiveSerializer):
+    """Validate a single blueprint entry, similar to a subset of regular blueprints"""
+
+    model = CharField()
+    attrs = DictField()
+
+    def validate_model(self, fq_model: str) -> str:
+        """Validate model is allowed"""
+        if "." not in fq_model:
+            raise ValidationError("Invalid model")
+        app, model_name = fq_model.split(".")
+        try:
+            model = apps.get_model(app, model_name)
+            if not is_model_allowed(model):
+                raise ValidationError("Invalid model")
+        except LookupError:
+            raise ValidationError("Invalid model")
+        return model
+
+
+class BlueprintProceduralSerializer(PassiveSerializer):
+    """Validate a procedural blueprint, which is a subset of a regular blueprint"""
+
+    entries = ListSerializer(child=BlueprintEntrySerializer())
+
+
 class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     """Blueprint instances"""
 
@@ -127,3 +155,31 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         blueprint = self.get_object()
         apply_blueprint.delay(str(blueprint.pk)).get()
         return self.retrieve(request, *args, **kwargs)
+
+    @extend_schema(
+        request=BlueprintProceduralSerializer,
+    )
+    @action(
+        detail=False,
+        pagination_class=None,
+        filter_backends=[],
+        methods=["PUT"],
+        permission_classes=[IsAdminUser],
+    )
+    def procedural(self, request: Request) -> Response:
+        blueprint = Blueprint()
+        data = BlueprintProceduralSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        for raw_entry in data.validated_data["entries"]:
+            entry = BlueprintEntrySerializer(data=raw_entry)
+            entry.is_valid(raise_exception=True)
+            blueprint.entries.append(
+                BlueprintEntry(
+                    model=entry.data["model"],
+                    state=BlueprintEntryDesiredState.PRESENT,
+                    identifiers={},
+                    attrs=entry.data["attrs"],
+                )
+            )
+        print(blueprint)
+        return Response(status=400)

@@ -8513,6 +8513,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /managed/blueprints/procedural/:
+    put:
+      operationId: managed_blueprints_procedural_update
+      description: Blueprint instances
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlueprintProceduralRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintInstance'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /oauth2/access_tokens/:
     get:
       operationId: oauth2_access_tokens_list
@@ -28000,6 +28033,20 @@ components:
         * `REDIRECT` - Redirect Binding
         * `POST` - POST Binding
         * `POST_AUTO` - POST Binding with auto-confirmation
+    BlueprintEntryRequest:
+      type: object
+      description: Validate a single blueprint entry, similar to a subset of regular
+        blueprints
+      properties:
+        model:
+          type: string
+          minLength: 1
+        attrs:
+          type: object
+          additionalProperties: {}
+      required:
+      - attrs
+      - model
     BlueprintFile:
       type: object
       properties:
@@ -28101,6 +28148,17 @@ components:
         * `error` - Error
         * `orphaned` - Orphaned
         * `unknown` - Unknown
+    BlueprintProceduralRequest:
+      type: object
+      description: Validate a procedural blueprint, which is a subset of a regular
+        blueprint
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlueprintEntryRequest'
+      required:
+      - entries
     Cache:
       type: object
       description: Generic cache stats for an object
@@ -40941,6 +40999,6 @@ components:
       type: apiKey
       in: header
       name: Authorization
-      scheme: bearer
+      scheme: Bearer
 servers:
-- url: /api/v3/
+- url: /api/v3

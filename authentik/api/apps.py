@@ -31,5 +31,5 @@ class AuthentikAPIConfig(AppConfig):
                     "type": "apiKey",
                     "in": "header",
                     "name": "Authorization",
-                    "scheme": "bearer",
+                    "scheme": "Bearer",
                 }
