@@ -125,7 +125,7 @@ SPECTACULAR_SETTINGS = {
     "SCHEMA_PATH_PREFIX_TRIM": True,
     "SERVERS": [
         {
-            "url": "/api/v3/",
+            "url": "/api/v3",
         },
     ],
     "CONTACT": {
