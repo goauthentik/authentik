@@ -6,7 +6,7 @@ from django.test import TransactionTestCase
 
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.tests import apply_blueprint
-from authentik.blueprints.v1.importer import Importer
+from authentik.blueprints.v1.importer import StringImporter
 from authentik.tenants.models import Tenant
 
 
@@ -25,7 +25,7 @@ def blueprint_tester(file_name: Path) -> Callable:
     def tester(self: TestPackaged):
         base = Path("blueprints/")
         rel_path = Path(file_name).relative_to(base)
-        importer = Importer(BlueprintInstance(path=str(rel_path)).retrieve())
+        importer = StringImporter(BlueprintInstance(path=str(rel_path)).retrieve())
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
