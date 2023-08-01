@@ -24,7 +24,7 @@ The `-O` flag retains the downloaded file's name, overwriting any existing local
 
 ### Kubernetes
 
-Upgrade the helm chart to the new version
+Upgrade the Helm Chart to the new version, using the following commands:
 
 ```shell
 helm repo update
