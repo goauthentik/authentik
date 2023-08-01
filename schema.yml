@@ -3091,6 +3091,7 @@ paths:
   /core/applications/create_transactional/:
     put:
       operationId: core_applications_create_transactional_update
+      description: Convert data into a blueprint, validate it and apply it
       tags:
       - core
       requestBody:
@@ -3103,7 +3104,11 @@ paths:
       - authentik: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionApplicationResponse'
+          description: ''
         '400':
           content:
             application/json:
@@ -41851,6 +41856,22 @@ components:
       - app
       - provider
       - provider_model
+    TransactionApplicationResponse:
+      type: object
+      description: Transactional creation response
+      properties:
+        valid:
+          type: boolean
+        applied:
+          type: boolean
+        logs:
+          type: array
+          items:
+            type: string
+      required:
+      - applied
+      - logs
+      - valid
     TypeCreate:
       type: object
       description: Types of an object that can be created
