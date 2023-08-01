@@ -4,7 +4,7 @@ import authentik. This is done by the dockerfile."""
 from sys import exit as sysexit
 from time import sleep
 
-from psycopg2 import OperationalError, connect
+from psycopg import OperationalError, connect
 from redis.exceptions import RedisError
 
 from authentik.lib.config import CONFIG
