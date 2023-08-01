@@ -1,7 +1,7 @@
 """Test blueprints v1"""
 from django.test import TransactionTestCase
 
-from authentik.blueprints.v1.importer import Importer
+from authentik.blueprints.v1.importer import StringImporter
 from authentik.core.models import Application, Token, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.flows.models import Flow
@@ -18,7 +18,7 @@ class TestBlueprintsV1ConditionalFields(TransactionTestCase):
         self.uid = generate_id()
         import_yaml = load_fixture("fixtures/conditional_fields.yaml", uid=self.uid, user=user.pk)
 
-        importer = Importer(import_yaml)
+        importer = StringImporter(import_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
