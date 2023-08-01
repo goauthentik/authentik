@@ -16,7 +16,7 @@ from structlog.stdlib import get_logger
 
 from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.exporter import FlowExporter
-from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, Importer
+from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT, StringImporter
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import CacheSerializer, LinkSerializer, PassiveSerializer
 from authentik.events.utils import sanitize_dict
@@ -181,7 +181,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         if not file:
             return Response(data=import_response.initial_data, status=400)
 
-        importer = Importer(file.read().decode())
+        importer = StringImporter(file.read().decode())
         valid, logs = importer.validate()
         import_response.initial_data["logs"] = [sanitize_dict(log) for log in logs]
         import_response.initial_data["success"] = valid

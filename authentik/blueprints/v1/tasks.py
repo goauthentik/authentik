@@ -26,7 +26,7 @@ from authentik.blueprints.models import (
     BlueprintRetrievalFailed,
 )
 from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata, EntryInvalidError
-from authentik.blueprints.v1.importer import Importer
+from authentik.blueprints.v1.importer import StringImporter
 from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.events.monitored_tasks import (
@@ -190,7 +190,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         self.set_uid(slugify(instance.name))
         blueprint_content = instance.retrieve()
         file_hash = sha512(blueprint_content.encode()).hexdigest()
-        importer = Importer(blueprint_content, instance.context)
+        importer = StringImporter(blueprint_content, instance.context)
         if importer.blueprint.metadata:
             instance.metadata = asdict(importer.blueprint.metadata)
         valid, logs = importer.validate()

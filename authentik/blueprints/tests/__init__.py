@@ -11,7 +11,7 @@ from authentik.blueprints.models import BlueprintInstance
 def apply_blueprint(*files: str):
     """Apply blueprint before test"""
 
-    from authentik.blueprints.v1.importer import Importer
+    from authentik.blueprints.v1.importer import StringImporter
 
     def wrapper_outer(func: Callable):
         """Apply blueprint before test"""
@@ -20,7 +20,7 @@ def apply_blueprint(*files: str):
         def wrapper(*args, **kwargs):
             for file in files:
                 content = BlueprintInstance(path=file).retrieve()
-                Importer(content).apply()
+                StringImporter(content).apply()
             return func(*args, **kwargs)
 
         return wrapper

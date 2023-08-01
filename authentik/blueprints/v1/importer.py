@@ -85,27 +85,22 @@ class Importer:
     """Import Blueprint from YAML"""
 
     logger: BoundLogger
+    _import: Blueprint
 
-    def __init__(self, yaml_input: str, context: Optional[dict] = None):
+    def __init__(self, blueprint: Blueprint, context: Optional[dict] = None):
         self.__pk_map: dict[Any, Model] = {}
+        self._import = blueprint
         self.logger = get_logger()
-        import_dict = load(yaml_input, BlueprintLoader)
-        try:
-            self.__import = from_dict(
-                Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
-            )
-        except DaciteError as exc:
-            raise EntryInvalidError from exc
         ctx = {}
-        always_merger.merge(ctx, self.__import.context)
+        always_merger.merge(ctx, self._import.context)
         if context:
             always_merger.merge(ctx, context)
-        self.__import.context = ctx
+        self._import.context = ctx
 
     @property
     def blueprint(self) -> Blueprint:
         """Get imported blueprint"""
-        return self.__import
+        return self._import
 
     def __update_pks_for_attrs(self, attrs: dict[str, Any]) -> dict[str, Any]:
         """Replace any value if it is a known primary key of an other object"""
@@ -151,11 +146,11 @@ class Importer:
     # pylint: disable-msg=too-many-locals
     def _validate_single(self, entry: BlueprintEntry) -> Optional[BaseSerializer]:
         """Validate a single entry"""
-        if not entry.check_all_conditions_match(self.__import):
+        if not entry.check_all_conditions_match(self._import):
             self.logger.debug("One or more conditions of this entry are not fulfilled, skipping")
             return None
 
-        model_app_label, model_name = entry.get_model(self.__import).split(".")
+        model_app_label, model_name = entry.get_model(self._import).split(".")
         model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
@@ -163,7 +158,7 @@ class Importer:
         if issubclass(model, BaseMetaModel):
             serializer_class: type[Serializer] = model.serializer()
             serializer = serializer_class(
-                data=entry.get_attrs(self.__import),
+                data=entry.get_attrs(self._import),
                 context={
                     SERIALIZER_CONTEXT_BLUEPRINT: entry,
                 },
@@ -181,7 +176,7 @@ class Importer:
         # the full serializer for later usage
         # Because a model might have multiple unique columns, we chain all identifiers together
         # to create an OR query.
-        updated_identifiers = self.__update_pks_for_attrs(entry.get_identifiers(self.__import))
+        updated_identifiers = self.__update_pks_for_attrs(entry.get_identifiers(self._import))
         for key, value in list(updated_identifiers.items()):
             if isinstance(value, dict) and "pk" in value:
                 del updated_identifiers[key]
@@ -217,7 +212,7 @@ class Importer:
                 model_instance.pk = updated_identifiers["pk"]
             serializer_kwargs["instance"] = model_instance
         try:
-            full_data = self.__update_pks_for_attrs(entry.get_attrs(self.__import))
+            full_data = self.__update_pks_for_attrs(entry.get_attrs(self._import))
         except ValueError as exc:
             raise EntryInvalidError(exc) from exc
         always_merger.merge(full_data, updated_identifiers)
@@ -252,8 +247,8 @@ class Importer:
     def _apply_models(self) -> bool:
         """Apply (create/update) models yaml"""
         self.__pk_map = {}
-        for entry in self.__import.entries:
-            model_app_label, model_name = entry.get_model(self.__import).split(".")
+        for entry in self._import.entries:
+            model_app_label, model_name = entry.get_model(self._import).split(".")
             try:
                 model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
             except LookupError:
@@ -266,14 +261,14 @@ class Importer:
                 serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
                 # For deleting objects we don't need the serializer to be valid
-                if entry.get_state(self.__import) == BlueprintEntryDesiredState.ABSENT:
+                if entry.get_state(self._import) == BlueprintEntryDesiredState.ABSENT:
                     continue
                 self.logger.warning(f"entry invalid: {exc}", entry=entry, error=exc)
                 return False
             if not serializer:
                 continue
 
-            state = entry.get_state(self.__import)
+            state = entry.get_state(self._import)
             if state in [BlueprintEntryDesiredState.PRESENT, BlueprintEntryDesiredState.CREATED]:
                 instance = serializer.instance
                 if (
@@ -306,8 +301,8 @@ class Importer:
         """Validate loaded blueprint export, ensure all models are allowed
         and serializers have no errors"""
         self.logger.debug("Starting blueprint import validation")
-        orig_import = deepcopy(self.__import)
-        if self.__import.version != 1:
+        orig_import = deepcopy(self._import)
+        if self._import.version != 1:
             self.logger.warning("Invalid blueprint version")
             return False, [{"event": "Invalid blueprint version"}]
         with (
@@ -320,5 +315,19 @@ class Importer:
         for log in logs:
             getattr(self.logger, log.get("log_level"))(**log)
         self.logger.debug("Finished blueprint import validation")
-        self.__import = orig_import
+        self._import = orig_import
         return successful, logs
+
+
+class StringImporter(Importer):
+    """Importer that also parses from string"""
+
+    def __init__(self, yaml_input: str, context: dict | None = None):
+        import_dict = load(yaml_input, BlueprintLoader)
+        try:
+            _import = from_dict(
+                Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
+            )
+        except DaciteError as exc:
+            raise EntryInvalidError from exc
+        super().__init__(_import, context)
