@@ -279,9 +279,9 @@ class KerberosRealm(KerberosProvider):
                 event.from_http(event)
             LOGGER.warning("Failed to evaluate property mapping", exc=exc)
             return None
-        if not isinstance(principal, User):
+        if not isinstance(user, User):
             LOGGER.warning(
-                "Property mapping user to principal returned a non-PrincipalName value, ignoring.",
+                "Property mapping user to principal returned a non-User value, ignoring.",
                 realm=self,
                 principal=principal,
                 value=user,

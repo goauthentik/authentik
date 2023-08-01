@@ -18,7 +18,10 @@ import {
     FlowsApi,
     FlowsInstancesListDesignationEnum,
     FlowsInstancesListRequest,
+    KerberosPrincipalMapping,
+    KerberosPrincipalMappingsListRequest,
     KerberosRealm,
+    PropertymappingsApi,
     ProvidersApi,
 } from "@goauthentik/api";
 
@@ -135,7 +138,90 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                 </p>
             </ak-form-element-horizontal>
 
-            <ak-form-group .expanded=${true}>
+            <ak-form-group .expanded=${false}>
+                <span slot="header"> ${msg("Principal mappings")} </span>
+                <div slot="body" class="pf-c-form">
+                    <ak-form-element-horizontal
+                        label=${msg("User to principal mapping")}
+                        ?required=${false}
+                        name="userToPrincipalPm"
+                    >
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<KerberosPrincipalMapping[]> => {
+                                const args: KerberosPrincipalMappingsListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const propertyMappings = await new PropertymappingsApi(
+                                    DEFAULT_CONFIG,
+                                ).propertymappingsKerberosprincipalList(args);
+                                return propertyMappings.results;
+                            }}
+                            .renderElement=${(item: KerberosPrincipalMapping): string => {
+                                return item.name;
+                            }}
+                            .value=${(
+                                item: KerberosPrincipalMapping | undefined,
+                            ): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: KerberosPrincipalMapping): boolean => {
+                                return;
+                                item.pk === this.instance?.userToPrincipalPm;
+                            }}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Mapping used to transform a user to a principal.")}
+                        </p>
+                    </ak-form-element-horizontal>
+
+                    <ak-form-element-horizontal
+                        label=${msg("Principal to user mapping")}
+                        ?required=${false}
+                        name="principalToUserPm"
+                    >
+                        <ak-search-select
+                            .fetchObjects=${async (
+                                query?: string,
+                            ): Promise<KerberosPrincipalMapping[]> => {
+                                const args: KerberosPrincipalMappingsListRequest = {
+                                    ordering: "name",
+                                };
+                                if (query !== undefined) {
+                                    args.search = query;
+                                }
+                                const propertyMappings = await new PropertymappingsApi(
+                                    DEFAULT_CONFIG,
+                                ).propertymappingsKerberosprincipalList(args);
+                                return propertyMappings.results;
+                            }}
+                            .renderElement=${(item: KerberosPrincipalMapping): string => {
+                                return item.name;
+                            }}
+                            .value=${(
+                                item: KerberosPrincipalMapping | undefined,
+                            ): string | undefined => {
+                                return item?.pk;
+                            }}
+                            .selected=${(item: KerberosPrincipalMapping): boolean => {
+                                return;
+                                item.pk === this.instance?.principalToUserPm;
+                            }}
+                        >
+                        </ak-search-select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Mapping used to transform a principal to a user.")}
+                        </p>
+                    </ak-form-element-horizontal>
+                </div>
+            </ak-form-group>
+
+            <ak-form-group .expanded=${false}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
