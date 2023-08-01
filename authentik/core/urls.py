@@ -8,6 +8,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.generic import RedirectView
 
 from authentik.core.api.applications import ApplicationViewSet
+from authentik.core.api.applications_transactional import TransactionalApplicationView
 from authentik.core.api.authenticated_sessions import AuthenticatedSessionViewSet
 from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
@@ -70,6 +71,11 @@ urlpatterns = [
 api_urlpatterns = [
     ("core/authenticated_sessions", AuthenticatedSessionViewSet),
     ("core/applications", ApplicationViewSet),
+    path(
+        "core/applications/create_transactional/",
+        TransactionalApplicationView.as_view(),
+        name="core-apps-transactional",
+    ),
     ("core/groups", GroupViewSet),
     ("core/users", UserViewSet),
     ("core/tokens", TokenViewSet),
