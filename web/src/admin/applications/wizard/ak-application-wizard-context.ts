@@ -29,6 +29,7 @@ type OneOfProvider =
 
 export type WizardState = {
     step: number;
+    providerType: string;
     application: Partial<Application>;
     provider: OneOfProvider;
 };
@@ -42,6 +43,7 @@ export class AkApplicationWizardContext extends CustomListenerElement(LitElement
     @property({ attribute: false })
     wizardState: WizardState = {
         step: 0,
+        providerType: "",
         application: {},
         provider: {},
     };

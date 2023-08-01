@@ -3,39 +3,22 @@ import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-radio-input";
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
-import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { consume } from "@lit-labs/context";
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
-import { state } from "@lit/reactive-element/decorators/state.js";
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { styles as AwadStyles } from "./ak-application-wizard-application-details.css";
-
-import type { WizardState } from "./ak-application-wizard-context";
-import applicationWizardContext from "./ak-application-wizard-context-name";
+import ApplicationWizardPageBase from "./ApplicationWizardPageBase";
 
 @customElement("ak-application-wizard-application-details")
-export class ApplicationWizardApplicationDetails extends CustomEmitterElement(AKElement) {
-    static get styles() {
-        return AwadStyles;
-    }
-
-    @consume({ context: applicationWizardContext, subscribe: true })
-    @state()
-    private wizard!: WizardState;
-
+export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBase {
     handleChange(ev: Event) {
         const value = ev.target.type === "checkbox" ? ev.target.checked : ev.target.value;
-
-        this.dispatchCustomEvent("ak-wizard-update", {
-            ...this.wizard,
+        this.dispatchWizardUpdate({
             application: {
                 ...this.wizard.application,
                 [ev.target.name]: value,
