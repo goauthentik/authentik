@@ -284,7 +284,7 @@ class ConfigLoader:
         for dot_part in dot_parts[:-1]:
             current_obj.setdefault(dot_part, {})
             current_obj = current_obj[dot_part]
-        current_obj[dot_parts[-1]] = value
+        current_obj[dot_parts[-1]] = Attr(value, Attr.Source.ENV, path)
         return outer
 
     def update_from_env(self):
@@ -337,10 +337,6 @@ class ConfigLoader:
         """Set value using same syntax as get()"""
         # Walk sub_dicts before parsing path
         self._set_value_for_key_path(self.raw, path, value, sep)
-
-    def y_bool(self, path: str, default=False) -> bool:
-        """Wrapper for y that converts value into boolean"""
-        return str(self.get(path, default)).lower() == "true"
 
 
 CONFIG = ConfigLoader()
