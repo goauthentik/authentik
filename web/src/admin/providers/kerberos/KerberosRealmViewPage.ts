@@ -11,6 +11,8 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/events/ObjectChangelog";
+import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/forms/ProxyForm";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { msg, str } from "@lit/localize";
@@ -147,6 +149,23 @@ export class KerberosRealmViewPage extends AKElement {
                                     </dd>
                                 </div>
                             </dl>
+                        </div>
+                        <div class="pf-c-card__footer">
+                            <ak-forms-modal>
+                                <span slot="submit"> ${msg("Update")} </span>
+                                <span slot="header"> ${msg("Update Kerberos Realm")} </span>
+                                <ak-proxy-form
+                                    slot="form"
+                                    .args=${{
+                                        instancePk: this.realm.pk,
+                                    }}
+                                    type="ak-kerberos-realm-form"
+                                >
+                                </ak-proxy-form>
+                                <button slot="trigger" class="pf-c-button pf-m-primary">
+                                    ${msg("Edit")}
+                                </button>
+                            </ak-forms-modal>
                         </div>
                     </div>
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
