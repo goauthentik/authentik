@@ -2,7 +2,7 @@
 title: Upgrade PostgreSQL on Kubernetes
 ---
 
-## Placeholders
+## Preparation
 
 -   `authentik-postgresql-0` is the Kubernetes Pod running PostgreSQL.
 
