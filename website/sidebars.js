@@ -33,6 +33,7 @@ module.exports = {
                 "core/tenants",
                 "core/certificates",
                 "core/geoip",
+                "core/architecture",
             ],
         },
         {
@@ -301,6 +302,11 @@ module.exports = {
                         description:
                             "Steps to help debug forward auth setups with various reverse proxies.",
                     },
+                },
+                {
+                    type: "category",
+                    label: "PostgreSQL",
+                    items: ["troubleshooting/postgres/upgrade_kubernetes"],
                 },
                 "troubleshooting/access",
                 "troubleshooting/login",

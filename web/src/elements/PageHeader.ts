@@ -9,6 +9,7 @@ import {
 import { currentInterface } from "@goauthentik/common/sentry";
 import { me } from "@goauthentik/common/users";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -169,7 +170,9 @@ export class PageHeader extends AKElement {
                         );
                     }}
                 >
-                    <i class="fas fa-code"></i>
+                    <pf-tooltip position="top" content=${msg("Open API drawer")}>
+                        <i class="fas fa-code"></i>
+                    </pf-tooltip>
                 </button>
                 <button
                     class="notification-trigger pf-c-button pf-m-plain ${this.hasNotifications
@@ -184,7 +187,9 @@ export class PageHeader extends AKElement {
                         );
                     }}
                 >
-                    <i class="fas fa-bell"></i>
+                    <pf-tooltip position="top" content=${msg("Open Notification drawer")}>
+                        <i class="fas fa-bell"></i>
+                    </pf-tooltip>
                 </button>
             </div>`;
     }

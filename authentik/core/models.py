@@ -60,7 +60,7 @@ def default_token_key():
     """Default token key"""
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
-    return generate_id(int(CONFIG.get("default_token_length")))
+    return generate_id(CONFIG.get_int("default_token_length"))
 
 
 class UserTypes(models.TextChoices):
@@ -79,7 +79,7 @@ class UserTypes(models.TextChoices):
 
 
 class Group(SerializerModel):
-    """Custom Group model which supports a basic hierarchy"""
+    """Group model which supports a basic hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
@@ -148,15 +148,15 @@ class Group(SerializerModel):
 
 
 class UserManager(DjangoUserManager):
-    """Custom user manager that doesn't assign is_superuser and is_staff"""
+    """User manager that doesn't assign is_superuser and is_staff"""
 
     def create_user(self, username, email=None, password=None, **extra_fields):
-        """Custom user manager that doesn't assign is_superuser and is_staff"""
+        """User manager that doesn't assign is_superuser and is_staff"""
         return self._create_user(username, email, password, **extra_fields)
 
 
 class User(SerializerModel, GuardianUserMixin, AbstractUser):
-    """Custom User model to allow easier adding of user-based settings"""
+    """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))

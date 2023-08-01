@@ -6,7 +6,7 @@ from inspect import getmembers, isclass
 from pathlib import Path
 from typing import Any
 
-from psycopg2 import connect
+from psycopg import connect
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
@@ -56,7 +56,7 @@ if __name__ == "__main__":
         user=CONFIG.get("postgresql.user"),
         password=CONFIG.get("postgresql.password"),
         host=CONFIG.get("postgresql.host"),
-        port=int(CONFIG.get("postgresql.port")),
+        port=CONFIG.get_int("postgresql.port"),
         sslmode=CONFIG.get("postgresql.sslmode"),
         sslrootcert=CONFIG.get("postgresql.sslrootcert"),
         sslcert=CONFIG.get("postgresql.sslcert"),

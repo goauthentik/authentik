@@ -9,6 +9,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -128,7 +129,9 @@ export class TokenListPage extends TablePage<Token> {
                           <span slot="header"> ${msg("Update Token")} </span>
                           <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
                           <button slot="trigger" class="pf-c-button pf-m-plain">
-                              <i class="fas fa-edit"></i>
+                              <pf-tooltip position="top" content=${msg("Edit")}>
+                                  <i class="fas fa-edit"></i>
+                              </pf-tooltip>
                           </button>
                       </ak-forms-modal>`
                     : html``}
@@ -136,7 +139,9 @@ export class TokenListPage extends TablePage<Token> {
                     class="pf-c-button pf-m-plain"
                     identifier="${item.identifier}"
                 >
-                    <i class="fas fa-copy"></i>
+                    <pf-tooltip position="top" content=${msg("Copy token")}>
+                        <i class="fas fa-copy"></i>
+                    </pf-tooltip>
                 </ak-token-copy-button>
             `,
         ];

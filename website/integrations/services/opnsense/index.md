@@ -6,11 +6,9 @@ title: OPNsense
 
 ## What is OPNsense
 
-From https://opnsense.org/
-
-:::note
-OPNsense is a free and Open-Source FreeBSD-based firewall and routing software. It is licensed under an Open Source Initiative approved license.
-:::
+> OPNsense is a free and Open-Source FreeBSD-based firewall and routing software. It is licensed under an Open Source Initiative approved license.
+>
+> -- https://opnsense.org/
 
 :::note
 This is based on authentik 2022.4.1 and OPNsense 22.1.6-amd64 installed using https://docs.opnsense.org/manual/install.html. Instructions may differ between versions.

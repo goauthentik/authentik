@@ -6,11 +6,9 @@ title: sssd
 
 ## What is sssd
 
-From https://sssd.io/
-
-:::note
-**SSSD** is an acronym for System Security Services Daemon. It is the client component of centralized identity management solutions such as FreeIPA, 389 Directory Server, Microsoft Active Directory, OpenLDAP and other directory servers. The client serves and caches the information stored in the remote directory server and provides identity, authentication and authorization services to the host machine.
-:::
+> **SSSD** is an acronym for System Security Services Daemon. It is the client component of centralized identity management solutions such as FreeIPA, 389 Directory Server, Microsoft Active Directory, OpenLDAP and other directory servers. The client serves and caches the information stored in the remote directory server and provides identity, authentication and authorization services to the host machine.
+>
+> -- https://sssd.io/
 
 Note that authentik supports _only_ user and group objects. As
 a consequence, it cannot be used to provide automount or sudo

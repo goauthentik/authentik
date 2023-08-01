@@ -2,7 +2,7 @@
 from functools import lru_cache
 from uuid import uuid4
 
-from psycopg2 import connect
+from psycopg import connect
 
 from authentik.lib.config import CONFIG
 
@@ -30,7 +30,7 @@ def get_install_id_raw():
         user=CONFIG.get("postgresql.user"),
         password=CONFIG.get("postgresql.password"),
         host=CONFIG.get("postgresql.host"),
-        port=int(CONFIG.get("postgresql.port")),
+        port=CONFIG.get_int("postgresql.port"),
         sslmode=CONFIG.get("postgresql.sslmode"),
         sslrootcert=CONFIG.get("postgresql.sslrootcert"),
         sslcert=CONFIG.get("postgresql.sslcert"),

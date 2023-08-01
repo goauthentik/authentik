@@ -107,6 +107,18 @@ class TestConfig(TestCase):
         unlink(file_name)
         unlink(file2_name)
 
+    def test_get_int(self):
+        """Test get_int"""
+        config = ConfigLoader()
+        config.set("foo", 1234)
+        self.assertEqual(config.get_int("foo"), 1234)
+
+    def test_get_int_invalid(self):
+        """Test get_int"""
+        config = ConfigLoader()
+        config.set("foo", "bar")
+        self.assertEqual(config.get_int("foo", 1234), 1234)
+
     @mock.patch.dict(environ, check_deprecations_env_vars)
     def test_check_deprecations(self):
         """Test config key re-write for deprecated env vars"""

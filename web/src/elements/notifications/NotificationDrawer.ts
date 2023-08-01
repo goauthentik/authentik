@@ -99,7 +99,9 @@ export class NotificationDrawer extends AKElement {
                         class="pf-c-dropdown__toggle pf-m-plain"
                         href="/if/admin/#/events/log/${item.event?.pk}"
                     >
-                        <i class="fas fa-share-square"></i>
+                        <pf-tooltip position="top" content=${msg("Show details")}>
+                            <i class="fas fa-share-square"></i>
+                        </pf-tooltip>
                     </a>
                 `}
                 <button

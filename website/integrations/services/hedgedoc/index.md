@@ -6,11 +6,9 @@ title: HedgeDoc
 
 ## What is HedgeDoc
 
-From https://github.com/hedgedoc/hedgedoc
-
-:::note
-HedgeDoc lets you create real-time collaborative markdown notes.
-:::
+> HedgeDoc lets you create real-time collaborative markdown notes.
+>
+> -- https://github.com/hedgedoc/hedgedoc
 
 ## Preparation
 
