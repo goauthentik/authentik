@@ -17,6 +17,18 @@ import type { TypeCreate } from "@goauthentik/api";
 
 import ApplicationWizardPageBase from "./ApplicationWizardPageBase";
 
+// The provider description that comes from the server is fairly specific and not internationalized.
+// We provide alternative descriptions that use the phrase 'authentication method' instead, and make
+// it available to i18n.
+//
+// prettier-ignore
+const alternativeDescription = new Map<string, string>([
+    ["oauth2provider", msg("Modern applications, APIs and Single-page applications.")],
+    ["samlprovider", msg("XML-based SSO standard. Use this if your application only supports SAML.")],
+    ["proxyprovider", msg("Legacy applications which don't natively support SSO.")],
+    ["ldapprovider", msg("Provide an LDAP interface for applications and users to authenticate against.")]
+]);
+
 @customElement("ak-application-wizard-authentication-method-choice")
 export class ApplicationWizardAuthenticationMethodChoice extends ApplicationWizardPageBase {
     @state()
@@ -26,21 +38,25 @@ export class ApplicationWizardAuthenticationMethodChoice extends ApplicationWiza
         super();
         this.handleChoice = this.handleChoice.bind(this);
         this.renderProvider = this.renderProvider.bind(this);
+        // If the provider doesn't supply a model to which to send our initialization, the user will
+        // have to use the older provider path.
         new ProvidersApi(DEFAULT_CONFIG).providersAllTypesList().then((types) => {
-            this.providerTypes = types;
+            this.providerTypes = types.filter(({ modelName }) => modelName.trim() !== "");
         });
     }
 
-    handleChoice(ev: Event) {
-        this.dispatchWizardUpdate({ providerType: ev.target.value });
+    handleChoice(ev: InputEvent) {
+        const target = ev.target as HTMLInputElement;
+
+        this.dispatchWizardUpdate({ providerType: target.value });
     }
 
-    renderProvider(type: Provider) {
-        // Special case; the SAML-by-import method is handled differently
-        // prettier-ignore
-        const model = /^SAML/.test(type.name) && type.modelName === ""
-            ? "samlimporter"
-            : type.modelName;
+    renderProvider(type: TypeCreate) {
+        const description = alternativeDescription.has(type.modelName)
+            ? alternativeDescription.get(type.modelName)
+            : type.description;
+
+        const label = type.name.replace(/\s+Provider/, "");
 
         return html`<div class="pf-c-radio">
             <input
@@ -48,11 +64,11 @@ export class ApplicationWizardAuthenticationMethodChoice extends ApplicationWiza
                 type="radio"
                 name="type"
                 id=${type.component}
-                value=${model}
+                value=${type.modelName}
                 @change=${this.handleChoice}
             />
-            <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
-            <span class="pf-c-radio__description">${type.description}</span>
+            <label class="pf-c-radio__label" for=${type.component}>${label}</label>
+            <span class="pf-c-radio__description">${description}</span>
         </div>`;
     }
 

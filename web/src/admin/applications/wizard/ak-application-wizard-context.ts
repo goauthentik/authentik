@@ -27,12 +27,14 @@ type OneOfProvider =
     | Partial<OAuth2Provider>
     | Partial<LDAPProvider>;
 
-export type WizardState = {
+export interface WizardState {
     step: number;
     providerType: string;
     application: Partial<Application>;
     provider: OneOfProvider;
-};
+}
+
+type WizardStateEvent = WizardState & { target?: HTMLInputElement };
 
 @customElement("ak-application-wizard-context")
 export class AkApplicationWizardContext extends CustomListenerElement(LitElement) {
@@ -63,7 +65,7 @@ export class AkApplicationWizardContext extends CustomListenerElement(LitElement
         super.disconnectedCallback();
     }
 
-    handleUpdate(event: CustomEvent<WizardState>) {
+    handleUpdate(event: CustomEvent<WizardStateEvent>) {
         delete event.detail.target;
         this.wizardState = event.detail;
     }

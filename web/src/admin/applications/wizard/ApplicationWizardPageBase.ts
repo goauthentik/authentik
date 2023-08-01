@@ -7,16 +7,17 @@ import { state } from "@lit/reactive-element/decorators/state.js";
 import { styles as AwadStyles } from "./ak-application-wizard-application-details.css";
 
 import type { WizardState } from "./ak-application-wizard-context";
-import applicationWizardContext from "./ak-application-wizard-context-name";
+import { applicationWizardContext } from "./ak-application-wizard-context-name";
 
 export class ApplicationWizardPageBase extends CustomEmitterElement(AKElement) {
     static get styles() {
         return AwadStyles;
     }
 
+    // @ts-expect-error
     @consume({ context: applicationWizardContext, subscribe: true })
     @state()
-    private wizard!: WizardState;
+    public wizard!: WizardState;
 
     dispatchWizardUpdate(update: Partial<WizardState>) {
         this.dispatchCustomEvent("ak-wizard-update", {

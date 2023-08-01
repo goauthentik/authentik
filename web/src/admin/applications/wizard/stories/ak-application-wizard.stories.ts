@@ -6,32 +6,14 @@ import "../ak-application-wizard-application-details";
 import AkApplicationWizardApplicationDetails from "../ak-application-wizard-application-details";
 import "../ak-application-wizard-authentication-method-choice";
 import "../ak-application-wizard-context";
+import "../ldap/ak-application-wizard-authentication-by-ldap";
 import "./ak-application-context-display-for-test";
-
-// prettier-ignore
-const providerTypes = [
-    ["LDAP Provider", "ldapprovider", 
-     "Allow applications to authenticate against authentik's users using LDAP.", 
-    ], 
-    ["OAuth2/OpenID Provider", "oauth2provider", 
-     "OAuth2 Provider for generic OAuth and OpenID Connect Applications.", 
-    ], 
-    ["Proxy Provider", "proxyprovider", 
-     "Protect applications that don't support any of the other\n    Protocols by using a Reverse-Proxy.", 
-    ], 
-    ["Radius Provider", "radiusprovider", 
-     "Allow applications to authenticate against authentik's users using Radius.", 
-    ], 
-    ["SAML Provider", "samlprovider", 
-     "SAML 2.0 Endpoint for applications which support SAML.", 
-    ], 
-    ["SCIM Provider", "scimprovider", 
-     "SCIM 2.0 provider to create users and groups in external applications", 
-    ], 
-    ["SAML Provider from Metadata", "", 
-     "Create a SAML Provider by importing its Metadata.", 
-    ], 
-].map(([name, model_name, description]) => ({ name, description, model_name }));
+import {
+    dummyAuthenticationFlowsSearch,
+    dummyCoreGroupsSearch,
+    dummyCryptoCertsSearch,
+    dummyProviderTypesList,
+} from "./samples";
 
 const metadata: Meta<AkApplicationWizardApplicationDetails> = {
     title: "Elements / Application Wizard / Page 1",
@@ -47,7 +29,26 @@ const metadata: Meta<AkApplicationWizardApplicationDetails> = {
                 url: "/api/v3/providers/all/types/",
                 method: "GET",
                 status: 200,
-                response: providerTypes,
+                response: dummyProviderTypesList,
+            },
+            {
+                url: "/api/v3/core/groups/?ordering=name",
+                method: "GET",
+                status: 200,
+                response: dummyCoreGroupsSearch,
+            },
+
+            {
+                url: "/api/v3/crypto/certificatekeypairs/?has_key=true&include_details=false&ordering=name",
+                method: "GET",
+                status: 200,
+                response: dummyCryptoCertsSearch,
+            },
+            {
+                url: "/api/v3/flows/instances/?designation=authentication&ordering=slug",
+                method: "GET",
+                status: 200,
+                response: dummyAuthenticationFlowsSearch,
             },
         ],
     },
@@ -73,7 +74,7 @@ export const PageOne = () => {
         html`<ak-application-wizard-context>
             <ak-application-wizard-application-details></ak-application-wizard-application-details>
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
-        </ak-application-wizard-context>`
+        </ak-application-wizard-context>`,
     );
 };
 
@@ -82,6 +83,15 @@ export const PageTwo = () => {
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-method-choice></ak-application-wizard-authentication-method-choice>
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
-        </ak-application-wizard-context>`
+        </ak-application-wizard-context>`,
+    );
+};
+
+export const PageThreeLdap = () => {
+    return container(
+        html`<ak-application-wizard-context>
+            <ak-application-wizard-authentication-by-ldap></ak-application-wizard-authentication-by-ldap>
+            <ak-application-context-display-for-test></ak-application-context-display-for-test>
+        </ak-application-wizard-context>`,
     );
 };
