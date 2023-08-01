@@ -1,7 +1,8 @@
 """API URLs"""
 from django.urls import path
 
-from authentik.providers.kerberos.api import (
+from authentik.providers.kerberos.api.property_mapping import KerberosPrincipalMappingViewSet
+from authentik.providers.kerberos.api.provider import (
     KerberosOutpostConfigViewSet,
     KerberosProviderViewSet,
     KerberosRealmViewSet,
@@ -16,4 +17,5 @@ api_urlpatterns = [
     ("outposts/kerberos", KerberosOutpostConfigViewSet, "kerberosrealmoutpost"),
     ("providers/kerberos/realms", KerberosRealmViewSet),
     ("providers/kerberos", KerberosProviderViewSet),
+    ("propertymappings/kerberosprincipal", KerberosPrincipalMappingViewSet),
 ]

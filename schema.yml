@@ -13402,6 +13402,292 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /propertymappings/kerberosprincipal/:
+    get:
+      operationId: propertymappings_kerberosprincipal_list
+      description: SCIMMapping Viewset
+      parameters:
+      - in: query
+        name: expression
+        schema:
+          type: string
+      - in: query
+        name: managed
+        schema:
+          type: array
+          items:
+            type: string
+        explode: true
+        style: form
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedKerberosPrincipalMappingList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: propertymappings_kerberosprincipal_create
+      description: SCIMMapping Viewset
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KerberosPrincipalMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosPrincipalMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/kerberosprincipal/{pm_uuid}/:
+    get:
+      operationId: propertymappings_kerberosprincipal_retrieve
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kerberos Principal Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosPrincipalMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: propertymappings_kerberosprincipal_update
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kerberos Principal Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/KerberosPrincipalMappingRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosPrincipalMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: propertymappings_kerberosprincipal_partial_update
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kerberos Principal Mapping.
+        required: true
+      tags:
+      - propertymappings
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedKerberosPrincipalMappingRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KerberosPrincipalMapping'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: propertymappings_kerberosprincipal_destroy
+      description: SCIMMapping Viewset
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kerberos Principal Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /propertymappings/kerberosprincipal/{pm_uuid}/used_by/:
+    get:
+      operationId: propertymappings_kerberosprincipal_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: pm_uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Kerberos Principal Mapping.
+        required: true
+      tags:
+      - propertymappings
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /propertymappings/ldap/:
     get:
       operationId: propertymappings_ldap_list
@@ -30399,6 +30685,7 @@ components:
             * `authentik_policies_reputation.reputation` - reputation
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_kerberos.kerberosprovider` - Kerberos Provider
+            * `authentik_providers_kerberos.kerberosprincipalmapping` - Kerberos Principal Mapping
             * `authentik_providers_kerberos.kerberosrealm` - kerberos realm
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -30593,6 +30880,7 @@ components:
             * `authentik_policies_reputation.reputation` - reputation
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_kerberos.kerberosprovider` - Kerberos Provider
+            * `authentik_providers_kerberos.kerberosprincipalmapping` - Kerberos Principal Mapping
             * `authentik_providers_kerberos.kerberosrealm` - kerberos realm
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -31885,6 +32173,73 @@ components:
       - pk
       - realm_name
       - url_kdc_proxy
+    KerberosPrincipalMapping:
+      type: object
+      description: KerberosPrincipalMapping Serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Pm uuid
+        managed:
+          type: string
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        expression:
+          type: string
+        component:
+          type: string
+          description: Get object's component so that we know how to edit the object
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+      required:
+      - component
+      - expression
+      - meta_model_name
+      - name
+      - pk
+      - verbose_name
+      - verbose_name_plural
+    KerberosPrincipalMappingRequest:
+      type: object
+      description: KerberosPrincipalMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
+      required:
+      - expression
+      - name
     KerberosProvider:
       type: object
       description: KerberosProvider Serializer
@@ -32247,6 +32602,14 @@ components:
         realm_name:
           type: string
           description: The Kerberos realm name.
+        user_to_principal_pm:
+          type: string
+          format: uuid
+          nullable: true
+        principal_to_user_pm:
+          type: string
+          format: uuid
+          nullable: true
         outpost_set:
           type: array
           items:
@@ -32386,6 +32749,14 @@ components:
           type: string
           minLength: 1
           description: The Kerberos realm name.
+        user_to_principal_pm:
+          type: string
+          format: uuid
+          nullable: true
+        principal_to_user_pm:
+          type: string
+          format: uuid
+          nullable: true
       required:
       - authentication_flow
       - name
@@ -33278,6 +33649,7 @@ components:
       - authentik_policies_reputation.reputation
       - authentik_policies.policybinding
       - authentik_providers_kerberos.kerberosprovider
+      - authentik_providers_kerberos.kerberosprincipalmapping
       - authentik_providers_kerberos.kerberosrealm
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.scopemapping
@@ -33352,6 +33724,7 @@ components:
         * `authentik_policies_reputation.reputation` - reputation
         * `authentik_policies.policybinding` - Policy Binding
         * `authentik_providers_kerberos.kerberosprovider` - Kerberos Provider
+        * `authentik_providers_kerberos.kerberosprincipalmapping` - Kerberos Principal Mapping
         * `authentik_providers_kerberos.kerberosrealm` - kerberos realm
         * `authentik_providers_ldap.ldapprovider` - LDAP Provider
         * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -35401,6 +35774,41 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/KerberosOutpostConfig'
+      required:
+      - pagination
+      - results
+    PaginatedKerberosPrincipalMappingList:
+      type: object
+      properties:
+        pagination:
+          type: object
+          properties:
+            next:
+              type: number
+            previous:
+              type: number
+            count:
+              type: number
+            current:
+              type: number
+            total_pages:
+              type: number
+            start_index:
+              type: number
+            end_index:
+              type: number
+          required:
+          - next
+          - previous
+          - count
+          - current
+          - total_pages
+          - start_index
+          - end_index
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KerberosPrincipalMapping'
       required:
       - pagination
       - results
@@ -38330,6 +38738,7 @@ components:
             * `authentik_policies_reputation.reputation` - reputation
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_kerberos.kerberosprovider` - Kerberos Provider
+            * `authentik_providers_kerberos.kerberosprincipalmapping` - Kerberos Principal Mapping
             * `authentik_providers_kerberos.kerberosrealm` - kerberos realm
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -38627,6 +39036,25 @@ components:
           description: If this flag is set, this Stage will jump to the next Stage
             when no Invitation is given. By default this Stage will cancel the Flow
             when no invitation is given.
+    PatchedKerberosPrincipalMappingRequest:
+      type: object
+      description: KerberosPrincipalMapping Serializer
+      properties:
+        managed:
+          type: string
+          nullable: true
+          minLength: 1
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+          minLength: 1
+        expression:
+          type: string
+          minLength: 1
     PatchedKerberosProviderRequest:
       type: object
       description: KerberosProvider Serializer
@@ -38793,6 +39221,14 @@ components:
           type: string
           minLength: 1
           description: The Kerberos realm name.
+        user_to_principal_pm:
+          type: string
+          format: uuid
+          nullable: true
+        principal_to_user_pm:
+          type: string
+          format: uuid
+          nullable: true
     PatchedKubernetesServiceConnectionRequest:
       type: object
       description: KubernetesServiceConnection Serializer

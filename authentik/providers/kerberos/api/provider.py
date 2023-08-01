@@ -148,6 +148,8 @@ class KerberosRealmSerializer(KerberosProviderSerializer):
         model = KerberosRealm
         fields = KerberosProviderSerializer.Meta.fields + [
             "realm_name",
+            "user_to_principal_pm",
+            "principal_to_user_pm",
             "outpost_set",
             "url_kdc_proxy",
             "url_download_dns_records",
@@ -157,6 +159,18 @@ class KerberosRealmSerializer(KerberosProviderSerializer):
             "authentication_flow": {"required": True, "allow_null": False},
             "spn": {"required": False, "allow_null": True},
         }
+
+    def validate(self, data):
+        if (
+            data["user_to_principal_pm"] is not None
+            and data["principal_to_user_pm"] is None
+            or data["user_to_principal_pm"] is None
+            and data["principal_to_user_pm"] is not None
+        ):
+            raise serializers.ValidationError(
+                "Both user to principal and principal to user mappings must be set, or neither of them must be set."
+            )
+        return data
 
     def get_url_kdc_proxy(self, instance: KerberosProvider) -> str:
         if "request" not in self._context:

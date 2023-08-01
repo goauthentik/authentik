@@ -6,12 +6,16 @@ from typing import Optional, Type
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import RegexValidator
 from django.db import models
+from django.http import HttpRequest
 from django.utils.functional import cached_property
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.serializers import Serializer
+from structlog.stdlib import get_logger
 
-from authentik.core.models import KerberosKeyMixin, Provider
+from authentik.core.exceptions import PropertyMappingExpressionException
+from authentik.core.models import KerberosKeyMixin, PropertyMapping, Provider, User
+from authentik.events.models import Event, EventAction
 from authentik.lib.generators import generate_id, generate_key
 from authentik.lib.utils.time import timedelta_string_validator
 from authentik.providers.kerberos.lib import keytab
@@ -20,7 +24,9 @@ from authentik.providers.kerberos.lib.crypto import (
     EncryptionType,
     get_enctype_from_value,
 )
-from authentik.providers.kerberos.lib.protocol import PrincipalName
+from authentik.providers.kerberos.lib.protocol import PrincipalName, PrincipalNameType
+
+LOGGER = get_logger()
 
 
 def _get_kerberos_enctypes():
@@ -171,9 +177,32 @@ class KerberosProvider(KerberosKeyMixin, Provider):
 
     @property
     def serializer(self) -> Type[Serializer]:
-        from authentik.providers.kerberos.api import KerberosProviderSerializer
+        from authentik.providers.kerberos.api.provider import KerberosProviderSerializer
 
         return KerberosProviderSerializer
+
+
+class KerberosPrincipalMapping(PropertyMapping):
+    """Map users to principals"""
+
+    @property
+    def component(self) -> str:
+        return "ak-property-mapping-kerberos-principal-form"
+
+    @property
+    def serializer(self) -> type[Serializer]:
+        from authentik.providers.kerberos.api.property_mapping import (
+            KerberosPrincipalMappingSerializer,
+        )
+
+        return KerberosPrincipalMappingSerializer
+
+    def __str__(self):
+        return f"Kerberos Principal Mapping {self.name}"
+
+    class Meta:
+        verbose_name = _("Kerberos Principal Mapping")
+        verbose_name_plural = _("Kerberos Principal Mappings")
 
 
 class KerberosRealm(KerberosProvider):
@@ -182,9 +211,83 @@ class KerberosRealm(KerberosProvider):
         help_text=_("The Kerberos realm name."),
     )
 
+    user_to_principal_pm = models.ForeignKey(
+        KerberosPrincipalMapping,
+        on_delete=models.RESTRICT,
+        null=True,
+        related_name="kerberosrealm_usertoprincipal",
+    )
+    principal_to_user_pm = models.ForeignKey(
+        KerberosPrincipalMapping,
+        on_delete=models.RESTRICT,
+        null=True,
+        related_name="kerberosrealm_principaltouser",
+    )
+
     def save(self, *args, **kwargs):
         self.spn = PrincipalName.krbtgt(self.realm_name).to_string()
         super().save(*args, **kwargs)
+
+    def get_user_principal(
+        self, user: User, request: HttpRequest | None = None
+    ) -> PrincipalName | None:
+        if self.user_to_principal_pm is None:
+            return PrincipalName.from_components(PrincipalNameType.NT_PRINCIPAL, [user.username])
+        try:
+            principal = self.user_to_principal_pm.evaluate(user=user, request=request, realm=self)
+        except PropertyMappingExpressionException as exc:
+            event = Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=f"Failed to evaluate property-mapping: {self.user_to_principal_pm.name}",
+                provider=self,
+                mapping="user to principal",
+            ).set_user(user)
+            if request:
+                event.from_http(event)
+            LOGGER.warning("Failed to evaluate property mapping", exc=exc)
+            return None
+        if isinstance(principal, PrincipalName):
+            return principal
+        if isinstance(principal, str):
+            return PrincipalName.from_components(PrincipalNameType.NT_PRINCIPAL, [principal])
+
+        LOGGER.warning(
+            "Property mapping user to principal returned a non-PrincipalName value, ignoring.",
+            realm=self,
+            user=user,
+            value=principal,
+        )
+        return None
+
+    def get_principal_user(
+        self, principal: PrincipalName, request: HttpRequest | None = None
+    ) -> User | None:
+        if self.principal_to_user_pm is None:
+            return User.objects.filter(username=principal.to_string).first()
+        try:
+            user = self.principal_to_user_pm.evaluate(
+                user=None, request=request, principal=principal, realm=self
+            )
+        except PropertyMappingExpressionException as exc:
+            event = Event.new(
+                EventAction.CONFIGURATION_ERROR,
+                message=f"Failed to evaluate property-mapping: {self.principal_to_user_pm.name}",
+                provider=self,
+                mapping="user to principal",
+            )
+            if request:
+                event.from_http(event)
+            LOGGER.warning("Failed to evaluate property mapping", exc=exc)
+            return None
+        if not isinstance(principal, User):
+            LOGGER.warning(
+                "Property mapping user to principal returned a non-PrincipalName value, ignoring.",
+                realm=self,
+                principal=principal,
+                value=user,
+            )
+            return None
+        return user
 
 
 class KerberosKeys(models.Model):

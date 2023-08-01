@@ -769,6 +769,42 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_providers_kerberos.kerberosprincipalmapping"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_providers_kerberos.kerberosprincipalmapping"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_providers_kerberos.kerberosprincipalmapping"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_providers_kerberos.kerberosrealm"
                             },
                             "id": {
@@ -3361,6 +3397,7 @@
                         "authentik_policies_reputation.reputation",
                         "authentik_policies.policybinding",
                         "authentik_providers_kerberos.kerberosprovider",
+                        "authentik_providers_kerberos.kerberosprincipalmapping",
                         "authentik_providers_kerberos.kerberosrealm",
                         "authentik_providers_ldap.ldapprovider",
                         "authentik_providers_oauth2.scopemapping",
@@ -3768,6 +3805,31 @@
                     "minLength": 1,
                     "title": "Secret",
                     "description": "The secret value from which Kerberos keys are derived."
+                }
+            },
+            "required": []
+        },
+        "model_authentik_providers_kerberos.kerberosprincipalmapping": {
+            "type": "object",
+            "properties": {
+                "managed": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "minLength": 1,
+                    "title": "Managed by authentik",
+                    "description": "Objects that are managed by authentik. These objects are created and updated automatically. This flag only indicates that an object can be overwritten by migrations. You can still modify the objects via the API, but expect changes to be overwritten in a later update."
+                },
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "expression": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Expression"
                 }
             },
             "required": []
