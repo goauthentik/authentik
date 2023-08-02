@@ -9,7 +9,7 @@ export const isCustomEvent = (v: any): v is CustomEvent =>
 
 export function CustomEmitterElement<T extends Constructor<LitElement>>(superclass: T) {
     return class EmmiterElementHandler extends superclass {
-        dispatchCustomEvent(eventName: string, detail = {}, options = {}) {
+        dispatchCustomEvent(eventName: string, detail: any = {}, options = {}) {
             this.dispatchEvent(
                 new CustomEvent(eventName, {
                     composed: true,
