@@ -4845,11 +4845,6 @@ paths:
           type: integer
         description: A unique integer value identifying this User.
         required: true
-      - in: query
-        name: realm_pk
-        schema:
-          type: integer
-        required: true
       tags:
       - core
       security:
