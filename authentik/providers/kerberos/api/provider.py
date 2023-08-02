@@ -121,7 +121,7 @@ class KerberosProviderViewSet(UsedByMixin, ModelViewSet):
             200: OpenApiResponse(description="Service keytab"),
         }
     )
-    @action(detail=True, methods=["GET"])
+    @action(detail=True, pagination_class=None, filter_backends=[])
     def keytab(self, request: Request, pk: str) -> HttpResponse:
         """Retrieve the provider keytab"""
         provider: KerberosProvider = self.get_object()

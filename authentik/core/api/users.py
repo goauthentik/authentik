@@ -515,14 +515,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required("authentik_core.reset_user_password")
     @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                name="realm_pk",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.INT,
-                required=True,
-            )
-        ],
         responses={
             200: OpenApiResponse(description="User keytab"),
         },
@@ -531,15 +523,15 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     def keytab(self, request: Request, pk: int) -> Response:
         """Generate keytab for user and realm"""
         user: User = self.get_object()
-        realm = KerberosRealm.objects.filter(pk=request.query_params.get("realm_pk")).first()
-        if not realm:
+        realms = KerberosRealm.objects.all()
+        if not realms.exists():
             return Response(status=404)
         keytab = user.kerberoskeys.keytab(
             protocol.PrincipalName.from_components(
                 name_type=protocol.PrincipalNameType.NT_PRINCIPAL,
                 name=[user.username],
             ),
-            [realm],
+            realms,
         )
         return HttpResponse(
             keytab.to_bytes(),
