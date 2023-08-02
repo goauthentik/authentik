@@ -54,6 +54,7 @@ jobs:
           delete-branch: true
           signoff: true
       - uses: peter-evans/enable-pull-request-automerge@v3
+        if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
         with:
           token: ${{ steps.generate_token.outputs.token }}
           pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
