@@ -1,5 +1,4 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/applications/wizard/ApplicationWizard";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -89,17 +88,20 @@ export class ApplicationListPage extends TablePage<Application> {
     renderSidebarAfter(): TemplateResult {
         // Rendering the wizard with .open here, as if we set the attribute in
         // renderObjectCreate() it'll open two wizards, since that function gets called twice
-        return html`<ak-application-wizard
+
+        /* Re-enable the wizard later:
+          <ak-application-wizard
                 .open=${getURLParam("createWizard", false)}
                 .showButton=${false}
-            ></ak-application-wizard>
-            <div class="pf-c-sidebar__panel pf-m-width-25">
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-markdown .md=${MDApplication}></ak-markdown>
-                    </div>
+                ></ak-application-wizard>*/
+
+        return html` <div class="pf-c-sidebar__panel pf-m-width-25">
+            <div class="pf-c-card">
+                <div class="pf-c-card__body">
+                    <ak-markdown .md=${MDApplication}></ak-markdown>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {

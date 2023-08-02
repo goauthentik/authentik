@@ -82,6 +82,58 @@ export const dummyAuthenticationFlowsSearch = {
     ],
 };
 
+export const dummyAuthorizationFlowsSearch = {
+    pagination: {
+        next: 0,
+        previous: 0,
+        count: 2,
+        current: 1,
+        total_pages: 1,
+        start_index: 1,
+        end_index: 2,
+    },
+    results: [
+        {
+            pk: "9e01f011-8b3f-43d6-bedf-c29be5f3a428",
+            policybindingmodel_ptr_id: "14179ef8-2726-4027-9e2f-dc99185199bf",
+            name: "Authorize Application",
+            slug: "default-provider-authorization-explicit-consent",
+            title: "Redirecting to %(app)s",
+            designation: "authorization",
+            background: "/static/dist/assets/images/flow_background.jpg",
+            stages: ["ed5f015f-82b9-450f-addf-1e9d21d8dda3"],
+            policies: [],
+            cache_count: 0,
+            policy_engine_mode: "any",
+            compatibility_mode: false,
+            export_url:
+                "/api/v3/flows/instances/default-provider-authorization-explicit-consent/export/",
+            layout: "stacked",
+            denied_action: "message_continue",
+            authentication: "require_authenticated",
+        },
+        {
+            pk: "06f11ee3-cbe3-456d-81df-fae4c0a62951",
+            policybindingmodel_ptr_id: "686e6539-8b9f-473e-9f54-e05cc207dd2a",
+            name: "Authorize Application",
+            slug: "default-provider-authorization-implicit-consent",
+            title: "Redirecting to %(app)s",
+            designation: "authorization",
+            background: "/static/dist/assets/images/flow_background.jpg",
+            stages: [],
+            policies: [],
+            cache_count: 0,
+            policy_engine_mode: "any",
+            compatibility_mode: false,
+            export_url:
+                "/api/v3/flows/instances/default-provider-authorization-implicit-consent/export/",
+            layout: "stacked",
+            denied_action: "message_continue",
+            authentication: "require_authenticated",
+        },
+    ],
+};
+
 export const dummyCoreGroupsSearch = {
     pagination: {
         next: 0,
@@ -119,6 +171,84 @@ export const dummyCoreGroupsSearch = {
             ],
         },
     ],
+};
+
+export const dummyPropertyMappings = {
+    pagination: {
+        next: 0,
+        previous: 0,
+        count: 4,
+        current: 1,
+        total_pages: 1,
+        start_index: 1,
+        end_index: 4,
+    },
+    results: [
+        {
+            pk: "30d87af7-9d9d-4292-873e-a52145ba4bcb",
+            managed: "goauthentik.io/providers/proxy/scope-proxy",
+            name: "authentik default OAuth Mapping: Proxy outpost",
+            expression:
+                '# This mapping is used by the authentik proxy. It passes extra user attributes,\n# which are used for example for the HTTP-Basic Authentication mapping.\nreturn {\n    "ak_proxy": {\n        "user_attributes": request.user.group_attributes(request),\n        "is_superuser": request.user.is_superuser,\n    }\n}',
+            component: "ak-property-mapping-scope-form",
+            verbose_name: "Scope Mapping",
+            verbose_name_plural: "Scope Mappings",
+            meta_model_name: "authentik_providers_oauth2.scopemapping",
+            scope_name: "ak_proxy",
+            description: "authentik Proxy - User information",
+        },
+        {
+            pk: "3e3751ed-a24c-4f47-a051-e2e05b5cd306",
+            managed: "goauthentik.io/providers/oauth2/scope-email",
+            name: "authentik default OAuth Mapping: OpenID 'email'",
+            expression: 'return {\n    "email": request.user.email,\n    "email_verified": True\n}',
+            component: "ak-property-mapping-scope-form",
+            verbose_name: "Scope Mapping",
+            verbose_name_plural: "Scope Mappings",
+            meta_model_name: "authentik_providers_oauth2.scopemapping",
+            scope_name: "email",
+            description: "Email address",
+        },
+        {
+            pk: "81c5e330-d8a0-45cd-9cad-e6a49a9c428f",
+            managed: "goauthentik.io/providers/oauth2/scope-openid",
+            name: "authentik default OAuth Mapping: OpenID 'openid'",
+            expression:
+                "# This scope is required by the OpenID-spec, and must as such exist in authentik.\n# The scope by itself does not grant any information\nreturn {}",
+            component: "ak-property-mapping-scope-form",
+            verbose_name: "Scope Mapping",
+            verbose_name_plural: "Scope Mappings",
+            meta_model_name: "authentik_providers_oauth2.scopemapping",
+            scope_name: "openid",
+            description: "",
+        },
+        {
+            pk: "7ad9cd6f-bcc8-425d-b7c2-c7c4592a1b36",
+            managed: "goauthentik.io/providers/oauth2/scope-profile",
+            name: "authentik default OAuth Mapping: OpenID 'profile'",
+            expression:
+                'return {\n    # Because authentik only saves the user\'s full name, and has no concept of first and last names,\n    # the full name is used as given name.\n    # You can override this behaviour in custom mappings, i.e. `request.user.name.split(" ")`\n    "name": request.user.name,\n    "given_name": request.user.name,\n    "preferred_username": request.user.username,\n    "nickname": request.user.username,\n    # groups is not part of the official userinfo schema, but is a quasi-standard\n    "groups": [group.name for group in request.user.ak_groups.all()],\n}',
+            component: "ak-property-mapping-scope-form",
+            verbose_name: "Scope Mapping",
+            verbose_name_plural: "Scope Mappings",
+            meta_model_name: "authentik_providers_oauth2.scopemapping",
+            scope_name: "profile",
+            description: "General Profile Information",
+        },
+    ],
+};
+
+export const dummyHasJwks = {
+    pagination: {
+        next: 0,
+        previous: 0,
+        count: 0,
+        current: 1,
+        total_pages: 1,
+        start_index: 0,
+        end_index: 0,
+    },
+    results: [],
 };
 
 // prettier-ignore

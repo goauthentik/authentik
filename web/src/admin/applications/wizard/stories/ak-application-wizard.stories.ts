@@ -7,11 +7,15 @@ import AkApplicationWizardApplicationDetails from "../ak-application-wizard-appl
 import "../ak-application-wizard-authentication-method-choice";
 import "../ak-application-wizard-context";
 import "../ldap/ak-application-wizard-authentication-by-ldap";
+import "../oauth/ak-application-wizard-authentication-by-oauth";
 import "./ak-application-context-display-for-test";
 import {
     dummyAuthenticationFlowsSearch,
+    dummyAuthorizationFlowsSearch,
     dummyCoreGroupsSearch,
     dummyCryptoCertsSearch,
+    dummyHasJwks,
+    dummyPropertyMappings,
     dummyProviderTypesList,
 } from "./samples";
 
@@ -50,6 +54,26 @@ const metadata: Meta<AkApplicationWizardApplicationDetails> = {
                 status: 200,
                 response: dummyAuthenticationFlowsSearch,
             },
+            {
+                url: "/api/v3/flows/instances/?designation=authorization&ordering=slug",
+                method: "GET",
+                status: 200,
+                response: dummyAuthorizationFlowsSearch,
+            },
+            {
+                url: "/api/v3/propertymappings/scope/?ordering=scope_name",
+                method: "GET",
+                status: 200,
+                response: dummyPropertyMappings,
+            },
+            {
+                url: "/api/v3/sources/oauth/?has_jwks=true&ordering=name",
+                method: "GET",
+                status: 200,
+                response: dummyHasJwks,
+            },
+
+            
         ],
     },
 };
@@ -60,9 +84,8 @@ function injectTheme() {
         if (!document.body.classList.contains(LIGHT)) {
             document.body.classList.add(LIGHT);
         }
-    })
+    });
 }
-              
 
 export default metadata;
 
@@ -78,14 +101,14 @@ const container = (testItem: TemplateResult) => {
             }
         </style>
         ${testItem}
-</div>`;
-}
+    </div>`;
+};
 
 export const PageOne = () => {
     return container(
         html`<ak-application-wizard-context>
-<ak-application-wizard-application-details></ak-application-wizard-application-details>
-<hr/>
+            <ak-application-wizard-application-details></ak-application-wizard-application-details>
+            <hr />
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
         </ak-application-wizard-context>`,
     );
@@ -95,7 +118,7 @@ export const PageTwo = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-method-choice></ak-application-wizard-authentication-method-choice>
-<hr/>
+            <hr />
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
         </ak-application-wizard-context>`,
     );
@@ -105,7 +128,18 @@ export const PageThreeLdap = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-by-ldap></ak-application-wizard-authentication-by-ldap>
-<hr/>
+            <hr />
+            <ak-application-context-display-for-test></ak-application-context-display-for-test>
+        </ak-application-wizard-context>`,
+    );
+};
+
+
+export const PageThreeOauth2 = () => {
+    return container(
+        html`<ak-application-wizard-context>
+            <ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>
+            <hr />
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
         </ak-application-wizard-context>`,
     );

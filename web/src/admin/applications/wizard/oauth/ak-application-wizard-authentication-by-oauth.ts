@@ -1,173 +1,91 @@
 import "@goauthentik/admin/common/ak-crypto-certificate-search";
-import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
+import {
+    clientTypeOptions,
+    issuerModeOptions,
+    redirectUriHelp,
+    subjectModeOptions,
+} from "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-number-input";
 import "@goauthentik/components/ak-radio-input";
+import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
-import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
-import "@goauthentik/elements/forms/Radio";
-import "@goauthentik/elements/forms/SearchSelect";
-import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { TemplateResult, html, nothing } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, state } from "@lit/reactive-element/decorators.js";
+import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     ClientTypeEnum,
     FlowsInstancesListDesignationEnum,
-    IssuerModeEnum,
+    PropertymappingsApi,
+    SourcesApi,
+} from "@goauthentik/api";
+import type {
     OAuth2Provider,
     PaginatedOAuthSourceList,
     PaginatedScopeMappingList,
-    PropertymappingsApi,
-    ProvidersApi,
-    SourcesApi,
-    SubModeEnum,
 } from "@goauthentik/api";
 
-export const clientTypeOptions = [
-    {
-        label: msg("Confidential"),
-        value: ClientTypeEnum.Confidential,
-        default: true,
-        description: html`${msg(
-            "Confidential clients are capable of maintaining the confidentiality of their credentials such as client secrets",
-        )}`,
-    },
-    {
-        label: msg("Public"),
-        value: ClientTypeEnum.Public,
-        description: html`${msg(
-            "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE. ",
-        )}`,
-    },
-];
+import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
 
-export const subjectModeOptions = [
-    {
-        label: msg("Based on the User's hashed ID"),
-        value: SubModeEnum.HashedUserId,
-        default: true,
-    },
-    {
-        label: msg("Based on the User's ID"),
-        value: SubModeEnum.UserId,
-    },
-    {
-        label: msg("Based on the User's UUID"),
-        value: SubModeEnum.UserUuid,
-    },
-    {
-        label: msg("Based on the User's username"),
-        value: SubModeEnum.UserUsername,
-    },
-    {
-        label: msg("Based on the User's Email"),
-        value: SubModeEnum.UserEmail,
-        description: html`${msg("This is recommended over the UPN mode.")}`,
-    },
-    {
-        label: msg("Based on the User's UPN"),
-        value: SubModeEnum.UserUpn,
-        description: html`${msg(
-            "Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.",
-        )}`,
-    },
-];
-
-export const issuerModeOptions = [
-    {
-        label: msg("Each provider has a different issuer, based on the application slug"),
-        value: IssuerModeEnum.PerProvider,
-        default: true,
-    },
-    {
-        label: msg("Same identifier is used for all providers"),
-        value: IssuerModeEnum.Global,
-    },
-];
-
-const redirectUriHelpMessages = [
-    msg(
-        "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.",
-    ),
-    msg(
-        "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.",
-    ),
-    msg(
-        'To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.',
-    ),
-];
-
-export const redirectUriHelp = html`${redirectUriHelpMessages.map(
-    (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
-)}`;
-
-/**
- * Form page for OAuth2 Authentication Method
- *
- * @element ak-provider-oauth2-form
- *
- */
-
-@customElement("ak-provider-oauth2-form")
-export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
-    propertyMappings?: PaginatedScopeMappingList;
-    oauthSources?: PaginatedOAuthSourceList;
+@customElement("ak-application-wizard-authentication-by-oauth")
+export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPageBase {
+    @state()
+    showClientSecret = false;
 
     @state()
-    showClientSecret = true;
+    propertyMappings?: PaginatedScopeMappingList;
 
-    async loadInstance(pk: number): Promise<OAuth2Provider> {
-        const provider = await new ProvidersApi(DEFAULT_CONFIG).providersOauth2Retrieve({
-            id: pk,
-        });
-        this.showClientSecret = provider.clientType === ClientTypeEnum.Confidential;
-        return provider;
-    }
+    @state()
+    oauthSources?: PaginatedOAuthSourceList;
 
-    async load(): Promise<void> {
-        this.propertyMappings = await new PropertymappingsApi(
-            DEFAULT_CONFIG,
-        ).propertymappingsScopeList({
-            ordering: "scope_name",
-        });
-        this.oauthSources = await new SourcesApi(DEFAULT_CONFIG).sourcesOauthList({
-            ordering: "name",
-            hasJwks: true,
-        });
-    }
-
-    getSuccessMessage(): string {
-        if (this.instance) {
-            return msg("Successfully updated provider.");
-        } else {
-            return msg("Successfully created provider.");
-        }
-    }
-
-    async send(data: OAuth2Provider): Promise<OAuth2Provider> {
-        if (this.instance) {
-            return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Update({
-                id: this.instance.pk || 0,
-                oAuth2ProviderRequest: data,
+    constructor() {
+        super();
+        new PropertymappingsApi(DEFAULT_CONFIG)
+            .propertymappingsScopeList({
+                ordering: "scope_name",
+            })
+            .then((propertyMappings: PaginatedScopeMappingList) => {
+                this.propertyMappings = propertyMappings;
             });
-        } else {
-            return new ProvidersApi(DEFAULT_CONFIG).providersOauth2Create({
-                oAuth2ProviderRequest: data,
+
+        new SourcesApi(DEFAULT_CONFIG)
+            .sourcesOauthList({
+                ordering: "name",
+                hasJwks: true,
+            })
+            .then((oauthSources: PaginatedOAuthSourceList) => {
+                this.oauthSources = oauthSources;
             });
-        }
     }
 
-    renderForm(): TemplateResult {
-        const provider = this.instance;
+    handleChange(ev: InputEvent) {
+        if (!ev.target) {
+            console.warn(`Received event with no target: ${ev}`);
+            return;
+        }
+        const target = ev.target as HTMLInputElement;
+        const value = target.type === "checkbox" ? target.checked : target.value;
+        this.dispatchWizardUpdate({
+            provider: {
+                ...this.wizard.provider,
+                [target.name]: value,
+            },
+        });
+    }
 
-        return html`<form class="pf-c-form pf-m-horizontal">
+    render() {
+        const provider = this.wizard.provider as OAuth2Provider | undefined;
+
+        // prettier-ignore
+        return html`<form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
             <ak-text-input
                 name="name"
                 label=${msg("Name")}
@@ -222,7 +140,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         label=${msg("Client ID")}
                         value="${first(
                             provider?.clientId,
-                            randomString(40, ascii_letters + digits),
+                            randomString(40, ascii_letters + digits)
                         )}"
                         required
                     >
@@ -232,7 +150,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         label=${msg("Client Secret")}
                         value="${first(
                             provider?.clientSecret,
-                            randomString(128, ascii_letters + digits),
+                            randomString(128, ascii_letters + digits)
                         )}"
                         ?hidden=${!this.showClientSecret}
                     >
@@ -301,12 +219,14 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                                 if (!provider?.propertyMappings) {
                                     selected =
                                         scope.managed?.startsWith(
-                                            "goauthentik.io/providers/oauth2/scope-",
+                                            "goauthentik.io/providers/oauth2/scope-"
                                         ) || false;
                                 } else {
-                                    selected = Array.from(provider?.propertyMappings).some((su) => {
-                                        return su == scope.pk;
-                                    });
+                                    selected = Array.from(provider?.propertyMappings).some(
+                                        (su) => {
+                                            return su == scope.pk;
+                                        }
+                                    );
                                 }
                                 return html`<option
                                     value=${ifDefined(scope.pk)}
@@ -318,7 +238,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Select which scopes can be used by the client. The client still has to specify the scope to access the data.",
+                                "Select which scopes can be used by the client. The client still has to specify the scope to access the data."
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
@@ -332,7 +252,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         .options=${subjectModeOptions}
                         .value=${provider?.subMode}
                         help=${msg(
-                            "Configure what data should be used as unique User Identifier. For most cases, the default should be fine.",
+                            "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
                         )}
                     >
                     </ak-radio-input>
@@ -340,7 +260,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         label=${msg("Include claims in id_token")}
                         ?checked=${first(provider?.includeClaimsInIdToken, true)}
                         help=${msg(
-                            "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
+                            "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
                         )}></ak-switch-input
                     >
                     <ak-radio-input
@@ -350,7 +270,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         .options=${issuerModeOptions}
                         .value=${provider?.issuerMode}
                         help=${msg(
-                            "Configure how the issuer field of the ID Token should be filled.",
+                            "Configure how the issuer field of the ID Token should be filled."
                         )}
                     >
                     </ak-radio-input>
@@ -376,7 +296,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
+                                "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
@@ -388,3 +308,5 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
         </form>`;
     }
 }
+
+export default ApplicationWizardAuthenticationByOauth;

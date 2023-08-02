@@ -1,39 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { html, nothing } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
-
-type AkTextareaArgs = {
-    // The name of the field, snake-to-camel'd if necessary.
-    name: string;
-    // The label of the field.
-    label: string;
-    value?: string;
-    required: boolean;
-    // The help message, shown at the bottom.
-    help?: string;
-};
-
-const akTextareaDefaults = {
-    required: false,
-};
-
-export function akTextarea(args: AkTextareaArgs) {
-    const { name, label, value, required, help } = {
-        ...akTextareaDefaults,
-        ...args,
-    };
-
-    // `<textarea>` is highly sensitive to whitespace. When editing this control, take care that the
-    // provided value has no whitespace between the `textarea` open and close tags.
-    //
-    // prettier-ignore
-    return html`<ak-form-element-horizontal label=${label} ?required=${required} name=${name}>
-        <textarea class="pf-c-form-control" ?required=${required} 
-            name=${name}>${value !== undefined ? value : ""}</textarea>
-        ${help ? html`<p class="pf-c-form__helper-textarea">${help}</p>` : nothing}
-    </ak-form-element-horizontal> `;
-}
 
 @customElement("ak-textarea-input")
 export class AkTextareaInput extends AKElement {
@@ -63,13 +31,26 @@ export class AkTextareaInput extends AKElement {
     @property({ type: String })
     help = "";
 
+    @property({ type: Object })
+    bighelp!: TemplateResult | TemplateResult[];
+
+    renderHelp() {
+        return [
+            this.help ? html`<p class="pf-c-form__helper-textarea">${this.help}</p>` : nothing,
+            this.bighelp ? this.bighelp : nothing,
+        ];
+    }
+
     render() {
-        return akTextarea({
-            name: this.name,
-            label: this.label,
-            value: this.value,
-            required: this.required,
-            help: this.help.trim() !== "" ? this.help : undefined,
-        });
+        return html`<ak-form-element-horizontal
+            label=${this.label}
+            ?required=${this.required}
+            name=${this.name}
+        >
+            <textarea class="pf-c-form-control" ?required=${this.required} name=${this.name}>
+${this.value !== undefined ? this.value : ""}</textarea
+            >
+            ${this.renderHelp()}
+        </ak-form-element-horizontal> `;
     }
 }

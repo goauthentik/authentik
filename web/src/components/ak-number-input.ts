@@ -4,38 +4,6 @@ import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-type AkNumberArgs = {
-    // The name of the field, snake-to-camel'd if necessary.
-    name: string;
-    // The label of the field.
-    label: string;
-    value?: number;
-    required: boolean;
-    // The help message, shown at the bottom.
-    help?: string;
-};
-
-const akNumberDefaults = {
-    required: false,
-};
-
-export function akNumber(args: AkNumberArgs) {
-    const { name, label, value, required, help } = {
-        ...akNumberDefaults,
-        ...args,
-    };
-
-    return html`<ak-form-element-horizontal label=${label} ?required=${required} name=${name}>
-        <input
-            type="number"
-            value=${ifDefined(value)}
-            class="pf-c-form-control"
-            ?required=${required}
-        />
-        ${help ? html`<p class="pf-c-form__helper-text">${help}</p>` : nothing}
-    </ak-form-element-horizontal> `;
-}
-
 @customElement("ak-number-input")
 export class AkNumberInput extends AKElement {
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
@@ -55,7 +23,7 @@ export class AkNumberInput extends AKElement {
     @property({ type: String })
     label = "";
 
-    @property({ type: Number })
+    @property({ type: Number, reflect: true })
     value = 0;
 
     @property({ type: Boolean })
@@ -65,12 +33,18 @@ export class AkNumberInput extends AKElement {
     help = "";
 
     render() {
-        return akNumber({
-            name: this.name,
-            label: this.label,
-            value: this.value,
-            required: this.required,
-            help: this.help.trim() !== "" ? this.help : undefined,
-        });
+        return html`<ak-form-element-horizontal
+            label=${this.label}
+            ?required=${this.required}
+            name=${this.name}
+        >
+            <input
+                type="number"
+                value=${ifDefined(this.value)}
+                class="pf-c-form-control"
+                ?required=${this.required}
+            />
+            ${this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing}
+        </ak-form-element-horizontal> `;
     }
 }

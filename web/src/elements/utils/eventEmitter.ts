@@ -11,15 +11,19 @@ export function CustomEmitterElement<T extends Constructor<LitElement>>(supercla
     return class EmmiterElementHandler extends superclass {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         dispatchCustomEvent(eventName: string, detail: any = {}, options = {}) {
+            const fullDetail =
+                typeof detail === "object"
+                    ? {
+                          target: this,
+                          ...detail,
+                      }
+                    : detail;
             this.dispatchEvent(
                 new CustomEvent(eventName, {
                     composed: true,
                     bubbles: true,
                     ...options,
-                    detail: {
-                        target: this,
-                        ...detail,
-                    },
+                    detail: fullDetail,
                 }),
             );
         }

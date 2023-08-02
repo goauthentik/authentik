@@ -4,35 +4,6 @@ import { RadioOption } from "@goauthentik/elements/forms/Radio";
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-type AkRadioArgs<T> = {
-    // The name of the field, snake-to-camel'd if necessary.
-    name: string;
-    // The label of the field.
-    label: string;
-    value?: T;
-    required?: boolean;
-    options: RadioOption<T>[];
-    // The help message, shown at the bottom.
-    help?: string;
-};
-
-const akRadioDefaults = {
-    required: false,
-    options: [],
-};
-
-export function akRadioInput<T>(args: AkRadioArgs<T>) {
-    const { name, label, help, required, options, value } = {
-        ...akRadioDefaults,
-        ...args,
-    };
-
-    return html`<ak-form-element-horizontal label=${label} ?required=${required} name=${name}>
-        <ak-radio .options=${options} .value=${value}></ak-radio>
-        ${help ? html`<p class="pf-c-form__helper-radio">${help}</p>` : nothing}
-    </ak-form-element-horizontal> `;
-}
-
 @customElement("ak-radio-input")
 export class AkRadioInput<T> extends AKElement {
     // Render into the lightDOM. This effectively erases the shadowDOM nature of this component, but
@@ -65,14 +36,16 @@ export class AkRadioInput<T> extends AKElement {
     options: RadioOption<T>[] = [];
 
     render() {
-        return akRadioInput({
-            name: this.name,
-            label: this.label,
-            value: this.value,
-            options: this.options,
-            required: this.required,
-            help: this.help.trim() !== "" ? this.help : undefined,
-        });
+        return html`<ak-form-element-horizontal
+            label=${this.label}
+            ?required=${this.required}
+            name=${this.name}
+        >
+            <ak-radio .options=${this.options} .value=${this.value}></ak-radio>
+            ${this.help.trim()
+                ? html`<p class="pf-c-form__helper-radio">${this.help}</p>`
+                : nothing}
+        </ak-form-element-horizontal> `;
     }
 }
 

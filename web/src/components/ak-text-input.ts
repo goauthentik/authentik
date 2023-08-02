@@ -1,40 +1,8 @@
 import { AKElement } from "@goauthentik/elements/Base";
 
-import { html, nothing } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
-
-type AkTextArgs = {
-    // The name of the field, snake-to-camel'd if necessary.
-    name: string;
-    // The label of the field.
-    label: string;
-    value?: string;
-    required: boolean;
-    // The help message, shown at the bottom.
-    help?: string;
-};
-
-const akTextDefaults = {
-    required: false,
-};
-
-export function akText(args: AkTextArgs) {
-    const { name, label, value, required, help } = {
-        ...akTextDefaults,
-        ...args,
-    };
-
-    return html`<ak-form-element-horizontal label=${label} ?required=${required} name=${name}>
-        <input
-            type="text"
-            value=${ifDefined(value)}
-            class="pf-c-form-control"
-            ?required=${required}
-        />
-        ${help ? html`<p class="pf-c-form__helper-text">${help}</p>` : nothing}
-    </ak-form-element-horizontal> `;
-}
 
 @customElement("ak-text-input")
 export class AkTextInput extends AKElement {
@@ -55,7 +23,7 @@ export class AkTextInput extends AKElement {
     @property({ type: String })
     label = "";
 
-    @property({ type: String })
+    @property({ type: String, reflect: true })
     value = "";
 
     @property({ type: Boolean })
@@ -64,13 +32,33 @@ export class AkTextInput extends AKElement {
     @property({ type: String })
     help = "";
 
+    @property({ type: Boolean })
+    hidden = false;
+
+    @property({ type: Object })
+    bighelp!: TemplateResult | TemplateResult[];
+
+    renderHelp() {
+        return [
+            this.help ? html`<p class="pf-c-form__helper-text">${this.help}</p>` : nothing,
+            this.bighelp ? this.bighelp : nothing,
+        ];
+    }
+
     render() {
-        return akText({
-            name: this.name,
-            label: this.label,
-            value: this.value,
-            required: this.required,
-            help: this.help.trim() !== "" ? this.help : undefined,
-        });
+        return html`<ak-form-element-horizontal
+            label=${this.label}
+            ?required=${this.required}
+            ?hidden=${this.hidden}
+            name=${this.name}
+        >
+            <input
+                type="text"
+                value=${ifDefined(this.value)}
+                class="pf-c-form-control"
+                ?required=${this.required}
+            />
+            ${this.renderHelp()}
+        </ak-form-element-horizontal> `;
     }
 }
