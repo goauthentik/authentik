@@ -89,7 +89,18 @@ module.exports = {
                     items: ["providers/ldap/generic_setup"],
                 },
                 "providers/scim/index",
-                "providers/kerberos/index",
+                {
+                    type: "category",
+                    label: "Kerberos Provider",
+                    link: {
+                        type: "doc",
+                        id: "providers/kerberos/index",
+                    },
+                    items: [
+                        "providers/kerberos/generic_setup",
+                        "providers/kerberos/advanced_configuration",
+                    ],
+                },
             ],
         },
         {
