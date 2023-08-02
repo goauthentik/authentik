@@ -44039,6 +44039,10 @@ components:
           type: string
         type:
           $ref: '#/components/schemas/UserTypeEnum'
+        url_download_keytab:
+          type: string
+          description: Get URL where to download user's keytab
+          readOnly: true
       required:
       - avatar
       - groups_obj
@@ -44046,6 +44050,7 @@ components:
       - name
       - pk
       - uid
+      - url_download_keytab
       - username
     UserAccountRequest:
       type: object

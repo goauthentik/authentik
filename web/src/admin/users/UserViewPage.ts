@@ -198,6 +198,13 @@ export class UserViewPage extends AKElement {
                                     ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
+                            <a
+                                class="pf-c-button pf-m-primary"
+                                target="_blank"
+                                href=${this.user.urlDownloadKeytab}
+                            >
+                                ${msg("Download Keytab")}
+                            </a>
                         </div>
                         ${rootInterface()?.config?.capabilities.includes(
                             CapabilitiesEnum.CanImpersonate,

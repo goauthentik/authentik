@@ -10,8 +10,8 @@ from django.db.models.functions import ExtractHour
 from django.db.models.query import QuerySet
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
-from django.http import HttpResponse
-from django.urls import reverse_lazy
+from django.http import HttpRequest, HttpResponse
+from django.urls import reverse, reverse_lazy
 from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
@@ -117,6 +117,8 @@ class UserSerializer(ModelSerializer):
     uid = CharField(read_only=True)
     username = CharField(max_length=150, validators=[UniqueValidator(queryset=User.objects.all())])
 
+    url_download_keytab = SerializerMethodField()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
@@ -162,6 +164,15 @@ class UserSerializer(ModelSerializer):
             raise ValidationError("Setting a user to internal service account is not allowed.")
         return user_type
 
+    def get_url_download_keytab(self, instance: User) -> str:
+        """Get URL where to download user's keytab"""
+        if "request" not in self._context:
+            return ""
+        request: HttpRequest = self._context["request"]._request
+        return request.build_absolute_uri(
+            reverse("authentik_api:user-keytab", kwargs={"pk": instance.pk})
+        )
+
     class Meta:
         model = User
         fields = [
@@ -179,6 +190,7 @@ class UserSerializer(ModelSerializer):
             "uid",
             "path",
             "type",
+            "url_download_keytab",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
@@ -513,7 +525,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
             update_session_auth_hash(self.request, user)
         return Response(status=204)
 
-    @permission_required("authentik_core.reset_user_password")
     @extend_schema(
         responses={
             200: OpenApiResponse(description="User keytab"),
@@ -523,6 +534,10 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     def keytab(self, request: Request, pk: int) -> Response:
         """Generate keytab for user and realm"""
         user: User = self.get_object()
+        if request.user.pk != user.pk or not request.user.has_perm(
+            "authentik_core.reset_user_password"
+        ):
+            return Response(status=404)
         realms = KerberosRealm.objects.all()
         if not realms.exists():
             return Response(status=404)
