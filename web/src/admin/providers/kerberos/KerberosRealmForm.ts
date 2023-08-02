@@ -382,26 +382,6 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                             )}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="requiresPreauth">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.requiresPreauth, true)}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Requires preauthentication")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Should tickets only be issued to preauthenticated clients.")}
-                        </p>
-                    </ak-form-element-horizontal>
                     <ak-form-element-horizontal name="setOkAsDelegate">
                         <label class="pf-c-switch">
                             <input
@@ -420,6 +400,26 @@ export class KerberosRealmFormPage extends ModelForm<KerberosRealm, number> {
                             ${msg(
                                 "Should the tickets issued for this realm have the ok-as-delegate flag set.",
                             )}
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal name="requiresPreauth">
+                        <label class="pf-c-switch">
+                            <input
+                                class="pf-c-switch__input"
+                                type="checkbox"
+                                ?checked=${first(this.instance?.requiresPreauth, true)}
+                            />
+                            <span class="pf-c-switch__toggle">
+                                <span class="pf-c-switch__toggle-icon">
+                                    <i class="fas fa-check" aria-hidden="true"></i>
+                                </span>
+                            </span>
+                            <span class="pf-c-switch__label"
+                                >${msg("Requires preauthentication")}</span
+                            >
+                        </label>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Should tickets only be issued to preauthenticated clients.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>

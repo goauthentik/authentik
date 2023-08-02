@@ -124,15 +124,15 @@ class KerberosProvider(KerberosKeyMixin, Provider):
         ),
     )
 
-    requires_preauth = models.BooleanField(
-        default=True, help_text=_("Should tickets only be issued to preauthenticated clients.")
-    )
-
     set_ok_as_delegate = models.BooleanField(
         default=False,
         help_text=_(
             "Should the tickets issued for this provider have the ok-as-delegate flag set."
         ),
+    )
+
+    requires_preauth = models.BooleanField(
+        default=True, help_text=_("Should tickets only be issued to preauthenticated clients.")
     )
 
     secret = models.TextField(
