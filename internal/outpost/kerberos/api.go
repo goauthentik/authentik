@@ -140,7 +140,7 @@ func (ks *KerberosServer) handle(request []byte) ([]byte, error) {
 }
 
 func (ks *KerberosServer) StartUDPServer() error {
-	addr, err := net.ResolveUDPAddr("udp", config.Get().Listen.KerberosUDP)
+	addr, err := net.ResolveUDPAddr("udp", config.Get().Listen.Kerberos)
 	if err != nil {
 		return err
 	}
@@ -203,7 +203,7 @@ func (ks *KerberosServer) StartUDPServer() error {
 }
 
 func (ks *KerberosServer) StartTCPServer() error {
-	addr, err := net.ResolveTCPAddr("tcp", config.Get().Listen.KerberosTCP)
+	addr, err := net.ResolveTCPAddr("tcp", config.Get().Listen.Kerberos)
 	if err != nil {
 		return err
 	}

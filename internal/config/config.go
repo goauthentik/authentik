@@ -28,15 +28,14 @@ func defaultConfig() *Config {
 	return &Config{
 		Debug: false,
 		Listen: ListenConfig{
-			HTTP:        "0.0.0.0:9000",
-			HTTPS:       "0.0.0.0:9443",
-			LDAP:        "0.0.0.0:3389",
-			LDAPS:       "0.0.0.0:6636",
-			Radius:      "0.0.0.0:1812",
-			KerberosUDP: "0.0.0.0:8888",
-			KerberosTCP: "0.0.0.0:8888",
-			Metrics:     "0.0.0.0:9300",
-			Debug:       "0.0.0.0:9900",
+			HTTP:     "0.0.0.0:9000",
+			HTTPS:    "0.0.0.0:9443",
+			LDAP:     "0.0.0.0:3389",
+			LDAPS:    "0.0.0.0:6636",
+			Radius:   "0.0.0.0:1812",
+			Kerberos: "0.0.0.0:8888",
+			Metrics:  "0.0.0.0:9300",
+			Debug:    "0.0.0.0:9900",
 		},
 		Paths: PathsConfig{
 			Media: "./media",

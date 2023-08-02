@@ -43,8 +43,7 @@ type ListenConfig struct {
 	LDAP              string   `yaml:"listen_ldap" env:"AUTHENTIK_LISTEN__LDAP"`
 	LDAPS             string   `yaml:"listen_ldaps" env:"AUTHENTIK_LISTEN__LDAPS"`
 	Radius            string   `yaml:"listen_radius" env:"AUTHENTIK_LISTEN__RADIUS"`
-	KerberosUDP       string   `yaml:"listen_kerberos_udp" env:"AUTHENTIK_LISTEN__KERBEROS_UDP"`
-	KerberosTCP       string   `yaml:"listen_kerberos_tcp" env:"AUTHENTIK_LISTEN__KERBEROS_TCP"`
+	Kerberos          string   `yaml:"listen_kerberos" env:"AUTHENTIK_LISTEN__KERBEROS"`
 	Metrics           string   `yaml:"listen_metrics" env:"AUTHENTIK_LISTEN__METRICS"`
 	Debug             string   `yaml:"listen_debug" env:"AUTHENTIK_LISTEN__DEBUG"`
 	TrustedProxyCIDRs []string `yaml:"trusted_proxy_cidrs" env:"AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS"`
