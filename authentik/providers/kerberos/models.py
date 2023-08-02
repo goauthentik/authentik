@@ -87,7 +87,7 @@ class KerberosProvider(KerberosKeyMixin, Provider):
 
     maximum_ticket_renew_lifetime = models.TextField(
         help_text=_("Maximum Ticket renew lifetime (Format: hours=1;minutes=2;seconds=3)."),
-        default="weeks=1",
+        default="days=1",
         validators=[
             timedelta_string_validator,
         ],
