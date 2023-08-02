@@ -69,7 +69,8 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
     // already set.
     buildChangeHandler(option: RadioOption<T>) {
         return (ev: Event) => {
-            // This is a controlled input. Stop the native event from escaping.
+            // This is a controlled input. Stop the native event from escaping or affecting the
+            // value.  We'll do that ourselves.
             ev.stopPropagation();
             ev.preventDefault();
             if (this.value === option.value) {

@@ -54,10 +54,21 @@ const metadata: Meta<AkApplicationWizardApplicationDetails> = {
     },
 };
 
+const LIGHT = "pf-t-light";
+function injectTheme() {
+    setTimeout(() => {
+        if (!document.body.classList.contains(LIGHT)) {
+            document.body.classList.add(LIGHT);
+        }
+    })
+}
+              
+
 export default metadata;
 
-const container = (testItem: TemplateResult) =>
-    html` <div style="background: #fff; padding: 1em">
+const container = (testItem: TemplateResult) => {
+    injectTheme();
+    return html` <div style="background: #fff; padding: 1.0rem;">
         <style>
             li {
                 display: block;
@@ -67,12 +78,14 @@ const container = (testItem: TemplateResult) =>
             }
         </style>
         ${testItem}
-    </div>`;
+</div>`;
+}
 
 export const PageOne = () => {
     return container(
         html`<ak-application-wizard-context>
-            <ak-application-wizard-application-details></ak-application-wizard-application-details>
+<ak-application-wizard-application-details></ak-application-wizard-application-details>
+<hr/>
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
         </ak-application-wizard-context>`,
     );
@@ -82,6 +95,7 @@ export const PageTwo = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-method-choice></ak-application-wizard-authentication-method-choice>
+<hr/>
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
         </ak-application-wizard-context>`,
     );
@@ -91,6 +105,7 @@ export const PageThreeLdap = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-by-ldap></ak-application-wizard-authentication-by-ldap>
+<hr/>
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
         </ak-application-wizard-context>`,
     );
