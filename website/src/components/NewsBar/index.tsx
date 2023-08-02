@@ -19,9 +19,10 @@ export function getReleases(): ItemLink[] {
     );
     const releaseVersion: ItemLink[] = releaseItems.map((relUrl: string) => {
         const [_, year, version] = relUrl.split("/");
+        const url = useBaseUrl(`docs/releases/${version.replace("v", "")}`);
         return {
             label: `authentik ${version} released!`,
-            link: relUrl,
+            link: url,
         };
     });
     return releaseVersion;
@@ -34,7 +35,7 @@ export function NewsBar() {
             <div className="items">
                 {getReleases().map((version) => {
                     return (
-                        <a key={version.link} href={useBaseUrl(version.link)}>
+                        <a key={version.link} href={version.link}>
                             {version.label}
                         </a>
                     );
