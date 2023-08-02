@@ -54,7 +54,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     // Set the value if it's not set already. Property changes inside the `willUpdate()` method do
     // not trigger an element update.
-    willUpdate(changedProperties: Map<string, any>) {
+    willUpdate() {
         if (!this.value) {
             const maybeDefault = this.options.filter((opt) => opt.default);
             if (maybeDefault.length > 0) {

@@ -75,3 +75,5 @@ export class AkRadioInput<T> extends AKElement {
         });
     }
 }
+
+export default AkRadioInput;

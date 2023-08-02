@@ -6,6 +6,7 @@ import { TemplateResult, html } from "lit";
 import "../Radio";
 import Radio from "../Radio";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const metadata: Meta<Radio<any>> = {
     title: "Elements / Basic Radio",
     component: "ak-radio",
@@ -42,11 +43,11 @@ const testOptions = [
 ];
 
 export const BasicRadioElement = () => {
-    const displayChange = (ev: any) => {
+    const displayChange = (ev: InputEvent) => {
         document.getElementById("radio-message-pad")!.innerText = `Value selected: ${JSON.stringify(
-            ev.target.value,
+            (ev.target as HTMLInputElement)!.value,
             null,
-            2
+            2,
         )}`;
     };
 
@@ -55,6 +56,6 @@ export const BasicRadioElement = () => {
             @input=${displayChange}
             name="ak-test-radio-input"
             .options=${testOptions}
-        ></ak-radio>`
+        ></ak-radio>`,
     );
 };

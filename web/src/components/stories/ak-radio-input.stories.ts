@@ -6,7 +6,7 @@ import { TemplateResult, html } from "lit";
 import "../ak-radio-input";
 import AkRadioInput from "../ak-radio-input";
 
-const metadata: Meta<AkRadioInput> = {
+const metadata: Meta<AkRadioInput<Record<string, number>>> = {
     title: "Components / Radio Input",
     component: "ak-radio-input",
     parameters: {
@@ -30,7 +30,7 @@ const container = (testItem: TemplateResult) =>
                 margin-top: 1em;
             }
         </style>
-${testItem}
+        ${testItem}
         <ul id="radio-message-pad" style="margin-top: 1em"></ul>
     </div>`;
 
@@ -41,14 +41,15 @@ const testOptions = [
 ];
 
 export const ButtonWithSuccess = () => {
-    let result = "";
+    const result = "";
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
         console.log(ev.type, ev.target.name, ev.target.value, ev.detail);
         document.getElementById("radio-message-pad")!.innerText = `Value selected: ${JSON.stringify(
             ev.target.value,
             null,
-            2
+            2,
         )}`;
     };
 
@@ -60,6 +61,6 @@ export const ButtonWithSuccess = () => {
                 help="This is where you would read the help messages"
                 .options=${testOptions}
             ></ak-radio-input>
-            <div>${result}</div>`
+            <div>${result}</div>`,
     );
 };
