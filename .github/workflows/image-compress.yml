@@ -1,0 +1,61 @@
+---
+name: authentik-compress-images
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "**.jpg"
+      - "**.jpeg"
+      - "**.png"
+      - "**.webp"
+  pull_request:
+    paths:
+      - "**.jpg"
+      - "**.jpeg"
+      - "**.png"
+      - "**.webp"
+  workflow_dispatch:
+
+jobs:
+  compress:
+    name: compress
+    runs-on: ubuntu-latest
+    # Don't run on forks. Token will not be available. Will run on main and open a PR anyway
+    if: |
+      github.repository == 'goauthentik/authentik' &&
+      (github.event_name != 'pull_request' ||
+       github.event.pull_request.head.repo.full_name == github.repository)
+    steps:
+      - id: generate_token
+        uses: tibdex/github-app-token@v1
+        with:
+          app_id: ${{ secrets.GH_APP_ID }}
+          private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+      - name: Compress images
+        id: compress
+        uses: calibreapp/image-actions@main
+        with:
+          githubToken: ${{ steps.generate_token.outputs.token }}
+          compressOnly: ${{ github.event_name != 'pull_request' }}
+      - uses: peter-evans/create-pull-request@v4
+        if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
+        id: cpr
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          title: "*: Auto compress images"
+          branch-suffix: timestamp
+          commit-messsage: "*: compress images"
+          body: ${{ steps.compress.outputs.markdown }}
+          delete-branch: true
+          signoff: true
+      - uses: peter-evans/enable-pull-request-automerge@v3
+        if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
