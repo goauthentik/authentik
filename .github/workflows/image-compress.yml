@@ -1,5 +1,5 @@
 ---
-name: Compress images
+name: authentik-compress-images
 
 on:
   push:
@@ -43,12 +43,18 @@ jobs:
           githubToken: ${{ steps.generate_token.outputs.token }}
           compressOnly: ${{ github.event_name != 'pull_request' }}
       - uses: peter-evans/create-pull-request@v4
-        if: "github.event_name != 'pull_request' && steps.compress.outputs.markdown != ''"
+        if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
+        id: cpr
         with:
           token: ${{ steps.generate_token.outputs.token }}
-          title: Auto compress images
+          title: "*: Auto compress images"
           branch-suffix: timestamp
-          commit-messsage: "images: compress"
-          body: ${{ steps.id.outputs.markdown }}
+          commit-messsage: "*: compress images"
+          body: ${{ steps.compress.outputs.markdown }}
           delete-branch: true
           signoff: true
+      - uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash
