@@ -240,7 +240,15 @@ class KerberosRealmViewSet(KerberosProviderViewSet):
         )
         records_raw = (
             f'_kerberos.{realm.realm_name} TXT "{realm.realm_name}"',
-            f"_kerberos.{realm.realm_name} URI 10 1 krb5srv::kkdcp:{kdc_proxy}",
+            f"_kerberos.{realm.realm_name} URI 100 1 krb5srv:m:kkdcp:{kdc_proxy}",
+            "; if you also have an outpost. The specified port here is 8888, which is what the outpost listens on. Feel free to edit this if you setup port-forwarding to the default 88.",
+            f"_kerberos.{realm.realm_name} URI 50 100 krb5srv::udp:<kerberos outpost IP>:8888",
+            f"_kerberos.{realm.realm_name} URI 50 50 krb5srv::tcp:<kerberos outpost IP>:8888",
+            "; the following records need an A, or AAAA record. Feel free to replace the IPs above with those names if you create them",
+            f"kerberos.{realm.realm_name} A <kerberos outpost IPv4>",
+            f"kerberos.{realm.realm_name} AAAA <kerberos outpost IPv6>",
+            f"_kerberos._udp.{realm.realm_name} SRV 100 100 8888 kerberos.{realm.realm_name}",
+            f"_kerberos._tcp.{realm.realm_name} SRV 100 100 8888 kerberos.{realm.realm_name}",
         )
         records = "\n".join(records_raw)
 
