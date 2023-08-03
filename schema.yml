@@ -3088,39 +3088,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /core/applications/create_transactional/:
-    put:
-      operationId: core_applications_create_transactional_update
-      description: Convert data into a blueprint, validate it and apply it
-      tags:
-      - core
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TransactionApplicationRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TransactionApplicationResponse'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /core/authenticated_sessions/:
     get:
       operationId: core_authenticated_sessions_list
@@ -4370,6 +4337,39 @@ paths:
           description: ''
         '404':
           description: Token not found or expired
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/transactional/applications/:
+    put:
+      operationId: core_transactional_applications_update
+      description: Convert data into a blueprint, validate it and apply it
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionApplicationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionApplicationResponse'
+          description: ''
         '400':
           content:
             application/json:

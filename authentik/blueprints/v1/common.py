@@ -52,6 +52,7 @@ class BlueprintEntryDesiredState(Enum):
     ABSENT = "absent"
     PRESENT = "present"
     CREATED = "created"
+    MUST_CREATED = "must_created"
 
 
 @dataclass
