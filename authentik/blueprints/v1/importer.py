@@ -199,9 +199,6 @@ class Importer:
         serializer_kwargs = {}
         model_instance = existing_models.first()
         if not isinstance(model(), BaseMetaModel) and model_instance:
-            if entry.get_state(self.__import) == BlueprintEntryDesiredState.CREATED:
-                self.logger.debug("instance exists, skipping")
-                return None
             self.logger.debug(
                 "initialise serializer with instance",
                 model=model,
@@ -268,21 +265,34 @@ class Importer:
             try:
                 serializer = self._validate_single(entry)
             except EntryInvalidError as exc:
+                # For deleting objects we don't need the serializer to be valid
+                if entry.get_state(self.__import) == BlueprintEntryDesiredState.ABSENT:
+                    continue
                 self.logger.warning(f"entry invalid: {exc}", entry=entry, error=exc)
                 return False
             if not serializer:
                 continue
 
             state = entry.get_state(self.__import)
-            if state in [
-                BlueprintEntryDesiredState.PRESENT,
-                BlueprintEntryDesiredState.CREATED,
-            ]:
-                model = serializer.save()
+            if state in [BlueprintEntryDesiredState.PRESENT, BlueprintEntryDesiredState.CREATED]:
+                instance = serializer.instance
+                if (
+                    instance
+                    and not instance._state.adding
+                    and state == BlueprintEntryDesiredState.CREATED
+                ):
+                    self.logger.debug(
+                        "instance exists, skipping",
+                        model=model,
+                        instance=instance,
+                        pk=instance.pk,
+                    )
+                else:
+                    instance = serializer.save()
+                    self.logger.debug("updated model", model=instance)
                 if "pk" in entry.identifiers:
-                    self.__pk_map[entry.identifiers["pk"]] = model.pk
-                entry._state = BlueprintEntryState(model)
-                self.logger.debug("updated model", model=model)
+                    self.__pk_map[entry.identifiers["pk"]] = instance.pk
+                entry._state = BlueprintEntryState(instance)
             elif state == BlueprintEntryDesiredState.ABSENT:
                 instance: Optional[Model] = serializer.instance
                 if instance.pk:
@@ -309,5 +319,6 @@ class Importer:
                 self.logger.debug("Blueprint validation failed")
         for log in logs:
             getattr(self.logger, log.get("log_level"))(**log)
+        self.logger.debug("Finished blueprint import validation")
         self.__import = orig_import
         return successful, logs

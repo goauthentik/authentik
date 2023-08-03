@@ -155,6 +155,7 @@ class TestBlueprintsV1(TransactionTestCase):
                     },
                     "if_false_complex": ["list", "with", "items", "foo-bar"],
                     "if_true_simple": True,
+                    "if_short": True,
                     "if_false_simple": 2,
                     "enumerate_mapping_to_mapping": {
                         "prefix-key1": "other-prefix-value",
@@ -211,6 +212,7 @@ class TestBlueprintsV1(TransactionTestCase):
                             ],
                         },
                     },
+                    "nested_context": "context-nested-value",
                 }
             )
         )

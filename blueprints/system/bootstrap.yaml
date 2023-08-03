@@ -1,0 +1,49 @@
+version: 1
+metadata:
+  name: authentik Bootstrap
+  labels:
+    blueprints.goauthentik.io/system-bootstrap: "true"
+    blueprints.goauthentik.io/system: "true"
+    blueprints.goauthentik.io/description: |
+      This blueprint configures the default admin user and group, and configures them for the [Automated install](https://goauthentik.io/docs/installation/automated-install).
+context:
+  username: akadmin
+  group_name: authentik Admins
+  email: !Env [AUTHENTIK_BOOTSTRAP_EMAIL, "root@example.com"]
+  password: !Env [AUTHENTIK_BOOTSTRAP_PASSWORD, null]
+  token: !Env [AUTHENTIK_BOOTSTRAP_TOKEN, null]
+entries:
+  - model: authentik_core.group
+    state: created
+    identifiers:
+      name: !Context group_name
+    attrs:
+      is_superuser: true
+    id: admin-group
+  - model: authentik_core.user
+    state: created
+    id: admin-user
+    identifiers:
+      username: !Context username
+    attrs:
+      name: authentik Default Admin
+      email: !Context email
+      groups:
+        - !KeyOf admin-group
+      password: !Context password
+  - model: authentik_core.token
+    state: created
+    conditions:
+      - !If [!Context token]
+    identifiers:
+      identifier: authentik-bootstrap-token
+      intent: api
+      expiring: false
+      key: !Context token
+      user: !KeyOf admin-user
+  - model: authentik_blueprints.blueprintinstance
+    identifiers:
+      metadata:
+        labels:
+          blueprints.goauthentik.io/system-bootstrap: "true"
+    state: absent

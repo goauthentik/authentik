@@ -6,6 +6,7 @@ import { uiConfig } from "@goauthentik/common/ui/config";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -75,7 +76,9 @@ export class EventListPage extends TablePage<Event> {
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.tenant?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
-                <i class="fas fa-share-square"></i>
+                <pf-tooltip position="top" content=${msg("Show details")}>
+                    <i class="fas fa-share-square"></i>
+                </pf-tooltip>
             </a>`,
         ];
     }

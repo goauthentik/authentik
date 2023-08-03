@@ -5,7 +5,7 @@ from sys import exit as sysexit
 from time import sleep
 from urllib.parse import quote_plus
 
-from psycopg2 import OperationalError, connect
+from psycopg import OperationalError, connect
 from redis import Redis
 from redis.exceptions import RedisError
 
@@ -28,7 +28,7 @@ while True:
             user=CONFIG.get("postgresql.user"),
             password=CONFIG.get("postgresql.password"),
             host=CONFIG.get("postgresql.host"),
-            port=int(CONFIG.get("postgresql.port")),
+            port=CONFIG.get_int("postgresql.port"),
             sslmode=CONFIG.get("postgresql.sslmode"),
             sslrootcert=CONFIG.get("postgresql.sslrootcert"),
             sslcert=CONFIG.get("postgresql.sslcert"),
@@ -47,7 +47,7 @@ if CONFIG.get_bool("redis.tls", False):
 REDIS_URL = (
     f"{REDIS_PROTOCOL_PREFIX}:"
     f"{quote_plus(CONFIG.get('redis.password'))}@{quote_plus(CONFIG.get('redis.host'))}:"
-    f"{int(CONFIG.get('redis.port'))}/{CONFIG.get('redis.db')}"
+    f"{CONFIG.get_int('redis.port')}/{CONFIG.get('redis.db')}"
 )
 while True:
     try:

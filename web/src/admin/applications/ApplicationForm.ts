@@ -15,6 +15,7 @@ import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/ProxyForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -158,7 +159,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 value=${this.instance?.group}
                 label=${msg("Group")}
                 help=${msg(
-                    "Optionally enter a group name. Applications with identical groups are shown grouped together.",
+                    "Optionally enter a group name. Applications with identical groups are shown grouped together."
                 )}
             ></ak-text-input>
             <ak-provider-search-input
@@ -172,11 +173,15 @@ export class ApplicationForm extends ModelForm<Application, string> {
                 name="backchannelProviders"
                 label=${msg("Backchannel Providers")}
                 help=${msg(
-                    "Select backchannel providers which augment the functionality of the main provider.",
+                    "Select backchannel providers which augment the functionality of the main provider."
                 )}
                 .providers=${this.backchannelProviders}
                 .confirm=${this.handleConfirmBackchannelProviders}
                 .remover=${this.makeRemoveBackchannelProviderHandler}
+                .tooltip=${html`<pf-tooltip
+                    position="top"
+                    content=${msg("Add provider")}
+                ></pf-tooltip>`}
             >
             </ak-backchannel-providers-input>
             <ak-radio-input
@@ -194,7 +199,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         label=${msg("Launch URL")}
                         value=${ifDefined(this.instance?.metaLaunchUrl)}
                         help=${msg(
-                            "If left empty, authentik will try to extract the launch URL based on the selected provider.",
+                            "If left empty, authentik will try to extract the launch URL based on the selected provider."
                         )}
                     ></ak-text-input>
                     <ak-switch-input
@@ -202,7 +207,7 @@ export class ApplicationForm extends ModelForm<Application, string> {
                         ?checked=${first(this.instance?.openInNewTab, false)}
                         label=${msg("Open in new tab")}
                         help=${msg(
-                            "If checked, the launch URL will open in a new browser tab or window from the user's application library.",
+                            "If checked, the launch URL will open in a new browser tab or window from the user's application library."
                         )}
                     >
                     </ak-switch-input>

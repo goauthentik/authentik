@@ -12,7 +12,12 @@ This installation method is for test-setups and small-scale production setups.
 
 ## Preparation
 
-Download the latest `docker-compose.yml` from [here](https://goauthentik.io/docker-compose.yml). Place it in a directory of your choice.
+To download the latest `docker-compose.yml` open your terminal and navigate to the directory of your choice.
+Run the following command:
+
+```shell
+wget https://goauthentik.io/docker-compose.yml
+```
 
 If this is a fresh authentik installation, you need to generate a password and a secret key. If you don't already have a password generator installed, you can run this command to install **pwgen**, a popular generator:
 
@@ -87,8 +92,8 @@ docker-compose up -d
 
 The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file. Each time you upgrade to a newer version of authentik, you download a new `docker-compose.yml` file, which points to the latest available version. For more information, refer to the **Upgrading** section in the [Release Notes](../releases).
 
-By default, authentik is reachable (by default) on port 9000 (HTTP) and port 9443 (HTTPS).
-
-To start the initial setup, navigate to `https://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
+To start the initial setup, navigate to `http://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
 
 There you are prompted to set a password for the akadmin user (the default user).
+
+An explanation about what each service in the docker compose file does, see [Architecture](../core/architecture.md).

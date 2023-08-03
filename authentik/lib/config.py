@@ -213,6 +213,14 @@ class ConfigLoader:
         attr: Attr = get_path_from_dict(root, path, sep=sep, default=Attr(default))
         return attr.value
 
+    def get_int(self, path: str, default=0) -> int:
+        """Wrapper for get that converts value into int"""
+        try:
+            return int(self.get(path, default))
+        except ValueError as exc:
+            self.log("warning", "Failed to parse config as int", path=path, exc=str(exc))
+            return default
+
     def get_bool(self, path: str, default=False) -> bool:
         """Wrapper for get that converts value into boolean"""
         return str(self.get(path, default)).lower() == "true"

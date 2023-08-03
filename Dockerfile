@@ -31,7 +31,7 @@ RUN pip install --no-cache-dir poetry && \
     poetry export -f requirements.txt --dev --output requirements-dev.txt
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.20.6-bullseye AS go-builder
+FROM docker.io/golang:1.20.7-bullseye AS go-builder
 
 WORKDIR /work
 
@@ -81,13 +81,13 @@ COPY --from=geoip /usr/share/GeoIP /geoip
 
 RUN apt-get update && \
     # Required for installing pip packages
-    apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev zlib1g-dev && \
+    apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev zlib1g-dev libpq-dev python3-dev && \
     # Required for runtime
-    apt-get install -y --no-install-recommends libxmlsec1-openssl libmaxminddb0 && \
+    apt-get install -y --no-install-recommends libpq5 openssl libxmlsec1-openssl libmaxminddb0 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
     pip install --no-cache-dir -r /requirements.txt && \
-    apt-get remove --purge -y build-essential pkg-config libxmlsec1-dev && \
+    apt-get remove --purge -y build-essential pkg-config libxmlsec1-dev libpq-dev python3-dev && \
     apt-get autoremove --purge -y && \
     apt-get clean && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
