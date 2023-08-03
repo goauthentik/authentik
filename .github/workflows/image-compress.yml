@@ -42,7 +42,7 @@ jobs:
         with:
           githubToken: ${{ steps.generate_token.outputs.token }}
           compressOnly: ${{ github.event_name != 'pull_request' }}
-      - uses: peter-evans/create-pull-request@v4
+      - uses: peter-evans/create-pull-request@v5
         if: "${{ github.event_name != 'pull_request' && steps.compress.outputs.markdown != '' }}"
         id: cpr
         with:
