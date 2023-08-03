@@ -1,6 +1,7 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -8,8 +9,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { CSSResult, css } from "lit";
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -104,84 +104,25 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     }
 
     renderHttpBasic(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("HTTP-Basic Username Key")}
+        return html`<ak-text-input
                 name="basicAuthUserAttribute"
+                label=${msg("HTTP-Basic Username Key")}
+                value="${ifDefined(this.instance?.basicAuthUserAttribute)}"
+                help=${msg(
+                    "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
+                )}
             >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.basicAuthUserAttribute)}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("HTTP-Basic Password Key")}
-                name="basicAuthPasswordAttribute"
-            >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.basicAuthPasswordAttribute)}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "User/Group Attribute used for the password part of the HTTP-Basic Header.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
-    }
+            </ak-text-input>
 
-    renderModeSelector(): TemplateResult {
-        return html` <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.mode === ProxyMode.Proxy
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.mode = ProxyMode.Proxy;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text">${msg("Proxy")}</span>
-                </button>
-            </div>
-            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-            <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.mode === ProxyMode.ForwardSingle
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.mode = ProxyMode.ForwardSingle;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text"
-                        >${msg("Forward auth (single application)")}</span
-                    >
-                </button>
-            </div>
-            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-            <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.mode === ProxyMode.ForwardDomain
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.mode = ProxyMode.ForwardDomain;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text"
-                        >${msg("Forward auth (domain level)")}</span
-                    >
-                </button>
-            </div>`;
+            <ak-text-input
+                name="basicAuthPasswordAttribute"
+                label=${msg("HTTP-Basic Password Key")}
+                value="${ifDefined(this.instance?.basicAuthPasswordAttribute)}"
+                help=${msg(
+                    "User/Group Attribute used for the password part of the HTTP-Basic Header.",
+                )}
+            >
+            </ak-text-input>`;
     }
 
     renderSettings(): TemplateResult {
@@ -363,7 +304,20 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
 
             <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">
-                    <div class="pf-c-toggle-group">${this.renderModeSelector()}</div>
+                    <ak-toggle-group
+                        value=${this.mode}
+                        @ak-toggle=${(ev: CustomEvent<{ value: ProxyMode }>) => {
+                            this.mode = ev.detail.value;
+                        }}
+                    >
+                        <option value=${ProxyMode.Proxy}>${msg("Proxy")}</option>
+                        <option value=${ProxyMode.ForwardSingle}>
+                            ${msg("Forward auth (single application)")}
+                        </option>
+                        <option value=${ProxyMode.ForwardDomain}>
+                            ${msg("Forward auth (domain level)")}
+                        </option>
+                    </ak-toggle-group>
                 </div>
                 <div class="pf-c-card__footer">${this.renderSettings()}</div>
             </div>

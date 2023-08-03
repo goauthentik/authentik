@@ -72,8 +72,6 @@ const metadata: Meta<AkApplicationWizardApplicationDetails> = {
                 status: 200,
                 response: dummyHasJwks,
             },
-
-            
         ],
     },
 };
@@ -133,7 +131,6 @@ export const PageThreeLdap = () => {
         </ak-application-wizard-context>`,
     );
 };
-
 
 export const PageThreeOauth2 = () => {
     return container(

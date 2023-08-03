@@ -112,55 +112,22 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     }
 
     renderModeSelector(): TemplateResult {
-        return html` <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.policyGroupUser === target.policy
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.policyGroupUser = target.policy;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text">${msg("Policy")}</span>
-                </button>
-            </div>
-            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-            <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.policyGroupUser === target.group
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.policyGroupUser = target.group;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text">${msg("Group")}</span>
-                </button>
-            </div>
-            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-            <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.policyGroupUser === target.user
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.policyGroupUser = target.user;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text">${msg("User")}</span>
-                </button>
-            </div>`;
+        return html` <ak-toggle-group
+            value=${this.policyGroupUser}
+            @ak-toggle=${(ev: CustomEvent<{ value: target }>) => {
+                this.policyGroupUser = ev.detail.value;
+            }}
+        >
+            <option value=${target.policy}>${msg("Policy")}</option>
+            <option value=${target.group}>${msg("Group")}</option>
+            <option value=${target.user}>${msg("User")}</option>
+        </ak-toggle-group>`;
     }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="pf-c-card pf-m-selectable pf-m-selected">
-                <div class="pf-c-card__body">
-                    <div class="pf-c-toggle-group">${this.renderModeSelector()}</div>
-                </div>
+                <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">
                     <ak-form-element-horizontal
                         label=${msg("Policy")}
