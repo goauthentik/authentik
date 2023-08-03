@@ -43,7 +43,7 @@ const container = (testItem: TemplateResult) => {
         ${testItem}
         <ul id="toggle-message-pad" style="margin-top: 1em"></ul>
     </div>`;
-}
+};
 
 const testOptions = [
     ["funky", "Option One: The Funky One"],
@@ -55,13 +55,13 @@ export const ToggleGroup = () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
         document.getElementById(
-            "toggle-message-pad"
+            "toggle-message-pad",
         )!.innerText = `Value selected: ${ev.detail.value}`;
     };
 
     return container(
         html`<ak-toggle-group @ak-toggle=${displayChange}>
             ${testOptions.map(([key, label]) => html`<option value="${key}">${label}</option>`)}
-        </ak-toggle-group>`
+        </ak-toggle-group>`,
     );
 };
