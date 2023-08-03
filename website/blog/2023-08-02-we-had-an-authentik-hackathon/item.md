@@ -26,7 +26,6 @@ image: ./image1.jpg
 
 </aside>
 
-
 The first ever authentik hackathon just wrapped on Sunday, and we had a great time!
 
 A huge thanks to our persistent hackers, who hacked from Wednesday through Sunday, and made some fantastic contributions to [authentik](https://goauthentik.io/). We are already looking forward to the next one (winter 2023, maybe?), and to another round of intense fun with our community members.
