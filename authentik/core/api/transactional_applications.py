@@ -96,7 +96,7 @@ class TransactionalApplicationView(APIView):
         blueprint.entries.append(
             BlueprintEntry(
                 model=data.validated_data["provider_model"],
-                state=BlueprintEntryDesiredState.PRESENT,
+                state=BlueprintEntryDesiredState.MUST_CREATED,
                 identifiers={
                     "name": data.validated_data["provider"]["name"],
                 },
@@ -109,7 +109,7 @@ class TransactionalApplicationView(APIView):
         blueprint.entries.append(
             BlueprintEntry(
                 model="authentik_core.application",
-                state=BlueprintEntryDesiredState.PRESENT,
+                state=BlueprintEntryDesiredState.MUST_CREATED,
                 identifiers={
                     "slug": data.validated_data["app"]["slug"],
                 },

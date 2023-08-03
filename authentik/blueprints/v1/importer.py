@@ -202,6 +202,13 @@ class Importer:
             )
             serializer_kwargs["instance"] = model_instance
             serializer_kwargs["partial"] = True
+        elif model_instance and entry.state == BlueprintEntryDesiredState.MUST_CREATED:
+            raise EntryInvalidError(
+                (
+                    f"state is set to {BlueprintEntryDesiredState.MUST_CREATED}"
+                    " and object exists already"
+                )
+            )
         else:
             self.logger.debug(
                 "initialised new serializer instance", model=model, **updated_identifiers
@@ -269,7 +276,11 @@ class Importer:
                 continue
 
             state = entry.get_state(self._import)
-            if state in [BlueprintEntryDesiredState.PRESENT, BlueprintEntryDesiredState.CREATED]:
+            if state in [
+                BlueprintEntryDesiredState.PRESENT,
+                BlueprintEntryDesiredState.CREATED,
+                BlueprintEntryDesiredState.MUST_CREATED,
+            ]:
                 instance = serializer.instance
                 if (
                     instance
