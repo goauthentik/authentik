@@ -1,7 +1,6 @@
 ---
 title: Kerberos Provider
 ---
-
 :::info
 The Kerberos provider is currently in Preview.
 :::
@@ -14,14 +13,14 @@ Authenticating to a realm (i.e. getting a TGT, or ticket granting ticket) uses a
 
 Currently, the following stages are supported:
 
-- [Identification](../../flow/stages/identification/index.md)
-- [Password](../../flow/stages/password/index.md)
-- [User Logout](../../flow/stages/user_logout.md)
-- [User Login](../../flow/stages/user_login/index.md)
+-   [Identification](../../flow/stages/identification/index.md)
+-   [Password](../../flow/stages/password/index.md)
+-   [User Logout](../../flow/stages/user_logout.md)
+-   [User Login](../../flow/stages/user_login/index.md)
 
     Note: the session duration settings are ignored. TGT, and TGS, validity can be managed with the maximum lifetime settings on realms, and providers, respectively.
 
-- [Deny](../../flow/stages/deny.md)
+-   [Deny](../../flow/stages/deny.md)
 
 User login and user logout stages cannot be used as there is no way to invalidate a ticket once it's been issued to a user. Instead, you can configure the maximum ticket lifetime and the maximum ticket renew lifetime.
 
@@ -129,3 +128,12 @@ Communication with Kerberos in authentik is done using the [Key Distribution Cen
 However, some clients don't support that protocol, and as such, we provide a Kerberos outpost, which receives classic UDP or TCP Kerberos requests, and forwards them over HTTPS to authentik.
 
 Due to the way Kerberos works, the Kerberos outpost is not associated with multiple providers, but with a single realm. Other configuration options are the same. However, multiple outposts can be created for the same realm.
+
+### Unsupported features
+
+-   Cross-realm is not supported. However, as users are associated to all realms (unless prevented otherwise by a policy) and providers can be associated to multiple realms, if you don't need to trust an external realm, there is no need for this feature.
+-   Services4User (S4U), namely S4U2Self and S4U2Proxy, are not supported.
+-   User-to-user is not supported.
+-   PKINIT, FAST and SPAKE are not supported.
+-   OTP is not supported.
+-   Kpasswd and Kadm are not supported.
