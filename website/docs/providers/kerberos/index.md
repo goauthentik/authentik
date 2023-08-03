@@ -135,5 +135,6 @@ Due to the way Kerberos works, the Kerberos outpost is not associated with multi
 -   Services4User (S4U), namely S4U2Self and S4U2Proxy, are not supported.
 -   User-to-user is not supported.
 -   PKINIT, FAST and SPAKE are not supported.
+-   PAC is not supported.
 -   OTP is not supported.
 -   Kpasswd and Kadm are not supported.
