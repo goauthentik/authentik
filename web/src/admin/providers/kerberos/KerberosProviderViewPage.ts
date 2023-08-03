@@ -178,12 +178,7 @@ export class KerberosProviderViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-5-col">
-                    <div class="pf-c-card__body">
-                        <ak-markdown .md=${MDKerberosProvider}></ak-markdown>
-                    </div>
-                </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col pf-l-stack__item">
+                <div class="pf-c-card pf-l-grid__item pf-m-5-col pf-l-stack__item">
                     <div class="pf-c-card__title">
                         <p>${msg("Realms")}</p>
                     </div>
@@ -193,6 +188,11 @@ export class KerberosProviderViewPage extends AKElement {
                                 return html`<li><a href=#/providers/kerberos/realms/${realm.pk}>${realm.name} (${realm.realmName})</a></li>`;
                             })}
                         </ul>
+                    </div>
+                </div>
+                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                    <div class="pf-c-card__body">
+                        <ak-markdown .md=${MDKerberosProvider}></ak-markdown>
                     </div>
                 </div>
             </div>`;

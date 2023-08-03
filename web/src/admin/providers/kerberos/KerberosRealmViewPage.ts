@@ -2,6 +2,7 @@ import "@goauthentik/admin/providers/kerberos/KerberosRealmForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
+import MDKerberosProvider from "@goauthentik/docs/providers/kerberos/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Markdown";
@@ -213,6 +214,11 @@ export class KerberosRealmViewPage extends AKElement {
                                 ?readOnly=${true}
                                 value="${ifDefined(this.krb5Conf?.krb5Conf)}"
                             ></ak-codemirror>
+                        </div>
+                    </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__body">
+                            <ak-markdown .md=${MDKerberosProvider}></ak-markdown>
                         </div>
                     </div>
                 </div>
