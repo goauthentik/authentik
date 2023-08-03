@@ -1,7 +1,7 @@
 """Kerberos Provider"""
 from base64 import b64decode, b64encode
 from datetime import datetime
-from typing import Optional, Type
+from typing import Any, Optional, Type
 
 from django.contrib.postgres.fields import ArrayField
 from django.core.validators import RegexValidator
@@ -165,6 +165,13 @@ class KerberosProvider(KerberosKeyMixin, Provider):
     @cached_property
     def principal_name(self) -> PrincipalName:
         return PrincipalName.from_spn(self.spn)
+
+    def get_setting(self, setting: str, user: User) -> Any | None:
+        if setting == "requires_preauth":
+            return self.requires_preauth
+        return user.attributes.get("goauthentik.io/kerberos", {}).get(
+            setting, getattr(self, setting, None)
+        )
 
     @property
     def launch_url(self) -> Optional[str]:
