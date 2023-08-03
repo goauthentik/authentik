@@ -13,14 +13,14 @@ Authenticating to a realm (i.e. getting a TGT, or ticket granting ticket) uses a
 
 Currently, the following stages are supported:
 
--   [Identification](../../flow/stages/identification/index.md)
--   [Password](../../flow/stages/password/index.md)
--   [User Logout](../../flow/stages/user_logout.md)
--   [User Login](../../flow/stages/user_login/index.md)
+- [Identification](../../flow/stages/identification/index.md)
+- [Password](../../flow/stages/password/index.md)
+- [User Logout](../../flow/stages/user_logout.md)
+- [User Login](../../flow/stages/user_login/index.md)
 
-    Note: the session duration settings are ignored. TGT, and TGS, validity can be managed with the maximum lifetime settings on realms, and providers, respectively.
+    Note: the session duration settings are ignored. TGT, and service tickets, validity can be managed with the maximum lifetime settings on realms, and providers, respectively.
 
--   [Deny](../../flow/stages/deny.md)
+- [Deny](../../flow/stages/deny.md)
 
 User login and user logout stages cannot be used as there is no way to invalidate a ticket once it's been issued to a user. Instead, you can configure the maximum ticket lifetime and the maximum ticket renew lifetime.
 
@@ -37,7 +37,7 @@ return user.username.split("@")[0]
 And the principal to user mapping will look like:
 
 ```python
-return ak_user_by(username=principal.to_string() + "@phanes.net")
+return ak_user_by(username=principal.to_string() + "@authentik.company")
 ```
 
 The `principal` object is a class representing a principal name. The `to_string` method returns the string representation of the principal, like `user` or `host/authentik.company`.
@@ -48,13 +48,13 @@ A Kerberos provider must have a service principal name set. This must be in the 
 
 Providers can be associated with multiple realms, which means that a user that has obtained a TGT for any of those realms, can authenticate to that provider, unless prevented by a policy.
 
-As with realms, the maximum ticket lifetime and maximum ticket renew lifetime can be configured, but they apply for the TGS (ticket granting service) instead of the TGT.
+As with realms, the maximum ticket lifetime and maximum ticket renew lifetime can be configured, but they apply for the service ticket instead of the TGT.
 
 ### Additional settings
 
 A number of additional settings can be configured for realms and providers. They are located under the "Advanced protocol settings" section of their respective edit page.
 
-Unless otherwise specified, those settings have the same effect on tickets whether they are configure for realms or providers. For realms, they have an effect on the issuance (or not) of, and the TGT itself, and for providers, they apply to the TGS. As such, we'll refer to both realms and providers as "Services" in this section.
+Unless otherwise specified, those settings have the same effect on tickets whether they are configure for realms or providers. For realms, they have an effect on the issuance (or not) of, and the TGT itself, and for providers, they apply to the service ticket. As such, we'll refer to both realms and providers as "Services" in this section.
 
 :::warning
 We recommend leaving those settings to their default values, unless otherwise specified. Changing them can put your instance at risk of a wide variety of attacks.
@@ -82,13 +82,13 @@ This setting defaults to enabled, but that doesn't mean that a client can reques
 
 Whether to allow proxiable tickets to be issued.
 
-Note that for a TGS to be proxiable, the TGT must also be proxiable. As such, if enabled in a provider, it must also be enabled in the realm where it will be used for proxiable TGS to be issued for that provider.
+Note that for a service ticket to be proxiable, the TGT must also be proxiable. As such, if enabled in a provider, it must also be enabled in the realm where it will be used for proxiable service tickets to be issued for that provider.
 
 ##### Allow forwardable
 
 Whether to allow forwardable tickets to be issued.
 
-Note that for a TGS to be forwardable, the TGT must also be forwardable. As such, if enabled in a provider, it must also be enabled in the realm where it will be used for forwardable TGS to be issued for that provider.
+Note that for a service ticket to be forwardable, the TGT must also be forwardable. As such, if enabled in a provider, it must also be enabled in the realm where it will be used for forwardable service tickets to be issued for that provider.
 
 If needed by a specific provider, we recommend enabling this only on that provider and none other (and the realm where it will be used), as it allows the provider to act on behalf of the user.
 
@@ -131,10 +131,10 @@ Due to the way Kerberos works, the Kerberos outpost is not associated with multi
 
 ### Unsupported features
 
--   Cross-realm is not supported. However, as users are associated to all realms (unless prevented otherwise by a policy) and providers can be associated to multiple realms, if you don't need to trust an external realm, there is no need for this feature.
--   Services4User (S4U), namely S4U2Self and S4U2Proxy, are not supported.
--   User-to-user is not supported.
--   PKINIT, FAST and SPAKE are not supported.
--   PAC is not supported.
--   OTP is not supported.
--   Kpasswd and Kadm are not supported.
+- Cross-realm is not supported. However, as users are associated to all realms (unless prevented otherwise by a policy) and providers can be associated to multiple realms, if you don't need to trust an external realm, there is no need for this feature.
+- Services4User (S4U), namely S4U2Self and S4U2Proxy, are not supported.
+- User-to-user is not supported.
+- PKINIT, FAST and SPAKE are not supported.
+- PAC is not supported.
+- OTP is not supported.
+- Kpasswd and Kadm are not supported.
