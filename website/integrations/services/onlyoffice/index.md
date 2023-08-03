@@ -6,11 +6,9 @@ title: OnlyOffice
 
 ## What is OnlyOffice
 
-From https://en.wikipedia.org/wiki/OnlyOffice
-
-:::note
-OnlyOffice, stylized as ONLYOFFICE, is a free software office suite developed by Ascensio System SIA, a company headquartered in Riga, Latvia. It features online document editors, platform for document management, corporate communication, mail and project management tools
-:::
+> OnlyOffice, stylized as ONLYOFFICE, is a free software office suite developed by Ascensio System SIA, a company headquartered in Riga, Latvia. It features online document editors, platform for document management, corporate communication, mail and project management tools
+>
+> -- https://en.wikipedia.org/wiki/OnlyOffice
 
 :::note
 This is based on authentik 2021.10.4 and OnlyOffice 11.5.4.1582. Instructions may differ between versions.

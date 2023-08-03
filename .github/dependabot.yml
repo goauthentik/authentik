@@ -8,6 +8,8 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "ci:"
+    labels:
+      - dependencies
   - package-ecosystem: gomod
     directory: "/"
     schedule:
@@ -16,11 +18,15 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "core:"
+    labels:
+      - dependencies
   - package-ecosystem: npm
     directory: "/web"
     schedule:
       interval: daily
       time: "04:00"
+    labels:
+      - dependencies
     open-pull-requests-limit: 10
     commit-message:
       prefix: "web:"
@@ -44,6 +50,8 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "website:"
+    labels:
+      - dependencies
     groups:
       docusaurus:
         patterns:
@@ -56,6 +64,8 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "core:"
+    labels:
+      - dependencies
   - package-ecosystem: docker
     directory: "/"
     schedule:
@@ -64,3 +74,5 @@ updates:
     open-pull-requests-limit: 10
     commit-message:
       prefix: "core:"
+    labels:
+      - dependencies

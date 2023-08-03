@@ -6,11 +6,9 @@ title: Kimai
 
 ## What is Kimai
 
-From https://www.kimai.org/about/
-
-:::note
-Kimai is a free & open source timetracker. It tracks work time and prints out a summary of your activities on demand. Yearly, monthly, daily, by customer, by project … Its simplicity is its strength. Due to Kimai's browser based interface it runs cross-platform, even on your mobile device.
-:::
+> Kimai is a free & open source timetracker. It tracks work time and prints out a summary of your activities on demand. Yearly, monthly, daily, by customer, by project … Its simplicity is its strength. Due to Kimai's browser based interface it runs cross-platform, even on your mobile device.
+>
+> -- https://www.kimai.org/about/
 
 ## Preparation
 

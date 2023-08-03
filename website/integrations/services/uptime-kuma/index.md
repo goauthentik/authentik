@@ -6,11 +6,9 @@ title: Uptime Kuma
 
 ## What is Uptime Kuma
 
-From https://github.com/louislam/uptime-kuma
-
-:::note
-It is a self-hosted monitoring tool like "Uptime Robot".
-:::
+> Uptime Kuma is an easy-to-use self-hosted monitoring tool.
+>
+> -- https://github.com/louislam/uptime-kuma
 
 Uptime Kuma currently supports only a single user and no native SSO solution. To still use authentik, you can work with the Proxy Outpost and a Proxy Provider.
 

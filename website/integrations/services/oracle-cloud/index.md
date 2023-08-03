@@ -6,11 +6,9 @@ title: Oracle Cloud
 
 ## What is Oracle Cloud
 
-From https://www.oracle.com/cloud/
-
-:::note
-Oracle Cloud is the first public cloud built from the ground up to be a better cloud for every application. By rethinking core engineering and systems design for cloud computing, we created innovations that accelerate migrations, deliver better reliability and performance for all applications, and offer the complete services customers need to build innovative cloud applications.
-:::
+> Oracle Cloud is the first public cloud built from the ground up to be a better cloud for every application. By rethinking core engineering and systems design for cloud computing, we created innovations that accelerate migrations, deliver better reliability and performance for all applications, and offer the complete services customers need to build innovative cloud applications.
+>
+> -- https://www.oracle.com/cloud/
 
 ## Preparation
 

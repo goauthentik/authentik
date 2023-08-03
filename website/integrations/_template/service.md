@@ -6,11 +6,9 @@ title: Service Name
 
 ## What is Service Name
 
-From https://service.name
-
-:::note
-Insert a quick overview of what Service Name is and what it does
-:::
+> Insert a quick overview of what Service Name is and what it does
+>
+> -- https://service.name
 
 ## Preparation
 
