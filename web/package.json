@@ -37,7 +37,7 @@
         "@fortawesome/fontawesome-free": "^6.4.0",
         "@goauthentik/api": "^2023.6.1-1690455444",
         "@lit-labs/context": "^0.3.3",
-        "@lit-labs/task": "^2.1.2",
+        "@lit-labs/task": "^3.0.0",
         "@lit/localize": "^0.11.4",
         "@patternfly/elements": "^2.3.2",
         "@patternfly/patternfly": "^4.224.2",
