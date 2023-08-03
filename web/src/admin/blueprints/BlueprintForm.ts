@@ -9,12 +9,11 @@ import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
@@ -51,15 +50,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     }
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFToggleGroup,
-            PFContent,
-            css`
-                .pf-c-toggle-group {
-                    justify-content: center;
-                }
-            `,
-        );
+        return [...super.styles, PFContent];
     }
 
     async send(data: BlueprintInstance): Promise<BlueprintInstance> {
@@ -105,52 +96,16 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
             </ak-form-element-horizontal>
             <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">
-                    <div class="pf-c-toggle-group">
-                        <div class="pf-c-toggle-group__item">
-                            <button
-                                class="pf-c-toggle-group__button ${this.source ===
-                                blueprintSource.file
-                                    ? "pf-m-selected"
-                                    : ""}"
-                                type="button"
-                                @click=${() => {
-                                    this.source = blueprintSource.file;
-                                }}
-                            >
-                                <span class="pf-c-toggle-group__text">${msg("Local path")}</span>
-                            </button>
-                        </div>
-                        <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-                        <div class="pf-c-toggle-group__item">
-                            <button
-                                class="pf-c-toggle-group__button ${this.source ===
-                                blueprintSource.oci
-                                    ? "pf-m-selected"
-                                    : ""}"
-                                type="button"
-                                @click=${() => {
-                                    this.source = blueprintSource.oci;
-                                }}
-                            >
-                                <span class="pf-c-toggle-group__text">${msg("OCI Registry")}</span>
-                            </button>
-                        </div>
-                        <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-                        <div class="pf-c-toggle-group__item">
-                            <button
-                                class="pf-c-toggle-group__button ${this.source ===
-                                blueprintSource.internal
-                                    ? "pf-m-selected"
-                                    : ""}"
-                                type="button"
-                                @click=${() => {
-                                    this.source = blueprintSource.internal;
-                                }}
-                            >
-                                <span class="pf-c-toggle-group__text">${msg("Internal")}</span>
-                            </button>
-                        </div>
-                    </div>
+                    <ak-toggle-group
+                        value=${this.source}
+                        @ak-toggle=${(ev: CustomEvent<{ value: blueprintSource }>) => {
+                            this.source = ev.detail.value;
+                        }}
+                    >
+                        <option value=${blueprintSource.file}>${msg("Local path")}</option>
+                        <option value=${blueprintSource.oci}>${msg("OCI Registry")}</option>
+                        <option value=${blueprintSource.internal}>${msg("Internal")}</option>
+                    </ak-toggle-group>
                 </div>
                 <div class="pf-c-card__footer">
                     ${this.source === blueprintSource.file
