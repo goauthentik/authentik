@@ -4,7 +4,7 @@ import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { adaptCSS } from "@goauthentik/common/utils";
 
 import { localized } from "@lit/localize";
-import { LitElement } from "lit";
+import { CSSResult, LitElement } from "lit";
 import { state } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -18,6 +18,13 @@ export function rootInterface<T extends Interface>(): T | undefined {
         (el) => el instanceof Interface,
     );
     return el[0] as T;
+}
+
+export function ensureCSSStyleSheet(css: CSSStyleSheet | CSSResult): CSSStyleSheet {
+    if (css instanceof CSSResult) {
+        return css.styleSheet!;
+    }
+    return css;
 }
 
 let css: Promise<string[]> | undefined;
@@ -66,7 +73,10 @@ export class AKElement extends LitElement {
         if ("ShadyDOM" in window) {
             styleRoot = document;
         }
-        styleRoot.adoptedStyleSheets = adaptCSS([...styleRoot.adoptedStyleSheets, AKGlobal]);
+        styleRoot.adoptedStyleSheets = adaptCSS([
+            ...styleRoot.adoptedStyleSheets,
+            ensureCSSStyleSheet(AKGlobal),
+        ]);
         this._initTheme(styleRoot);
         this._initCustomCSS(styleRoot);
         return root;
@@ -151,7 +161,7 @@ export class AKElement extends LitElement {
         const stylesheet = AKElement.themeToStylesheet(theme);
         const oldStylesheet = AKElement.themeToStylesheet(this._activeTheme);
         if (stylesheet) {
-            root.adoptedStyleSheets = [...root.adoptedStyleSheets, stylesheet];
+            root.adoptedStyleSheets = [...root.adoptedStyleSheets, ensureCSSStyleSheet(stylesheet)];
         }
         if (oldStylesheet) {
             root.adoptedStyleSheets = root.adoptedStyleSheets.filter((v) => v !== oldStylesheet);
@@ -173,7 +183,7 @@ export class Interface extends AKElement {
 
     constructor() {
         super();
-        document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFBase];
+        document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
         tenant().then((tenant) => (this.tenant = tenant));
         config().then((config) => (this.config = config));
     }

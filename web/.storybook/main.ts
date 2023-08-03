@@ -1,6 +1,5 @@
 import replace from "@rollup/plugin-replace";
 import type { StorybookConfig } from "@storybook/web-components-vite";
-import path from "path";
 import { cwd } from "process";
 import postcssLit from "rollup-plugin-postcss-lit";
 import tsconfigPaths from "vite-tsconfig-paths";
