@@ -127,20 +127,16 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     }
 
     renderModeSelector(): TemplateResult {
+        const setMode = (ev: CustomEvent<{ value: ProxyMode }>) => {
+            this.mode = ev.detail.value;
+        };
+
+        // prettier-ignore
         return html`
-            <ak-toggle-group
-                value=${this.mode}
-                @ak-toggle=${(ev: CustomEvent<{ value: ProxyMode }>) => {
-                    this.mode = ev.detail.value;
-                }}
-            >
+            <ak-toggle-group value=${this.mode} @ak-toggle=${setMode}>
                 <option value=${ProxyMode.Proxy}>${msg("Proxy")}</option>
-                <option value=${ProxyMode.ForwardSingle}>
-                    ${msg("Forward auth (single application)")}
-                </option>
-                <option value=${ProxyMode.ForwardDomain}>
-                    ${msg("Forward auth (domain level)")}
-                </option>
+                <option value=${ProxyMode.ForwardSingle}>${msg("Forward auth (single application)")}</option>
+                <option value=${ProxyMode.ForwardDomain}>${msg("Forward auth (domain level)")}</option>
             </ak-toggle-group>
         `;
     }
