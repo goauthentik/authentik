@@ -45,7 +45,7 @@
         "@sentry/tracing": "^7.61.0",
         "@webcomponents/webcomponentsjs": "^2.8.0",
         "base64-js": "^1.5.1",
-        "chart.js": "^4.3.2",
+        "chart.js": "^4.3.3",
         "chartjs-adapter-moment": "^1.0.1",
         "codemirror": "^6.0.1",
         "construct-style-sheets-polyfill": "^3.1.0",
