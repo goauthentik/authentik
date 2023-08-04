@@ -154,6 +154,10 @@ class EncryptionType:
         return int(cls.DEFAULT_STRING_TO_KEY_PARAMS, 16).to_bytes(4, byteorder="big")
 
     @classmethod
+    def generate_key(cls):
+        return secrets.token_bytes(cls.KEY_BYTES)
+
+    @classmethod
     def random_to_key(cls, data: bytes) -> bytes:
         """
         Derive a protocol key from random data as defined in RFC 3961 and 8009.
@@ -624,6 +628,10 @@ class Aes256CtsHmacSha384192(Rfc8009):
     MESSAGE_BLOCK_BYTES = 1
     CIPHER_BLOCK_BITS = algorithms.AES256.block_size
     CONFOUNDER_BYTES = CIPHER_BLOCK_BITS // 8
+
+    @classmethod
+    def generate_key(cls):
+        return secrets.token_bytes(32)
 
 
 SUPPORTED_ENCTYPES = (

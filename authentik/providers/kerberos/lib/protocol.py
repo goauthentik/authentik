@@ -6,22 +6,29 @@ Allows for decoding types specified in RFC 4120.
 See https://www.rfc-editor.org/rfc/rfc4120#section-3
 """
 # pylint: disable=too-many-ancestors
-from datetime import datetime
+import socket
+
+from datetime import datetime, timezone
 from enum import UNIQUE, Enum, verify
 from typing import Any, Self
+from collections import UserDict
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
+from pyasn1.codec.native.decoder import decode as native_decode
+from pyasn1.codec.native.encoder import encode as native_encode
+
 from pyasn1.error import PyAsn1Error
 from pyasn1.type import base, char, constraint, namedtype, namedval, tag, univ, useful
 from structlog.stdlib import get_logger
 
 from authentik.providers.kerberos.lib.exceptions import KerberosError
+from authentik.providers.kerberos.lib import crypto
 
 LOGGER = get_logger()
 
 
-KERBEROS_VERSION = 5
+KERBEROS_PVNO = 5
 
 
 @verify(UNIQUE)
@@ -176,6 +183,9 @@ class Asn1SetValueMixin:
         """Create ASN.1 object from arguments."""
         obj = cls()
         for name, value in kwargs.items():
+            if value is None:
+                continue
+            name = name.replace("_", "-")
             obj.set_value(name, value)
         return obj
 
@@ -211,6 +221,55 @@ class Asn1LeafMixin:
         return der_encode(self)
 
 
+class Sequence(univ.Sequence):
+    def from_python(self, obj: Any) -> Self:
+        asn1obj = self.clone()
+        for key in asn1obj:
+            if key in obj and obj[key] is not None:
+                if hasattr(asn1obj[key], "from_python"):
+                    asn1obj[key] = asn1obj[key].from_python(obj[key])
+                elif hasattr(obj[key], "to_asn1"):
+                    asn1obj[key] = obj[key].to_asn1()
+                else:
+                    asn1obj[key] = native_decode(obj[key], asn1obj[key])
+        return asn1obj
+
+    def to_python(self) -> dict[str, Any]:
+        obj = {}
+        for key in self:
+            if not self[key].isValue:
+                continue
+            elif hasattr(self[key], "to_python"):
+                obj[key] = self[key].to_python()
+            else:
+                obj[key] = native_encode(self[key])
+        return obj
+
+
+class SequenceOf(univ.SequenceOf):
+    def from_python(self, obj: Any) -> Self:
+        asn1obj = self.clone()
+        for value in obj:
+            if hasattr(asn1obj.componentType, "from_python"):
+                asn1obj.append(asn1obj.componentType.from_python(value))
+            elif hasattr(value, "to_asn1"):
+                asn1obj.append(value.to_asn1())
+            else:
+                asn1obj.append(native_decode(value, asn1obj.componentType))
+        return asn1obj
+
+    def to_python(self) -> list[Any]:
+        obj = []
+        if not self.isValue:
+            return []
+        for value in self:
+            if hasattr(value, "to_python"):
+                obj.append(value.to_python())
+            else:
+                obj.append(native_encode(value))
+        return obj
+
+
 class Int32(univ.Integer):
     """Kerberos Int32 ASN.1 representation."""
 
@@ -238,18 +297,33 @@ class Microseconds(univ.Integer):
 class KerberosString(char.GeneralString):
     """Kerberos string ASN.1 representation"""
 
+    def to_python(self):
+        return str(self)
+
 
 class Realm(KerberosString):
     """Kerberos Realm ASN.1 representation"""
 
 
-class PrincipalName(Asn1SetValueMixin, univ.Sequence):
+class PrincipalName(Asn1SetValueMixin, Sequence):
     """Kerberos principal name ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
         _sequence_component("name-type", 0, Int32()),
-        _sequence_component("name-string", 1, univ.SequenceOf(componentType=KerberosString())),
+        _sequence_component("name-string", 1, SequenceOf(componentType=KerberosString())),
     )
+
+    def to_python(self):
+        return self.to_string()
+
+    def from_python(self, value: str) -> Self:
+        principal = self.from_spn(value)
+        return super().from_python(
+            {
+                "name-type": principal["name-type"],
+                "name-string": principal["name-string"],
+            }
+        )
 
     def to_string(self):
         """Format the principal name."""
@@ -295,8 +369,14 @@ class KerberosTime(useful.GeneralizedTime):
 
     _hasSubsecond = False
 
+    def from_python(self, value: Any) -> Self:
+        return native_decode(value.astimezone(tz=timezone.utc).strftime("%Y%m%d%H%M%SZ"), self)
 
-class HostAddress(univ.Sequence):
+    def to_python(self):
+        return self.asDateTime
+
+
+class HostAddress(Sequence):
     """Kerberos host address ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
@@ -304,17 +384,38 @@ class HostAddress(univ.Sequence):
         _sequence_component("address", 1, univ.OctetString()),
     )
 
+    def from_python(self, value: tuple[int, str | bytes]) -> Self:
+        addr_type, addr_value = value
+        if addr_type == 2:  # TODO: make constant
+            addr_value = socket.inet_pton(socket.AF_INET, addr_value)
+        elif addr_type == 24:  # TODO: make constant
+            addr_value = socket.inet_pton(socket.AF_INET6, addr_value)
+        return super().from_python(
+            {
+                "addr-type": addr_type,
+                "address": addr_value,
+            }
+        )
 
-class HostAddresses(univ.SequenceOf):
+    def to_python(self):
+        addr = bytes(self["address"])
+        if self["addr-type"] == 2:  # TODO: make constant
+            addr = socket.inet_ntop(socket.AF_INET, addr)
+        elif self["addr-type"] == 24:  # TODO: make constant
+            addr = socket.inet_ntop(socket.AF_INET6, addr)
+        return (int(self["addr-type"]), addr)
+
+
+class HostAddresses(SequenceOf):
     """Kerberos host addresses ASN.1 reprensentation"""
 
     componentType = HostAddress()
 
 
-class AuthorizationData(univ.SequenceOf):
+class AuthorizationData(SequenceOf):
     """Kerberos Authorization Data ASN.1 representation."""
 
-    componentType = univ.Sequence(
+    componentType = Sequence(
         componentType=namedtype.NamedTypes(
             _sequence_component("ad-type", 0, Int32()),
             _sequence_component("ad-data", 1, univ.OctetString()),
@@ -322,10 +423,10 @@ class AuthorizationData(univ.SequenceOf):
     )
 
 
-class LastReq(univ.SequenceOf):
+class LastReq(SequenceOf):
     """Kerberos Last Req ASN.1 representation."""
 
-    componentType = univ.Sequence(
+    componentType = Sequence(
         componentType=namedtype.NamedTypes(
             _sequence_component("lr-type", 0, Int32()),
             _sequence_component("lr-data", 1, KerberosTime()),
@@ -333,7 +434,7 @@ class LastReq(univ.SequenceOf):
     )
 
 
-class PaDataEncTsEnc(Asn1LeafMixin, univ.Sequence):
+class PaDataEncTsEnc(Asn1LeafMixin, Sequence):
     """Kerberos PaData EncTsEnc ASN.1 representation."""
 
     componentType = namedtype.NamedTypes(
@@ -342,23 +443,36 @@ class PaDataEncTsEnc(Asn1LeafMixin, univ.Sequence):
     )
 
 
-class PaDataEtypeInfo2Entry(univ.Sequence):
+class EncryptionType(Int32):
+    def from_python(self, value: Any) -> Self:
+        if issubclass(value, crypto.EncryptionType):
+            return native_decode(value.ENC_TYPE.value, self)
+        return native_decode(value[0], self)
+
+    def to_python(self):
+        try:
+            return (int(self), crypto.get_enctype_from_value(self))
+        except IndexError:
+            return (int(self), None)
+
+
+class PaDataEtypeInfo2Entry(Sequence):
     """Kerberos PaData ETypeInfo2 Entry ASN.1 representation."""
 
     componentType = namedtype.NamedTypes(
-        _sequence_component("etype", 0, Int32()),
+        _sequence_component("etype", 0, EncryptionType()),
         _sequence_optional_component("salt", 1, KerberosString()),
         _sequence_optional_component("s2kparams", 2, univ.OctetString()),
     )
 
 
-class PaDataEtypeInfo2(Asn1LeafMixin, univ.SequenceOf):
+class PaDataEtypeInfo2(Asn1LeafMixin, SequenceOf):
     """Kerberos PaData ETypeInfo2 ASN.1 representation."""
 
     componentType = PaDataEtypeInfo2Entry()
 
 
-class PaData(univ.Sequence):
+class PaData(Sequence):
     """Kerberos PA Data ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
@@ -366,8 +480,19 @@ class PaData(univ.Sequence):
         _sequence_component("padata-value", 2, univ.OctetString()),
     )
 
+    def from_python(self, value: tuple[int, bytes]) -> Self:
+        return super().from_python(
+            {
+                "padata-type": value[0],
+                "padata-value": value[1],
+            }
+        )
 
-class MethodData(Asn1LeafMixin, univ.SequenceOf):
+    def to_python(self) -> type[int, bytes]:
+        return (int(self["padata-type"]), bytes(self["padata-value"]))
+
+
+class MethodData(Asn1LeafMixin, SequenceOf):
     """Kerberos Method Data ASN.1 representation."""
 
     componentType = PaData()
@@ -402,27 +527,70 @@ class KerberosFlags(univ.BitString):
         self._value = newval
         return self
 
+    def from_python(self, value: dict[str | int, bool]) -> Self:
+        obj = self.clone(value=0)
+        for flag, flag_val in value.items():
+            obj[flag] = flag_val
+        return obj
 
-class EncryptedData(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+    def to_python(self):
+        obj = {}
+        for fname in self.namedValues:
+            obj[fname] = self[fname]
+        return obj
+
+
+class EncryptedDataWrapper(UserDict):
+    def encrypt(self, key: bytes, usage: KeyUsageNumbers, asn1item: Any) -> bytes:
+        if issubclass(self["etype"], crypto.EncryptionType):
+            etype = self["etype"]
+        else:
+            etype = self["etype"][1]
+        if etype is None:
+            raise ValueError("Unsupported enctype")
+        self["cipher"] = etype.encrypt_message(
+            key=key,
+            message=asn1item.from_python(self["plain"]).to_bytes(),
+            usage=usage.value,
+        )
+        return self["cipher"]
+
+    def decrypt(self, key: bytes, usage: KeyUsageNumbers, plain_cls: Any) -> Any:
+        etype = self["etype"][1]
+        if etype is None:
+            raise ValueError("Unsupported enctype")
+        plaintext = etype.decrypt_message(
+            key=key,
+            ciphertext=self["cipher"],
+            usage=usage.value,
+        )
+        self["plain"] = plain_cls.from_bytes(plaintext).to_python()
+        return self["plain"]
+
+
+class EncryptedData(Asn1SetValueMixin, Asn1LeafMixin, Sequence):
     """Kerberos encrypted data ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
-        _sequence_component("etype", 0, Int32()),
+        _sequence_component("etype", 0, EncryptionType()),
         _sequence_optional_component("kvno", 1, UInt32()),
         _sequence_component("cipher", 2, univ.OctetString()),
     )
 
+    def to_python(self):
+        return EncryptedDataWrapper(super().to_python())
 
-class EncryptionKey(Asn1SetValueMixin, univ.Sequence):
+
+class EncryptionKey(Asn1SetValueMixin, Sequence):
     """Kerberos encryption key ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
-        _sequence_component("keytype", 0, Int32()),
+        _sequence_component("keytype", 0, EncryptionType()),
         _sequence_component("keyvalue", 1, univ.OctetString()),
     )
 
 
-class Checksum(univ.Sequence):
+class Checksum(Sequence):
     """Kerberos checksum ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
@@ -431,7 +599,7 @@ class Checksum(univ.Sequence):
     )
 
 
-class Ticket(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+class Ticket(Asn1SetValueMixin, Asn1LeafMixin, Sequence):
     """Kerberos ticket ASN.1 representation"""
 
     tagSet = _application_tag(ApplicationTag.TICKET)
@@ -464,7 +632,7 @@ class TicketFlags(KerberosFlags):
     )
 
 
-class TransitedEncoding(Asn1SetValueMixin, univ.Sequence):
+class TransitedEncoding(Asn1SetValueMixin, Sequence):
     """Kerberos transited encoding ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
@@ -473,7 +641,7 @@ class TransitedEncoding(Asn1SetValueMixin, univ.Sequence):
     )
 
 
-class EncTicketPart(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+class EncTicketPart(Asn1SetValueMixin, Asn1LeafMixin, Sequence):
     """Kerberos enc ticket part ASN.1 representation"""
 
     tagSet = _application_tag(ApplicationTag.ENC_TICKET_PART)
@@ -492,7 +660,7 @@ class EncTicketPart(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
     )
 
 
-class Authenticator(Asn1LeafMixin, univ.Sequence):
+class Authenticator(Asn1LeafMixin, Sequence):
     """Kerberos authenticator ASN.1 representation"""
 
     tagSet = _application_tag(ApplicationTag.AUTHENTICATOR)
@@ -546,7 +714,7 @@ class KdcOptions(KerberosFlags):
     )
 
 
-class KdcReqBody(univ.Sequence):
+class KdcReqBody(Asn1LeafMixin, Sequence):
     """Kerberos KDC req body ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
@@ -558,16 +726,14 @@ class KdcReqBody(univ.Sequence):
         _sequence_component("till", 5, KerberosTime()),
         _sequence_optional_component("rtime", 6, KerberosTime()),
         _sequence_component("nonce", 7, UInt32()),
-        _sequence_component("etype", 8, univ.SequenceOf(componentType=Int32())),
+        _sequence_component("etype", 8, SequenceOf(componentType=EncryptionType())),
         _sequence_optional_component("addresses", 9, HostAddresses()),
         _sequence_optional_component("enc-authorization-data", 10, EncryptedData()),
-        _sequence_optional_component(
-            "additional-tickets", 11, univ.SequenceOf(componentType=Ticket())
-        ),
+        _sequence_optional_component("additional-tickets", 11, SequenceOf(componentType=Ticket())),
     )
 
 
-class KdcReq(univ.Sequence):
+class KdcReq(Asn1LeafMixin, Sequence):
     """Kerberos KDC req ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
@@ -583,7 +749,7 @@ class KdcReq(univ.Sequence):
                 )
             ),
         ),
-        _sequence_optional_component("padata", 3, univ.SequenceOf(componentType=PaData())),
+        _sequence_optional_component("padata", 3, SequenceOf(componentType=PaData())),
         _sequence_component("req-body", 4, KdcReqBody()),
     )
 
@@ -614,7 +780,7 @@ class TgsReq(KdcReq):
     tagSet = _application_tag(ApplicationTag.TGS_REQ)
 
 
-class ApReq(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+class ApReq(Asn1SetValueMixin, Asn1LeafMixin, Sequence):
     """Kerberos AP req ASN.1 representation"""
 
     tagSet = _application_tag(ApplicationTag.AP_REQ)
@@ -634,7 +800,7 @@ class ApReq(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
     )
 
 
-class KdcRep(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+class KdcRep(Asn1SetValueMixin, Asn1LeafMixin, Sequence):
     """Kerberos Kdc rep ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
@@ -650,7 +816,7 @@ class KdcRep(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
                 )
             ),
         ),
-        _sequence_optional_component("padata", 2, univ.SequenceOf(componentType=PaData())),
+        _sequence_optional_component("padata", 2, SequenceOf(componentType=PaData())),
         _sequence_component("crealm", 3, Realm()),
         _sequence_component("cname", 4, PrincipalName()),
         _sequence_component("ticket", 5, Ticket()),
@@ -670,7 +836,7 @@ class TgsRep(KdcRep):
     tagSet = _application_tag(ApplicationTag.TGS_REP)
 
 
-class EncKdcRepPart(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+class EncKdcRepPart(Asn1SetValueMixin, Asn1LeafMixin, Sequence):
     """Kerberos encrypted KDC rep part ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
@@ -701,7 +867,7 @@ class EncTgsRepPart(EncKdcRepPart):
     tagSet = _application_tag(ApplicationTag.ENC_TGS_REP_PART)
 
 
-class KrbError(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
+class KrbError(Asn1SetValueMixin, Asn1LeafMixin, Sequence):
     """Kerberos error ASN.1 representation"""
 
     tagSet = _application_tag(ApplicationTag.KRB_ERROR)
@@ -727,7 +893,7 @@ class KrbError(Asn1SetValueMixin, Asn1LeafMixin, univ.Sequence):
     )
 
 
-class KdcProxyMessage(Asn1LeafMixin, univ.Sequence):
+class KdcProxyMessage(Asn1LeafMixin, Sequence):
     """Kerberos proxy message ASN.1 representation"""
 
     componentType = namedtype.NamedTypes(
@@ -735,3 +901,19 @@ class KdcProxyMessage(Asn1LeafMixin, univ.Sequence):
         _sequence_optional_component("target-domain", 1, Realm()),
         _sequence_optional_component("dclocator-hint", 2, univ.Integer()),
     )
+
+    def from_python(self, value: dict[str, Any]) -> Self:
+        size, message = value.get("message", (0, bytes()))
+        value["message"] = size.to_bytes(4, byteorder="big") + message
+        return super().from_python(value)
+
+    def to_python(self) -> dict[str, Any]:
+        obj = super().to_python()
+        obj["message"] = (
+            int.from_bytes(
+                obj["message"][:4],
+                byteorder="big",
+            ),
+            obj["message"][4:],
+        )
+        return obj

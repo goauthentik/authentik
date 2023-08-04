@@ -198,25 +198,49 @@ class KerberosError(Exception):
         super().__init__(self.message)
 
     # We cannot type annotate classes in protocol.py because of circular imports
-    def to_krberror(self, realm: str, sname: Any, **context) -> Any:
+    def to_krberror(self, handler: Any, **context) -> Any:
         """Convert exception to a protocol error."""
         # pylint: disable=import-outside-toplevel
         from authentik.providers.kerberos.lib import protocol
 
         self.context.update(context)
-        obj = protocol.KrbError.from_values(
-            pvno = protocol.KERBEROS_VERSION,  # TODO: make constant
-            stime=now(),
-            susec=now().microsecond,
-            realm=realm,
-            sname=sname,
-            **{
-                "msg-type": protocol.ApplicationTag.KRB_ERROR.value,
-                "error-code": self.code.value,
-                "e-text": self.message,
-            },
+
+        ctime = self.context.get("ctime")
+        cusec = self.context.get("cusec")
+        sname = self.context.get("sname", handler.realm.spn)
+        if handler.request and "req-body" in handler.request:
+            cname = handler.request["req-body"].get("cname")
+            crealm = handler.request["req-body"].get("realm")
+            sname = handler.request["req-body"].get("sname", sname)
+        else:
+            cname = None
+            crealm = None
+
+        error = {
+            "pvno": protocol.KERBEROS_PVNO,
+            "msg-type": protocol.ApplicationTag.KRB_ERROR.value,
+            "ctime": ctime,
+            "cusec": cusec,
+            "stime": now(),
+            "susec": now().microsecond,
+            "error-code": self.code.value,
+            "crealm": crealm,
+            "cname": cname,
+            "realm": handler.realm.realm_name,
+            "sname": sname,
+            "e-text": self.message,
+            "e-data": self.context.get("e-data"),
+        }
+        return protocol.KrbError().from_python(error)
+
+
+class KerberosPreauthRequiredError(KerberosError):
+    def __init__(self, padata: list[Any], *args, **kwargs):
+        # pylint: disable=import-outside-toplevel
+        from authentik.providers.kerberos.lib import protocol
+
+        kwargs.setdefault("context", {})["e-data"] = (
+            protocol.MethodData().from_python(padata).to_bytes()
         )
-        for k in ("ctime", "cusec", "crealm", "cname", "e-data"):
-            if k in self.context and self.context[k]:
-                obj.set_value(k, self.context[k])
-        return obj
+        kwargs["code"] = ErrorCode.KDC_ERR_PREAUTH_REQUIRED
+        super().__init__(*args, **kwargs)
