@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/forms/SearchSelect";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { html } from "lit";
@@ -29,7 +30,7 @@ const renderValue = (item: CertificateKeyPair | undefined): string | undefined =
  */
 
 @customElement("ak-crypto-certificate-search")
-export class CryptoCertificateSearch extends CustomListenerElement(AKElement) {
+export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) {
     @property({ type: String, reflect: true })
     certificate?: string;
 
@@ -126,4 +127,4 @@ export class CryptoCertificateSearch extends CustomListenerElement(AKElement) {
     }
 }
 
-export default CryptoCertificateSearch;
+export default AkCryptoCertificateSearch;

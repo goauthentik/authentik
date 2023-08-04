@@ -2,6 +2,7 @@ import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { AKElement } from "@goauthentik/elements/Base";
 import { SearchSelect } from "@goauthentik/elements/forms/SearchSelect";
+import "@goauthentik/elements/forms/SearchSelect";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { html } from "lit";
