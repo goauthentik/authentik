@@ -5,7 +5,7 @@ title: Whitelist email domains
 To whitelist specific email addresses for signing in through SSO or directly with default policy customization,
 follow these steps:
 
-1. In the admin dashboard, navigate to Customization > Policies and modify the default policy named `default-source-enrollment-if-sso`
+1. In the Admin interface, navigate to **Customization > Policies** and modify the default policy named `default-source-enrollment-if-sso`.
 
 2. Add the following code snippet in the policy-specific settings under Expression and then click Update.
 
