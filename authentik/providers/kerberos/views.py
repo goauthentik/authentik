@@ -2,16 +2,17 @@
 
 from django.core.exceptions import SuspiciousOperation
 from django.http import HttpRequest, HttpResponse
-from django.utils.decorators import method_decorator
 from django.shortcuts import get_object_or_404
+from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from structlog.stdlib import get_logger
 
-from authentik.providers.kerberos.lib import crypto, iana, protocol
-from authentik.providers.kerberos.lib.exceptions import KerberosError
-from authentik.providers.kerberos.models import KerberosProvider, KerberosRealm
+from authentik.api.authentication import bearer_auth
+from authentik.outposts.models import Outpost
 from authentik.providers.kerberos import kdc
+from authentik.providers.kerberos.lib import protocol
+from authentik.providers.kerberos.models import KerberosRealm
 
 LOGGER = get_logger()
 
@@ -20,6 +21,24 @@ LOGGER = get_logger()
 class KdcProxyView(View):
     def post(self, request: HttpRequest, realm_name: str, **kwargs) -> HttpResponse:
         realm = get_object_or_404(KerberosRealm, realm_name=realm_name)
+
+        self.remote_addr = request.META["REMOTE_ADDR"]
+        if "X-Outpost-RemoteAddr" in request.headers:
+            if not "Authorization" in request.headers:
+                raise SuspiciousOperation()
+            user = bearer_auth(request.headers["Authorization"].encode())
+            if not user:
+                raise SuspiciousOperation()
+            associated_outpost = None
+            for outpost in Outpost.objects.filter(providers__pk=realm.pk):
+                if outpost.user == user:
+                    associated_outpost = outpost
+                    break
+            if not associated_outpost:
+                raise SuspiciousOperation()
+
+            self.remote_addr = request.headers["X-Outpost-RemoteAddr"]
+
         try:
             proxy_message = protocol.KdcProxyMessage.from_bytes(request.body).to_python()
             expected_length, message = proxy_message["message"]
