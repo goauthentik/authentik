@@ -1,3 +1,4 @@
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import { placeholderHelperText } from "@goauthentik/admin/helperText";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
@@ -12,11 +13,8 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CertificateKeyPair,
     CoreApi,
     CoreGroupsListRequest,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
     Group,
     LDAPSource,
     LDAPSourceRequest,
@@ -208,34 +206,10 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         label=${msg("TLS Verification Certificate")}
                         name="peerCertificate"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.peerCertificate;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            certificate=${this.instance?.peerCertificate}
+                            nokey
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When connecting to an LDAP Server with TLS, certificates are not checked by default. Specify a keypair to validate the remote certificate.",
@@ -246,35 +220,9 @@ export class LDAPSourceForm extends ModelForm<LDAPSource, string> {
                         label=${msg("TLS Client authentication certificate")}
                         name="clientCertificate"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.clientCertificate;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            certificate=${this.instance?.clientCertificate}
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Client certificate keypair to authenticate against the LDAP Server's Certificate.",
