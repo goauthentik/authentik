@@ -20,4 +20,4 @@ else:
   return ak_message("Access denied for this email domain")
 ```
 
-This will allow only the `allowed_domains` list of domains for logging in through SSO such as Google Oauth2. If your email is not in the available domains, you will receive a 'Permission Denied' message on the login screen.
+This configuration specifies the `allowed_domains` list of domains for logging in through SSO, such as Google OAuth2. If your email is not in the available domains, you will receive a 'Permission Denied' message on the login screen.
