@@ -95,6 +95,17 @@ class TicketIntegrityCheck(checks.Check):
             return False
         return True
 
+class ServiceMatchCheck(checks.Check):
+    error_code = KerberosError.Code.KRB_AP_ERR_NOT_US
+
+    def check(self) -> bool:
+        if self.parent.service.is_tgs:
+            return True
+        if self.parent.service != self.parent.parent.service:
+            return False
+        options = self.parent.parent.request["req-body"]["kdc-options"]
+        return options["renew"] or options["validate"] or options["proxy"]
+
 
 class SkeyEnctypeCheck(checks.Check):
     error_code = KerberosError.Code.KDC_ERR_ETYPE_NOSUPP
@@ -151,8 +162,9 @@ class CaddrCheck(checks.Check):
 
     def check(self) -> bool:
         if self.parent.request["ticket"]["enc-part"]["plain"].get("caddr") is not None:
-            # We do not support checking addresses for now, we should add proxy
-            # protocol support for the outpost
+            for addr_type, addr in self.parent.request["ticket"]["enc-part"]["plain"]["caddr"]:
+                if addr == self.parent.parent.view.remote_addr:
+                    return True
             return False
         return True
 
@@ -198,9 +210,17 @@ class AuthenticatorCksumCheck(checks.Check):
     error_code = KerberosError.Code.KRB_AP_ERR_MODIFIED
 
     def check(self) -> bool:
+        req_body = self.parent.parent.message["req-body"].to_bytes()
+
+        # Skip tag and size in DER encoded bytestring
+        if req_body[1] & 0x80:
+            size_field_length = 1 + (req_body[1] & 0x7F)
+        else:
+            size_field_length = 1
+
         return self.parent.cksumtype.verify_checksum(
             key=self.parent.skey,
-            data=self.parent.parent.message["req-body"].to_bytes()[2:],
+            data=req_body[1+size_field_length:],
             checksum=self.parent.cksum,
             usage=protocol.KeyUsageNumbers.TGS_REQ_PA_TGS_REQ_AP_REQ_AUTHENTICATOR_CHKSUM.value,
         )
@@ -272,6 +292,7 @@ class PaTgsReq(PaBase, checks.Checks):
         AuthenticatorIntegrityCheck,
         AuthenticatorMatchCheck,
         CaddrCheck,
+        ServiceMatchCheck,
         AuthenticatorValidityCheck,
         AuthenticatorCksumExistsCheck,
         AuthenticatorCksumTypeSupportedCheck,
@@ -301,6 +322,30 @@ class ApReqPreAuthentFlag(checks.Check):
         )
         return True
 
+class ApReqTicketInvalidCheck(checks.Check):
+    error_code = KerberosError.Code.KRB_AP_ERR_TKT_NYV
+
+    def check(self) -> bool:
+        if not self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["invalid"]:
+            return True
+        return self.parent.parent.request["req-body"]["kdc-options"]["validate"]
+
+class ApReqTicketMayPostdateCheck(checks.Check):
+    error_code = KerberosError.Code.KDC_ERR_BADOPTION
+
+    def check(self) -> bool:
+        if not self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["may-postdate"]:
+            return True
+        return not self.parent.parent.request["req-body"]["kdc-options"]["postdated"]
+
+class ApReqTicketAllowPostdateCheck(checks.Check):
+    error_code = KerberosError.Code.KDC_ERR_BADOPTION
+
+    def check(self) -> bool:
+        if not self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["may-postdate"]:
+            return True
+        return not self.parent.parent.request["req-body"]["kdc-options"]["allow-postdate"]
+
 
 class TgsReqMessageHandler(KdcReqMessageHandler):
     MESSAGE_CLASS = protocol.TgsReq
@@ -319,7 +364,10 @@ class TgsReqMessageHandler(KdcReqMessageHandler):
     PREAUTH_CHECKS = (PaTgsReq,)
 
     AFTER_PREAUTH_CHECKS = (
+        ApReqTicketInvalidCheck,
         ApReqPreAuthentFlag,
+        ApReqTicketMayPostdateCheck,
+        ApReqTicketAllowPostdateCheck,
         ProxiableOptionCheck,
         ForwardableOptionCheck,
         checks.ProxiablePolicyCheck,

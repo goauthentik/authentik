@@ -90,8 +90,6 @@ class AsReqMessageHandler(KdcReqMessageHandler):
         self.caddr = self.request["req-body"].get("addresses")
         super().fill_ticket()
         self.ticket["flags"]["initial"] = True
-        self.ticket["flags"]["proxiable"] = self.request["req-body"]["kdc-options"]["proxiable"]
-        self.ticket["flags"]["forwardable"] = self.request["req-body"]["kdc-options"]["forwardable"]
 
     def build_response(self):
         super().build_response()

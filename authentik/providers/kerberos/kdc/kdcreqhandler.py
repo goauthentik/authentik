@@ -149,8 +149,12 @@ class KdcReqMessageHandler:
                 "plain": self.ticket,
             }
         )
-        if hasattr(self, "preauthenticated"):
-            self.ticket["flags"]["pre-authent"] = self.preauthenticated
+        self.ticket["flags"]["renewable"] = self.request["req-body"]["kdc-options"]["renewable"]
+        self.ticket["flags"]["proxiable"] = self.request["req-body"]["kdc-options"]["proxiable"]
+        self.ticket["flags"]["forwardable"] = self.request["req-body"]["kdc-options"]["forwardable"]
+        self.ticket["flags"]["ok-as-delegate"] = self.service.set_ok_as_delegate
+        self.ticket["flags"]["may-postdate"] = self.request["req-body"]["kdc-options"]["allow-postdate"]
+        self.ticket["flags"]["pre-authent"] = getattr(self, "preauthenticated", False)
 
     def fill_encpart(self):
         encpart = self.response.setdefault("enc-part", EncryptedDataWrapper())

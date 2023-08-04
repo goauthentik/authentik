@@ -628,7 +628,7 @@ class TicketFlags(KerberosFlags):
         ("pre-authent", 10),
         ("hw-authent", 11),
         ("transited-policy-checked", 12),
-        ("ok-as-delefate", 13),
+        ("ok-as-delegate", 13),
     )
 
 
