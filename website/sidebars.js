@@ -182,7 +182,20 @@ module.exports = {
                 type: "doc",
                 id: "policies/index",
             },
-            items: ["policies/expression"],
+            items: [
+                {
+                    type: "category",
+                    label: "Working with policies",
+                    items: ["policies/working_with_policies/whitelist_email"],
+                    link: {
+                        type: "generated-index",
+                        title: "Working with policies",
+                        slug: "policies/working_with_policies",
+                        description:
+                            "Overview of policies configuration",
+                    },
+                },
+                "policies/expression"],
         },
         {
             type: "category",
@@ -310,7 +323,6 @@ module.exports = {
                 "troubleshooting/csrf",
                 "troubleshooting/emails",
                 "troubleshooting/ldap_source",
-                "troubleshooting/whitelist_email",
             ],
         },
         {
