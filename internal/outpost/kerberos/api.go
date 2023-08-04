@@ -109,7 +109,7 @@ func (m *KrbError) Marshal() ([]byte, error) {
 	return asn1.Marshal(r)
 }
 
-func (ks *KerberosServer) handle(request []byte) ([]byte, error) {
+func (ks *KerberosServer) handle(request []byte, remoteAddr string) ([]byte, error) {
 	m := KdcProxyMessage{
 		Message: request,
 		Realm:   ks.provider.realmName,
@@ -119,7 +119,17 @@ func (ks *KerberosServer) handle(request []byte) ([]byte, error) {
 		return nil, err
 	}
 	r := bytes.NewReader(body)
-	resp, err := http.Post(ks.provider.urlKdcProxy, "application/kerberos", r)
+	client := ks.ac.Client.GetConfig().HTTPClient
+	req, err := http.NewRequest("POST", ks.provider.urlKdcProxy, r)
+	if err != nil {
+		return nil, err
+	}
+	for header, value := range ks.ac.Client.GetConfig().DefaultHeader {
+		req.Header.Set(header, value)
+	}
+	req.Header.Set("Content-Type", "application/kerberos")
+	req.Header.Set("X-Outpost-RemoteAddr", remoteAddr)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +172,7 @@ func (ks *KerberosServer) StartUDPServer() error {
 		byteLength := make([]byte, 4)
 		binary.BigEndian.PutUint32(byteLength, uint32(n))
 		go func(buf []byte, remoteAddr *net.UDPAddr) {
-			response, err := ks.handle(buf)
+			response, err := ks.handle(buf, remoteAddr.IP.String())
 			if err != nil {
 				ks.log.WithError(err).Debug("failed to handle request")
 				return
@@ -222,13 +232,14 @@ func (ks *KerberosServer) StartTCPServer() error {
 		go func() {
 			defer conn.Close()
 			buf := make([]byte, MaxReadBytes)
+			remoteAddr, _, _ := net.SplitHostPort(conn.RemoteAddr().String())
 			for {
 				n, err := conn.Read(buf[:])
 				if err != nil {
 					ks.log.WithError(err).Info("failed to read from TCP")
 					break
 				}
-				response, err := ks.handle(buf[:n])
+				response, err := ks.handle(buf[:n], remoteAddr)
 				if err != nil {
 					ks.log.WithError(err).Warning("failed to handle request")
 					break
