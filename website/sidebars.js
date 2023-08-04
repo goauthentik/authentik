@@ -191,11 +191,11 @@ module.exports = {
                         type: "generated-index",
                         title: "Working with policies",
                         slug: "policies/working_with_policies",
-                        description:
-                            "Overview of policies configuration",
+                        description: "Overview of policies configuration",
                     },
                 },
-                "policies/expression"],
+                "policies/expression",
+            ],
         },
         {
             type: "category",
