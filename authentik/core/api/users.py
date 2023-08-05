@@ -15,7 +15,13 @@ from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter, UUIDFilter
+from django_filters.filters import (
+    BooleanFilter,
+    CharFilter,
+    ModelMultipleChoiceFilter,
+    MultipleChoiceFilter,
+    UUIDFilter,
+)
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
@@ -300,10 +306,10 @@ class UsersFilter(FilterSet):
     is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
     uuid = UUIDFilter(field_name="uuid")
 
-    path = CharFilter(
-        field_name="path",
-    )
+    path = CharFilter(field_name="path")
     path_startswith = CharFilter(field_name="path", lookup_expr="startswith")
+
+    type = MultipleChoiceFilter(field_name="type")
 
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="ak_groups__name",
