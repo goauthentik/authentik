@@ -13,6 +13,30 @@ import (
 	"goauthentik.io/internal/constants"
 )
 
+// Attempt to set basic auth based on user's attributes
+func (a *Application) setAuthorizationHeader(headers http.Header, c *Claims) {
+	if !*a.proxyConfig.BasicAuthEnabled {
+		return
+	}
+	userAttributes := c.Proxy.UserAttributes
+	var ok bool
+	var password string
+	if password, ok = userAttributes[*a.proxyConfig.BasicAuthPasswordAttribute].(string); !ok {
+		password = ""
+	}
+	// Check if we should use email or a custom attribute as username
+	var username string
+	if username, ok = userAttributes[*a.proxyConfig.BasicAuthUserAttribute].(string); !ok {
+		username = c.Email
+	}
+	if username == "" && password == "" {
+		return
+	}
+	authVal := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
+	a.log.WithField("username", username).Trace("setting http basic auth")
+	headers.Set("Authorization", fmt.Sprintf("Basic %s", authVal))
+}
+
 func (a *Application) addHeaders(headers http.Header, c *Claims) {
 	// https://goauthentik.io/docs/providers/proxy/proxy
 	headers.Set("X-authentik-username", c.PreferredUsername)
@@ -33,22 +57,7 @@ func (a *Application) addHeaders(headers http.Header, c *Claims) {
 		return
 	}
 	userAttributes := c.Proxy.UserAttributes
-	// Attempt to set basic auth based on user's attributes
-	if *a.proxyConfig.BasicAuthEnabled {
-		var ok bool
-		var password string
-		if password, ok = userAttributes[*a.proxyConfig.BasicAuthPasswordAttribute].(string); !ok {
-			password = ""
-		}
-		// Check if we should use email or a custom attribute as username
-		var username string
-		if username, ok = userAttributes[*a.proxyConfig.BasicAuthUserAttribute].(string); !ok {
-			username = c.Email
-		}
-		authVal := base64.StdEncoding.EncodeToString([]byte(username + ":" + password))
-		a.log.WithField("username", username).Trace("setting http basic auth")
-		headers.Set("Authorization", fmt.Sprintf("Basic %s", authVal))
-	}
+	a.setAuthorizationHeader(headers, c)
 	// Check if user has additional headers set that we should sent
 	if additionalHeaders, ok := userAttributes["additionalHeaders"].(map[string]interface{}); ok {
 		a.log.WithField("headers", additionalHeaders).Trace("setting additional headers")
