@@ -264,7 +264,7 @@ select[multiple] option:checked {
     filter: invert(1);
 }
 .pf-c-login__main-footer-band {
-    background-color: var(--ak-dark-background-lighter);
+    --pf-c-login__main-footer-band--BackgroundColor: var(--ak-dark-background-lighter);
     color: var(--ak-dark-foreground);
 }
 .form-control-static {
