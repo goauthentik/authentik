@@ -7,7 +7,6 @@ import "@goauthentik/elements/chips/Chip";
 import "@goauthentik/elements/chips/ChipGroup";
 import { getURLParam, updateURLParams } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/elements/table/TablePagination";
-import { Pagination } from "@goauthentik/elements/table/TablePagination";
 import "@goauthentik/elements/table/TableSearch";
 
 import { msg } from "@lit/localize";
@@ -23,6 +22,8 @@ import PFTable from "@patternfly/patternfly/components/Table/table.css";
 import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
+import { Pagination } from "@goauthentik/api";
 
 export class TableColumn {
     title: string;

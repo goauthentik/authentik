@@ -2,6 +2,43 @@
 from rest_framework import pagination
 from rest_framework.response import Response
 
+PAGINATION_COMPONENT_NAME = "Pagination"
+PAGINATION_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "next": {
+            "type": "number",
+        },
+        "previous": {
+            "type": "number",
+        },
+        "count": {
+            "type": "number",
+        },
+        "current": {
+            "type": "number",
+        },
+        "total_pages": {
+            "type": "number",
+        },
+        "start_index": {
+            "type": "number",
+        },
+        "end_index": {
+            "type": "number",
+        },
+    },
+    "required": [
+        "next",
+        "previous",
+        "count",
+        "current",
+        "total_pages",
+        "start_index",
+        "end_index",
+    ],
+}
+
 
 class Pagination(pagination.PageNumberPagination):
     """Pagination which includes total pages and current page"""
@@ -35,41 +72,7 @@ class Pagination(pagination.PageNumberPagination):
         return {
             "type": "object",
             "properties": {
-                "pagination": {
-                    "type": "object",
-                    "properties": {
-                        "next": {
-                            "type": "number",
-                        },
-                        "previous": {
-                            "type": "number",
-                        },
-                        "count": {
-                            "type": "number",
-                        },
-                        "current": {
-                            "type": "number",
-                        },
-                        "total_pages": {
-                            "type": "number",
-                        },
-                        "start_index": {
-                            "type": "number",
-                        },
-                        "end_index": {
-                            "type": "number",
-                        },
-                    },
-                    "required": [
-                        "next",
-                        "previous",
-                        "count",
-                        "current",
-                        "total_pages",
-                        "start_index",
-                        "end_index",
-                    ],
-                },
+                "pagination": {"$ref": f"#/components/schemas/{PAGINATION_COMPONENT_NAME}"},
                 "results": schema,
             },
             "required": ["pagination", "results"],

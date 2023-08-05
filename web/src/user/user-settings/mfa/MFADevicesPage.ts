@@ -49,6 +49,8 @@ export class MFADevicesPage extends Table<Device> {
                 totalPages: 1,
                 startIndex: 1,
                 endIndex: devices.length,
+                next: 0,
+                previous: 0,
             },
             results: devices,
         };

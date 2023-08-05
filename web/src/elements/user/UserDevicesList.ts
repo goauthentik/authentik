@@ -28,6 +28,8 @@ export class UserDeviceList extends MFADevicesPage {
                         totalPages: 1,
                         startIndex: 1,
                         endIndex: res.length,
+                        next: 0,
+                        previous: 0,
                     },
                     results: res,
                 };
