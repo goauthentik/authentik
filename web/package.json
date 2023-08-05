@@ -119,6 +119,6 @@
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.18.18",
         "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.18.17"
+        "@esbuild/linux-arm64": "^0.18.18"
     }
 }
