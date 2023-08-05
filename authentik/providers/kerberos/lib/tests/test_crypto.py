@@ -561,3 +561,31 @@ class TestAes256CtsHmacSha384192(TestCase):
                 ),
                 hash_,
             )
+
+    def test_checksum(self) -> None:
+        """Test checksum parity"""
+        data = (
+            # data, usage, key, checksum
+            (
+                b"\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F\x10\x11\x12\x13\x14",
+                2,
+                b"\x6D\x40\x4D\x37\xFA\xF7\x9F\x9D\xF0\xD3\x35\x68\xD3\x20\x66\x98\x00\xEB\x48\x36\x47\x2E\xA8\xA0\x26\xD1\x6B\x71\x82\x46\x0C\x52",
+                b"\x45\xEE\x79\x15\x67\xEE\xFC\xA3\x7F\x4A\xC1\xE0\x22\x2D\xE8\x0D\x43\xC3\xBF\xA0\x66\x99\x67\x2A",
+            ),
+        )
+
+        for d, usage, key, checksum in data:
+            cksum = Aes256CtsHmacSha384192.checksum_hash(
+                key=key,
+                data=d,
+                usage=usage,
+            )
+            self.assertTrue(
+                Aes256CtsHmacSha384192.verify_checksum(
+                    key=key,
+                    data=d,
+                    usage=usage,
+                    checksum=checksum,
+                )
+            )
+            self.assertEqual(cksum, checksum)
