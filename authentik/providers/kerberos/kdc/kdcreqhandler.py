@@ -2,7 +2,7 @@ import secrets
 from datetime import datetime
 from typing import Self, Any
 
-from django.utils.timezone import now
+from django.utils import timezone
 from django.views import View
 
 from authentik.providers.kerberos.models import KerberosRealm
@@ -45,6 +45,12 @@ class KdcReqMessageHandler:
     AFTER_PREAUTH_CHECKS = (
         checks.ProxiablePolicyCheck,
         checks.ForwardablePolicyCheck,
+        checks.PostdatePolicyCheck,
+        checks.RenewablePolicyCheck,
+        checks.StarttimeCheck,
+        checks.EndtimeCheck,
+        checks.RenewableCheck,
+        checks.NeverValidCheck,
     )
 
     def __init__(self, view: View, message: KdcReq, request: dict[str, Any], realm: KerberosRealm):
@@ -106,12 +112,6 @@ class KdcReqMessageHandler:
         except ValueError as exc:
             raise KerberosError(code=KerberosError.Code.KDC_ERR_NULL_KEY) from exc
 
-    def set_times(self):
-        self.authtime = now()
-        self.starttime = self.request["req-body"].get("from")
-        self.endtime = self.request["req-body"].get("till")
-        self.renew_till = self.request["req-body"].get("rtime")
-
     def fill_ticket(self):
         ticket = self.response.setdefault("ticket", {})
         ticket.update(
@@ -149,11 +149,13 @@ class KdcReqMessageHandler:
                 "plain": self.ticket,
             }
         )
-        self.ticket["flags"]["renewable"] = self.request["req-body"]["kdc-options"]["renewable"]
+        self.ticket["flags"]["renewable"] = self.renewable
         self.ticket["flags"]["proxiable"] = self.request["req-body"]["kdc-options"]["proxiable"]
         self.ticket["flags"]["forwardable"] = self.request["req-body"]["kdc-options"]["forwardable"]
         self.ticket["flags"]["ok-as-delegate"] = self.service.set_ok_as_delegate
         self.ticket["flags"]["may-postdate"] = self.request["req-body"]["kdc-options"]["allow-postdate"]
+        self.ticket["flags"]["postdated"] = self.postdated
+        self.ticket["flags"]["invalid"] = self.postdated
         self.ticket["flags"]["pre-authent"] = getattr(self, "preauthenticated", False)
 
     def fill_encpart(self):
@@ -188,7 +190,6 @@ class KdcReqMessageHandler:
             self.preauth()
             self.check(self.AFTER_PREAUTH_CHECKS)
             self.select_enctypes()
-            self.set_times()
             self.fill_ticket()
             self.fill_encpart()
             self.encrypt()

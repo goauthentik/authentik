@@ -240,26 +240,6 @@ class AuthenticatorSubkeyEnctypeIsSupportedCheck(checks.Check):
         return self.subkey_enctype is not None
 
 
-class ForwardableOptionCheck(checks.Check):
-    error_code: int = KerberosError.Code.KDC_ERR_BADOPTION
-
-    def check(self):
-        if not self.parent.request["req-body"]["kdc-options"]["forwardable"]:
-            return True
-        return self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["forwardable"]
-
-
-class ProxiableOptionCheck(checks.Check):
-    error_code: int = KerberosError.Code.KDC_ERR_BADOPTION
-
-    def check(self):
-        if not self.parent.request["req-body"]["kdc-options"]["proxiable"]:
-            return True
-        if not self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["proxiable"]:
-            return False
-        return not self.parent.service.is_tgs
-
-
 class PaTgsReq(PaBase, checks.Checks):
     PA_TYPE = iana.PreAuthenticationType.PA_TGS_REQ
     error_code = KerberosError.Code.KDC_ERR_PADATA_TYPE_NOSUPP
@@ -313,6 +293,31 @@ class PaTgsReq(PaBase, checks.Checks):
         return True
 
 
+class ForwardableOptionCheck(checks.Check):
+    error_code: int = KerberosError.Code.KDC_ERR_BADOPTION
+
+    def check(self):
+        if not self.parent.request["req-body"]["kdc-options"]["forwardable"]:
+            return True
+        return self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["forwardable"]
+
+
+class ProxiableOptionCheck(checks.Check):
+    error_code: int = KerberosError.Code.KDC_ERR_BADOPTION
+
+    def check(self):
+        if not self.parent.request["req-body"]["kdc-options"]["proxiable"]:
+            return True
+        if not self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["proxiable"]:
+            return False
+        if self.parent.service.is_tgs:
+            return any((
+                self.parent.request["req-body"]["kdc-options"]["renew"],
+                self.parent.request["req-body"]["kdc-options"]["validate"],
+            ))
+        return True
+
+
 class ApReqPreAuthentFlag(checks.Check):
     context_attrs = ["preauthenticated"]
 
@@ -328,23 +333,84 @@ class ApReqTicketInvalidCheck(checks.Check):
     def check(self) -> bool:
         if not self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["invalid"]:
             return True
-        return self.parent.parent.request["req-body"]["kdc-options"]["validate"]
+        starttime = self.parent.ap_req["ticket"]["enc-part"]["plain"]["starttime"]
+        skew = timedelta_from_string(self.parent.service.maximum_skew)
+        if now() - skew > starttime:
+            return False
+        return self.parent.request["req-body"]["kdc-options"]["validate"]
+
+class ApReqTicketExpiredCheck(checks.Check):
+    error_code = KerberosError.Code.KRB_AP_ERR_TKT_EXPIRED
+
+    def check(self) -> bool:
+        endtime = self.parent.ap_req["ticket"]["enc-part"]["plain"]["endtime"]
+        skew = timedelta_from_string(self.parent.service.maximum_skew)
+        if endtime < now() + skew:
+            return False
+        if self.parent.request["req-body"]["kdc-options"]["renew"]:
+            renew_till = self.parent.ap_req["ticket"]["enc-part"]["plain"].get("renew-till")
+            return renew_till is not None and renew_till >= now() + skew
+        return True
 
 class ApReqTicketMayPostdateCheck(checks.Check):
     error_code = KerberosError.Code.KDC_ERR_BADOPTION
 
     def check(self) -> bool:
-        if not self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["may-postdate"]:
+        if not self.parent.request["req-body"]["kdc-options"]["postdated"]:
             return True
-        return not self.parent.parent.request["req-body"]["kdc-options"]["postdated"]
+        return self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["may-postdate"]
 
 class ApReqTicketAllowPostdateCheck(checks.Check):
     error_code = KerberosError.Code.KDC_ERR_BADOPTION
 
     def check(self) -> bool:
-        if not self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["may-postdate"]:
+        if not self.parent.request["req-body"]["kdc-options"]["allow-postdate"]:
             return True
-        return not self.parent.parent.request["req-body"]["kdc-options"]["allow-postdate"]
+        return self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["may-postdate"]
+
+class TgsReqRenewCheck(checks.Check):
+    error_code = KerberosError.Code.KDC_ERR_BADOPTION
+
+    def check(self) -> bool:
+        if not self.parent.request["req-body"]["kdc-options"]["renew"]:
+            return True
+        return not self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["renewable"]
+
+class TgsReqValidateCheck(checks.Check):
+    error_code = KerberosError.Code.KDC_ERR_BADOPTION
+
+    def check(self) -> bool:
+        if not self.parent.request["req-body"]["kdc-options"]["validate"]:
+            return True
+        return self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["invalid"]
+
+class ApReqTicketRenewableCheck(checks.Check):
+    error_code = KerberosError.Code.KDC_ERR_BADOPTION
+
+    def check(self) -> bool:
+        if self.parent.ap_req["ticket"]["enc-part"]["plain"]["flags"]["renewable"]:
+            return True
+        return not self.parent.request["req-body"]["kdc-options"]["renewable"]
+
+class ApReqTicketEndtimeCheck(checks.Check):
+    context_attrs = ["endtime"]
+
+    def check(self) -> bool:
+        starttime = self.parent.ap_req["ticket"]["enc-part"]["plain"]["starttime"]
+        endtime = self.parent.ap_req["ticket"]["enc-part"]["plain"]["endtime"]
+        svc_endtime = starttime + timedelta_from_string(self.parent.service.maximum_ticket_lifetime)
+        if self.parent.request["req-body"]["kdc-options"]["renew"]:
+            self.endtime = min(
+                self.parent.endtime,
+                self.parent.ap_req["ticket"]["enc-part"]["plain"]["renew-till"],
+                self.parent.starttime + (endtime - starttime),
+            )
+        else:
+            self.endtime = min(
+                self.parent.endtime,
+                svc_endtime,
+            )
+        return True
 
 
 class TgsReqMessageHandler(KdcReqMessageHandler):
@@ -365,13 +431,22 @@ class TgsReqMessageHandler(KdcReqMessageHandler):
 
     AFTER_PREAUTH_CHECKS = (
         ApReqTicketInvalidCheck,
+        ApReqTicketExpiredCheck,
         ApReqPreAuthentFlag,
         ApReqTicketMayPostdateCheck,
         ApReqTicketAllowPostdateCheck,
+        ApReqTicketRenewableCheck,
         ProxiableOptionCheck,
         ForwardableOptionCheck,
         checks.ProxiablePolicyCheck,
         checks.ForwardablePolicyCheck,
+        checks.PostdatePolicyCheck,
+        checks.RenewablePolicyCheck,
+        checks.StarttimeCheck,
+        checks.EndtimeCheck,
+        ApReqTicketEndtimeCheck,
+        checks.RenewableCheck,
+        checks.NeverValidCheck,
     )
 
     def select_enctypes(self):

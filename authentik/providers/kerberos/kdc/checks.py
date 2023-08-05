@@ -1,5 +1,7 @@
 from typing import Any
+from django.utils import timezone
 
+from authentik.lib.utils.time import timedelta_from_string
 from authentik.providers.kerberos.lib.exceptions import KerberosError, KerberosPreauthRequiredError
 from authentik.providers.kerberos.lib import protocol
 from authentik.providers.kerberos.models import KerberosProvider
@@ -167,49 +169,96 @@ class ForwardablePolicyCheck(Check):
 
 
 class ProxiablePolicyCheck(Check):
+    error_code: int = KerberosError.Code.KDC_ERR_POLICY
+
     def check(self):
         if not self.parent.request["req-body"]["kdc-options"]["proxiable"]:
             return True
         return self.parent.service.allow_proxiable
 
-
-class ForwardableCheck(Check):
-    error_code: int = KerberosError.Code.KDC_ERR_BADOPTION
-
-    def check(self):
-        if not self.parent.request["req-body"]["kdc-options"]["forwardable"]:
-            return True
-        if hasattr(self.parent, "pa_ap_req"):
-            if not self.parent.pa_ap_req["ticket"]["enc-part"]["flags"]["forwardable"]:
-                return False
-        return self.parent.service.allow_forwardable
-
-
-class ServiceMatchCheck(Check):
-    error_code: int = KerberosError.Code.KDC_ERR_SERVER_NOMATCH
+class PostdatePolicyCheck(Check):
+    error_code: int = KerberosError.Code.KDC_ERR_POLICY
 
     def check(self):
-        if self.parent.request["req-body"]["kdc-options"]["forwardable"]:
+        if not self.parent.request["req-body"]["kdc-options"]["postdated"]:
             return True
-        if hasattr(self.parent, "pa_ap_req"):
-            # TODO: if self.parent.pa_ap_req["ticket"]["enc-part"]["sname"] is TGS:
-            #         return True
-            if (
-                self.parent.pa_ap_req["ticket"]["enc-part"]["sname"]
-                != self.parent.request["req-body"]["sname"]
-            ):
-                return False
+        return self.parent.service.allow_postdateable
+
+class RenewablePolicyCheck(Check):
+    error_code: int = KerberosError.Code.KDC_ERR_POLICY
+    context_attrs = ["renewable_ok", "renewable"]
+
+    def check(self):
+        self.renewable_ok = self.parent.request["req-body"]["kdc-options"]["renewable-ok"]
+        self.renewable = self.parent.request["req-body"]["kdc-options"]["renewable"]
+        if self.parent.service.allow_renewable:
+            return True
+        self.renewable_ok = False
+        return not self.renewable
+
+
+class StarttimeCheck(Check):
+    error_code: int = KerberosError.Code.KDC_ERR_CANNOT_POSTDATE
+    context_attrs = ["authtime", "starttime", "postdated"]
+
+    def check(self) -> bool:
+        now = timezone.now()
+        skew = timedelta_from_string(self.parent.service.maximum_skew)
+        self.authtime = now
+        self.starttime = self.parent.request["req-body"].get("from")
+        postdate = self.parent.request["req-body"]["kdc-options"]["postdated"]
+        if self.starttime is None:
+            self.starttime = now
+            self.postdated = False
+            return True
+        if self.starttime <= now:
+            self.starttime = now
+            self.postdated = False
+            return True
+        if self.starttime <= now + skew and not postdate:
+            self.starttime = now
+            self.postdated = False
+            return True
+        self.postdated = True
+        return postdate
+
+
+class EndtimeCheck(Check):
+    context_attrs = ["endtime"]
+
+    def check(self) -> bool:
+        now = timezone.now()
+        skew = timedelta_from_string(self.parent.service.maximum_skew)
+        req_endtime = self.parent.request["req-body"]["till"]
+        svc_max_endtime = self.parent.starttime + timedelta_from_string(self.parent.service.maximum_ticket_lifetime)
+        # FIXME: cl_max_endtime
+        self.endtime = min((req_endtime, svc_max_endtime))
+        return True
+
+class RenewableCheck(Check):
+    context_attrs = ["renew_till", "renewable"]
+
+    def check(self) -> bool:
+        req_endtime = self.parent.request["req-body"]["till"]
+
+        if req_endtime > self.parent.endtime and self.parent.renewable_ok and not self.parent.renewable:
+            self.renewable = True
+            self.renew_till = req_endtime
+        else:
+            self.renew_till = self.parent.request["req-body"].get("rtill")
+            if self.renew_till is None:
+                self.renewable = False
+                return True
+
+        svc_max_rtill = self.parent.starttime + timedelta_from_string(self.parent.service.maximum_ticket_renew_lifetime)
+        # FIXME: cl_max_rtill
+        self.renew_till = min((self.renew_till, svc_max_rtill))
         return True
 
 
-class TicketValidCheck(Check):
-    error_code: int = KerberosError.Code.KRB_AP_ERR_TKT_NYV
+class NeverValidCheck(Check):
+    error_code: int = KerberosError.Code.KDC_ERR_NEVER_VALID
 
     def check(self):
-        if not hasattr(self.parent, "pa_ap_req"):
-            return True
-        if not self.parent.pa_ap_req["ticket"]["enc-part"]["flags"]["invalid"]:
-            return True
-        if self.parent.request["req-body"]["kdc-options"]["validate"]:
-            return True
-        return False
+        skew = timedelta_from_string(self.parent.service.maximum_skew)
+        return self.parent.endtime >= self.parent.starttime + skew

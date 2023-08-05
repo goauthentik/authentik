@@ -373,7 +373,7 @@ class KerberosTime(useful.GeneralizedTime):
         return native_decode(value.astimezone(tz=timezone.utc).strftime("%Y%m%d%H%M%SZ"), self)
 
     def to_python(self):
-        return self.asDateTime
+        return self.asDateTime.replace(tzinfo=timezone.utc)
 
 
 class HostAddress(Sequence):
