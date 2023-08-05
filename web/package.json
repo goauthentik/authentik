@@ -23,7 +23,7 @@
         "tsc:execute": "tsc --noEmit -p .",
         "tsc": "run-s build-locales tsc:execute",
         "storybook": "storybook dev -p 6006",
-        "storybook:build": "storybook build",
+        "storybook:build": "node --max-old-space-size=4096 ./node_modules/.bin/storybook build",
         "background-image": "sharp resize 2650 --mozjpeg -i src/assets/images/flow_background.jpg -o src/assets/images/flow_background.jpg"
     },
     "dependencies": {
