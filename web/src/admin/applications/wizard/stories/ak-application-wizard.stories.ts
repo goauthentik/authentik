@@ -7,6 +7,7 @@ import AkApplicationWizardApplicationDetails from "../ak-application-wizard-appl
 import "../ak-application-wizard-authentication-method-choice";
 import "../ak-application-wizard-context";
 import "../ldap/ak-application-wizard-authentication-by-ldap";
+import "../proxy/ak-application-wizard-authentication-by-proxy";
 import "../oauth/ak-application-wizard-authentication-by-oauth";
 import "./ak-application-context-display-for-test";
 import {
@@ -136,6 +137,16 @@ export const PageThreeOauth2 = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>
+            <hr />
+            <ak-application-context-display-for-test></ak-application-context-display-for-test>
+        </ak-application-wizard-context>`,
+    );
+};
+
+export const PageThreeProxy = () => {
+    return container(
+        html`<ak-application-wizard-context>
+            <ak-application-wizard-authentication-by-proxy></ak-application-wizard-authentication-by-proxy>
             <hr />
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
         </ak-application-wizard-context>`,

@@ -56,12 +56,12 @@ export class AkBackchannelProvidersInput extends AKElement {
             html`<ak-chip
                 .removable=${true}
                 value=${ifDefined(provider.pk)}
-                @remove=${remove(provider)}
+                @remove=${this.remover(provider)}
                 >${provider.name}</ak-chip
             >`;
 
         return html`
-            <ak-form-element-horizontal label=${label} name=${name}>
+            <ak-form-element-horizontal label=${this.label} name=${name}>
                 <div class="pf-c-input-group">
                     <ak-provider-select-table ?backchannelOnly=${true} .confirm=${confirm}>
                         <button slot="trigger" class="pf-c-button pf-m-control" type="button">
@@ -70,10 +70,10 @@ export class AkBackchannelProvidersInput extends AKElement {
                         </button>
                     </ak-provider-select-table>
                     <div class="pf-c-form-control">
-                        <ak-chip-group> ${map(providers, renderOneChip)} </ak-chip-group>
+                        <ak-chip-group> ${map(this.providers, renderOneChip)} </ak-chip-group>
                     </div>
                 </div>
-                ${help ? html`<p class="pf-c-form__helper-radio">${help}</p>` : nothing}
+                ${this.help ? html`<p class="pf-c-form__helper-radio">${this.help}</p>` : nothing}
             </ak-form-element-horizontal>
         `;
     }
