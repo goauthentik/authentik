@@ -555,21 +555,30 @@ class BlueprintDumper(SafeDumper):
         return super().represent(data)
 
 
+def yaml_key_map() -> dict[str, type[YAMLTag]]:
+    """get a dict of all yaml tags, key being the actual tag
+    and the value is the class"""
+    return {
+        "!KeyOf": KeyOf,
+        "!Find": Find,
+        "!Context": Context,
+        "!Format": Format,
+        "!Condition": Condition,
+        "!If": If,
+        "!Env": Env,
+        "!Enumerate": Enumerate,
+        "!Value": Value,
+        "!Index": Index,
+    }
+
+
 class BlueprintLoader(SafeLoader):
     """Loader for blueprints with custom tag support"""
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.add_constructor("!KeyOf", KeyOf)
-        self.add_constructor("!Find", Find)
-        self.add_constructor("!Context", Context)
-        self.add_constructor("!Format", Format)
-        self.add_constructor("!Condition", Condition)
-        self.add_constructor("!If", If)
-        self.add_constructor("!Env", Env)
-        self.add_constructor("!Enumerate", Enumerate)
-        self.add_constructor("!Value", Value)
-        self.add_constructor("!Index", Index)
+        for tag, cls in yaml_key_map().items():
+            self.add_constructor(tag, cls)
 
 
 class EntryInvalidError(SentryIgnoredException):

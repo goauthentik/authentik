@@ -15,6 +15,7 @@ from authentik.api.decorators import permission_required
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.common import Blueprint, BlueprintEntry, BlueprintEntryDesiredState
 from authentik.blueprints.v1.importer import StringImporter, is_model_allowed
+from authentik.blueprints.v1.json_parser import BlueprintJSONParser
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
 from authentik.core.api.used_by import UsedByMixin
@@ -165,6 +166,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         filter_backends=[],
         methods=["PUT"],
         permission_classes=[IsAdminUser],
+        parser_classes=[BlueprintJSONParser],
     )
     def procedural(self, request: Request) -> Response:
         blueprint = Blueprint()
