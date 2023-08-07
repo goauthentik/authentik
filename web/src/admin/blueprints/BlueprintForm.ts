@@ -9,12 +9,11 @@ import "@goauthentik/elements/forms/SearchSelect";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
@@ -51,15 +50,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
     }
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFToggleGroup,
-            PFContent,
-            css`
-                .pf-c-toggle-group {
-                    justify-content: center;
-                }
-            `,
-        );
+        return [...super.styles, PFContent];
     }
 
     async send(data: BlueprintInstance): Promise<BlueprintInstance> {

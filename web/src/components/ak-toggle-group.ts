@@ -9,6 +9,19 @@ import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-
 
 type Pair = [string, string];
 
+/**
+ * Toggle Group
+ *
+ * An implementation of the Patternfly Toggle Group as a LitElement
+ *
+ * @element ak-toggle-group
+ *
+ * @fires ak-toggle - Fired when someone clicks on a toggle option. Carries the value of the option.
+ */
+
+// MYNIS:
+// A 'name' property so that the event carries *which* toggle group emitted the event.
+
 @customElement("ak-toggle-group")
 export class AkToggleGroup extends CustomEmitterElement(AKElement) {
     static get styles() {
@@ -22,6 +35,11 @@ export class AkToggleGroup extends CustomEmitterElement(AKElement) {
         ];
     }
 
+    /*
+     * The value (causes highlighting, value is returned)
+     *
+     * @attr
+     */
     @property({ type: String, reflect: true })
     value = "";
 

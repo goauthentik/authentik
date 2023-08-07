@@ -9,13 +9,12 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import {
@@ -35,17 +34,7 @@ import {
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFToggleGroup,
-            PFContent,
-            PFList,
-            PFSpacing,
-            css`
-                .pf-c-toggle-group {
-                    justify-content: center;
-                }
-            `,
-        );
+        return [...super.styles, PFContent, PFList, PFSpacing];
     }
 
     async loadInstance(pk: number): Promise<ProxyProvider> {
@@ -114,6 +103,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
             >
             </ak-text-input>
 
+<<<<<<< HEAD
             <ak-text-input
                 name="basicAuthPasswordAttribute"
                 label=${msg("HTTP-Basic Password Key")}
@@ -122,7 +112,22 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                     "User/Group Attribute used for the password part of the HTTP-Basic Header.",
                 )}
             >
-            </ak-text-input>`;
+</ak-text-input>`;
+    }
+    
+    renderModeSelector(): TemplateResult {
+        const setMode = (ev: CustomEvent<{ value: ProxyMode }>) => {
+            this.mode = ev.detail.value;
+        };
+
+        // prettier-ignore
+        return html`
+            <ak-toggle-group value=${this.mode} @ak-toggle=${setMode}>
+                <option value=${ProxyMode.Proxy}>${msg("Proxy")}</option>
+                <option value=${ProxyMode.ForwardSingle}>${msg("Forward auth (single application)")}</option>
+                <option value=${ProxyMode.ForwardDomain}>${msg("Forward auth (domain level)")}</option>
+            </ak-toggle-group>
+        `;
     }
 
     renderSettings(): TemplateResult {
@@ -303,6 +308,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
             </ak-form-element-horizontal>
 
             <div class="pf-c-card pf-m-selectable pf-m-selected">
+<<<<<<< HEAD
                 <div class="pf-c-card__body">
                     <ak-toggle-group
                         value=${this.mode}
@@ -319,6 +325,9 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                         </option>
                     </ak-toggle-group>
                 </div>
+=======
+                <div class="pf-c-card__body">${this.renderModeSelector()}</div>
+>>>>>>> ak-toggle-group
                 <div class="pf-c-card__footer">${this.renderSettings()}</div>
             </div>
             <ak-form-element-horizontal label=${msg("Token validity")} name="accessTokenValidity">
