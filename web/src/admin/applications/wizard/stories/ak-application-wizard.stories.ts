@@ -7,8 +7,9 @@ import AkApplicationWizardApplicationDetails from "../ak-application-wizard-appl
 import "../ak-application-wizard-authentication-method-choice";
 import "../ak-application-wizard-context";
 import "../ldap/ak-application-wizard-authentication-by-ldap";
-import "../proxy/ak-application-wizard-authentication-by-proxy";
 import "../oauth/ak-application-wizard-authentication-by-oauth";
+import "../proxy/ak-application-wizard-authentication-for-reverse-proxy";
+import "../proxy/ak-application-wizard-authentication-for-single-forward-proxy";
 import "./ak-application-context-display-for-test";
 import {
     dummyAuthenticationFlowsSearch,
@@ -103,7 +104,7 @@ const container = (testItem: TemplateResult) => {
     </div>`;
 };
 
-export const PageOne = () => {
+export const DescribeApplication = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-application-details></ak-application-wizard-application-details>
@@ -113,7 +114,7 @@ export const PageOne = () => {
     );
 };
 
-export const PageTwo = () => {
+export const ChooseAuthMethod = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-method-choice></ak-application-wizard-authentication-method-choice>
@@ -123,7 +124,7 @@ export const PageTwo = () => {
     );
 };
 
-export const PageThreeLdap = () => {
+export const ConfigureLdap = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-by-ldap></ak-application-wizard-authentication-by-ldap>
@@ -133,7 +134,7 @@ export const PageThreeLdap = () => {
     );
 };
 
-export const PageThreeOauth2 = () => {
+export const ConfigureOauth2 = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>
@@ -143,10 +144,20 @@ export const PageThreeOauth2 = () => {
     );
 };
 
-export const PageThreeProxy = () => {
+export const ConfigureReverseProxy = () => {
     return container(
         html`<ak-application-wizard-context>
-            <ak-application-wizard-authentication-by-proxy></ak-application-wizard-authentication-by-proxy>
+            <ak-application-wizard-authentication-for-reverse-proxy></ak-application-wizard-authentication-for-reverse-proxy>
+            <hr />
+            <ak-application-context-display-for-test></ak-application-context-display-for-test>
+        </ak-application-wizard-context>`,
+    );
+};
+
+export const ConfigureSingleForwardProxy = () => {
+    return container(
+        html`<ak-application-wizard-context>
+            <ak-application-wizard-authentication-for-single-forward-proxy></ak-application-wizard-authentication-for-single-forward-proxy>
             <hr />
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
         </ak-application-wizard-context>`,

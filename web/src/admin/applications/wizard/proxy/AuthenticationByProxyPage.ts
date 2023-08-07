@@ -1,16 +1,15 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
-import "@goauthentik/elements/forms/HorizontalFormElement";
-
-import { msg } from "@lit/localize";
-import { customElement, state } from "@lit/reactive-element/decorators.js";
-import { TemplateResult, html } from "lit";
-import { ifDefined } from "lit/directives/if-defined.js";
-
 import "@goauthentik/components/ak-switch-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/components/ak-textarea-input";
 import "@goauthentik/components/ak-toggle-group";
+import "@goauthentik/elements/forms/HorizontalFormElement";
+
+import { msg } from "@lit/localize";
+import { state } from "@lit/reactive-element/decorators.js";
+import { TemplateResult, html, nothing } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     FlowsInstancesListDesignationEnum,
@@ -24,7 +23,8 @@ import {
 
 import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
 
-@customElement("ak-application-wizard-authentication-by-proxy")
+type MaybeTemplateResult = TemplateResult | typeof nothing;
+
 export class AkTypeProxyApplicationWizardPage extends ApplicationWizardPageBase {
     constructor() {
         super();
@@ -72,6 +72,14 @@ export class AkTypeProxyApplicationWizardPage extends ApplicationWizardPageBase 
         return this.wizard.provider as ProxyProvider;
     }
 
+    renderModeDescription(): MaybeTemplateResult {
+        return nothing;
+    }
+
+    renderProxyMode() {
+        return html`<h2>This space intentionally left blank</h2>`;
+    }
+
     renderHttpBasic(): TemplateResult {
         return html`<ak-text-input
                 name="basicAuthUserAttribute"
@@ -94,120 +102,9 @@ export class AkTypeProxyApplicationWizardPage extends ApplicationWizardPageBase 
             </ak-text-input>`;
     }
 
-    renderModeSelector(): TemplateResult {
-        const setMode = (ev: CustomEvent<{ value: ProxyMode }>) => {
-            this.mode = ev.detail.value;
-        };
-
-        // prettier-ignore
-        return html`
-            <ak-toggle-group value=${this.mode} @ak-toggle=${setMode}>
-                <option value=${ProxyMode.Proxy}>${msg("Proxy")}</option>
-                <option value=${ProxyMode.ForwardSingle}>${msg("Forward auth (single application)")}</option>
-                <option value=${ProxyMode.ForwardDomain}>${msg("Forward auth (domain level)")}</option>
-            </ak-toggle-group>
-        `;
-    }
-
-    renderProxyModeProxy() {
-        return html`<p class="pf-u-mb-xl">
-                ${msg(
-                    "This provider will behave like a transparent reverse-proxy, except requests must be authenticated. If your upstream application uses HTTPS, make sure to connect to the outpost using HTTPS as well.",
-                )}
-            </p>
-            <ak-text-input
-                name="externalHost"
-                value=${ifDefined(this.instance?.externalHost)}
-                required
-                label=${msg("External host")}
-                help=${msg(
-                    "The external URL you'll access the application at. Include any non-standard port.",
-                )}
-            ></ak-text-input>
-            <ak-text-input
-                name="internalHost"
-                value=${ifDefined(this.instance?.internalHost)}
-                required
-                label=${msg("Internal host")}
-                help=${msg("Upstream host that the requests are forwarded to.")}
-            ></ak-text-input>
-            <ak-switch-input
-                name="internalHostSslValidation"
-                ?checked=${first(this.instance?.internalHostSslValidation, true)}
-                label=${msg("Internal host SSL Validation")}
-                help=${msg("Validate SSL Certificates of upstream servers.")}
-            >
-            </ak-switch-input>`;
-    }
-
-    renderProxyModeForwardSingle() {
-        return html`<p class="pf-u-mb-xl">
-                ${msg(
-                    "Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you).",
-                )}
-            </p>
-            <ak-text-input
-                name="externalHost"
-                value=${ifDefined(this.instance?.externalHost)}
-                required
-                label=${msg("External host")}
-                help=${msg(
-                    "The external URL you'll access the application at. Include any non-standard port.",
-                )}
-            ></ak-text-input>`;
-    }
-
-    renderProxyModeForwardDomain() {
-        return html`<p class="pf-u-mb-xl">
-                ${msg(
-                    "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.",
-                )}
-            </p>
-            <div class="pf-u-mb-xl">
-                ${msg("An example setup can look like this:")}
-                <ul class="pf-c-list">
-                    <li>${msg("authentik running on auth.example.com")}</li>
-                    <li>${msg("app1 running on app1.example.com")}</li>
-                </ul>
-                ${msg(
-                    "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com.",
-                )}
-            </div>
-            <ak-text-input
-                name="externalHost"
-                value=${first(this.instance?.externalHost, window.location.origin)}
-                required
-                label=${msg("Authentication URL")}
-                help=${msg(
-                    "The external URL you'll authenticate at. The authentik core server should be reachable under this URL.",
-                )}
-            ></ak-text-input>
-            <ak-text-input
-                name="cookieDomain"
-                value=${ifDefined(this.instance?.cookieDomain)}
-                required
-                label=${msg("Cookie domain")}
-                help=${msg(
-                    "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.",
-                )}
-            ></ak-text-input>`;
-    }
-
-    renderSettings() {
-        switch (this.mode) {
-            case ProxyMode.Proxy:
-                return this.renderProxyModeProxy();
-            case ProxyMode.ForwardSingle:
-                return this.renderProxyModeForwardSingle();
-            case ProxyMode.ForwardDomain:
-                return this.renderProxyModeForwardDomain();
-            case ProxyMode.UnknownDefaultOpenApi:
-                return html`<p>${msg("Unknown proxy mode")}</p>`;
-        }
-    }
-
     render() {
         return html`<form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
+            ${this.renderModeDescription()}
             <ak-text-input
                 name="name"
                 value=${ifDefined(this.instance?.name)}
@@ -243,10 +140,8 @@ export class AkTypeProxyApplicationWizardPage extends ApplicationWizardPageBase 
                 </p>
             </ak-form-element-horizontal>
 
-            <div class="pf-c-card pf-m-selectable pf-m-selected">
-                <div class="pf-c-card__body">${this.renderModeSelector()}</div>
-                <div class="pf-c-card__footer">${this.renderSettings()}</div>
-            </div>
+            <div class="pf-c-card__footer">${this.renderProxyMode()}</div>
+
             <ak-text-input
                 name="accessTokenValidity"
                 value=${first(this.instance?.accessTokenValidity, "hours=24")}
