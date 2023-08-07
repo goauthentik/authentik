@@ -38,6 +38,9 @@ export class Tabs extends AKElement {
                 :host([vertical]) .pf-c-tabs__list {
                     height: 100%;
                 }
+                :host([vertical]) .pf-c-tabs .pf-c-tabs__list::before {
+                    border-color: transparent;
+                }
             `,
         ];
     }
