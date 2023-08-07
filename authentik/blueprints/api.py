@@ -1,10 +1,10 @@
 """Serializer mixin for managed models"""
 from django.apps import apps
 from django.utils.translation import gettext_lazy as _
-from drf_spectacular.utils import extend_schema, inline_serializer
+from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, DateTimeField, DictField, JSONField
+from rest_framework.fields import BooleanField, CharField, DateTimeField, DictField, JSONField
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -14,7 +14,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.api.decorators import permission_required
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.common import Blueprint, BlueprintEntry, BlueprintEntryDesiredState
-from authentik.blueprints.v1.importer import YAMLStringImporter, is_model_allowed
+from authentik.blueprints.v1.importer import Importer, YAMLStringImporter, is_model_allowed
 from authentik.blueprints.v1.json_parser import BlueprintJSONParser
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
@@ -91,6 +91,8 @@ class BlueprintEntrySerializer(PassiveSerializer):
     """Validate a single blueprint entry, similar to a subset of regular blueprints"""
 
     model = CharField()
+    id = CharField(required=False, allow_blank=True)
+    identifiers = DictField()
     attrs = DictField()
 
     def validate_model(self, fq_model: str) -> str:
@@ -104,13 +106,22 @@ class BlueprintEntrySerializer(PassiveSerializer):
                 raise ValidationError("Invalid model")
         except LookupError:
             raise ValidationError("Invalid model")
-        return model
+        return fq_model
 
 
-class BlueprintProceduralSerializer(PassiveSerializer):
+class BlueprintSerializer(PassiveSerializer):
     """Validate a procedural blueprint, which is a subset of a regular blueprint"""
 
     entries = ListSerializer(child=BlueprintEntrySerializer())
+    context = DictField(required=False)
+
+
+class BlueprintProceduralResultSerializer(PassiveSerializer):
+    """Result of applying a procedural blueprint"""
+
+    valid = BooleanField()
+    applied = BooleanField()
+    logs = ListSerializer(child=CharField())
 
 
 class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
@@ -158,7 +169,11 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         return self.retrieve(request, *args, **kwargs)
 
     @extend_schema(
-        request=BlueprintProceduralSerializer,
+        request=BlueprintSerializer,
+        responses=BlueprintProceduralResultSerializer,
+        parameters=[
+            OpenApiParameter("validate_only", bool),
+        ],
     )
     @action(
         detail=False,
@@ -169,19 +184,38 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
         parser_classes=[BlueprintJSONParser],
     )
     def procedural(self, request: Request) -> Response:
+        """Run a client-provided blueprint once, as-is. Blueprint is not kept in memory/database
+        and will not be continuously applied"""
         blueprint = Blueprint()
-        data = BlueprintProceduralSerializer(data=request.data)
+        data = BlueprintSerializer(data=request.data)
         data.is_valid(raise_exception=True)
+        blueprint.context = data.validated_data.get("context", {})
         for raw_entry in data.validated_data["entries"]:
             entry = BlueprintEntrySerializer(data=raw_entry)
             entry.is_valid(raise_exception=True)
             blueprint.entries.append(
                 BlueprintEntry(
                     model=entry.data["model"],
-                    state=BlueprintEntryDesiredState.PRESENT,
-                    identifiers={},
+                    state=BlueprintEntryDesiredState.MUST_CREATED,
+                    identifiers=entry.data["identifiers"],
                     attrs=entry.data["attrs"],
+                    id=entry.data.get("id", None),
                 )
             )
-        print(blueprint)
-        return Response(status=400)
+        importer = Importer(blueprint)
+        valid, logs = importer.validate()
+        result = {
+            "valid": valid,
+            "applied": False,
+            # TODO: Better way to handle logs
+            "logs": [x["event"] for x in logs],
+        }
+        response = BlueprintProceduralResultSerializer(data=result)
+        response.is_valid()
+        if request.query_params.get("validate_only", False):
+            return Response(response.validated_data)
+        applied = importer.apply()
+        result["applied"] = applied
+        response = BlueprintProceduralResultSerializer(data=result)
+        response.is_valid()
+        return Response(response.validated_data)

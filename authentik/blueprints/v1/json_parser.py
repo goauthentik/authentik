@@ -1,8 +1,12 @@
 """Blueprint JSON decoder"""
+import codecs
 from collections.abc import Hashable
 from typing import Any
 
+from django.conf import settings
+from rest_framework.exceptions import ParseError
 from rest_framework.parsers import JSONParser
+from yaml import load
 from yaml.nodes import MappingNode
 
 from authentik.blueprints.v1.common import BlueprintLoader, YAMLTag, yaml_key_map
@@ -65,6 +69,9 @@ class BlueprintJSONParser(JSONParser):
     """Wrapper around the rest_framework JSON parser that uses the `BlueprintJSONDecoder`"""
 
     def parse(self, stream, media_type=None, parser_context=None):
-        parser_context = parser_context or {}
-        parser_context["cls"] = BlueprintJSONDecoder
-        return super().parse(stream, media_type, parser_context)
+        encoding = parser_context.get("encoding", settings.DEFAULT_CHARSET)
+        try:
+            decoded_stream = codecs.getreader(encoding)(stream)
+            return load(decoded_stream, BlueprintJSONDecoder)
+        except ValueError as exc:
+            raise ParseError("JSON parse error") from exc

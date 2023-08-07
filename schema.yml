@@ -8483,14 +8483,21 @@ paths:
   /managed/blueprints/procedural/:
     put:
       operationId: managed_blueprints_procedural_update
-      description: Blueprint instances
+      description: |-
+        Run a client-provided blueprint once, as-is. Blueprint is not kept in memory/database
+        and will not be continuously applied
+      parameters:
+      - in: query
+        name: validate_only
+        schema:
+          type: boolean
       tags:
       - managed
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/BlueprintProceduralRequest'
+              $ref: '#/components/schemas/BlueprintRequest'
         required: true
       security:
       - authentik: []
@@ -8499,7 +8506,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BlueprintInstance'
+                $ref: '#/components/schemas/BlueprintProceduralResult'
           description: ''
         '400':
           content:
@@ -28008,11 +28015,17 @@ components:
         model:
           type: string
           minLength: 1
+        id:
+          type: string
+        identifiers:
+          type: object
+          additionalProperties: {}
         attrs:
           type: object
           additionalProperties: {}
       required:
       - attrs
+      - identifiers
       - model
     BlueprintFile:
       type: object
@@ -28115,7 +28128,23 @@ components:
         * `error` - Error
         * `orphaned` - Orphaned
         * `unknown` - Unknown
-    BlueprintProceduralRequest:
+    BlueprintProceduralResult:
+      type: object
+      description: Result of applying a procedural blueprint
+      properties:
+        valid:
+          type: boolean
+        applied:
+          type: boolean
+        logs:
+          type: array
+          items:
+            type: string
+      required:
+      - applied
+      - logs
+      - valid
+    BlueprintRequest:
       type: object
       description: Validate a procedural blueprint, which is a subset of a regular
         blueprint
@@ -28124,6 +28153,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BlueprintEntryRequest'
+        context:
+          type: object
+          additionalProperties: {}
       required:
       - entries
     Cache:

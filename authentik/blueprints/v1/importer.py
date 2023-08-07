@@ -242,6 +242,7 @@ class Importer:
 
     def apply(self) -> bool:
         """Apply (create/update) models yaml, in database transaction"""
+        self.logger.debug("Starting blueprint import")
         try:
             with transaction.atomic():
                 if not self._apply_models():
