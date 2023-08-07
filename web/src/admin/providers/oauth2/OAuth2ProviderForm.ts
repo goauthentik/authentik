@@ -247,11 +247,10 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
 
                     <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                         <ak-crypto-certificate-search
-                            certificate=${ifDefined(provider?.signingKey ?? nothing)}
                             name="certificate"
+                            certificate=${ifDefined(this.instance?.signingKey ?? undefined)}
                             singleton
-                        >
-                        </ak-crypto-certificate-search>
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
                     </ak-form-element-horizontal>
                 </div>

@@ -1,3 +1,4 @@
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-source-flow-search";
 import { iconHelperText, placeholderHelperText } from "@goauthentik/admin/helperText";
 import { UserMatchingModeToLabel } from "@goauthentik/admin/sources/oauth/utils";
@@ -18,9 +19,6 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     BindingTypeEnum,
     CapabilitiesEnum,
-    CertificateKeyPair,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
     DigestAlgorithmEnum,
     FlowsInstancesListDesignationEnum,
     NameIdPolicyEnum,
@@ -274,35 +272,9 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         </ak-radio>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Signing keypair")} name="signingKp">
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.signingKp;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            certificate=${this.instance?.signingKp}
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Keypair which is used to sign outgoing requests. Leave empty to disable signing.",
@@ -313,34 +285,10 @@ export class SAMLSourceForm extends ModelForm<SAMLSource, string> {
                         label=${msg("Verification Certificate")}
                         name="verificationKp"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.verificationKp;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            certificate=${this.instance?.verificationKp}
+                            nokey
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
