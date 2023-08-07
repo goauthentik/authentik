@@ -4587,17 +4587,21 @@ paths:
       - in: query
         name: type
         schema:
-          type: string
-          enum:
-          - external
-          - internal
-          - internal_service_account
-          - service_account
+          type: array
+          items:
+            type: string
+            enum:
+            - external
+            - internal
+            - internal_service_account
+            - service_account
         description: |-
           * `internal` - Internal
           * `external` - External
           * `service_account` - Service Account
           * `internal_service_account` - Internal Service Account
+        explode: true
+        style: form
       - in: query
         name: username
         schema:
@@ -17070,6 +17074,7 @@ paths:
           - br
           - bs
           - ca
+          - ckb
           - cs
           - cy
           - da
@@ -32965,30 +32970,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33000,30 +32982,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33035,30 +32994,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33070,30 +33006,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33105,30 +33018,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33140,30 +33030,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33175,30 +33042,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33210,30 +33054,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33245,30 +33066,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33280,30 +33078,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33315,30 +33090,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33350,30 +33102,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33385,30 +33114,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33420,30 +33126,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33455,30 +33138,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33490,30 +33150,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33525,30 +33162,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33560,30 +33174,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33595,30 +33186,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33630,30 +33198,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33665,30 +33210,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33700,30 +33222,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33735,30 +33234,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33770,30 +33246,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33805,30 +33258,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33840,30 +33270,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33875,30 +33282,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33910,30 +33294,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33945,30 +33306,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -33980,30 +33318,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34015,30 +33330,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34050,30 +33342,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34085,30 +33354,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34120,30 +33366,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34155,30 +33378,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34190,30 +33390,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34225,30 +33402,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34260,30 +33414,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34295,30 +33426,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34330,30 +33438,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34365,30 +33450,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34400,30 +33462,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34435,30 +33474,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34470,30 +33486,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34505,30 +33498,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34540,30 +33510,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34575,30 +33522,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34610,30 +33534,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34645,30 +33546,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34680,30 +33558,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34715,30 +33570,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34750,30 +33582,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34785,30 +33594,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34820,30 +33606,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34855,30 +33618,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34890,30 +33630,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34925,30 +33642,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34960,30 +33654,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -34995,30 +33666,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35030,30 +33678,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35065,30 +33690,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35100,30 +33702,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35135,30 +33714,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35170,30 +33726,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35205,30 +33738,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35240,30 +33750,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35275,30 +33762,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35310,30 +33774,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35345,30 +33786,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35380,30 +33798,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35415,30 +33810,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35450,30 +33822,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35485,30 +33834,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35520,30 +33846,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35555,30 +33858,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35590,30 +33870,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35625,30 +33882,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35660,30 +33894,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35695,30 +33906,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35730,30 +33918,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35765,30 +33930,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35800,30 +33942,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35835,30 +33954,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35866,6 +33962,31 @@ components:
       required:
       - pagination
       - results
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - next
+      - previous
+      - count
+      - current
+      - total_pages
+      - start_index
+      - end_index
     PasswordChallenge:
       type: object
       description: Password challenge UI fields

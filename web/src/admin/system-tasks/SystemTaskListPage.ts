@@ -49,6 +49,8 @@ export class SystemTaskListPage extends TablePage<Task> {
                     startIndex: 1,
                     endIndex: tasks.length,
                     current: page,
+                    next: 0,
+                    previous: 0,
                 },
                 results: tasks,
             };
