@@ -73,9 +73,6 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
             // value.  We'll do that ourselves.
             ev.stopPropagation();
             ev.preventDefault();
-            if (this.value === option.value) {
-                return;
-            }
             this.value = option.value;
             this.dispatchCustomEvent("change", option.value);
             this.dispatchCustomEvent("input", option.value);
