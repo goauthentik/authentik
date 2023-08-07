@@ -14,7 +14,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.api.decorators import permission_required
 from authentik.blueprints.models import BlueprintInstance
 from authentik.blueprints.v1.common import Blueprint, BlueprintEntry, BlueprintEntryDesiredState
-from authentik.blueprints.v1.importer import StringImporter, is_model_allowed
+from authentik.blueprints.v1.importer import YAMLStringImporter, is_model_allowed
 from authentik.blueprints.v1.json_parser import BlueprintJSONParser
 from authentik.blueprints.v1.oci import OCI_PREFIX
 from authentik.blueprints.v1.tasks import apply_blueprint, blueprints_find_dict
@@ -52,7 +52,7 @@ class BlueprintInstanceSerializer(ModelSerializer):
         if content == "":
             return content
         context = self.instance.context if self.instance else {}
-        valid, logs = StringImporter(content, context).validate()
+        valid, logs = YAMLStringImporter(content, context).validate()
         if not valid:
             text_logs = "\n".join([x["event"] for x in logs])
             raise ValidationError(_("Failed to validate blueprint: %(logs)s" % {"logs": text_logs}))

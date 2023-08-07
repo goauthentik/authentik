@@ -1,6 +1,7 @@
 """Blueprint importer"""
 from contextlib import contextmanager
 from copy import deepcopy
+from json import loads
 from typing import Any, Optional
 
 from dacite.config import Config
@@ -27,6 +28,7 @@ from authentik.blueprints.v1.common import (
     BlueprintLoader,
     EntryInvalidError,
 )
+from authentik.blueprints.v1.json_parser import BlueprintJSONDecoder
 from authentik.blueprints.v1.meta.registry import BaseMetaModel, registry
 from authentik.core.models import (
     AuthenticatedSession,
@@ -330,11 +332,25 @@ class Importer:
         return successful, logs
 
 
-class StringImporter(Importer):
-    """Importer that also parses from string"""
+class YAMLStringImporter(Importer):
+    """Importer that also parses from YAML string"""
 
     def __init__(self, yaml_input: str, context: dict | None = None):
         import_dict = load(yaml_input, BlueprintLoader)
+        try:
+            _import = from_dict(
+                Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
+            )
+        except DaciteError as exc:
+            raise EntryInvalidError from exc
+        super().__init__(_import, context)
+
+
+class JSONStringImporter(Importer):
+    """Importer that also parses from JSON string"""
+
+    def __init__(self, json_import: str, context: dict | None = None):
+        import_dict = loads(json_import, cls=BlueprintJSONDecoder)
         try:
             _import = from_dict(
                 Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
