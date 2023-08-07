@@ -1,7 +1,6 @@
 """Blueprint importer"""
 from contextlib import contextmanager
 from copy import deepcopy
-from json import loads
 from typing import Any, Optional
 
 from dacite.config import Config
@@ -350,7 +349,7 @@ class JSONStringImporter(Importer):
     """Importer that also parses from JSON string"""
 
     def __init__(self, json_import: str, context: dict | None = None):
-        import_dict = loads(json_import, cls=BlueprintJSONDecoder)
+        import_dict = load(json_import, BlueprintJSONDecoder)
         try:
             _import = from_dict(
                 Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
