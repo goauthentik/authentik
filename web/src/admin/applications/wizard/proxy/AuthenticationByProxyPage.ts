@@ -21,11 +21,11 @@ import {
     SourcesApi,
 } from "@goauthentik/api";
 
-import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
+import ApplicationWizardProviderPageBase from "../ApplicationWizardProviderPageBase";
 
 type MaybeTemplateResult = TemplateResult | typeof nothing;
 
-export class AkTypeProxyApplicationWizardPage extends ApplicationWizardPageBase {
+export class AkTypeProxyApplicationWizardPage extends ApplicationWizardProviderPageBase {
     constructor() {
         super();
         new PropertymappingsApi(DEFAULT_CONFIG)
@@ -42,21 +42,6 @@ export class AkTypeProxyApplicationWizardPage extends ApplicationWizardPageBase 
             .then((oauthSources: PaginatedOAuthSourceList) => {
                 this.oauthSources = oauthSources;
             });
-    }
-
-    handleChange(ev: InputEvent) {
-        if (!ev.target) {
-            console.warn(`Received event with no target: ${ev}`);
-            return;
-        }
-        const target = ev.target as HTMLInputElement;
-        const value = target.type === "checkbox" ? target.checked : target.value;
-        this.dispatchWizardUpdate({
-            provider: {
-                ...this.wizard.provider,
-                [target.name]: value,
-            },
-        });
     }
 
     propertyMappings?: PaginatedScopeMappingList;
@@ -111,6 +96,7 @@ export class AkTypeProxyApplicationWizardPage extends ApplicationWizardPageBase 
                 required
                 label=${msg("Name")}
             ></ak-text-input>
+
             <ak-form-element-horizontal
                 label=${msg("Authentication flow")}
                 ?required=${false}
@@ -125,6 +111,7 @@ export class AkTypeProxyApplicationWizardPage extends ApplicationWizardPageBase 
                     ${msg("Flow used when a user access this provider and is not authenticated.")}
                 </p>
             </ak-form-element-horizontal>
+
             <ak-form-element-horizontal
                 label=${msg("Authorization flow")}
                 ?required=${true}
@@ -157,6 +144,7 @@ export class AkTypeProxyApplicationWizardPage extends ApplicationWizardPageBase 
                             certificate=${ifDefined(this.instance?.certificate ?? undefined)}
                         ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
+
                     <ak-form-element-horizontal
                         label=${msg("Additional scopes")}
                         name="propertyMappings"
@@ -187,6 +175,7 @@ export class AkTypeProxyApplicationWizardPage extends ApplicationWizardPageBase 
                             ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
+
                     <ak-textarea-input
                         name="skipPathRegex"
                         label=${this.mode === ProxyMode.ForwardDomain

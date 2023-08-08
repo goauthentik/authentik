@@ -15,76 +15,26 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { html, nothing } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { FlowsInstancesListDesignationEnum, LDAPAPIAccessMode } from "@goauthentik/api";
+import { FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 import type { LDAPProvider } from "@goauthentik/api";
 
-import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
-
-const bindModeOptions = [
-    {
-        label: msg("Cached binding"),
-        value: LDAPAPIAccessMode.Cached,
-        default: true,
-        description: html`${msg(
-            "Flow is executed and session is cached in memory. Flow is executed when session expires",
-        )}`,
-    },
-    {
-        label: msg("Direct binding"),
-        value: LDAPAPIAccessMode.Direct,
-        description: html`${msg(
-            "Always execute the configured bind flow to authenticate the user",
-        )}`,
-    },
-];
-
-const searchModeOptions = [
-    {
-        label: msg("Cached querying"),
-        value: LDAPAPIAccessMode.Cached,
-        default: true,
-        description: html`${msg(
-            "The outpost holds all users and groups in-memory and will refresh every 5 Minutes",
-        )}`,
-    },
-    {
-        label: msg("Direct querying"),
-        value: LDAPAPIAccessMode.Direct,
-        description: html`${msg(
-            "Always returns the latest data, but slower than cached querying",
-        )}`,
-    },
-];
-
-const groupHelp = msg(
-    "Users in the selected group can do search queries. If no group is selected, no LDAP Searches are allowed.",
-);
-
-const mfaSupportHelp = msg(
-    "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.",
-);
+import ApplicationWizardProviderPageBase from "../ApplicationWizardProviderPageBase";
+import {
+    bindModeOptions,
+    cryptoCertificateHelp,
+    gidStartNumberHelp,
+    groupHelp,
+    mfaSupportHelp,
+    searchModeOptions,
+    tlsServerNameHelp,
+    uidStartNumberHelp,
+} from "./LDAPOptionsAndHelp";
 
 @customElement("ak-application-wizard-authentication-by-ldap")
-export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBase {
-    handleChange(ev: InputEvent) {
-        if (!ev.target) {
-            console.warn(`Received event with no target: ${ev}`);
-            return;
-        }
-        const target = ev.target as HTMLInputElement;
-        const value = target.type === "checkbox" ? target.checked : target.value;
-        this.dispatchWizardUpdate({
-            provider: {
-                ...this.wizard.provider,
-                [target.name]: value,
-            },
-        });
-    }
-
+export class ApplicationWizardApplicationDetails extends ApplicationWizardProviderPageBase {
     render() {
         const provider = this.wizard.provider as LDAPProvider | undefined;
 
-        // prettier-ignore
         return html` <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
             <ak-text-input
                 name="name"
@@ -149,12 +99,9 @@ export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBa
                         name="baseDn"
                         label=${msg("Base DN")}
                         required
-                        value="${first(
-                            provider?.baseDn,
-                            "DC=ldap,DC=goauthentik,DC=io"
-                        )}"
+                        value="${first(provider?.baseDn, "DC=ldap,DC=goauthentik,DC=io")}"
                         help=${msg(
-                            "LDAP DN under which bind requests and search requests can be made."
+                            "LDAP DN under which bind requests and search requests can be made.",
                         )}
                     >
                     </ak-text-input>
@@ -165,11 +112,7 @@ export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBa
                             name="certificate"
                         >
                         </ak-crypto-certificate-search>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "The certificate for the above configured Base DN. As a fallback, the provider uses a self-signed certificate."
-                            )}
-                        </p>
+                        <p class="pf-c-form__helper-text">${cryptoCertificateHelp}</p>
                     </ak-form-element-horizontal>
 
                     <ak-text-input
@@ -177,9 +120,7 @@ export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBa
                         required
                         name="tlsServerName"
                         value="${first(provider?.tlsServerName, "")}"
-                        help=${msg(
-                            "DNS name for which the above configured certificate should be used. The certificate cannot be detected based on the base DN, as the SSL/TLS negotiation happens before such data is exchanged."
-                        )}
+                        help=${tlsServerNameHelp}
                     ></ak-text-input>
 
                     <ak-number-input
@@ -187,9 +128,7 @@ export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBa
                         required
                         name="uidStartNumber"
                         value="${first(provider?.uidStartNumber, 2000)}"
-                        help=${msg(
-                            "The start for uidNumbers, this number is added to the user.Pk to make sure that the numbers aren't too low for POSIX users. Default is 2000 to ensure that we don't collide with local users uidNumber"
-                        )}
+                        help=${uidStartNumberHelp}
                     ></ak-number-input>
 
                     <ak-number-input
@@ -197,9 +136,7 @@ export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBa
                         required
                         name="gidStartNumber"
                         value="${first(provider?.gidStartNumber, 4000)}"
-                        help=${msg(
-                            "The start for gidNumbers, this number is added to a number generated from the group.Pk to make sure that the numbers aren't too low for POSIX groups. Default is 4000 to ensure that we don't collide with local groups or users primary groups gidNumber"
-                        )}
+                        help=${gidStartNumberHelp}
                     ></ak-number-input>
                 </div>
             </ak-form-group>

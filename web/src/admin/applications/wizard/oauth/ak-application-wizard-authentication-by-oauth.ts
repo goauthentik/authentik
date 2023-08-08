@@ -33,10 +33,10 @@ import type {
     PaginatedScopeMappingList,
 } from "@goauthentik/api";
 
-import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
+import ApplicationWizardProviderPageBase from "../ApplicationWizardProviderPageBase";
 
 @customElement("ak-application-wizard-authentication-by-oauth")
-export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPageBase {
+export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardProviderPageBase {
     @state()
     showClientSecret = false;
 
@@ -66,25 +66,9 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
             });
     }
 
-    handleChange(ev: InputEvent) {
-        if (!ev.target) {
-            console.warn(`Received event with no target: ${ev}`);
-            return;
-        }
-        const target = ev.target as HTMLInputElement;
-        const value = target.type === "checkbox" ? target.checked : target.value;
-        this.dispatchWizardUpdate({
-            provider: {
-                ...this.wizard.provider,
-                [target.name]: value,
-            },
-        });
-    }
-
     render() {
         const provider = this.wizard.provider as OAuth2Provider | undefined;
 
-        // prettier-ignore
         return html`<form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
             <ak-text-input
                 name="name"
@@ -106,6 +90,7 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
                     ${msg("Flow used when a user access this provider and is not authenticated.")}
                 </p>
             </ak-form-element-horizontal>
+
             <ak-form-element-horizontal
                 name="authorizationFlow"
                 label=${msg("Authorization flow")}
@@ -135,26 +120,29 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
                         .options=${clientTypeOptions}
                     >
                     </ak-radio-input>
+
                     <ak-text-input
                         name="clientId"
                         label=${msg("Client ID")}
                         value="${first(
                             provider?.clientId,
-                            randomString(40, ascii_letters + digits)
+                            randomString(40, ascii_letters + digits),
                         )}"
                         required
                     >
                     </ak-text-input>
+
                     <ak-text-input
                         name="clientSecret"
                         label=${msg("Client Secret")}
                         value="${first(
                             provider?.clientSecret,
-                            randomString(128, ascii_letters + digits)
+                            randomString(128, ascii_letters + digits),
                         )}"
                         ?hidden=${!this.showClientSecret}
                     >
                     </ak-text-input>
+
                     <ak-textarea-input
                         name="redirectUris"
                         label=${msg("Redirect URIs/Origins (RegEx)")}
@@ -189,6 +177,7 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
                             <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
                     </ak-text-input>
+
                     <ak-text-input
                         name="accessTokenValidity"
                         label=${msg("Access Token validity")}
@@ -212,6 +201,7 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
                             <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
                     </ak-text-input>
+
                     <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
                         <select class="pf-c-form-control" multiple>
                             ${this.propertyMappings?.results.map((scope) => {
@@ -219,14 +209,12 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
                                 if (!provider?.propertyMappings) {
                                     selected =
                                         scope.managed?.startsWith(
-                                            "goauthentik.io/providers/oauth2/scope-"
+                                            "goauthentik.io/providers/oauth2/scope-",
                                         ) || false;
                                 } else {
-                                    selected = Array.from(provider?.propertyMappings).some(
-                                        (su) => {
-                                            return su == scope.pk;
-                                        }
-                                    );
+                                    selected = Array.from(provider?.propertyMappings).some((su) => {
+                                        return su == scope.pk;
+                                    });
                                 }
                                 return html`<option
                                     value=${ifDefined(scope.pk)}
@@ -238,13 +226,14 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "Select which scopes can be used by the client. The client still has to specify the scope to access the data."
+                                "Select which scopes can be used by the client. The client still has to specify the scope to access the data.",
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
                             ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
+
                     <ak-radio-input
                         name="subMode"
                         label=${msg("Subject mode")}
@@ -252,7 +241,7 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
                         .options=${subjectModeOptions}
                         .value=${provider?.subMode}
                         help=${msg(
-                            "Configure what data should be used as unique User Identifier. For most cases, the default should be fine."
+                            "Configure what data should be used as unique User Identifier. For most cases, the default should be fine.",
                         )}
                     >
                     </ak-radio-input>
@@ -260,7 +249,7 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
                         label=${msg("Include claims in id_token")}
                         ?checked=${first(provider?.includeClaimsInIdToken, true)}
                         help=${msg(
-                            "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint."
+                            "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
                         )}></ak-switch-input
                     >
                     <ak-radio-input
@@ -270,7 +259,7 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
                         .options=${issuerModeOptions}
                         .value=${provider?.issuerMode}
                         help=${msg(
-                            "Configure how the issuer field of the ID Token should be filled."
+                            "Configure how the issuer field of the ID Token should be filled.",
                         )}
                     >
                     </ak-radio-input>
@@ -296,7 +285,7 @@ export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardPag
                         </select>
                         <p class="pf-c-form__helper-text">
                             ${msg(
-                                "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider."
+                                "JWTs signed by certificates configured in the selected sources can be used to authenticate to this provider.",
                             )}
                         </p>
                         <p class="pf-c-form__helper-text">
