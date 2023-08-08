@@ -10,6 +10,7 @@ import "../ldap/ak-application-wizard-authentication-by-ldap";
 import "../oauth/ak-application-wizard-authentication-by-oauth";
 import "../proxy/ak-application-wizard-authentication-for-reverse-proxy";
 import "../proxy/ak-application-wizard-authentication-for-single-forward-proxy";
+import "../saml/ak-application-wizard-authentication-by-saml-configuration";
 import "./ak-application-context-display-for-test";
 import {
     dummyAuthenticationFlowsSearch,
@@ -19,6 +20,7 @@ import {
     dummyHasJwks,
     dummyPropertyMappings,
     dummyProviderTypesList,
+    dummySAMLProviderMappings,
 } from "./samples";
 
 const metadata: Meta<AkApplicationWizardApplicationDetails> = {
@@ -74,6 +76,13 @@ const metadata: Meta<AkApplicationWizardApplicationDetails> = {
                 status: 200,
                 response: dummyHasJwks,
             },
+            {
+                url: "/api/v3/propertymappings/saml/?ordering=saml_name",
+                method: "GET",
+                status: 200,
+                response: dummySAMLProviderMappings,
+            },
+            
         ],
     },
 };
@@ -158,6 +167,16 @@ export const ConfigureSingleForwardProxy = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-for-single-forward-proxy></ak-application-wizard-authentication-for-single-forward-proxy>
+            <hr />
+            <ak-application-context-display-for-test></ak-application-context-display-for-test>
+        </ak-application-wizard-context>`,
+    );
+};
+
+export const ConfigureSamlManually = () => {
+    return container(
+        html`<ak-application-wizard-context>
+            <ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>
             <hr />
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
         </ak-application-wizard-context>`,

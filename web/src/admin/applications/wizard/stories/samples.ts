@@ -251,6 +251,104 @@ export const dummyHasJwks = {
     results: [],
 };
 
+export const dummySAMLProviderMappings = {
+    "pagination": {
+        "next": 0,
+        "previous": 0,
+        "count": 7,
+        "current": 1,
+        "total_pages": 1,
+        "start_index": 1,
+        "end_index": 7
+    },
+    "results": [
+        {
+            "pk": "9f1f23b7-1956-4daa-b08b-338cab9b3953",
+            "managed": "goauthentik.io/providers/saml/uid",
+            "name": "authentik default SAML Mapping: User ID",
+            "expression": "return request.user.pk",
+            "component": "ak-property-mapping-saml-form",
+            "verbose_name": "SAML Property Mapping",
+            "verbose_name_plural": "SAML Property Mappings",
+            "meta_model_name": "authentik_providers_saml.samlpropertymapping",
+            "saml_name": "http://schemas.goauthentik.io/2021/02/saml/uid",
+            "friendly_name": null
+        },
+        {
+            "pk": "801b6328-bb0b-4ec6-b52c-f3dc7bb6ec7f",
+            "managed": "goauthentik.io/providers/saml/username",
+            "name": "authentik default SAML Mapping: Username",
+            "expression": "return request.user.username",
+            "component": "ak-property-mapping-saml-form",
+            "verbose_name": "SAML Property Mapping",
+            "verbose_name_plural": "SAML Property Mappings",
+            "meta_model_name": "authentik_providers_saml.samlpropertymapping",
+            "saml_name": "http://schemas.goauthentik.io/2021/02/saml/username",
+            "friendly_name": null
+        },
+        {
+            "pk": "27c4d370-658d-4acf-9f61-cfa6dd020b11",
+            "managed": "goauthentik.io/providers/saml/ms-windowsaccountname",
+            "name": "authentik default SAML Mapping: WindowsAccountname (Username)",
+            "expression": "return request.user.username",
+            "component": "ak-property-mapping-saml-form",
+            "verbose_name": "SAML Property Mapping",
+            "verbose_name_plural": "SAML Property Mappings",
+            "meta_model_name": "authentik_providers_saml.samlpropertymapping",
+            "saml_name": "http://schemas.microsoft.com/ws/2008/06/identity/claims/windowsaccountname",
+            "friendly_name": null
+        },
+        {
+            "pk": "757b185b-1c21-42b4-a2ee-04d6f7b655b3",
+            "managed": "goauthentik.io/providers/saml/groups",
+            "name": "authentik default SAML Mapping: Groups",
+            "expression": "for group in request.user.ak_groups.all():\n    yield group.name",
+            "component": "ak-property-mapping-saml-form",
+            "verbose_name": "SAML Property Mapping",
+            "verbose_name_plural": "SAML Property Mappings",
+            "meta_model_name": "authentik_providers_saml.samlpropertymapping",
+            "saml_name": "http://schemas.xmlsoap.org/claims/Group",
+            "friendly_name": null
+        },
+        {
+            "pk": "de67cee7-7c56-4c1d-9466-9ad0e0105092",
+            "managed": "goauthentik.io/providers/saml/email",
+            "name": "authentik default SAML Mapping: Email",
+            "expression": "return request.user.email",
+            "component": "ak-property-mapping-saml-form",
+            "verbose_name": "SAML Property Mapping",
+            "verbose_name_plural": "SAML Property Mappings",
+            "meta_model_name": "authentik_providers_saml.samlpropertymapping",
+            "saml_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress",
+            "friendly_name": null
+        },
+        {
+            "pk": "42a936a5-11a9-4442-8748-ec27a8ab9546",
+            "managed": "goauthentik.io/providers/saml/name",
+            "name": "authentik default SAML Mapping: Name",
+            "expression": "return request.user.name",
+            "component": "ak-property-mapping-saml-form",
+            "verbose_name": "SAML Property Mapping",
+            "verbose_name_plural": "SAML Property Mappings",
+            "meta_model_name": "authentik_providers_saml.samlpropertymapping",
+            "saml_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+            "friendly_name": null
+        },
+        {
+            "pk": "06bee8f0-e5b4-4ce8-959a-308ba0769917",
+            "managed": "goauthentik.io/providers/saml/upn",
+            "name": "authentik default SAML Mapping: UPN",
+            "expression": "return request.user.attributes.get('upn', request.user.email)",
+            "component": "ak-property-mapping-saml-form",
+            "verbose_name": "SAML Property Mapping",
+            "verbose_name_plural": "SAML Property Mappings",
+            "meta_model_name": "authentik_providers_saml.samlpropertymapping",
+            "saml_name": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/upn",
+            "friendly_name": null
+        }
+    ]
+}
+
 // prettier-ignore
 export const dummyProviderTypesList = [
     ["LDAP Provider", "ldapprovider", 
