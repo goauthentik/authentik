@@ -117,7 +117,7 @@
         "vite-tsconfig-paths": "^4.2.0"
     },
     "optionalDependencies": {
-        "@esbuild/darwin-arm64": "^0.18.19",
+        "@esbuild/darwin-arm64": "^0.18.20",
         "@esbuild/linux-amd64": "^0.18.11",
         "@esbuild/linux-arm64": "^0.18.20"
     }
