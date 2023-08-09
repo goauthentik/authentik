@@ -97,12 +97,12 @@ By giving users the flexibility to choose their own security measures and provid
 
 ## **FAQs**
 
-* What is the primary ethical dilemma in offering security measures like SSO separately?
-    * The main ethical issue is that customers may not fully understand the importance of security measures, or they might choose to ignore them due to cost considerations. This could expose them to security breaches.
-* How can SSO providers address these ethical dilemmas in authentication?
-    * authentik allows users to tailor-make their security measures, offers a wide range of protocols and services, and maintains transparency through its open-source nature. This approach empowers users to prioritize their security based on their needs and understanding.
-* How can companies strike a balance between security and convenience in authentication?
-    * Companies can strike a balance by educating customers on the importance of security measures, providing flexible and user-friendly security options, and maintaining transparency in their security practices.
+-   What is the primary ethical dilemma in offering security measures like SSO separately?
+    -   The main ethical issue is that customers may not fully understand the importance of security measures, or they might choose to ignore them due to cost considerations. This could expose them to security breaches.
+-   How can SSO providers address these ethical dilemmas in authentication?
+    -   authentik allows users to tailor-make their security measures, offers a wide range of protocols and services, and maintains transparency through its open-source nature. This approach empowers users to prioritize their security based on their needs and understanding.
+-   How can companies strike a balance between security and convenience in authentication?
+    -   Companies can strike a balance by educating customers on the importance of security measures, providing flexible and user-friendly security options, and maintaining transparency in their security practices.
 
 By prioritizing flexibility, versatility, and transparency, SSO providers can build solutions in which users can choose, understand, and control their own security measures. This approach mitigates the risk of misunderstanding or underestimating the importance of such measures, ensuring users aren't left vulnerable to security breaches.
 
