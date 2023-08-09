@@ -33,7 +33,7 @@ Finding the sweet spot between these two extremes isn't easy, but it is essentia
 
 The challenge lies in navigating the intertwined threads of convenience and security in a way that doesn't unravel the overall user experience or compromise the safety of user data. As we continue our journey on the digital tightrope, the quest for answers on crafting a solution that respects the ethical nuances of this process continues.
 
-### **Flexibility: tailor-made security measures**
+### Flexibility: tailor-made security measures
 
 In the heart of authentik's approach lies the ability for users to custom-fit their security measures. This is not a one-size-fits-all solution, but rather an opportunity for assessment and customization, in which users can prioritize security aspects that are crucial to their unique circumstances.
 
@@ -41,7 +41,7 @@ By offering such flexible configurations, authentik ensures that the control lie
 
 ### Versatility: diverse protocols and services
 
-With the digital world evolving at a lightning pace, the needs and requirements of users are also constantly changing. Authentik supports a multitude of protocols and services, displaying a level of versatility that caters to an extensive user base. From businesses with complex corporate structures to research, data and university centers, to individual users seeking straightforward solutions, authentik is equipped to handle almost all environments and protocols.
+With the digital world evolving at a lightning pace, the needs and requirements of users are also constantly changing. Authentik supports a multitude of protocols and services, providing a level of versatility that caters to an extensive user base. From businesses with complex corporate structures to research, data and university centers, to individual users seeking straightforward solutions, authentik is equipped to handle almost all environments and protocols.
 
 ### Transparency: the open-source advantage
 
@@ -85,17 +85,17 @@ Recognizing that every user has unique needs and levels of understanding when it
 
 Our emphasis on versatility ensures that authentik's platform can adapt to a wide array of situations and user requirements. Rather than pushing a one-size-fits-all security solution, authentik acknowledges that what works for one user may not work for another. This philosophy goes a long way in addressing one of the key ethical dilemmas in authentication: the balance between convenience and security.
 
-### **Empowering users through transparency**
+### Empowering users through transparency
 
 Another distinguishing aspect of authentik's approach is its commitment to transparency. As an open-source identity provider, authentik allows its users to peek under the hood and gain a clear understanding of how their security measures are implemented. This degree of transparency fosters trust and helps users make informed decisions about their digital security.
 
 This transparency is not only ethical but also empowering. It offers users the information they need to decide about their security, thereby addressing another dilemma: ensuring users understand the importance of security measures.
 
-### **Prioritizing user understanding and needs**
+### Prioritizing user understanding and needs
 
 By giving users the flexibility to choose their own security measures and providing them with a clear understanding of how these measures work, authentik empowers users to take control of their digital security. This user-centric approach is a practical solution to the ethical dilemma of user understanding and need.
 
-## **FAQs**
+## FAQs
 
 -   What is the primary ethical dilemma in offering security measures like SSO separately?
     -   The main ethical issue is that customers may not fully understand the importance of security measures, or they might choose to ignore them due to cost considerations. This could expose them to security breaches.
