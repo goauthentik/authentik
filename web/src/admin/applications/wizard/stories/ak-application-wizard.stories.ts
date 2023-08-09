@@ -11,6 +11,7 @@ import "../oauth/ak-application-wizard-authentication-by-oauth";
 import "../proxy/ak-application-wizard-authentication-for-reverse-proxy";
 import "../proxy/ak-application-wizard-authentication-for-single-forward-proxy";
 import "../saml/ak-application-wizard-authentication-by-saml-configuration";
+import "../saml/ak-application-wizard-authentication-by-saml-import";
 import "./ak-application-context-display-for-test";
 import {
     dummyAuthenticationFlowsSearch,
@@ -177,6 +178,17 @@ export const ConfigureSamlManually = () => {
     return container(
         html`<ak-application-wizard-context>
             <ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>
+            <hr />
+            <ak-application-context-display-for-test></ak-application-context-display-for-test>
+        </ak-application-wizard-context>`,
+    );
+};
+
+
+export const SamlImport = () => {
+    return container(
+        html`<ak-application-wizard-context>
+            <ak-application-wizard-authentication-by-saml-import></ak-application-wizard-authentication-by-saml-import>
             <hr />
             <ak-application-context-display-for-test></ak-application-context-display-for-test>
         </ak-application-wizard-context>`,
