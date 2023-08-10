@@ -69,7 +69,10 @@ module.exports = {
                         type: "doc",
                         id: "docs/templates/index",
                     },
-                    items: ["docs/templates/procedural"],
+                    items: [
+                        "docs/templates/procedural",
+                        "docs/templates/conceptual",
+                    ],
                 },
             ],
         },
