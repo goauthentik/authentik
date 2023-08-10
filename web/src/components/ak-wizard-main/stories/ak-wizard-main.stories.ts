@@ -3,9 +3,8 @@ import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
-import "../ak-wizard-main"
+import "../ak-wizard-main";
 import AkWizard from "../ak-wizard-main";
-
 import type { WizardStep } from "../types";
 import { makeWizardId } from "../types";
 
@@ -37,8 +36,6 @@ const container = (testItem: TemplateResult) =>
         ${testItem}
     </div>`;
 
-
-
 const dummySteps: WizardStep[] = [
     {
         id: makeWizardId("0"),
@@ -64,6 +61,6 @@ const dummySteps: WizardStep[] = [
 
 export const OnePageWizard = () => {
     return container(
-        html` <ak-wizard-main .steps=${dummySteps} prompt="Start the show!"></ak-wizard-main>`
+        html` <ak-wizard-main .steps=${dummySteps} prompt="Start the show!"></ak-wizard-main>`,
     );
 };

@@ -1,19 +1,19 @@
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 import "@goauthentik/components/ak-wizard-main";
 import { AKElement } from "@goauthentik/elements/Base";
+import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { provide } from "@lit-labs/context";
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
-import { property, customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { WizardState, WizardStateEvent } from "./types"
 import { steps } from "./ApplicationWizardSteps";
 import applicationWizardContext from "./ak-application-wizard-context-name";
+import { WizardState, WizardStateEvent } from "./types";
 
 // my-context.ts
 
@@ -37,7 +37,7 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
 
     @state()
     steps = steps;
-    
+
     @property({ type: Boolean })
     open = false;
 
@@ -83,7 +83,7 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
             method.disabled = false;
             this.steps = newSteps;
         }
-        
+
         this.wizardState = newWizardState;
     }
 

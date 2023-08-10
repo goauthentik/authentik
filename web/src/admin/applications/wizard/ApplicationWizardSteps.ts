@@ -1,10 +1,11 @@
 import { WizardStep, makeWizardId } from "@goauthentik/components/ak-wizard-main";
-import "./application/ak-application-wizard-application-details";
-import "./auth-method-choice/ak-application-wizard-authentication-method-choice";
-import "./auth-method/ak-application-wizard-authentication-method";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
+
+import "./application/ak-application-wizard-application-details";
+import "./auth-method-choice/ak-application-wizard-authentication-method-choice";
+import "./auth-method/ak-application-wizard-authentication-method";
 
 export const steps: WizardStep[] = [
     {
@@ -39,5 +40,5 @@ export const steps: WizardStep[] = [
         nextButtonLabel: msg("Submit"),
         backButtonLabel: msg("Back"),
         valid: true,
-    }
+    },
 ];

@@ -13,6 +13,7 @@ export class ApplicationWizardPageBase extends CustomEmitterElement(AKElement) {
         return AwadStyles;
     }
 
+    // @ts-expect-error
     @consume({ context: applicationWizardContext, subscribe: true })
     @state()
     public wizard!: WizardState;

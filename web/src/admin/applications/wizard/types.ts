@@ -24,4 +24,3 @@ export interface WizardState {
 }
 
 export type WizardStateEvent = WizardState & { target?: HTMLInputElement };
-

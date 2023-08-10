@@ -27,7 +27,7 @@ import type { WizardStep } from "./types";
  * @fires ak-wizard-nav - Tell the orchestrator what page the user wishes to move to. This is the
  * only event that causes this wizard to change its appearance.
  *
- * NOTE: The event name is configurable as an attribute.  
+ * NOTE: The event name is configurable as an attribute.
  *
  */
 

@@ -37,8 +37,8 @@ export class ApplicationWizardAuthenticationMethodChoice extends ApplicationWiza
                 type="radio"
                 name="type"
                 id="provider-${type.modelName}"
-value=${type.modelName}
-?checked=${type.modelName === method}
+                value=${type.modelName}
+                ?checked=${type.modelName === method}
                 @change=${this.handleChoice}
             />
             <label class="pf-c-radio__label" for="provider-${type.modelName}">${type.name}</label>

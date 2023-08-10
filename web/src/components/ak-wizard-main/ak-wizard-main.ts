@@ -9,8 +9,8 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "./ak-wizard-frame";
 import "./ak-wizard-context";
+import "./ak-wizard-frame";
 import type { WizardStep } from "./types";
 
 /**
@@ -42,7 +42,7 @@ export class AkWizardMain extends AKElement {
      * @attribute
      */
     @property({ type: String })
-    prompt = "Show Wizard"
+    prompt = "Show Wizard";
 
     /**
      * Mostly a control on the ModalButton that summons the wizard component.
@@ -76,7 +76,7 @@ export class AkWizardMain extends AKElement {
                     header=${this.header}
                     description=${ifDefined(this.description)}
                 >
-<button slot="trigger" class="pf-c-button pf-m-primary">${this.prompt}</button>
+                    <button slot="trigger" class="pf-c-button pf-m-primary">${this.prompt}</button>
                 </ak-wizard-frame>
             </ak-wizard-context>
         `;

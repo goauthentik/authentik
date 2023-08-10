@@ -9,8 +9,8 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "../ak-wizard-frame";
 import "../ak-wizard-context";
+import "../ak-wizard-frame";
 import type { WizardStep } from "../types";
 
 @customElement("ak-demo-wizard")

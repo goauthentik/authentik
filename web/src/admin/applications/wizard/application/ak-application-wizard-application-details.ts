@@ -16,7 +16,6 @@ import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
 
 @customElement("ak-application-wizard-application-details")
 export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBase {
-
     handleChange(ev: Event) {
         if (!ev.target) {
             console.warn(`Received event with no target: ${ev}`);
@@ -88,7 +87,5 @@ export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBa
         </form>`;
     }
 }
-
-
 
 export default ApplicationWizardApplicationDetails;
