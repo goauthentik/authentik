@@ -84,6 +84,7 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
             this.steps = newSteps;
         }
 
+        console.log(newWizardState);
         this.wizardState = newWizardState;
     }
 
