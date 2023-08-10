@@ -1,37 +1,38 @@
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
+import { consume } from "@lit-labs/context";
 import { msg } from "@lit/localize";
 import { customElement, property, state } from "@lit/reactive-element/decorators.js";
 import { html, nothing } from "lit";
-
-
 import { classMap } from "lit/directives/class-map.js";
-import { consume } from "@lit-labs/context"
+
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
-import type { WizardStep } from "./types";
 import { akWizardCurrentStepContextName } from "./akWizardCurrentStepContextName";
 import { akWizardStepsContextName } from "./akWizardStepsContextName";
+import type { WizardStep } from "./types";
 
 /**
- * AKWizard is a container for displaying Wizard pages.
+ * AKWizardFrame is the main container for displaying Wizard pages.
  *
- * AKWizard is one component of a total Wizard development environment.  It provides the header, titled
- * navigation sidebar, and bottom row button bar. It takes its cues about what to render from two
- * data structure, `this.steps: WizardStep[]`, which lists all the current steps *in order* and
+ * AKWizardFrame is one component of a total Wizard development environment. It provides the header,
+ * titled navigation sidebar, and bottom row button bar. It takes its cues about what to render from
+ * two data structure, `this.steps: WizardStep[]`, which lists all the current steps *in order* and
  * doesn't care otherwise about their structure, and `this.currentStep: WizardStep` which must be a
  * _reference_ to a member of `this.steps`.
  *
- * @element ak-wizard-2
+ * @element ak-wizard-frame
  *
  * @fires ak-wizard-nav - Tell the orchestrator what page the user wishes to move to. This is the
  * only event that causes this wizard to change its appearance.
  *
+ * NOTE: The event name is configurable as an attribute.  
+ *
  */
 
-@customElement("ak-wizard-2")
-export class AkWizard extends CustomEmitterElement(ModalButton) {
+@customElement("ak-wizard-frame")
+export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     static get styles() {
         return [...super.styles, PFWizard];
     }
@@ -47,9 +48,6 @@ export class AkWizard extends CustomEmitterElement(ModalButton) {
 
     @property()
     eventName: string = "ak-wizard-nav";
-
-    @property({ type: Boolean })
-    isValid = false;
 
     // @ts-expect-error
     @consume({ context: akWizardStepsContextName, subscribe: true })
@@ -134,7 +132,7 @@ export class AkWizard extends CustomEmitterElement(ModalButton) {
     renderFooter() {
         return html`
             <footer class="pf-c-wizard__footer">
-${this.currentStep.nextStep ? this.renderFooterNextButton() : nothing }
+                ${this.currentStep.nextStep ? this.renderFooterNextButton() : nothing}
                 ${this.currentStep.backStep ? this.renderFooterBackButton() : nothing}
                 ${this.canCancel ? this.renderFooterCancelButton() : nothing}
             </footer>
@@ -175,4 +173,4 @@ ${this.currentStep.nextStep ? this.renderFooterNextButton() : nothing }
     }
 }
 
-export default AkWizard;
+export default AkWizardFrame;

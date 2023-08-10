@@ -12,7 +12,7 @@ import { map } from "lit/directives/map.js";
 
 import type { TypeCreate } from "@goauthentik/api";
 
-import ApplicationWizardPageBase from "./ApplicationWizardPageBase";
+import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
 import providerTypesList from "./ak-application-wizard-authentication-method-choice.choices";
 
 @customElement("ak-application-wizard-authentication-method-choice")
@@ -29,13 +29,16 @@ export class ApplicationWizardAuthenticationMethodChoice extends ApplicationWiza
     }
 
     renderProvider(type: TypeCreate) {
+        const method = this.wizard.providerType;
+
         return html`<div class="pf-c-radio">
             <input
                 class="pf-c-radio__input"
                 type="radio"
                 name="type"
                 id="provider-${type.modelName}"
-                value=${type.modelName}
+value=${type.modelName}
+?checked=${type.modelName === method}
                 @change=${this.handleChoice}
             />
             <label class="pf-c-radio__label" for="provider-${type.modelName}">${type.name}</label>

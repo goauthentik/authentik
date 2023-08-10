@@ -3,16 +3,15 @@ import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
-import "../ak-wizard-2"
-import "./ak-demo-wizard";
-import AkWizard from "../ak-wizard-2";
+import "../ak-wizard-main"
+import AkWizard from "../ak-wizard-main";
 
 import type { WizardStep } from "../types";
 import { makeWizardId } from "../types";
 
 const metadata: Meta<AkWizard> = {
     title: "Components / Wizard / Basic",
-    component: "ak-wizard-2",
+    component: "ak-wizard-main",
     parameters: {
         docs: {
             description: {
@@ -36,8 +35,6 @@ const container = (testItem: TemplateResult) =>
         </style>
         <ak-message-container></ak-message-container>
         ${testItem}
-        <p>Messages received from the button:</p>
-        <ul id="action-button-message-pad" style="margin-top: 1em"></ul>
     </div>`;
 
 
@@ -67,6 +64,6 @@ const dummySteps: WizardStep[] = [
 
 export const OnePageWizard = () => {
     return container(
-        html` <ak-demo-wizard .steps=${dummySteps}></ak-demo-wizard>`
+        html` <ak-wizard-main .steps=${dummySteps} prompt="Start the show!"></ak-wizard-main>`
     );
 };

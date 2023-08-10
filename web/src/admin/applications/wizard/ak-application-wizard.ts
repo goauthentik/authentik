@@ -1,58 +1,43 @@
-import "@goauthentik/admin/applications/wizard/InitialApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/TypeApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/ldap/TypeLDAPApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/link/TypeLinkApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/oauth/TypeOAuthAPIApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/oauth/TypeOAuthApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/oauth/TypeOAuthCodeApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/oauth/TypeOAuthImplicitApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/proxy/TypeProxyApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/saml/TypeSAMLApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/saml/TypeSAMLConfigApplicationWizardPage";
-import "@goauthentik/admin/applications/wizard/saml/TypeSAMLImportApplicationWizardPage";
+import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import "@goauthentik/components/ak-wizard-main";
 import { AKElement } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/wizard/Wizard";
 
+import { provide } from "@lit-labs/context";
 import { msg } from "@lit/localize";
-import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { CSSResult, TemplateResult, html } from "lit";
-import { property } from "lit/decorators.js";
+import { property, customElement, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-/*
-const steps = [
-    {
-        name: msg("Application Details"),
-        view: () =>
-            html`<ak-application-wizard-application-details></ak-application-wizard-application-details>`,
-    },
-    {
-        name: msg("Authentication Method"),
-        view: () =>
-            html`<ak-application-wizard-authentication-choice></ak-application-wizard-authentication-choice>`,
-    },
-    {
-        name: msg("Authentication Details"),
-        view: () =>
-            html`<ak-application-wizard-authentication-details></ak-application-wizard-authentication-details>`,
-    },
-    {
-        name: msg("Save Application"),
-        view: () =>
-            html`<ak-application-wizard-application-commit></ak-application-wizard-application-commit>`,
-    },
-    ];
-    */
+import { WizardState, WizardStateEvent } from "./types"
+import { steps } from "./ApplicationWizardSteps";
+import applicationWizardContext from "./ak-application-wizard-context-name";
+
+// my-context.ts
 
 @customElement("ak-application-wizard")
-export class ApplicationWizard extends AKElement {
+export class ApplicationWizard extends CustomListenerElement(AKElement) {
     static get styles(): CSSResult[] {
         return [PFBase, PFButton, PFRadio];
     }
 
+    /**
+     * Providing a context at the root element
+     */
+    @provide({ context: applicationWizardContext })
+    @property({ attribute: false })
+    wizardState: WizardState = {
+        step: 0,
+        providerType: "",
+        application: {},
+        provider: {},
+    };
+
+    @state()
+    steps = steps;
+    
     @property({ type: Boolean })
     open = false;
 
@@ -67,23 +52,54 @@ export class ApplicationWizard extends AKElement {
         return Promise.resolve();
     };
 
+    constructor() {
+        super();
+        this.handleUpdate = this.handleUpdate.bind(this);
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.addCustomListener("ak-application-wizard-update", this.handleUpdate);
+    }
+
+    disconnectedCallback() {
+        this.removeCustomListener("ak-application-wizard-update", this.handleUpdate);
+        super.disconnectedCallback();
+    }
+
+    // And this is where all the special cases go...
+    handleUpdate(event: CustomEvent<WizardStateEvent>) {
+        delete event.detail.target;
+        const newWizardState: WizardState = event.detail;
+
+        // When the user sets the authentication method type, the corresponding authentication
+        // method page becomes available.
+        if (newWizardState.providerType !== "") {
+            const newSteps = [...this.steps];
+            const method = newSteps.find(({ id }) => id === "auth-method");
+            if (!method) {
+                throw new Error("Could not find Authentication Method page?");
+            }
+            method.disabled = false;
+            this.steps = newSteps;
+        }
+        
+        this.wizardState = newWizardState;
+    }
+
     render(): TemplateResult {
         return html`
-            <ak-wizard
-                .open=${this.open}
-                .steps=${["ak-application-wizard-initial", "ak-application-wizard-type"]}
+            <ak-wizard-main
+                .steps=${this.steps}
                 header=${msg("New application")}
                 description=${msg("Create a new application.")}
-                .finalHandler=${() => {
-                    return this.finalHandler();
-                }}
             >
                 ${this.showButton
                     ? html`<button slot="trigger" class="pf-c-button pf-m-primary">
                           ${this.createText}
                       </button>`
                     : html``}
-            </ak-wizard>
+            </ak-wizard-main>
         `;
     }
 }

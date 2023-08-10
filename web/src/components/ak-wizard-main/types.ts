@@ -18,7 +18,3 @@ export interface WizardStep {
     backButtonLabel?: string
 }
 
-export enum WizardStepEvent {
-    next = "next",
-    back = "back"
-}

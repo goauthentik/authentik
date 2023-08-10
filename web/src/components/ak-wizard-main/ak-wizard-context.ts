@@ -9,6 +9,15 @@ import { WizardStepEvent, } from "./types";
 import { akWizardCurrentStepContextName } from "./akWizardCurrentStepContextName";
 import { akWizardStepsContextName } from "./akWizardStepsContextName";
 
+/**
+ * AkWizardContext
+ *
+ * @element ak-wizard-context
+ *
+ * The WizardContext controls the navigation for the wizard. It listens for navigation events from
+ * the wizard frame and responds with changes to the view, including handling the close button.
+ *
+ */
 
 @customElement("ak-wizard-context") 
 export class AkWizardContext extends CustomListenerElement(LitElement) {
@@ -39,6 +48,11 @@ export class AkWizardContext extends CustomListenerElement(LitElement) {
 
     // Note that we always scan for the valid next step and throw an error if we can't find it.
     // There should never be a question that the currentStep is a *valid* step.
+    //
+    // TODO: Put a phase in there so that the current step can validate the contents asynchronously
+    // before setting the currentStep. Especially since setting the currentStep triggers a second
+    // asynchronous event-- scheduling a re-render of everything interested in the currentStep
+    // object.
     handleNavigation(event: CustomEvent<{ step: WizardStepId | WizardStepEvent }>) {
         const requestedStep = event.detail.step;
         if (!requestedStep) {

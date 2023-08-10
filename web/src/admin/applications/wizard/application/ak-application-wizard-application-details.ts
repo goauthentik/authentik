@@ -12,10 +12,11 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import ApplicationWizardPageBase from "./ApplicationWizardPageBase";
+import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
 
 @customElement("ak-application-wizard-application-details")
 export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBase {
+
     handleChange(ev: Event) {
         if (!ev.target) {
             console.warn(`Received event with no target: ${ev}`);
@@ -87,5 +88,7 @@ export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBa
         </form>`;
     }
 }
+
+
 
 export default ApplicationWizardApplicationDetails;

@@ -1,11 +1,11 @@
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 
-import ApplicationWizardPageBase from "./ApplicationWizardPageBase";
-import { providerRendererList } from "./ak-application-wizard-authentication-method-choice.choices";
-import "./ldap/ak-application-wizard-authentication-by-ldap";
-import "./oauth/ak-application-wizard-authentication-by-oauth";
-import "./proxy/ak-application-wizard-authentication-for-reverse-proxy";
-import "./proxy/ak-application-wizard-authentication-for-single-forward-proxy";
+import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
+import { providerRendererList } from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
+import "../ldap/ak-application-wizard-authentication-by-ldap";
+import "../oauth/ak-application-wizard-authentication-by-oauth";
+import "../proxy/ak-application-wizard-authentication-for-reverse-proxy";
+import "../proxy/ak-application-wizard-authentication-for-single-forward-proxy";
 
 // prettier-ignore
 
