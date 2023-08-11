@@ -21,11 +21,11 @@ import {
     SourcesApi,
 } from "@goauthentik/api";
 
-import ApplicationWizardProviderPageBase from "../ApplicationWizardProviderPageBase";
+import BaseProviderPanel from "../BaseProviderPanel";
 
 type MaybeTemplateResult = TemplateResult | typeof nothing;
 
-export class AkTypeProxyApplicationWizardPage extends ApplicationWizardProviderPageBase {
+export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
     constructor() {
         super();
         new PropertymappingsApi(DEFAULT_CONFIG)

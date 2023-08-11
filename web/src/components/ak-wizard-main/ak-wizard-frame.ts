@@ -63,6 +63,20 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
         this.open = false;
     }
 
+    get maxStep() {
+        return this.steps.length - 1;
+    }
+
+    get nextStep() {
+        const idx = this.steps.findIndex((step) => step === this.currentStep);
+        return idx < this.maxStep ? this.steps[idx + 1] : undefined;
+    }
+
+    get backStep() {
+        const idx = this.steps.findIndex((step) => step === this.currentStep);
+        return idx > 0 ? this.steps[idx - 1] : undefined;
+    }
+
     renderModalInner() {
         // prettier-ignore
         return html`<div class="pf-c-wizard">
@@ -134,32 +148,30 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     renderFooter() {
         return html`
             <footer class="pf-c-wizard__footer">
-                ${this.currentStep.nextStep ? this.renderFooterNextButton() : nothing}
-                ${this.currentStep.backStep ? this.renderFooterBackButton() : nothing}
+                ${this.nextStep ? this.renderFooterNextButton(this.nextStep) : nothing}
+                ${this.backStep ? this.renderFooterBackButton(this.backStep) : nothing}
                 ${this.canCancel ? this.renderFooterCancelButton() : nothing}
             </footer>
         `;
     }
 
-    renderFooterNextButton() {
+    renderFooterNextButton(nextStep: WizardStep) {
         return html`<button
             class="pf-c-button pf-m-primary"
             type="submit"
             ?disabled=${!this.currentStep.valid}
-            @click=${() =>
-                this.dispatchCustomEvent(this.eventName, { step: this.currentStep.nextStep })}
+            @click=${() => this.dispatchCustomEvent(this.eventName, { step: nextStep.id })}
         >
             ${this.currentStep.nextButtonLabel}
         </button>`;
     }
 
-    renderFooterBackButton() {
+    renderFooterBackButton(backStep: WizardStep) {
         return html`
             <button
                 class="pf-c-button pf-m-secondary"
                 type="button"
-                @click=${() =>
-                    this.dispatchCustomEvent(this.eventName, { step: this.currentStep.backStep })}
+                @click=${() => this.dispatchCustomEvent(this.eventName, { step: backStep.id })}
             >
                 ${this.currentStep.backButtonLabel}
             </button>

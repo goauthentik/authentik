@@ -1,15 +1,7 @@
 import { TemplateResult } from "lit";
 
-type PhantomType<Type, Data> = { _type: Type } & Data;
-
-export type WizardStepId = PhantomType<"WizardId", string>;
-
-export const makeWizardId = (id: string): WizardStepId => id as WizardStepId;
-
 export interface WizardStep {
-    id: WizardStepId;
-    nextStep?: WizardStepId;
-    backStep?: WizardStepId;
+    id: string;
     label: string;
     valid: boolean;
     renderer: () => TemplateResult;

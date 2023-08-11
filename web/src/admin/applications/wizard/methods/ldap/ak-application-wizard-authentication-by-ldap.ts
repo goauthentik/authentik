@@ -18,7 +18,7 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import { FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 import type { LDAPProvider } from "@goauthentik/api";
 
-import ApplicationWizardProviderPageBase from "../ApplicationWizardProviderPageBase";
+import BaseProviderPanel from "../BaseProviderPanel";
 import {
     bindModeOptions,
     cryptoCertificateHelp,
@@ -31,7 +31,7 @@ import {
 } from "./LDAPOptionsAndHelp";
 
 @customElement("ak-application-wizard-authentication-by-ldap")
-export class ApplicationWizardApplicationDetails extends ApplicationWizardProviderPageBase {
+export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
     render() {
         const provider = this.wizard.provider as LDAPProvider | undefined;
 

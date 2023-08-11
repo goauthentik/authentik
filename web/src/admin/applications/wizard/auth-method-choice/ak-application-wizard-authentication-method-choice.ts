@@ -12,11 +12,11 @@ import { map } from "lit/directives/map.js";
 
 import type { TypeCreate } from "@goauthentik/api";
 
-import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
+import BasePanel from "../BasePanel";
 import providerTypesList from "./ak-application-wizard-authentication-method-choice.choices";
 
 @customElement("ak-application-wizard-authentication-method-choice")
-export class ApplicationWizardAuthenticationMethodChoice extends ApplicationWizardPageBase {
+export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
     constructor() {
         super();
         this.handleChoice = this.handleChoice.bind(this);

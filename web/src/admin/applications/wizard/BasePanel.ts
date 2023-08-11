@@ -4,9 +4,10 @@ import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 import { consume } from "@lit-labs/context";
 import { query, state } from "@lit/reactive-element/decorators.js";
 
-import { styles as AwadStyles } from "./ApplicationWizardCss";
-import type { WizardState } from "./ak-application-wizard-context";
+import { styles as AwadStyles } from "./BasePanel.css";
+
 import { applicationWizardContext } from "./ak-application-wizard-context-name";
+import type { WizardState } from "./types";
 
 export class ApplicationWizardPageBase extends CustomEmitterElement(AKElement) {
     static get styles() {

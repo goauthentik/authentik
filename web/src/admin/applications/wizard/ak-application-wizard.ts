@@ -11,11 +11,14 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { steps } from "./ApplicationWizardSteps";
 import applicationWizardContext from "./ak-application-wizard-context-name";
+import { steps } from "./steps";
 import { WizardState, WizardStateEvent } from "./types";
 
 // my-context.ts
+
+// All this thing is doing is recording the input the user makes to the forms. It should NOT be
+// triggering re-renders; that's the wizard frame's jobs.
 
 @customElement("ak-application-wizard")
 export class ApplicationWizard extends CustomListenerElement(AKElement) {
@@ -38,19 +41,8 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
     @state()
     steps = steps;
 
-    @property({ type: Boolean })
-    open = false;
-
     @property()
-    createText = msg("Create");
-
-    @property({ type: Boolean })
-    showButton = true;
-
-    @property({ attribute: false })
-    finalHandler: () => Promise<void> = () => {
-        return Promise.resolve();
-    };
+    prompt = msg("Create");
 
     constructor() {
         super();
@@ -83,8 +75,6 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
             method.disabled = false;
             this.steps = newSteps;
         }
-
-        console.log(newWizardState);
         this.wizardState = newWizardState;
     }
 
@@ -94,12 +84,8 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
                 .steps=${this.steps}
                 header=${msg("New application")}
                 description=${msg("Create a new application.")}
+                prompt=${this.prompt}
             >
-                ${this.showButton
-                    ? html`<button slot="trigger" class="pf-c-button pf-m-primary">
-                          ${this.createText}
-                      </button>`
-                    : html``}
             </ak-wizard-main>
         `;
     }

@@ -12,10 +12,10 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { TemplateResult, html } from "lit";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import ApplicationWizardPageBase from "../ApplicationWizardPageBase";
+import BasePanel from "../BasePanel";
 
 @customElement("ak-application-wizard-application-details")
-export class ApplicationWizardApplicationDetails extends ApplicationWizardPageBase {
+export class ApplicationWizardApplicationDetails extends BasePanel {
     handleChange(ev: Event) {
         if (!ev.target) {
             console.warn(`Received event with no target: ${ev}`);

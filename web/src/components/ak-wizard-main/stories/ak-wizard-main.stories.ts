@@ -6,7 +6,6 @@ import { TemplateResult, html } from "lit";
 import "../ak-wizard-main";
 import AkWizard from "../ak-wizard-main";
 import type { WizardStep } from "../types";
-import { makeWizardId } from "../types";
 
 const metadata: Meta<AkWizard> = {
     title: "Components / Wizard / Basic",
@@ -38,22 +37,20 @@ const container = (testItem: TemplateResult) =>
 
 const dummySteps: WizardStep[] = [
     {
-        id: makeWizardId("0"),
+        id: "0",
         label: "Test Step1",
         renderer: () => html`<h2>This space intentionally left blank today</h2>`,
         disabled: false,
         valid: true,
-        nextStep: makeWizardId("1"),
         nextButtonLabel: "Next",
         backButtonLabel: undefined,
     },
     {
-        id: makeWizardId("1"),
+        id: "1",
         label: "Test Step 2",
         renderer: () => html`<h2>This space also intentionally left blank</h2>`,
         disabled: false,
         valid: true,
-        backStep: makeWizardId("0"),
         nextButtonLabel: undefined,
         backButtonLabel: "Back",
     },

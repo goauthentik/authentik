@@ -33,10 +33,10 @@ import type {
     PaginatedScopeMappingList,
 } from "@goauthentik/api";
 
-import ApplicationWizardProviderPageBase from "../ApplicationWizardProviderPageBase";
+import BaseProviderPanel from "../BaseProviderPanel";
 
 @customElement("ak-application-wizard-authentication-by-oauth")
-export class ApplicationWizardAuthenticationByOauth extends ApplicationWizardProviderPageBase {
+export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
     @state()
     showClientSecret = false;
 

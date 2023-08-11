@@ -1,5 +1,4 @@
 import "./ak-wizard-main";
-import type { WizardStep, WizardStepId } from "./types";
-import { makeWizardId } from "./types";
+import type { WizardStep } from "./types";
 
-export { WizardStepId, WizardStep, makeWizardId };
+export { WizardStep };

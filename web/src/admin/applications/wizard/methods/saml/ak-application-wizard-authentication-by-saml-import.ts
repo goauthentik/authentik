@@ -9,10 +9,10 @@ import { html } from "lit";
 
 import { FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 
-import ApplicationWizardProviderPageBase from "../ApplicationWizardProviderPageBase";
+import BaseProviderPanel from "../BaseProviderPanel";
 
 @customElement("ak-application-wizard-authentication-by-saml-import")
-export class ApplicationWizardProviderSamlImport extends ApplicationWizardProviderPageBase {
+export class ApplicationWizardProviderSamlImport extends BaseProviderPanel {
     render() {
         return html` <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
             <ak-text-input name="name" label=${msg("Name")} required></ak-text-input>

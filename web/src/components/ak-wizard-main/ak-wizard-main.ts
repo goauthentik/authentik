@@ -20,8 +20,11 @@ import type { WizardStep } from "./types";
  *
  * @element ak-wizard-main
  *
- * This is the entry point for the wizard.
- *
+ * This is the entry point for the wizard.  Its tasks are:
+ * - keep the collection of steps
+ * - maintain the open/close status of the modal
+ * - listens for navigation events
+ * - if a navigation event is valid, switch to the panel requested
  */
 
 @customElement("ak-wizard-main")

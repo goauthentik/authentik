@@ -1,6 +1,6 @@
-import ApplicationWizardPageBase from "./ApplicationWizardPageBase";
+import BasePanel from "../BasePanel";
 
-export class ApplicationWizardProviderPageBase extends ApplicationWizardPageBase {
+export class ApplicationWizardProviderPageBase extends BasePanel {
     handleChange(ev: InputEvent) {
         if (!ev.target) {
             console.warn(`Received event with no target: ${ev}`);

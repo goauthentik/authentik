@@ -21,7 +21,7 @@ import {
     SAMLProvider,
 } from "@goauthentik/api";
 
-import ApplicationWizardProviderPageBase from "../ApplicationWizardProviderPageBase";
+import BaseProviderPanel from "../BaseProviderPanel";
 import {
     digestAlgorithmOptions,
     signatureAlgorithmOptions,
@@ -29,7 +29,7 @@ import {
 } from "./SamlProviderOptions";
 
 @customElement("ak-application-wizard-authentication-by-saml-configuration")
-export class ApplicationWizardProviderSamlConfiguration extends ApplicationWizardProviderPageBase {
+export class ApplicationWizardProviderSamlConfiguration extends BaseProviderPanel {
     propertyMappings?: PaginatedSAMLPropertyMappingList;
 
     constructor() {
