@@ -1,16 +1,18 @@
 import { AKElement } from "@goauthentik/elements/Base";
+import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
+import { provide } from "@lit-labs/context";
 import { html } from "lit";
-import { property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import "./ak-wizard-context";
 import "./ak-wizard-frame";
+import { akWizardCurrentStepContextName } from "./akWizardCurrentStepContextName";
+import { akWizardStepsContextName } from "./akWizardStepsContextName";
 import type { WizardStep } from "./types";
 
 /**
@@ -23,21 +25,39 @@ import type { WizardStep } from "./types";
  */
 
 @customElement("ak-wizard-main")
-export class AkWizardMain extends AKElement {
+export class AkWizardMain extends CustomListenerElement(AKElement) {
     static get styles() {
         return [PFBase, PFButton, PFRadio];
     }
+
+    @property()
+    eventName: string = "ak-wizard-nav";
 
     /**
      * The steps of the Wizard.
      *
      * @attribute
      */
+    @provide({ context: akWizardStepsContextName })
     @property({ attribute: false })
     steps: WizardStep[] = [];
 
     /**
-     * The text of the button
+     * The current step of the wizard.
+     *
+     * @attribute
+     */
+    @provide({ context: akWizardCurrentStepContextName })
+    @state()
+    currentStep!: WizardStep;
+
+    constructor() {
+        super();
+        this.handleNavigation = this.handleNavigation.bind(this);
+    }
+
+    /**
+     * The text of the modal button
      *
      * @attribute
      */
@@ -68,17 +88,58 @@ export class AkWizardMain extends AKElement {
     @property()
     description?: string;
 
+    // Guarantee that if the current step was not passed in by the client, that we know
+    // and set to the first step.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    willUpdate(_changedProperties: Map<string, any>) {
+        if (this.currentStep === undefined) {
+            this.currentStep = this.steps[0];
+        }
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.addCustomListener(this.eventName, this.handleNavigation);
+    }
+
+    disconnectedCallback() {
+        this.removeCustomListener(this.eventName, this.handleNavigation);
+        super.disconnectedCallback();
+    }
+
+    // Note that we always scan for the valid next step and throw an error if we can't find it.
+    // There should never be a question that the currentStep is a *valid* step.
+    //
+    // TODO: Put a phase in there so that the current step can validate the contents asynchronously
+    // before setting the currentStep. Especially since setting the currentStep triggers a second
+    // asynchronous event-- scheduling a re-render of everything interested in the currentStep
+    // object.
+    handleNavigation(event: CustomEvent<{ step: string }>) {
+        const requestedStep = event.detail.step;
+        if (!requestedStep) {
+            throw new Error("Request for next step when no next step is available");
+        }
+        const step = this.steps.find(({ id }) => id === requestedStep);
+        if (!step) {
+            throw new Error("Request for next step when no next step is available.");
+        }
+        if (step.disabled) {
+            throw new Error("Request for next step when the next step is disabled.");
+        }
+        this.currentStep = step;
+        return;
+    }
+
     render() {
         return html`
-            <ak-wizard-context .steps=${this.steps}>
-                <ak-wizard-frame
-                    ?open=${this.open}
-                    header=${this.header}
-                    description=${ifDefined(this.description)}
-                >
-                    <button slot="trigger" class="pf-c-button pf-m-primary">${this.prompt}</button>
-                </ak-wizard-frame>
-            </ak-wizard-context>
+            <ak-wizard-frame
+                ?open=${this.open}
+                header=${this.header}
+                description=${ifDefined(this.description)}
+                eventName=${this.eventName}
+            >
+                <button slot="trigger" class="pf-c-button pf-m-primary">${this.prompt}</button>
+            </ak-wizard-frame>
         `;
     }
 }

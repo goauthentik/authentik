@@ -123,6 +123,8 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
         `;
     }
 
+    // This is where the panel is shown. We expect the panel to get its information from an
+    // independent context.
     renderMainSection() {
         return html`<main class="pf-c-wizard__main">
             <div class="pf-c-wizard__main-body">${this.currentStep.renderer()}</div>
