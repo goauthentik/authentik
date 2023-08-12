@@ -1,0 +1,44 @@
+digraph G {
+    
+  subgraph cluster_pvno_check {
+    label = "pvno_check";
+    pvno_check_start -> pvno_check;
+    
+    pvno_check -> pvno_check_end [label="result=true",color=green];
+    pvno_check -> kerberos_error [label="result=false,error_code=KRB_ERR_PVNO",color=red];
+    
+    pvno_check_start [shape=Mdiamond];
+    pvno_check_end [shape=Msquare];
+  }
+
+  subgraph cluster_pa_enc_ts {
+    label="pa_enc_ts";
+
+	
+    pa_enc_ts_start -> has_pa_enc_ts;
+      
+    has_pa_enc_ts -> check_pa_enc_ts [label="result=true",color=green];
+    has_pa_enc_ts -> is_pa_required [label="result=false",color=red];
+      
+    is_pa_required -> kerberos_error [label="result=true,error_code=KRB_ERR_PA_REQUIRED",color=green];
+    is_pa_required -> pa_enc_ts_end [label="result=false,preauthenticated=false",color=red];
+    
+    check_pa_enc_ts -> pa_enc_ts_end [label="result=true,preauthenticated=true",color=green];
+    check_pa_enc_ts -> kerberos_error [label="result=false,error_code=KRB_ERR_PA_FAILED",color=red];
+    
+    pa_enc_ts_start [shape=Mdiamond];
+    pa_enc_ts_end [shape=Msquare];
+  }
+  
+  kerberos_error;contourcontour
+  
+  start -> pvno_check_start;
+  pvno_check_end -> pa_enc_ts_start;
+
+  
+
+  
+  start [shape=Mdiamond];
+  end [shape=Msquare];
+  kerberos_error [shape=Msquare];
+}

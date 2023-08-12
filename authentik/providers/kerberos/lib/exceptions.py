@@ -1,14 +1,13 @@
 """Kerberos exceptions"""
-from enum import UNIQUE, Enum, verify
+from enum import UNIQUE, IntEnum, verify
 from typing import Any
 
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
-from pyasn1.type import univ
 
 
 @verify(UNIQUE)
-class ErrorCode(Enum):
+class ErrorCode(IntEnum):
     """
     Kerberos error codes as defined by RFC 4120.
 
@@ -218,12 +217,12 @@ class KerberosError(Exception):
 
         error = {
             "pvno": protocol.KERBEROS_PVNO,
-            "msg-type": protocol.ApplicationTag.KRB_ERROR.value,
+            "msg-type": protocol.ApplicationTag.KRB_ERROR,
             "ctime": ctime,
             "cusec": cusec,
             "stime": now(),
             "susec": now().microsecond,
-            "error-code": self.code.value,
+            "error-code": self.code,
             "crealm": crealm,
             "cname": cname,
             "realm": handler.realm.realm_name,

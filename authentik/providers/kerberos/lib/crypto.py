@@ -646,7 +646,7 @@ SUPPORTED_CHECKSUMTYPES = SUPPORTED_ENCTYPES
 def get_enctype_from_value(value: int) -> Type[EncryptionType]:
     """Get an encryption type from it's IANA defined value."""
     for enctype in SUPPORTED_ENCTYPES:
-        if enctype.ENC_TYPE.value == value:
+        if enctype.ENC_TYPE == value:
             return enctype
     raise IndexError("No matching enctype found")
 
@@ -654,6 +654,6 @@ def get_enctype_from_value(value: int) -> Type[EncryptionType]:
 def get_checksumtype_from_value(value: int) -> Type[EncryptionType]:
     """Get a checksum type from it's IANA defined value."""
     for checksumtype in SUPPORTED_CHECKSUMTYPES:
-        if checksumtype.CHECKSUM_TYPE.value == value:
+        if checksumtype.CHECKSUM_TYPE == value:
             return checksumtype
     raise IndexError("No matching checksumtype found")

@@ -62,7 +62,7 @@ class TestKerberosProviderKeytab(APITestCase):
             )
             self.assertEqual(
                 entry.key.key,
-                self.provider.kerberoskeys.keys[get_enctype_from_value(entry.key.key_type.value)],
+                self.provider.kerberoskeys.keys[get_enctype_from_value(entry.key.key_type)],
             )
 
     def test_keytab_kvno_mod256(self) -> None:

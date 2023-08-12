@@ -112,7 +112,7 @@ class KerberosProviderViewSet(UsedByMixin, ModelViewSet):
     def enctypes(self, request):
         enctypes = []
         for enctype in SUPPORTED_ENCTYPES:
-            enctypes.append({"name": enctype.ENC_NAME, "id": enctype.ENC_TYPE.value})
+            enctypes.append({"name": enctype.ENC_NAME, "id": enctype.ENC_TYPE})
         serializer = EnctypeSerializer(enctypes, many=True)
         return Response(serializer.data)
 

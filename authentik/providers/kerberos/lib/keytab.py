@@ -27,7 +27,7 @@ class EncryptionKey:
 
     def to_bytes(self) -> bytes:
         """Export to bytes"""
-        return self.key_type.value.to_bytes(2, byteorder="big") + _to_bytes_with_length(self.key)
+        return self.key_type.to_bytes(2, byteorder="big") + _to_bytes_with_length(self.key)
 
     @classmethod
     def from_bytes(cls, data: bytes) -> Tuple[Self, bytes]:

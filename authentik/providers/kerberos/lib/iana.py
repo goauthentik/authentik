@@ -1,9 +1,9 @@
 """Kerberos IANA numbers"""
-from enum import UNIQUE, Enum, verify
+from enum import UNIQUE, IntEnum, verify
 
 
 @verify(UNIQUE)
-class EncryptionType(Enum):
+class EncryptionType(IntEnum):
     # pylint: disable=line-too-long
     """
     Kerberos encryption types as defined by IANA.
@@ -42,7 +42,7 @@ class EncryptionType(Enum):
 
 
 @verify(UNIQUE)
-class ChecksumType(Enum):
+class ChecksumType(IntEnum):
     # pylint: disable=line-too-long
     """
     Kerberos checksum types, as defined by IANA, and some others.
@@ -78,7 +78,7 @@ class ChecksumType(Enum):
     HMAC_MD5_ARCFOUR = -138  # RFC 4757
 
 
-class PreAuthenticationType(Enum):
+class PreAuthenticationType(IntEnum):
     # pylint: disable=line-too-long
     """
     Kerberos pre-authentication and Typed data, as defined by IANA.

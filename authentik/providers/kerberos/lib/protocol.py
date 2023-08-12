@@ -7,23 +7,21 @@ See https://www.rfc-editor.org/rfc/rfc4120#section-3
 """
 # pylint: disable=too-many-ancestors
 import socket
-
-from datetime import datetime, timezone
-from enum import UNIQUE, Enum, verify
-from typing import Any, Self
 from collections import UserDict
+from datetime import datetime, timezone
+from enum import UNIQUE, IntEnum, verify
+from typing import Any, Self
 
 from pyasn1.codec.der.decoder import decode as der_decode
 from pyasn1.codec.der.encoder import encode as der_encode
 from pyasn1.codec.native.decoder import decode as native_decode
 from pyasn1.codec.native.encoder import encode as native_encode
-
 from pyasn1.error import PyAsn1Error
 from pyasn1.type import base, char, constraint, namedtype, namedval, tag, univ, useful
 from structlog.stdlib import get_logger
 
-from authentik.providers.kerberos.lib.exceptions import KerberosError
 from authentik.providers.kerberos.lib import crypto
+from authentik.providers.kerberos.lib.exceptions import KerberosError
 
 LOGGER = get_logger()
 
@@ -32,7 +30,7 @@ KERBEROS_PVNO = 5
 
 
 @verify(UNIQUE)
-class KeyUsageNumbers(Enum):
+class KeyUsageNumbers(IntEnum):
     """Kerberos key usage numbers as defined by RFC 4120
 
     See https://www.rfc-editor.org/rfc/rfc4120#section-7.5.1
@@ -77,7 +75,7 @@ class KeyUsageNumbers(Enum):
 
 
 @verify(UNIQUE)
-class PrincipalNameType(Enum):
+class PrincipalNameType(IntEnum):
     """
     Kerberos principal name types as defined by RFC 4120 and RFC 6111.
 
@@ -108,7 +106,7 @@ class PrincipalNameType(Enum):
 
 
 @verify(UNIQUE)
-class ApplicationTag(Enum):
+class ApplicationTag(IntEnum):
     """
     Kerberos messages ASN.1 application tags as defined by RFC 4120 and RFC 6111.
 
@@ -143,7 +141,7 @@ class ApplicationTag(Enum):
 
 def _application_tag(tag_: ApplicationTag) -> tag.TagSet:
     return univ.Sequence.tagSet.tagExplicitly(
-        tag.Tag(tag.tagClassApplication, tag.tagFormatConstructed, tag_.value)
+        tag.Tag(tag.tagClassApplication, tag.tagFormatConstructed, tag_)
     )
 
 
@@ -333,7 +331,7 @@ class PrincipalName(Asn1SetValueMixin, Sequence):
     def from_components(cls, name_type: PrincipalNameType, name: list[str]) -> Self:
         """Create a principal name from name components."""
         obj = cls()
-        obj["name-type"] = name_type.value
+        obj["name-type"] = name_type
         obj["name-string"].extend(name)
         return obj
 
@@ -446,7 +444,7 @@ class PaDataEncTsEnc(Asn1LeafMixin, Sequence):
 class EncryptionType(Int32):
     def from_python(self, value: Any) -> Self:
         if issubclass(value, crypto.EncryptionType):
-            return native_decode(value.ENC_TYPE.value, self)
+            return native_decode(value.ENC_TYPE, self)
         return native_decode(value[0], self)
 
     def to_python(self):
@@ -551,7 +549,7 @@ class EncryptedDataWrapper(UserDict):
         self["cipher"] = etype.encrypt_message(
             key=key,
             message=asn1item.from_python(self["plain"]).to_bytes(),
-            usage=usage.value,
+            usage=usage,
         )
         return self["cipher"]
 
@@ -562,7 +560,7 @@ class EncryptedDataWrapper(UserDict):
         plaintext = etype.decrypt_message(
             key=key,
             ciphertext=self["cipher"],
-            usage=usage.value,
+            usage=usage,
         )
         self["plain"] = plain_cls.from_bytes(plaintext).to_python()
         return self["plain"]
@@ -745,7 +743,7 @@ class KdcReq(Asn1LeafMixin, Sequence):
             subtypeSpec=constraint.ConstraintsUnion(
                 *(
                     constraint.SingleValueConstraint(v)
-                    for v in [ApplicationTag.AS_REQ.value, ApplicationTag.TGS_REQ.value]
+                    for v in [ApplicationTag.AS_REQ, ApplicationTag.TGS_REQ]
                 )
             ),
         ),
@@ -791,7 +789,7 @@ class ApReq(Asn1SetValueMixin, Asn1LeafMixin, Sequence):
             1,
             univ.Integer(),
             subtypeSpec=constraint.ConstraintsUnion(
-                *(constraint.SingleValueConstraint(v) for v in [ApplicationTag.AP_REQ.value])
+                *(constraint.SingleValueConstraint(v) for v in [ApplicationTag.AP_REQ])
             ),
         ),
         _sequence_component("ap-options", 2, ApOptions()),
@@ -812,7 +810,7 @@ class KdcRep(Asn1SetValueMixin, Asn1LeafMixin, Sequence):
             subtypeSpec=constraint.ConstraintsUnion(
                 *(
                     constraint.SingleValueConstraint(v)
-                    for v in [ApplicationTag.AS_REP.value, ApplicationTag.TGS_REP.value]
+                    for v in [ApplicationTag.AS_REP, ApplicationTag.TGS_REP]
                 )
             ),
         ),
@@ -877,7 +875,7 @@ class KrbError(Asn1SetValueMixin, Asn1LeafMixin, Sequence):
             "msg-type",
             1,
             univ.Integer(),
-            subtypeSpec=constraint.SingleValueConstraint(ApplicationTag.KRB_ERROR.value),
+            subtypeSpec=constraint.SingleValueConstraint(ApplicationTag.KRB_ERROR),
         ),
         _sequence_optional_component("ctime", 2, KerberosTime()),
         _sequence_optional_component("cusec", 3, Microseconds()),

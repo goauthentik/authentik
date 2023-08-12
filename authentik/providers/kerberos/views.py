@@ -46,13 +46,14 @@ class KdcProxyView(View):
                 raise ValueError(
                     f"Mismatched message length: expected: {expected_length} got {len(message)}"
                 )
-            if "target-domain" not in proxy_message:
-                raise ValueError("Missing target-domain")
-            if proxy_message["target-domain"] != realm.realm_name:
-                raise ValueError(
-                    f"Mismatched realm name: expected: {realm.realm_name} got {proxy_message['target-domain']}"
-                )
-            handler = kdc.KdcReqMessageHandler.from_message(
+            # target-domain is optional, we probably shouldn't check for it
+            # if "target-domain" not in proxy_message:
+            #     raise ValueError("Missing target-domain")
+            # if proxy_message["target-domain"] != realm.realm_name:
+            #     raise ValueError(
+            #         f"Mismatched realm name: expected: {realm.realm_name} got {proxy_message['target-domain']}"
+            #     )
+            handler = kdc.handlers.KdcReqMessageHandler.from_message(
                 view=self,
                 message=message,
                 realm=realm,

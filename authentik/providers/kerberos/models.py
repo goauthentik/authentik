@@ -31,11 +31,11 @@ LOGGER = get_logger()
 
 def _get_kerberos_enctypes():
     """Get supported Kerberos encryption types as a model choices list"""
-    return [(enctype.ENC_TYPE.value, enctype.ENC_NAME) for enctype in SUPPORTED_ENCTYPES]
+    return [(enctype.ENC_TYPE, enctype.ENC_NAME) for enctype in SUPPORTED_ENCTYPES]
 
 
 def _get_default_enctypes():
-    return [enctype.ENC_TYPE.value for enctype in SUPPORTED_ENCTYPES]
+    return [enctype.ENC_TYPE for enctype in SUPPORTED_ENCTYPES]
 
 
 validate_spn = RegexValidator(
@@ -313,7 +313,7 @@ class KerberosKeys(models.Model):
             self.salt = salt
 
         self.keys_raw = {
-            str(enctype.ENC_TYPE.value): b64encode(
+            str(enctype.ENC_TYPE): b64encode(
                 enctype.string_to_key(
                     password=secret.encode(),
                     salt=self.salt.encode(),
