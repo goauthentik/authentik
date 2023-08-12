@@ -31,7 +31,9 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
         });
     }
 
+
     render(): TemplateResult {
+        console.log("HUH?");
         return html` <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
             <ak-text-input
                 name="name"

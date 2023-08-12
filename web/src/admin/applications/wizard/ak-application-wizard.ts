@@ -30,7 +30,6 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
      * Providing a context at the root element
      */
     @provide({ context: applicationWizardContext })
-    @property({ attribute: false })
     wizardState: WizardState = {
         step: 0,
         providerType: "",

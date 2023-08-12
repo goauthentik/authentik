@@ -17,14 +17,22 @@ export class ApplicationWizardPageBase extends CustomEmitterElement(AKElement) {
     @query("form")
     form!: HTMLFormElement;
 
+    rendered = false;
+
     // @ts-expect-error
-    @consume({ context: applicationWizardContext, subscribe: true })
-    @state()
+    @consume({ context: applicationWizardContext })
     public wizard!: WizardState;
 
+    shouldUpdate(changedProperties: Map<string, any>) {
+        if (!this.rendered) {
+            this.rendered = true;
+            return true;
+        }
+        return (changedProperties.size !== 0)
+    }
+    
     dispatchWizardUpdate(update: Partial<WizardState>) {
         // TODO: Incorporate this into the message heading upward: "the current step is valid."
-        console.log(this.form.reportValidity());
 
         this.dispatchCustomEvent("ak-application-wizard-update", {
             ...this.wizard,
