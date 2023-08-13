@@ -152,7 +152,6 @@ class KdcReqMessageHandler:
         self.ticket["flags"]["renewable"] = self.renewable
         self.ticket["flags"]["proxiable"] = self.request["req-body"]["kdc-options"]["proxiable"]
         self.ticket["flags"]["forwardable"] = self.request["req-body"]["kdc-options"]["forwardable"]
-        self.ticket["flags"]["ok-as-delegate"] = self.service.set_ok_as_delegate
         self.ticket["flags"]["may-postdate"] = self.request["req-body"]["kdc-options"]["allow-postdate"]
         self.ticket["flags"]["postdated"] = self.postdated
         self.ticket["flags"]["invalid"] = self.postdated
@@ -173,9 +172,13 @@ class KdcReqMessageHandler:
             }
         )
 
-        for key in ("flags", "key", "authtime", "starttime", "endtime", "renew-till", "caddr"):
+        for key in ("key", "authtime", "starttime", "endtime", "renew-till", "caddr"):
             if key in self.ticket:
                 encpart["plain"][key] = self.ticket[key]
+
+        # ok-as-delegate can only be set on the encpart flags
+        encpart["plain"]["flags"] = dict(self.ticket["flags"])
+        encpart["plain"]["flags"]["ok-as-delegate"] = self.service.set_ok_as_delegate
 
     def encrypt(self):
         self.response["ticket"]["enc-part"].encrypt(
