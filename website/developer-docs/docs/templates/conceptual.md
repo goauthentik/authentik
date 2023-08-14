@@ -2,9 +2,9 @@
 title: "Conceptual topic"
 ---
 
-Use a title that focuses on the feature, component, or technolgy you are writing about... for example, "About authentik polices" or "Understanding outposts". For conceptual docs, the verb in the title should indicate a concept, such as "About" or "Overview" or "Understanding", followed by the noun (the component or object you are writing about).
+Use a title that focuses on the feature, component, or technology you are writing about... for example, "About authentik polices" or "Understanding outposts". For conceptual docs, the verb in the title should indicate a concept, such as "About" or "Overview" or "Understanding", followed by the noun (the component or object you are writing about).
 
-In this first section, immediately after the title, write one or two sentences about the feature, component, or technolgy. The following sections can help break up the content.
+In this first section, immediately after the title, write one or two sentences about the feature, component, or technology. The following sections can help break up the content.
 
 ## Common use cases (optional section)
 
