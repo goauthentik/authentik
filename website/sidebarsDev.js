@@ -72,6 +72,7 @@ module.exports = {
                     items: [
                         "docs/templates/procedural",
                         "docs/templates/conceptual",
+                        "docs/templates/reference",
                     ],
                 },
             ],
