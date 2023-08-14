@@ -47,6 +47,9 @@ updates:
         patterns:
           - "@storybook/*"
           - "*storybook*"
+      esbuild:
+        patterns:
+          - "@esbuild/*"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
