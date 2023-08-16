@@ -2954,13 +2954,13 @@ pytest = ">=4.0.0"
 
 [[package]]
 name = "pytest-randomly"
-version = "3.13.0"
+version = "3.15.0"
 description = "Pytest plugin to randomly order tests and control random.seed."
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "pytest_randomly-3.13.0-py3-none-any.whl", hash = "sha256:e78d898ef4066f89744e5075083aa7fb6f0de07ffd70ca9c4435cda590cf1eac"},
-    {file = "pytest_randomly-3.13.0.tar.gz", hash = "sha256:079c78b94693189879fbd7304de4e147304f0811fa96249ea5619f2f1cd33df0"},
+    {file = "pytest_randomly-3.15.0-py3-none-any.whl", hash = "sha256:0516f4344b29f4e9cdae8bce31c4aeebf59d0b9ef05927c33354ff3859eeeca6"},
+    {file = "pytest_randomly-3.15.0.tar.gz", hash = "sha256:b908529648667ba5e54723088edd6f82252f540cc340d748d1fa985539687047"},
 ]
 
 [package.dependencies]
