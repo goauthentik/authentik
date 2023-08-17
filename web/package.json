@@ -74,7 +74,7 @@
         "@lit/localize-tools": "^0.6.9",
         "@rollup/plugin-babel": "^6.0.3",
         "@rollup/plugin-commonjs": "^25.0.4",
-        "@rollup/plugin-node-resolve": "^15.0.2",
+        "@rollup/plugin-node-resolve": "^15.2.0",
         "@rollup/plugin-replace": "^5.0.2",
         "@rollup/plugin-typescript": "^11.1.2",
         "@storybook/addon-essentials": "^7.3.1",
