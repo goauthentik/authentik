@@ -99,7 +99,7 @@ In the first misconception, we tend to treat the process of building software as
 
 And when you purchase component parts from smaller vendors instead of buying “complete” packages from large vendors, you often get to work more closely with the vendor and shape the product in a way that works for you (and for other customers like you). A vendor option can then be customizable out-of-the-box and customizable long-term as you work alongside the vendor.
 
-> Customization of the log in and authentication workflow, using [templated flows](http://localhost:3000/developer-docs/blueprints/) and stages, is a core out-of-the-box feature of [authentik](https://goauthentik.io/).
+> Customization of the log in and authentication workflow, using our editable flows, stages, and UI elements, is a core out-of-the-box feature of [authentik](https://goauthentik.io/).
 
 In the second misconception, we tend to assume that the offered solution is complete and that buying a product merely involves breaking out the company credit card. That might be what the vendors pitch but more often than not, there are significant costs to maintenance and integration. Duncan Greenberg, Vice President at Oscar Health, has [argued](https://medium.com/oscar-tech/the-many-pitfalls-of-build-vs-buy-5364f49a4fed) that “The choice is also often better seen as buy and maintain or buy and integrate” because, he writes, “Some amount of building is always required.”
 
