@@ -5859,9 +5859,15 @@
                 },
                 "token_count": {
                     "type": "integer",
-                    "minimum": -2147483648,
+                    "minimum": 0,
                     "maximum": 2147483647,
                     "title": "Token count"
+                },
+                "token_length": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Token length"
                 }
             },
             "required": []
