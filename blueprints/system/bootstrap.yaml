@@ -39,8 +39,9 @@ entries:
       identifier: authentik-bootstrap-token
       intent: api
       expiring: false
-      key: !Context token
       user: !KeyOf admin-user
+    attrs:
+      key: !Context token
   - model: authentik_blueprints.blueprintinstance
     identifiers:
       metadata:

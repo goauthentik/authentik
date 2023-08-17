@@ -35,6 +35,7 @@ from authentik.core.models import (
     Source,
     UserSourceConnection,
 )
+from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
 from authentik.outposts.models import OutpostServiceConnection
@@ -209,7 +210,9 @@ class Importer:
             serializer_kwargs["partial"] = True
         else:
             self.logger.debug(
-                "initialised new serializer instance", model=model, **updated_identifiers
+                "initialised new serializer instance",
+                model=model,
+                **cleanse_dict(updated_identifiers),
             )
             model_instance = model()
             # pk needs to be set on the model instance otherwise a new one will be generated
