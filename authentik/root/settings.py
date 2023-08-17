@@ -279,14 +279,15 @@ DATABASES = {
         "SSLROOTCERT": CONFIG.get("postgresql.sslrootcert"),
         "SSLCERT": CONFIG.get("postgresql.sslcert"),
         "SSLKEY": CONFIG.get("postgresql.sslkey"),
+        # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
+        "CONN_MAX_AGE": None,
+        "CONN_HEALTH_CHECKS": True,
     }
 }
 
 if CONFIG.get_bool("postgresql.use_pgbouncer", False):
     # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
     DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
-    # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
-    DATABASES["default"]["CONN_MAX_AGE"] = None  # persistent
 
 # Email
 # These values should never actually be used, emails are only sent from email stages, which
