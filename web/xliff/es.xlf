@@ -5788,6 +5788,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7cfe12cd14df9950">
   <source>Sign out</source>
 </trans-unit>
+<trans-unit id="s7caa8f7edb920909">
+  <source>The number of tokens generated whenever this stage is used. Every token generated per stage execution will be attached to a single static device.</source>
+</trans-unit>
+<trans-unit id="s4aacc4e0277c1042">
+  <source>Token length</source>
+</trans-unit>
+<trans-unit id="s6931695c4f563bc4">
+  <source>The length of the individual generated tokens. Can be increased to improve security.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

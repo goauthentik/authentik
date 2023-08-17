@@ -21101,6 +21101,10 @@ paths:
         name: token_count
         schema:
           type: integer
+      - in: query
+        name: token_length
+        schema:
+          type: integer
       tags:
       - stages
       security:
@@ -27547,7 +27551,11 @@ components:
         token_count:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
+        token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
       required:
       - component
       - meta_model_name
@@ -27579,7 +27587,11 @@ components:
         token_count:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
+        token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
       required:
       - name
     AuthenticatorTOTPChallenge:
@@ -34502,7 +34514,11 @@ components:
         token_count:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
+        token_length:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
     PatchedAuthenticatorTOTPStageRequest:
       type: object
       description: AuthenticatorTOTPStage Serializer
