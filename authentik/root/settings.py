@@ -281,6 +281,7 @@ DATABASES = {
         "SSLKEY": CONFIG.get("postgresql.sslkey"),
         # https://docs.djangoproject.com/en/4.0/ref/databases/#persistent-connections
         "CONN_MAX_AGE": None,
+        "CONN_HEALTH_CHECKS": True,
     }
 }
 
