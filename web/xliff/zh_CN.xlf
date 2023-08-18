@@ -7757,6 +7757,18 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Sign out</source>
   <target>登出</target>
 </trans-unit>
+<trans-unit id="s7caa8f7edb920909">
+  <source>The number of tokens generated whenever this stage is used. Every token generated per stage execution will be attached to a single static device.</source>
+  <target>使用此阶段时生成的令牌数量。每次阶段执行中生成的每个令牌都会被附加到单个静态设备上。</target>
+</trans-unit>
+<trans-unit id="s4aacc4e0277c1042">
+  <source>Token length</source>
+  <target>令牌长度</target>
+</trans-unit>
+<trans-unit id="s6931695c4f563bc4">
+  <source>The length of the individual generated tokens. Can be increased to improve security.</source>
+  <target>每个生成令牌的长度。可以增加以增强安全性。</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
