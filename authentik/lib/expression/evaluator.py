@@ -112,7 +112,7 @@ class BaseEvaluator:
     @staticmethod
     def expr_is_group_member(user: User, **group_filters) -> bool:
         """Check if `user` is member of group with name `group_name`"""
-        return user.ak_groups.filter(**group_filters).exists()
+        return user.all_groups().filter(**group_filters).exists()
 
     @staticmethod
     def expr_user_by(**filters) -> Optional[User]:

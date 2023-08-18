@@ -207,7 +207,7 @@ class UserSelfSerializer(ModelSerializer):
     )
     def get_groups(self, _: User):
         """Return only the group names a user is member of"""
-        for group in self.instance.ak_groups.all():
+        for group in self.instance.all_groups().order_by("name"):
             yield {
                 "name": group.name,
                 "pk": group.pk,
