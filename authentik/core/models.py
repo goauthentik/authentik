@@ -113,8 +113,7 @@ class Group(SerializerModel):
 
     def is_member(self, user: "User") -> bool:
         """Recursively check if `user` is member of us, or any parent."""
-        all_groups = user.all_groups()
-        return any(group.group_uuid == self.group_uuid for group in all_groups.iterator())
+        return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
     def __str__(self):
         return f"Group {self.name}"
@@ -170,7 +169,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         WITH RECURSIVE parents AS (
             SELECT authentik_core_group.*, 0 AS relative_depth
             FROM authentik_core_group
-            WHERE authentik_core_group.group_uuid IN %s
+            WHERE authentik_core_group.group_uuid IN (%s)
 
             UNION ALL
 
@@ -186,7 +185,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         GROUP BY group_uuid, name
         ORDER BY name;
         """
-        group_pks = [group.pk for group in Group.objects.raw(query, [direct_groups]).iterator()]
+        group_pks = [group.pk for group in Group.objects.raw(query, direct_groups).iterator()]
         return Group.objects.filter(pk__in=group_pks)
 
     def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
