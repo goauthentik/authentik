@@ -64,6 +64,10 @@ helm upgrade --install authentik authentik/authentik -f values.yaml
 
 During the installation process, the database migrations will be applied automatically on startup.
 
+:::info
+The authentik release 2023.05.x deprecated support for Postgres v11. If you are running 2023.05.x or 2023.06.x, refer to the [Release Notes](https://goauthentik.io/docs/releases/2023.5#breaking-changes) for more information. If you are running authentik on Kubernetes, also refer to the documentation for how to [upgrade to Postgres v12](https://goauthentik.io/docs/troubleshooting/postgres/upgrade_kubernetes).
+:::
+
 ### Accessing authentik
 
 Once the installation is complete, access authentik at `https://<ingress-host-name>/if/flow/initial-setup/`. Here, you can set a password for the default akadmin user.
