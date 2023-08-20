@@ -13,7 +13,9 @@ class TestGroups(TestCase):
         user = User.objects.create(username=generate_id())
         user2 = User.objects.create(username=generate_id())
         group = Group.objects.create(name=generate_id())
+        other_group = Group.objects.create(name=generate_id())
         group.users.add(user)
+        other_group.users.add(user)
         self.assertTrue(group.is_member(user))
         self.assertFalse(group.is_member(user2))
 
