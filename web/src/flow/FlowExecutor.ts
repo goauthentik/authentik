@@ -528,7 +528,7 @@ export class FlowExecutor extends Interface implements StageHost {
                                                     ? html`
                                                           <li>
                                                               <a
-                                                                  href="https://unsplash.com/@diegojimenez"
+                                                                  href="https://unsplash.com/@sgabriel"
                                                                   >${msg("Background image")}</a
                                                               >
                                                           </li>

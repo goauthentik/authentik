@@ -18,7 +18,12 @@ class AuthenticatorStaticStageSerializer(StageSerializer):
 
     class Meta:
         model = AuthenticatorStaticStage
-        fields = StageSerializer.Meta.fields + ["configure_flow", "friendly_name", "token_count"]
+        fields = StageSerializer.Meta.fields + [
+            "configure_flow",
+            "friendly_name",
+            "token_count",
+            "token_length",
+        ]
 
 
 class AuthenticatorStaticStageViewSet(UsedByMixin, ModelViewSet):

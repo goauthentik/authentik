@@ -36,6 +36,10 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
     }
 
     async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
+        if (data.action?.toString() === "") data.action = null;
+        if (data.clientIp?.toString() === "") data.clientIp = null;
+        if (data.app?.toString() === "") data.app = null;
+        if (data.model?.toString() === "") data.model = null;
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",

@@ -13,7 +13,8 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Generate static tokens for the user as a backup."""
 
-    token_count = models.IntegerField(default=6)
+    token_count = models.PositiveIntegerField(default=6)
+    token_length = models.PositiveIntegerField(default=12)
 
     @property
     def serializer(self) -> type[BaseSerializer]:

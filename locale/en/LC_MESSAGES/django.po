@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-07-28 11:50+0000\n"
+"POT-Creation-Date: 2023-08-17 17:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -23,11 +23,11 @@ msgstr ""
 msgid "Successfully re-scheduled Task %(name)s!"
 msgstr ""
 
-#: authentik/api/schema.py:21
+#: authentik/api/schema.py:24
 msgid "Generic API Error"
 msgstr ""
 
-#: authentik/api/schema.py:29
+#: authentik/api/schema.py:32
 msgid "Validation Error"
 msgstr ""
 
@@ -82,11 +82,11 @@ msgstr ""
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr ""
 
-#: authentik/core/api/users.py:144
+#: authentik/core/api/users.py:150
 msgid "No leading or trailing slashes allowed."
 msgstr ""
 
-#: authentik/core/api/users.py:147
+#: authentik/core/api/users.py:153
 msgid "No empty segments in user path allowed."
 msgstr ""
 
@@ -1871,11 +1871,11 @@ msgstr ""
 msgid "Invalid phone number"
 msgstr ""
 
-#: authentik/stages/authenticator_static/models.py:46
+#: authentik/stages/authenticator_static/models.py:47
 msgid "Static Authenticator Stage"
 msgstr ""
 
-#: authentik/stages/authenticator_static/models.py:47
+#: authentik/stages/authenticator_static/models.py:48
 msgid "Static Authenticator Stages"
 msgstr ""
 
