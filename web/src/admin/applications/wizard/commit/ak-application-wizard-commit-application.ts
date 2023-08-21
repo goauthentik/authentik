@@ -14,8 +14,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import BasePanel from "../BasePanel";
 
-@customElement("ak-application-wizard-application-details")
-export class ApplicationWizardApplicationDetails extends BasePanel {
+@customElement("ak-application-wizard-commit-application")
+export class ApplicationWizardCommitApplication extends BasePanel {
     handleChange(ev: Event) {
         if (!ev.target) {
             console.warn(`Received event with no target: ${ev}`);

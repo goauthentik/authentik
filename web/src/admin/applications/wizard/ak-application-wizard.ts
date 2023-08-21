@@ -1,3 +1,4 @@
+import { merge } from "@goauthentik/common/merge";
 import "@goauthentik/components/ak-wizard-main";
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
@@ -13,7 +14,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import applicationWizardContext from "./ak-application-wizard-context-name";
 import { steps } from "./steps";
-import { WizardState, WizardStateEvent } from "./types";
+import { OneOfProvider, WizardState, WizardStateEvent } from "./types";
 
 // my-context.ts
 
@@ -30,6 +31,7 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
      * Providing a context at the root element
      */
     @provide({ context: applicationWizardContext })
+    @state()
     wizardState: WizardState = {
         step: 0,
         providerType: "",
@@ -42,6 +44,8 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
 
     @property()
     prompt = msg("Create");
+
+    providerCache: Map<string, OneOfProvider> = new Map();
 
     constructor() {
         super();
@@ -60,12 +64,19 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
 
     // And this is where all the special cases go...
     handleUpdate(event: CustomEvent<WizardStateEvent>) {
-        delete event.detail.target;
-        const newWizardState: WizardState = event.detail;
+        const update = event.detail.update;
 
-        // When the user sets the authentication method type, the corresponding authentication
-        // method page becomes available.
-        if (newWizardState.providerType !== "") {
+        // Are we changing provider type? If so, swap the caches of the various provider types the
+        // user may have filled in, and enable the next step.
+        const providerType = update.providerType;
+        if (
+            providerType &&
+            typeof providerType === "string" &&
+            providerType !== this.wizardState.providerType
+        ) {
+            this.providerCache.set(this.wizardState.providerType, this.wizardState.provider);
+            const prevProvider = this.providerCache.get(providerType);
+            this.wizardState.provider = prevProvider ?? {};
             const newSteps = [...this.steps];
             const method = newSteps.find(({ id }) => id === "auth-method");
             if (!method) {
@@ -74,7 +85,9 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
             method.disabled = false;
             this.steps = newSteps;
         }
-        this.wizardState = newWizardState;
+
+        this.wizardState = merge(this.wizardState, update) as WizardState;
+        console.log(JSON.stringify(this.wizardState, null, 2));
     }
 
     render(): TemplateResult {

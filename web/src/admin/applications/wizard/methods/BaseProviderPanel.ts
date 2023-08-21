@@ -10,7 +10,6 @@ export class ApplicationWizardProviderPageBase extends BasePanel {
         const value = target.type === "checkbox" ? target.checked : target.value;
         this.dispatchWizardUpdate({
             provider: {
-                ...this.wizard.provider,
                 [target.name]: value,
             },
         });

@@ -33,8 +33,19 @@ export const steps: WizardStep[] = [
         renderer: () =>
             html`<ak-application-wizard-authentication-method></ak-application-wizard-authentication-method>`,
         disabled: true,
+        nextButtonLabel: msg("Next"),
+        backButtonLabel: msg("Back"),
+        valid: true,
+    },
+    {
+        id: "commit-application",
+        label: "Submit New Application",
+        renderer: () =>
+            html`<ak-application-wizard-commit-application></ak-application-wizard-commit-application>`,
+        disabled: true,
         nextButtonLabel: msg("Submit"),
         backButtonLabel: msg("Back"),
         valid: true,
     },
+    
 ];

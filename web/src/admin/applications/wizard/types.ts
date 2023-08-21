@@ -23,4 +23,4 @@ export interface WizardState {
     provider: OneOfProvider;
 }
 
-export type WizardStateEvent = WizardState & { target?: HTMLInputElement };
+export type WizardStateEvent = { update: Partial<WizardState> };
