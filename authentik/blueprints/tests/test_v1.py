@@ -4,7 +4,7 @@ from os import environ
 from django.test import TransactionTestCase
 
 from authentik.blueprints.v1.exporter import FlowExporter
-from authentik.blueprints.v1.importer import Importer, transaction_rollback
+from authentik.blueprints.v1.importer import StringImporter, transaction_rollback
 from authentik.core.models import Group
 from authentik.flows.models import Flow, FlowDesignation, FlowStageBinding
 from authentik.lib.generators import generate_id
@@ -21,14 +21,14 @@ class TestBlueprintsV1(TransactionTestCase):
 
     def test_blueprint_invalid_format(self):
         """Test blueprint with invalid format"""
-        importer = Importer('{"version": 3}')
+        importer = StringImporter('{"version": 3}')
         self.assertFalse(importer.validate()[0])
-        importer = Importer(
+        importer = StringImporter(
             '{"version": 1,"entries":[{"identifiers":{},"attrs":{},'
             '"model": "authentik_core.User"}]}'
         )
         self.assertFalse(importer.validate()[0])
-        importer = Importer(
+        importer = StringImporter(
             '{"version": 1, "entries": [{"attrs": {"name": "test"}, '
             '"identifiers": {}, '
             '"model": "authentik_core.Group"}]}'
@@ -54,7 +54,7 @@ class TestBlueprintsV1(TransactionTestCase):
             },
         )
 
-        importer = Importer(
+        importer = StringImporter(
             '{"version": 1, "entries": [{"attrs": {"name": "test999", "attributes": '
             '{"key": ["updated_value"]}}, "identifiers": {"attributes": {"other_key": '
             '["other_value"]}}, "model": "authentik_core.Group"}]}'
@@ -103,7 +103,7 @@ class TestBlueprintsV1(TransactionTestCase):
             self.assertEqual(len(export.entries), 3)
             export_yaml = exporter.export_to_string()
 
-        importer = Importer(export_yaml)
+        importer = StringImporter(export_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
@@ -113,14 +113,14 @@ class TestBlueprintsV1(TransactionTestCase):
         """Test export and import it twice"""
         count_initial = Prompt.objects.filter(field_key="username").count()
 
-        importer = Importer(load_fixture("fixtures/static_prompt_export.yaml"))
+        importer = StringImporter(load_fixture("fixtures/static_prompt_export.yaml"))
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
         count_before = Prompt.objects.filter(field_key="username").count()
         self.assertEqual(count_initial + 1, count_before)
 
-        importer = Importer(load_fixture("fixtures/static_prompt_export.yaml"))
+        importer = StringImporter(load_fixture("fixtures/static_prompt_export.yaml"))
         self.assertTrue(importer.apply())
 
         self.assertEqual(Prompt.objects.filter(field_key="username").count(), count_before)
@@ -130,7 +130,7 @@ class TestBlueprintsV1(TransactionTestCase):
         ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").delete()
         Group.objects.filter(name="test").delete()
         environ["foo"] = generate_id()
-        importer = Importer(load_fixture("fixtures/tags.yaml"), {"bar": "baz"})
+        importer = StringImporter(load_fixture("fixtures/tags.yaml"), {"bar": "baz"})
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         policy = ExpressionPolicy.objects.filter(name="foo-bar-baz-qux").first()
@@ -247,7 +247,7 @@ class TestBlueprintsV1(TransactionTestCase):
             exporter = FlowExporter(flow)
             export_yaml = exporter.export_to_string()
 
-        importer = Importer(export_yaml)
+        importer = StringImporter(export_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
         self.assertTrue(UserLoginStage.objects.filter(name=stage_name).exists())
@@ -296,7 +296,7 @@ class TestBlueprintsV1(TransactionTestCase):
             exporter = FlowExporter(flow)
             export_yaml = exporter.export_to_string()
 
-        importer = Importer(export_yaml)
+        importer = StringImporter(export_yaml)
 
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())

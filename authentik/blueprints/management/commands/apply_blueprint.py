@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, no_translations
 from structlog.stdlib import get_logger
 
 from authentik.blueprints.models import BlueprintInstance
-from authentik.blueprints.v1.importer import Importer
+from authentik.blueprints.v1.importer import StringImporter
 
 LOGGER = get_logger()
 
@@ -18,7 +18,7 @@ class Command(BaseCommand):
         """Apply all blueprints in order, abort when one fails to import"""
         for blueprint_path in options.get("blueprints", []):
             content = BlueprintInstance(path=blueprint_path).retrieve()
-            importer = Importer(content)
+            importer = StringImporter(content)
             valid, _ = importer.validate()
             if not valid:
                 self.stderr.write("blueprint invalid")
