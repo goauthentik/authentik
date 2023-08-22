@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
 jobs:
   publish-source-docs:
     runs-on: ubuntu-latest
