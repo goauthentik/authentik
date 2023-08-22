@@ -28,7 +28,7 @@ The danger with letting identity become boring is that we’re not engaging in t
 
 > My pitch: Let’s make identity fun again. And in doing so, let’s think through a better way to decide whether to build or buy software.
 
-!["Image by <a href="https://pixabay.com/users/jplenio-7645255/?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=3092026">Joe</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=image&utm_content=3092026">Pixabay</a>"](./image1.jpg)
+[![Image1](./image1.jpg)](https://pixabay.com/users/jplenio-7645255/ "Image by jplenio on pixabay")
 
 <!--truncate-->
 
