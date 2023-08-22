@@ -15,7 +15,7 @@ export default function Comparison() {
         "Requires additional product: Web Application Proxy";
     return (
         <>
-            <a id="comparison"></a>
+            <div id="comparison"></div>
             <h1 className="header">Why authentik?</h1>
             <div className="table-responsive">
                 <div className="table">
