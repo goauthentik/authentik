@@ -1,9 +1,4 @@
 const fs = require("fs").promises;
-const sidebar = require("./sidebars.js");
-
-const releases = sidebar.docs
-    .filter((doc) => doc.link?.slug === "releases")[0]
-    .items.filter((release) => typeof release === "string");
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = async function () {
@@ -21,8 +16,8 @@ module.exports = async function () {
         organizationName: "Authentik Security Inc.",
         projectName: "authentik",
         themeConfig: {
+            image: "img/social.png",
             navbar: {
-                title: "authentik",
                 logo: {
                     alt: "authentik logo",
                     src: "img/icon_left_brand.svg",
@@ -48,26 +43,6 @@ module.exports = async function () {
                         to: "pricing/",
                         label: "Pricing",
                         position: "left",
-                    },
-                    {
-                        type: "dropdown",
-                        label: `Version: ${releases[0].replace(
-                            /releases\/\d+\/v/,
-                            "",
-                        )}`,
-                        position: "right",
-                        items: releases.map((release) => {
-                            const version = release.replace(
-                                /releases\/\d+\/v/,
-                                "",
-                            );
-                            const subdomain = version.replace(".", "-");
-                            const label = `Version: ${version}`;
-                            return {
-                                label: label,
-                                href: `https://version-${subdomain}.goauthentik.io`,
-                            };
-                        }),
                     },
                     {
                         href: "https://github.com/goauthentik/authentik",
