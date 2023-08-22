@@ -31,8 +31,10 @@
 }
 
 /* Match color of light/dark theme switch */
-.navbar__items--right svg {
+.navbar__items--right svg,
+.navbar-sidebar__brand svg {
     color: var(--white);
+    stroke: var(--white);
 }
 
 .hero--primary {
@@ -125,4 +127,13 @@ body {
 }
 .theme-doc-sidebar-menu hr {
     margin-top: calc(var(--ifm-hr-margin-vertical) / 2);
+}
+
+/* Nav header background color on mobile */
+.navbar-sidebar__brand,
+.navbar-sidebar__items {
+    background-color: var(--ifm-color-primary);
+}
+.navbar-sidebar__items .menu__link {
+    color: var(--white);
 }
