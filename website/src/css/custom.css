@@ -26,11 +26,6 @@
     box-shadow: none;
 }
 
-/* Don't display text title */
-.navbar__title {
-    display: none;
-}
-
 .navbar__logo {
     margin: 0 0.75rem;
 }
