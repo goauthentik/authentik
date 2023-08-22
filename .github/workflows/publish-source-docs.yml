@@ -20,6 +20,7 @@ jobs:
         uses: ./.github/actions/setup
       - name: generate docs
         run: |
+          poetry run make migrate
           poetry run ak build_source_docs
       - name: Publish
         uses: netlify/actions/cli@master
