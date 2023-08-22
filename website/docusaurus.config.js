@@ -16,6 +16,7 @@ module.exports = async function () {
         organizationName: "Authentik Security Inc.",
         projectName: "authentik",
         themeConfig: {
+            image: "img/social.png",
             navbar: {
                 logo: {
                     alt: "authentik logo",
