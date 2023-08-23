@@ -5953,7 +5953,7 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Forecast internal users</source>
 </trans-unit>
 <trans-unit id="sde9a3f41977ec1f8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.users}"/> current internal users and <x id="1" equiv-text="${this.forecast?.forecastedUsers}"/> forecasted internal users.</source>
+  <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.internalUsers}"/> current internal users and <x id="1" equiv-text="${this.forecast?.forecastedInternalUsers}"/> forecasted internal users.</source>
 </trans-unit>
 <trans-unit id="s4557b6b9da258643">
   <source>Forecast external users</source>
@@ -6035,6 +6035,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6931695c4f563bc4">
   <source>The length of the individual generated tokens. Can be increased to improve security.</source>
+</trans-unit>
+<trans-unit id="s0dd031b58ed4017c">
+  <source>Internal: <x id="0" equiv-text="${item.internalUsers}"/></source>
+</trans-unit>
+<trans-unit id="s57b07e524f8f5c2a">
+  <source>External: <x id="0" equiv-text="${item.externalUsers}"/></source>
 </trans-unit>
     </body>
   </file>

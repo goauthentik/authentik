@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-17 17:37+0000\n"
+"POT-Creation-Date: 2023-08-23 10:04+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -98,125 +98,125 @@ msgstr ""
 msgid "Users added to this group will be superusers."
 msgstr ""
 
-#: authentik/core/models.py:162
+#: authentik/core/models.py:142
 msgid "User's display name."
 msgstr ""
 
-#: authentik/core/models.py:256 authentik/providers/oauth2/models.py:294
+#: authentik/core/models.py:268 authentik/providers/oauth2/models.py:294
 msgid "User"
 msgstr ""
 
-#: authentik/core/models.py:257
+#: authentik/core/models.py:269
 msgid "Users"
 msgstr ""
 
-#: authentik/core/models.py:270
+#: authentik/core/models.py:282
 msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
 msgstr ""
 
-#: authentik/core/models.py:280
+#: authentik/core/models.py:292
 msgid "Flow used when authorizing this provider."
 msgstr ""
 
-#: authentik/core/models.py:292
+#: authentik/core/models.py:304
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
 msgstr ""
 
-#: authentik/core/models.py:347
+#: authentik/core/models.py:359
 msgid "Application's display Name."
 msgstr ""
 
-#: authentik/core/models.py:348
+#: authentik/core/models.py:360
 msgid "Internal application name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:360
+#: authentik/core/models.py:372
 msgid "Open launch URL in a new browser tab or window."
 msgstr ""
 
-#: authentik/core/models.py:424
+#: authentik/core/models.py:436
 msgid "Application"
 msgstr ""
 
-#: authentik/core/models.py:425
+#: authentik/core/models.py:437
 msgid "Applications"
 msgstr ""
 
-#: authentik/core/models.py:431
+#: authentik/core/models.py:443
 msgid "Use the source-specific identifier"
 msgstr ""
 
-#: authentik/core/models.py:433
+#: authentik/core/models.py:445
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr ""
 
-#: authentik/core/models.py:437
+#: authentik/core/models.py:449
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr ""
 
-#: authentik/core/models.py:440
+#: authentik/core/models.py:452
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
 msgstr ""
 
-#: authentik/core/models.py:444
+#: authentik/core/models.py:456
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr ""
 
-#: authentik/core/models.py:451
+#: authentik/core/models.py:463
 msgid "Source's display Name."
 msgstr ""
 
-#: authentik/core/models.py:452
+#: authentik/core/models.py:464
 msgid "Internal source name, used in URLs."
 msgstr ""
 
-#: authentik/core/models.py:471
+#: authentik/core/models.py:483
 msgid "Flow to use when authenticating existing users."
 msgstr ""
 
-#: authentik/core/models.py:480
+#: authentik/core/models.py:492
 msgid "Flow to use when enrolling new users."
 msgstr ""
 
-#: authentik/core/models.py:488
+#: authentik/core/models.py:500
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr ""
 
-#: authentik/core/models.py:660
+#: authentik/core/models.py:672
 msgid "Token"
 msgstr ""
 
-#: authentik/core/models.py:661
+#: authentik/core/models.py:673
 msgid "Tokens"
 msgstr ""
 
-#: authentik/core/models.py:702
+#: authentik/core/models.py:714
 msgid "Property Mapping"
 msgstr ""
 
-#: authentik/core/models.py:703
+#: authentik/core/models.py:715
 msgid "Property Mappings"
 msgstr ""
 
-#: authentik/core/models.py:738
+#: authentik/core/models.py:750
 msgid "Authenticated Session"
 msgstr ""
 
-#: authentik/core/models.py:739
+#: authentik/core/models.py:751
 msgid "Authenticated Sessions"
 msgstr ""
 
