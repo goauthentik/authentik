@@ -30,11 +30,11 @@ This is a common tension when you’re building commercially on top of open sour
 
 I started working on the project that led to [authentik](https://github.com/goauthentik/authentik) when I was 20. My original vision was a single pane of glass for emails, domains, applications, hosting, and so on. This was overly ambitious for one person and their hobby project, and I ended up spending most of my time on the SSO part. This became its own project: Passbook (later [renamed to authentik](https://github.com/goauthentik/authentik/pull/361) due to a [naming conflict](https://techcrunch.com/2015/06/08/apple-rebrands-passbook-to-wallet/)).
 
-authentik initially used the MIT license. When [Elastic called out AWS](https://www.elastic.co/blog/why-license-change-aws) for trademark abuse (offering Elasticsearch as an AWS service without collaborating with Elastic), I [changed it to GPLv3](https://github.com/goauthentik/authentik/commit/4671d4afb4d32988ca0058a33888862bd9652b16) because I didn’t like what AWS did in principle, and didn’t want it to happen to authentik.
+Initially, authentik used the MIT license. When [Elastic called out AWS](https://www.elastic.co/blog/why-license-change-aws) for trademark abuse (offering Elasticsearch as an AWS service without collaborating with Elastic), I [changed it to GPLv3](https://github.com/goauthentik/authentik/commit/4671d4afb4d32988ca0058a33888862bd9652b16) because I didn’t like what AWS did in principle, and didn’t want it to happen to authentik.
 
 # An opportunity, and a compromise
 
-Two years later, [Sid](https://www.linkedin.com/in/sijbrandij/) at [Open Core Ventures](https://opencoreventures.com/) (OCV) contacted me about creating a company, building on the features and functionality of authentik. It was a dream opportunity: work full time on my hobby project and make 25% more in the process. But I had to let go of the GPL license.
+Two years later, [Sid](https://www.linkedin.com/in/sijbrandij/) at [Open Core Ventures](https://opencoreventures.com/) (OCV) contacted me about [creating a company](./2022-11-02-the-next-step-for-authentik), building on the features and functionality of authentik. It was a dream opportunity: work full time on my hobby project and make 25% more in the process. But I had to let go of the GPL license.
 
 With an open core model customers are usually using code from both the open source and proprietary codebases. This necessitates a dual license structure, meaning customers need to accept both licenses.
 
