@@ -16,7 +16,7 @@ Tandoor Recipy uses Django Allauth as the authentication engine. It supports Ope
 
 The following placeholders will be used:
 
--   `tandoor.company` is the FQDN of the Uptime Kuma install.
+-   `tandoor.company` is the FQDN of the Tandoor Recipes install.
 -   `authentik.company` is the FQDN of the authentik install.
 
 ### Provider
