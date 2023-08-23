@@ -10,7 +10,7 @@ title: Tandoor Recipes
 >
 > -- https://docs.tandoor.dev/
 
-Tandoor Recipy uses Django Allauth as the authentication engine. It supports Generic OATH 2, openid_connect.
+Tandoor Recipy uses Django Allauth as the authentication engine. It supports OpenID Connect.
 
 ## Preparation
 
