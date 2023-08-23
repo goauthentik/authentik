@@ -24,7 +24,7 @@ There’s been a lot of discussion about licensing in the news, with [Red Hat](h
 
 This is a common tension when you’re building commercially on top of open source, so I wanted to share some reflections from my own experience of going from MIT, to GPL, back to MIT.
 
-!["Photo by <a href="https://unsplash.com/@helloimnik?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Nik</a> on <a href="https://unsplash.com/photos/MAgPyHRO0AA?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>"](./image1.jpg)
+!["Photo by <a href="https://unsplash.com/@gcalebjones?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Caleb Jones</a> on <a href="https://unsplash.com/photos/J3JMyXWQHXU?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>"](./image1.jpg)
 
 <!--truncate-->
 
