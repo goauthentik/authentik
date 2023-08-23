@@ -38,7 +38,7 @@
         "@lit-labs/context": "^0.4.0",
         "@lit-labs/task": "^3.0.1",
         "@lit/localize": "^0.11.4",
-        "@patternfly/elements": "^2.3.2",
+        "@patternfly/elements": "^2.4.0",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^7.64.0",
         "@sentry/tracing": "^7.64.0",
