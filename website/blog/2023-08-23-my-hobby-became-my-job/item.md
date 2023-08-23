@@ -36,7 +36,7 @@ authentik initially used the MIT license. When [Elastic called out AWS](https://
 
 Two years later, [Sid](https://www.linkedin.com/in/sijbrandij/) at [Open Core Ventures](https://opencoreventures.com/) (OCV) contacted me about creating a company, building on the features and functionality of authentik. It was a dream opportunity: work full time on my hobby project and make 25% more in the process. But I had to let go of the GPL license.
 
-With an open core model, customers are usually using code from both the open source and proprietary codebases. This necessitates a dual license structure, meaning customers need to accept both licenses.
+With an open core model customers are usually using code from both the open source and proprietary codebases. This necessitates a dual license structure, meaning customers need to accept both licenses.
 
 The drawback of building commercially on top of open source software using GPL is that the copyleft aspect can put some people off. Not every person or business wants to have to expose their code for every minor change or bug fix they may add, and they will sooner find a competitor with a more permissive license than adopt your software. This is obviously not ideal when you’re trying to get traction and grow a business.
 
