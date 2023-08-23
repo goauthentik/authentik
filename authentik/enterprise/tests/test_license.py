@@ -32,7 +32,7 @@ class TestEnterpriseLicense(TestCase):
         """Check license verification"""
         lic = License.objects.create(key=generate_id())
         self.assertTrue(lic.status.is_valid())
-        self.assertEqual(lic.users, 100)
+        self.assertEqual(lic.internal_users, 100)
 
     def test_invalid(self):
         """Test invalid license"""
