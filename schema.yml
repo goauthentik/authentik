@@ -31714,7 +31714,7 @@ components:
           type: string
           format: date-time
           readOnly: true
-        users:
+        internal_users:
           type: integer
           readOnly: true
         external_users:
@@ -31723,27 +31723,27 @@ components:
       required:
       - expiry
       - external_users
+      - internal_users
       - key
       - license_uuid
       - name
-      - users
     LicenseForecast:
       type: object
       description: Serializer for license forecast
       properties:
-        users:
+        internal_users:
           type: integer
         external_users:
           type: integer
-        forecasted_users:
+        forecasted_internal_users:
           type: integer
         forecasted_external_users:
           type: integer
       required:
       - external_users
       - forecasted_external_users
-      - forecasted_users
-      - users
+      - forecasted_internal_users
+      - internal_users
     LicenseRequest:
       type: object
       description: License Serializer
@@ -31757,7 +31757,7 @@ components:
       type: object
       description: Serializer for license status
       properties:
-        users:
+        internal_users:
           type: integer
         external_users:
           type: integer
@@ -31777,11 +31777,11 @@ components:
       required:
       - external_users
       - has_license
+      - internal_users
       - latest_valid
       - read_only
       - show_admin_warning
       - show_user_warning
-      - users
       - valid
     Link:
       type: object
