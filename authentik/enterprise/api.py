@@ -35,13 +35,13 @@ class LicenseSerializer(ModelSerializer):
             "name",
             "key",
             "expiry",
-            "users",
+            "internal_users",
             "external_users",
         ]
         extra_kwargs = {
             "name": {"read_only": True},
             "expiry": {"read_only": True},
-            "users": {"read_only": True},
+            "internal_users": {"read_only": True},
             "external_users": {"read_only": True},
         }
 
@@ -49,7 +49,7 @@ class LicenseSerializer(ModelSerializer):
 class LicenseSummary(PassiveSerializer):
     """Serializer for license status"""
 
-    users = IntegerField(required=True)
+    internal_users = IntegerField(required=True)
     external_users = IntegerField(required=True)
     valid = BooleanField()
     show_admin_warning = BooleanField()
@@ -62,9 +62,9 @@ class LicenseSummary(PassiveSerializer):
 class LicenseForecastSerializer(PassiveSerializer):
     """Serializer for license forecast"""
 
-    users = IntegerField(required=True)
+    internal_users = IntegerField(required=True)
     external_users = IntegerField(required=True)
-    forecasted_users = IntegerField(required=True)
+    forecasted_internal_users = IntegerField(required=True)
     forecasted_external_users = IntegerField(required=True)
 
 
@@ -111,7 +111,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         latest_valid = datetime.fromtimestamp(total.exp)
         response = LicenseSummary(
             data={
-                "users": total.users,
+                "internal_users": total.internal_users,
                 "external_users": total.external_users,
                 "valid": total.is_valid(),
                 "show_admin_warning": show_admin_warning,
@@ -135,8 +135,8 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
     def forecast(self, request: Request) -> Response:
         """Forecast how many users will be required in a year"""
         last_month = now() - timedelta(days=30)
-        # Forecast for default users
-        users_in_last_month = User.objects.filter(
+        # Forecast for internal users
+        internal_in_last_month = User.objects.filter(
             type=UserTypes.INTERNAL, date_joined__gte=last_month
         ).count()
         # Forecast for external users
@@ -144,9 +144,9 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
         forecast_for_months = 12
         response = LicenseForecastSerializer(
             data={
-                "users": LicenseKey.get_default_user_count(),
+                "internal_users": LicenseKey.get_default_user_count(),
                 "external_users": LicenseKey.get_external_user_count(),
-                "forecasted_users": (users_in_last_month * forecast_for_months),
+                "forecasted_internal_users": (internal_in_last_month * forecast_for_months),
                 "forecasted_external_users": (external_in_last_month * forecast_for_months),
             }
         )
