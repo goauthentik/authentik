@@ -58,11 +58,7 @@ Create a Application with the following parameters:
 
 ## Tandoor Recipy
 
--   Add this to your `.env` file (please make sure to insert your `server_url`, `client_id` and `secret`):
-
-```
-SOCIALACCOUNT_PROVIDERS={ "openid_connect": { "SERVERS": [{ "id": "authentik", "name": "Authentik", "server_url": "https://authentik.company/application/o/tandoor/.well-known/openid-configuration", "token_auth_method": "client_secret_basic", "APP": { "client_id": "ClientIdFromProvider", "secret": "SecretFromProvider" } } ] } }
-```
+-   Set the following environment variables on your Tandoor Recipes installation (please make sure to use the correct values for `server_url`, `client_id` and `secret`):
 
 -   Restart Tandoor, you should now see `Sign In Via Authentik` button.
 
