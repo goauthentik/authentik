@@ -47,8 +47,8 @@ class LicenseKey:
     exp: int
 
     name: str
-    internal_users: int
-    external_users: int
+    internal_users: int = 0
+    external_users: int = 0
     flags: list[LicenseFlags] = field(default_factory=list)
 
     @staticmethod
