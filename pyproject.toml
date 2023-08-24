@@ -152,7 +152,7 @@ packaging = "*"
 paramiko = "*"
 psycopg = { extras = ["c"], version = "*" }
 pycryptodome = "*"
-pydantic = "<2.0.0"
+pydantic = "<3.0.0"
 pydantic-scim = "^0.0.7"
 pyjwt = "*"
 python = "^3.11"
