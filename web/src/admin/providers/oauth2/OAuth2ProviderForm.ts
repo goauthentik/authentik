@@ -1,3 +1,4 @@
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
@@ -14,10 +15,7 @@ import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CertificateKeyPair,
     ClientTypeEnum,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
     FlowsInstancesListDesignationEnum,
     IssuerModeEnum,
     OAuth2Provider,
@@ -206,42 +204,10 @@ ${this.instance?.redirectUris}</textarea
                         </p>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(
-                                item: CertificateKeyPair,
-                                items: CertificateKeyPair[],
-                            ): boolean => {
-                                let selected = this.instance?.signingKey === item.pk;
-                                if (!this.instance && items.length === 1) {
-                                    selected = true;
-                                }
-                                return selected;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            certificate=${this.instance?.signingKey}
+                            singleton
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
                     </ak-form-element-horizontal>
                 </div>
