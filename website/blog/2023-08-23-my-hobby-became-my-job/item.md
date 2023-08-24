@@ -36,7 +36,7 @@ Initially, authentik used the MIT license. When [Elastic called out AWS](https:/
 
 # An opportunity, and a compromise
 
-Two years later, [Sid](https://www.linkedin.com/in/sijbrandij/) at [Open Core Ventures](https://opencoreventures.com/) (OCV) contacted me about [creating a company](../2022-11-02-the-next-step-for-authentik), building on the features and functionality of authentik. It was a dream opportunity: work full time on my hobby project and make 25% more in the process. But I had to let go of the GPL license.
+Two years later, [Sid](https://www.linkedin.com/in/sijbrandij/) at [Open Core Ventures](https://opencoreventures.com/) (OCV) contacted me about [creating a company](../2022-11-02-the-next-step-for-authentik/item.md), building on the features and functionality of authentik. It was a dream opportunity: work full time on my hobby project and make 25% more in the process. But I had to let go of the GPL license.
 
 With an open core model customers are usually using code from both the open source and proprietary codebases. This necessitates a dual license structure, meaning customers need to accept both licenses.
 
