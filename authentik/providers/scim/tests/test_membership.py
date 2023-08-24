@@ -60,7 +60,7 @@ class SCIMMembershipTests(TestCase):
         with Mocker() as mocker:
             mocker.get(
                 "https://localhost/ServiceProviderConfig",
-                json=config.dict(),
+                json=config.model_dump(),
             )
             mocker.post(
                 "https://localhost/Users",
@@ -104,7 +104,7 @@ class SCIMMembershipTests(TestCase):
         with Mocker() as mocker:
             mocker.get(
                 "https://localhost/ServiceProviderConfig",
-                json=config.dict(),
+                json=config.model_dump(),
             )
             mocker.patch(
                 f"https://localhost/Groups/{group_scim_id}",
@@ -144,7 +144,7 @@ class SCIMMembershipTests(TestCase):
         with Mocker() as mocker:
             mocker.get(
                 "https://localhost/ServiceProviderConfig",
-                json=config.dict(),
+                json=config.model_dump(),
             )
             mocker.post(
                 "https://localhost/Users",
@@ -188,7 +188,7 @@ class SCIMMembershipTests(TestCase):
         with Mocker() as mocker:
             mocker.get(
                 "https://localhost/ServiceProviderConfig",
-                json=config.dict(),
+                json=config.model_dump(),
             )
             mocker.patch(
                 f"https://localhost/Groups/{group_scim_id}",
@@ -215,7 +215,7 @@ class SCIMMembershipTests(TestCase):
         with Mocker() as mocker:
             mocker.get(
                 "https://localhost/ServiceProviderConfig",
-                json=config.dict(),
+                json=config.model_dump(),
             )
             mocker.patch(
                 f"https://localhost/Groups/{group_scim_id}",
