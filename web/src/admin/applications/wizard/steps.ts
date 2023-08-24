@@ -5,6 +5,7 @@ import { html } from "lit";
 
 import "./application/ak-application-wizard-application-details";
 import "./auth-method-choice/ak-application-wizard-authentication-method-choice";
+import "./commit/ak-application-wizard-commit-application";
 import "./methods/ak-application-wizard-authentication-method";
 
 export const steps: WizardStep[] = [
@@ -47,5 +48,4 @@ export const steps: WizardStep[] = [
         backButtonLabel: msg("Back"),
         valid: true,
     },
-    
 ];

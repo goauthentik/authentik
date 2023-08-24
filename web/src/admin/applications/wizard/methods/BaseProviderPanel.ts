@@ -14,6 +14,10 @@ export class ApplicationWizardProviderPageBase extends BasePanel {
             },
         });
     }
+
+    validator() {
+        return this.form.reportValidity();
+    }
 }
 
 export default ApplicationWizardProviderPageBase;

@@ -1,16 +1,13 @@
 import { ModalButton } from "@goauthentik/elements/buttons/ModalButton";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { consume } from "@lit-labs/context";
 import { msg } from "@lit/localize";
-import { customElement, property, state } from "@lit/reactive-element/decorators.js";
+import { customElement, property, query } from "@lit/reactive-element/decorators.js";
 import { html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
-import { akWizardCurrentStepContextName } from "./akWizardCurrentStepContextName";
-import { akWizardStepsContextName } from "./akWizardStepsContextName";
 import type { WizardStep } from "./types";
 
 /**
@@ -49,15 +46,14 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     @property()
     eventName: string = "ak-wizard-nav";
 
-    // @ts-expect-error
-    @consume({ context: akWizardStepsContextName, subscribe: true })
-    @state()
+    @property({ attribute: false, type: Array })
     steps!: WizardStep[];
 
-    // @ts-expect-error
-    @consume({ context: akWizardCurrentStepContextName, subscribe: true })
-    @state()
+    @property({ attribute: false, type: Object })
     currentStep!: WizardStep;
+
+    @query("#main-content *:first-child")
+    content!: HTMLElement;
 
     reset() {
         this.open = false;
@@ -141,7 +137,9 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     // independent context.
     renderMainSection() {
         return html`<main class="pf-c-wizard__main">
-            <div class="pf-c-wizard__main-body">${this.currentStep.renderer()}</div>
+            <div id="main-content" class="pf-c-wizard__main-body">
+                ${this.currentStep.renderer()}
+            </div>
         </main>`;
     }
 
@@ -159,23 +157,22 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
         return html`<button
             class="pf-c-button pf-m-primary"
             type="submit"
-            ?disabled=${!this.currentStep.valid}
-            @click=${() => this.dispatchCustomEvent(this.eventName, { step: nextStep.id })}
+            @click=${() =>
+                this.dispatchCustomEvent(this.eventName, { step: nextStep.id, action: "next" })}
         >
             ${this.currentStep.nextButtonLabel}
         </button>`;
     }
 
     renderFooterBackButton(backStep: WizardStep) {
-        return html`
-            <button
-                class="pf-c-button pf-m-secondary"
-                type="button"
-                @click=${() => this.dispatchCustomEvent(this.eventName, { step: backStep.id })}
-            >
-                ${this.currentStep.backButtonLabel}
-            </button>
-        `;
+        return html`<button
+            class="pf-c-button pf-m-secondary"
+            type="button"
+            @click=${() =>
+                this.dispatchCustomEvent(this.eventName, { step: backStep.id, action: "back" })}
+        >
+            ${this.currentStep.backButtonLabel}
+        </button> `;
     }
 
     renderFooterCancelButton() {

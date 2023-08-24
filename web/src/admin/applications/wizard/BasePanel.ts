@@ -1,3 +1,4 @@
+import { WizardPanel } from "@goauthentik/components/ak-wizard-main/types";
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
@@ -9,7 +10,10 @@ import { styles as AwadStyles } from "./BasePanel.css";
 import { applicationWizardContext } from "./ak-application-wizard-context-name";
 import type { WizardState } from "./types";
 
-export class ApplicationWizardPageBase extends CustomEmitterElement(AKElement) {
+export class ApplicationWizardPageBase
+    extends CustomEmitterElement(AKElement)
+    implements WizardPanel
+{
     static get styles() {
         return AwadStyles;
     }
@@ -19,7 +23,6 @@ export class ApplicationWizardPageBase extends CustomEmitterElement(AKElement) {
 
     rendered = false;
 
-    // @ts-expect-error
     @consume({ context: applicationWizardContext })
     public wizard!: WizardState;
 

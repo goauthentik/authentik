@@ -9,3 +9,7 @@ export interface WizardStep {
     nextButtonLabel?: string;
     backButtonLabel?: string;
 }
+
+export interface WizardPanel extends HTMLElement {
+    validator?: () => boolean;
+}

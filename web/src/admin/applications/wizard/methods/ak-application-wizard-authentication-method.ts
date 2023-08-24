@@ -12,7 +12,7 @@ import "./proxy/ak-application-wizard-authentication-for-single-forward-proxy";
 @customElement("ak-application-wizard-authentication-method")
 export class ApplicationWizardApplicationDetails extends BasePanel {
     render() {
-        const handler = providerRendererList.get(this.wizard.providerType);
+        const handler = providerRendererList.get(this.wizard.providerModel);
         if (!handler) {
             throw new Error(
                 "Unrecognized authentication method in ak-application-wizard-authentication-method",

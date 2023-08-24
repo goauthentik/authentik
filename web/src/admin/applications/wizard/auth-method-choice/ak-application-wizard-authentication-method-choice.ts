@@ -10,10 +10,9 @@ import { customElement } from "@lit/reactive-element/decorators/custom-element.j
 import { html } from "lit";
 import { map } from "lit/directives/map.js";
 
-import type { TypeCreate } from "@goauthentik/api";
-
 import BasePanel from "../BasePanel";
-import providerTypesList from "./ak-application-wizard-authentication-method-choice.choices";
+import providerModelsList from "./ak-application-wizard-authentication-method-choice.choices";
+import type { LocalTypeCreate } from "./ak-application-wizard-authentication-method-choice.choices";
 
 @customElement("ak-application-wizard-authentication-method-choice")
 export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
@@ -25,31 +24,31 @@ export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
 
     handleChoice(ev: InputEvent) {
         const target = ev.target as HTMLInputElement;
-        this.dispatchWizardUpdate({ providerType: target.value });
+        this.dispatchWizardUpdate({ providerModel: target.value });
     }
 
-    renderProvider(type: TypeCreate) {
-        const method = this.wizard.providerType;
+    renderProvider(type: LocalTypeCreate) {
+        const method = this.wizard.providerModel;
 
         return html`<div class="pf-c-radio">
             <input
                 class="pf-c-radio__input"
                 type="radio"
                 name="type"
-                id="provider-${type.modelName}"
-                value=${type.modelName}
-                ?checked=${type.modelName === method}
+                id="provider-${type.formName}"
+                value=${type.formName}
+                ?checked=${type.formName === method}
                 @change=${this.handleChoice}
             />
-            <label class="pf-c-radio__label" for="provider-${type.modelName}">${type.name}</label>
+            <label class="pf-c-radio__label" for="provider-${type.formName}">${type.name}</label>
             <span class="pf-c-radio__description">${type.description}</span>
         </div>`;
     }
 
     render() {
-        return providerTypesList.length > 0
+        return providerModelsList.length > 0
             ? html`<form class="pf-c-form pf-m-horizontal">
-                  ${map(providerTypesList, this.renderProvider)}
+                  ${map(providerModelsList, this.renderProvider)}
               </form>`
             : html`<ak-empty-state loading header=${msg("Loading")}></ak-empty-state>`;
     }

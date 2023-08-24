@@ -1,25 +1,25 @@
 import {
-    Application,
-    LDAPProvider,
-    OAuth2Provider,
-    ProxyProvider,
-    RadiusProvider,
-    SAMLProvider,
-    SCIMProvider,
+    ApplicationRequest,
+    LDAPProviderRequest,
+    OAuth2ProviderRequest,
+    ProxyProviderRequest,
+    RadiusProviderRequest,
+    SAMLProviderRequest,
+    SCIMProviderRequest,
 } from "@goauthentik/api";
 
 export type OneOfProvider =
-    | Partial<SCIMProvider>
-    | Partial<SAMLProvider>
-    | Partial<RadiusProvider>
-    | Partial<ProxyProvider>
-    | Partial<OAuth2Provider>
-    | Partial<LDAPProvider>;
+    | Partial<SCIMProviderRequest>
+    | Partial<SAMLProviderRequest>
+    | Partial<RadiusProviderRequest>
+    | Partial<ProxyProviderRequest>
+    | Partial<OAuth2ProviderRequest>
+    | Partial<LDAPProviderRequest>;
 
 export interface WizardState {
     step: number;
-    providerType: string;
-    application: Partial<Application>;
+    providerModel: string;
+    app: Partial<ApplicationRequest>;
     provider: OneOfProvider;
 }
 

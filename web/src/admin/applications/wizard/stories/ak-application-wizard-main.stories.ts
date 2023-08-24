@@ -47,7 +47,7 @@ const container = (testItem: TemplateResult) => {
 
 export const MainPage = () => {
     return container(html`
-        <ak-application-wizard>></ak-application-wizard>
+        <ak-application-wizard></ak-application-wizard>
         <hr />
         <ak-application-context-display-for-test></ak-application-context-display-for-test>
     `);

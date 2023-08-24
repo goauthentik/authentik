@@ -3,9 +3,9 @@ import "@goauthentik/components/ak-wizard-main";
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { provide } from "@lit-labs/context";
+import { ContextProvider, ContextRoot } from "@lit-labs/context";
 import { msg } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -27,19 +27,22 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
         return [PFBase, PFButton, PFRadio];
     }
 
-    /**
-     * Providing a context at the root element
-     */
-    @provide({ context: applicationWizardContext })
     @state()
     wizardState: WizardState = {
         step: 0,
-        providerType: "",
-        application: {},
+        providerModel: "",
+        app: {},
         provider: {},
     };
 
-    @state()
+    /**
+     * Providing a context at the root element
+     */
+    wizardStateProvider = new ContextProvider(this, {
+        context: applicationWizardContext,
+        initialValue: this.wizardState,
+    });
+
     steps = steps;
 
     @property()
@@ -54,6 +57,7 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
 
     connectedCallback() {
         super.connectedCallback();
+        new ContextRoot().attach(this.parentElement!);
         this.addCustomListener("ak-application-wizard-update", this.handleUpdate);
     }
 
@@ -68,14 +72,14 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
 
         // Are we changing provider type? If so, swap the caches of the various provider types the
         // user may have filled in, and enable the next step.
-        const providerType = update.providerType;
+        const providerModel = update.providerModel;
         if (
-            providerType &&
-            typeof providerType === "string" &&
-            providerType !== this.wizardState.providerType
+            providerModel &&
+            typeof providerModel === "string" &&
+            providerModel !== this.wizardState.providerModel
         ) {
-            this.providerCache.set(this.wizardState.providerType, this.wizardState.provider);
-            const prevProvider = this.providerCache.get(providerType);
+            this.providerCache.set(this.wizardState.providerModel, this.wizardState.provider);
+            const prevProvider = this.providerCache.get(providerModel);
             this.wizardState.provider = prevProvider ?? {};
             const newSteps = [...this.steps];
             const method = newSteps.find(({ id }) => id === "auth-method");
@@ -87,10 +91,10 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
         }
 
         this.wizardState = merge(this.wizardState, update) as WizardState;
-        console.log(JSON.stringify(this.wizardState, null, 2));
+        this.wizardStateProvider.setValue(this.wizardState);
     }
 
-    render(): TemplateResult {
+    render() {
         return html`
             <ak-wizard-main
                 .steps=${this.steps}

@@ -1,4 +1,5 @@
 import "@goauthentik/admin/applications/ApplicationForm";
+import "@goauthentik/admin/applications/wizard/ak-application-wizard";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -7,7 +8,7 @@ import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
+// import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -162,6 +163,7 @@ export class ApplicationListPage extends TablePage<Application> {
         ];
     }
 
+    /*
     renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
             <span slot="submit"> ${msg("Create")} </span>
@@ -169,5 +171,10 @@ export class ApplicationListPage extends TablePage<Application> {
             <ak-application-form slot="form"> </ak-application-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
         </ak-forms-modal>`;
+    }
+*/
+
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-application-wizard></ak-application-wizard>`;
     }
 }

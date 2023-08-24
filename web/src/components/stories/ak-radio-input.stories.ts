@@ -45,7 +45,6 @@ export const ButtonWithSuccess = () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const displayChange = (ev: any) => {
-        console.log(ev.type, ev.target.name, ev.target.value, ev.detail);
         document.getElementById("radio-message-pad")!.innerText = `Value selected: ${JSON.stringify(
             ev.target.value,
             null,

@@ -1,9 +1,8 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { provide } from "@lit-labs/context";
 import { html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
+import { customElement, property, query, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -11,9 +10,16 @@ import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import "./ak-wizard-frame";
-import { akWizardCurrentStepContextName } from "./akWizardCurrentStepContextName";
-import { akWizardStepsContextName } from "./akWizardStepsContextName";
-import type { WizardStep } from "./types";
+import { AkWizardFrame } from "./ak-wizard-frame";
+import type { WizardPanel, WizardStep } from "./types";
+
+// Not just a check that it has a validator, but a check that satisfies Typescript that we're using
+// it correctly; anything within the hasValidator conditional block will know it's dealing with
+// a fully operational WizardPanel.
+//
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const hasValidator = (v: any): v is Required<Pick<WizardPanel, "validator">> =>
+    "validator" in v && typeof v.validator === "function";
 
 /**
  * AKWizardMain
@@ -41,7 +47,6 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
      *
      * @attribute
      */
-    @provide({ context: akWizardStepsContextName })
     @property({ attribute: false })
     steps: WizardStep[] = [];
 
@@ -50,7 +55,6 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
      *
      * @attribute
      */
-    @provide({ context: akWizardCurrentStepContextName })
     @state()
     currentStep!: WizardStep;
 
@@ -91,6 +95,9 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
     @property()
     description?: string;
 
+    @query("ak-wizard-frame")
+    frame!: AkWizardFrame;
+
     // Guarantee that if the current step was not passed in by the client, that we know
     // and set to the first step.
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -117,7 +124,7 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
     // before setting the currentStep. Especially since setting the currentStep triggers a second
     // asynchronous event-- scheduling a re-render of everything interested in the currentStep
     // object.
-    handleNavigation(event: CustomEvent<{ step: string }>) {
+    handleNavigation(event: CustomEvent<{ step: string; action: string }>) {
         const requestedStep = event.detail.step;
         if (!requestedStep) {
             throw new Error("Request for next step when no next step is available");
@@ -126,11 +133,18 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
         if (!step) {
             throw new Error("Request for next step when no next step is available.");
         }
-        if (step.disabled) {
-            throw new Error("Request for next step when the next step is disabled.");
+        if (event.detail.action === "next" && !this.validated()) {
+            return false;
         }
         this.currentStep = step;
-        return;
+        return true;
+    }
+
+    validated() {
+        if (hasValidator(this.frame.content)) {
+            return this.frame.content.validator();
+        }
+        return true;
     }
 
     render() {
@@ -140,6 +154,8 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
                 header=${this.header}
                 description=${ifDefined(this.description)}
                 eventName=${this.eventName}
+                .steps=${this.steps}
+                .currentStep=${this.currentStep}
             >
                 <button slot="trigger" class="pf-c-button pf-m-primary">${this.prompt}</button>
             </ak-wizard-frame>
