@@ -1,13 +1,10 @@
 """root settings for authentik"""
 
-import ast
-import base64
 import importlib
 import logging
 import os
 from hashlib import sha512
 from pathlib import Path
-from urllib.parse import quote_plus
 
 import structlog
 from celery.schedules import crontab
