@@ -2,6 +2,7 @@ package application
 
 import (
 	"math"
+	"net/http"
 	"net/url"
 	"os"
 	"path"
@@ -40,7 +41,10 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 			redisstore.WithOptions(&sessions.Options{
 				Path: "/",
 				Domain: *p.CookieDomain,
+				HttpOnly: true,
 				MaxAge: sessionExpire,
+				SameSite: htthttp.SameSiteLaxMode,
+				Secure: strings.ToLower(externalHost.Scheme) == "https",
 			}),
 			redisstore.WithKeyPrefix(RedisKeyPrefix),
 			redisstore.WithMaxLength(math.MaxInt),
@@ -49,6 +53,8 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		if err != nil {
 			panic(err)
 		}
+
+		rs.SetOptions()
 
 		a.log.Trace("using redis session backend")
 		return rs
@@ -63,7 +69,12 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 
 	// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
 	cs.MaxLength(math.MaxInt)
+	cs.Options.HttpOnly = true
+	if strings.ToLower(externalHost.Scheme) == "https" {
+		cs.Options.Secure = true
+	}
 	cs.Options.Domain = *p.CookieDomain
+	cs.Options.SameSite = http.SameSiteLaxMode
 	a.log.WithField("dir", dir).Trace("using filesystem session backend")
 	return cs
 }

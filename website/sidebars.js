@@ -1,5 +1,11 @@
-module.exports = {
+const generateVersionDropdown =
+    require("./src/utils.js").generateVersionDropdown;
+
+const docsSidebar = {
     docs: [
+        {
+            type: "html",
+        },
         {
             type: "doc",
             id: "index",
@@ -183,7 +189,20 @@ module.exports = {
                 type: "doc",
                 id: "policies/index",
             },
-            items: ["policies/expression"],
+            items: [
+                {
+                    type: "category",
+                    label: "Working with policies",
+                    items: ["policies/working_with_policies/whitelist_email"],
+                    link: {
+                        type: "generated-index",
+                        title: "Working with policies",
+                        slug: "policies/working_with_policies",
+                        description: "Overview of policies configuration",
+                    },
+                },
+                "policies/expression",
+            ],
         },
         {
             type: "category",
@@ -338,3 +357,6 @@ module.exports = {
         },
     ],
 };
+
+docsSidebar.docs[0].value = generateVersionDropdown(docsSidebar);
+module.exports = docsSidebar;

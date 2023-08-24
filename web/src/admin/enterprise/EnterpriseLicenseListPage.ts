@@ -170,11 +170,11 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                         icon="pf-icon pf-icon-user"
                         header=${msg("Forecast internal users")}
                         subtext=${msg(
-                            str`Estimated user count one year from now based on ${this.forecast?.users} current internal users and ${this.forecast?.forecastedUsers} forecasted internal users.`,
+                            str`Estimated user count one year from now based on ${this.forecast?.internalUsers} current internal users and ${this.forecast?.forecastedInternalUsers} forecasted internal users.`,
                         )}
                     >
-                        ~&nbsp;${(this.forecast?.users || 0) +
-                        (this.forecast?.forecastedUsers || 0)}
+                        ~&nbsp;${(this.forecast?.internalUsers || 0) +
+                        (this.forecast?.forecastedInternalUsers || 0)}
                     </ak-aggregate-card>
                     <ak-aggregate-card
                         class="pf-l-grid__item"
@@ -217,10 +217,8 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
         }
         return [
             html`<div>${item.name}</div>`,
-            html`<div>
-                <small>0 / ${item.users}</small>
-                <small>0 / ${item.externalUsers}</small>
-            </div>`,
+            html`<div>${msg(str`Internal: ${item.internalUsers}`)}</div>
+                <div>${msg(str`External: ${item.externalUsers}`)}</div>`,
             html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>

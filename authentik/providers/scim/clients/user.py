@@ -64,7 +64,7 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
         if not raw_scim_user:
             raise StopSync(ValueError("No user mappings configured"), obj)
         try:
-            scim_user = SCIMUserSchema.parse_obj(delete_none_values(raw_scim_user))
+            scim_user = SCIMUserSchema.model_validate(delete_none_values(raw_scim_user))
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
         if not scim_user.externalId:
@@ -77,7 +77,8 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
         response = self._request(
             "POST",
             "/Users",
-            data=scim_user.json(
+            json=scim_user.model_dump(
+                mode="json",
                 exclude_unset=True,
             ),
         )
@@ -90,7 +91,8 @@ class SCIMUserClient(SCIMClient[User, SCIMUserSchema]):
         self._request(
             "PUT",
             f"/Users/{connection.id}",
-            data=scim_user.json(
+            json=scim_user.model_dump(
+                mode="json",
                 exclude_unset=True,
             ),
         )

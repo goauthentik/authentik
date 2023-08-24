@@ -47,6 +47,8 @@ export class DeleteObjectsTable<T> extends Table<T> {
                 totalPages: 1,
                 startIndex: 1,
                 endIndex: this.objects.length,
+                next: 0,
+                previous: 0,
             },
             results: this.objects,
         });

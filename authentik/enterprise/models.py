@@ -11,6 +11,7 @@ from uuid import uuid4
 from cryptography.exceptions import InvalidSignature
 from cryptography.x509 import Certificate, load_der_x509_certificate, load_pem_x509_certificate
 from dacite import from_dict
+from django.contrib.postgres.indexes import HashIndex
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
@@ -46,8 +47,8 @@ class LicenseKey:
     exp: int
 
     name: str
-    users: int
-    external_users: int
+    internal_users: int = 0
+    external_users: int = 0
     flags: list[LicenseFlags] = field(default_factory=list)
 
     @staticmethod
@@ -87,7 +88,7 @@ class LicenseKey:
         active_licenses = License.objects.filter(expiry__gte=now())
         total = LicenseKey(get_license_aud(), 0, "Summarized license", 0, 0)
         for lic in active_licenses:
-            total.users += lic.users
+            total.internal_users += lic.internal_users
             total.external_users += lic.external_users
             exp_ts = int(mktime(lic.expiry.timetuple()))
             if total.exp == 0:
@@ -123,7 +124,7 @@ class LicenseKey:
 
         Only checks the current count, no historical data is checked"""
         default_users = self.get_default_user_count()
-        if default_users > self.users:
+        if default_users > self.internal_users:
             return False
         active_users = self.get_external_user_count()
         if active_users > self.external_users:
@@ -153,17 +154,20 @@ class License(models.Model):
     """An authentik enterprise license"""
 
     license_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
-    key = models.TextField(unique=True)
+    key = models.TextField()
 
     name = models.TextField()
     expiry = models.DateTimeField()
-    users = models.BigIntegerField()
+    internal_users = models.BigIntegerField()
     external_users = models.BigIntegerField()
 
     @property
     def status(self) -> LicenseKey:
         """Get parsed license status"""
         return LicenseKey.validate(self.key)
+
+    class Meta:
+        indexes = (HashIndex(fields=("key",)),)
 
 
 def usage_expiry():

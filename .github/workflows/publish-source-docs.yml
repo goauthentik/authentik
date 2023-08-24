@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+env:
+  POSTGRES_DB: authentik
+  POSTGRES_USER: authentik
+  POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
+
 jobs:
   publish-source-docs:
     runs-on: ubuntu-latest
@@ -15,6 +20,7 @@ jobs:
         uses: ./.github/actions/setup
       - name: generate docs
         run: |
+          poetry run make migrate
           poetry run ak build_source_docs
       - name: Publish
         uses: netlify/actions/cli@master

@@ -31,7 +31,14 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CapabilitiesEnum, CoreApi, Group, ResponseError, User } from "@goauthentik/api";
+import {
+    CapabilitiesEnum,
+    CoreApi,
+    CoreUsersListTypeEnum,
+    Group,
+    ResponseError,
+    User,
+} from "@goauthentik/api";
 
 @customElement("ak-user-related-add")
 export class RelatedUserAdd extends Form<{ users: number[] }> {
@@ -127,10 +134,8 @@ export class RelatedUserList extends Table<User> {
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
             groupsByPk: this.targetGroup ? [this.targetGroup.pk] : [],
-            attributes: this.hideServiceAccounts
-                ? JSON.stringify({
-                      "goauthentik.io/user/service-account__isnull": true,
-                  })
+            type: this.hideServiceAccounts
+                ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]
                 : undefined,
         });
     }
@@ -138,7 +143,7 @@ export class RelatedUserList extends Table<User> {
     columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "active"),
+            new TableColumn(msg("Active"), "is_active"),
             new TableColumn(msg("Last login"), "last_login"),
             new TableColumn(msg("Actions")),
         ];

@@ -20,7 +20,7 @@ WORKDIR /work/web
 RUN npm ci --include=dev && npm run build
 
 # Stage 3: Poetry to requirements.txt export
-FROM docker.io/python:3.11.4-slim-bullseye AS poetry-locker
+FROM docker.io/python:3.11.4-slim-bookworm AS poetry-locker
 
 WORKDIR /work
 COPY ./pyproject.toml /work
@@ -31,7 +31,7 @@ RUN pip install --no-cache-dir poetry && \
     poetry export --without-hashes -f requirements.txt --dev --output requirements-dev.txt
 
 # Stage 4: Build go proxy
-FROM docker.io/golang:1.20.7-bullseye AS go-builder
+FROM docker.io/golang:1.21.0-bookworm AS go-builder
 
 WORKDIR /work
 
@@ -61,7 +61,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 6: Run
-FROM docker.io/python:3.11.4-slim-bullseye AS final-image
+FROM docker.io/python:3.11.4-slim-bookworm AS final-image
 
 ARG GIT_BUILD_HASH
 ARG VERSION
