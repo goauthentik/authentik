@@ -82,7 +82,7 @@ from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.config import CONFIG
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
-from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.email.utils.template import TemplateEmailMessage
 from authentik.tenants.models import Tenant
 
 LOGGER = get_logger()

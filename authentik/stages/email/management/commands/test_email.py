@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand, no_translations
 
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mail
-from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.email.utils.template import TemplateEmailMessage
 
 
 class Command(BaseCommand):

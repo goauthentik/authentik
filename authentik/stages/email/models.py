@@ -14,6 +14,7 @@ from structlog.stdlib import get_logger
 
 from authentik.flows.models import Stage
 from authentik.lib.config import CONFIG
+from authentik.stages.email.utils.aws import aws_calculate_password
 
 LOGGER = get_logger()
 
@@ -106,11 +107,17 @@ class EmailStage(Stage):
         """Get fully configured Email Backend instance"""
         if self.use_global_settings:
             CONFIG.refresh("email.password")
+            host = CONFIG.get("email.host")
+            password = CONFIG.get("email.password")
+            # Special case for AWS Email passwords
+            if host.endswith("amazonaws.com"):
+                region = host.replace(".amazonaws.com", "").split(".")[-1]
+                password = aws_calculate_password(password, region)
             return self.backend_class(
-                host=CONFIG.get("email.host"),
+                host=host,
                 port=CONFIG.get_int("email.port"),
                 username=CONFIG.get("email.username"),
-                password=CONFIG.get("email.password"),
+                password=password,
                 use_tls=CONFIG.get_bool("email.use_tls", False),
                 use_ssl=CONFIG.get_bool("email.use_ssl", False),
                 timeout=CONFIG.get_int("email.timeout"),

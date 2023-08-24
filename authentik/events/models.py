@@ -39,7 +39,7 @@ from authentik.lib.sentry import SentryIgnoredException
 from authentik.lib.utils.http import get_client_ip, get_http_session
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.policies.models import PolicyBindingModel
-from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.email.utils.template import TemplateEmailMessage
 from authentik.tenants.models import Tenant
 from authentik.tenants.utils import DEFAULT_TENANT
 

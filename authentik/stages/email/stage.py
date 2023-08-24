@@ -18,7 +18,7 @@ from authentik.flows.stage import ChallengeStageView
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
-from authentik.stages.email.utils import TemplateEmailMessage
+from authentik.stages.email.utils.template import TemplateEmailMessage
 
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
