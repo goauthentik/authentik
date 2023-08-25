@@ -127,6 +127,7 @@ body {
 }
 .theme-doc-sidebar-menu hr {
     margin-top: calc(var(--ifm-hr-margin-vertical) / 2);
+    margin-right: -0.5rem;
 }
 
 /* Nav header background color on mobile */
