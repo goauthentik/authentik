@@ -1,13 +1,10 @@
 """WebAuthn stage"""
-from json import dumps, loads
-
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from webauthn.helpers.bytes_to_base64url import bytes_to_base64url
 from webauthn.helpers.exceptions import InvalidRegistrationResponse
-from webauthn.helpers.options_to_json import options_to_json
 from webauthn.helpers.structs import (
     AuthenticatorSelectionCriteria,
     PublicKeyCredentialCreationOptions,
@@ -55,7 +52,7 @@ class AuthenticatorWebAuthnChallengeResponse(ChallengeResponse):
 
         try:
             registration: VerifiedRegistration = verify_registration_response(
-                credential=RegistrationCredential.parse_raw(dumps(response)),
+                credential=RegistrationCredential.model_validate(response),
                 expected_challenge=challenge,
                 expected_rp_id=get_rp_id(self.request),
                 expected_origin=get_origin(self.request),
@@ -108,7 +105,12 @@ class AuthenticatorWebAuthnStageView(ChallengeStageView):
         return AuthenticatorWebAuthnChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
-                "registration": loads(options_to_json(registration_options)),
+                "registration": registration_options.model_dump(
+                    mode="json",
+                    by_alias=True,
+                    exclude_unset=False,
+                    exclude_none=True,
+                ),
             }
         )
 

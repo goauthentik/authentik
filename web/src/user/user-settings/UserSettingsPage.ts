@@ -116,43 +116,63 @@ export class UserSettingsPage extends AKElement {
                         data-tab-title="${msg("Sessions")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        <ak-user-session-list
-                            targetUser=${ifDefined(
-                                rootInterface<UserInterface>()?.me?.user.username,
-                            )}
-                        ></ak-user-session-list>
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__body">
+                                <ak-user-session-list
+                                    targetUser=${ifDefined(
+                                        rootInterface<UserInterface>()?.me?.user.username,
+                                    )}
+                                ></ak-user-session-list>
+                            </div>
+                        </div>
                     </section>
                     <section
                         slot="page-consents"
                         data-tab-title="${msg("Consent")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        <ak-user-consent-list
-                            userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
-                        ></ak-user-consent-list>
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__body">
+                                <ak-user-consent-list
+                                    userId=${ifDefined(rootInterface<UserInterface>()?.me?.user.pk)}
+                                ></ak-user-consent-list>
+                            </div>
+                        </div>
                     </section>
                     <section
                         slot="page-mfa"
                         data-tab-title="${msg("MFA Devices")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        <ak-user-settings-mfa
-                            .userSettings=${this.userSettings}
-                        ></ak-user-settings-mfa>
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__body">
+                                <ak-user-settings-mfa
+                                    .userSettings=${this.userSettings}
+                                ></ak-user-settings-mfa>
+                            </div>
+                        </div>
                     </section>
                     <section
                         slot="page-sources"
                         data-tab-title="${msg("Connected services")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        <ak-user-settings-source></ak-user-settings-source>
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__body">
+                                <ak-user-settings-source></ak-user-settings-source>
+                            </div>
+                        </div>
                     </section>
                     <section
                         slot="page-tokens"
                         data-tab-title="${msg("Tokens and App passwords")}"
                         class="pf-c-page__main-section pf-m-no-padding-mobile"
                     >
-                        <ak-user-token-list></ak-user-token-list>
+                        <div class="pf-c-card">
+                            <div class="pf-c-card__body">
+                                <ak-user-token-list></ak-user-token-list>
+                            </div>
+                        </div>
                     </section>
                 </ak-tabs>
             </main>

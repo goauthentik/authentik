@@ -47,6 +47,7 @@ class SCIMMembershipTests(TestCase):
     def test_member_add(self):
         """Test member add"""
         config = ServiceProviderConfiguration.default()
+        # pylint: disable=assigning-non-slot
         config.patch.supported = True
         user_scim_id = generate_id()
         group_scim_id = generate_id()
@@ -60,7 +61,7 @@ class SCIMMembershipTests(TestCase):
         with Mocker() as mocker:
             mocker.get(
                 "https://localhost/ServiceProviderConfig",
-                json=config.dict(),
+                json=config.model_dump(),
             )
             mocker.post(
                 "https://localhost/Users",
@@ -104,7 +105,7 @@ class SCIMMembershipTests(TestCase):
         with Mocker() as mocker:
             mocker.get(
                 "https://localhost/ServiceProviderConfig",
-                json=config.dict(),
+                json=config.model_dump(),
             )
             mocker.patch(
                 f"https://localhost/Groups/{group_scim_id}",
@@ -131,6 +132,7 @@ class SCIMMembershipTests(TestCase):
     def test_member_remove(self):
         """Test member remove"""
         config = ServiceProviderConfiguration.default()
+        # pylint: disable=assigning-non-slot
         config.patch.supported = True
         user_scim_id = generate_id()
         group_scim_id = generate_id()
@@ -144,7 +146,7 @@ class SCIMMembershipTests(TestCase):
         with Mocker() as mocker:
             mocker.get(
                 "https://localhost/ServiceProviderConfig",
-                json=config.dict(),
+                json=config.model_dump(),
             )
             mocker.post(
                 "https://localhost/Users",
@@ -188,7 +190,7 @@ class SCIMMembershipTests(TestCase):
         with Mocker() as mocker:
             mocker.get(
                 "https://localhost/ServiceProviderConfig",
-                json=config.dict(),
+                json=config.model_dump(),
             )
             mocker.patch(
                 f"https://localhost/Groups/{group_scim_id}",
@@ -215,7 +217,7 @@ class SCIMMembershipTests(TestCase):
         with Mocker() as mocker:
             mocker.get(
                 "https://localhost/ServiceProviderConfig",
-                json=config.dict(),
+                json=config.model_dump(),
             )
             mocker.patch(
                 f"https://localhost/Groups/{group_scim_id}",

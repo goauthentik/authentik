@@ -74,7 +74,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         if not raw_scim_group:
             raise StopSync(ValueError("No group mappings configured"), obj)
         try:
-            scim_group = SCIMGroupSchema.parse_obj(delete_none_values(raw_scim_group))
+            scim_group = SCIMGroupSchema.model_validate(delete_none_values(raw_scim_group))
         except ValidationError as exc:
             raise StopSync(exc, obj) from exc
         if not scim_group.externalId:
@@ -99,7 +99,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         response = self._request(
             "POST",
             "/Groups",
-            data=scim_group.json(
+            json=scim_group.model_dump(
+                mode="json",
                 exclude_unset=True,
             ),
         )
@@ -113,7 +114,8 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             return self._request(
                 "PUT",
                 f"/Groups/{scim_group.id}",
-                data=scim_group.json(
+                json=scim_group.model_dump(
+                    mode="json",
                     exclude_unset=True,
                 ),
             )
@@ -160,7 +162,13 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         *ops: PatchOperation,
     ):
         req = PatchRequest(Operations=ops)
-        self._request("PATCH", f"/Groups/{group_id}", data=req.json())
+        self._request(
+            "PATCH",
+            f"/Groups/{group_id}",
+            json=req.model_dump(
+                mode="json",
+            ),
+        )
 
     def _patch_add_users(self, group: Group, users_set: set[int]):
         """Add users in users_set to group"""

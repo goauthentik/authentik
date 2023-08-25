@@ -3,10 +3,10 @@ import babel from "@rollup/plugin-babel";
 import commonjs from "@rollup/plugin-commonjs";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
+import terser from "@rollup/plugin-terser";
 import { cwd } from "process";
 import copy from "rollup-plugin-copy";
 import cssimport from "rollup-plugin-cssimport";
-import { terser } from "rollup-plugin-terser";
 
 // https://github.com/d3/d3-interpolate/issues/58
 const IGNORED_WARNINGS = /Circular dependency(.*d3-[interpolate|selection])|(.*@lit\/localize.*)/;
