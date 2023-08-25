@@ -1,67 +1,59 @@
-const { execSync } = require('child_process')
-const { readdirSync } = require('fs')
-const path = require('path')
+const { execSync } = require("child_process");
+const { readdirSync } = require("fs");
+const path = require("path");
+const { $AkSel } = require("../lib/idiom");
 
 const CLICK_TIME_DELAY = 250;
 
-describe('Login', () => {
+const login = [
+    ['text', '>>>input[name="uidField"]', "ken@goauthentik.io"],
+    ['button', '>>>button[type="submit"]'],
+    ['pause'],
+    ['text', '>>>input[name="password"]', "eat10bugs"],
+    ['button', '>>>button[type="submit"]'],
+    ['pause', ">>>div.header h1"],
+];
+
+
+const simpleApplication = [
+    ['text',   '>>>ak-form-element-horizontal input[name="name"]', "This Is My Application"],
+    ['button', ">>>ak-wizard-frame footer button.pf-m-primary"],
+    ['button', '>>>input[value="ldapprovider"]'],
+    ['button', ">>>ak-wizard-frame footer button.pf-m-primary"],
+    ['text',   '>>>ak-form-element-horizontal input[name="name"]', "This Is My Provider"],
+    ['search', '>>>ak-tenanted-flow-search input[type="text"]', "button*=default-authentication-flow"],
+    ['text',   '>>>ak-form-element-horizontal input[name="tlsServerName"]', "example.goauthentik.io"],
+    ['button', ">>>ak-wizard-frame footer button.pf-m-primary"]
+];
+
+
+describe("Login", () => {
     it(`Should correctly log in to Authentik}`, async () => {
-        await browser.reloadSession()
-        await browser.url("http://localhost:9000")
+        await browser.reloadSession();
+        await browser.url("http://localhost:9000");
 
-        const uidField = await $('>>>input[name="uidField"]');
-        await uidField.setValue('ken@goauthentik.io');
+        let start = Date.now();
+        for ([command, ...args] of login) {
+            await $AkSel[command].apply($, args);
+        }
 
-        const next1 = await $('>>>button[type="submit"]');
-        await next1.click();
-        await browser.pause(CLICK_TIME_DELAY);
-        
-        const pwdField = await $('>>>input[name="password"]');
-        await pwdField.setValue('eat10bugs');
-        const next2 = await $('>>>button[type="submit"]');
-        await next2.click();
-        await browser.pause(CLICK_TIME_DELAY);
-
-        const home = await $('>>>div.header h1');
-        expect(home).toHaveText('My applications');
+        const home = await $(">>>div.header h1");
+        expect(home).toHaveText("My applications");
 
         const goToAdmin = await $('>>>a[href="/if/admin"]');
         goToAdmin.click();
 
-        await $('>>>ak-admin-overview').waitForDisplayed();
+        await $(">>>ak-admin-overview").waitForDisplayed();
+        $AkSel.button('>>>a[href="#/core/applications;%7B%22createForm%22%3Atrue%7D"]');
 
-        const applicationLink = await $('>>>a[href="#/core/applications;%7B%22createForm%22%3Atrue%7D"]');
-        applicationLink.click();
+        await $(">>>ak-application-list").waitForDisplayed();
+        $AkSel.button('>>>ak-wizard-frame button[slot="trigger"]');
 
-        await $('>>>ak-application-list').waitForDisplayed();
-        const startWizard = await $('>>>ak-wizard-frame button[slot="trigger"]')
-        startWizard.click();
-
-        {
-            const nameInput = await $('>>>ak-form-element-horizontal input[name="name"]');
-            await nameInput.setValue('This Is My Application');
-
-            const slugInput = await $('>>>ak-form-element-horizontal input[name="slug"]');
-            await slugInput.setValue('this-is-my-application');
-
-            const nextButton = await $('>>>ak-wizard-frame footer button.pf-m-primary');
-            await nextButton.click();
+        for ([command, ...args] of simpleApplication) {
+            await $AkSel[command].apply($, args);
         }
 
-        {
-            const input = await $('>>>input[value="proxyprovider-proxy"]');
-            await input.click();
-
-            const nextButton = await $('>>>ak-wizard-frame footer button.pf-m-primary');
-            await nextButton.click();
-        }
-
-        {
-            const input = await $('>>>ak-form-element-horizontal input[name="name"]');
-            await input.setValue('This Is My Provider');
-        }
-
-        await browser.pause(2000);
-    })
-})
-
+        let timeTaken = Date.now() - start;
+        console.log("Total time taken : " + timeTaken + " milliseconds");
+    });
+});

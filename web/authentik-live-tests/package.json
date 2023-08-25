@@ -17,6 +17,7 @@
     },
     "dependencies": {
         "@wdio/cli": "^8.15.6",
+        "@wdio/types": "^8.15.7",
         "prettier": "^3.0.2"
     }
 }
