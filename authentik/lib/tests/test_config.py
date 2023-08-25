@@ -125,18 +125,18 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         config.update_from_env()
         config.check_deprecations()
-        self.assertEqual(config.y("redis.broker_url", UNSET), UNSET)
-        self.assertEqual(config.y("redis.broker_transport_options", UNSET), UNSET)
-        self.assertEqual(config.y("redis.cache_timeout", UNSET), UNSET)
-        self.assertEqual(config.y("redis.cache_timeout_flows", UNSET), UNSET)
-        self.assertEqual(config.y("redis.cache_timeout_policies", UNSET), UNSET)
-        self.assertEqual(config.y("redis.cache_timeout_reputation", UNSET), UNSET)
-        self.assertEqual(config.y("broker.url"), "redis://myredis:8327/43")
-        self.assertEqual(config.y("broker.transport_options"), "bWFzdGVybmFtZT1teW1hc3Rlcg==")
-        self.assertEqual(config.y("cache.timeout"), "124s")
-        self.assertEqual(config.y("cache.timeout_flows"), "32m")
-        self.assertEqual(config.y("cache.timeout_policies"), "3920ns")
-        self.assertEqual(config.y("cache.timeout_reputation"), "298382us")
+        self.assertEqual(config.get("redis.broker_url", UNSET), UNSET)
+        self.assertEqual(config.get("redis.broker_transport_options", UNSET), UNSET)
+        self.assertEqual(config.get("redis.cache_timeout", UNSET), UNSET)
+        self.assertEqual(config.get("redis.cache_timeout_flows", UNSET), UNSET)
+        self.assertEqual(config.get("redis.cache_timeout_policies", UNSET), UNSET)
+        self.assertEqual(config.get("redis.cache_timeout_reputation", UNSET), UNSET)
+        self.assertEqual(config.get("broker.url"), "redis://myredis:8327/43")
+        self.assertEqual(config.get("broker.transport_options"), "bWFzdGVybmFtZT1teW1hc3Rlcg==")
+        self.assertEqual(config.get("cache.timeout"), "124s")
+        self.assertEqual(config.get("cache.timeout_flows"), "32m")
+        self.assertEqual(config.get("cache.timeout_policies"), "3920ns")
+        self.assertEqual(config.get("cache.timeout_reputation"), "298382us")
 
     @mock.patch.dict(environ, update_redis_url_from_env_env_vars)
     def test_update_redis_url_from_env(self):
@@ -145,7 +145,7 @@ class TestConfig(TestCase):
         config.update_from_env()
         config.update_redis_url_from_env()
         self.assertEqual(
-            config.y("redis.url"),
+            config.get("redis.url"),
             "rediss://myredis:9637/56?idletimeout=20s&insecureskipverify=true"
             + "&password=%22%27%25+%21.%3B.%C2%B0&username=default",
         )
@@ -157,6 +157,6 @@ class TestConfig(TestCase):
         config.update_from_env()
         config.update_redis_url_from_env()
         self.assertEqual(
-            config.y("redis.url"),
+            config.get("redis.url"),
             "rediss://myredis:5132/8?skipverify=true",
         )
