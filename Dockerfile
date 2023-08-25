@@ -5,10 +5,9 @@ ENV NODE_ENV=production
 
 WORKDIR /work/website
 
-COPY ./website/package.json /work/website/package.json
-COPY ./website/package-lock.json /work/website/package-lock.json
-
-RUN --mount=type=cache,target=/root/.npm \
+RUN --mount=type=bind,target=/work/website/package.json,src=./website/package.json \
+    --mount=type=bind,target=/work/website/package-lock.json,src=./website/package-lock.json \
+    --mount=type=cache,target=/root/.npm \
     npm ci --include=dev
 
 COPY ./website /work/website/
@@ -24,10 +23,9 @@ ENV NODE_ENV=production
 
 WORKDIR /work/web
 
-COPY ./web/package.json /work/web/package.json
-COPY ./web/package-lock.json /work/web/package-lock.json
-
-RUN --mount=type=cache,target=/root/.npm \
+RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
+    --mount=type=bind,target=/work/web/package-lock.json,src=./web/package-lock.json \
+    --mount=type=cache,target=/root/.npm \
     npm ci --include=dev
 
 COPY ./web /work/web/
@@ -38,19 +36,27 @@ RUN npm run build
 # Stage 3: Build go proxy
 FROM docker.io/golang:1.21.1-bookworm AS go-builder
 
-WORKDIR /work
+WORKDIR /go/src/goauthentik.io
 
-COPY --from=web-builder /work/web/robots.txt /work/web/robots.txt
-COPY --from=web-builder /work/web/security.txt /work/web/security.txt
+RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
+    --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
+    --mount=type=cache,target=/go/pkg/mod \
+    go mod download
 
-COPY ./cmd /work/cmd
-COPY ./authentik/lib /work/authentik/lib
-COPY ./web/static.go /work/web/static.go
-COPY ./internal /work/internal
-COPY ./go.mod /work/go.mod
-COPY ./go.sum /work/go.sum
+COPY ./cmd /go/src/goauthentik.io/cmd
+COPY ./authentik/lib /go/src/goauthentik.io/authentik/lib
+COPY ./web/static.go /go/src/goauthentik.io/web/static.go
+COPY ./web/robots.txt /go/src/goauthentik.io/web/robots.txt
+COPY ./web/security.txt /go/src/goauthentik.io/web/security.txt
+COPY ./internal /go/src/goauthentik.io/internal
+COPY ./go.mod /go/src/goauthentik.io/go.mod
+COPY ./go.sum /go/src/goauthentik.io/go.sum
 
-RUN go build -o /work/bin/authentik ./cmd/server/
+ENV CGO_ENABLED=0
+
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -o /go/authentik ./cmd/server
 
 # Stage 4: MaxMind GeoIP
 FROM ghcr.io/maxmind/geoipupdate:v6.0 as geoip
@@ -126,7 +132,7 @@ COPY ./tests /tests
 COPY ./manage.py /
 COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
-COPY --from=go-builder /work/bin/authentik /bin/authentik
+COPY --from=go-builder /go/authentik /bin/authentik
 COPY --from=python-deps /work/venv /venv
 COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/

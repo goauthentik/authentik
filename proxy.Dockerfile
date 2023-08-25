@@ -6,8 +6,9 @@ WORKDIR /static
 
 COPY web/package.json .
 COPY web/package-lock.json .
-RUN --mount=type=cache,target=/static/.npm \
-    npm set cache /static/.npm && \
+RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
+    --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
+    --mount=type=cache,target=/root/.npm \
     npm ci --include=dev
 
 COPY web .
@@ -18,10 +19,10 @@ FROM docker.io/golang:1.21.1-bookworm AS builder
 
 WORKDIR /go/src/goauthentik.io
 
-COPY go.mod .
-COPY go.sum .
-COPY gen-go-api .
-RUN --mount=type=cache,target=/go/pkg/mod \
+RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
+    --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
+    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
+    --mount=type=cache,target=/go/pkg/mod \
     go mod download
 
 ENV CGO_ENABLED=0
