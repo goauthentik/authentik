@@ -1,0 +1,77 @@
+#!/usr/bin/env bash
+
+# The below is helpful because Chrome is an evergreen browser, meaning that it will auto-updated on
+# most desktop computers without even informing the user. So we need a way, if you hit the mismatch,
+# to update the local chromedriver easily.
+#
+# Testing with WDIO requires a specific version of the chromedriver, specified in the current
+# package.json. Updating the chromedriver will change that version number in package.json.
+#
+# The environment block derives the major version for the local (MacOS) version of chrome and the
+# current driver version for the project and, if they're mismatch, updates the local driver then
+# resets the content of package.json.
+
+# -u: Treat an unset variable as a fatal syntax error.
+# -eo pipefile: Fail on first error, even if it happens inside a pipeline.
+set -ueo pipefail
+
+VERBOSE=""
+if [ "$#" -gt 0 ] && [ "$1" = "-v" ]; then
+    VERBOSE="verbose";
+fi;
+
+if [ "$#" -gt 0 ] && [ "$1" = "-h" ]; then
+    echo "Usage: "
+    echo "    -v: On success, show a message. (Default behavior only shows a message on failure)"
+    echo "    -h: This help message"
+    echo ""
+    exit 0
+fi;
+
+# The path to the working folder for the test project, as a subfolder of the monorepo. This will be
+# help us find where the driver is kept for comparison.
+SUBFOLDER="authentik-live-tests"
+
+# The variant of Chrome we expect under Linux. There are a lot of variants, like Midori, chromium,
+# chromium-browser, etc. If you're not running the version supplied by Google, you'll have to change
+# this variable.
+LINUX_VARIANT="google-chrome"
+
+CURRENT_OS=$(uname -s)
+
+CURRENT_OS=$(uname -s)
+if [ "$CURRENT_OS" == "Linux" ]; then
+	CHROME_LOCATION=$(command -v "$LINUX_VARIANT")
+	if [ "$CHROME_LOCATION" == "" ]; then
+		echo "Could not find google-chrome installed on this Linux system."
+		exit 1
+	fi
+	CHROME_VERSION=$("$LINUX_VARIANT" --version)
+else
+	CHROME_LOCATION="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
+	if [ ! -f "$CHROME_LOCATION" ]; then
+		echo "Could not find Google Chrome app installed on this MacOS system."
+		exit 1
+	fi
+	CHROME_VERSION=$("$CHROME_LOCATION" --version)
+fi
+
+CHROME_MAJOR_VER=$(echo "$CHROME_VERSION" | sed 's/^Google Chrome //' | cut -d'.' -f1)
+PROJECT_TOPLEVEL=$(git rev-parse --show-toplevel)
+TEST_HOME=$(find $PROJECT_TOPLEVEL -not \( -path "*/node_modules" -prune \) -type d -name "$SUBFOLDER" | head -1)
+DRIVER_VER=$(grep '^  "version":' "$TEST_HOME/node_modules/chromedriver/package.json")
+DRIVER_MAJOR_VER=$(echo "$DRIVER_VER" | cut -d':' -f2 | sed 's/"//g' | cut -d'.' -f1 | sed 's/ *//')
+
+if [ "$CHROME_MAJOR_VER" -ne "$DRIVER_MAJOR_VER" ]; then
+    echo "Driver: $DRIVER_MAJOR_VER, Chrome: $CHROME_MAJOR_VER, updating..."
+    npm install "chromedriver@$CHROME_MAJOR_VER"
+    git checkout package.json package-lock.json
+    exit 0
+fi 
+
+if [ "$VERBOSE" ]; then
+    echo "Driver: $DRIVER_MAJOR_VER, Chrome: $CHROME_MAJOR_VER. No update required."
+fi
+
+# SUCCESS!
+exit 0

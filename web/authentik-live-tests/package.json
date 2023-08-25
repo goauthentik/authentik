@@ -1,0 +1,22 @@
+{
+    "name": "authentik-live-tests",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@wdio/junit-reporter": "^8.15.6",
+        "@wdio/local-runner": "^8.15.6",
+        "@wdio/mocha-framework": "^8.15.6",
+        "@wdio/spec-reporter": "^8.15.6",
+        "@wdio/sync": "^7.27.0",
+        "chromedriver": "^116.0.0",
+        "wdio-chromedriver-service": "^8.1.1",
+        "wdio-safaridriver-service": "^2.1.1"
+    },
+    "dependencies": {
+        "@wdio/cli": "^8.15.6",
+        "prettier": "^3.0.2"
+    }
+}
