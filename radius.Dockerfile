@@ -3,10 +3,10 @@ FROM docker.io/golang:1.21.1-bookworm AS builder
 
 WORKDIR /go/src/goauthentik.io
 
-COPY go.mod .
-COPY go.sum .
-COPY gen-go-api .
-RUN --mount=type=cache,target=/go/pkg/mod \
+RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
+    --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
+    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
+    --mount=type=cache,target=/go/pkg/mod \
     go mod download
 
 ENV CGO_ENABLED=0
