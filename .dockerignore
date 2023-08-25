@@ -8,3 +8,4 @@ build_docs/**
 *Dockerfile
 authentik/enterprise
 blueprints/local
+.git
