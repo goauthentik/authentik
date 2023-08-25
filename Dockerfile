@@ -1,36 +1,41 @@
 # Stage 1: Build website
 FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as website-builder
 
+ENV NODE_ENV=production
+
+WORKDIR /work/website
+
+COPY ./website/package.json /work/website/package.json
+COPY ./website/package-lock.json /work/website/package-lock.json
+
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --include=dev
+
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
 COPY ./SECURITY.md /work/
 
-ENV NODE_ENV=production
-WORKDIR /work/website
-RUN npm ci --include=dev && npm run build-docs-only
+RUN npm run build-docs-only
 
 # Stage 2: Build webui
 FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as web-builder
 
+ENV NODE_ENV=production
+
+WORKDIR /work/web
+
+COPY ./web/package.json /work/web/package.json
+COPY ./web/package-lock.json /work/web/package-lock.json
+
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --include=dev
+
 COPY ./web /work/web/
 COPY ./website /work/website/
 
-ENV NODE_ENV=production
-WORKDIR /work/web
-RUN npm ci --include=dev && npm run build
+RUN npm run build
 
-# Stage 3: Poetry to requirements.txt export
-FROM docker.io/python:3.11.5-slim-bookworm AS poetry-locker
-
-WORKDIR /work
-COPY ./pyproject.toml /work
-COPY ./poetry.lock /work
-
-RUN pip install --no-cache-dir poetry && \
-    poetry export -f requirements.txt --output requirements.txt && \
-    poetry export -f requirements.txt --dev --output requirements-dev.txt
-
-# Stage 4: Build go proxy
+# Stage 3: Build go proxy
 FROM docker.io/golang:1.21.1-bookworm AS go-builder
 
 WORKDIR /work
@@ -47,7 +52,7 @@ COPY ./go.sum /work/go.sum
 
 RUN go build -o /work/bin/authentik ./cmd/server/
 
-# Stage 5: MaxMind GeoIP
+# Stage 4: MaxMind GeoIP
 FROM ghcr.io/maxmind/geoipupdate:v6.0 as geoip
 
 ENV GEOIPUPDATE_EDITION_IDS="GeoLite2-City"
@@ -60,6 +65,27 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     --mount=type=secret,id=GEOIPUPDATE_LICENSE_KEY \
     mkdir -p /usr/share/GeoIP && \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
+
+# Stage 5: Python dependencies
+FROM docker.io/python:3.11.5-bookworm AS python-deps
+
+WORKDIR /work
+
+ENV VENV_PATH="/work/venv" \
+    PATH="/work/venv/bin:$PATH"
+
+RUN --mount=type=cache,target=/var/cache/apt \
+    apt-get update && \
+    # Required for installing pip packages
+    apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev zlib1g-dev libpq-dev
+
+RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
+    --mount=type=bind,target=./poetry.lock,src=./poetry.lock \
+    --mount=type=cache,target=/root/.cache/pypoetry \
+    python -m venv /work/venv/ && \
+    pip3 install --upgrade pip && \
+    pip3 install poetry && \
+    poetry install --only=main
 
 # Stage 6: Run
 FROM docker.io/python:3.11.5-slim-bookworm AS final-image
@@ -76,22 +102,16 @@ LABEL org.opencontainers.image.revision ${GIT_BUILD_HASH}
 
 WORKDIR /
 
-COPY --from=poetry-locker /work/requirements.txt /
-COPY --from=poetry-locker /work/requirements-dev.txt /
 COPY --from=geoip /usr/share/GeoIP /geoip
 
+# We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
-    # Required for installing pip packages
-    apt-get install -y --no-install-recommends build-essential pkg-config libxmlsec1-dev zlib1g-dev libpq-dev python3-dev && \
     # Required for runtime
     apt-get install -y --no-install-recommends libpq5 openssl libxmlsec1-openssl libmaxminddb0 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
-    pip install --no-cache-dir -r /requirements.txt && \
-    apt-get remove --purge -y build-essential pkg-config libxmlsec1-dev libpq-dev python3-dev && \
-    apt-get autoremove --purge -y && \
     apt-get clean && \
-    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ /root/.cache && \
+    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
     mkdir -p /certs /media /blueprints && \
     mkdir -p /authentik/.ssh && \
@@ -99,6 +119,7 @@ RUN apt-get update && \
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
+COPY ./poetry.lock /
 COPY ./schemas /schemas
 COPY ./locale /locale
 COPY ./tests /tests
@@ -106,15 +127,17 @@ COPY ./manage.py /
 COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY --from=go-builder /work/bin/authentik /bin/authentik
+COPY --from=python-deps /work/venv /venv
 COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/
 COPY --from=website-builder /work/website/help/ /website/help/
 
 USER 1000
 
-ENV TMPDIR /dev/shm/
-ENV PYTHONUNBUFFERED 1
-ENV PATH "/usr/local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/lifecycle"
+ENV TMPDIR=/dev/shm/ \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PATH="/venv/bin:$PATH"
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "/lifecycle/ak", "healthcheck" ]
 
