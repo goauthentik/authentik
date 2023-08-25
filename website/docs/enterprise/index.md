@@ -7,7 +7,7 @@ The Enterprise release of authentik provides all of the functionality that we ha
 Refer to our Enterprise documentation for information about creating and managing your organization, purchasing and activating a license, support, and managing billing and organization members.
 
 -   [Get started with Enterprise](./get-started.md)
--   [Manage you Enterprose account](./manage-enterprise.md)
+-   [Manage you Enterprise account](./manage-enterprise.md)
 -   [Support for Enterprise accounts](./entsupport.md)
 
-Our standard technical documentation covers how to configure, customize, and use authentik, whether the open source version that we have built our reputation on, or our Enerprise feature with dedicated support.
+Our standard technical documentation covers how to configure, customize, and use authentik, whether the open source version that we have built our reputation on, or our Enterprise feature with dedicated support.

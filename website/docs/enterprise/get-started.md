@@ -2,51 +2,55 @@
 title: Get started
 ---
 
-Installing authentik is exactly the same process for both Enterprise version and our free OSS version. Refer to our [technical documentation](../installation/index.md) for instructions to install and configure authentik.
+Installing authentik is exactly the same process for both Enterprise version and our free open source version.
 
 > This preview version of Enterprise authentik is available within our 2023.8.x release and later.
 
 ## Install Enterprise
 
-To get started working with the preview edition of Enterprise authentik, upgrade to the 2023.8.x version. For installation steps, [technical documentation](../installation/index.md) for instructions to install and configure authentik.
+To get started working with the preview edition of Enterprise authentik, upgrade to the [2023.8.x version](../releases). For installation steps, [technical documentation](../installation/index.md) for instructions to install and configure authentik.
 
 -   [Docker Compose installation](../installation/docker-compose.md)
--   [Kubernetes instalation](../installation/kubernetes.md)
+-   [Kubernetes installation](../installation/kubernetes.md)
 
 ## Access Enterprise
 
-After you have installed authentik, you can access your Enterprise features by first getting a license for the organization.
+Access your Enterprise features by first getting a license for the organization.
 
-The license key provides access to the Customer Portal, where you define your organization and its members, manage billing, and access our Support center to open tickets and view current requests.
+The license key provides access to the Customer portal, where you define your organization and its members, manage billing, and access our Support center to open tickets and view current requests.
 
-1. To get a license key, log in to your authentik account as usual, and click on **Admin interface** in the upper right.
+1. To get a license key, log in to your authentik account with your admin credentials, and then click **Admin interface** in the upper right.
 
 !["Admin interface licenses page"](./licenses-page-admin.png)
 
-2. On the **Admin interface**, navigate to **Enterprise → Licenses** in the left menu, and then click **Go to customer portal** under the **Get a license** section.
+2. On the **Admin interface**, navigate to **Enterprise → Licenses** in the left menu, and then click **Go to Customer portal** under the **Get a license** section.
 
 3. In the Authentik login screen, sign up and then log in to the Customer Portal.
 
-4. In the Customer Portal, if you have not already created an Organization (nor been invited to join one), you are first be prompted to create an organization.
+    In the Customer Portal, if you have not already created an Organization (nor been invited to join one), you are first prompted to create an organization.
 
-    For details about creating an organization, refer to [Manage your Enterprise account](./manage-enterprise.md#organization-management).
+4. On the **My organizations** page, click **Create an organization**.
 
-5. In the Customer Portal, on the **Purchase a license** page, review the pricing plans and, optionally, change the name of the license. (The name is simply a nickname, a convenient way to label the license.)
+5. Specify the organization's name and notification email address, and then click **Create**.
 
-6. Click **Continue** to display the checkout page. Select the number of users, provide your payment information, and then click **Subscribe**.
+    For more information about organizations, refer to [Manage your Enterprise account](./manage-enterprise.md#organization-management).
 
-NOTES for me: after they click Subscribe, payment verification happens...
+    Your new organization page displays.
 
-redirected to the Customer portal Organization page... which dipslays success or not... in the background, the license is created. The user will see a message during the verification stage, saying "your license will be created now."
+6. Click **Purchase license**, and then on the **Purchase a license** page, review the pricing plans and (optionally) change the name of the license. The name is simply a nickname, a convenient way to label the license.
 
-NOTE: user will have to refresh the page to get the license... figure out how to word this to not sound too bad. It only takes seconds...
+7. Click **Continue** to display the checkout page. Select the number of users, provide your payment information, and then click **Subscribe**.
 
-When ready, the license shows on the Org page in the list, for that org.
+When payment verification is complete, you are redirected to the **My organizations** page, where you should see a message saying "Successful purchase. Your license will appear here once we've validated your payment. If it doesn't, please contact us."
 
-7. To retrieve your license key, click on Details beside the license and .... copy the key.
+    When ready, the license displays on the organization's page.
 
-8. Go back to the Admin interface, navigate to **Enterprise -> Licenses** page, click on **Install** and paste the key, and then click **Install**.
+7. To retrieve your license key, click on **Details** beside the license name and copy the key to your clipboard.
 
-To verify that it all works, the expriry date will show one year. (Ask Jens to add green mark of success.)
+8. Go back to the Admin interface, navigate to **Enterprise -> Licenses** page, click on **Install**, paste the key, and then click **Install**.
+
+## License verification
+
+To verify that the license was successfully installed, confirm that the expriry date on the **Enterprise --> Licenses** page displays a date one year later.
 
 > For information about managing your Enterprise organizations, billing, and licenses, refer to [Manage your Enterprise account](./manage-enterprise.md)].

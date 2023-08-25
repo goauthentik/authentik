@@ -2,26 +2,55 @@
 title: Manage your Enterprise account
 ---
 
-### Organization management
+## Organization management
 
 Your organization defines the members, their roles, the license associated with the organization, and account management for billing, payment methods, and invoice history.
 
-#### **Create an Org**
+### **Create an Organization**
 
-note that to delete one, you need to open a ticket
+1. To create a new organization, log in to the Customer portal.
 
-#### Add/remove members of an organization\*\*
+2. On the **My organizations** page, click **Create an organization**.
 
--   explain the roles
+3. Specify the organization's name and notification email address, and then click **Create**.
+
+    Your new organization page displays.
+
+:::info
+If you need to delete an organization open a ticket in the Support center.
+:::
+
+### Add/remove members of an organization
+
+In the customer portal you can remove members and invite new members to the organization. When you invite new members, you can specify the role for the new member.
+
+-   **Membe**r: can view licenses, including the license key.
+-   **Owner**: can do everything the Member role can do, plus adding and removing members. Can order and renew licenses. Can edit the organization.
+
+1. To manage membership in an organization, log in to the Customer portal.
+
+2. On the **My organizations** page, click the name of the organization you want to edit membership in.
+
+    Your organization page displays.
+
+    - To remove a member, scroll down to the **Membership** area and then click **Remove** beside the name of the member.
+
+    - To invite a new member, scroll down to the **Pending invitations** area, and enter the email address for the person, select the role, and then click **Invite**.
+
+    A message appears that the invitation has been sent. When the recipient accepts the invitation by clicking a link in the email, they will be added to the organization.
+
+    TO BE WRITTEN
+    vvvvvvvvvvvv
+
 -   explain the forecast users
 
 ### License management
 
-#### Buy a license
+### Buy a license
 
 (explain the Install ID for those people who entered the Customer Portal without going through the Admin interface)
 
-#### Difference between Internal and External users
+### Difference between Internal and External users
 
 -   How the license usage is calculated (for default and external users)
 
@@ -43,6 +72,6 @@ note that to delete one, you need to open a ticket
 
     But the rest of the functionality is still there as is
 
--   How to view your license key
+### How to view your license key
 
 ### Manage Billing

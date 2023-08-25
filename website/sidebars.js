@@ -13,7 +13,7 @@ const docsSidebar = {
         {
             type: "category",
             label: "Installation",
-            collapsed: false,
+            collapsed: true,
             link: {
                 type: "doc",
                 id: "installation/index",
@@ -32,7 +32,7 @@ const docsSidebar = {
         {
             type: "category",
             label: "Core Concepts",
-            collapsed: false,
+            collapsed: true,
             items: [
                 "core/terminology",
                 "core/applications",
@@ -40,6 +40,20 @@ const docsSidebar = {
                 "core/certificates",
                 "core/geoip",
                 "core/architecture",
+            ],
+        },
+        {
+            type: "category",
+            label: "Enterprise",
+            collapsed: true,
+            link: {
+                type: "doc",
+                id: "enterprise/index",
+            },
+            items: [
+                "enterprise/get-started",
+                "enterprise/manage-enterprise",
+                "enterprise/entsupport",
             ],
         },
         {
