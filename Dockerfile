@@ -75,9 +75,10 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
 # Stage 5: Python dependencies
 FROM docker.io/python:3.11.5-bookworm AS python-deps
 
-WORKDIR /work
+WORKDIR /work/poetry
 
 ENV VENV_PATH="/work/venv" \
+    POETRY_VIRTUALENVS_CREATE=false \
     PATH="/work/venv/bin:$PATH"
 
 RUN --mount=type=cache,target=/var/cache/apt \
@@ -87,11 +88,12 @@ RUN --mount=type=cache,target=/var/cache/apt \
 
 RUN --mount=type=bind,target=./pyproject.toml,src=./pyproject.toml \
     --mount=type=bind,target=./poetry.lock,src=./poetry.lock \
+    --mount=type=cache,target=/root/.cache/pip \
     --mount=type=cache,target=/root/.cache/pypoetry \
     python -m venv /work/venv/ && \
     pip3 install --upgrade pip && \
     pip3 install poetry && \
-    poetry install --only=main
+    poetry install --only=main --no-ansi --no-interaction
 
 # Stage 6: Run
 FROM docker.io/python:3.11.5-slim-bookworm AS final-image
