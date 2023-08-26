@@ -39,6 +39,7 @@ COPY --from=web-builder /work/web/robots.txt /work/web/robots.txt
 COPY --from=web-builder /work/web/security.txt /work/web/security.txt
 
 COPY ./cmd /work/cmd
+COPY ./authentik/lib /work/authentik/lib
 COPY ./web/static.go /work/web/static.go
 COPY ./internal /work/internal
 COPY ./go.mod /work/go.mod
