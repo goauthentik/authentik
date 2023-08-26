@@ -67,7 +67,12 @@ func Get() *Config {
 }
 
 func (c *Config) Setup(paths ...string) {
-	c.LoadConfig(lib.DefaultConfig())
+	// initially try to load the default config which is compiled in
+	err := c.LoadConfig(lib.DefaultConfig())
+	// this should never fail
+	if err != nil {
+		panic(fmt.Errorf("failed to load inbuilt config: %v", err))
+	}
 	log.WithField("path", "inbuilt-default").Debug("Loaded config")
 	for _, path := range paths {
 		err := c.LoadConfigFromFile(path)
@@ -75,7 +80,7 @@ func (c *Config) Setup(paths ...string) {
 			log.WithError(err).Info("failed to load config, skipping")
 		}
 	}
-	err := c.fromEnv()
+	err = c.fromEnv()
 	if err != nil {
 		log.WithError(err).Info("failed to load env vars")
 	}
