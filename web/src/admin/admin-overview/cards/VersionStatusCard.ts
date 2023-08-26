@@ -43,11 +43,11 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
 
     renderValue(): TemplateResult {
         let text = this.value?.versionCurrent;
-        let link = "https://goauthentik.io/docs/releases/${this.value?.versionCurrent}";
+        let link = `https://goauthentik.io/docs/releases/${this.value?.versionCurrent}`;
         if (this.value?.buildHash) {
             text = this.value.buildHash?.substring(0, 7);
-            link = "https://github.com/goauthentik/authentik/commit/${this.value.buildHash}";
+            link = `https://github.com/goauthentik/authentik/commit/${this.value.buildHash}`;
         }
-        return html`<a href=${link} target="_blank"> ${text} </a>`;
+        return html`<a href=${link} target="_blank">${text}</a>`;
     }
 }
