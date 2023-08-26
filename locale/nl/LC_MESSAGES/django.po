@@ -128,12 +128,12 @@ msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
 msgstr ""
-"Stroom gebruikt voor authenticatie wanneer de bijbehorende applicatie wordt "
+"Flow gebruikt voor authenticatie wanneer de bijbehorende applicatie wordt "
 "geopend door een niet-geauthenticeerde gebruiker."
 
 #: authentik/core/models.py:292
 msgid "Flow used when authorizing this provider."
-msgstr "Stroom gebruikt bij het autoriseren van deze provider."
+msgstr "Flow gebruikt bij het autoriseren van deze provider."
 
 #: authentik/core/models.py:304
 msgid ""
@@ -211,12 +211,11 @@ msgstr "Interne naam van de bron, gebruikt in URL's."
 
 #: authentik/core/models.py:483
 msgid "Flow to use when authenticating existing users."
-msgstr ""
-"Stroom om te gebruiken bij het authenticeren van bestaande gebruikers."
+msgstr "Flow om te gebruiken bij het authenticeren van bestaande gebruikers."
 
 #: authentik/core/models.py:492
 msgid "Flow to use when enrolling new users."
-msgstr "Stroom om te gebruiken bij het inschrijven van nieuwe gebruikers."
+msgstr "Flow om te gebruiken bij het inschrijven van nieuwe gebruikers."
 
 #: authentik/core/models.py:500
 msgid ""
@@ -261,7 +260,7 @@ msgstr ""
 
 #: authentik/core/sources/flow_manager.py:245
 msgid "Configured flow does not exist."
-msgstr "Geconfigureerde stroom bestaat niet."
+msgstr "Geconfigureerde flow bestaat niet."
 
 #: authentik/core/sources/flow_manager.py:275
 #: authentik/core/sources/flow_manager.py:327
@@ -482,7 +481,7 @@ msgstr "Taak is nog niet uitgevoerd."
 #, python-format
 msgid "Flow not applicable to current user/request: %(messages)s"
 msgstr ""
-"Stroom is niet van toepassing op de huidige gebruiker/aanvraag: %(messages)s"
+"Flow is niet van toepassing op de huidige gebruiker/aanvraag: %(messages)s"
 
 #: authentik/flows/api/flows_diagram.py:68
 #: authentik/flows/api/flows_diagram.py:94
@@ -514,7 +513,7 @@ msgstr "Beleid geweigerd"
 #: authentik/flows/api/flows_diagram.py:205
 #: authentik/flows/api/flows_diagram.py:227
 msgid "End of the flow"
-msgstr "Einde van de stroom"
+msgstr "Einde van de flow"
 
 #: authentik/flows/api/flows_diagram.py:169
 msgid "Requirement not fulfilled"
@@ -522,7 +521,7 @@ msgstr "Vereiste niet vervuld"
 
 #: authentik/flows/api/flows_diagram.py:177
 msgid "Flow authentication requirement"
-msgstr "Authenticatievereiste voor stroom"
+msgstr "Authenticatievereiste voor flow"
 
 #: authentik/flows/api/flows_diagram.py:183
 msgid "Requirement fulfilled"
@@ -530,15 +529,15 @@ msgstr "Vereiste vervuld"
 
 #: authentik/flows/api/flows_diagram.py:196
 msgid "Pre-flow policies"
-msgstr "Beleid voorafgaand aan stroom"
+msgstr "Beleid voorafgaand aan flow"
 
 #: authentik/flows/api/flows_diagram.py:214 authentik/flows/models.py:193
 msgid "Flow"
-msgstr "Stroom"
+msgstr "Flow"
 
 #: authentik/flows/exceptions.py:19
 msgid "Flow does not apply to current user."
-msgstr "Stroom is niet van toepassing op de huidige gebruiker."
+msgstr "Flow is niet van toepassing op de huidige gebruiker."
 
 #: authentik/flows/models.py:114
 #, python-format
@@ -558,9 +557,9 @@ msgid ""
 "Decides what this Flow is used for. For example, the Authentication flow is "
 "redirect to when an un-authenticated user visits authentik."
 msgstr ""
-"Bepaalt waarvoor deze Stroom wordt gebruikt. Bijvoorbeeld, de "
-"Authenticatiestroom wordt gebruikt wanneer een niet-geauthenticeerde "
-"gebruiker authentik bezoekt."
+"Bepaalt waarvoor deze Flow wordt gebruikt. Bijvoorbeeld, de "
+"Authenticatieflow wordt gebruikt wanneer een niet-geauthenticeerde gebruiker"
+" authentik bezoekt."
 
 #: authentik/flows/models.py:147
 msgid "Background shown during execution"
@@ -577,14 +576,14 @@ msgstr ""
 #: authentik/flows/models.py:162
 msgid "Configure what should happen when a flow denies access to a user."
 msgstr ""
-"Configureer wat er moet gebeuren wanneer een stroom de toegang tot een "
+"Configureer wat er moet gebeuren wanneer een flow de toegang tot een "
 "gebruiker weigert."
 
 #: authentik/flows/models.py:168
 msgid "Required level of authentication and authorization to access a flow."
 msgstr ""
 "Vereist niveau van authenticatie en autorisatie om toegang te krijgen tot "
-"een stroom."
+"een flow."
 
 #: authentik/flows/models.py:194
 msgid "Flows"
@@ -592,7 +591,7 @@ msgstr "Stromen"
 
 #: authentik/flows/models.py:215
 msgid "Evaluate policies during the Flow planning process."
-msgstr "Evalueer beleid tijdens het planningsproces van de Stroom."
+msgstr "Evalueer beleid tijdens het planningsproces van de Flow."
 
 #: authentik/flows/models.py:219
 msgid "Evaluate policies when the Stage is present to the user."
@@ -605,35 +604,35 @@ msgid ""
 "executor. RESTART restarts the flow from the beginning, and "
 "RESTART_WITH_CONTEXT restarts the flow while keeping the current context."
 msgstr ""
-"Configureer hoe de stroomuitvoerder moet omgaan met een ongeldige reactie op"
-" een uitdaging. RETRY geeft het foutbericht en een soortgelijke uitdaging "
-"terug aan de uitvoerder. RESTART start de stroom opnieuw vanaf het begin, en"
-" RESTART_WITH_CONTEXT start de stroom opnieuw terwijl de huidige context "
+"Configureer hoe de flowuitvoerder moet omgaan met een ongeldige reactie op "
+"een uitdaging. RETRY geeft het foutbericht en een soortgelijke uitdaging "
+"terug aan de uitvoerder. RESTART start de flow opnieuw vanaf het begin, en "
+"RESTART_WITH_CONTEXT start de flow opnieuw terwijl de huidige context "
 "behouden blijft."
 
 #: authentik/flows/models.py:249
 msgid "Flow Stage Binding"
-msgstr "Stroomfasebinding"
+msgstr "Flowfasebinding"
 
 #: authentik/flows/models.py:250
 msgid "Flow Stage Bindings"
-msgstr "Stroomfasebindingen"
+msgstr "Flowfasebindingen"
 
 #: authentik/flows/models.py:265
 msgid ""
 "Flow used by an authenticated user to configure this Stage. If empty, user "
 "will not be able to configure this stage."
 msgstr ""
-"Stroom gebruikt door een geauthenticeerde gebruiker om deze fase te "
+"Flow gebruikt door een geauthenticeerde gebruiker om deze fase te "
 "configureren. Als leeg, zal de gebruiker deze fase niet kunnen configureren."
 
 #: authentik/flows/models.py:305
 msgid "Flow Token"
-msgstr "Stroomtoken"
+msgstr "Flowtoken"
 
 #: authentik/flows/models.py:306
 msgid "Flow Tokens"
-msgstr "Stroomtokens"
+msgstr "Flowtokens"
 
 #: authentik/lib/utils/time.py:27
 #, python-format
@@ -1057,27 +1056,27 @@ msgstr ""
 
 #: authentik/providers/oauth2/models.py:74
 msgid "code (Authorization Code Flow)"
-msgstr "code (Autorisatiecode-stroom)"
+msgstr "code (Autorisatiecode-flow)"
 
 #: authentik/providers/oauth2/models.py:75
 msgid "id_token (Implicit Flow)"
-msgstr "id_token (Impliciete Stroom)"
+msgstr "id_token (Impliciete Flow)"
 
 #: authentik/providers/oauth2/models.py:76
 msgid "id_token token (Implicit Flow)"
-msgstr "id_token token (Impliciete Stroom)"
+msgstr "id_token token (Impliciete Flow)"
 
 #: authentik/providers/oauth2/models.py:77
 msgid "code token (Hybrid Flow)"
-msgstr "code token (Hybride Stroom)"
+msgstr "code token (Hybride Flow)"
 
 #: authentik/providers/oauth2/models.py:78
 msgid "code id_token (Hybrid Flow)"
-msgstr "code id_token (Hybride Stroom)"
+msgstr "code id_token (Hybride Flow)"
 
 #: authentik/providers/oauth2/models.py:79
 msgid "code id_token token (Hybrid Flow)"
-msgstr "code id_token token (Hybride Stroom)"
+msgstr "code id_token token (Hybride Flow)"
 
 #: authentik/providers/oauth2/models.py:85
 msgid "HS256 (Symmetric Encryption)"
@@ -1744,7 +1743,7 @@ msgstr "Autorisatie-URL"
 
 #: authentik/sources/oauth/models.py:33
 msgid "URL the user is redirect to to conest the flow."
-msgstr "URL waarnaar de gebruiker wordt omgeleid om de stroom te verbinden."
+msgstr "URL waarnaar de gebruiker wordt omgeleid om de flow te verbinden."
 
 #: authentik/sources/oauth/models.py:38
 msgid "Access Token URL"
@@ -1942,7 +1941,7 @@ msgstr "POST Binding met automatische bevestiging"
 
 #: authentik/sources/saml/models.py:70
 msgid "Flow used before authentication."
-msgstr "Stroom gebruikt vóór authenticatie."
+msgstr "Flow gebruikt vóór authenticatie."
 
 #: authentik/sources/saml/models.py:77
 msgid "Issuer"
@@ -2397,15 +2396,15 @@ msgstr ""
 
 #: authentik/stages/identification/models.py:65
 msgid "Optional enrollment flow, which is linked at the bottom of the page."
-msgstr "Optionele inschrijvingsstroom, die onderaan de pagina is gekoppeld."
+msgstr "Optionele inschrijvingsflow, die onderaan de pagina is gekoppeld."
 
 #: authentik/stages/identification/models.py:74
 msgid "Optional recovery flow, which is linked at the bottom of the page."
-msgstr "Optionele herstelstroom, die onderaan de pagina is gekoppeld."
+msgstr "Optionele herstelflow, die onderaan de pagina is gekoppeld."
 
 #: authentik/stages/identification/models.py:83
 msgid "Optional passwordless flow, which is linked at the bottom of the page."
-msgstr "Optionele wachtwoordloze stroom, die onderaan de pagina is gekoppeld."
+msgstr "Optionele wachtwoordloze flow, die onderaan de pagina is gekoppeld."
 
 #: authentik/stages/identification/models.py:87
 msgid "Specify which sources should be shown."
@@ -2435,7 +2434,7 @@ msgid ""
 msgstr ""
 "Als deze vlag is ingesteld, zal dit stadium naar het volgende stadium "
 "springen wanneer er geen uitnodiging wordt gegeven. Standaard zal dit "
-"stadium de stroom annuleren als er geen uitnodiging wordt gegeven."
+"stadium de flow annuleren als er geen uitnodiging wordt gegeven."
 
 #: authentik/stages/invitation/models.py:44
 msgid "Invitation Stage"
@@ -2448,7 +2447,7 @@ msgstr "Uitnodigingsstadia"
 #: authentik/stages/invitation/models.py:60
 msgid "When set, only the configured flow can use this invitation."
 msgstr ""
-"Wanneer ingesteld, kan alleen de geconfigureerde stroom deze uitnodiging "
+"Wanneer ingesteld, kan alleen de geconfigureerde flow deze uitnodiging "
 "gebruiken."
 
 #: authentik/stages/invitation/models.py:64
@@ -2492,8 +2491,8 @@ msgid ""
 "How many attempts a user has before the flow is canceled. To lock the user "
 "out, use a reputation policy and a user_write stage."
 msgstr ""
-"Hoeveel pogingen een gebruiker heeft voordat de stroom wordt geannuleerd. Om"
-" de gebruiker buiten te sluiten, gebruik een reputatiebeleid en een "
+"Hoeveel pogingen een gebruiker heeft voordat de flow wordt geannuleerd. Om "
+"de gebruiker buiten te sluiten, gebruik een reputatiebeleid en een "
 "gebruikersschrijffase."
 
 #: authentik/stages/password/models.py:75
@@ -2561,7 +2560,7 @@ msgid ""
 "flow context as data-URI"
 msgstr ""
 "Bestand: Bestandsupload voor willekeurige bestanden. Bestandsinhoud is "
-"beschikbaar in de stroomcontext als gegevens-URI."
+"beschikbaar in de flowcontext als gegevens-URI."
 
 #: authentik/stages/prompt/models.py:85
 msgid "Separator: Static Separator Line"
