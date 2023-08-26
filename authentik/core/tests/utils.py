@@ -21,7 +21,7 @@ def create_test_flow(
     )
 
 
-def create_test_admin_user(name: Optional[str] = None) -> User:
+def create_test_admin_user(name: Optional[str] = None, **kwargs) -> User:
     """Generate a test-admin user"""
     uid = generate_id(20) if not name else name
     group = Group.objects.create(name=uid, is_superuser=True)
@@ -29,6 +29,7 @@ def create_test_admin_user(name: Optional[str] = None) -> User:
         username=uid,
         name=uid,
         email=f"{uid}@goauthentik.io",
+        **kwargs,
     )
     user.set_password(uid)
     user.save()
@@ -36,12 +37,12 @@ def create_test_admin_user(name: Optional[str] = None) -> User:
     return user
 
 
-def create_test_tenant() -> Tenant:
+def create_test_tenant(**kwargs) -> Tenant:
     """Generate a test tenant, removing all other tenants to make sure this one
     matches."""
     uid = generate_id(20)
     Tenant.objects.all().delete()
-    return Tenant.objects.create(domain=uid, default=True)
+    return Tenant.objects.create(domain=uid, default=True, **kwargs)
 
 
 def create_test_cert(use_ec_private_key=False) -> CertificateKeyPair:
