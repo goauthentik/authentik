@@ -53,7 +53,6 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		if err != nil {
 			panic(err)
 		}
-
 		a.log.Trace("using redis session backend")
 		return rs
 	}

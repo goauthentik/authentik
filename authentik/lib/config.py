@@ -129,10 +129,25 @@ class ConfigLoader:
             redis_url_old = urlparse(self.get("redis.url"))
             redis_url_query = dict(parse_qsl(redis_url_old.query))
             redis_addrs = get_addrs_from_url(redis_url_old)
-            redis_addr = redis_addrs[0].rsplit(":", 1)
-            redis_host = redis_addr[0]
-            if len(redis_addr) > 1:
-                redis_port = redis_addr[1]
+            if len(redis_url_old.scheme) > 0:
+                redis_url = redis_url_old.scheme
+            if redis_url == "redis+socket":
+                if redis_url_old.hostname:
+                    redis_addrs = [str(Path(redis_url_old.hostname).joinpath(redis_url_old.path))]
+                else:
+                    redis_addrs = [redis_url_old.path]
+                redis_db = None
+            add_env_redis_addr = False
+            if len(redis_addrs) == 0:
+                add_env_redis_addr = True
+            if self.get("redis.host", UNSET) is not UNSET:
+                redis_host = self.get("redis.host")
+                add_env_redis_addr = True
+            if self.get("redis.port", UNSET) is not UNSET:
+                redis_port = int(self.get("redis.port"))
+                add_env_redis_addr = True
+            if add_env_redis_addr:
+                redis_addrs += [f"{redis_host}:{redis_port}"]
             redis_credentials = get_credentials_from_url({}, redis_url_old)
             if len(redis_addrs) > 1:
                 redis_url_query["addrs"] = ",".join(redis_addrs[1:])
@@ -161,10 +176,6 @@ class ConfigLoader:
                     )
         if self.get("redis.db", UNSET) is not UNSET:
             redis_db = int(self.get("redis.db"))
-        if self.get("redis.host", UNSET) is not UNSET:
-            redis_host = self.get("redis.host")
-        if self.get("redis.port", UNSET) is not UNSET:
-            redis_port = int(self.get("redis.port"))
         if self.get("redis.username", UNSET) is not UNSET:
             redis_url_query["username"] = self.get("redis.username")
         elif "username" in redis_credentials:
@@ -173,7 +184,9 @@ class ConfigLoader:
             redis_url_query["password"] = self.get("redis.password")
         elif "password" in redis_credentials:
             redis_url_query["password"] = redis_credentials["password"]
-        redis_url += f"://{quote_plus(redis_host)}:{redis_port}/{redis_db}"
+        redis_url += f"://{redis_addrs[0]}"
+        if redis_db is not None:
+            redis_url += f"/{redis_db}"
         # Sort query in order to have similar tests between Go and Python implementation
         redis_url_query = urlencode(dict(sorted(redis_url_query.items())))
         if redis_url_query != "":
