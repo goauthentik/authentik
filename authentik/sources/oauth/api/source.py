@@ -62,7 +62,8 @@ class OAuthSourceSerializer(SourceSerializer):
                 well_known_config = session.get(well_known)
                 well_known_config.raise_for_status()
             except RequestException as exc:
-                raise ValidationError(exc.response.text)
+                text = exc.response.text if exc.response else str(exc)
+                raise ValidationError(text)
             config = well_known_config.json()
             try:
                 attrs["authorization_url"] = config["authorization_endpoint"]
@@ -78,7 +79,8 @@ class OAuthSourceSerializer(SourceSerializer):
                 jwks_config = session.get(jwks_url)
                 jwks_config.raise_for_status()
             except RequestException as exc:
-                raise ValidationError(exc.response.text)
+                text = exc.response.text if exc.response else str(exc)
+                raise ValidationError(text)
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 
