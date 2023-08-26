@@ -45,7 +45,7 @@ COPY ./internal /work/internal
 COPY ./go.mod /work/go.mod
 COPY ./go.sum /work/go.sum
 
-RUN go build -o /work/authentik ./cmd/server/
+RUN go build -o /work/bin/authentik ./cmd/server/
 
 # Stage 5: MaxMind GeoIP
 FROM ghcr.io/maxmind/geoipupdate:v6.0 as geoip
@@ -105,7 +105,7 @@ COPY ./tests /tests
 COPY ./manage.py /
 COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
-COPY --from=go-builder /work/authentik /bin/authentik
+COPY --from=go-builder /work/bin/authentik /bin/authentik
 COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/
 COPY --from=website-builder /work/website/help/ /website/help/
