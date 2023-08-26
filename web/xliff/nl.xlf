@@ -133,7 +133,7 @@
       </trans-unit>
       <trans-unit id="s95a032ae86881bf5">
         <source>Using flow</source>
-        <target>Stroom gebruiken</target>
+        <target>Flow gebruiken</target>
         
       </trans-unit>
       <trans-unit id="scb5c9a7cc4ccd68d">
@@ -298,7 +298,7 @@
       </trans-unit>
       <trans-unit id="s1cd264012278c047">
         <source>Flow execution</source>
-        <target>Stroomuitvoering</target>
+        <target>Flowuitvoering</target>
         
       </trans-unit>
       <trans-unit id="s32f04d33924ce8ad">
@@ -858,7 +858,7 @@
       </trans-unit>
       <trans-unit id="s319040353f479853">
         <source>Flow used for users to authenticate.</source>
-        <target>Stroom die wordt gebruikt om gebruikers te authenticeren.</target>
+        <target>Flow die wordt gebruikt om gebruikers te authenticeren.</target>
         
       </trans-unit>
       <trans-unit id="sbc80eab557fbf782">
@@ -883,7 +883,7 @@
       </trans-unit>
       <trans-unit id="s842d690eb3c11762">
         <source>Flow is executed and session is cached in memory. Flow is executed when session expires</source>
-        <target>De stroom wordt uitgevoerd en de sessie wordt in het geheugen gecachet. De stroom wordt uitgevoerd wanneer de sessie verloopt.</target>
+        <target>De flow wordt uitgevoerd en de sessie wordt in het geheugen gecachet. De flow wordt uitgevoerd wanneer de sessie verloopt.</target>
         
       </trans-unit>
       <trans-unit id="s6a66759749bf31ed">
@@ -893,7 +893,7 @@
       </trans-unit>
       <trans-unit id="se0adaf83627104fb">
         <source>Always execute the configured bind flow to authenticate the user</source>
-        <target>Voer altijd de geconfigureerde bindstroom uit om de gebruiker te authenticeren</target>
+        <target>Voer altijd de geconfigureerde bindflow uit om de gebruiker te authenticeren</target>
         
       </trans-unit>
       <trans-unit id="scef3f4ad80abbd22">
@@ -988,22 +988,22 @@
       </trans-unit>
       <trans-unit id="sbb3243352661428f">
         <source>Authentication flow</source>
-        <target>Authenticatiestroom</target>
+        <target>Authenticatieflow</target>
         
       </trans-unit>
       <trans-unit id="sa72a3bd1e7e89926">
         <source>Flow used when a user access this provider and is not authenticated.</source>
-        <target>Stroom die wordt gebruikt wanneer een gebruiker toegang krijgt tot deze provider en niet is geauthenticeerd.</target>
+        <target>Flow die wordt gebruikt wanneer een gebruiker toegang krijgt tot deze provider en niet is geauthenticeerd.</target>
         
       </trans-unit>
       <trans-unit id="s62f7c59b0606a8d6">
         <source>Authorization flow</source>
-        <target>Autorisatiestroom</target>
+        <target>Autorisatieflow</target>
         
       </trans-unit>
       <trans-unit id="sfbaeb0de54fbfdbb">
         <source>Flow used when authorizing this provider.</source>
-        <target>Stroom die wordt gebruikt bij het autoriseren van deze provider.</target>
+        <target>Flow die wordt gebruikt bij het autoriseren van deze provider.</target>
         
       </trans-unit>
       <trans-unit id="sc8de93a7dc0d78ba">
@@ -1048,7 +1048,7 @@
       </trans-unit>
       <trans-unit id="s7f9eb9c8bd26e8fd">
         <source>Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.</source>
-        <target>Geldige doorverwijzings-URL's na een succesvolle autorisatiestroom. Specificeer hier ook eventuele oorsprongen voor impliciete stromen.</target>
+        <target>Geldige doorverwijzings-URL's na een succesvolle autorisatieflow. Specificeer hier ook eventuele oorsprongen voor impliciete stromen.</target>
         
       </trans-unit>
       <trans-unit id="s2a369bc2febb5d55">
@@ -3371,22 +3371,22 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s1cc0e66dbd2b5502">
         <source>Flow settings</source>
-        <target>Stroominstellingen</target>
+        <target>Flowinstellingen</target>
         
       </trans-unit>
       <trans-unit id="sfe6977a3aea3ee6e">
         <source>Flow to use when authenticating existing users.</source>
-        <target>Stroom om te gebruiken bij het authenticeren van bestaande gebruikers.</target>
+        <target>Flow om te gebruiken bij het authenticeren van bestaande gebruikers.</target>
         
       </trans-unit>
       <trans-unit id="s2801a48ceac691b3">
         <source>Enrollment flow</source>
-        <target>Inschrijvingsstroom</target>
+        <target>Inschrijvingsflow</target>
         
       </trans-unit>
       <trans-unit id="s5d0a14d29ebad561">
         <source>Flow to use when enrolling new users.</source>
-        <target>Stroom om te gebruiken bij het inschrijven van nieuwe gebruikers.</target>
+        <target>Flow om te gebruiken bij het inschrijven van nieuwe gebruikers.</target>
         
       </trans-unit>
       <trans-unit id="s91f389c796720a81">
@@ -3526,12 +3526,12 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="sb32e9c1faa0b8673">
         <source>Pre-authentication flow</source>
-        <target>Stroom voorafgaand aan authenticatie</target>
+        <target>Flow voorafgaand aan authenticatie</target>
         
       </trans-unit>
       <trans-unit id="sa3c1f6ac5e63a70f">
         <source>Flow used before authentication.</source>
-        <target>Stroom die wordt gebruikt vóór authenticatie.</target>
+        <target>Flow die wordt gebruikt vóór authenticatie.</target>
         
       </trans-unit>
       <trans-unit id="se12969ade44cd2b6">
@@ -3797,7 +3797,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s59bf194136d0d13a">
         <source>Used to login using a flow executor</source>
-        <target>Gebruikt om in te loggen met behulp van een stroom-uitvoerder</target>
+        <target>Gebruikt om in te loggen met behulp van een flow-uitvoerder</target>
         
       </trans-unit>
       <trans-unit id="s1b14062c44e5ef45">
@@ -3927,7 +3927,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="sd6b8b4156f7df696">
         <source>Icon shown in sidebar/header and flow executor.</source>
-        <target>Pictogram getoond in zijbalk/koptekst en stroomuitvoerder.</target>
+        <target>Pictogram getoond in zijbalk/koptekst en flowuitvoerder.</target>
         
       </trans-unit>
       <trans-unit id="s3626433940124897">
@@ -3947,42 +3947,42 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="sd216b08bafb297ee">
         <source>Flow used to authenticate users. If left empty, the first applicable flow sorted by the slug is used.</source>
-        <target>Stroom die wordt gebruikt om gebruikers te authenticeren. Als dit leeg wordt gelaten, wordt de eerste toepasselijke stroom gesorteerd op de slug gebruikt.</target>
+        <target>Flow die wordt gebruikt om gebruikers te authenticeren. Als dit leeg wordt gelaten, wordt de eerste toepasselijke flow gesorteerd op de slug gebruikt.</target>
         
       </trans-unit>
       <trans-unit id="s35e6e60e83a8c003">
         <source>Invalidation flow</source>
-        <target>Ongeldigheidsstroom</target>
+        <target>Ongeldigheidsflow</target>
         
       </trans-unit>
       <trans-unit id="s7989db5f4819af89">
         <source>Flow used to logout. If left empty, the first applicable flow sorted by the slug is used.</source>
-        <target>Stroom die wordt gebruikt om uit te loggen. Als dit leeg wordt gelaten, wordt de eerste toepasselijke stroom gesorteerd op de slug gebruikt.</target>
+        <target>Flow die wordt gebruikt om uit te loggen. Als dit leeg wordt gelaten, wordt de eerste toepasselijke flow gesorteerd op de slug gebruikt.</target>
         
       </trans-unit>
       <trans-unit id="sfeb779d4ccbc5a0e">
         <source>Recovery flow</source>
-        <target>Herstelstroom</target>
+        <target>Herstelflow</target>
         
       </trans-unit>
       <trans-unit id="s1c2fd8097e14a608">
         <source>Recovery flow. If left empty, the first applicable flow sorted by the slug is used.</source>
-        <target>Herstelstroom. Als dit leeg wordt gelaten, wordt de eerste toepasselijke stroom gesorteerd op de slug gebruikt.</target>
+        <target>Herstelflow. Als dit leeg wordt gelaten, wordt de eerste toepasselijke flow gesorteerd op de slug gebruikt.</target>
         
       </trans-unit>
       <trans-unit id="s836aa192b30c21da">
         <source>Unenrollment flow</source>
-        <target>Uitschrijvingsstroom</target>
+        <target>Uitschrijvingsflow</target>
         
       </trans-unit>
       <trans-unit id="s081d3c4b47a6ff83">
         <source>If set, users are able to unenroll themselves using this flow. If no flow is set, option is not shown.</source>
-        <target>Als dit is ingesteld, kunnen gebruikers zichzelf uitschrijven met behulp van deze stroom. Als er geen stroom is ingesteld, wordt de optie niet weergegeven.</target>
+        <target>Als dit is ingesteld, kunnen gebruikers zichzelf uitschrijven met behulp van deze flow. Als er geen flow is ingesteld, wordt de optie niet weergegeven.</target>
         
       </trans-unit>
       <trans-unit id="secbfd13bdae95a59">
         <source>User settings flow</source>
-        <target>Gebruikersinstellingenstroom</target>
+        <target>Gebruikersinstellingenflow</target>
         
       </trans-unit>
       <trans-unit id="s523160b433311521">
@@ -3992,12 +3992,12 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s134177568525dbc8">
         <source>Device code flow</source>
-        <target>Apparaatcode-stroom</target>
+        <target>Apparaatcode-flow</target>
         
       </trans-unit>
       <trans-unit id="s7b298427bdea81ae">
         <source>If set, the OAuth Device Code profile can be used, and the selected flow will be used to enter the code.</source>
-        <target>Als dit is ingesteld, kan het OAuth Apparaatcode-profiel worden gebruikt en wordt de geselecteerde stroom gebruikt om de code in te voeren.</target>
+        <target>Als dit is ingesteld, kan het OAuth Apparaatcode-profiel worden gebruikt en wordt de geselecteerde flow gebruikt om de code in te voeren.</target>
         
       </trans-unit>
       <trans-unit id="s7f4e4054fbe132e1">
@@ -4310,7 +4310,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s8ca0dbaec5d48563">
         <source>No recovery flow is configured.</source>
-        <target>Er is geen herstelstroom geconfigureerd.</target>
+        <target>Er is geen herstelflow geconfigureerd.</target>
         
       </trans-unit>
       <trans-unit id="sb69119c9f0547bed">
@@ -4340,7 +4340,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s63d89a6ae0969c30">
         <source>To let a user directly reset a their password, configure a recovery flow on the currently active tenant.</source>
-        <target>Om een gebruiker rechtstreeks zijn/haar wachtwoord te laten resetten, configureer een herstelstroom op de momenteel actieve tenant.</target>
+        <target>Om een gebruiker rechtstreeks zijn/haar wachtwoord te laten resetten, configureer een herstelflow op de momenteel actieve tenant.</target>
         
       </trans-unit>
       <trans-unit id="s720594461542943f">
@@ -4550,7 +4550,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s06f79477aff0576c">
         <source>To create a recovery link, the current tenant needs to have a recovery flow configured.</source>
-        <target>Om een herstelkoppeling te maken, moet de huidige tenant een herstelstroom geconfigureerd hebben.</target>
+        <target>Om een herstelkoppeling te maken, moet de huidige tenant een herstelflow geconfigureerd hebben.</target>
         
       </trans-unit>
       <trans-unit id="sed80a99ca1491909">
@@ -4605,17 +4605,17 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="sfcebd18506f1e535">
         <source>Flow</source>
-        <target>Stroom</target>
+        <target>Flow</target>
         
       </trans-unit>
       <trans-unit id="sa84a7fd11ba85e88">
         <source>When selected, the invite will only be usable with the flow. By default the invite is accepted on all flows with invitation stages.</source>
-        <target>Indien geselecteerd, is de uitnodiging alleen bruikbaar met de stroom. Standaard wordt de uitnodiging geaccepteerd voor alle stromen met uitnodigingsfasen.</target>
+        <target>Indien geselecteerd, is de uitnodiging alleen bruikbaar met de flow. Standaard wordt de uitnodiging geaccepteerd voor alle stromen met uitnodigingsfasen.</target>
         
       </trans-unit>
       <trans-unit id="s7520286c8419a266">
         <source>Optional data which is loaded into the flow's 'prompt_data' context variable. YAML or JSON.</source>
-        <target>Optionele gegevens die worden geladen in de contextvariabele 'prompt_data' van de stroom. YAML of JSON.</target>
+        <target>Optionele gegevens die worden geladen in de contextvariabele 'prompt_data' van de flow. YAML of JSON.</target>
         
       </trans-unit>
       <trans-unit id="sb8795b799c70776a">
@@ -4630,7 +4630,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="sa4a8086275475714">
         <source>Select an enrollment flow</source>
-        <target>Selecteer een inschrijvingsstroom</target>
+        <target>Selecteer een inschrijvingsflow</target>
         
       </trans-unit>
       <trans-unit id="s839cb09cb2193da9">
@@ -4660,7 +4660,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s96dcf7ec8342c335">
         <source>Invitation not limited to any flow, and can be used with any enrollment flow.</source>
-        <target>Uitnodiging niet beperkt tot een specifieke stroom en kan worden gebruikt met elke inschrijvingsstroom.</target>
+        <target>Uitnodiging niet beperkt tot een specifieke flow en kan worden gebruikt met elke inschrijvingsflow.</target>
         
       </trans-unit>
       <trans-unit id="s1b42b49e7b392013">
@@ -4675,7 +4675,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s802826db4e2c852e">
         <source>Warning: No invitation stage is bound to any flow. Invitations will not work as expected.</source>
-        <target>Waarschuwing: Geen uitnodigingsfase is gekoppeld aan een stroom. Uitnodigingen werken niet zoals verwacht.</target>
+        <target>Waarschuwing: Geen uitnodigingsfase is gekoppeld aan een flow. Uitnodigingen werken niet zoals verwacht.</target>
         
       </trans-unit>
       <trans-unit id="s2f995efbb1e46b18">
@@ -4941,12 +4941,12 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s0a61796c1956d32c">
         <source>Evaluate when flow is planned</source>
-        <target>Evalueer wanneer stroom is gepland</target>
+        <target>Evalueer wanneer flow is gepland</target>
         
       </trans-unit>
       <trans-unit id="sf533f13321fee530">
         <source>Evaluate policies during the Flow planning process.</source>
-        <target>Evalueer beleid tijdens het stroomplanningsproces.</target>
+        <target>Evalueer beleid tijdens het flowplanningsproces.</target>
         
       </trans-unit>
       <trans-unit id="s6336fa345e96dde9">
@@ -4971,17 +4971,17 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="sd891d8463d0ebace">
         <source>Restarts the flow from the beginning</source>
-        <target>Start de stroom opnieuw vanaf het begin</target>
+        <target>Start de flow opnieuw vanaf het begin</target>
         
       </trans-unit>
       <trans-unit id="s6b9a1dd402750a8a">
         <source>Restarts the flow from the beginning, while keeping the flow context</source>
-        <target>Start de stroom opnieuw vanaf het begin, terwijl de stroomcontext behouden blijft</target>
+        <target>Start de flow opnieuw vanaf het begin, terwijl de flowcontext behouden blijft</target>
         
       </trans-unit>
       <trans-unit id="sbc88fb27a4c3b894">
         <source>Configure how the flow executor should handle an invalid response to a challenge given by this bound stage.</source>
-        <target>Configureer hoe de uitvoerder van de stroom moet omgaan met een ongeldig antwoord op een uitdaging die wordt gegeven door deze gebonden fase.</target>
+        <target>Configureer hoe de uitvoerder van de flow moet omgaan met een ongeldig antwoord op een uitdaging die wordt gegeven door deze gebonden fase.</target>
         
       </trans-unit>
       <trans-unit id="s916b32ac64ea2b05">
@@ -5047,12 +5047,12 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s0dfc6838c9d07677">
         <source>Configuration flow</source>
-        <target>Configuratiestroom</target>
+        <target>Configuratieflow</target>
         
       </trans-unit>
       <trans-unit id="sebf44d2471b608ad">
         <source>Flow used by an authenticated user to configure this Stage. If empty, user will not be able to configure this stage.</source>
-        <target>Stroom gebruikt door een geauthenticeerde gebruiker om deze fase te configureren. Als leeg, kan de gebruiker deze fase niet configureren.</target>
+        <target>Flow gebruikt door een geauthenticeerde gebruiker om deze fase te configureren. Als leeg, kan de gebruiker deze fase niet configureren.</target>
         
       </trans-unit>
       <trans-unit id="s3baf512851453712">
@@ -5422,7 +5422,7 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
       </trans-unit>
       <trans-unit id="s5e9527b6481a94ce">
         <source>Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding.</source>
-        <target>Weiger de stroom statisch. Om deze fase effectief te gebruiken, schakelt u *Evaluatie op schema* uit voor de respectievelijke binding.</target>
+        <target>Weiger de flow statisch. Om deze fase effectief te gebruiken, schakelt u *Evaluatie op schema* uit voor de respectievelijke binding.</target>
         
       </trans-unit>
       <trans-unit id="s22b10ed263b96194">
@@ -7218,7 +7218,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
       </trans-unit>
       <trans-unit id="s3ab772345f78aee0">
         <source>Flow inspector</source>
-        <target>Stroominspecteur</target>
+        <target>Flowinspecteur</target>
         
       </trans-unit>
       <trans-unit id="s502884e1977b2c06">
@@ -7243,7 +7243,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
       </trans-unit>
       <trans-unit id="sc3e1c4f1fff8e1ca">
         <source>This flow is completed.</source>
-        <target>Deze stroom is voltooid.</target>
+        <target>Deze flow is voltooid.</target>
         
       </trans-unit>
       <trans-unit id="s342eccabf83c9bde">
@@ -7348,7 +7348,7 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
       </trans-unit>
       <trans-unit id="s8c05cccd470f6b5f">
         <source>No settings flow configured.</source>
-        <target>Geen instellingenstroom geconfigureerd.</target>
+        <target>Geen instellingenflow geconfigureerd.</target>
         
       </trans-unit>
       <trans-unit id="sb546eb04425e07fa">
