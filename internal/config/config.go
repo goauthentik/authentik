@@ -1,6 +1,7 @@
 package config
 
 import (
+	_ "embed"
 	"errors"
 	"fmt"
 	"net/url"
@@ -11,13 +12,16 @@ import (
 
 	env "github.com/Netflix/go-env"
 	log "github.com/sirupsen/logrus"
+	"goauthentik.io/authentik/lib"
 	"gopkg.in/yaml.v2"
 )
 
 var cfg *Config
 
+const defaultConfigPath = "./authentik/lib/default.yml"
+
 func getConfigPaths() []string {
-	configPaths := []string{"./authentik/lib/default.yml", "/etc/authentik/config.yml", ""}
+	configPaths := []string{defaultConfigPath, "/etc/authentik/config.yml", ""}
 	globConfigPaths, _ := filepath.Glob("/etc/authentik/config.d/*.yml")
 	configPaths = append(configPaths, globConfigPaths...)
 
@@ -63,20 +67,36 @@ func Get() *Config {
 }
 
 func (c *Config) Setup(paths ...string) {
+	// initially try to load the default config which is compiled in
+	err := c.LoadConfig(lib.DefaultConfig())
+	// this should never fail
+	if err != nil {
+		panic(fmt.Errorf("failed to load inbuilt config: %v", err))
+	}
+	log.WithField("path", "inbuilt-default").Debug("Loaded config")
 	for _, path := range paths {
-		err := c.LoadConfig(path)
+		err := c.LoadConfigFromFile(path)
 		if err != nil {
 			log.WithError(err).Info("failed to load config, skipping")
 		}
 	}
-	err := c.fromEnv()
+	err = c.fromEnv()
 	if err != nil {
 		log.WithError(err).Info("failed to load env vars")
 	}
 	c.configureLogger()
 }
 
-func (c *Config) LoadConfig(path string) error {
+func (c *Config) LoadConfig(raw []byte) error {
+	err := yaml.Unmarshal(raw, c)
+	if err != nil {
+		return fmt.Errorf("failed to parse YAML: %w", err)
+	}
+	c.walkScheme(c)
+	return nil
+}
+
+func (c *Config) LoadConfigFromFile(path string) error {
 	raw, err := os.ReadFile(path)
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
@@ -84,11 +104,10 @@ func (c *Config) LoadConfig(path string) error {
 		}
 		return fmt.Errorf("failed to load config file: %w", err)
 	}
-	err = yaml.Unmarshal(raw, c)
+	err = c.LoadConfig(raw)
 	if err != nil {
-		return fmt.Errorf("failed to parse YAML: %w", err)
+		return err
 	}
-	c.walkScheme(c)
 	log.WithField("path", path).Debug("Loaded config")
 	return nil
 }

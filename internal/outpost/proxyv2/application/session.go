@@ -29,7 +29,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		// Add one to the validity to ensure we don't have a session with indefinite length
 		maxAge = int(*t) + 1
 	}
-	if config.Get().Redis.Host != "" {
+	if a.isEmbedded {
 		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.DB))
 		if err != nil {
 			panic(err)
