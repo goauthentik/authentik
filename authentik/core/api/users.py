@@ -309,7 +309,7 @@ class UsersFilter(FilterSet):
     path = CharFilter(field_name="path")
     path_startswith = CharFilter(field_name="path", lookup_expr="startswith")
 
-    type = MultipleChoiceFilter(field_name="type")
+    type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
 
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="ak_groups__name",
