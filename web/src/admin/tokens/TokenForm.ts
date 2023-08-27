@@ -8,16 +8,21 @@ import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 
 import { CoreApi, CoreUsersListRequest, IntentEnum, Token, User } from "@goauthentik/api";
 
 @customElement("ak-token-form")
 export class TokenForm extends ModelForm<Token, string> {
-    loadInstance(pk: string): Promise<Token> {
-        return new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
+    @state()
+    showExpiry = true;
+
+    async loadInstance(pk: string): Promise<Token> {
+        const token = await new CoreApi(DEFAULT_CONFIG).coreTokensRetrieve({
             identifier: pk,
         });
+        this.showExpiry = token.expiring || true;
+        return token;
     }
 
     getSuccessMessage(): string {
@@ -39,6 +44,17 @@ export class TokenForm extends ModelForm<Token, string> {
                 tokenRequest: data,
             });
         }
+    }
+
+    renderExpiry(): TemplateResult {
+        return html`<ak-form-element-horizontal label=${msg("Expires on")} name="expires">
+            <input
+                type="datetime-local"
+                data-type="datetime-local"
+                value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
+                class="pf-c-form-control"
+            />
+        </ak-form-element-horizontal>`;
     }
 
     renderForm(): TemplateResult {
@@ -117,6 +133,10 @@ export class TokenForm extends ModelForm<Token, string> {
                         class="pf-c-switch__input"
                         type="checkbox"
                         ?checked=${first(this.instance?.expiring, true)}
+                        @change=${(ev: Event) => {
+                            const el = ev.target as HTMLInputElement;
+                            this.showExpiry = el.checked;
+                        }}
                     />
                     <span class="pf-c-switch__toggle">
                         <span class="pf-c-switch__toggle-icon">
@@ -131,14 +151,7 @@ export class TokenForm extends ModelForm<Token, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Expires on")} name="expires">
-                <input
-                    type="datetime-local"
-                    data-type="datetime-local"
-                    value="${dateTimeLocal(first(this.instance?.expires, new Date()))}"
-                    class="pf-c-form-control"
-                />
-            </ak-form-element-horizontal>
+            ${this.showExpiry ? this.renderExpiry() : html``}
         </form>`;
     }
 }
