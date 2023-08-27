@@ -151,6 +151,14 @@ class TestTokenClientCredentials(OAuthTestCase):
         )
         self.assertEqual(jwt["given_name"], self.user.name)
         self.assertEqual(jwt["preferred_username"], self.user.username)
+        jwt = decode(
+            body["id_token"],
+            key=self.provider.signing_key.public_key,
+            algorithms=[alg],
+            audience=self.provider.client_id,
+        )
+        self.assertEqual(jwt["given_name"], self.user.name)
+        self.assertEqual(jwt["preferred_username"], self.user.username)
 
     def test_successful_password(self):
         """test successful (password grant)"""
