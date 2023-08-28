@@ -13,7 +13,7 @@ const docsSidebar = {
         {
             type: "category",
             label: "Installation",
-            collapsed: true,
+            collapsed: false,
             link: {
                 type: "doc",
                 id: "installation/index",
