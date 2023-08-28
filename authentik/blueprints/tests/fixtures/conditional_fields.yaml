@@ -45,3 +45,8 @@ entries:
     attrs:
       name: "%(uid)s"
       password: "%(uid)s"
+  - model: authentik_core.user
+    identifiers:
+      username: "%(uid)s-no-password"
+    attrs:
+      name: "%(uid)s"

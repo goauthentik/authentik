@@ -123,26 +123,34 @@ class UserSerializer(ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            self.fields["password"] = CharField(required=False)
+            self.fields["password"] = CharField(required=False, allow_null=True)
 
     def create(self, validated_data: dict) -> User:
         """If this serializer is used in the blueprint context, we allow for
         directly setting a password. However should be done via the `set_password`
         method instead of directly setting it like rest_framework."""
+        password = validated_data.pop("password", None)
         instance: User = super().create(validated_data)
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and "password" in validated_data:
-            instance.set_password(validated_data["password"])
-            instance.save()
+        self._set_password(instance, password)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
         """Same as `create` above, set the password directly if we're in a blueprint
         context"""
+        password = validated_data.pop("password", None)
         instance = super().update(instance, validated_data)
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and "password" in validated_data:
-            instance.set_password(validated_data["password"])
-            instance.save()
+        self._set_password(instance, password)
         return instance
+
+    def _set_password(self, instance: User, password: Optional[str]):
+        """Set password of user if we're in a blueprint context, and if it's an empty
+        string then use an unusable password"""
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and password:
+            instance.set_password(password)
+            instance.save()
+        if len(instance.password) == 0:
+            instance.set_unusable_password()
+            instance.save()
 
     def validate_path(self, path: str) -> str:
         """Validate path"""
