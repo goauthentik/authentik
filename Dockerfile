@@ -20,7 +20,7 @@ WORKDIR /work/web
 RUN npm ci --include=dev && npm run build
 
 # Stage 3: Poetry to requirements.txt export
-FROM docker.io/python:3.11.4-slim-bookworm AS poetry-locker
+FROM docker.io/python:3.11.5-slim-bookworm AS poetry-locker
 
 WORKDIR /work
 COPY ./pyproject.toml /work
@@ -62,7 +62,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 6: Run
-FROM docker.io/python:3.11.4-slim-bookworm AS final-image
+FROM docker.io/python:3.11.5-slim-bookworm AS final-image
 
 ARG GIT_BUILD_HASH
 ARG VERSION
