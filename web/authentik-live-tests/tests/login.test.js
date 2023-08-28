@@ -6,29 +6,31 @@ const { $AkSel } = require("../lib/idiom");
 const CLICK_TIME_DELAY = 250;
 
 const login = [
-    ['text', '>>>input[name="uidField"]', "ken@goauthentik.io"],
-    ['button', '>>>button[type="submit"]'],
-    ['pause'],
-    ['text', '>>>input[name="password"]', "eat10bugs"],
-    ['button', '>>>button[type="submit"]'],
-    ['pause', ">>>div.header h1"],
+    ["text", '>>>input[name="uidField"]', "ken@goauthentik.io"],
+    ["button", '>>>button[type="submit"]'],
+    ["pause"],
+    ["text", '>>>input[name="password"]', "eat10bugs"],
+    ["button", '>>>button[type="submit"]'],
+    ["pause", ">>>div.header h1"],
 ];
-
 
 const simpleApplication = [
-    ['text',   '>>>ak-form-element-horizontal input[name="name"]', "This Is My Application"],
-    ['button', ">>>ak-wizard-frame footer button.pf-m-primary"],
-    ['button', '>>>input[value="ldapprovider"]'],
-    ['button', ">>>ak-wizard-frame footer button.pf-m-primary"],
-    ['text',   '>>>ak-form-element-horizontal input[name="name"]', "This Is My Provider"],
-    ['search', '>>>ak-tenanted-flow-search input[type="text"]', "button*=default-authentication-flow"],
-    ['text',   '>>>ak-form-element-horizontal input[name="tlsServerName"]', "example.goauthentik.io"],
-    ['button', ">>>ak-wizard-frame footer button.pf-m-primary"]
+    ["text", '>>>ak-form-element-horizontal input[name="name"]', "This Is My Application"],
+    ["button", ">>>ak-wizard-frame footer button.pf-m-primary"],
+    ["button", '>>>input[value="ldapprovider"]'],
+    ["button", ">>>ak-wizard-frame footer button.pf-m-primary"],
+    ["text", '>>>ak-form-element-horizontal input[name="name"]', "This Is My Provider"],
+    [
+        "search",
+        '>>>ak-tenanted-flow-search input[type="text"]',
+        "button*=default-authentication-flow",
+    ],
+    ["text", '>>>ak-form-element-horizontal input[name="tlsServerName"]', "example.goauthentik.io"],
+    ["button", ">>>ak-wizard-frame footer button.pf-m-primary"],
 ];
 
-
 describe("Login", () => {
-    it(`Should correctly log in to Authentik}`, async () => {
+    it("Should correctly log in to Authentik}", async () => {
         await browser.reloadSession();
         await browser.url("http://localhost:9000");
 

@@ -60,14 +60,14 @@ const _providerModelsTable: ProviderType[] = [
         "samlprovider-manual",
         msg("SAML Manual configuration"),
         msg("Configure SAML provider manually"),
-        () => html`<p>Under construction</p>`,
+        () => html`<ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>`,
         ProviderModelEnum.SamlSamlprovider
     ],
     [
         "samlprovider-import",
         msg("SAML Import Configuration"),
         msg("Create a SAML provider by importing its metadata"),
-        () => html`<p>Under construction</p>`,
+        () => html`<ak-application-wizard-authentication-by-saml-import></ak-application-wizard-authentication-by-saml-import>`,
         ProviderModelEnum.SamlSamlprovider
     ],
 ];

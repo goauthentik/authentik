@@ -80,7 +80,9 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
         ) {
             this.providerCache.set(this.wizardState.providerModel, this.wizardState.provider);
             const prevProvider = this.providerCache.get(providerModel);
-            this.wizardState.provider = prevProvider ?? {};
+            this.wizardState.provider = prevProvider ?? {
+                name: `Provider for ${this.wizardState.app.name}`,
+            };
             const newSteps = [...this.steps];
             const method = newSteps.find(({ id }) => id === "auth-method");
             if (!method) {

@@ -2,58 +2,32 @@ import { msg } from "@lit/localize";
 
 import { DigestAlgorithmEnum, SignatureAlgorithmEnum, SpBindingEnum } from "@goauthentik/api";
 
-export const spBindingOptions = [
-    {
-        label: msg("Redirect"),
-        value: SpBindingEnum.Redirect,
-        default: true,
-    },
-    {
-        label: msg("Post"),
-        value: SpBindingEnum.Post,
-    },
-];
+type Option<T> = [string, T, boolean?];
 
-export const digestAlgorithmOptions = [
-    {
-        label: "SHA1",
-        value: DigestAlgorithmEnum._200009Xmldsigsha1,
-    },
-    {
-        label: "SHA256",
-        value: DigestAlgorithmEnum._200104Xmlencsha256,
-        default: true,
-    },
-    {
-        label: "SHA384",
-        value: DigestAlgorithmEnum._200104XmldsigMoresha384,
-    },
-    {
-        label: "SHA512",
-        value: DigestAlgorithmEnum._200104Xmlencsha512,
-    },
-];
+function toOptions<T>(options: Option<T>[]) {
+    return options.map(([label, value, isDefault]: Option<T>) => ({
+        label,
+        value,
+        default: isDefault ?? false,
+    }));
+}
 
-export const signatureAlgorithmOptions = [
-    {
-        label: "RSA-SHA1",
-        value: SignatureAlgorithmEnum._200009XmldsigrsaSha1,
-    },
-    {
-        label: "RSA-SHA256",
-        value: SignatureAlgorithmEnum._200104XmldsigMorersaSha256,
-        default: true,
-    },
-    {
-        label: "RSA-SHA384",
-        value: SignatureAlgorithmEnum._200104XmldsigMorersaSha384,
-    },
-    {
-        label: "RSA-SHA512",
-        value: SignatureAlgorithmEnum._200104XmldsigMorersaSha512,
-    },
-    {
-        label: "DSA-SHA1",
-        value: SignatureAlgorithmEnum._200009XmldsigdsaSha1,
-    },
-];
+export const spBindingOptions = toOptions([
+    [msg("Redirect"), SpBindingEnum.Redirect, true],
+    [msg("Post"), SpBindingEnum.Post],
+]);
+
+export const digestAlgorithmOptions = toOptions([
+    ["SHA1", DigestAlgorithmEnum._200009Xmldsigsha1],
+    ["SHA256", DigestAlgorithmEnum._200104Xmlencsha256, true],
+    ["SHA384", DigestAlgorithmEnum._200104XmldsigMoresha384],
+    ["SHA512", DigestAlgorithmEnum._200104Xmlencsha512],
+]);
+
+export const signatureAlgorithmOptions = toOptions([
+    ["RSA-SHA1", SignatureAlgorithmEnum._200009XmldsigrsaSha1],
+    ["RSA-SHA256", SignatureAlgorithmEnum._200104XmldsigMorersaSha256, true],
+    ["RSA-SHA384", SignatureAlgorithmEnum._200104XmldsigMorersaSha384],
+    ["RSA-SHA512", SignatureAlgorithmEnum._200104XmldsigMorersaSha512],
+    ["DSA-SHA1", SignatureAlgorithmEnum._200009XmldsigdsaSha1],
+]);

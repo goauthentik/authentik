@@ -29,7 +29,9 @@ export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
 
     validator() {
         const radios = Array.from(this.form.querySelectorAll('input[type="radio"]'));
-        const chosen = radios.find((radio: Element) => radio instanceof HTMLInputElement && radio.checked);
+        const chosen = radios.find(
+            (radio: Element) => radio instanceof HTMLInputElement && radio.checked,
+        );
         return chosen;
     }
 
