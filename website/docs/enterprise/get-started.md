@@ -23,4 +23,4 @@ The license key provides access to the Customer portal, where you define your or
 
 Enterprise authentik provides dedicated support, with a Support center where you can open a request and view the progress and communications for your current requests.
 
-To learn about our Suport center, see ["Enterprise support"](./entsupport.md).
+To learn about our Support center, see ["Enterprise support"](./entsupport.md).

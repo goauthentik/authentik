@@ -72,7 +72,7 @@ In the customer portal you can remove members and invite new members to the orga
     When ready, the license displays on the organization's page.
 
 :::info
-If you access the checkout page directly from the Customer portal, and not through the admin interface, you are prompted to provide the Install ID for your authentik installtion. This ID can be found in the Admin interface on the **Licenses** page; click **Install** to view the **Install ID** number.
+If you access the checkout page directly from the Customer portal, and not through the admin interface, you are prompted to provide the Install ID for your authentik installation. This ID can be found in the Admin interface on the **Licenses** page; click **Install** to view the **Install ID** number.
 :::
 
 8. To retrieve your license key, click on **Details** beside the license name and copy the key to your clipboard.
@@ -89,13 +89,13 @@ You can view the list of licenses that are applied to your organization on eithe
 
 ### About the license expiry date
 
-The **Enterprise -> Licenses** page shows your currrent licenses' **Cumulative license expiry**. Expiry date calculation works by verifying the individual expiry date for all valid licenses and then picking the lowest expiry date. After the date of the earliest expiring license, all calculations will be updated without that license, by selecting the next earliest date.
+The **Enterprise -> Licenses** page shows your current licenses' **Cumulative license expiry**. Expiry date calculation works by verifying the individual expiry date for all valid licenses and then picking the lowest expiry date. After the date of the earliest expiring license, all calculations will be updated without that license, by selecting the next earliest date.
 
 ### License violation notifications
 
 The following events occur when a license expeires and is not renewed within two weeks.
 
--   After 2 weeks of the expiry date admininistrators see a warning banner on the Admin interface
+-   After 2 weeks of the expiry date administrators see a warning banner on the Admin interface
 
 -   After another 2 weeks, users get a warning banner
 
