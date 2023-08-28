@@ -52,7 +52,7 @@ class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
 class PatchRequest(BasePatchRequest):
     """PatchRequest which correctly sets schemas"""
 
-    schemas: tuple[str] = ["urn:ietf:params:scim:api:messages:2.0:PatchOp"]
+    schemas: tuple[str] = ("urn:ietf:params:scim:api:messages:2.0:PatchOp",)
 
 
 class SCIMError(BaseSCIMError):

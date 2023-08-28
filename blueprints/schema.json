@@ -8471,7 +8471,10 @@
                     "title": "Type"
                 },
                 "password": {
-                    "type": "string",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "minLength": 1,
                     "title": "Password"
                 }

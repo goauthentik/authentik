@@ -213,8 +213,9 @@ class TestBlueprintsV1(TransactionTestCase):
                         },
                     },
                     "nested_context": "context-nested-value",
+                    "env_null": None,
                 }
-            )
+            ).exists()
         )
         self.assertTrue(
             OAuthSource.objects.filter(

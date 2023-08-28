@@ -16,9 +16,6 @@ with open("local.env.yml", "w", encoding="utf-8") as _config:
                 "container_image_base": "ghcr.io/goauthentik/dev-%(type)s:gh-%(build_hash)s",
             },
             "blueprints_dir": "./blueprints",
-            "web": {
-                "outpost_port_offset": 100,
-            },
             "cert_discovery_dir": "./certs",
             "geoip": "tests/GeoLite2-City-Test.mmdb",
         },

@@ -23,7 +23,7 @@ class TestEnterpriseLicense(TestCase):
                 aud="",
                 exp=_exp,
                 name=generate_id(),
-                users=100,
+                internal_users=100,
                 external_users=100,
             )
         ),
@@ -32,7 +32,7 @@ class TestEnterpriseLicense(TestCase):
         """Check license verification"""
         lic = License.objects.create(key=generate_id())
         self.assertTrue(lic.status.is_valid())
-        self.assertEqual(lic.users, 100)
+        self.assertEqual(lic.internal_users, 100)
 
     def test_invalid(self):
         """Test invalid license"""
@@ -46,7 +46,7 @@ class TestEnterpriseLicense(TestCase):
                 aud="",
                 exp=_exp,
                 name=generate_id(),
-                users=100,
+                internal_users=100,
                 external_users=100,
             )
         ),
@@ -58,7 +58,7 @@ class TestEnterpriseLicense(TestCase):
         lic2 = License.objects.create(key=generate_id())
         self.assertTrue(lic2.status.is_valid())
         total = LicenseKey.get_total()
-        self.assertEqual(total.users, 200)
+        self.assertEqual(total.internal_users, 200)
         self.assertEqual(total.external_users, 200)
         self.assertEqual(total.exp, _exp)
         self.assertTrue(total.is_valid())

@@ -55,6 +55,8 @@ type Application struct {
 
 	errorTemplates  *template.Template
 	authHeaderCache *ttlcache.Cache[string, Claims]
+
+	isEmbedded bool
 }
 
 type Server interface {
@@ -86,15 +88,15 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		CallbackSignature: []string{"true"},
 	}.Encode()
 
-	managed := false
+	isEmbedded := false
 	if m := server.API().Outpost.Managed.Get(); m != nil {
-		managed = *m == "goauthentik.io/outposts/embedded"
+		isEmbedded = *m == "goauthentik.io/outposts/embedded"
 	}
 	// Configure an OpenID Connect aware OAuth2 client.
 	endpoint := GetOIDCEndpoint(
 		p,
 		server.API().Outpost.Config["authentik_host"].(string),
-		managed,
+		isEmbedded,
 	)
 
 	verifier := oidc.NewVerifier(endpoint.Issuer, ks, &oidc.Config{
@@ -132,6 +134,7 @@ func NewApplication(p api.ProxyOutpostConfig, c *http.Client, server Server) (*A
 		ak:                   server.API(),
 		authHeaderCache:      ttlcache.New(ttlcache.WithDisableTouchOnHit[string, Claims]()),
 		srv:                  server,
+		isEmbedded:           isEmbedded,
 	}
 	go a.authHeaderCache.Start()
 	a.sessions = a.getStore(p, externalHost)

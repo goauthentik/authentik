@@ -25,8 +25,13 @@ export class LoggingMiddleware implements Middleware {
 
     post(context: ResponseContext): Promise<Response | void> {
         let msg = `authentik/api[${this.tenant.matchedDomain}]: `;
-        msg += `${context.response.status} ${context.init.method} ${context.url}`;
-        console.debug(msg);
+        // https://developer.mozilla.org/en-US/docs/Web/API/console#styling_console_output
+        msg += `%c${context.response.status}%c ${context.init.method} ${context.url}`;
+        let style = "";
+        if (context.response.status >= 400) {
+            style = "color: red; font-weight: bold;";
+        }
+        console.debug(msg, style, "");
         return Promise.resolve(context.response);
     }
 }

@@ -16,6 +16,7 @@
         "sourceType": "module"
     },
     "plugins": ["@typescript-eslint", "lit", "custom-elements"],
+    "ignorePatterns": ["authentik-live-tests/**"],
     "rules": {
         "indent": "off",
         "linebreak-style": ["error", "unix"],

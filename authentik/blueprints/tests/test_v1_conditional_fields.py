@@ -51,3 +51,9 @@ class TestBlueprintsV1ConditionalFields(TransactionTestCase):
         user: User = User.objects.filter(username=self.uid).first()
         self.assertIsNotNone(user)
         self.assertTrue(user.check_password(self.uid))
+
+    def test_user_null(self):
+        """Test user"""
+        user: User = User.objects.filter(username=f"{self.uid}-no-password").first()
+        self.assertIsNotNone(user)
+        self.assertFalse(user.has_usable_password())

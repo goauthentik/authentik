@@ -246,8 +246,8 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                     </ak-textarea-input>
 
                     <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
+                        <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                         <ak-crypto-certificate-search
-                            name="certificate"
                             certificate=${ifDefined(this.instance?.signingKey ?? undefined)}
                             singleton
                         ></ak-crypto-certificate-search>

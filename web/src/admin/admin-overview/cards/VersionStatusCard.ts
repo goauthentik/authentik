@@ -12,7 +12,6 @@ import { AdminApi, Version } from "@goauthentik/api";
 
 @customElement("ak-admin-status-version")
 export class VersionStatusCard extends AdminStatusCard<Version> {
-    headerLink = "https://goauthentik.io/docs/releases";
     icon = "pf-icon pf-icon-bundle";
 
     getPrimaryValue(): Promise<Version> {
@@ -43,16 +42,12 @@ export class VersionStatusCard extends AdminStatusCard<Version> {
     }
 
     renderValue(): TemplateResult {
+        let text = this.value?.versionCurrent;
+        let link = `https://goauthentik.io/docs/releases/${this.value?.versionCurrent}`;
         if (this.value?.buildHash) {
-            return html`
-                <a
-                    href="https://github.com/goauthentik/authentik/commit/${this.value.buildHash}"
-                    target="_blank"
-                >
-                    ${this.value.buildHash?.substring(0, 7)}
-                </a>
-            `;
+            text = this.value.buildHash?.substring(0, 7);
+            link = `https://github.com/goauthentik/authentik/commit/${this.value.buildHash}`;
         }
-        return html`${this.value?.versionCurrent}`;
+        return html`<a href=${link} target="_blank">${text}</a>`;
     }
 }

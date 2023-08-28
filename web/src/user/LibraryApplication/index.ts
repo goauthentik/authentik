@@ -67,6 +67,13 @@ export class LibraryApplication extends AKElement {
             return html`<ak-spinner></ak-spinner>`;
         }
         const me = rootInterface<UserInterface>()?.me;
+        let expandable = false;
+        if (rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser) {
+            expandable = true;
+        }
+        if (this.application.metaPublisher !== "" || this.application.metaDescription !== "") {
+            expandable = true;
+        }
         return html` <div
             class="pf-c-card pf-m-hoverable pf-m-compact ${this.selected
                 ? "pf-m-selectable pf-m-selected"
@@ -89,22 +96,25 @@ export class LibraryApplication extends AKElement {
                 >
             </div>
             <div class="expander"></div>
-            <ak-expand textOpen=${msg("Less details")} textClosed=${msg("More details")}>
-                <div class="pf-c-content">
-                    <small>${this.application.metaPublisher}</small>
-                </div>
-                ${truncateWords(this.application.metaDescription || "", 10)}
-                ${rootInterface()?.uiConfig?.enabledFeatures.applicationEdit && me?.user.isSuperuser
-                    ? html`
-                          <a
-                              class="pf-c-button pf-m-control pf-m-small pf-m-block"
-                              href="/if/admin/#/core/applications/${this.application?.slug}"
-                          >
-                              <i class="fas fa-edit"></i>&nbsp;${msg("Edit")}
-                          </a>
-                      `
-                    : html``}
-            </ak-expand>
+            ${expandable
+                ? html`<ak-expand textOpen=${msg("Less details")} textClosed=${msg("More details")}>
+                      <div class="pf-c-content">
+                          <small>${this.application.metaPublisher}</small>
+                      </div>
+                      ${truncateWords(this.application.metaDescription || "", 10)}
+                      ${rootInterface()?.uiConfig?.enabledFeatures.applicationEdit &&
+                      me?.user.isSuperuser
+                          ? html`
+                                <a
+                                    class="pf-c-button pf-m-control pf-m-small pf-m-block"
+                                    href="/if/admin/#/core/applications/${this.application?.slug}"
+                                >
+                                    <i class="fas fa-edit"></i>&nbsp;${msg("Edit")}
+                                </a>
+                            `
+                          : html``}
+                  </ak-expand>`
+                : html``}
         </div>`;
     }
 }

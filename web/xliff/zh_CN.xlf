@@ -7658,8 +7658,8 @@ Bindings to groups/users are checked against the user of the event.</source>
   <target>预测内部用户</target>
 </trans-unit>
 <trans-unit id="sde9a3f41977ec1f8">
-  <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.users}"/> current internal users and <x id="1" equiv-text="${this.forecast?.forecastedUsers}"/> forecasted internal users.</source>
-  <target>根据当前 <x id="0" equiv-text="${this.forecast?.users}"/> 名内部用户和 <x id="1" equiv-text="${this.forecast?.forecastedUsers}"/> 名预测的内部用户，估算从此时起一年后的用户数。</target>
+  <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.internalUsers}"/> current internal users and <x id="1" equiv-text="${this.forecast?.forecastedInternalUsers}"/> forecasted internal users.</source>
+  <target>根据当前 <x id="0" equiv-text="${this.forecast?.internalUsers}"/> 名内部用户和 <x id="1" equiv-text="${this.forecast?.forecastedInternalUsers}"/> 名预测的内部用户，估算从此时起一年后的用户数。</target>
 </trans-unit>
 <trans-unit id="s4557b6b9da258643">
   <source>Forecast external users</source>
@@ -7768,6 +7768,14 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6931695c4f563bc4">
   <source>The length of the individual generated tokens. Can be increased to improve security.</source>
   <target>每个生成令牌的长度。可以增加以增强安全性。</target>
+</trans-unit>
+<trans-unit id="s0dd031b58ed4017c">
+  <source>Internal: <x id="0" equiv-text="${item.internalUsers}"/></source>
+  <target>内部：<x id="0" equiv-text="${item.internalUsers}"/></target>
+</trans-unit>
+<trans-unit id="s57b07e524f8f5c2a">
+  <source>External: <x id="0" equiv-text="${item.externalUsers}"/></source>
+  <target>外部：<x id="0" equiv-text="${item.externalUsers}"/></target>
 </trans-unit>
     </body>
   </file>
