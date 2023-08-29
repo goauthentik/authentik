@@ -34,6 +34,7 @@ export class NotificationDrawer extends AKElement {
             }
             .pf-c-notification-drawer__body {
                 flex-grow: 1;
+                overflow-x: hidden;
             }
             .pf-c-notification-drawer__header {
                 height: 114px;
