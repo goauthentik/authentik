@@ -4,7 +4,7 @@ title: Manage your Enterprise account
 
 ## Organization management
 
-Your organization defines the members, their roles, the license associated with the organization, and account management for billing, payment methods, and invoice history.
+Your organization defines the members, their roles, the licenses associated with the organization, and account management for billing, payment methods, and invoice history.
 
 ### Create an Organization
 
