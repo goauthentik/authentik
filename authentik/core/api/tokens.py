@@ -47,7 +47,7 @@ class TokenSerializer(ManagedSerializer, ModelSerializer):
             attrs.setdefault("user", request.user)
         attrs.setdefault("intent", TokenIntents.INTENT_API)
         if attrs.get("intent") not in [TokenIntents.INTENT_API, TokenIntents.INTENT_APP_PASSWORD]:
-            raise ValidationError(f"Invalid intent {attrs.get('intent')}")
+            raise ValidationError({"intent": f"Invalid intent {attrs.get('intent')}"})
         return attrs
 
     class Meta:

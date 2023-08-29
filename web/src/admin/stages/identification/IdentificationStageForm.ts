@@ -69,9 +69,9 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg("Let the user identify themselves with their username or Email address.")}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

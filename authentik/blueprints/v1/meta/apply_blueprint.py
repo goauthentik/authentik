@@ -31,7 +31,7 @@ class ApplyBlueprintMetaSerializer(PassiveSerializer):
         required = attrs["required"]
         instance = BlueprintInstance.objects.filter(**identifiers).first()
         if not instance and required:
-            raise ValidationError("Required blueprint does not exist")
+            raise ValidationError({"identifiers": "Required blueprint does not exist"})
         self.blueprint_instance = instance
         return super().validate(attrs)
 

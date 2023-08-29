@@ -59,7 +59,9 @@ class ProxyProviderSerializer(ProviderSerializer):
             attrs.get("mode", ProxyMode.PROXY) == ProxyMode.PROXY
             and attrs.get("internal_host", "") == ""
         ):
-            raise ValidationError(_("Internal host cannot be empty when forward auth is disabled."))
+            raise ValidationError(
+                {"internal_host": _("Internal host cannot be empty when forward auth is disabled.")}
+            )
         return attrs
 
     def create(self, validated_data: dict):

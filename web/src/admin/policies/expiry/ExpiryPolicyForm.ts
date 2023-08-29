@@ -42,11 +42,11 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg(
                     "Checks if the request's user's password has been changed in the last x days, and denys based on settings.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
