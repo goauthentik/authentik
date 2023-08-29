@@ -42,6 +42,9 @@ export class UserSourceSettingsPage extends AKElement {
                 :host([theme="dark"]) .pf-c-data-list__cell img {
                     filter: invert(1);
                 }
+                .pf-c-data-list__item {
+                    background-color: transparent;
+                }
             `,
         ];
     }
