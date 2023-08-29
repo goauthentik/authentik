@@ -208,9 +208,6 @@ select[multiple] option:checked {
 .pf-c-check__label {
     color: var(--ak-dark-foreground);
 }
-.form-help-text {
-    color: var(--ak-dark-foreground);
-}
 .pf-c-dropdown__toggle::before {
     border-color: transparent;
 }

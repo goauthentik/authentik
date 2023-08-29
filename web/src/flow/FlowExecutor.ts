@@ -509,7 +509,6 @@ export class FlowExecutor extends Interface implements StageHost {
                                             ${this.renderChallengeWrapper()}
                                         </div>
                                         <footer class="pf-c-login__footer">
-                                            <p></p>
                                             <ul class="pf-c-list pf-m-inline">
                                                 ${this.tenant?.uiFooterLinks?.map((link) => {
                                                     return html`<li>

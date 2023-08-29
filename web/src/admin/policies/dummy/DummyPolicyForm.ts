@@ -42,11 +42,11 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg(
                     "A policy used for testing. Always returns the same result as specified below after waiting a random duration.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
