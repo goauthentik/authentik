@@ -217,7 +217,6 @@ export class LDAPProviderFormPage extends ModelForm<LDAPProvider, number> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("TLS Server name")}
-                        ?required=${true}
                         name="tlsServerName"
                     >
                         <input
