@@ -65,12 +65,12 @@ export default function pricingPage() {
                                         <small>/external user/month</small>
                                     </h1>
                                     <a
-                                        className="button button--info button--block"
+                                        className="button button--primary button--block"
                                         href={useBaseUrl(
                                             "/docs/enterprise/get-started",
                                         )}
                                     >
-                                        Join waitlist
+                                        Get Started
                                     </a>
                                 </div>
                             </div>
