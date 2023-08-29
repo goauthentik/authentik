@@ -51,6 +51,8 @@ entries:
     order: 20
     stage: !KeyOf default-authentication-password
     target: !KeyOf flow
+  attrs:
+    re_evaluate_policies: true
   id: default-authentication-flow-password-binding
   model: authentik_flows.flowstagebinding
 - identifiers:
