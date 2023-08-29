@@ -2,9 +2,9 @@
 title: Get started
 ---
 
-Installing authentik is exactly the same process for both Enterprise version and our free open source version.
+Installing authentik is exactly the same process for both Enterprise version and our free [open source](https://github.com/goauthentik/authentik) version.
 
-> This preview version of Enterprise authentik is available within our 2023.8.x release.
+> This ***Preview*** version of Enterprise authentik is available with our 2023.8.x release. Send us feedback through the Customer portal or at <hello@goauthentik.io>.
 
 ## Install Enterprise
 
@@ -17,7 +17,9 @@ To get started working with Enterprise authentik, upgrade to the [2023.8.x](../r
 
 Access your Enterprise features by first [purchasing a license](./manage-enterprise.md#buy-a-license) for the organization.
 
-The license key provides access to the Customer portal, where you define your organization and its members, manage billing, and access our Support center.
+To open the Customer portal and buy a license, go to the Admin interface and in the left pane, navigate to **Enterprise -> Licenses**, and then click **Go to Customer portal**.
+
+The license key provides direct access to the Customer portal, where you define your organization and its members, manage billing, and access our Support center.
 
 ## Visit the Support center
 
