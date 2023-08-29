@@ -78,9 +78,13 @@ html > form > input {
 }
 .pf-c-login__footer {
     flex-grow: 2;
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
 }
 .pf-c-login__footer ul.pf-c-list.pf-m-inline {
     justify-content: center;
+    padding: 2rem 0;
 }
 /*****************************
 * End Login adjustments
