@@ -9,6 +9,7 @@ from drf_spectacular.plumbing import (
 )
 from drf_spectacular.settings import spectacular_settings
 from drf_spectacular.types import OpenApiTypes
+from rest_framework.settings import api_settings
 
 from authentik.api.pagination import PAGINATION_COMPONENT_NAME, PAGINATION_SCHEMA
 
@@ -31,7 +32,7 @@ GENERIC_ERROR = build_object_type(
 VALIDATION_ERROR = build_object_type(
     description=_("Validation Error"),
     properties={
-        "non_field_errors": build_array_type(build_standard_type(OpenApiTypes.STR)),
+        api_settings.NON_FIELD_ERRORS_KEY: build_array_type(build_standard_type(OpenApiTypes.STR)),
         "code": build_standard_type(OpenApiTypes.STR),
     },
     required=[],
