@@ -117,10 +117,6 @@ html > form > input {
     color: var(--pf-global--danger-color--100);
 }
 
-.form-help-text {
-    color: var(--pf-global--Color--100);
-}
-
 .pf-c-description-list__description .pf-c-button {
     margin-right: 6px;
     margin-bottom: 6px;

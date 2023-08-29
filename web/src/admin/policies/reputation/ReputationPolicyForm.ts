@@ -42,21 +42,21 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg("Allows/denys requests based on the users and/or the IPs reputation.")}
-            </div>
-            <div class="form-help-text">
+            </span>
+            <span>
                 ${msg(
                     `Invalid login attempts will decrease the score for the client's IP, and the
 username they are attempting to login as, by one.`,
                 )}
-            </div>
-            <div class="form-help-text">
+            </span>
+            <span>
                 ${msg(
                     `The policy passes when the reputation score is below the threshold, and
 doesn't pass when either or both of the selected options are equal or above the threshold.`,
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

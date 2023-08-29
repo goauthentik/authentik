@@ -54,11 +54,11 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg(
                     "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

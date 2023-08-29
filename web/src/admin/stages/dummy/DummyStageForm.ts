@@ -41,11 +41,11 @@ export class DummyStageForm extends ModelForm<DummyStage, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg(
                     "Dummy stage used for testing. Shows a simple continue button and always passes.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

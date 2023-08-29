@@ -41,11 +41,11 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg(
                     "This stage checks the user's current session against the Google reCaptcha (or compatible) service.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

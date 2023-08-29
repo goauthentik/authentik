@@ -148,11 +148,11 @@ export class EmailStageForm extends ModelForm<EmailStage, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg(
                     "Verify the user's email address by sending them a one-time-link. Can also be used for recovery to verify the user's authenticity.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
