@@ -347,6 +347,7 @@ const docsSidebar = {
             },
             items: [
                 "security/policy",
+                "security/CVE-2023-39522",
                 "security/CVE-2023-36456",
                 "security/2023-06-cure53",
                 "security/CVE-2023-26481",
