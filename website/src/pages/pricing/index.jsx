@@ -2,6 +2,7 @@ import React from "react";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
 import Card from "../../components/PricingQuestions/Card";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
 export default function pricingPage() {
     return (
@@ -65,7 +66,9 @@ export default function pricingPage() {
                                     </h1>
                                     <a
                                         className="button button--info button--block"
-                                        href="./waitlist/enterprise"
+                                        href={useBaseUrl(
+                                            "/docs/enterprise/get-started",
+                                        )}
                                     >
                                         Join waitlist
                                     </a>
