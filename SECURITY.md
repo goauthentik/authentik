@@ -16,8 +16,8 @@ Even if the issue is not a CVE, we still greatly appreciate your help in hardeni
 
 | Version | Supported |
 | --- | --- |
-| 2023.5.x | ✅ |
 | 2023.6.x | ✅ |
+| 2023.8.x | ✅ |
 
 ## Reporting a Vulnerability
 
