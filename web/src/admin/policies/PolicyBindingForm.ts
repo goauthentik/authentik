@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -24,9 +25,9 @@ import {
 } from "@goauthentik/api";
 
 enum target {
-    policy,
-    group,
-    user,
+    policy = "policy",
+    group = "group",
+    user = "user",
 }
 
 @customElement("ak-policy-binding-form")
