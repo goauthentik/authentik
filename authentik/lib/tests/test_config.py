@@ -7,7 +7,7 @@ from unittest import mock
 from django.conf import ImproperlyConfigured
 from django.test import TestCase
 
-from authentik.lib.config import ENV_PREFIX, UNSET, ConfigLoader, Attr, AttrEncoder
+from authentik.lib.config import ENV_PREFIX, UNSET, Attr, AttrEncoder, ConfigLoader
 
 
 class TestConfig(TestCase):
