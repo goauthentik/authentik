@@ -6,6 +6,7 @@ import { customElement, property } from "lit/decorators.js";
 import { classMap } from "lit/directives/class-map.js";
 
 import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 type Pair = [string, string];
 
@@ -26,6 +27,7 @@ type Pair = [string, string];
 export class AkToggleGroup extends CustomEmitterElement(AKElement) {
     static get styles() {
         return [
+            PFBase,
             PFToggleGroup,
             css`
                 .pf-c-toggle-group {

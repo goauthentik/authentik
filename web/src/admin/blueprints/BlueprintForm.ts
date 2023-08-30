@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -18,9 +19,9 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import { BlueprintFile, BlueprintInstance, ManagedApi } from "@goauthentik/api";
 
 enum blueprintSource {
-    file,
-    oci,
-    internal,
+    file = "file",
+    oci = "oci",
+    internal = "internal",
 }
 
 @customElement("ak-blueprint-form")
