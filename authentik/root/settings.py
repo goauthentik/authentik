@@ -402,6 +402,7 @@ LOG_PRE_CHAIN = [
     structlog.stdlib.add_logger_name,
     structlog.processors.TimeStamper(),
     structlog.processors.StackInfoRenderer(),
+    structlog.processors.format_exc_info,
 ]
 
 LOGGING = {
