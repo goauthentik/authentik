@@ -174,12 +174,25 @@ class TestParserUtils(TestCase):
         config = process_config(url, *get_redis_options(url))
         self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][TCP_KEEPCNT], 100 // 60)
 
+    def test_get_redis_options_idle_timeout_arg_socket(self):
+        """Test Redis URL parser with idletimeout arg for Redis socket connection"""
+        url = urlparse("redis+socket://myredis/0?idletimeout=100s")
+        config = process_config(url, *get_redis_options(url))
+        self.assertFalse("socket_keepalive_options" in config["redis_kwargs"])
+
     # TODO: This is not supported by the Go Redis URL parser!
     def test_get_redis_options_idle_check_frequency_arg(self):
         """Test Redis URL parser with idlecheckfrequency arg"""
         url = urlparse("redis://myredis/0?idlecheckfrequency=31")
         config = process_config(url, *get_redis_options(url))
         self.assertEqual(config["redis_kwargs"]["socket_keepalive_options"][TCP_KEEPINTVL], 31)
+
+    # TODO: This is not supported by the Go Redis URL parser!
+    def test_get_redis_options_idle_check_frequency_arg_socket(self):
+        """Test Redis URL parser with idlecheckfrequency arg for Redis socket connection"""
+        url = urlparse("redis+socket://myredis/0?idlecheckfrequency=31")
+        config = process_config(url, *get_redis_options(url))
+        self.assertFalse("socket_keepalive_options" in config["redis_kwargs"])
 
     def test_get_redis_options_max_idle_conns_arg(self):
         """Test Redis URL parser with maxidleconns arg"""
