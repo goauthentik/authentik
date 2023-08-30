@@ -22,7 +22,7 @@
         "@mdx-js/react": "^1.6.22",
         "clsx": "^2.0.0",
         "disqus-react": "^1.1.5",
-        "postcss": "^8.4.28",
+        "postcss": "^8.4.29",
         "rapidoc": "^9.3.4",
         "react": "^17.0.2",
         "react-before-after-slider-component": "^1.1.8",
@@ -45,6 +45,6 @@
         ]
     },
     "devDependencies": {
-        "prettier": "3.0.2"
+        "prettier": "3.0.3"
     }
 }

@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -24,9 +25,9 @@ import {
 } from "@goauthentik/api";
 
 enum target {
-    policy,
-    group,
-    user,
+    policy = "policy",
+    group = "group",
+    user = "user",
 }
 
 @customElement("ak-policy-binding-form")
@@ -51,7 +52,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     @property()
     targetPk?: string;
 
-    @property({ type: Number })
+    @state()
     policyGroupUser: target = target.policy;
 
     @property({ type: Boolean })
@@ -76,6 +77,21 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         if (this.targetPk) {
             data.target = this.targetPk;
         }
+        switch (this.policyGroupUser) {
+            case target.policy:
+                data.user = null;
+                data.group = null;
+                break;
+            case target.group:
+                data.policy = null;
+                data.user = null;
+                break;
+            case target.user:
+                data.policy = null;
+                data.group = null;
+                break;
+        }
+        console.log(data);
         if (this.instance?.pk) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUpdate({
                 policyBindingUuid: this.instance.pk,
