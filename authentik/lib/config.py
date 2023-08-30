@@ -1,5 +1,6 @@
 """authentik core config loader"""
 import os
+from collections import defaultdict
 from collections.abc import Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -8,6 +9,7 @@ from glob import glob
 from json import JSONEncoder, dumps, loads
 from json.decoder import JSONDecodeError
 from pathlib import Path
+from string import Template
 from sys import argv, stderr
 from time import time
 from typing import Any, Optional
@@ -23,6 +25,15 @@ SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + 
 )
 ENV_PREFIX = "AUTHENTIK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
+
+REDIS_ENV_KEYS = [f"{ENV_PREFIX}_REDIS__HOST",
+                  f"{ENV_PREFIX}_REDIS__PORT"
+                  f"{ENV_PREFIX}_REDIS__DB",
+                  f"{ENV_PREFIX}_REDIS__USERNAME",
+                  f"{ENV_PREFIX}_REDIS__PASSWORD",
+                  f"{ENV_PREFIX}_REDIS__TLS",
+                  f"{ENV_PREFIX}_REDIS__TLS_REQS"
+]
 
 DEPRECATIONS = {
     "redis.broker_url": "broker.url",
@@ -112,10 +123,10 @@ class ConfigLoader:
                         self.update_from_file(env_file)
         self.update_from_env()
         self.check_deprecations()
-        self.update_redis_url_from_env()
+        self.update_redis_url()
 
     # pylint: disable=too-many-statements
-    def update_redis_url_from_env(self):
+    def update_redis_url(self):
         """Build Redis URL from other env variables"""
 
         redis_url = "redis"
@@ -123,75 +134,54 @@ class ConfigLoader:
         redis_host = "localhost"
         redis_port = 6379
         redis_db = 0
-        redis_credentials = {}
 
         if self.get("redis.url", UNSET) is not UNSET:
-            redis_url_old = urlparse(self.get("redis.url"))
-            redis_url_query = dict(parse_qsl(redis_url_old.query))
-            redis_addrs = get_addrs_from_url(redis_url_old)
-            if len(redis_url_old.scheme) > 0:
-                redis_url = redis_url_old.scheme
-            if redis_url == "redis+socket":
-                if redis_url_old.hostname:
-                    redis_addrs = [str(Path(redis_url_old.hostname).joinpath(redis_url_old.path))]
-                else:
-                    redis_addrs = [redis_url_old.path]
-                redis_db = None
-            add_env_redis_addr = False
-            if len(redis_addrs) == 0:
-                add_env_redis_addr = True
+            env = {k: quote_plus(v) for k, v in os.environ.items() if k in REDIS_ENV_KEYS}
+            self.set("redis.url", Template(self.get("redis.url", UNSET)).substitute(env))
+        else:
+            self.log(
+                "warning",
+                "Other Redis environment variables have been deprecated in favor of 'AUTHENTIK_REDIS__URL'! "
+                "Please update your configuration.",
+            )
             if self.get("redis.host", UNSET) is not UNSET:
                 redis_host = self.get("redis.host")
-                add_env_redis_addr = True
             if self.get("redis.port", UNSET) is not UNSET:
                 redis_port = int(self.get("redis.port"))
-                add_env_redis_addr = True
-            if add_env_redis_addr:
-                redis_addrs += [f"{redis_host}:{redis_port}"]
-            redis_credentials = get_credentials_from_url({}, redis_url_old)
-            if len(redis_addrs) > 1:
-                redis_url_query["addrs"] = ",".join(redis_addrs[1:])
-            if redis_url_old.path[1:].isdigit():
-                redis_db = redis_url_old.path[1:]
-            if self.get("redis.tls", UNSET) is UNSET:
-                redis_url = redis_url_old.scheme
-        if self.get_bool("redis.tls", False):
-            redis_url = "rediss"
-        if self.get("redis.tls_reqs", UNSET) is not UNSET:
-            redis_tls_reqs = self.get("redis.tls_reqs")
-            match redis_tls_reqs.lower():
-                case "none":
-                    redis_url_query.pop("skipverify", None)
-                    redis_url_query["insecureskipverify"] = "true"
-                case "optional":
-                    redis_url_query.pop("insecureskipverify", None)
-                    redis_url_query["skipverify"] = "true"
-                case "required":
-                    pass
-                case _:
-                    self.log(
-                        "warning",
-                        f"Unsupported Redis TLS requirements option '{redis_tls_reqs}'! "
-                        "Using default option 'required'.",
-                    )
-        if self.get("redis.db", UNSET) is not UNSET:
-            redis_db = int(self.get("redis.db"))
-        if self.get("redis.username", UNSET) is not UNSET:
-            redis_url_query["username"] = self.get("redis.username")
-        elif "username" in redis_credentials:
-            redis_url_query["username"] = redis_credentials["username"]
-        if self.get("redis.password", UNSET) is not UNSET:
-            redis_url_query["password"] = self.get("redis.password")
-        elif "password" in redis_credentials:
-            redis_url_query["password"] = redis_credentials["password"]
-        redis_url += f"://{redis_addrs[0]}"
-        if redis_db is not None:
-            redis_url += f"/{redis_db}"
-        # Sort query in order to have similar tests between Go and Python implementation
-        redis_url_query = urlencode(dict(sorted(redis_url_query.items())))
-        if redis_url_query != "":
-            redis_url += f"?{redis_url_query}"
-        self.set("redis.url", redis_url)
+            redis_addr = f"{redis_host}:{redis_port}"
+            if self.get_bool("redis.tls", False):
+                redis_url = "rediss"
+            if self.get("redis.tls_reqs", UNSET) is not UNSET:
+                redis_tls_reqs = self.get("redis.tls_reqs")
+                match redis_tls_reqs.lower():
+                    case "none":
+                        redis_url_query.pop("skipverify", None)
+                        redis_url_query["insecureskipverify"] = "true"
+                    case "optional":
+                        redis_url_query.pop("insecureskipverify", None)
+                        redis_url_query["skipverify"] = "true"
+                    case "required":
+                        pass
+                    case _:
+                        self.log(
+                            "warning",
+                            f"Unsupported Redis TLS requirements option '{redis_tls_reqs}'! "
+                            "Using default option 'required'.",
+                        )
+            if self.get("redis.db", UNSET) is not UNSET:
+                redis_db = int(self.get("redis.db"))
+            if self.get("redis.username", UNSET) is not UNSET:
+                redis_url_query["username"] = self.get("redis.username")
+            if self.get("redis.password", UNSET) is not UNSET:
+                redis_url_query["password"] = self.get("redis.password")
+            redis_url += f"://{redis_addr}"
+            if redis_db is not None:
+                redis_url += f"/{redis_db}"
+            # Sort query in order to have similar tests between Go and Python implementation
+            redis_url_query = urlencode(dict(sorted(redis_url_query.items())))
+            if redis_url_query != "":
+                redis_url += f"?{redis_url_query}"
+            self.set("redis.url", redis_url)
 
     def check_deprecations(self):
         """Warn if any deprecated configuration options are used"""

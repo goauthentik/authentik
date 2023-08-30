@@ -20,10 +20,7 @@ class TestConfig(TestCase):
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_POLICIES": "3920ns",
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_REPUTATION": "298382us",
     }
-    update_redis_url_from_env_env_vars = {
-        ENV_PREFIX
-        + "_REDIS__URL": "redis://oldredis:2493/2?idletimeout=20s&skipverify=true"
-        + "&password=pass&username=redis",
+    update_redis_url_set_default_env_vars = {
         ENV_PREFIX + "_REDIS__HOST": "myredis",
         ENV_PREFIX + "_REDIS__PORT": "9637",
         ENV_PREFIX + "_REDIS__DB": "56",
@@ -32,10 +29,11 @@ class TestConfig(TestCase):
         ENV_PREFIX + "_REDIS__TLS": "true",
         ENV_PREFIX + "_REDIS__TLS_REQS": "none",
     }
-    update_redis_url_from_env_tls_reqs_env_vars = {
-        ENV_PREFIX + "_REDIS__URL": "redis://myredis:5132/8?insecureskipverify=notvalid",
-        ENV_PREFIX + "_REDIS__TLS": "true",
-        ENV_PREFIX + "_REDIS__TLS_REQS": "optional",
+    update_redis_url_from_env_env_vars = {
+        ENV_PREFIX + "_REDIS__URL": "redis://${AUTHENTIK_REDIS__USERNAME}:${"
+                                    "AUTHENTIK_REDIS__PASSWORD}@myredis:2493/2?idletimeout=20s&skipverify=true",
+        ENV_PREFIX + "_REDIS__USERNAME": "default",
+        ENV_PREFIX + "_REDIS__PASSWORD": "\"'% !.;.°",
     }
 
     @mock.patch.dict(environ, {ENV_PREFIX + "_test__test": "bar"})
@@ -138,25 +136,24 @@ class TestConfig(TestCase):
         self.assertEqual(config.get("cache.timeout_policies"), "3920ns")
         self.assertEqual(config.get("cache.timeout_reputation"), "298382us")
 
-    @mock.patch.dict(environ, update_redis_url_from_env_env_vars)
-    def test_update_redis_url_from_env(self):
+    @mock.patch.dict(environ, update_redis_url_set_default_env_vars)
+    def test_update_redis_url_set_default(self):
         """Test updating Redis URL from environment"""
         config = ConfigLoader()
         config.update_from_env()
-        config.update_redis_url_from_env()
+        config.update_redis_url()
         self.assertEqual(
             config.get("redis.url"),
-            "rediss://myredis:9637/56?idletimeout=20s&insecureskipverify=true"
-            + "&password=%22%27%25+%21.%3B.%C2%B0&username=default",
+            "rediss://myredis:9637/56?insecureskipverify=true&password=%22%27%25+%21.%3B.%C2%B0&username=default",
         )
 
-    @mock.patch.dict(environ, update_redis_url_from_env_tls_reqs_env_vars)
-    def test_update_redis_url_from_env_tls_reqs(self):
+    @mock.patch.dict(environ, update_redis_url_from_env_env_vars)
+    def test_update_redis_url_from_env(self):
         """Test updating Redis URL from environment with new TLS reqs"""
         config = ConfigLoader()
         config.update_from_env()
-        config.update_redis_url_from_env()
+        config.update_redis_url()
         self.assertEqual(
             config.get("redis.url"),
-            "rediss://myredis:5132/8?skipverify=true",
+            "rediss://default:%22%27%25+%21.%3B.%C2%B0@myredis:2493/2?idletimeout=20s&skipverify=true",
         )

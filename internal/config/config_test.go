@@ -38,9 +38,8 @@ func TestConfigEnv_File(t *testing.T) {
 	assert.Equal(t, "bar", Get().SecretKey)
 }
 
-func TestConfig_UpdateRedisURL(t *testing.T) {
+func TestConfig_UpdateRedisURL_SetDefault(t *testing.T) {
 	cfg = nil
-	os.Setenv("AUTHENTIK_REDIS__URL", "redis://oldredis:2493/2?idletimeout=20s&skipverify=true&password=pass&username=redis")
 	os.Setenv("AUTHENTIK_REDIS__HOST", "myredis")
 	os.Setenv("AUTHENTIK_REDIS__PORT", "9637")
 	os.Setenv("AUTHENTIK_REDIS__DB", "56")
@@ -50,7 +49,19 @@ func TestConfig_UpdateRedisURL(t *testing.T) {
 	os.Setenv("AUTHENTIK_REDIS__TLS_REQS", "none")
 	assert.Equal(
 		t,
-		"rediss://myredis:9637/56?idletimeout=20s&insecureskipverify=true&password=%22%27%25+%21.%3B.%C2%B0&username=default",
+		"rediss://myredis:9637/56?insecureskipverify=true&password=%22%27%25+%21.%3B.%C2%B0&username=default",
+		Get().Redis.URL,
+	)
+}
+
+func TestConfig_UpdateRedisURL_FromEnv(t *testing.T) {
+	cfg = nil
+	os.Setenv("AUTHENTIK_REDIS__URL", "redis://${AUTHENTIK_REDIS__USERNAME}:${AUTHENTIK_REDIS__PASSWORD}@myredis:2493/2?idletimeout=20s&skipverify=true")
+	os.Setenv("AUTHENTIK_REDIS__USERNAME", "default")
+	os.Setenv("AUTHENTIK_REDIS__PASSWORD", "\"'% !.;.°")
+	assert.Equal(
+		t,
+		"rediss://default:%22%27%25+%21.%3B.%C2%B0@myredis:2493/2?idletimeout=20s&skipverify=true",
 		Get().Redis.URL,
 	)
 }

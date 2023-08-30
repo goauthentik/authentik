@@ -328,8 +328,6 @@ def get_redis_options(
     if disable_socket_timeout:
         redis_kwargs["socket_timeout"] = None
 
-    redis_kwargs = _configure_tcp_keepalive(redis_kwargs)
-
     return _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url)
 
 
@@ -389,10 +387,12 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
     if len(scheme_parts) > 1:
         match scheme_parts[1]:
             case "sentinel" | "sentinels":
+                redis_kwargs = _configure_tcp_keepalive(redis_kwargs)
                 credentials = (sentinel_username, sentinel_password)
                 kwargs = (redis_kwargs, pool_kwargs)
                 config = _config_sentinel(config, service_name, credentials, kwargs, addrs)
             case "cluster" | "clusters":
+                redis_kwargs = _configure_tcp_keepalive(redis_kwargs)
                 config["type"] = "cluster"
                 database = redis_kwargs.pop("db")
                 if database:
@@ -404,7 +404,7 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
             case "socket":
                 if scheme_parts[0] == "rediss":
                     raise ValueError("Redis unix socket connection does not support SSL!")
-                redis_kwargs["path"] = (addrs[0][0] + ":" + str(addrs[0][1]), url.path)
+                redis_kwargs["path"] = url.path
                 config["type"] = "socket"
                 config["pool_kwargs"] = deepcopy(pool_kwargs)
                 config["redis_kwargs"] = deepcopy(redis_kwargs)
