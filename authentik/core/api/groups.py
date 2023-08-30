@@ -49,7 +49,7 @@ class GroupSerializer(ModelSerializer):
     users_obj = ListSerializer(
         child=GroupMemberSerializer(), read_only=True, source="users", required=False
     )
-    parent_name = CharField(source="parent.name", read_only=True)
+    parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
 
     num_pk = IntegerField(read_only=True)
 
