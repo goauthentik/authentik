@@ -157,6 +157,6 @@ class TestConfig(TestCase):
         config.update_redis_url()
         self.assertEqual(
             config.get("redis.url"),
-            "rediss://default:%22%27%25+%21.%3B.%C2%B0@myredis:2493"
+            "redis://default:%22%27%25+%21.%3B.%C2%B0@myredis:2493"
             "/2?idletimeout=20s&skipverify=true",
         )
