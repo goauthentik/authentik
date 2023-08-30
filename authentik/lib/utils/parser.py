@@ -410,6 +410,8 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
                 config["redis_kwargs"] = deepcopy(redis_kwargs)
             case _:
                 raise ValueError("Unknown scheme found in redis connection URL: " + url.scheme)
+    else:
+        redis_kwargs = _configure_tcp_keepalive(redis_kwargs)
 
     if scheme_parts[0] != "redis" and scheme_parts[0] != "rediss":
         raise ValueError("Unknown scheme found in redis connection URL: " + url.scheme)
