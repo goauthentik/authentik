@@ -52,7 +52,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     @property()
     targetPk?: string;
 
-    @property({ type: Number })
+    @state()
     policyGroupUser: target = target.policy;
 
     @property({ type: Boolean })
