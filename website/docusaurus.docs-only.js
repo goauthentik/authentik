@@ -14,7 +14,6 @@ module.exports = async function () {
         projectName: "authentik",
         themeConfig: {
             navbar: {
-                title: "authentik",
                 logo: {
                     alt: "authentik logo",
                     src: "img/icon_left_brand.svg",

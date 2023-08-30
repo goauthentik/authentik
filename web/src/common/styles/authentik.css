@@ -78,9 +78,13 @@ html > form > input {
 }
 .pf-c-login__footer {
     flex-grow: 2;
+    display: flex;
+    justify-content: start;
+    flex-direction: column;
 }
 .pf-c-login__footer ul.pf-c-list.pf-m-inline {
     justify-content: center;
+    padding: 2rem 0;
 }
 /*****************************
 * End Login adjustments
@@ -113,15 +117,7 @@ html > form > input {
     color: var(--pf-global--danger-color--100);
 }
 
-.form-help-text {
-    color: var(--pf-global--Color--100);
-}
-
 .pf-c-description-list__description .pf-c-button {
     margin-right: 6px;
     margin-bottom: 6px;
-}
-
-.pf-c-data-list__item {
-    background-color: transparent;
 }

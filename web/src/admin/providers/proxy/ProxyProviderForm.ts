@@ -1,6 +1,8 @@
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -8,20 +10,16 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { CSSResult, css } from "lit";
+import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
-import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 import PFSpacing from "@patternfly/patternfly/utilities/Spacing/spacing.css";
 
 import {
-    CertificateKeyPair,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
     FlowsInstancesListDesignationEnum,
     PaginatedOAuthSourceList,
     PaginatedScopeMappingList,
@@ -35,17 +33,7 @@ import {
 @customElement("ak-provider-proxy-form")
 export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFToggleGroup,
-            PFContent,
-            PFList,
-            PFSpacing,
-            css`
-                .pf-c-toggle-group {
-                    justify-content: center;
-                }
-            `,
-        );
+        return [...super.styles, PFContent, PFList, PFSpacing];
     }
 
     async loadInstance(pk: number): Promise<ProxyProvider> {
@@ -137,51 +125,18 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     }
 
     renderModeSelector(): TemplateResult {
-        return html` <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.mode === ProxyMode.Proxy
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.mode = ProxyMode.Proxy;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text">${msg("Proxy")}</span>
-                </button>
-            </div>
-            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-            <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.mode === ProxyMode.ForwardSingle
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.mode = ProxyMode.ForwardSingle;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text"
-                        >${msg("Forward auth (single application)")}</span
-                    >
-                </button>
-            </div>
-            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-            <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.mode === ProxyMode.ForwardDomain
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.mode = ProxyMode.ForwardDomain;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text"
-                        >${msg("Forward auth (domain level)")}</span
-                    >
-                </button>
-            </div>`;
+        const setMode = (ev: CustomEvent<{ value: ProxyMode }>) => {
+            this.mode = ev.detail.value;
+        };
+
+        // prettier-ignore
+        return html`
+            <ak-toggle-group value=${this.mode} @ak-toggle=${setMode}>
+                <option value=${ProxyMode.Proxy}>${msg("Proxy")}</option>
+                <option value=${ProxyMode.ForwardSingle}>${msg("Forward auth (single application)")}</option>
+                <option value=${ProxyMode.ForwardDomain}>${msg("Forward auth (domain level)")}</option>
+            </ak-toggle-group>
+        `;
     }
 
     renderSettings(): TemplateResult {
@@ -362,9 +317,7 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
             </ak-form-element-horizontal>
 
             <div class="pf-c-card pf-m-selectable pf-m-selected">
-                <div class="pf-c-card__body">
-                    <div class="pf-c-toggle-group">${this.renderModeSelector()}</div>
-                </div>
+                <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">${this.renderSettings()}</div>
             </div>
             <ak-form-element-horizontal label=${msg("Token validity")} name="accessTokenValidity">
@@ -383,35 +336,9 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
                 <span slot="header">${msg("Advanced protocol settings")}</span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Certificate")} name="certificate">
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.certificate;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            certificate=${this.instance?.certificate}
+                        ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Additional scopes")}

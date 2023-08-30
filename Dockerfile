@@ -20,7 +20,7 @@ WORKDIR /work/web
 RUN npm ci --include=dev && npm run build
 
 # Stage 3: Poetry to requirements.txt export
-FROM docker.io/python:3.11.4-slim-bookworm AS poetry-locker
+FROM docker.io/python:3.11.5-slim-bookworm AS poetry-locker
 
 WORKDIR /work
 COPY ./pyproject.toml /work
@@ -39,12 +39,13 @@ COPY --from=web-builder /work/web/robots.txt /work/web/robots.txt
 COPY --from=web-builder /work/web/security.txt /work/web/security.txt
 
 COPY ./cmd /work/cmd
+COPY ./authentik/lib /work/authentik/lib
 COPY ./web/static.go /work/web/static.go
 COPY ./internal /work/internal
 COPY ./go.mod /work/go.mod
 COPY ./go.sum /work/go.sum
 
-RUN go build -o /work/authentik ./cmd/server/
+RUN go build -o /work/bin/authentik ./cmd/server/
 
 # Stage 5: MaxMind GeoIP
 FROM ghcr.io/maxmind/geoipupdate:v6.0 as geoip
@@ -61,7 +62,7 @@ RUN --mount=type=secret,id=GEOIPUPDATE_ACCOUNT_ID \
     /bin/sh -c "/usr/bin/entry.sh || echo 'Failed to get GeoIP database, disabling'; exit 0"
 
 # Stage 6: Run
-FROM docker.io/python:3.11.4-slim-bookworm AS final-image
+FROM docker.io/python:3.11.5-slim-bookworm AS final-image
 
 ARG GIT_BUILD_HASH
 ARG VERSION
@@ -106,7 +107,7 @@ COPY ./tests /tests
 COPY ./manage.py /
 COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
-COPY --from=go-builder /work/authentik /bin/authentik
+COPY --from=go-builder /work/bin/authentik /bin/authentik
 COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/
 COPY --from=website-builder /work/website/help/ /website/help/

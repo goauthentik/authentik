@@ -23,7 +23,7 @@ import PFToolbar from "@patternfly/patternfly/components/Toolbar/toolbar.css";
 import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Pagination } from "@goauthentik/api";
+import { Pagination, ResponseError } from "@goauthentik/api";
 
 export class TableColumn {
     title: string;
@@ -260,7 +260,9 @@ export abstract class Table<T> extends AKElement {
 
     renderError(): TemplateResult {
         return html`<ak-empty-state header="${msg("Failed to fetch objects.")}" icon="fa-times">
-            <div slot="body">${this.hasError?.toString()}</div>
+            ${this.hasError instanceof ResponseError
+                ? html` <div slot="body">${this.hasError.message}</div> `
+                : html`<div slot="body">${this.hasError?.toString()}</div>`}
         </ak-empty-state>`;
     }
 
@@ -268,8 +270,8 @@ export abstract class Table<T> extends AKElement {
         if (this.hasError) {
             return [this.renderEmpty(this.renderError())];
         }
-        if (!this.data) {
-            return;
+        if (!this.data || this.isLoading) {
+            return [this.renderLoading()];
         }
         if (this.data.pagination.count === 0) {
             return [this.renderEmpty()];
@@ -499,7 +501,7 @@ export abstract class Table<T> extends AKElement {
                         ${this.columns().map((col) => col.render(this))}
                     </tr>
                 </thead>
-                ${this.isLoading || !this.data ? this.renderLoading() : this.renderRows()}
+                ${this.renderRows()}
             </table>
             ${this.paginated
                 ? html` <div class="pf-c-pagination pf-m-bottom">

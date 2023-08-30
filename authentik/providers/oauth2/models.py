@@ -2,6 +2,7 @@
 import base64
 import binascii
 import json
+from dataclasses import asdict
 from functools import cached_property
 from hashlib import sha256
 from typing import Any, Optional
@@ -358,7 +359,7 @@ class AccessToken(SerializerModel, ExpiringModel, BaseGrantModel):
     @id_token.setter
     def id_token(self, value: IDToken):
         self.token = value.to_access_token(self.provider)
-        self._id_token = json.dumps(value.to_dict())
+        self._id_token = json.dumps(asdict(value))
 
     @property
     def at_hash(self):
@@ -400,7 +401,7 @@ class RefreshToken(SerializerModel, ExpiringModel, BaseGrantModel):
 
     @id_token.setter
     def id_token(self, value: IDToken):
-        self._id_token = json.dumps(value.to_dict())
+        self._id_token = json.dumps(asdict(value))
 
     @property
     def serializer(self) -> Serializer:

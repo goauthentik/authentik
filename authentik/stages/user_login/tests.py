@@ -99,6 +99,7 @@ class TestUserLoginStage(FlowTestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
+        before_request = now()
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
         )
@@ -108,7 +109,7 @@ class TestUserLoginStage(FlowTestCase):
         session_key = self.client.session.session_key
         session = AuthenticatedSession.objects.filter(session_key=session_key).first()
         self.assertAlmostEqual(
-            session.expires.timestamp() - now().timestamp(),
+            session.expires.timestamp() - before_request.timestamp(),
             timedelta_from_string(self.stage.session_duration).total_seconds(),
             delta=1,
         )

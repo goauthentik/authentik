@@ -45,6 +45,9 @@ export class FlowInspector extends AKElement {
                     overflow-x: hidden;
                     white-space: break-spaces;
                 }
+                .pf-c-notification-drawer__body {
+                    overflow-x: hidden;
+                }
             `,
         ];
     }

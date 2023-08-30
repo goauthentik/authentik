@@ -28,6 +28,19 @@ class TestUsersAPI(APITestCase):
         self.admin = create_test_admin_user()
         self.user = User.objects.create(username="test-user")
 
+    def test_filter_type(self):
+        """Test API filtering by type"""
+        self.client.force_login(self.admin)
+        user = create_test_admin_user(type=UserTypes.EXTERNAL)
+        response = self.client.get(
+            reverse("authentik_api:user-list"),
+            data={
+                "type": UserTypes.EXTERNAL,
+                "username": user.username,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
     def test_metrics(self):
         """Test user's metrics"""
         self.client.force_login(self.admin)

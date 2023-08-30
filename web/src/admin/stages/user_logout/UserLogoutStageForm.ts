@@ -40,7 +40,7 @@ export class UserLogoutStageForm extends ModelForm<UserLogoutStage, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">${msg("Remove the user from the current session.")}</div>
+            <span>${msg("Remove the user from the current session.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

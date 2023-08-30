@@ -29,33 +29,35 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		maxAge = int(*t) + 1
 	}
 
-	redisURL, err := url.Parse(config.Get().Redis.URL)
-
-	if err != nil {
-		client, err := redisstore.GetRedisClient(redisURL)
+	if a.isEmbedded {
+		redisURL, err := url.Parse(config.Get().Redis.URL)
 		if err != nil {
-			panic(err)
+			client, err := redisstore.GetRedisClient(redisURL)
+			if err != nil {
+				panic(err)
+			}
+			rs, err := redisstore.NewStoreWithUniversalClient(
+				client,
+				redisstore.WithOptions(&sessions.Options{
+					Path: "/",
+					Domain: *p.CookieDomain,
+					HttpOnly: true,
+					MaxAge: sessionExpire,
+					SameSite: http.SameSiteLaxMode,
+					Secure: strings.ToLower(externalHost.Scheme) == "https",
+				}),
+				redisstore.WithKeyPrefix(RedisKeyPrefix),
+				redisstore.WithMaxLength(math.MaxInt),
+				redisstore.WithCodecs(codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))),
+			)
+			if err != nil {
+				panic(err)
+			}
+			a.log.Trace("using redis session backend")
+			return rs
 		}
-		rs, err := redisstore.NewStoreWithUniversalClient(
-			client,
-			redisstore.WithOptions(&sessions.Options{
-				Path: "/",
-				Domain: *p.CookieDomain,
-				HttpOnly: true,
-				MaxAge: sessionExpire,
-				SameSite: http.SameSiteLaxMode,
-				Secure: strings.ToLower(externalHost.Scheme) == "https",
-			}),
-			redisstore.WithKeyPrefix(RedisKeyPrefix),
-			redisstore.WithMaxLength(math.MaxInt),
-			redisstore.WithCodecs(codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))),
-		)
-		if err != nil {
-			panic(err)
-		}
-		a.log.Trace("using redis session backend")
-		return rs
 	}
+
 	dir := os.TempDir()
 	cs := sessions.NewFilesystemStore(dir)
 	cs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))

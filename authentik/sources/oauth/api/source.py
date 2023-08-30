@@ -62,7 +62,8 @@ class OAuthSourceSerializer(SourceSerializer):
                 well_known_config = session.get(well_known)
                 well_known_config.raise_for_status()
             except RequestException as exc:
-                raise ValidationError(exc.response.text)
+                text = exc.response.text if exc.response else str(exc)
+                raise ValidationError({"oidc_well_known_url": text})
             config = well_known_config.json()
             try:
                 attrs["authorization_url"] = config["authorization_endpoint"]
@@ -70,7 +71,9 @@ class OAuthSourceSerializer(SourceSerializer):
                 attrs["profile_url"] = config["userinfo_endpoint"]
                 attrs["oidc_jwks_url"] = config["jwks_uri"]
             except (IndexError, KeyError) as exc:
-                raise ValidationError(f"Invalid well-known configuration: {exc}")
+                raise ValidationError(
+                    {"oidc_well_known_url": f"Invalid well-known configuration: {exc}"}
+                )
 
         jwks_url = attrs.get("oidc_jwks_url")
         if jwks_url and jwks_url != "":
@@ -78,7 +81,8 @@ class OAuthSourceSerializer(SourceSerializer):
                 jwks_config = session.get(jwks_url)
                 jwks_config.raise_for_status()
             except RequestException as exc:
-                raise ValidationError(exc.response.text)
+                text = exc.response.text if exc.response else str(exc)
+                raise ValidationError({"jwks_url": text})
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 
