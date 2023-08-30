@@ -54,7 +54,7 @@ func TestConfig_UpdateRedisURL_SetDefault(t *testing.T) {
 	)
 }
 
-func TestConfig_UpdateRedisURL_FromEnv(t *testing.T) {
+func TestConfig_UpdateRedisURL_Placeholders(t *testing.T) {
 	cfg = nil
 	os.Setenv("AUTHENTIK_REDIS__URL", "redis://${AUTHENTIK_REDIS__USERNAME}:${AUTHENTIK_REDIS__PASSWORD}@myredis:2493/2?idletimeout=20s&skipverify=true")
 	os.Setenv("AUTHENTIK_REDIS__USERNAME", "default")

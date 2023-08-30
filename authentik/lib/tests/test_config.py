@@ -29,9 +29,10 @@ class TestConfig(TestCase):
         ENV_PREFIX + "_REDIS__TLS": "true",
         ENV_PREFIX + "_REDIS__TLS_REQS": "none",
     }
-    update_redis_url_from_env_env_vars = {
+    update_redis_url_placeholders_env_vars = {
         ENV_PREFIX + "_REDIS__URL": "redis://${AUTHENTIK_REDIS__USERNAME}:${"
-                                    "AUTHENTIK_REDIS__PASSWORD}@myredis:2493/2?idletimeout=20s&skipverify=true",
+        "AUTHENTIK_REDIS__PASSWORD}@myredis:2493"
+        "/2?idletimeout=20s&skipverify=true",
         ENV_PREFIX + "_REDIS__USERNAME": "default",
         ENV_PREFIX + "_REDIS__PASSWORD": "\"'% !.;.°",
     }
@@ -138,22 +139,24 @@ class TestConfig(TestCase):
 
     @mock.patch.dict(environ, update_redis_url_set_default_env_vars)
     def test_update_redis_url_set_default(self):
-        """Test updating Redis URL from environment"""
+        """Test generating default Redis URL from environment"""
         config = ConfigLoader()
         config.update_from_env()
         config.update_redis_url()
         self.assertEqual(
             config.get("redis.url"),
-            "rediss://myredis:9637/56?insecureskipverify=true&password=%22%27%25+%21.%3B.%C2%B0&username=default",
+            "rediss://myredis:9637/56?insecureskipverify=true"
+            "&password=%22%27%25+%21.%3B.%C2%B0&username=default",
         )
 
-    @mock.patch.dict(environ, update_redis_url_from_env_env_vars)
-    def test_update_redis_url_from_env(self):
-        """Test updating Redis URL from environment with new TLS reqs"""
+    @mock.patch.dict(environ, update_redis_url_placeholders_env_vars)
+    def test_update_redis_url_placeholders(self):
+        """Test using placeholders for Redis URL construction"""
         config = ConfigLoader()
         config.update_from_env()
         config.update_redis_url()
         self.assertEqual(
             config.get("redis.url"),
-            "rediss://default:%22%27%25+%21.%3B.%C2%B0@myredis:2493/2?idletimeout=20s&skipverify=true",
+            "rediss://default:%22%27%25+%21.%3B.%C2%B0@myredis:2493"
+            "/2?idletimeout=20s&skipverify=true",
         )

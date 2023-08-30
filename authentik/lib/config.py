@@ -1,6 +1,5 @@
 """authentik core config loader"""
 import os
-from collections import defaultdict
 from collections.abc import Mapping
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -13,12 +12,10 @@ from string import Template
 from sys import argv, stderr
 from time import time
 from typing import Any, Optional
-from urllib.parse import parse_qsl, quote_plus, urlencode, urlparse
+from urllib.parse import quote_plus, urlencode, urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
-
-from authentik.lib.utils.parser import get_addrs_from_url, get_credentials_from_url
 
 SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + glob(
     "/etc/authentik/config.d/*.yml", recursive=True
@@ -26,13 +23,13 @@ SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + 
 ENV_PREFIX = "AUTHENTIK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
 
-REDIS_ENV_KEYS = [f"{ENV_PREFIX}_REDIS__HOST",
-                  f"{ENV_PREFIX}_REDIS__PORT"
-                  f"{ENV_PREFIX}_REDIS__DB",
-                  f"{ENV_PREFIX}_REDIS__USERNAME",
-                  f"{ENV_PREFIX}_REDIS__PASSWORD",
-                  f"{ENV_PREFIX}_REDIS__TLS",
-                  f"{ENV_PREFIX}_REDIS__TLS_REQS"
+REDIS_ENV_KEYS = [
+    f"{ENV_PREFIX}_REDIS__HOST",
+    f"{ENV_PREFIX}_REDIS__PORT" f"{ENV_PREFIX}_REDIS__DB",
+    f"{ENV_PREFIX}_REDIS__USERNAME",
+    f"{ENV_PREFIX}_REDIS__PASSWORD",
+    f"{ENV_PREFIX}_REDIS__TLS",
+    f"{ENV_PREFIX}_REDIS__TLS_REQS",
 ]
 
 DEPRECATIONS = {
@@ -141,7 +138,8 @@ class ConfigLoader:
         else:
             self.log(
                 "warning",
-                "Other Redis environment variables have been deprecated in favor of 'AUTHENTIK_REDIS__URL'! "
+                "Other Redis environment variables have been deprecated "
+                "in favor of 'AUTHENTIK_REDIS__URL'! "
                 "Please update your configuration.",
             )
             if self.get("redis.host", UNSET) is not UNSET:
