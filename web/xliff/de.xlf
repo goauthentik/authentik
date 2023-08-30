@@ -4135,10 +4135,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="se0c660020d9cf5b7">
         <source>Offset after which consent expires.</source>
       </trans-unit>
-      <trans-unit id="s5e9527b6481a94ce">
-        <source>Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding.</source>
-        <target>Den Fluss statisch verweigern. Um diese Phase effektiv zu nutzen, deaktivieren Sie *Evaluate on plan* für die entsprechende Bindung</target>
-      </trans-unit>
       <trans-unit id="s22b10ed263b96194">
         <source>Dummy stage used for testing. Shows a simple continue button and always passes.</source>
         <target>Dummy-Stage zum Testen verwendet. Zeigt eine einfache Schaltfläche zum Fortfahren und besteht immer.</target>
@@ -5894,6 +5890,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s57b07e524f8f5c2a">
   <source>External: <x id="0" equiv-text="${item.externalUsers}"/></source>
+</trans-unit>
+<trans-unit id="s7f68101a50f526ee">
+  <source>Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.</source>
 </trans-unit>
     </body>
   </file>

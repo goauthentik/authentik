@@ -42,7 +42,7 @@ export class DenyStageForm extends ModelForm<DenyStage, string> {
         return html`<form class="pf-c-form pf-m-horizontal">
             <span>
                 ${msg(
-                    "Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding.",
+                    "Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.",
                 )}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">

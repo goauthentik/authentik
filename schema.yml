@@ -30531,6 +30531,7 @@ components:
         parent_name:
           type: string
           readOnly: true
+          nullable: true
         users:
           type: array
           items:

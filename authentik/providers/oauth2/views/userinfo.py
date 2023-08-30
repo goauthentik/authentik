@@ -40,10 +40,14 @@ class UserInfoView(View):
 
     token: Optional[RefreshToken]
 
-    def get_scope_descriptions(self, scopes: list[str]) -> list[PermissionDict]:
+    def get_scope_descriptions(
+        self, scopes: list[str], provider: OAuth2Provider
+    ) -> list[PermissionDict]:
         """Get a list of all Scopes's descriptions"""
         scope_descriptions = []
-        for scope in ScopeMapping.objects.filter(scope_name__in=scopes).order_by("scope_name"):
+        for scope in ScopeMapping.objects.filter(scope_name__in=scopes, provider=provider).order_by(
+            "scope_name"
+        ):
             scope_descriptions.append(PermissionDict(id=scope.scope_name, name=scope.description))
         # GitHub Compatibility Scopes are handled differently, since they required custom paths
         # Hence they don't exist as Scope objects
