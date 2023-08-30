@@ -61,7 +61,7 @@ func TestConfig_UpdateRedisURL_FromEnv(t *testing.T) {
 	os.Setenv("AUTHENTIK_REDIS__PASSWORD", "\"'% !.;.°")
 	assert.Equal(
 		t,
-		"rediss://default:%22%27%25+%21.%3B.%C2%B0@myredis:2493/2?idletimeout=20s&skipverify=true",
+		"redis://default:%22%27%25+%21.%3B.%C2%B0@myredis:2493/2?idletimeout=20s&skipverify=true",
 		Get().Redis.URL,
 	)
 }
