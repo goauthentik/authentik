@@ -1,4 +1,5 @@
 """Test config loader"""
+from json import dumps
 from os import chmod, environ, unlink, write
 from tempfile import mkstemp
 from unittest import mock
@@ -6,7 +7,7 @@ from unittest import mock
 from django.conf import ImproperlyConfigured
 from django.test import TestCase
 
-from authentik.lib.config import ENV_PREFIX, UNSET, ConfigLoader
+from authentik.lib.config import ENV_PREFIX, UNSET, ConfigLoader, Attr, AttrEncoder
 
 
 class TestConfig(TestCase):
@@ -57,8 +58,16 @@ class TestConfig(TestCase):
     def test_uri_env(self):
         """Test URI parsing (environment)"""
         config = ConfigLoader()
-        self.assertEqual(config.parse_uri("env://foo"), "bar")
-        self.assertEqual(config.parse_uri("env://foo?bar"), "bar")
+        foo_uri = "env://foo"
+        foo_parsed = config.parse_uri(foo_uri)
+        self.assertEqual(foo_parsed.value, "bar")
+        self.assertEqual(foo_parsed.source_type, Attr.Source.URI)
+        self.assertEqual(foo_parsed.source, foo_uri)
+        foo_bar_uri = "env://foo?bar"
+        foo_bar_parsed = config.parse_uri(foo_bar_uri)
+        self.assertEqual(foo_bar_parsed.value, "bar")
+        self.assertEqual(foo_bar_parsed.source_type, Attr.Source.URI)
+        self.assertEqual(foo_bar_parsed.source, foo_bar_uri)
 
     def test_uri_file(self):
         """Test URI parsing (file load)"""
@@ -117,6 +126,12 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         config.set("foo", "bar")
         self.assertEqual(config.get_int("foo", 1234), 1234)
+
+    def test_attr_json_encoder(self):
+        """Test AttrEncoder"""
+        test_attr = Attr("foo", Attr.Source.ENV, "AUTHENTIK_REDIS__USERNAME")
+        json_attr = dumps(test_attr, indent=4, cls=AttrEncoder)
+        self.assertEqual(json_attr, '"foo"')
 
     @mock.patch.dict(environ, check_deprecations_env_vars)
     def test_check_deprecations(self):

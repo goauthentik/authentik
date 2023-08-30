@@ -119,6 +119,7 @@ class ConfigLoader:
                         # Update config with env file
                         self.update_from_file(env_file)
         self.update_from_env()
+        self.update(self.__config, kwargs)
         self.check_deprecations()
         self.update_redis_url()
 
@@ -204,8 +205,8 @@ class ConfigLoader:
                     "Please update your configuration.",
                 )
 
-                deprecated_value = _pop_deprecated_key(self.__config, deprecation.split("."), 0)
-                self.set(replacement, deprecated_value)
+                deprecated_attr = _pop_deprecated_key(self.__config, deprecation.split("."), 0)
+                self.set(replacement, deprecated_attr.value)
 
     def log(self, level: str, message: str, **kwargs):
         """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
