@@ -77,6 +77,21 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
         if (this.targetPk) {
             data.target = this.targetPk;
         }
+        switch (this.policyGroupUser) {
+            case target.policy:
+                data.user = null;
+                data.group = null;
+                break;
+            case target.group:
+                data.policy = null;
+                data.user = null;
+                break;
+            case target.user:
+                data.policy = null;
+                data.group = null;
+                break;
+        }
+        console.log(data);
         if (this.instance?.pk) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUpdate({
                 policyBindingUuid: this.instance.pk,
