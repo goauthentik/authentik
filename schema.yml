@@ -29800,15 +29800,14 @@ components:
       type: object
       description: Response object of Event's top_per_user
       properties:
-        application:
-          type: object
-          additionalProperties: {}
+        application_name:
+          type: string
         counted_events:
           type: integer
         unique_users:
           type: integer
       required:
-      - application
+      - application_name
       - counted_events
       - unique_users
     ExpiringBaseGrantModel:

@@ -10,7 +10,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.decorators import action
-from rest_framework.fields import DictField, IntegerField
+from rest_framework.fields import CharField, IntegerField
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -42,7 +42,7 @@ class EventSerializer(ModelSerializer):
 class EventTopPerUserSerializer(PassiveSerializer):
     """Response object of Event's top_per_user"""
 
-    application = DictField()
+    application_name = CharField()
     counted_events = IntegerField()
     unique_users = IntegerField()
 
@@ -141,9 +141,10 @@ class EventViewSet(ModelViewSet):
             .annotate(application=KeyTextTransform("authorized_application", "context"))
             .annotate(user_pk=KeyTextTransform("pk", "user"))
             .values("application")
+            .annotate(application_name=KeyTextTransform("name", "application"))
             .annotate(counted_events=Count("application"))
             .annotate(unique_users=Count("user_pk", distinct=True))
-            .values("unique_users", "application", "counted_events")
+            .values("unique_users", "application_name", "counted_events")
             .order_by("-counted_events")[:top_n]
         )
 

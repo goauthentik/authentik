@@ -32,7 +32,7 @@ export class TopApplicationsTable extends AKElement {
 
     renderRow(event: EventTopPerUser): TemplateResult {
         return html`<tr role="row">
-            <td role="cell">${event.application.name}</td>
+            <td role="cell">${event.applicationName}</td>
             <td role="cell">${event.countedEvents}</td>
             <td role="cell">
                 <progress
