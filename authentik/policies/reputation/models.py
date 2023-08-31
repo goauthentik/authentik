@@ -92,4 +92,6 @@ class Reputation(ExpiringModel, SerializerModel):
         return f"Reputation {self.identifier}/{self.ip} @ {self.score}"
 
     class Meta:
+        verbose_name = _("Reputation Score")
+        verbose_name_plural = _("Reputation Scores")
         unique_together = ("identifier", "ip")

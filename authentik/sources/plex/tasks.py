@@ -30,7 +30,7 @@ def check_plex_token(self: MonitoredTask, source_slug: int):
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, ["Plex token is valid."]))
     except RequestException as exc:
         error = exception_to_string(exc)
-        if len(source.plex_token) < 1:
+        if len(source.plex_token) > 0:
             error = error.replace(source.plex_token, "$PLEX_TOKEN")
         self.set_status(
             TaskResult(

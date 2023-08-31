@@ -23,4 +23,11 @@ class Migration(migrations.Migration):
             name="expiring",
             field=models.BooleanField(default=True),
         ),
+        migrations.AlterModelOptions(
+            name="reputation",
+            options={
+                "verbose_name": "Reputation Score",
+                "verbose_name_plural": "Reputation Scores",
+            },
+        ),
     ]
