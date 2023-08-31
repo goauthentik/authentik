@@ -41,7 +41,7 @@ func (g *GoUnicorn) initCmd() {
 	args := []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
 	if config.Get().Debug {
 		command = "./manage.py"
-		args = []string{"runserver"}
+		args = []string{"dev_server"}
 	}
 	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
 	g.p = exec.Command(command, args...)

@@ -1,6 +1,7 @@
 package web
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 
@@ -26,7 +27,7 @@ var (
 	}, []string{"dest"})
 )
 
-func (ws *WebServer) RunMetricsServer() {
+func (ws *WebServer) runMetricsServer() {
 	m := mux.NewRouter()
 	l := log.WithField("logger", "authentik.router.metrics")
 	m.Use(sentry.SentryNoSampleMiddleware)
@@ -38,7 +39,7 @@ func (ws *WebServer) RunMetricsServer() {
 		).ServeHTTP(rw, r)
 
 		// Get upstream metrics
-		re, err := http.NewRequest("GET", "http://socket/-/metrics/", nil)
+		re, err := http.NewRequest("GET", fmt.Sprintf("%s/-/metrics/", ws.ul.String()), nil)
 		if err != nil {
 			l.WithError(err).Warning("failed to get upstream metrics")
 			return

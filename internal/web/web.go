@@ -96,7 +96,7 @@ func NewWebServer() *WebServer {
 }
 
 func (ws *WebServer) Start() {
-	go ws.RunMetricsServer()
+	go ws.runMetricsServer()
 	go ws.attemptStartBackend()
 	go ws.listenPlain()
 	go ws.listenTLS()

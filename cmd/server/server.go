@@ -60,7 +60,10 @@ var rootCmd = &cobra.Command{
 		ex := common.Init()
 		defer common.Defer()
 
-		u, _ := url.Parse("http://localhost:9000")
+		u, err := url.Parse(fmt.Sprintf("http://%s", config.Get().Listen.HTTP))
+		if err != nil {
+			panic(err)
+		}
 
 		ws := web.NewWebServer()
 		ws.Core().HealthyCallback = func() {
