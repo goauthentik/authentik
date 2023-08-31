@@ -1,5 +1,5 @@
 ---
-title: “Announcing “the authentic Enterprise release!”
+title: “Announcing “the authentik Enterprise release!”
 slug: 2023-08-31-announcing-the-authentik-enterprise-release
 authors:
     - name: Jens Langhammer
