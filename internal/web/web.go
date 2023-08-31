@@ -3,8 +3,10 @@ package web
 import (
 	"context"
 	"errors"
+	"fmt"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"path"
 
@@ -34,6 +36,7 @@ type WebServer struct {
 	lh  *mux.Router
 	log *log.Entry
 	uc  *http.Client
+	ul  *url.URL
 }
 
 const UnixSocketName = "authentik-core.sock"
@@ -49,23 +52,41 @@ func NewWebServer() *WebServer {
 	tmp := os.TempDir()
 	socketPath := path.Join(tmp, "authentik-core.sock")
 
-	ws := &WebServer{
-		m:   mainHandler,
-		lh:  loggingHandler,
-		log: l,
-		gr:  true,
-		uc: &http.Client{
+	// create http client to talk to backend, normal client if we're in debug more
+	// and a client that connects to our socket when in non debug mode
+	var upstreamClient *http.Client
+	if config.Get().Debug {
+		upstreamClient = http.DefaultClient
+	} else {
+		upstreamClient = &http.Client{
 			Transport: &http.Transport{
 				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
 					return net.Dial("unix", socketPath)
 				},
 			},
-		},
+		}
+	}
+
+	u, _ := url.Parse("http://localhost:8000")
+
+	ws := &WebServer{
+		m:   mainHandler,
+		lh:  loggingHandler,
+		log: l,
+		gr:  true,
+		uc:  upstreamClient,
+		ul:  u,
 	}
 	ws.configureStatic()
 	ws.configureProxy()
 	ws.g = gounicorn.New(func() bool {
-		res, err := ws.upstreamHttpClient().Get("http://localhost:8000/-/health/live/")
+		req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s/-/health/live/", ws.ul.String()), nil)
+		if err != nil {
+			ws.log.WithError(err).Warning("failed to create request for healthcheck")
+			return false
+		}
+		req.Header.Set("User-Agent", "goauthentik.io/router/healthcheck")
+		res, err := ws.upstreamHttpClient().Do(req)
 		if err == nil && res.StatusCode == 204 {
 			return true
 		}

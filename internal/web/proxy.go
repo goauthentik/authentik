@@ -14,8 +14,8 @@ import (
 func (ws *WebServer) configureProxy() {
 	// Reverse proxy to the application server
 	director := func(req *http.Request) {
-		req.URL.Scheme = "http"
-		req.URL.Host = "socket"
+		req.URL.Scheme = ws.ul.Scheme
+		req.URL.Host = ws.ul.Host
 		if _, ok := req.Header["User-Agent"]; !ok {
 			// explicitly disable User-Agent so it's not set to default value
 			req.Header.Set("User-Agent", "")
