@@ -51,15 +51,19 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
 -   `AUTHENTIK_REDIS__CACHE_TIMEOUT_POLICIES`: Timeout for cached policies until they expire in seconds, defaults to 300
 -   `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`: Timeout for cached reputation until they expire in seconds, defaults to 300
 
+    :::info
+    `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
+    :::
+
 ## Listen Setting
 
--   `AUTHENTIK_LISTEN__HTTP`: Listening address:port (e.g. `0.0.0.0:9000`) for HTTP (Server and Proxy outpost)
--   `AUTHENTIK_LISTEN__HTTPS`: Listening address:port (e.g. `0.0.0.0:9443`) for HTTPS (Server and Proxy outpost)
--   `AUTHENTIK_LISTEN__LDAP`: Listening address:port (e.g. `0.0.0.0:3389`) for LDAP (LDAP outpost)
--   `AUTHENTIK_LISTEN__LDAPS`: Listening address:port (e.g. `0.0.0.0:6636`) for LDAPS (LDAP outpost)
--   `AUTHENTIK_LISTEN__METRICS`: Listening address:port (e.g. `0.0.0.0:9300`) for Prometheus metrics (All)
--   `AUTHENTIK_LISTEN__DEBUG`: Listening address:port (e.g. `0.0.0.0:9900`) for Go Debugging metrics (All)
--   `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`: List of CIDRs that proxy headers should be accepted from (Server)
+-   `AUTHENTIK_LISTEN__HTTP`: Listening address:port (e.g. `0.0.0.0:9000`) for HTTP (Applies to Server and Proxy outpost)
+-   `AUTHENTIK_LISTEN__HTTPS`: Listening address:port (e.g. `0.0.0.0:9443`) for HTTPS (Applies to Server and Proxy outpost)
+-   `AUTHENTIK_LISTEN__LDAP`: Listening address:port (e.g. `0.0.0.0:3389`) for LDAP (Applies to LDAP outpost)
+-   `AUTHENTIK_LISTEN__LDAPS`: Listening address:port (e.g. `0.0.0.0:6636`) for LDAPS (Applies to LDAP outpost)
+-   `AUTHENTIK_LISTEN__METRICS`: Listening address:port (e.g. `0.0.0.0:9300`) for Prometheus metrics (Applies to All)
+-   `AUTHENTIK_LISTEN__DEBUG`: Listening address:port (e.g. `0.0.0.0:9900`) for Go Debugging metrics (Applies to All)
+-   `AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS`: List of CIDRs that proxy headers should be accepted from (Applies to Server)
 
     Defaults to `127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `fe80::/10`, `::1/128`.
 
@@ -296,6 +300,16 @@ Requires authentik 2022.7
 Allows configuration of TLS Cliphers for LDAP connections used by LDAP sources. Setting applies to all sources.
 
 Defaults to `null`.
+
+### `AUTHENTIK_REPUTATION__EXPIRY`
+
+:::info
+Requires authentik 2023.8.2
+:::
+
+Configure how long reputation scores should be saved for in seconds. Note that this is different than [`AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION`](#redis-settings), as reputation is saved to the database every 5 minutes.
+
+Defaults to `86400`.
 
 ### `AUTHENTIK_WEB__WORKERS`
 

@@ -84,6 +84,9 @@ ldap:
   tls:
     ciphers: null
 
+reputation:
+  expiry: 86400
+
 cookie_domain: null
 disable_update_check: false
 disable_startup_analytics: false
