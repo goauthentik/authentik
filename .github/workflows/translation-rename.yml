@@ -1,4 +1,5 @@
 # Rename transifex pull requests to have a correct naming
+# Also enables auto squash-merge
 name: authentik-translation-transifex-rename
 
 on:
@@ -37,3 +38,8 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             https://api.github.com/repos/${GITHUB_REPOSITORY}/pulls/${{ github.event.pull_request.number }} \
             -d "{\"title\":\"translate: ${{ steps.title.outputs.title }}\"}"
+      - uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          pull-request-number: ${{ github.event.pull_request.number }}
+          merge-method: squash
