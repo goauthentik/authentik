@@ -17,6 +17,8 @@ import (
 	"goauthentik.io/internal/web/tenant_tls"
 )
 
+const unixSocketPath = "./authentik-core.sock"
+
 type WebServer struct {
 	Bind    string
 	BindTLS bool
@@ -26,13 +28,15 @@ type WebServer struct {
 	ProxyServer *proxyv2.ProxyServer
 	TenantTLS   *tenant_tls.Watcher
 
+	g   *gounicorn.GoUnicorn
+	gr  bool
 	m   *mux.Router
 	lh  *mux.Router
 	log *log.Entry
-	p   *gounicorn.GoUnicorn
+	uc  *http.Client
 }
 
-func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
+func NewWebServer() *WebServer {
 	l := log.WithField("logger", "authentik.router")
 	mainHandler := mux.NewRouter()
 	mainHandler.Use(web.ProxyHeaders())
@@ -44,19 +48,55 @@ func NewWebServer(g *gounicorn.GoUnicorn) *WebServer {
 		m:   mainHandler,
 		lh:  loggingHandler,
 		log: l,
-		p:   g,
+		gr:  true,
+		uc: &http.Client{
+			Transport: &http.Transport{
+				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
+					return net.Dial("unix", unixSocketPath)
+				},
+			},
+		},
 	}
 	ws.configureStatic()
 	ws.configureProxy()
+	ws.g = gounicorn.New(func() bool {
+		res, err := ws.upstreamHttpClient().Get("http://localhost:8000/-/health/live/")
+		if err == nil && res.StatusCode == 204 {
+			return true
+		}
+		return false
+	})
 	return ws
 }
 
 func (ws *WebServer) Start() {
+	go ws.RunMetricsServer()
+	go ws.attemptStartBackend()
 	go ws.listenPlain()
 	go ws.listenTLS()
 }
 
+func (ws *WebServer) attemptStartBackend() {
+	for {
+		if !ws.gr {
+			return
+		}
+		err := ws.g.Start()
+		log.WithField("logger", "authentik.router").WithError(err).Warning("gunicorn process died, restarting")
+	}
+}
+
+func (ws *WebServer) Core() *gounicorn.GoUnicorn {
+	return ws.g
+}
+
+func (ws *WebServer) upstreamHttpClient() *http.Client {
+	return ws.uc
+}
+
 func (ws *WebServer) Shutdown() {
+	ws.log.Info("shutting down gunicorn")
+	ws.g.Kill()
 	ws.stop <- struct{}{}
 }
 

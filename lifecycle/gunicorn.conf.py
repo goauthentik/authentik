@@ -21,7 +21,7 @@ from lifecycle.worker import DjangoUvicornWorker
 if TYPE_CHECKING:
     from gunicorn.arbiter import Arbiter
 
-bind = "127.0.0.1:8000"
+bind = "unix://./authentik-core.sock"
 
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"

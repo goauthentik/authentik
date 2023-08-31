@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httputil"
-	"net/url"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -14,10 +13,9 @@ import (
 
 func (ws *WebServer) configureProxy() {
 	// Reverse proxy to the application server
-	u, _ := url.Parse("http://localhost:8000")
 	director := func(req *http.Request) {
-		req.URL.Scheme = u.Scheme
-		req.URL.Host = u.Host
+		req.URL.Scheme = "http"
+		req.URL.Host = "socket"
 		if _, ok := req.Header["User-Agent"]; !ok {
 			// explicitly disable User-Agent so it's not set to default value
 			req.Header.Set("User-Agent", "")
@@ -27,7 +25,10 @@ func (ws *WebServer) configureProxy() {
 		}
 		ws.log.WithField("url", req.URL.String()).WithField("headers", req.Header).Trace("tracing request to backend")
 	}
-	rp := &httputil.ReverseProxy{Director: director}
+	rp := &httputil.ReverseProxy{
+		Director:  director,
+		Transport: ws.upstreamHttpClient().Transport,
+	}
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
 	ws.m.PathPrefix("/outpost.goauthentik.io").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
@@ -49,7 +50,7 @@ func (ws *WebServer) configureProxy() {
 		rw.WriteHeader(204)
 	}))
 	ws.m.PathPrefix("/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
-		if !ws.p.IsRunning() {
+		if !ws.g.IsRunning() {
 			ws.proxyErrorHandler(rw, r, fmt.Errorf("authentik core not running yet"))
 			return
 		}
@@ -82,7 +83,7 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 	ws.log.WithError(err).Warning("failed to proxy to backend")
 	rw.WriteHeader(http.StatusBadGateway)
 	em := fmt.Sprintf("failed to connect to authentik backend: %v", err)
-	if !ws.p.IsRunning() {
+	if !ws.g.IsRunning() {
 		em = "authentik starting..."
 	}
 	// return json if the client asks for json
