@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - id: generate_token
         uses: tibdex/github-app-token@v1

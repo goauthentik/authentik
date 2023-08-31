@@ -8,7 +8,7 @@ on:
 
 jobs:
   cleanup:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - name: Check out code
         uses: actions/checkout@v3

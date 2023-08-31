@@ -12,7 +12,7 @@ on:
 
 jobs:
   lint-eslint:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3.8.1
@@ -28,7 +28,7 @@ jobs:
         working-directory: web/
         run: npm run lint
   lint-build:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3.8.1
@@ -44,7 +44,7 @@ jobs:
         working-directory: web/
         run: npm run tsc
   lint-prettier:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3.8.1
@@ -60,7 +60,7 @@ jobs:
         working-directory: web/
         run: npm run prettier-check
   lint-lit-analyse:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3.8.1
@@ -86,13 +86,13 @@ jobs:
       - lint-prettier
       - lint-lit-analyse
       - lint-build
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - run: echo mark
   build:
     needs:
       - ci-web-mark
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3.8.1

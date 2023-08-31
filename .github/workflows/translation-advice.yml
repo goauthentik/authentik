@@ -11,7 +11,7 @@ on:
 
 jobs:
   post-comment:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - name: Find Comment
         uses: peter-evans/find-comment@v2

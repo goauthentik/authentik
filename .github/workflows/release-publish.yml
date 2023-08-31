@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-server:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Set up QEMU
@@ -46,7 +46,7 @@ jobs:
             VERSION=${{ steps.ev.outputs.version }}
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -95,7 +95,7 @@ jobs:
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
   build-outpost-binary:
     timeout-minutes: 120
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -139,7 +139,7 @@ jobs:
       - build-server
       - build-outpost
       - build-outpost-binary
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Run test suite in final docker images
@@ -155,7 +155,7 @@ jobs:
       - build-server
       - build-outpost
       - build-outpost-binary
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: prepare variables

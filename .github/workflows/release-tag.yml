@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Create Release from Tag
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Pre-release test

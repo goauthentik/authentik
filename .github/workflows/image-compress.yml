@@ -21,7 +21,7 @@ on:
 jobs:
   compress:
     name: compress
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     # Don't run on forks. Token will not be available. Will run on main and open a PR anyway
     if: |
       github.repository == 'goauthentik/authentik' &&

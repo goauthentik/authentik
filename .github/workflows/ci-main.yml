@@ -31,7 +31,7 @@ jobs:
           - pylint
           - pyright
           - ruff
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Setup authentik env
@@ -39,7 +39,7 @@ jobs:
       - name: run job
         run: poetry run make ci-${{ matrix.job }}
   test-migrations:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
       - name: Setup authentik env
@@ -47,7 +47,7 @@ jobs:
       - name: run migrations
         run: poetry run python -m lifecycle.migrate
   test-migrations-from-stable:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     continue-on-error: true
     steps:
       - uses: actions/checkout@v3
@@ -82,7 +82,7 @@ jobs:
         run: poetry run python -m lifecycle.migrate
   test-unittest:
     name: test-unittest - PostgreSQL ${{ matrix.psql }}
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -105,7 +105,7 @@ jobs:
         with:
           flags: unit
   test-integration:
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v3
@@ -123,7 +123,7 @@ jobs:
           flags: integration
   test-e2e:
     name: test-e2e (${{ matrix.job.name }})
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     timeout-minutes: 30
     strategy:
       fail-fast: false
@@ -178,12 +178,12 @@ jobs:
       - test-unittest
       - test-integration
       - test-e2e
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     steps:
       - run: echo mark
   build:
     needs: ci-core-mark
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v3
@@ -228,7 +228,7 @@ jobs:
           tag: gh-${{ steps.ev.outputs.branchNameContainer }}-${{ steps.ev.outputs.timestamp }}-${{ steps.ev.outputs.shortHash }}
   build-arm64:
     needs: ci-core-mark
-    runs-on: ubuntu-latest
+    runs-on: large-4core-ubuntu-22.04
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v3
