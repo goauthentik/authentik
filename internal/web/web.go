@@ -5,6 +5,8 @@ import (
 	"errors"
 	"net"
 	"net/http"
+	"os"
+	"path"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -16,8 +18,6 @@ import (
 	"goauthentik.io/internal/utils/web"
 	"goauthentik.io/internal/web/tenant_tls"
 )
-
-const unixSocketPath = "./authentik-core.sock"
 
 type WebServer struct {
 	Bind    string
@@ -36,6 +36,8 @@ type WebServer struct {
 	uc  *http.Client
 }
 
+const UnixSocketName = "authentik-core.sock"
+
 func NewWebServer() *WebServer {
 	l := log.WithField("logger", "authentik.router")
 	mainHandler := mux.NewRouter()
@@ -43,6 +45,9 @@ func NewWebServer() *WebServer {
 	mainHandler.Use(handlers.CompressHandler)
 	loggingHandler := mainHandler.NewRoute().Subrouter()
 	loggingHandler.Use(web.NewLoggingHandler(l, nil))
+
+	tmp := os.TempDir()
+	socketPath := path.Join(tmp, "authentik-core.sock")
 
 	ws := &WebServer{
 		m:   mainHandler,
@@ -52,7 +57,7 @@ func NewWebServer() *WebServer {
 		uc: &http.Client{
 			Transport: &http.Transport{
 				DialContext: func(_ context.Context, _, _ string) (net.Conn, error) {
-					return net.Dial("unix", unixSocketPath)
+					return net.Dial("unix", socketPath)
 				},
 			},
 		},

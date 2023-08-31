@@ -21,12 +21,12 @@ from lifecycle.worker import DjangoUvicornWorker
 if TYPE_CHECKING:
     from gunicorn.arbiter import Arbiter
 
-bind = "unix://./authentik-core.sock"
-
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
 worker_tmp_dir = str(_tmp.joinpath("authentik_worker_tmp"))
 prometheus_tmp_dir = str(_tmp.joinpath("authentik_prometheus_tmp"))
+
+bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
 os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
