@@ -258,16 +258,18 @@ new?labels=bug,from_authentik&title=${encodeURIComponent(title)}
                 return html` <div class="pf-c-card__title">${msg("Secret:")}</div>
                     ${this.getModelInfo(this.event.context.secret as EventModel)}`;
             case EventActions.SystemException:
-                return html` <a
-                        class="pf-c-button pf-m-primary"
-                        target="_blank"
-                        href=${this.buildGitHubIssueUrl(this.event.context)}
-                    >
-                        ${msg("Open issue on GitHub...")}
-                    </a>
-                    <div class="pf-l-flex">
+                return html`<div class="pf-l-flex">
                         <div class="pf-l-flex__item">
                             <div class="pf-c-card__title">${msg("Exception")}</div>
+                            <div class="pf-c-card__title">
+                                <a
+                                    class="pf-c-button pf-m-primary"
+                                    target="_blank"
+                                    href=${this.buildGitHubIssueUrl(this.event.context)}
+                                >
+                                    ${msg("Open issue on GitHub...")}
+                                </a>
+                            </div>
                             <div class="pf-c-card__body">
                                 <pre>${this.event.context.message}</pre>
                             </div>

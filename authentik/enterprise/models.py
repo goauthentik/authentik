@@ -15,6 +15,7 @@ from django.contrib.postgres.indexes import HashIndex
 from django.db import models
 from django.db.models.query import QuerySet
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
 from guardian.shortcuts import get_anonymous_user
 from jwt import PyJWTError, decode, get_unverified_header
 from rest_framework.exceptions import ValidationError
@@ -187,3 +188,7 @@ class LicenseUsage(ExpiringModel):
     within_limits = models.BooleanField()
 
     record_date = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _("License Usage")
+        verbose_name_plural = _("License Usage Records")
