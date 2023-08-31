@@ -1,5 +1,5 @@
 """custom runserver command"""
-from django.core.management.commands.runserver import Command as RunServer
+from daphne.management.commands.runserver import Command as RunServer
 
 
 class Command(RunServer):
