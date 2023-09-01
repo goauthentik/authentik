@@ -4,8 +4,6 @@ help:  ## Print out this help message.
 		sort -nr | head -1) && \
 		perl -ne "m/^((\w|-)*):.*##\s*(.*)/ && print(sprintf(\"%s: %s\t%s\n\", \$$1, \" \"x($$M-length(\$$1)), \$$3))" Makefile
 	@echo ""
-	@echo "Set env NODE_ENV to 'development' to run this against the dev server"
-	@echo ""
 
 .PHONY: update-local-chromedriver
 update-local-chromedriver:  ## Update the chrome driver to match the local chrome version, restoring package.json

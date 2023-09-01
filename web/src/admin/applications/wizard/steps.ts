@@ -1,4 +1,11 @@
 import { WizardStep } from "@goauthentik/components/ak-wizard-main";
+import {
+    BackStep,
+    CancelWizard,
+    CloseWizard,
+    NextStep,
+    SubmitStep,
+} from "@goauthentik/components/ak-wizard-main/commonWizardButtons";
 
 import { msg } from "@lit/localize";
 import { html } from "lit";
@@ -15,7 +22,7 @@ export const steps: WizardStep[] = [
         renderer: () =>
             html`<ak-application-wizard-application-details></ak-application-wizard-application-details>`,
         disabled: false,
-        nextButtonLabel: msg("Next"),
+        buttons: [NextStep, CancelWizard],
         valid: true,
     },
     {
@@ -24,8 +31,7 @@ export const steps: WizardStep[] = [
         renderer: () =>
             html`<ak-application-wizard-authentication-method-choice></ak-application-wizard-authentication-method-choice>`,
         disabled: false,
-        nextButtonLabel: msg("Next"),
-        backButtonLabel: msg("Back"),
+        buttons: [NextStep, BackStep, CancelWizard],
         valid: true,
     },
     {
@@ -34,8 +40,7 @@ export const steps: WizardStep[] = [
         renderer: () =>
             html`<ak-application-wizard-authentication-method></ak-application-wizard-authentication-method>`,
         disabled: true,
-        nextButtonLabel: msg("Next"),
-        backButtonLabel: msg("Back"),
+        buttons: [SubmitStep, BackStep, CancelWizard],
         valid: true,
     },
     {
@@ -44,8 +49,7 @@ export const steps: WizardStep[] = [
         renderer: () =>
             html`<ak-application-wizard-commit-application></ak-application-wizard-commit-application>`,
         disabled: true,
-        nextButtonLabel: msg("Submit"),
-        backButtonLabel: msg("Back"),
+        buttons: [BackStep, CancelWizard],
         valid: true,
     },
 ];

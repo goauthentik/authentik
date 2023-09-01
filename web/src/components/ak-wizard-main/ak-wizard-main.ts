@@ -26,11 +26,22 @@ const hasValidator = (v: any): v is Required<Pick<WizardPanel, "validator">> =>
  *
  * @element ak-wizard-main
  *
- * This is the entry point for the wizard.  Its tasks are:
+ * This is the controller for a multi-form wizard. It provides an interface for describing a pop-up
+ * (modal) wizard, the contents of which are independent of the navigation. This controller only
+ * handles the navigation.
+ *
+ * Each step (see the `types.ts` file) provides label, a "currently valid" boolean, a "disabled"
+ * boolean, a function that returns the HTML of the object to be rendered, a `disabled` flag
+ * indicating
+
+ Its tasks are:
  * - keep the collection of steps
  * - maintain the open/close status of the modal
  * - listens for navigation events
  * - if a navigation event is valid, switch to the panel requested
+ *
+ * 
+ 
  */
 
 @customElement("ak-wizard-main")
@@ -56,7 +67,7 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
      * @attribute
      */
     @state()
-    currentStep!: WizardStep;
+    currentStep: number = 0;
 
     constructor() {
         super();
@@ -70,14 +81,6 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
      */
     @property({ type: String })
     prompt = "Show Wizard";
-
-    /**
-     * Mostly a control on the ModalButton that summons the wizard component.
-     *
-     * @attribute
-     */
-    @property({ type: Boolean, reflect: true })
-    open = false;
 
     /**
      * The text of the header on the wizard, upper bar.
@@ -95,17 +98,16 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
     @property()
     description?: string;
 
+    /**
+     * Whether or not to show the "cancel" button in the wizard.
+     *
+     * @attribute
+     */
+    @property({ type: Boolean })
+    canCancel!: boolean;
+
     @query("ak-wizard-frame")
     frame!: AkWizardFrame;
-
-    // Guarantee that if the current step was not passed in by the client, that we know
-    // and set to the first step.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    willUpdate(_changedProperties: Map<string, any>) {
-        if (this.currentStep === undefined) {
-            this.currentStep = this.steps[0];
-        }
-    }
 
     connectedCallback() {
         super.connectedCallback();
@@ -117,30 +119,55 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
         super.disconnectedCallback();
     }
 
-    // Note that we always scan for the valid next step and throw an error if we can't find it.
-    // There should never be a question that the currentStep is a *valid* step.
-    //
-    // TODO: Put a phase in there so that the current step can validate the contents asynchronously
-    // before setting the currentStep. Especially since setting the currentStep triggers a second
-    // asynchronous event-- scheduling a re-render of everything interested in the currentStep
-    // object.
-    handleNavigation(event: CustomEvent<{ step: string; action: string }>) {
-        const requestedStep = event.detail.step;
-        if (!requestedStep) {
-            throw new Error("Request for next step when no next step is available");
-        }
-        const step = this.steps.find(({ id }) => id === requestedStep);
-        if (!step) {
-            throw new Error("Request for next step when no next step is available.");
-        }
-        if (event.detail.action === "next" && !this.validated()) {
-            return false;
-        }
-        this.currentStep = step;
-        return true;
+    get maxStep() {
+        return this.steps.length - 1;
     }
 
-    validated() {
+    get nextStep() {
+        return this.currentStep < this.maxStep ? this.currentStep + 1 : undefined;
+    }
+
+    get backStep() {
+        return this.currentStep > 0 ? this.currentStep - 1 : undefined;
+    }
+
+    handleNavigation(event: CustomEvent<{ command: string; step?: number }>) {
+        const command = event.detail.command;
+        console.log(command);
+        switch (command) {
+            case "back": {
+                if (this.backStep !== undefined && this.steps[this.backStep]) {
+                    this.currentStep = this.backStep;
+                }
+                return;
+            }
+            case "goto": {
+                if (
+                    typeof event.detail.step === "number" &&
+                    event.detail.step >= 0 &&
+                    event.detail.step <= this.maxStep
+                )
+                    this.currentStep = event.detail.step;
+                return;
+            }
+            case "next": {
+                if (
+                    this.nextStep &&
+                    this.steps[this.nextStep] &&
+                    !this.steps[this.nextStep].disabled &&
+                    this.validated
+                ) {
+                    this.currentStep = this.nextStep;
+                }
+                return;
+            }
+            case "close": {
+                this.frame.open = this.open;
+            }
+        }
+    }
+
+    get validated() {
         if (hasValidator(this.frame.content)) {
             return this.frame.content.validator();
         }
@@ -150,7 +177,7 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
     render() {
         return html`
             <ak-wizard-frame
-                ?open=${this.open}
+                ?canCancel=${this.canCancel}
                 header=${this.header}
                 description=${ifDefined(this.description)}
                 eventName=${this.eventName}

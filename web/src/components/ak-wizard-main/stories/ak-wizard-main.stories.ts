@@ -1,6 +1,6 @@
 import "@goauthentik/elements/messages/MessageContainer";
 import { Meta } from "@storybook/web-components";
-
+import { NextStep, BackStep, CancelWizard, CloseWizard } from "../commonWizardButtons";
 import { TemplateResult, html } from "lit";
 
 import "../ak-wizard-main";
@@ -37,27 +37,21 @@ const container = (testItem: TemplateResult) =>
 
 const dummySteps: WizardStep[] = [
     {
-        id: "0",
         label: "Test Step1",
         renderer: () => html`<h2>This space intentionally left blank today</h2>`,
         disabled: false,
-        valid: true,
-        nextButtonLabel: "Next",
-        backButtonLabel: undefined,
+        buttons: [NextStep, CancelWizard],
     },
     {
-        id: "1",
         label: "Test Step 2",
         renderer: () => html`<h2>This space also intentionally left blank</h2>`,
         disabled: false,
-        valid: true,
-        nextButtonLabel: undefined,
-        backButtonLabel: "Back",
+        buttons: [BackStep, CloseWizard],
     },
 ];
 
 export const OnePageWizard = () => {
     return container(
-        html` <ak-wizard-main .steps=${dummySteps} prompt="Start the show!"></ak-wizard-main>`,
+        html` <ak-wizard-main .steps=${dummySteps} canCancel header="The Grand Illusion" prompt="Start the show!"></ak-wizard-main>`,
     );
 };

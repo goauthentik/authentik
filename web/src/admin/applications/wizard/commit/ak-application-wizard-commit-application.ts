@@ -103,7 +103,6 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         Promise.allSettled([network, timeout]).then(([network_resolution]) => {
             if (network_resolution.status === "rejected") {
                 this.commitState = errorState;
-                console.log(network_resolution.reason);
                 return;
             }
 
