@@ -403,7 +403,7 @@ LOGGING = {
         "json": {
             "()": structlog.stdlib.ProcessorFormatter,
             "processor": structlog.processors.JSONRenderer(sort_keys=True),
-            "foreign_pre_chain": LOG_PRE_CHAIN,
+            "foreign_pre_chain": LOG_PRE_CHAIN + [structlog.processors.dict_tracebacks],
         },
         "console": {
             "()": structlog.stdlib.ProcessorFormatter,

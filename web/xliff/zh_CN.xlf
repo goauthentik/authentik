@@ -5456,11 +5456,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>同意过期后的偏移。</target>
         
       </trans-unit>
-      <trans-unit id="s5e9527b6481a94ce">
-        <source>Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding.</source>
-        <target>静态拒绝流。要有效地使用此阶段，请在相应的绑定上禁用*规划时进行评估*。</target>
-        
-      </trans-unit>
       <trans-unit id="s22b10ed263b96194">
         <source>Dummy stage used for testing. Shows a simple continue button and always passes.</source>
         <target>用于测试的虚拟阶段。显示一个简单的“继续”按钮，并且始终通过。</target>
@@ -7776,6 +7771,10 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s57b07e524f8f5c2a">
   <source>External: <x id="0" equiv-text="${item.externalUsers}"/></source>
   <target>外部：<x id="0" equiv-text="${item.externalUsers}"/></target>
+</trans-unit>
+<trans-unit id="s7f68101a50f526ee">
+  <source>Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.</source>
+  <target>静态拒绝流。要有效地使用此阶段，请在相应的绑定上禁用*规划时进行评估*。</target>
 </trans-unit>
     </body>
   </file>

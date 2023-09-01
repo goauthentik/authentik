@@ -5420,11 +5420,6 @@ slaagt niet wanneer een of beide geselecteerde opties gelijk zijn aan of boven d
         <target>Vertraging na verloop waarvan toestemming vervalt.</target>
         
       </trans-unit>
-      <trans-unit id="s5e9527b6481a94ce">
-        <source>Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding.</source>
-        <target>Weiger de flow statisch. Om deze fase effectief te gebruiken, schakelt u *Evaluatie op schema* uit voor de respectievelijke binding.</target>
-        
-      </trans-unit>
       <trans-unit id="s22b10ed263b96194">
         <source>Dummy stage used for testing. Shows a simple continue button and always passes.</source>
         <target>Dummyfase voor testdoeleinden. Toont een eenvoudige knop &quot;Doorgaan&quot; en slaagt altijd.</target>
@@ -7720,6 +7715,10 @@ Bindingen naar groepen/gebruikers worden gecontroleerd tegen de gebruiker van de
 <trans-unit id="s57b07e524f8f5c2a">
   <source>External: <x id="0" equiv-text="${item.externalUsers}"/></source>
   <target>Extern: <x id="0" equiv-text="${item.externalUsers}"/></target>
+</trans-unit>
+<trans-unit id="s7f68101a50f526ee">
+  <source>Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.</source>
+  <target>Statisch de flow weigeren. Om deze fase effectief te gebruiken, schakelt u Evalueren wanneer de flow is gepland uit bij de betreffende binding.</target>
 </trans-unit>
     </body>
   </file>

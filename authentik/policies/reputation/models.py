@@ -1,13 +1,17 @@
 """authentik reputation request policy"""
+from datetime import timedelta
 from uuid import uuid4
 
 from django.db import models
 from django.db.models import Sum
 from django.db.models.query_utils import Q
+from django.utils.timezone import now
 from django.utils.translation import gettext as _
 from rest_framework.serializers import BaseSerializer
 from structlog import get_logger
 
+from authentik.core.models import ExpiringModel
+from authentik.lib.config import CONFIG
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import get_client_ip
 from authentik.policies.models import Policy
@@ -15,6 +19,11 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 CACHE_KEY_PREFIX = "goauthentik.io/policies/reputation/scores/"
+
+
+def reputation_expiry():
+    """Reputation expiry"""
+    return now() + timedelta(seconds=CONFIG.get_int("reputation.expiry"))
 
 
 class ReputationPolicy(Policy):
@@ -59,7 +68,7 @@ class ReputationPolicy(Policy):
         verbose_name_plural = _("Reputation Policies")
 
 
-class Reputation(SerializerModel):
+class Reputation(ExpiringModel, SerializerModel):
     """Reputation for user and or IP."""
 
     reputation_uuid = models.UUIDField(primary_key=True, unique=True, default=uuid4)
@@ -68,6 +77,8 @@ class Reputation(SerializerModel):
     ip = models.GenericIPAddressField()
     ip_geo_data = models.JSONField(default=dict)
     score = models.BigIntegerField(default=0)
+
+    expires = models.DateTimeField(default=reputation_expiry)
 
     updated = models.DateTimeField(auto_now_add=True)
 
@@ -81,4 +92,6 @@ class Reputation(SerializerModel):
         return f"Reputation {self.identifier}/{self.ip} @ {self.score}"
 
     class Meta:
+        verbose_name = _("Reputation Score")
+        verbose_name_plural = _("Reputation Scores")
         unique_together = ("identifier", "ip")

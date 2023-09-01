@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.8.1
+  version: 2023.8.2
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -12961,7 +12961,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this reputation.
+        description: A UUID string identifying this Reputation Score.
         required: true
       tags:
       - policies
@@ -12995,7 +12995,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this reputation.
+        description: A UUID string identifying this Reputation Score.
         required: true
       tags:
       - policies
@@ -13026,7 +13026,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this reputation.
+        description: A UUID string identifying this Reputation Score.
         required: true
       tags:
       - policies
@@ -29523,7 +29523,7 @@ components:
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies_reputation.reputation` - Reputation Score
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -29713,7 +29713,7 @@ components:
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies_reputation.reputation` - Reputation Score
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -31943,7 +31943,7 @@ components:
         * `authentik_policies_expression.expressionpolicy` - Expression Policy
         * `authentik_policies_password.passwordpolicy` - Password Policy
         * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-        * `authentik_policies_reputation.reputation` - reputation
+        * `authentik_policies_reputation.reputation` - Reputation Score
         * `authentik_policies.policybinding` - Policy Binding
         * `authentik_providers_ldap.ldapprovider` - LDAP Provider
         * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -34930,7 +34930,7 @@ components:
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies_reputation.reputation` - Reputation Score
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -38459,8 +38459,7 @@ components:
           minLength: 1
         authorization_flow:
           type: string
-          minLength: 1
-          description: Visible in the URL.
+          format: uuid
         file:
           type: string
           format: binary

@@ -135,6 +135,3 @@ body {
 .navbar-sidebar__items {
     background-color: var(--ifm-color-primary);
 }
-.navbar-sidebar__items .menu__link {
-    color: var(--white);
-}
