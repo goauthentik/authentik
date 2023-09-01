@@ -8,7 +8,6 @@ async function text(selector, value) {
 }
 
 async function button(selector) {
-    console.log("HEY:", selector);
     const button = await $(selector);
     return await button.click();
 }
@@ -28,9 +27,25 @@ async function pause(selector) {
     return await browser.pause(CLICK_TIME_DELAY);
 }
 
+async function waitfor(selector) {
+    return await $(selector).waitForDisplayed();
+}
+
+async function deletebox(selector) {
+    return await $(selector)
+        .parentElement()
+        .parentElement()
+        .$(".pf-c-table__check")
+        .$('input[type="checkbox"]')
+        .click();
+}
+    
+
 exports.$AkSel = {
     button,
     pause,
     search,
     text,
+    waitfor,
+    deletebox,
 };

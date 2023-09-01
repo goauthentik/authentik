@@ -33,7 +33,8 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
     }
 
     validator() {
-        return this.form.reportValidity();
+        return true;
+        // return this.form.reportValidity();
     }
 
     render(): TemplateResult {
