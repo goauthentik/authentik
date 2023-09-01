@@ -28,7 +28,7 @@ This Enterprise version is available in Preview mode in our latest release, 2023
 
 This is an exciting step for us, as we grow the team and the company and our user base. We officially became a company just last fall (I wrote about it in November 2022, in “[The next step for authentik"](../2022-11-02-the-next-step-for-authentik/item.md)), and this release is another move forwards in maturing authentik into the SSO and identity management app of choice.
 
-One thing we want to acknowledge, up front, is that we would never have been able to achieve this goal without the years of support from our open source community. You all helped build authentik into what it is today, and that’s why all of our Enterprise-level features will be open core and source available, always.
+One thing we want to acknowledge up front is that we would never have been able to achieve this goal without the years of support from our open source community. You all helped build authentik into what it is today, and that’s why all of our Enterprise-level features will be open core and source available, always.
 
 ![](./image1.png)
 
