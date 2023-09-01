@@ -13,10 +13,9 @@ from rest_framework.decorators import action
 from rest_framework.fields import CharField, FileField, SerializerMethodField
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import AllowAny
-from rest_framework.relations import SlugRelatedField
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import ValidationError
+from rest_framework.serializers import PrimaryKeyRelatedField, ValidationError
 from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
@@ -168,10 +167,8 @@ class SAMLProviderImportSerializer(PassiveSerializer):
     """Import saml provider from XML Metadata"""
 
     name = CharField(required=True)
-    # Using SlugField because https://github.com/OpenAPITools/openapi-generator/issues/3278
-    authorization_flow = SlugRelatedField(
+    authorization_flow = PrimaryKeyRelatedField(
         queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION),
-        slug_field="slug",
     )
     file = FileField()
 

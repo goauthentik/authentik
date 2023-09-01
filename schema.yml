@@ -38459,8 +38459,7 @@ components:
           minLength: 1
         authorization_flow:
           type: string
-          minLength: 1
-          description: Visible in the URL.
+          format: uuid
         file:
           type: string
           format: binary
