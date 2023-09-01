@@ -2,6 +2,7 @@ package web
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httputil"
@@ -44,14 +45,14 @@ func (ws *WebServer) configureProxy() {
 			}).Observe(float64(elapsed))
 			return
 		}
-		ws.proxyErrorHandler(rw, r, fmt.Errorf("proxy not running"))
+		ws.proxyErrorHandler(rw, r, errors.New("proxy not running"))
 	})
 	ws.m.Path("/-/health/live/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)
 	}))
 	ws.m.PathPrefix("/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		if !ws.g.IsRunning() {
-			ws.proxyErrorHandler(rw, r, fmt.Errorf("authentik core not running yet"))
+			ws.proxyErrorHandler(rw, r, errors.New("authentik starting"))
 			return
 		}
 		before := time.Now()
@@ -83,17 +84,14 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 	ws.log.WithError(err).Warning("failed to proxy to backend")
 	rw.WriteHeader(http.StatusBadGateway)
 	em := fmt.Sprintf("failed to connect to authentik backend: %v", err)
-	if !ws.g.IsRunning() {
-		em = "authentik starting..."
-	}
 	// return json if the client asks for json
 	if req.Header.Get("Accept") == "application/json" {
-		eem, _ := json.Marshal(map[string]string{
+		err = json.NewEncoder(rw).Encode(map[string]string{
 			"error": em,
 		})
-		em = string(eem)
+	} else {
+		_, err = rw.Write([]byte(em))
 	}
-	_, err = rw.Write([]byte(em))
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to write error message")
 	}
