@@ -63,8 +63,8 @@ function Home() {
                                 <div>with a unified platform.</div>
                             </h1>
                             <p className="hero__subtitle">
-                                authentik is an open-source Identity Provider
-                                focused on flexibility and versatility
+                                Unify all of your identity needs into a single
+                                platform
                             </p>
                             <div className={styles.buttons}>
                                 <Link
