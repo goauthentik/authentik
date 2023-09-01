@@ -140,6 +140,12 @@ class TestParserUtils(TestCase):
         with self.assertRaises(ValueError):
             _, _, _ = get_redis_options(url)
 
+    def test_get_redis_options_timeout_arg_missing_unit(self):
+        """Test Redis URL parser with missing unit timeout arg"""
+        url = urlparse("redis://myredis/0?timeout=43")
+        with self.assertRaises(ValueError):
+            _, _, _ = get_redis_options(url)
+
     def test_get_redis_options_timeout_arg_milliseconds(self):
         """Test Redis URL parser with millisecond timeout arg"""
         url = urlparse("redis://myredis/0?timeout=10000ms")

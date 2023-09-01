@@ -125,7 +125,7 @@ class ConfigLoader:
 
     # pylint: disable=too-many-statements
     def update_redis_url(self):
-        """Build Redis URL from other env variables"""
+        """Build Redis URL using default values or replace placeholders with other env vars"""
 
         redis_url = "redis"
         redis_url_query = {}

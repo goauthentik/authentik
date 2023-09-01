@@ -67,11 +67,7 @@ def _val_to_sec(values: list[bytes]):
     """Convert a list of string bytes into a duration in seconds"""
     result = None
     for value in values:
-        try:
-            result = _parse_duration_to_sec(str(value))
-            return result
-        except ValueError:
-            result = int(value)
+        return _parse_duration_to_sec(str(value))
     return result
 
 
