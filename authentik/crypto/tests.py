@@ -128,8 +128,26 @@ class TestCrypto(APITestCase):
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-list",
-            )
-            + f"?name={cert.name}"
+            ),
+            data={"name": cert.name},
+        )
+        self.assertEqual(200, response.status_code)
+        body = loads(response.content.decode())
+        api_cert = [x for x in body["results"] if x["name"] == cert.name][0]
+        self.assertEqual(api_cert["fingerprint_sha1"], cert.fingerprint_sha1)
+        self.assertEqual(api_cert["fingerprint_sha256"], cert.fingerprint_sha256)
+
+    def test_list_has_key_false(self):
+        """Test API List with has_key set to false"""
+        cert = create_test_cert()
+        cert.key_data = ""
+        cert.save()
+        self.client.force_login(create_test_admin_user())
+        response = self.client.get(
+            reverse(
+                "authentik_api:certificatekeypair-list",
+            ),
+            data={"name": cert.name, "has_key": False},
         )
         self.assertEqual(200, response.status_code)
         body = loads(response.content.decode())
@@ -144,8 +162,8 @@ class TestCrypto(APITestCase):
         response = self.client.get(
             reverse(
                 "authentik_api:certificatekeypair-list",
-            )
-            + f"?name={cert.name}&include_details=false"
+            ),
+            data={"name": cert.name, "include_details": False},
         )
         self.assertEqual(200, response.status_code)
         body = loads(response.content.decode())
@@ -168,8 +186,8 @@ class TestCrypto(APITestCase):
             reverse(
                 "authentik_api:certificatekeypair-view-certificate",
                 kwargs={"pk": keypair.pk},
-            )
-            + "?download",
+            ),
+            data={"download": True},
         )
         self.assertEqual(200, response.status_code)
         self.assertIn("Content-Disposition", response)
@@ -189,8 +207,8 @@ class TestCrypto(APITestCase):
             reverse(
                 "authentik_api:certificatekeypair-view-private-key",
                 kwargs={"pk": keypair.pk},
-            )
-            + "?download",
+            ),
+            data={"download": True},
         )
         self.assertEqual(200, response.status_code)
         self.assertIn("Content-Disposition", response)
@@ -200,7 +218,7 @@ class TestCrypto(APITestCase):
         self.client.force_login(create_test_admin_user())
         keypair = create_test_cert()
         provider = OAuth2Provider.objects.create(
-            name="test",
+            name=generate_id(),
             client_id="test",
             client_secret=generate_key(),
             authorization_flow=create_test_flow(),
