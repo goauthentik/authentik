@@ -188,14 +188,12 @@ class ConfigLoader:
         def _pop_deprecated_key(current_obj, dot_parts, index):
             """Recursive function to remove deprecated keys in configuration"""
             dot_part = dot_parts[index]
-            if dot_part in current_obj:
-                if index == len(dot_parts) - 1:
-                    return current_obj.pop(dot_part)
-                value = _pop_deprecated_key(current_obj[dot_part], dot_parts, index + 1)
-                if not current_obj[dot_part]:
-                    current_obj.pop(dot_part)
-                return value
-            return None
+            if index == len(dot_parts) - 1:
+                return current_obj.pop(dot_part)
+            value = _pop_deprecated_key(current_obj[dot_part], dot_parts, index + 1)
+            if not current_obj[dot_part]:
+                current_obj.pop(dot_part)
+            return value
 
         for deprecation, replacement in DEPRECATIONS.items():
             if self.get(deprecation, default=UNSET) is not UNSET:

@@ -37,17 +37,23 @@ def _parse_duration_to_sec(duration_str: str) -> float:
     units = {"ns": 1e-9, "us": 1e-6, "ms": 1e-3, "s": 1.0, "m": 60.0, "h": 3600.0}
     result = 0.0
     num = ""
-    for duration_char in duration_str:
+    skip_loop = False
+    for i, duration_char in enumerate(duration_str):
+        if skip_loop:
+            skip_loop = False
+            continue
         if duration_char.isdigit() or duration_char == ".":
             num += duration_char
         elif duration_char.isalpha():
             if num == "":
                 raise ValueError("invalid format")
             unit = duration_char
-            while unit not in units:
-                if len(unit) == 2:
-                    raise ValueError("unknown unit")
-                unit = duration_char + duration_str[duration_str.index(duration_char) + 1]
+            if len(duration_str) == i + 2:
+                if duration_str[i + 1].isalpha():
+                    unit += duration_str[i + 1]
+                    skip_loop = True
+            if unit not in units:
+                raise ValueError("unknown unit")
             result += float(num) * units[unit]
             num = ""
         else:

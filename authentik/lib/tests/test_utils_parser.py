@@ -121,6 +121,32 @@ class TestParserUtils(TestCase):
         self.assertEqual(redis_kwargs["socket_timeout"], 100)
         self.assertEqual(redis_kwargs["socket_connect_timeout"], 100)
 
+    def test_get_redis_options_timeout_arg_empty(self):
+        """Test Redis URL parser with empty timeout arg"""
+        url = urlparse("redis://myredis/0?timeout=")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["socket_timeout"], 3)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], 5)
+
+    def test_get_redis_options_timeout_arg_invalid_format(self):
+        """Test Redis URL parser with invalid format timeout arg"""
+        url = urlparse("redis://myredis/0?timeout=39l")
+        with self.assertRaises(ValueError):
+            _, _, _ = get_redis_options(url)
+
+    def test_get_redis_options_timeout_arg_invalid_char(self):
+        """Test Redis URL parser with invalid char timeout arg"""
+        url = urlparse("redis://myredis/0?timeout=39,34h")
+        with self.assertRaises(ValueError):
+            _, _, _ = get_redis_options(url)
+
+    def test_get_redis_options_timeout_arg_milliseconds(self):
+        """Test Redis URL parser with millisecond timeout arg"""
+        url = urlparse("redis://myredis/0?timeout=10000ms")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["socket_timeout"], 10)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], 10)
+
     def test_get_redis_options_dial_timeout_arg(self):
         """Test Redis URL parser with dialtimeout arg"""
         url = urlparse("redis://myredis/0?dialtimeout=100s")
@@ -239,3 +265,16 @@ class TestParserUtils(TestCase):
         url = urlparse("redis://myredis/0?insecureskipverify=true")
         _, _, tls_kwargs = get_redis_options(url)
         self.assertEqual(tls_kwargs["ssl_cert_reqs"], "none")
+
+    def test_get_redis_options_minidleconns_arg(self):
+        """Test Redis URL parser with minidleconns arg"""
+        url = urlparse("redis://myredis/0?minidleconns=4")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertFalse("minidleconns" in redis_kwargs)
+        self.assertFalse("min_idle_conns" in redis_kwargs)
+
+    def test_get_redis_options_unknown_arg(self):
+        """Test Redis URL parser with an unknown arg"""
+        url = urlparse("redis://myredis/0?notanarg=4")
+        with self.assertRaises(ValueError):
+            get_redis_options(url)

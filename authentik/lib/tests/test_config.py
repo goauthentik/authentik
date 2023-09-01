@@ -37,6 +37,15 @@ class TestConfig(TestCase):
         ENV_PREFIX + "_REDIS__USERNAME": "default",
         ENV_PREFIX + "_REDIS__PASSWORD": "\"'% !.;.°",
     }
+    update_redis_url_tls_reqs_optional_env_vars = {
+        ENV_PREFIX + "_REDIS__TLS_REQS": "optional",
+    }
+    update_redis_url_tls_reqs_required_env_vars = {
+        ENV_PREFIX + "_REDIS__TLS_REQS": "required",
+    }
+    update_redis_url_tls_reqs_invalid_env_vars = {
+        ENV_PREFIX + "_REDIS__TLS_REQS": "invalid",
+    }
 
     @mock.patch.dict(environ, {ENV_PREFIX + "_test__test": "bar"})
     def test_env(self):
@@ -133,6 +142,12 @@ class TestConfig(TestCase):
         json_attr = dumps(test_attr, indent=4, cls=AttrEncoder)
         self.assertEqual(json_attr, '"foo"')
 
+    def test_attr_json_encoder_no_attr(self):
+        """Test AttrEncoder if no Attr is passed"""
+        test_str = "foo"
+        json_str = dumps(test_str, indent=4, cls=AttrEncoder)
+        self.assertEqual(json_str, '"foo"')
+
     @mock.patch.dict(environ, check_deprecations_env_vars)
     def test_check_deprecations(self):
         """Test config key re-write for deprecated env vars"""
@@ -151,6 +166,22 @@ class TestConfig(TestCase):
         self.assertEqual(config.get("cache.timeout_flows"), "32m")
         self.assertEqual(config.get("cache.timeout_policies"), "3920ns")
         self.assertEqual(config.get("cache.timeout_reputation"), "298382us")
+
+    @mock.patch.dict(environ, update_redis_url_tls_reqs_optional_env_vars)
+    def test_update_redis_url_tls_reqs_optional(self):
+        """Test updating Redis URL with TLS requirements set to optional"""
+        config = ConfigLoader()
+        config.update_from_env()
+        config.update_redis_url()
+        self.assertEqual(config.get("redis.url"), "redis://localhost:6379/0?skipverify=true")
+
+    @mock.patch.dict(environ, update_redis_url_tls_reqs_required_env_vars)
+    def test_update_redis_url_tls_reqs_required(self):
+        """Test updating Redis URL with TLS requirements set to required"""
+        config = ConfigLoader()
+        config.update_from_env()
+        config.update_redis_url()
+        self.assertEqual(config.get("redis.url"), "redis://localhost:6379/0")
 
     @mock.patch.dict(environ, update_redis_url_set_default_env_vars)
     def test_update_redis_url_set_default(self):
@@ -175,3 +206,22 @@ class TestConfig(TestCase):
             "redis://default:%22%27%25+%21.%3B.%C2%B0@myredis:2493"
             "/2?idletimeout=20s&skipverify=true",
         )
+
+    def test_update_redis_url_default(self):
+        """Test default value for Redis URL"""
+        config = ConfigLoader()
+        self.assertEqual(config.get("redis.url"), "redis://localhost:6379/0")
+
+    def test_update_from_dict(self):
+        """Test update config from dict"""
+        config = ConfigLoader()
+        config_dict = {
+            "redis": {
+                "url": Attr("rediss://myredis:4282/28?username=foo", Attr.Source.UNSPECIFIED)
+            },
+            "foo": Attr("bar", Attr.Source.UNSPECIFIED),
+        }
+        self.assertEqual(config.get("foo"), None)
+        config.update_from_dict(config_dict)
+        self.assertEqual(config.get("foo"), "bar")
+        self.assertEqual(config.get("redis.url"), "rediss://myredis:4282/28?username=foo")
