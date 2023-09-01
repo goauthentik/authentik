@@ -1,5 +1,5 @@
 ---
-title: “Announcing “the authentik Enterprise release!”
+title: Announcing the authentik Enterprise release!
 slug: 2023-08-31-announcing-the-authentik-enterprise-release
 authors:
     - name: Jens Langhammer
@@ -51,6 +51,6 @@ Check out our Enterprise documentation for information about creating and managi
 -   [Manage you Enterprise account](../docs/enterprise/manage-enterprise)
 -   [Support for Enterprise accounts](../docs/enterprise/entsupport)
 
-In future releases, we will be adding additional Enterprise features, including RBAC support, authentication for remote desktop access, and an authentik mobile app for multi-factor authentication.
+In future releases, we will be adding additional Enterprise features, including RBAC support, inbuilt remote desktop access, and an authentik mobile app for multi-factor authentication.
 
 For this preview release of authentik Enterprise, we’d like to hear from you; thoughts and suggestions, questions, any specific direction that you’d like to see the Enterprise version focus on? Contact us at [hello@goauthentik.io](mailto:hello@goauthentik.io).
