@@ -1,9 +1,9 @@
 """Test Static API"""
 from django.urls import reverse
-from django_otp.plugins.otp_static.models import StaticDevice
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
+from authentik.stages.authenticator.plugins.otp_static.models import StaticDevice
 
 
 class AuthenticatorStaticStageTests(APITestCase):

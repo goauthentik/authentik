@@ -6,7 +6,6 @@ from django.db import models
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer, Serializer
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.structs import PublicKeyCredentialDescriptor
@@ -14,6 +13,7 @@ from webauthn.helpers.structs import PublicKeyCredentialDescriptor
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
+from authentik.stages.authenticator.models import Device
 
 
 class UserVerification(models.TextChoices):

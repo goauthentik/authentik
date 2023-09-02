@@ -1,6 +1,4 @@
 """Authenticator Devices API Views"""
-from django_otp import device_classes, devices_for_user
-from django_otp.models import Device
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.fields import BooleanField, CharField, IntegerField, SerializerMethodField
@@ -10,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from authentik.core.api.utils import MetaNameSerializer
+from authentik.stages.authenticator import device_classes, devices_for_user
+from authentik.stages.authenticator.models import Device
 
 
 class DeviceSerializer(MetaNameSerializer):

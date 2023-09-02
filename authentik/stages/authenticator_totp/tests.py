@@ -1,9 +1,9 @@
 """Test TOTP API"""
 from django.urls import reverse
-from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
+from authentik.stages.authenticator.plugins.otp_totp.models import TOTPDevice
 
 
 class AuthenticatorTOTPStage(APITestCase):

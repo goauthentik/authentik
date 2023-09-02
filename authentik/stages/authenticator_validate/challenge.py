@@ -7,8 +7,6 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
-from django_otp import match_token
-from django_otp.models import Device
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
@@ -25,6 +23,8 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.lib.utils.http import get_client_ip
+from authentik.stages.authenticator import match_token
+from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses

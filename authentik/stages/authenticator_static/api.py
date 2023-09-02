@@ -1,6 +1,5 @@
 """AuthenticatorStaticStage API Views"""
 from django_filters.rest_framework import DjangoFilterBackend
-from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
 from rest_framework import mixins
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
@@ -10,6 +9,7 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
+from authentik.stages.authenticator.plugins.otp_static.models import StaticDevice, StaticToken
 from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
 
 
