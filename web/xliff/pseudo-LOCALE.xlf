@@ -2413,10 +2413,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>No policies are currently bound to this object.</source>
         
       </trans-unit>
-      <trans-unit id="s6b66ad92d4c1a0a8">
-        <source>Create &amp; bind Policy</source>
-        
-      </trans-unit>
       <trans-unit id="sddb040c47daae56b">
         <source>Bind existing policy</source>
         
@@ -2831,10 +2827,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s19b09f4fc72175d1">
         <source>Create a new source.</source>
-        
-      </trans-unit>
-      <trans-unit id="sf96b3cc66d2e25f8">
-        <source>Federation &amp; Social login</source>
         
       </trans-unit>
       <trans-unit id="s6152026c364ad974">
@@ -4872,10 +4864,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Bind stage</source>
         
       </trans-unit>
-      <trans-unit id="se8eb190d8f084f80">
-        <source>Create &amp; bind Stage</source>
-        
-      </trans-unit>
       <trans-unit id="scc2e420c54dc8089">
         <source>Bind existing stage</source>
         
@@ -5464,16 +5452,8 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Customisation</source>
         
       </trans-unit>
-      <trans-unit id="s58398dbcff942947">
-        <source>Flows &amp; Stages</source>
-        
-      </trans-unit>
       <trans-unit id="sc0829ee663ced008">
         <source>Directory</source>
-        
-      </trans-unit>
-      <trans-unit id="sdf4e926513e26458">
-        <source>Tokens &amp; App passwords</source>
         
       </trans-unit>
       <trans-unit id="sa81e2cdaf6921adc">
@@ -6144,6 +6124,18 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7f68101a50f526ee">
   <source>Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.</source>
+</trans-unit>
+<trans-unit id="s911a27022aba349f">
+  <source>Create and bind Policy</source>
+</trans-unit>
+<trans-unit id="sb1a4e9b288e2f005">
+  <source>Federation and Social login</source>
+</trans-unit>
+<trans-unit id="s6f367f5604d5056d">
+  <source>Create and bind Stage</source>
+</trans-unit>
+<trans-unit id="s1a65ee08832fbfe2">
+  <source>Flows and Stages</source>
 </trans-unit>
     </body>
   </file>
