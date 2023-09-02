@@ -24,7 +24,7 @@ import { Source, SourcesApi } from "@goauthentik/api";
 @customElement("ak-source-list")
 export class SourceListPage extends TablePage<Source> {
     pageTitle(): string {
-        return msg("Federation & Social login");
+        return msg("Federation and Social login");
     }
     pageDescription(): string | undefined {
         return msg(
