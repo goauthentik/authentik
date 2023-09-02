@@ -14,7 +14,8 @@ def hex_validator(length=0):
         def key_validator(value):
             return hex_validator(20)(value)
 
-        key = models.CharField(max_length=40, validators=[key_validator], help_text='A hex-encoded 20-byte secret key')
+        key = models.CharField(max_length=40,
+            validators=[key_validator], help_text='A hex-encoded 20-byte secret key')
 
     :param int length: If greater than 0, validation will fail unless the
         decoded value is exactly this number of bytes.

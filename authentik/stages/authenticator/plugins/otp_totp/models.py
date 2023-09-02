@@ -91,7 +91,10 @@ class TOTPDevice(ThrottlingMixin, Device):
     )
     last_t = models.BigIntegerField(
         default=-1,
-        help_text="The t value of the latest verified token. The next token must be at a higher time step.",
+        help_text=(
+            "The t value of the latest verified token. "
+            "The next token must be at a higher time step."
+        ),
     )
 
     class Meta(Device.Meta):

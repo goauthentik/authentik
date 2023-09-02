@@ -10,7 +10,7 @@ def login(request, device):
     rejected if it does not belong to ``request.user``.
 
     This is called automatically any time :func:`django.contrib.auth.login` is
-    called with a user having an ``otp_device`` atribute. If you use Django's
+    called with a user having an ``otp_device`` attribute. If you use Django's
     :class:`~django.contrib.auth.views.LoginView` view with the django-otp
     authentication forms, then you won't need to call this.
 

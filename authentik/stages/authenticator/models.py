@@ -7,7 +7,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
 
-from .util import random_number_token
+from authentik.stages.authenticator.util import random_number_token
 
 
 class DeviceManager(models.Manager):
@@ -303,7 +303,10 @@ class ThrottlingMixin(models.Model):
         null=True,
         blank=True,
         default=None,
-        help_text="A timestamp of the last failed verification attempt. Null if last attempt succeeded.",
+        help_text=(
+            "A timestamp of the last failed verification attempt. "
+            "Null if last attempt succeeded."
+        ),
     )
 
     throttling_failure_count = models.PositiveIntegerField(
