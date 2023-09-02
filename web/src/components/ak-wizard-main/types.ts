@@ -14,7 +14,7 @@ export interface WizardStep {
 
     // A function which returns the html for rendering the actual content of the step, its form and
     // such.
-    renderer: () => TemplateResult;
+    render: () => TemplateResult;
 
     // A collection of buttons, in render order, that are to be shown in the button bar. The
     // semantics of the buttons are simple: 'next' will navigate to currentStep + 1, 'back' will

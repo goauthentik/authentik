@@ -8,7 +8,7 @@ import { query } from "@lit/reactive-element/decorators.js";
 import { styles as AwadStyles } from "./BasePanel.css";
 
 import { applicationWizardContext } from "./ak-application-wizard-context-name";
-import type { WizardState } from "./types";
+import type { WizardState, WizardStateUpdate } from "./types";
 
 export class ApplicationWizardPageBase
     extends CustomEmitterElement(AKElement)
@@ -27,8 +27,8 @@ export class ApplicationWizardPageBase
     public wizard!: WizardState;
 
     // This used to be more complex; now it just establishes the event name.
-    dispatchWizardUpdate(update: Partial<WizardState>) {
-        this.dispatchCustomEvent("ak-application-wizard-update", { update });
+    dispatchWizardUpdate(update: WizardStateUpdate) {
+        this.dispatchCustomEvent("ak-application-wizard-update", update);
     }
 }
 

@@ -26,17 +26,19 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
         const target = ev.target as HTMLInputElement;
         const value = target.type === "checkbox" ? target.checked : target.value;
         this.dispatchWizardUpdate({
-            app: {
-                [target.name]: value,
+            update: {
+                app: {
+                    [target.name]: value,
+                },
             },
+            status: this.form.checkValidity() ? "valid" : "invalid",
         });
     }
 
     validator() {
-        return true;
-        // return this.form.reportValidity();
+        return this.form.reportValidity();
     }
-
+    
     render(): TemplateResult {
         return html` <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
             <ak-text-input

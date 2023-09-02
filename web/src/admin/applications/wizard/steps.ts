@@ -2,12 +2,10 @@ import { WizardStep } from "@goauthentik/components/ak-wizard-main";
 import {
     BackStep,
     CancelWizard,
-    CloseWizard,
     NextStep,
     SubmitStep,
 } from "@goauthentik/components/ak-wizard-main/commonWizardButtons";
 
-import { msg } from "@lit/localize";
 import { html } from "lit";
 
 import "./application/ak-application-wizard-application-details";
@@ -15,41 +13,46 @@ import "./auth-method-choice/ak-application-wizard-authentication-method-choice"
 import "./commit/ak-application-wizard-commit-application";
 import "./methods/ak-application-wizard-authentication-method";
 
-export const steps: WizardStep[] = [
+type NamedStep = WizardStep & {
+    id: string,
+    valid: boolean,
+};
+
+export const steps: NamedStep[] = [
     {
         id: "application",
         label: "Application Details",
-        renderer: () =>
+        render: () =>
             html`<ak-application-wizard-application-details></ak-application-wizard-application-details>`,
         disabled: false,
+        valid: false,
         buttons: [NextStep, CancelWizard],
-        valid: true,
     },
     {
-        id: "auth-method-choice",
+        id: "provider-method",
         label: "Authentication Method",
-        renderer: () =>
+        render: () =>
             html`<ak-application-wizard-authentication-method-choice></ak-application-wizard-authentication-method-choice>`,
         disabled: false,
+        valid: false,
         buttons: [NextStep, BackStep, CancelWizard],
-        valid: true,
     },
     {
-        id: "auth-method",
+        id: "provider-details",
         label: "Authentication Details",
-        renderer: () =>
+        render: () =>
             html`<ak-application-wizard-authentication-method></ak-application-wizard-authentication-method>`,
         disabled: true,
+        valid: false,
         buttons: [SubmitStep, BackStep, CancelWizard],
-        valid: true,
     },
     {
-        id: "commit-application",
+        id: "submit",
         label: "Submit New Application",
-        renderer: () =>
+        render: () =>
             html`<ak-application-wizard-commit-application></ak-application-wizard-commit-application>`,
         disabled: true,
+        valid: false,
         buttons: [BackStep, CancelWizard],
-        valid: true,
     },
 ];

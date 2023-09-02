@@ -104,14 +104,19 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     }
 
     renderNavigation() {
+        let disabled = false;
+
         return html`<nav class="pf-c-wizard__nav">
             <ol class="pf-c-wizard__nav-list">
-                ${this.steps.map((step, idx) => this.renderNavigationStep(step, idx))}
+                ${this.steps.map((step, idx) => {
+                    disabled = disabled || this.step.disabled;
+                    return this.renderNavigationStep(step, disabled, idx);
+                })}
             </ol>
         </nav>`;
     }
 
-    renderNavigationStep(step: WizardStep, idx: number) {
+    renderNavigationStep(step: WizardStep, disabled: boolean, idx: number) {
         const buttonClasses = {
             "pf-c-wizard__nav-link": true,
             "pf-m-current": idx === this.currentStep,
@@ -121,7 +126,7 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
             <li class="pf-c-wizard__nav-item">
                 <button
                     class=${classMap(buttonClasses)}
-                    ?disabled=${step.disabled}
+                    ?disabled=${disabled}
                     @click=${() =>
                         this.dispatchCustomEvent(this.eventName, { command: "goto", step: idx })}
                 >
@@ -135,7 +140,7 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     // independent context.
     renderMainSection() {
         return html`<main class="pf-c-wizard__main">
-            <div id="main-content" class="pf-c-wizard__main-body">${this.step.renderer()}</div>
+            <div id="main-content" class="pf-c-wizard__main-body">${this.step.render()}</div>
         </main>`;
     }
 

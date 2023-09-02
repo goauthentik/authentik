@@ -131,9 +131,12 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
         return this.currentStep > 0 ? this.currentStep - 1 : undefined;
     }
 
+    get step() {
+        return this.steps[this.currentStep];
+    }
+
     handleNavigation(event: CustomEvent<{ command: string; step?: number }>) {
         const command = event.detail.command;
-        console.log(command);
         switch (command) {
             case "back": {
                 if (this.backStep !== undefined && this.steps[this.backStep]) {
@@ -151,6 +154,11 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
                 return;
             }
             case "next": {
+                console.log(this.nextStep, 
+                    this.steps[this.nextStep], 
+                    !this.steps[this.nextStep].disabled, 
+                    this.validated);
+                
                 if (
                     this.nextStep &&
                     this.steps[this.nextStep] &&
@@ -162,7 +170,7 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
                 return;
             }
             case "close": {
-                this.frame.open = this.open;
+                this.frame.open = false;
             }
         }
     }

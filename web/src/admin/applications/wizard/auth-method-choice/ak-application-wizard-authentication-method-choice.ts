@@ -24,7 +24,10 @@ export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
 
     handleChoice(ev: InputEvent) {
         const target = ev.target as HTMLInputElement;
-        this.dispatchWizardUpdate({ providerModel: target.value });
+        this.dispatchWizardUpdate({
+            update: { providerModel: target.value },
+            status: this.validator() ? "valid" : "invalid",
+        });
     }
 
     validator() {
@@ -32,7 +35,7 @@ export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
         const chosen = radios.find(
             (radio: Element) => radio instanceof HTMLInputElement && radio.checked,
         );
-        return chosen;
+        return !!chosen;
     }
 
     renderProvider(type: LocalTypeCreate) {

@@ -17,10 +17,14 @@ export type OneOfProvider =
     | Partial<LDAPProviderRequest>;
 
 export interface WizardState {
-    step: number;
     providerModel: string;
     app: Partial<ApplicationRequest>;
     provider: OneOfProvider;
 }
 
-export type WizardStateEvent = { update: Partial<WizardState> };
+type StatusType = "invalid" | "valid" | "submitted" | "failed";
+
+export type WizardStateUpdate = {
+    update: Partial<WizardState>,
+    status?: StatusType,
+};
