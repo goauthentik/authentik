@@ -10,7 +10,7 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.stages.authenticator_mobile.models import AuthenticatorMobileStage, MobileDeviceToken
+from authentik.stages.authenticator_mobile.models import AuthenticatorMobileStage, MobileDevice, MobileDeviceToken
 
 FLOW_PLAN_MOBILE_ENROLL = "authentik/stages/authenticator_mobile/enroll"
 
@@ -45,19 +45,23 @@ class AuthenticatorMobileStageView(ChallengeStageView):
         """Prepare the token"""
         if FLOW_PLAN_MOBILE_ENROLL in self.executor.plan.context:
             return
+        device = MobileDevice.objects.create(
+            user=self.get_pending_user(),
+            stage=self.executor.current_stage,
+        )
         token = MobileDeviceToken.objects.create(
             user=self.get_pending_user(),
+            device=device,
         )
         self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL] = token
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
-        stage: AuthenticatorMobileStage = self.executor.current_stage
         self.prepare()
         payload = AuthenticatorMobilePayloadChallenge(
             data={
                 # TODO: use cloud gateway?
                 "u": self.request.build_absolute_uri("/"),
-                "s": str(stage.stage_uuid),
+                "s": self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL].device.pk,
                 "t": self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL].token,
             }
         )

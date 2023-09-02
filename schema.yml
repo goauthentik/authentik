@@ -2157,6 +2157,123 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /authenticators/mobile/{id}/enrollment_callback/:
+    post:
+      operationId: authenticators_mobile_enrollment_callback_create
+      description: Enrollment callback
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceEnrollmentRequest'
+        required: true
+      security:
+      - mobile_device_token: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDeviceEnrollmentCallback'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/{id}/receive_response/:
+    post:
+      operationId: authenticators_mobile_receive_response_create
+      description: Get response from notification on phone
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceRequest'
+        required: true
+      security:
+      - mobile_device_token: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/{id}/set_notification_key/:
+    post:
+      operationId: authenticators_mobile_set_notification_key_create
+      description: Called by the phone whenever the firebase key changes and we need
+        to update it
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceSetPushKeyRequest'
+        required: true
+      security:
+      - mobile_device_token: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /authenticators/mobile/{id}/used_by/:
     get:
       operationId: authenticators_mobile_used_by_list
@@ -22597,47 +22714,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /stages/authenticator/mobile/{stage_uuid}/enrollment_callback/:
-    post:
-      operationId: stages_authenticator_mobile_enrollment_callback_create
-      description: Enrollment callback
-      parameters:
-      - in: path
-        name: stage_uuid
-        schema:
-          type: string
-          format: uuid
-        description: A UUID string identifying this Mobile Authenticator Setup Stage.
-        required: true
-      tags:
-      - stages
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/MobileDeviceEnrollmentRequest'
-        required: true
-      security:
-      - mobile_device_token: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MobileDeviceEnrollmentCallback'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /stages/authenticator/mobile/{stage_uuid}/used_by/:
     get:
       operationId: stages_authenticator_mobile_used_by_list
@@ -34145,16 +34221,20 @@ components:
       properties:
         device_token:
           type: string
+        device_uuid:
+          type: string
+          format: uuid
       required:
       - device_token
+      - device_uuid
     MobileDeviceEnrollmentRequest:
       type: object
       properties:
-        device_token:
+        token:
           type: string
           minLength: 1
       required:
-      - device_token
+      - token
     MobileDeviceRequest:
       type: object
       description: Serializer for Mobile authenticator devices
@@ -34166,6 +34246,14 @@ components:
           maxLength: 64
       required:
       - name
+    MobileDeviceSetPushKeyRequest:
+      type: object
+      properties:
+        firebase_key:
+          type: string
+          minLength: 1
+      required:
+      - firebase_key
     ModelEnum:
       enum:
       - authentik_crypto.certificatekeypair
@@ -35353,30 +35441,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
@@ -35772,30 +35837,7 @@ components:
       type: object
       properties:
         pagination:
-          type: object
-          properties:
-            next:
-              type: number
-            previous:
-              type: number
-            count:
-              type: number
-            current:
-              type: number
-            total_pages:
-              type: number
-            start_index:
-              type: number
-            end_index:
-              type: number
-          required:
-          - next
-          - previous
-          - count
-          - current
-          - total_pages
-          - start_index
-          - end_index
+          $ref: '#/components/schemas/Pagination'
         results:
           type: array
           items:
