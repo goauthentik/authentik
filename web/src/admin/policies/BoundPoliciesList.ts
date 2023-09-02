@@ -194,7 +194,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     renderToolbar(): TemplateResult {
         return html`<ak-policy-wizard
-                createText=${msg("Create & bind Policy")}
+                createText=${msg("Create and bind Policy")}
                 ?showBindingPage=${true}
                 bindingTarget=${ifDefined(this.target)}
             ></ak-policy-wizard>
