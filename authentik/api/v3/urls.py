@@ -11,6 +11,7 @@ from structlog.stdlib import get_logger
 from authentik.api.v3.config import ConfigView
 from authentik.api.views import APIBrowserView
 from authentik.lib.utils.reflection import get_apps
+from django.conf import settings
 
 LOGGER = get_logger()
 
@@ -52,6 +53,10 @@ urlpatterns = (
     + _other_urls
     + [
         path("root/config/", ConfigView.as_view(), name="config"),
-        path("schema/", cache_page(86400)(SpectacularAPIView.as_view()), name="schema"),
+        path(
+            "schema/",
+            cache_page(0 if settings.DEBUG else 86400)(SpectacularAPIView.as_view()),
+            name="schema",
+        ),
     ]
 )
