@@ -1,0 +1,17 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+<div style="text-align: center;">
+  <p id="qrcode">
+    <img width="200" height="200"
+         style="background-color: white"
+         src="{% url "admin:otp_hotp_hotpdevice_qrcode" pk=device.pk %}"
+         onerror="document.getElementById('qrcode').style.display = 'none'; document.getElementById('no-qrcode').style.display = 'block';"
+    >
+  </p>
+  <p id="no-qrcode" style="display: none">
+    Install <a href="https://pypi.python.org/pypi/qrcode/">qrcode</a> or use the URL below:
+  </p>
+  <p>{{ device.config_url }}</p>
+</div>
+{% endblock %}
