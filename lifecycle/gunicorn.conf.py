@@ -7,12 +7,12 @@ from pathlib import Path
 from tempfile import gettempdir
 from typing import TYPE_CHECKING
 
-import structlog
 from kubernetes.config.incluster_config import SERVICE_HOST_ENV_NAME
 from prometheus_client.values import MultiProcessValue
 
 from authentik import get_full_version
 from authentik.lib.config import CONFIG
+from authentik.lib.logging import get_logger_config
 from authentik.lib.utils.http import get_http_session
 from authentik.lib.utils.reflection import get_env
 from authentik.root.install_id import get_install_id_raw
@@ -21,57 +21,23 @@ from lifecycle.worker import DjangoUvicornWorker
 if TYPE_CHECKING:
     from gunicorn.arbiter import Arbiter
 
-bind = "127.0.0.1:8000"
-
 _tmp = Path(gettempdir())
 worker_class = "lifecycle.worker.DjangoUvicornWorker"
 worker_tmp_dir = str(_tmp.joinpath("authentik_worker_tmp"))
 prometheus_tmp_dir = str(_tmp.joinpath("authentik_prometheus_tmp"))
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
-os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
-
 makedirs(worker_tmp_dir, exist_ok=True)
 makedirs(prometheus_tmp_dir, exist_ok=True)
+
+bind = f"unix://{str(_tmp.joinpath('authentik-core.sock'))}"
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
+os.environ.setdefault("PROMETHEUS_MULTIPROC_DIR", prometheus_tmp_dir)
 
 max_requests = 1000
 max_requests_jitter = 50
 
-_debug = CONFIG.get_bool("DEBUG", False)
-
-logconfig_dict = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "json": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.processors.JSONRenderer(),
-            "foreign_pre_chain": [
-                structlog.stdlib.add_log_level,
-                structlog.stdlib.add_logger_name,
-                structlog.processors.TimeStamper(),
-                structlog.processors.StackInfoRenderer(),
-            ],
-        },
-        "console": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.dev.ConsoleRenderer(colors=True),
-            "foreign_pre_chain": [
-                structlog.stdlib.add_log_level,
-                structlog.stdlib.add_logger_name,
-                structlog.processors.TimeStamper(),
-                structlog.processors.StackInfoRenderer(),
-            ],
-        },
-    },
-    "handlers": {
-        "console": {"class": "logging.StreamHandler", "formatter": "json" if _debug else "console"},
-    },
-    "loggers": {
-        "uvicorn": {"handlers": ["console"], "level": "WARNING", "propagate": False},
-        "gunicorn": {"handlers": ["console"], "level": "INFO", "propagate": False},
-    },
-}
+logconfig_dict = get_logger_config()
 
 # if we're running in kubernetes, use fixed workers because we can scale with more pods
 # otherwise (assume docker-compose), use as much as we can
