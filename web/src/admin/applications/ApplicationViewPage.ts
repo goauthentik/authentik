@@ -87,7 +87,7 @@ export class ApplicationViewPage extends AKElement {
                 .iconImage=${true}
             >
                 <ak-app-icon
-                    size=${PFSize.Small}
+                    size=${PFSize.Medium}
                     slot="icon"
                     .app=${this.application}
                 ></ak-app-icon>
