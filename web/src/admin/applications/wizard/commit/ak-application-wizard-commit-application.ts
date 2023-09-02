@@ -26,6 +26,7 @@ import type { ModelRequest } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
 import providerModelsList from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
+import { type WizardStateUpdate } from "../types";
 
 function cleanApplication(app: Partial<ApplicationRequest>): ApplicationRequest {
     return {
@@ -100,6 +101,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         const network = new CoreApi(DEFAULT_CONFIG).coreTransactionalApplicationsUpdate({
             transactionApplicationRequest: data,
         });
+
         Promise.allSettled([network, timeout]).then(([network_resolution]) => {
             if (network_resolution.status === "rejected") {
                 this.commitState = errorState;
@@ -112,9 +114,9 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                     this.errors = network_resolution.value.logs;
                     return;
                 }
-
                 this.response = network_resolution.value;
                 this.dispatchCustomEvent(EVENT_REFRESH);
+                this.dispatchWizardUpdate({ status: "submitted"});
                 this.commitState = doneState;
             }
         });

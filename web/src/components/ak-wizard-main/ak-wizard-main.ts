@@ -154,11 +154,6 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
                 return;
             }
             case "next": {
-                console.log(this.nextStep, 
-                    this.steps[this.nextStep], 
-                    !this.steps[this.nextStep].disabled, 
-                    this.validated);
-                
                 if (
                     this.nextStep &&
                     this.steps[this.nextStep] &&
@@ -170,6 +165,7 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
                 return;
             }
             case "close": {
+                this.currentStep = 0;
                 this.frame.open = false;
             }
         }

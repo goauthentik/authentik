@@ -14,11 +14,11 @@ import "./commit/ak-application-wizard-commit-application";
 import "./methods/ak-application-wizard-authentication-method";
 
 type NamedStep = WizardStep & {
-    id: string,
-    valid: boolean,
+    id: string;
+    valid: boolean;
 };
 
-export const steps: NamedStep[] = [
+export const newSteps = (): NamedStep[] => [
     {
         id: "application",
         label: "Application Details",

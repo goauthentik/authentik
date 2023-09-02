@@ -1,6 +1,7 @@
 import { type AkWizardMain } from "@goauthentik/app/components/ak-wizard-main/ak-wizard-main";
 import { merge } from "@goauthentik/common/merge";
 import "@goauthentik/components/ak-wizard-main";
+import { CloseWizard } from "@goauthentik/components/ak-wizard-main/commonWizardButtons";
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
@@ -15,8 +16,14 @@ import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import applicationWizardContext from "./ak-application-wizard-context-name";
-import { steps } from "./steps";
-import { OneOfProvider, WizardState, WizardStateEvent } from "./types";
+import { newSteps } from "./steps";
+import { OneOfProvider, WizardState, WizardStateUpdate } from "./types";
+
+const freshWizardState = () => ({
+    providerModel: "",
+    app: {},
+    provider: {},
+});
 
 @customElement("ak-application-wizard")
 export class ApplicationWizard extends CustomListenerElement(AKElement) {
@@ -25,11 +32,7 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
     }
 
     @state()
-    wizardState: WizardState = {
-        providerModel: "",
-        app: {},
-        provider: {},
-    };
+    wizardState: WizardState = freshWizardState();
 
     /**
      * Providing a context at the root element
@@ -40,7 +43,7 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
     });
 
     @state()
-    steps = steps;
+    steps = newSteps();
 
     @property()
     prompt = msg("Create");
@@ -49,13 +52,13 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
 
     wizardRef: Ref<AkWizardMain> = createRef();
 
-    get step() {
-        return this.wizardRef.value?.currentStep ?? -1;
-    }
-
     constructor() {
         super();
         this.handleUpdate = this.handleUpdate.bind(this);
+    }
+
+    get step() {
+        return this.wizardRef.value?.currentStep ?? -1;
     }
 
     connectedCallback() {
@@ -88,11 +91,25 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
             throw new Error("Could not find Authentication Method page?");
         }
         method.disabled = false;
+        return true;
     }
 
     // And this is where all the special cases go...
-    handleUpdate(event: CustomEvent<WizardStateEvent>) {
+    handleUpdate(event: CustomEvent<WizardStateUpdate>) {
+        if (event.detail.status === "submitted") {
+            const submitStep = this.steps.find(({ id }) => id === "submit");
+            if (!submitStep) {
+                throw new Error("Could not find submit step?");
+            }
+            submitStep.buttons = [CloseWizard];
+            this.steps = [...this.steps];
+            return;
+        }
+
         const update = event.detail.update;
+        if (!update) {
+            return;
+        }
 
         if (this.maybeProviderSwap(update.providerModel)) {
             this.steps = [...this.steps];
@@ -100,7 +117,7 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
 
         if (event.detail.status === "valid" && this.steps[this.step + 1]) {
             this.steps[this.step + 1].disabled = false;
-            this.steps = [...this.steps];            
+            this.steps = [...this.steps];
         }
 
         this.wizardState = merge(this.wizardState, update) as WizardState;
