@@ -2,15 +2,13 @@ import { TemplateResult } from "lit";
 
 export type WizardNavCommand = "next" | "back" | "close" | ["goto", number];
 
-
 // The label of the button, the command the button should execute, and if the button
 // should be marked "disabled."
 export type WizardButton = [string, WizardNavCommand, boolean?];
 
-
 export interface WizardStep {
     // The name of the step, as shown in the navigation.
-    label: string;  
+    label: string;
 
     // A function which returns the html for rendering the actual content of the step, its form and
     // such.

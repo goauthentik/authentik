@@ -55,6 +55,7 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
     constructor() {
         super();
         this.handleUpdate = this.handleUpdate.bind(this);
+        this.handleClosed = this.handleClosed.bind(this);
     }
 
     get step() {
@@ -65,10 +66,12 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
         super.connectedCallback();
         new ContextRoot().attach(this.parentElement!);
         this.addCustomListener("ak-application-wizard-update", this.handleUpdate);
+        this.addCustomListener("ak-wizard-closed", this.handleClosed);
     }
 
     disconnectedCallback() {
         this.removeCustomListener("ak-application-wizard-update", this.handleUpdate);
+        this.removeCustomListener("ak-wizard-closed", this.handleClosed);
         super.disconnectedCallback();
     }
 
@@ -121,6 +124,12 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
         }
 
         this.wizardState = merge(this.wizardState, update) as WizardState;
+        this.wizardStateProvider.setValue(this.wizardState);
+    }
+
+    handleClosed() {
+        this.steps = newSteps();
+        this.wizardState = freshWizardState();
         this.wizardStateProvider.setValue(this.wizardState);
     }
 

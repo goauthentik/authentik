@@ -25,6 +25,6 @@ export interface WizardState {
 type StatusType = "invalid" | "valid" | "submitted" | "failed";
 
 export type WizardStateUpdate = {
-    update?: Partial<WizardState>,
-    status?: StatusType,
+    update?: Partial<WizardState>;
+    status?: StatusType;
 };

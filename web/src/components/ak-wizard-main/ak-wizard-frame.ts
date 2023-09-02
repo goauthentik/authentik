@@ -71,13 +71,11 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     }
 
     renderModalInner() {
-        // prettier-ignore
         return html`<div class="pf-c-wizard">
             ${this.renderHeader()}
             <div class="pf-c-wizard__outer-wrap">
                 <div class="pf-c-wizard__inner-wrap">
-                    ${this.renderNavigation()} 
-                    ${this.renderMainSection()}
+                    ${this.renderNavigation()} ${this.renderMainSection()}
                 </div>
                 ${this.renderFooter()}
             </div>

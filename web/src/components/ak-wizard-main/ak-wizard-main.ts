@@ -1,5 +1,5 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import { CustomEmitterElement, CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { html } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
@@ -45,7 +45,7 @@ const hasValidator = (v: any): v is Required<Pick<WizardPanel, "validator">> =>
  */
 
 @customElement("ak-wizard-main")
-export class AkWizardMain extends CustomListenerElement(AKElement) {
+export class AkWizardMain extends CustomEmitterElement(CustomListenerElement(AKElement)) {
     static get styles() {
         return [PFBase, PFButton, PFRadio];
     }
@@ -167,6 +167,7 @@ export class AkWizardMain extends CustomListenerElement(AKElement) {
             case "close": {
                 this.currentStep = 0;
                 this.frame.open = false;
+                this.dispatchCustomEvent('ak-wizard-closed');
             }
         }
     }

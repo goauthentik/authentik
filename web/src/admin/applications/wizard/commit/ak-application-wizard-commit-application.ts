@@ -26,7 +26,6 @@ import type { ModelRequest } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
 import providerModelsList from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
-import { type WizardStateUpdate } from "../types";
 
 function cleanApplication(app: Partial<ApplicationRequest>): ApplicationRequest {
     return {
@@ -116,7 +115,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                 }
                 this.response = network_resolution.value;
                 this.dispatchCustomEvent(EVENT_REFRESH);
-                this.dispatchWizardUpdate({ status: "submitted"});
+                this.dispatchWizardUpdate({ status: "submitted" });
                 this.commitState = doneState;
             }
         });

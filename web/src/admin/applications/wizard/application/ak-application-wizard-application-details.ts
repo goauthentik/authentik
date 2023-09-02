@@ -38,7 +38,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
     validator() {
         return this.form.reportValidity();
     }
-    
+
     render(): TemplateResult {
         return html` <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
             <ak-text-input

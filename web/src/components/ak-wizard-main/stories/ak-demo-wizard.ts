@@ -36,8 +36,8 @@ export class AkDemoWizard extends AKElement {
             <ak-wizard-context .steps=${this.steps}>
                 <ak-wizard-frame
                     ?open=${this.open}
-header=${this.header}
-canCancel
+                    header=${this.header}
+                    canCancel
                     description=${ifDefined(this.description)}
                 >
                     <button slot="trigger" class="pf-c-button pf-m-primary">Show Wizard</button>
