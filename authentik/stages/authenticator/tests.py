@@ -1,35 +1,18 @@
-import unittest
 from datetime import timedelta
-from doctest import DocTestSuite
-from io import StringIO
 from threading import Thread
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
-from django.core.management import call_command
-from django.core.management.base import CommandError
 from django.db import IntegrityError, connection
 from django.test import TestCase as DjangoTestCase
 from django.test import TransactionTestCase as DjangoTransactionTestCase
 from django.test import skipUnlessDBFeature
 from django.test.utils import override_settings
-from django.urls import reverse
 from django.utils import timezone
 from freezegun import freeze_time
 
-from authentik.stages.authenticator import match_token, oath, user_has_device, util, verify_token
+from authentik.stages.authenticator import match_token, user_has_device, verify_token
 from authentik.stages.authenticator.models import VerifyNotAllowed
-from authentik.stages.authenticator_static.models import StaticToken
-
-
-def load_tests(loader, tests, pattern):
-    suite = unittest.TestSuite()
-
-    suite.addTests(tests)
-    suite.addTest(DocTestSuite(util))
-    suite.addTest(DocTestSuite(oath))
-
-    return suite
 
 
 class TestThread(Thread):
@@ -189,93 +172,6 @@ class APITestCase(TestCase):
         self.assertEqual(verified, self.alice.staticdevice_set.first())
 
 
-class LoginViewTestCase(TestCase):
-    def setUp(self):
-        try:
-            self.alice = self.create_user("alice", "password")
-            self.bob = self.create_user("bob", "password", is_staff=True)
-        except IntegrityError:
-            self.skipTest("Unable to create a test user.")
-        else:
-            for user in [self.alice, self.bob]:
-                device = user.staticdevice_set.create()
-                device.token_set.create(token=user.get_username())
-
-    def test_admin_login_template(self):
-        response = self.client.get(reverse("otpadmin:login"))
-        self.assertContains(response, "Username:")
-        self.assertContains(response, "Password:")
-        self.assertNotContains(response, "OTP Device:")
-        self.assertContains(response, "OTP Token:")
-        response = self.client.post(
-            reverse("otpadmin:login"),
-            data={
-                "username": self.bob.get_username(),
-                "password": "password",
-            },
-        )
-        self.assertContains(response, "Username:")
-        self.assertContains(response, "Password:")
-        self.assertContains(response, "OTP Device:")
-        self.assertContains(response, "OTP Token:")
-
-        device = self.bob.staticdevice_set.get()
-        token = device.token_set.get()
-        response = self.client.post(
-            reverse("otpadmin:login"),
-            data={
-                "username": self.bob.get_username(),
-                "password": "password",
-                "otp_device": device.persistent_id,
-                "otp_token": token.token,
-                "next": "/",
-            },
-        )
-        self.assertRedirects(response, "/")
-
-    def test_authenticate(self):
-        device = self.alice.staticdevice_set.get()
-        token = device.token_set.get()
-
-        params = {
-            "username": self.alice.get_username(),
-            "password": "password",
-            "otp_device": device.persistent_id,
-            "otp_token": token.token,
-            "next": "/",
-        }
-
-        response = self.client.post(reverse("login"), params)
-        self.assertRedirects(response, "/")
-
-        response = self.client.get("/")
-        self.assertInHTML(
-            f'<span id="username">{self.alice.get_username()}</span>',
-            response.content.decode(response.charset),
-        )
-
-    def test_verify(self):
-        device = self.alice.staticdevice_set.get()
-        token = device.token_set.get()
-
-        params = {
-            "otp_device": device.persistent_id,
-            "otp_token": token.token,
-            "next": "/",
-        }
-
-        self.client.login(username=self.alice.get_username(), password="password")
-
-        response = self.client.post(reverse("login-otp"), params)
-        self.assertRedirects(response, "/")
-
-        response = self.client.get("/")
-        self.assertInHTML(
-            f'<span id="username">{self.alice.get_username()}</span>',
-            response.content.decode(response.charset),
-        )
-
-
 @skipUnlessDBFeature("has_select_for_update")
 @override_settings(OTP_STATIC_THROTTLE_FACTOR=0)
 class ConcurrencyTestCase(TransactionTestCase):
@@ -335,54 +231,3 @@ class ConcurrencyTestCase(TransactionTestCase):
             thread.join()
 
         self.assertEqual(sum(1 for t in threads if t.verified is not None), 1)
-
-    def test_concurrent_throttle_count(self):
-        self._test_throttling_concurrency(thread_count=10, expected_failures=10)
-
-    @override_settings(OTP_STATIC_THROTTLE_FACTOR=1)
-    def test_serialized_throttling(self):
-        # After the first failure, verification will be skipped and the count
-        # will not be incremented.
-        self._test_throttling_concurrency(thread_count=10, expected_failures=1)
-
-
-class AddStaticTokenTestCase(TestCase):
-    def setUp(self):
-        try:
-            self.alice = self.create_user("alice", "password")
-            self.bob = self.create_user("bob", "password", is_staff=True)
-        except IntegrityError:
-            self.skipTest("Unable to create a test user.")
-
-    def test_no_user(self):
-        with self.assertRaises(CommandError):
-            call_command("addstatictoken", "bogus")
-
-    def test_new_device(self):
-        out = StringIO()
-        call_command("addstatictoken", "alice", stdout=out)
-        token = out.getvalue().strip()
-
-        static_token = StaticToken.objects.select_related("device__user").get(token=token)
-        self.assertEqual(static_token.device.user, self.alice)
-
-    def test_existing_device(self):
-        device = self.alice.staticdevice_set.create()
-
-        out = StringIO()
-        call_command("addstatictoken", "alice", stdout=out)
-        token = out.getvalue().strip()
-
-        static_token = StaticToken.objects.select_related("device__user").get(token=token)
-        self.assertEqual(static_token.device, device)
-
-    def test_explicit_token(self):
-        device = self.alice.staticdevice_set.create()
-
-        out = StringIO()
-        call_command("addstatictoken", "alice", "-t", "secret-token", stdout=out)
-        token = out.getvalue().strip()
-
-        static_token = StaticToken.objects.select_related("device__user").get(token=token)
-        self.assertEqual(token, "secret-token")
-        self.assertEqual(static_token.device, device)

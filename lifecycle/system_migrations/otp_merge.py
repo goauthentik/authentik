@@ -33,7 +33,15 @@ class Migration(BaseMigration):
     def run(self):
         self.cur.execute(SQL_STATEMENT)
         self.con.commit()
-        self.system_crit("./manage.py migrate authentik_stages_authenticator_static 0008_initial --fake")
-        self.system_crit("./manage.py migrate authentik_stages_authenticator_static 0009_throttling --fake")
-        self.system_crit("./manage.py migrate authentik_stages_authenticator_totp 0008_initial --fake")
-        self.system_crit("./manage.py migrate authentik_stages_authenticator_totp 0009_auto_20190420_0723 --fake")
+        self.system_crit(
+            "./manage.py migrate authentik_stages_authenticator_static 0008_initial --fake"
+        )
+        self.system_crit(
+            "./manage.py migrate authentik_stages_authenticator_static 0009_throttling --fake"
+        )
+        self.system_crit(
+            "./manage.py migrate authentik_stages_authenticator_totp 0008_initial --fake"
+        )
+        self.system_crit(
+            "./manage.py migrate authentik_stages_authenticator_totp 0009_auto_20190420_0723 --fake"
+        )

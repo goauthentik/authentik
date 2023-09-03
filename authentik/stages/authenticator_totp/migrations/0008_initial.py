@@ -1,6 +1,7 @@
-import django_otp.plugins.otp_totp.models
 from django.conf import settings
 from django.db import migrations, models
+
+import authentik.stages.authenticator_totp.models
 
 
 class Migration(migrations.Migration):
@@ -32,10 +33,10 @@ class Migration(migrations.Migration):
                 (
                     "key",
                     models.CharField(
-                        default=django_otp.plugins.otp_totp.models.default_key,
+                        default=authentik.stages.authenticator_totp.models.default_key,
                         help_text="A hex-encoded secret key of up to 40 bytes.",
                         max_length=80,
-                        validators=[django_otp.plugins.otp_totp.models.key_validator],
+                        validators=[authentik.stages.authenticator_totp.models.key_validator],
                     ),
                 ),
                 (

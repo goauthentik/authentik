@@ -63,10 +63,12 @@ class AuthenticatorTOTPStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
 
 def default_key():
+    """Default TOTP Device key"""
     return random_hex(20)
 
 
 def key_validator(value):
+    """Validate totp key"""
     return hex_validator()(value)
 
 

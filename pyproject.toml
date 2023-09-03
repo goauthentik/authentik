@@ -105,7 +105,7 @@ max-branches = 20
 DJANGO_SETTINGS_MODULE = "authentik.root.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 junit_family = "xunit2"
-addopts = "-p no:celery --junitxml=unittest.xml"
+addopts = "-p no:celery --junitxml=unittest.xml -vv --full-trace --doctest-modules"
 filterwarnings = [
     "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
     "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
