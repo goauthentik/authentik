@@ -11,6 +11,7 @@ class EnterprisePolicyAccessView(PolicyAccessView):
     """PolicyAccessView which also checks enterprise licensing"""
 
     def check_license(self):
+        """Check license"""
         if not LicenseKey.get_total().is_valid():
             return False
         if self.request.user.type != UserTypes.INTERNAL:
@@ -23,7 +24,7 @@ class EnterprisePolicyAccessView(PolicyAccessView):
         request.http_request = self.request
         result = super().user_has_access(user)
         enterprise_result = self.check_license()
-        if not enterprise_result.passing:
+        if not enterprise_result:
             return enterprise_result
         return result
 
