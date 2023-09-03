@@ -29,7 +29,7 @@ from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 from authentik.providers.scim.models import SCIMGroup, SCIMUser
-from authentik.stages.authenticator.plugins.otp_static.models import StaticToken
+from authentik.stages.authenticator_static.models import StaticToken
 
 IGNORED_MODELS = (
     Event,

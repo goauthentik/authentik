@@ -9,8 +9,11 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.flows.api.stages import StageSerializer
-from authentik.stages.authenticator.plugins.otp_static.models import StaticDevice, StaticToken
-from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
+from authentik.stages.authenticator_static.models import (
+    AuthenticatorStaticStage,
+    StaticDevice,
+    StaticToken,
+)
 
 
 class AuthenticatorStaticStageSerializer(StageSerializer):

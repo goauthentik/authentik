@@ -3,7 +3,7 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
 from authentik.events.models import Event
-from authentik.stages.authenticator.plugins.otp_static.models import StaticDevice
+from authentik.stages.authenticator_static.models import StaticDevice
 
 
 @receiver(pre_delete, sender=StaticDevice)

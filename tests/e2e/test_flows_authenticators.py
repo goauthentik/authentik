@@ -11,9 +11,12 @@ from selenium.webdriver.support.wait import WebDriverWait
 from authentik.blueprints.tests import apply_blueprint
 from authentik.flows.models import Flow
 from authentik.stages.authenticator.oath import TOTP
-from authentik.stages.authenticator.plugins.otp_static.models import StaticDevice, StaticToken
 from authentik.stages.authenticator.plugins.otp_totp.models import TOTPDevice
-from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
+from authentik.stages.authenticator_static.models import (
+    AuthenticatorStaticStage,
+    StaticDevice,
+    StaticToken,
+)
 from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
 from tests.e2e.utils import SeleniumTestCase, retry
 

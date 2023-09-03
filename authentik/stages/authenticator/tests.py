@@ -30,7 +30,7 @@ from authentik.stages.authenticator import (
 from authentik.stages.authenticator.forms import OTPTokenForm
 from authentik.stages.authenticator.middleware import OTPMiddleware
 from authentik.stages.authenticator.models import VerifyNotAllowed
-from authentik.stages.authenticator.plugins.otp_static.models import StaticDevice, StaticToken
+from authentik.stages.authenticator_static.models import StaticDevice, StaticToken
 
 
 def load_tests(loader, tests, pattern):
