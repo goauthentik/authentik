@@ -71,7 +71,7 @@ class Device(models.Model):
 
     .. attribute:: objects
 
-        A :class:`~django_otp.models.DeviceManager`.
+        A :class:`~authentik.stages.authenticator.models.DeviceManager`.
     """
 
     user = models.ForeignKey(
@@ -148,7 +148,7 @@ class Device(models.Model):
         """
         Returns ``True`` if this is an interactive device. The default
         implementation returns ``True`` if
-        :meth:`~django_otp.models.Device.generate_challenge` has been
+        :meth:`~authentik.stages.authenticator.models.Device.generate_challenge` has been
         overridden, but subclasses are welcome to provide smarter
         implementations.
 
@@ -272,7 +272,7 @@ class VerifyNotAllowed:
     """
     Constants that may be returned in the ``reason`` member of the extra
     information dictionary returned by
-    :meth:`~django_otp.models.Device.verify_is_allowed`
+    :meth:`~authentik.stages.authenticator.models.Device.verify_is_allowed`
 
     .. data:: N_FAILED_ATTEMPTS
 
@@ -295,7 +295,7 @@ class ThrottlingMixin(models.Model):
     :meth:`throttle_increment` methods from within their verify_token() method.
 
     See the implementation of
-    :class:`~django_otp.plugins.otp_email.models.EmailDevice` for an example.
+    :class:`~authentik.stages.authenticator.plugins.otp_email.models.EmailDevice` for an example.
 
     """
 
@@ -326,7 +326,7 @@ class ThrottlingMixin(models.Model):
             }
 
         where ``n`` is the number of successive failures. See
-        :class:`~django_otp.models.VerifyNotAllowed`.
+        :class:`~authentik.stages.authenticator.models.VerifyNotAllowed`.
 
         """
         if (

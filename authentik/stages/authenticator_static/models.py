@@ -54,7 +54,7 @@ class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
 class StaticDevice(ThrottlingMixin, Device):
     """
-    A static :class:`~django_otp.models.Device` simply consists of random
+    A static :class:`~authentik.stages.authenticator.models.Device` simply consists of random
     tokens shared by the database and the user.
 
     These are frequently used as emergency tokens in case a user's normal

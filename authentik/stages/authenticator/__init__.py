@@ -5,7 +5,7 @@ from django.db import transaction
 def verify_token(user, device_id, token):
     """
     Attempts to verify a :term:`token` against a specific device, identified by
-    :attr:`~django_otp.models.Device.persistent_id`.
+    :attr:`~authentik.stages.authenticator.models.Device.persistent_id`.
 
     This wraps the verification process in a transaction to ensure that things
     like throttling polices are properly enforced.
@@ -18,7 +18,7 @@ def verify_token(user, device_id, token):
     :param str token: An OTP token to verify.
 
     :returns: The device that accepted ``token``, if any.
-    :rtype: :class:`~django_otp.models.Device` or ``None``
+    :rtype: :class:`~authentik.stages.authenticator.models.Device` or ``None``
 
     """
     from authentik.stages.authenticator.models import Device
@@ -50,7 +50,7 @@ def match_token(user, token):
     :param str token: An OTP token to verify.
 
     :returns: The device that accepted ``token``, if any.
-    :rtype: :class:`~django_otp.models.Device` or ``None``
+    :rtype: :class:`~authentik.stages.authenticator.models.Device` or ``None``
     """
     with transaction.atomic():
         for device in devices_for_user(user, for_verify=True):

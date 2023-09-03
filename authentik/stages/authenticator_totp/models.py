@@ -74,8 +74,8 @@ def key_validator(value):
 
 class TOTPDevice(ThrottlingMixin, Device):
     """
-    A generic TOTP :class:`~django_otp.models.Device`. The model fields mostly
-    correspond to the arguments to :func:`django_otp.oath.totp`. They all have
+    A generic TOTP :class:`~authentik.stages.authenticator.models.Device`. The model fields mostly
+    correspond to the arguments to :func:`authentik.stages.authenticator.oath.totp`. They all have
     sensible defaults, including the key, which is randomly generated.
 
     .. attribute:: key
