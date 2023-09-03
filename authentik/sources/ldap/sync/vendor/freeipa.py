@@ -45,7 +45,11 @@ class FreeIPA(BaseLDAPSynchronizer):
         # 389-ds and this will trigger regardless
         if "nsaccountlock" not in attributes:
             return
-        is_active = attributes.get("nsaccountlock", False)
+        # For some reason, nsaccountlock is not defined properly in the schema as bool
+        # hence we get it as a list of strings
+        _is_active = str(self._flatten(attributes.get("nsaccountlock", ["FALSE"])))
+        # So we have to attempt to convert it to a bool
+        is_active = _is_active.lower() == "true"
         if is_active != user.is_active:
             user.is_active = is_active
             user.save()
