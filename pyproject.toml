@@ -182,6 +182,7 @@ coverage = { extras = ["toml"], version = "*" }
 debugpy = "*"
 django-silk = "*"
 drf-jsonschema-serializer = "*"
+freezegun = "*"
 importlib-metadata = "*"
 pdoc = "*"
 pylint = "*"
