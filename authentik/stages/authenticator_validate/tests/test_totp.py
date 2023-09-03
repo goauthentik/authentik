@@ -16,7 +16,7 @@ from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.root.install_id import get_install_id
 from authentik.stages.authenticator.oath import TOTP
-from authentik.stages.authenticator.plugins.otp_totp.models import TOTPDevice
+from authentik.stages.authenticator_totp.models import TOTPDevice
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     validate_challenge_code,

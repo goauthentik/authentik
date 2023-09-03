@@ -1,4 +1,3 @@
-import pickle
 import unittest
 from datetime import timedelta
 from doctest import DocTestSuite
@@ -10,7 +9,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.core.management import call_command
 from django.core.management.base import CommandError
 from django.db import IntegrityError, connection
-from django.test import RequestFactory
 from django.test import TestCase as DjangoTestCase
 from django.test import TransactionTestCase as DjangoTransactionTestCase
 from django.test import skipUnlessDBFeature
@@ -19,18 +17,9 @@ from django.urls import reverse
 from django.utils import timezone
 from freezegun import freeze_time
 
-from authentik.stages.authenticator import (
-    DEVICE_ID_SESSION_KEY,
-    match_token,
-    oath,
-    user_has_device,
-    util,
-    verify_token,
-)
-from authentik.stages.authenticator.forms import OTPTokenForm
-from authentik.stages.authenticator.middleware import OTPMiddleware
+from authentik.stages.authenticator import match_token, oath, user_has_device, util, verify_token
 from authentik.stages.authenticator.models import VerifyNotAllowed
-from authentik.stages.authenticator_static.models import StaticDevice, StaticToken
+from authentik.stages.authenticator_static.models import StaticToken
 
 
 def load_tests(loader, tests, pattern):
@@ -200,98 +189,6 @@ class APITestCase(TestCase):
         self.assertEqual(verified, self.alice.staticdevice_set.first())
 
 
-class OTPMiddlewareTestCase(TestCase):
-    def setUp(self):
-        self.factory = RequestFactory()
-        try:
-            self.alice = self.create_user("alice", "password")
-            self.bob = self.create_user("bob", "password")
-        except IntegrityError:
-            self.skipTest("Unable to create a test user.")
-        else:
-            for user in [self.alice, self.bob]:
-                device = user.staticdevice_set.create()
-                device.token_set.create(token=user.get_username())
-
-        self.middleware = OTPMiddleware(lambda r: None)
-
-    def test_verified(self):
-        request = self.factory.get("/")
-        request.user = self.alice
-        device = self.alice.staticdevice_set.get()
-        request.session = {DEVICE_ID_SESSION_KEY: device.persistent_id}
-
-        self.middleware(request)
-
-        self.assertTrue(request.user.is_verified())
-
-    def test_verified_legacy_device_id(self):
-        request = self.factory.get("/")
-        request.user = self.alice
-        device = self.alice.staticdevice_set.get()
-        request.session = {
-            DEVICE_ID_SESSION_KEY: "{}.{}/{}".format(
-                device.__module__, device.__class__.__name__, device.id
-            )
-        }
-
-        self.middleware(request)
-
-        self.assertTrue(request.user.is_verified())
-
-    def test_unverified(self):
-        request = self.factory.get("/")
-        request.user = self.alice
-        request.session = {}
-
-        self.middleware(request)
-
-        self.assertFalse(request.user.is_verified())
-
-    def test_no_device(self):
-        request = self.factory.get("/")
-        request.user = self.alice
-        request.session = {
-            DEVICE_ID_SESSION_KEY: "otp_static.staticdevice/0",
-        }
-
-        self.middleware(request)
-
-        self.assertFalse(request.user.is_verified())
-
-    def test_no_model(self):
-        request = self.factory.get("/")
-        request.user = self.alice
-        request.session = {
-            DEVICE_ID_SESSION_KEY: "otp_bogus.bogusdevice/0",
-        }
-
-        self.middleware(request)
-
-        self.assertFalse(request.user.is_verified())
-
-    def test_wrong_user(self):
-        request = self.factory.get("/")
-        request.user = self.alice
-        device = self.bob.staticdevice_set.get()
-        request.session = {DEVICE_ID_SESSION_KEY: device.persistent_id}
-
-        self.middleware(request)
-
-        self.assertFalse(request.user.is_verified())
-
-    def test_pickling(self):
-        request = self.factory.get("/")
-        request.user = self.alice
-        device = self.alice.staticdevice_set.get()
-        request.session = {DEVICE_ID_SESSION_KEY: device.persistent_id}
-
-        self.middleware(request)
-
-        # Should not raise an exception.
-        pickle.dumps(request.user)
-
-
 class LoginViewTestCase(TestCase):
     def setUp(self):
         try:
@@ -447,27 +344,6 @@ class ConcurrencyTestCase(TransactionTestCase):
         # After the first failure, verification will be skipped and the count
         # will not be incremented.
         self._test_throttling_concurrency(thread_count=10, expected_failures=1)
-
-    def _test_throttling_concurrency(self, thread_count, expected_failures):
-        forms = (
-            OTPTokenForm(
-                device.user,
-                None,
-                {"otp_device": device.persistent_id, "otp_token": "bogus"},
-            )
-            for _ in range(thread_count)
-            for device in StaticDevice.objects.all()
-        )
-
-        threads = [TestThread(target=form.is_valid) for form in forms]
-        for thread in threads:
-            thread.start()
-        for thread in threads:
-            thread.join()
-
-        for device in StaticDevice.objects.all():
-            with self.subTest(user=device.user.get_username()):
-                self.assertEqual(device.throttling_failure_count, expected_failures)
 
 
 class AddStaticTokenTestCase(TestCase):
