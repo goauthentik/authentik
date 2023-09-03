@@ -28,7 +28,6 @@ def create_test_admin_user(name: Optional[str] = None, **kwargs) -> User:
     kwargs.setdefault("email", f"{uid}@goauthentik.io")
     kwargs.setdefault("username", uid)
     user: User = User.objects.create(
-        username=uid,
         name=uid,
         **kwargs,
     )

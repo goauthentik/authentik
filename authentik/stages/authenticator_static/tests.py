@@ -28,17 +28,16 @@ class DeviceTest(TestCase):
     """A few generic tests to get us started."""
 
     def setUp(self):
-        try:
-            self.user = create_test_admin_user("alice")
-        except Exception:
-            self.skipTest("Unable to create the test user.")
+        self.user = create_test_admin_user("alice")
 
     def test_str(self):
+        """Test __str__ of model"""
         device = StaticDevice.objects.create(user=self.user, name="Device")
 
         str(device)
 
     def test_str_unpopulated(self):
+        """Test __str__ of model"""
         device = StaticDevice()
 
         str(device)
@@ -48,6 +47,8 @@ class DeviceTest(TestCase):
     OTP_STATIC_THROTTLE_FACTOR=1,
 )
 class ThrottlingTestCase(ThrottlingTestMixin, TestCase):
+    """Test static device throttling"""
+
     def setUp(self):
         user = create_test_admin_user("alice")
         self.device = user.staticdevice_set.create()
