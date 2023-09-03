@@ -18,6 +18,8 @@ from authentik.stages.authenticator.models import Device, VerifyNotAllowed
 class TestThread(Thread):
     "Django testing quirk: threads have to close their DB connections."
 
+    __test__ = False
+
     def run(self):
         super().run()
         connection.close()
@@ -116,8 +118,8 @@ class APITestCase(TestCase):
         self.alice = create_test_admin_user("alice")
         self.bob = create_test_admin_user("bob")
         device = self.alice.staticdevice_set.create()
-        self.test_token = generate_id()
-        device.token_set.create(token=self.test_token)
+        self.valid = generate_id(length=16)
+        device.token_set.create(token=self.valid)
 
     def test_user_has_device(self):
         """Test user_has_device"""
@@ -135,7 +137,7 @@ class APITestCase(TestCase):
         verified = verify_token(self.alice, device.persistent_id, "bogus")
         self.assertIsNone(verified)
 
-        verified = verify_token(self.alice, device.persistent_id, "alice")
+        verified = verify_token(self.alice, device.persistent_id, self.valid)
         self.assertIsNotNone(verified)
 
     def test_match_token(self):
@@ -143,7 +145,7 @@ class APITestCase(TestCase):
         verified = match_token(self.alice, "bogus")
         self.assertIsNone(verified)
 
-        verified = match_token(self.alice, self.test_token)
+        verified = match_token(self.alice, self.valid)
         self.assertEqual(verified, self.alice.staticdevice_set.first())
 
 
@@ -154,7 +156,7 @@ class ConcurrencyTestCase(TransactionTestCase):
     def setUp(self):
         self.alice = create_test_admin_user("alice")
         self.bob = create_test_admin_user("bob")
-        self.valid = generate_id()
+        self.valid = generate_id(length=16)
         for user in [self.alice, self.bob]:
             device = user.staticdevice_set.create()
             device.token_set.create(token=self.valid)
@@ -164,6 +166,8 @@ class ConcurrencyTestCase(TransactionTestCase):
 
         class VerifyThread(Thread):
             """Verifier thread"""
+
+            __test__ = False
 
             def __init__(self, user, device_id, token):
                 super().__init__()
@@ -192,6 +196,8 @@ class ConcurrencyTestCase(TransactionTestCase):
 
         class VerifyThread(Thread):
             """Verifier thread"""
+
+            __test__ = False
 
             def __init__(self, user, token):
                 super().__init__()

@@ -52,9 +52,9 @@ class ThrottlingTestCase(ThrottlingTestMixin, TestCase):
     def setUp(self):
         user = create_test_admin_user("alice")
         self.device = user.staticdevice_set.create()
-        self.device.token_set.create(token=generate_id())
-        self.device.token_set.create(token=generate_id())
-        self.device.token_set.create(token=generate_id())
+        self.device.token_set.create(token=generate_id(length=16))
+        self.device.token_set.create(token=generate_id(length=16))
+        self.device.token_set.create(token=generate_id(length=16))
 
     def valid_token(self):
         return self.device.token_set.first().token
