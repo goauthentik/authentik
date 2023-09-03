@@ -21,4 +21,8 @@ class Migration(migrations.Migration):
                 validators=[authentik.stages.authenticator_totp.models.key_validator],
             ),
         ),
+        migrations.AlterModelOptions(
+            name="totpdevice",
+            options={"verbose_name": "TOTP device", "verbose_name_plural": "TOTP devices"},
+        ),
     ]

@@ -11,6 +11,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
+from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device, ThrottlingMixin
 
 
@@ -52,7 +53,7 @@ class AuthenticatorStaticStage(ConfigurableStage, FriendlyNamedStage, Stage):
         verbose_name_plural = _("Static Authenticator Stages")
 
 
-class StaticDevice(ThrottlingMixin, Device):
+class StaticDevice(SerializerModel, ThrottlingMixin, Device):
     """
     A static :class:`~authentik.stages.authenticator.models.Device` simply consists of random
     tokens shared by the database and the user.
@@ -70,6 +71,12 @@ class StaticDevice(ThrottlingMixin, Device):
 
     """
 
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.stages.authenticator_static.api import StaticDeviceSerializer
+
+        return StaticDeviceSerializer
+
     def get_throttle_factor(self):
         return getattr(settings, "OTP_STATIC_THROTTLE_FACTOR", 1)
 
@@ -86,6 +93,10 @@ class StaticDevice(ThrottlingMixin, Device):
             match = None
 
         return match is not None
+
+    class Meta(Device.Meta):
+        verbose_name = _("Static device")
+        verbose_name_plural = _("Static devices")
 
 
 class StaticToken(models.Model):

@@ -13,6 +13,7 @@ from rest_framework.serializers import BaseSerializer
 
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
+from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device, ThrottlingMixin
 from authentik.stages.authenticator.oath import TOTP
 from authentik.stages.authenticator.util import hex_validator, random_hex
@@ -72,7 +73,7 @@ def key_validator(value):
     return hex_validator()(value)
 
 
-class TOTPDevice(ThrottlingMixin, Device):
+class TOTPDevice(SerializerModel, ThrottlingMixin, Device):
     """
     A generic TOTP :class:`~authentik.stages.authenticator.models.Device`. The model fields mostly
     correspond to the arguments to :func:`authentik.stages.authenticator.oath.totp`. They all have
@@ -150,8 +151,11 @@ class TOTPDevice(ThrottlingMixin, Device):
         ),
     )
 
-    class Meta(Device.Meta):
-        verbose_name = "TOTP device"
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.stages.authenticator_totp.api import TOTPDeviceSerializer
+
+        return TOTPDeviceSerializer
 
     @property
     def bin_key(self):
@@ -235,3 +239,7 @@ class TOTPDevice(ThrottlingMixin, Device):
         if isinstance(val, str) and (val != ""):
             return val
         return None
+
+    class Meta(Device.Meta):
+        verbose_name = _("TOTP device")
+        verbose_name_plural = _("TOTP devices")

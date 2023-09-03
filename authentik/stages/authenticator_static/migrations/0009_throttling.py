@@ -26,4 +26,8 @@ class Migration(migrations.Migration):
                 null=True,
             ),
         ),
+        migrations.AlterModelOptions(
+            name="staticdevice",
+            options={"verbose_name": "Static device", "verbose_name_plural": "Static devices"},
+        ),
     ]
