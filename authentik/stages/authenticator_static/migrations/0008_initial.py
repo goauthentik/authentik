@@ -4,6 +4,10 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
+        (
+            "authentik_stages_authenticator_static",
+            "0007_authenticatorstaticstage_token_length_and_more",
+        ),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -55,7 +59,7 @@ class Migration(migrations.Migration):
                     "device",
                     models.ForeignKey(
                         related_name="token_set",
-                        to="otp_static.StaticDevice",
+                        to="authentik_stages_authenticator_static.staticdevice",
                         on_delete=models.CASCADE,
                     ),
                 ),

@@ -5,6 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
+        ("authentik_stages_authenticator_totp", "0007_authenticatortotpstage_friendly_name"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 

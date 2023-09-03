@@ -5,7 +5,7 @@ from django.db import migrations, models
 
 class Migration(migrations.Migration):
     dependencies = [
-        ("otp_static", "0001_initial"),
+        ("authentik_stages_authenticator_static", "0008_initial"),
     ]
 
     operations = [
