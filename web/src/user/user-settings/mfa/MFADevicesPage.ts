@@ -24,9 +24,9 @@ export function stageToAuthenticatorName(stage: UserSetting): string {
 
 export function deviceTypeName(device: Device): string {
     switch (device.type) {
-        case "otp_static.StaticDevice":
+        case "authentik_stages_authenticator_static.StaticDevice":
             return msg("Static tokens");
-        case "otp_totp.TOTPDevice":
+        case "authentik_stages_authenticator_totp.TOTPDevice":
             return msg("TOTP Device");
         default:
             return device.verboseName;
@@ -102,11 +102,11 @@ export class MFADevicesPage extends Table<Device> {
                 return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsSmsDestroy({
                     id: device.pk,
                 });
-            case "otp_totp.TOTPDevice":
+            case "authentik_stages_authenticator_totp.TOTPDevice":
                 return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpDestroy({
                     id: device.pk,
                 });
-            case "otp_static.StaticDevice":
+            case "authentik_stages_authenticator_static.StaticDevice":
                 return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsStaticDestroy({
                     id: device.pk,
                 });
