@@ -2,7 +2,6 @@
 from time import time
 from urllib.parse import parse_qs, urlsplit
 
-from django.db import IntegrityError
 from django.test.utils import override_settings
 from django.urls import reverse
 from rest_framework.test import APITestCase
@@ -46,23 +45,20 @@ class TOTPDeviceMixin:
         784503,
     ]
 
+    # pylint: disable=invalid-name
     def setUp(self):
         """
         Create a device at the fourth time step. The current token is 154567.
         """
-        try:
-            self.alice = create_test_admin_user("alice", email="alice@example.com")
-        except IntegrityError:
-            self.skipTest("Unable to create the test user.")
-        else:
-            self.device = self.alice.totpdevice_set.create(
-                key="2a2bbba1092ffdd25a328ad1a0a5f5d61d7aacc4",
-                step=30,
-                t0=int(time() - (30 * 3)),
-                digits=6,
-                tolerance=0,
-                drift=0,
-            )
+        self.alice = create_test_admin_user("alice", email="alice@example.com")
+        self.device = self.alice.totpdevice_set.create(
+            key="2a2bbba1092ffdd25a328ad1a0a5f5d61d7aacc4",
+            step=30,
+            t0=int(time() - (30 * 3)),
+            digits=6,
+            tolerance=0,
+            drift=0,
+        )
 
 
 @override_settings(
@@ -70,24 +66,30 @@ class TOTPDeviceMixin:
     OTP_TOTP_THROTTLE_FACTOR=0,
 )
 class TOTPTest(TOTPDeviceMixin, TestCase):
+    """TOTP tests"""
+
     def test_default_key(self):
+        """Ensure default_key is valid"""
         device = self.alice.totpdevice_set.create()
 
         # Make sure we can decode the key.
-        device.bin_key
+        _ = device.bin_key
 
     def test_single(self):
+        """Test single token"""
         results = [self.device.verify_token(token) for token in self.tokens]
 
         self.assertEqual(results, [False] * 3 + [True] + [False] * 6)
 
     def test_tolerance(self):
+        """Test tolerance"""
         self.device.tolerance = 1
         results = [self.device.verify_token(token) for token in self.tokens]
 
         self.assertEqual(results, [False] * 2 + [True] * 3 + [False] * 5)
 
     def test_drift(self):
+        """Test drift"""
         self.device.tolerance = 1
         self.device.drift = -1
         results = [self.device.verify_token(token) for token in self.tokens]
@@ -95,14 +97,16 @@ class TOTPTest(TOTPDeviceMixin, TestCase):
         self.assertEqual(results, [False] * 1 + [True] * 3 + [False] * 6)
 
     def test_sync_drift(self):
+        """Test sync drift"""
         self.device.tolerance = 2
         with self.settings(OTP_TOTP_SYNC=True):
-            ok = self.device.verify_token(self.tokens[5])
+            valid = self.device.verify_token(self.tokens[5])
 
-        self.assertTrue(ok)
+        self.assertTrue(valid)
         self.assertEqual(self.device.drift, 2)
 
     def test_no_reuse(self):
+        """Test reuse"""
         verified1 = self.device.verify_token(self.tokens[3])
         verified2 = self.device.verify_token(self.tokens[3])
 
@@ -111,6 +115,7 @@ class TOTPTest(TOTPDeviceMixin, TestCase):
         self.assertFalse(verified2)
 
     def test_config_url(self):
+        """Test config_url"""
         with override_settings(OTP_TOTP_ISSUER=None):
             url = self.device.config_url
 
@@ -124,6 +129,7 @@ class TOTPTest(TOTPDeviceMixin, TestCase):
         self.assertNotIn("issuer", params)
 
     def test_config_url_issuer(self):
+        """Test config_url issuer"""
         with override_settings(OTP_TOTP_ISSUER="example.com"):
             url = self.device.config_url
 
@@ -138,6 +144,7 @@ class TOTPTest(TOTPDeviceMixin, TestCase):
         self.assertEqual(params["issuer"][0], "example.com")
 
     def test_config_url_issuer_spaces(self):
+        """Test config_url issuer with spaces"""
         with override_settings(OTP_TOTP_ISSUER="Very Trustworthy Source"):
             url = self.device.config_url
 
@@ -152,6 +159,7 @@ class TOTPTest(TOTPDeviceMixin, TestCase):
         self.assertEqual(params["issuer"][0], "Very Trustworthy Source")
 
     def test_config_url_issuer_method(self):
+        """Test config_url issuer method"""
         with override_settings(OTP_TOTP_ISSUER=lambda d: d.user.email):
             url = self.device.config_url
 
@@ -166,6 +174,7 @@ class TOTPTest(TOTPDeviceMixin, TestCase):
         self.assertEqual(params["issuer"][0], "alice@example.com")
 
     def test_config_url_image(self):
+        """Test config_url with image"""
         image_url = "https://test.invalid/square.png"
 
         with override_settings(OTP_TOTP_ISSUER=None, OTP_TOTP_IMAGE=image_url):
@@ -185,6 +194,8 @@ class TOTPTest(TOTPDeviceMixin, TestCase):
     OTP_TOTP_THROTTLE_FACTOR=1,
 )
 class ThrottlingTestCase(TOTPDeviceMixin, ThrottlingTestMixin, TestCase):
+    """Test TOTP Throttling"""
+
     def valid_token(self):
         return self.tokens[3]
 
