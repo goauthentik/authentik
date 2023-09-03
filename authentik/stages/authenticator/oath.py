@@ -1,10 +1,12 @@
+"""OATH helpers"""
 import hmac
 from hashlib import sha1
 from struct import pack
 from time import time
 
 
-def hotp(key, counter, digits=6):
+# pylint: disable=invalid-name
+def hotp(key: bytes, counter: int, digits=6) -> int:
     """
     Implementation of the HOTP algorithm from `RFC 4226
     <http://tools.ietf.org/html/rfc4226#section-5>`_.
@@ -38,12 +40,10 @@ def hotp(key, counter, digits=6):
     bin_code = (
         (hs[offset] & 0x7F) << 24 | hs[offset + 1] << 16 | hs[offset + 2] << 8 | hs[offset + 3]
     )
-    hotp = bin_code % pow(10, digits)
-
-    return hotp
+    return bin_code % pow(10, digits)
 
 
-def totp(key, step=30, t0=0, digits=6, drift=0):
+def totp(key: bytes, step=30, t0=0, digits=6, drift=0) -> int:
     """
     Implementation of the TOTP algorithm from `RFC 6238
     <http://tools.ietf.org/html/rfc6238#section-4>`_.
@@ -128,7 +128,8 @@ class TOTP:
     359152
     """
 
-    def __init__(self, key, step=30, t0=0, digits=6, drift=0):
+    # pylint: disable=too-many-arguments
+    def __init__(self, key: bytes, step=30, t0=0, digits=6, drift=0):
         self.key = key
         self.step = step
         self.t0 = t0
@@ -189,7 +190,7 @@ class TOTP:
             self.drift = drift_orig + offset
             if (min_t is not None) and (self.t() < min_t):
                 continue
-            elif self.token() == token:
+            if self.token() == token:
                 verified = True
                 break
         else:

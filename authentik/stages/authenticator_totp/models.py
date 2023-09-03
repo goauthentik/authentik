@@ -161,7 +161,7 @@ class TOTPDevice(ThrottlingMixin, Device):
         return unhexlify(self.key.encode())
 
     def verify_token(self, token):
-        OTP_TOTP_SYNC = getattr(settings, "OTP_TOTP_SYNC", True)
+        otp_totp_sync = getattr(settings, "OTP_TOTP_SYNC", True)
 
         verify_allowed, _ = self.verify_is_allowed()
         if not verify_allowed:
@@ -169,7 +169,7 @@ class TOTPDevice(ThrottlingMixin, Device):
 
         try:
             token = int(token)
-        except Exception:
+        except ValueError:
             verified = False
         else:
             key = self.bin_key
@@ -180,7 +180,7 @@ class TOTPDevice(ThrottlingMixin, Device):
             verified = totp.verify(token, self.tolerance, self.last_t + 1)
             if verified:
                 self.last_t = totp.t()
-                if OTP_TOTP_SYNC:
+                if otp_totp_sync:
                     self.drift = totp.drift
                 self.throttle_reset(commit=False)
                 self.save()
@@ -203,7 +203,7 @@ class TOTPDevice(ThrottlingMixin, Device):
         The image (for e.g. FreeOTP) is taken from :setting:`OTP_TOTP_IMAGE`, if available.
 
         """
-        label = str(self.user.get_username())
+        label = str(self.user.username)
         params = {
             "secret": b32encode(self.bin_key),
             "algorithm": "SHA1",

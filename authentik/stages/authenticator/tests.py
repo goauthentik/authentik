@@ -1,18 +1,18 @@
+"""Base authenticator tests"""
 from datetime import timedelta
 from threading import Thread
 
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
-from django.db import IntegrityError, connection
-from django.test import TestCase as DjangoTestCase
-from django.test import TransactionTestCase as DjangoTransactionTestCase
-from django.test import skipUnlessDBFeature
+from django.db import connection
+from django.test import TestCase, TransactionTestCase
 from django.test.utils import override_settings
 from django.utils import timezone
 from freezegun import freeze_time
 
+from authentik.core.tests.utils import create_test_admin_user
+from authentik.lib.generators import generate_id
 from authentik.stages.authenticator import match_token, user_has_device, verify_token
-from authentik.stages.authenticator.models import VerifyNotAllowed
+from authentik.stages.authenticator.models import Device, VerifyNotAllowed
 
 
 class TestThread(Thread):
@@ -21,36 +21,6 @@ class TestThread(Thread):
     def run(self):
         super().run()
         connection.close()
-
-
-class OTPTestCaseMixin:
-    """
-    Utilities for dealing with custom user models.
-    """
-
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-
-        cls.User = get_user_model()
-        cls.USERNAME_FIELD = cls.User.USERNAME_FIELD
-
-    def create_user(self, username, password, **kwargs):
-        """
-        Try to create a user, honoring the custom user model, if any.
-
-        This may raise an exception if the user model is too exotic for our
-        purposes.
-        """
-        return self.User.objects.create_user(username, password=password, **kwargs)
-
-
-class TestCase(OTPTestCaseMixin, DjangoTestCase):
-    pass
-
-
-class TransactionTestCase(OTPTestCaseMixin, DjangoTransactionTestCase):
-    pass
 
 
 class ThrottlingTestMixin:
@@ -66,8 +36,7 @@ class ThrottlingTestMixin:
 
     """
 
-    def setUp(self):
-        self.device = None
+    device: Device
 
     def valid_token(self):
         """Returns a valid token to pass to our device under test."""
@@ -82,12 +51,14 @@ class ThrottlingTestMixin:
     #
 
     def test_delay_imposed_after_fail(self):
+        """Test delay imposed after fail"""
         verified1 = self.device.verify_token(self.invalid_token())
         self.assertFalse(verified1)
         verified2 = self.device.verify_token(self.valid_token())
         self.assertFalse(verified2)
 
     def test_delay_after_fail_expires(self):
+        """Test delay after fail expires"""
         verified1 = self.device.verify_token(self.invalid_token())
         self.assertFalse(verified1)
         with freeze_time() as frozen_time:
@@ -97,8 +68,9 @@ class ThrottlingTestMixin:
             self.assertTrue(verified2)
 
     def test_throttling_failure_count(self):
+        """Test throttling failure count"""
         self.assertEqual(self.device.throttling_failure_count, 0)
-        for i in range(0, 5):
+        for _ in range(0, 5):
             self.device.verify_token(self.invalid_token())
             # Only the first attempt will increase throttling_failure_count,
             # the others will all be within 1 second of first
@@ -106,6 +78,7 @@ class ThrottlingTestMixin:
             self.assertEqual(self.device.throttling_failure_count, 1)
 
     def test_verify_is_allowed(self):
+        """Test verify allowed"""
         # Initially should be allowed
         verify_is_allowed1, data1 = self.device.verify_is_allowed()
         self.assertEqual(verify_is_allowed1, True)
@@ -137,17 +110,17 @@ class ThrottlingTestMixin:
 
 @override_settings(OTP_STATIC_THROTTLE_FACTOR=0)
 class APITestCase(TestCase):
+    """Test API"""
+
     def setUp(self):
-        try:
-            self.alice = self.create_user("alice", "password")
-            self.bob = self.create_user("bob", "password")
-        except IntegrityError:
-            self.skipTest("Unable to create a test user.")
-        else:
-            device = self.alice.staticdevice_set.create()
-            device.token_set.create(token="alice")
+        self.alice = create_test_admin_user("alice")
+        self.bob = create_test_admin_user("bob")
+        device = self.alice.staticdevice_set.create()
+        self.test_token = generate_id()
+        device.token_set.create(token=self.test_token)
 
     def test_user_has_device(self):
+        """Test user_has_device"""
         with self.subTest(user="anonymous"):
             self.assertFalse(user_has_device(AnonymousUser()))
         with self.subTest(user="alice"):
@@ -156,6 +129,7 @@ class APITestCase(TestCase):
             self.assertFalse(user_has_device(self.bob))
 
     def test_verify_token(self):
+        """Test verify_token"""
         device = self.alice.staticdevice_set.first()
 
         verified = verify_token(self.alice, device.persistent_id, "bogus")
@@ -165,29 +139,32 @@ class APITestCase(TestCase):
         self.assertIsNotNone(verified)
 
     def test_match_token(self):
+        """Test match_token"""
         verified = match_token(self.alice, "bogus")
         self.assertIsNone(verified)
 
-        verified = match_token(self.alice, "alice")
+        verified = match_token(self.alice, self.test_token)
         self.assertEqual(verified, self.alice.staticdevice_set.first())
 
 
-@skipUnlessDBFeature("has_select_for_update")
 @override_settings(OTP_STATIC_THROTTLE_FACTOR=0)
 class ConcurrencyTestCase(TransactionTestCase):
+    """Test concurrent verifications"""
+
     def setUp(self):
-        try:
-            self.alice = self.create_user("alice", "password")
-            self.bob = self.create_user("bob", "password")
-        except IntegrityError:
-            self.skipTest("Unable to create a test user.")
-        else:
-            for user in [self.alice, self.bob]:
-                device = user.staticdevice_set.create()
-                device.token_set.create(token="valid")
+        self.alice = create_test_admin_user("alice")
+        self.bob = create_test_admin_user("bob")
+        self.valid = generate_id()
+        for user in [self.alice, self.bob]:
+            device = user.staticdevice_set.create()
+            device.token_set.create(token=self.valid)
 
     def test_verify_token(self):
+        """Test verify_token in a thread"""
+
         class VerifyThread(Thread):
+            """Verifier thread"""
+
             def __init__(self, user, device_id, token):
                 super().__init__()
 
@@ -202,7 +179,7 @@ class ConcurrencyTestCase(TransactionTestCase):
                 connection.close()
 
         device = self.alice.staticdevice_set.get()
-        threads = [VerifyThread(device.user, device.persistent_id, "valid") for _ in range(10)]
+        threads = [VerifyThread(device.user, device.persistent_id, self.valid) for _ in range(10)]
         for thread in threads:
             thread.start()
         for thread in threads:
@@ -211,7 +188,11 @@ class ConcurrencyTestCase(TransactionTestCase):
         self.assertEqual(sum(1 for t in threads if t.verified is not None), 1)
 
     def test_match_token(self):
+        """Test match_token in a thread"""
+
         class VerifyThread(Thread):
+            """Verifier thread"""
+
             def __init__(self, user, token):
                 super().__init__()
 
@@ -224,7 +205,7 @@ class ConcurrencyTestCase(TransactionTestCase):
                 self.verified = match_token(self.user, self.token)
                 connection.close()
 
-        threads = [VerifyThread(self.alice, "valid") for _ in range(10)]
+        threads = [VerifyThread(self.alice, self.valid) for _ in range(10)]
         for thread in threads:
             thread.start()
         for thread in threads:

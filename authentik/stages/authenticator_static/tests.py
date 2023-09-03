@@ -1,10 +1,11 @@
 """Test Static API"""
-from django.db import IntegrityError
 from django.test.utils import override_settings
 from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
+from authentik.lib.generators import generate_id
 from authentik.stages.authenticator.tests import TestCase, ThrottlingTestMixin
 from authentik.stages.authenticator_static.models import StaticDevice
 
@@ -28,7 +29,7 @@ class DeviceTest(TestCase):
 
     def setUp(self):
         try:
-            self.user = self.create_user("alice", "password")
+            self.user = create_test_admin_user("alice")
         except Exception:
             self.skipTest("Unable to create the test user.")
 
@@ -48,15 +49,11 @@ class DeviceTest(TestCase):
 )
 class ThrottlingTestCase(ThrottlingTestMixin, TestCase):
     def setUp(self):
-        try:
-            user = self.create_user("alice", "password")
-        except IntegrityError:
-            self.skipTest("Unable to create a test user.")
-        else:
-            self.device = user.staticdevice_set.create()
-            self.device.token_set.create(token="valid1")
-            self.device.token_set.create(token="valid2")
-            self.device.token_set.create(token="valid3")
+        user = create_test_admin_user("alice")
+        self.device = user.staticdevice_set.create()
+        self.device.token_set.create(token=generate_id())
+        self.device.token_set.create(token=generate_id())
+        self.device.token_set.create(token=generate_id())
 
     def valid_token(self):
         return self.device.token_set.first().token

@@ -1,42 +1,5 @@
-from django.contrib.auth.signals import user_logged_in
+"""Authenticator devices helpers"""
 from django.db import transaction
-
-DEVICE_ID_SESSION_KEY = "otp_device_id"
-
-
-def login(request, device):
-    """
-    Persist the given OTP device in the current session. The device will be
-    rejected if it does not belong to ``request.user``.
-
-    This is called automatically any time :func:`django.contrib.auth.login` is
-    called with a user having an ``otp_device`` attribute. If you use Django's
-    :class:`~django.contrib.auth.views.LoginView` view with the django-otp
-    authentication forms, then you won't need to call this.
-
-    :param request: The HTTP request
-    :type request: :class:`~django.http.HttpRequest`
-
-    :param device: The OTP device used to verify the user.
-    :type device: :class:`~django_otp.models.Device`
-    """
-    user = getattr(request, "user", None)
-
-    if (user is not None) and (device is not None) and (device.user_id == user.pk):
-        request.session[DEVICE_ID_SESSION_KEY] = device.persistent_id
-        request.user.otp_device = device
-
-
-def _handle_auth_login(sender, request, user, **kwargs):
-    """
-    Automatically persists an OTP device that was set by an OTP-aware
-    AuthenticationForm.
-    """
-    if hasattr(user, "otp_device"):
-        login(request, user.otp_device)
-
-
-user_logged_in.connect(_handle_auth_login)
 
 
 def verify_token(user, device_id, token):

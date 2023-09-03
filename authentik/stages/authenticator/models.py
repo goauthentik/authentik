@@ -1,12 +1,13 @@
+"""Base authenticator models"""
 from datetime import timedelta
 
 from django.apps import apps
-from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.utils import timezone
 from django.utils.functional import cached_property
 
+from authentik.core.models import User
 from authentik.stages.authenticator.util import random_number_token
 
 
@@ -74,7 +75,7 @@ class Device(models.Model):
     """
 
     user = models.ForeignKey(
-        getattr(settings, "AUTH_USER_MODEL", "auth.User"),
+        User,
         help_text="The user that this device belongs to.",
         on_delete=models.CASCADE,
     )
@@ -264,8 +265,7 @@ class SideChannelDevice(Device):
             self.save()
 
             return True
-        else:
-            return False
+        return False
 
 
 class VerifyNotAllowed:
@@ -378,7 +378,8 @@ class ThrottlingMixin(models.Model):
             self.save()
 
     @cached_property
-    def throttling_enabled(self):
+    def throttling_enabled(self) -> bool:
+        """Check if throttling is enabled"""
         return self.get_throttle_factor() > 0
 
     def get_throttle_factor(self):  # pragma: no cover

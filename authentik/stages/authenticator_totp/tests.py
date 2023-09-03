@@ -8,6 +8,7 @@ from django.urls import reverse
 from rest_framework.test import APITestCase
 
 from authentik.core.models import User
+from authentik.core.tests.utils import create_test_admin_user
 from authentik.stages.authenticator.tests import TestCase, ThrottlingTestMixin
 from authentik.stages.authenticator_totp.models import TOTPDevice
 
@@ -50,7 +51,7 @@ class TOTPDeviceMixin:
         Create a device at the fourth time step. The current token is 154567.
         """
         try:
-            self.alice = self.create_user("alice", "password", email="alice@example.com")
+            self.alice = create_test_admin_user("alice", email="alice@example.com")
         except IntegrityError:
             self.skipTest("Unable to create the test user.")
         else:
