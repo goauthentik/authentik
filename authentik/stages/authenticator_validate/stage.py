@@ -29,6 +29,7 @@ from authentik.stages.authenticator_validate.challenge import (
     select_challenge,
     validate_challenge_code,
     validate_challenge_duo,
+    validate_challenge_mobile,
     validate_challenge_webauthn,
 )
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
@@ -70,6 +71,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     code = CharField(required=False)
     webauthn = JSONDictField(required=False)
     duo = IntegerField(required=False)
+    mobile = CharField(required=False)
     component = CharField(default="ak-stage-authenticator-validate")
 
     def _challenge_allowed(self, classes: list):
@@ -99,6 +101,12 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
         self._challenge_allowed([DeviceClasses.DUO])
         self.device = validate_challenge_duo(duo, self.stage, self.stage.get_pending_user())
         return duo
+
+    def validate_mobile(self, mobile: str) -> str:
+        """Initiate mobile authentication"""
+        self._challenge_allowed([DeviceClasses.MOBILE])
+        self.device = validate_challenge_mobile(mobile, self.stage, self.stage.get_pending_user())
+        return mobile
 
     def validate_selected_challenge(self, challenge: dict) -> dict:
         """Check which challenge the user has selected. Actual logic only used for SMS stage."""
@@ -134,7 +142,7 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     def validate(self, attrs: dict):
         # Checking if the given data is from a valid device class is done above
         # Here we only check if the any data was sent at all
-        if "code" not in attrs and "webauthn" not in attrs and "duo" not in attrs:
+        if "code" not in attrs and "webauthn" not in attrs and "duo" not in attrs and "mobile" not in attrs:
             raise ValidationError("Empty response")
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "auth_mfa")
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})

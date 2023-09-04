@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageCode";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageDuo";
+import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageMobile";
 import "@goauthentik/flow/stages/authenticator_validate/AuthenticatorValidateStageWebAuthn";
 import { BaseStage, StageHost } from "@goauthentik/flow/stages/base";
 import { PasswordManagerPrefill } from "@goauthentik/flow/stages/identification/IdentificationStage";
@@ -115,6 +116,12 @@ export class AuthenticatorValidateStage
                         <p>${msg("Duo push-notifications")}</p>
                         <small>${msg("Receive a push notification on your device.")}</small>
                     </div>`;
+            case DeviceClassesEnum.Mobile:
+                return html`<i class="fas fa-mobile-alt"></i>
+                    <div class="right">
+                        <p>${msg("Push-notifications")}</p>
+                        <small>${msg("Receive a push notification on your device.")}</small>
+                    </div>`;
             case DeviceClassesEnum.Webauthn:
                 return html`<i class="fas fa-mobile-alt"></i>
                     <div class="right">
@@ -218,6 +225,14 @@ export class AuthenticatorValidateStage
                     .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
                 >
                 </ak-stage-authenticator-validate-duo>`;
+            case DeviceClassesEnum.Mobile:
+                return html` <ak-stage-authenticator-validate-mobile
+                    .host=${this}
+                    .challenge=${this.challenge}
+                    .deviceChallenge=${this.selectedDeviceChallenge}
+                    .showBackButton=${(this.challenge?.deviceChallenges || []).length > 1}
+                >
+                </ak-stage-authenticator-validate-mobile>`;
         }
         return html``;
     }

@@ -26,6 +26,7 @@ from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
+from authentik.stages.authenticator_mobile.models import MobileDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
@@ -174,6 +175,45 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
 
     device.set_sign_count(authentication_verification.new_sign_count)
     return device
+
+
+def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User) -> Device:
+    device: MobileDevice = get_object_or_404(MobileDevice, pk=device_pk)
+    if device.user != user:
+        LOGGER.warning("device mismatch")
+        raise Http404
+
+    # Get additional context for push
+    push_context = {
+        __("Domain"): stage_view.request.get_host(),
+    }
+    if SESSION_KEY_APPLICATION_PRE in stage_view.request.session:
+        push_context[__("Application")] = stage_view.request.session.get(
+            SESSION_KEY_APPLICATION_PRE, Application()
+        ).name
+
+    try:
+        response = device.send_message(**push_context)
+        # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
+        if response["result"] == "deny":
+            LOGGER.debug("mobile push response", result=response)
+            login_failed.send(
+                sender=__name__,
+                credentials={"username": user.username},
+                request=stage_view.request,
+                stage=stage_view.executor.current_stage,
+                device_class=DeviceClasses.MOBILE.value,
+                mobile_response=response,
+            )
+            raise ValidationError("Mobile denied access", code="denied")
+        return device
+    except RuntimeError as exc:
+        Event.new(
+            EventAction.CONFIGURATION_ERROR,
+            message=f"Failed to Mobile authenticate user: {str(exc)}",
+            user=user,
+        ).from_http(stage_view.request, user)
+        raise ValidationError("Mobile denied access", code="denied")
 
 
 def validate_challenge_duo(device_pk: int, stage_view: StageView, user: User) -> Device:
