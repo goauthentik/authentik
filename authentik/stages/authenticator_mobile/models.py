@@ -106,11 +106,19 @@ class MobileDevice(SerializerModel, Device):
         verbose_name_plural = _("Mobile Devices")
 
 
+class TransactionStates(models.TextChoices):
+    wait = "wait"
+    accept = "accept"
+    deny = "deny"
+
+
 class MobileTransaction(ExpiringModel):
     """A single push transaction"""
 
     tx_id = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey(MobileDevice, on_delete=models.CASCADE)
+
+    status = models.TextField(choices=TransactionStates.choices, default=TransactionStates.wait)
 
     def send_message(self, request: Optional[HttpRequest], **context):
         """Send mobile message"""
@@ -120,6 +128,9 @@ class MobileTransaction(ExpiringModel):
             branding = request.tenant.branding_title
             domain = request.get_host()
         message = Message(
+            data={
+                "tx_id": str(self.tx_id),
+            },
             notification=Notification(
                 title=__("%(brand)s authentication request" % {"brand": branding}),
                 body=__(
@@ -144,7 +155,6 @@ class MobileTransaction(ExpiringModel):
                         category="cat_authentik_push_authorization",
                     ),
                     interruption_level="time-sensitive",
-                    tx_id=str(self.tx_id),
                 ),
             ),
             token=self.device.firebase_token,
