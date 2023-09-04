@@ -31,6 +31,7 @@ def default_device_classes() -> list:
         DeviceClasses.WEBAUTHN,
         DeviceClasses.DUO,
         DeviceClasses.SMS,
+        DeviceClasses.MOBILE,
     ]
 
 
