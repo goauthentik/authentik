@@ -34352,7 +34352,7 @@ components:
       properties:
         tx_id:
           type: string
-          minLength: 1
+          format: uuid
         status:
           $ref: '#/components/schemas/MobileDeviceResponseStatusEnum'
       required:

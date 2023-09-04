@@ -26,7 +26,11 @@ from authentik.root.middleware import ClientIPMiddleware
 from authentik.stages.authenticator import match_token
 from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
-from authentik.stages.authenticator_mobile.models import MobileDevice, MobileTransaction
+from authentik.stages.authenticator_mobile.models import (
+    MobileDevice,
+    MobileTransaction,
+    TransactionStates,
+)
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
 from authentik.stages.authenticator_webauthn.models import UserVerification, WebAuthnDevice
@@ -194,20 +198,22 @@ def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User)
 
     try:
         tx = MobileTransaction.objects.create(device=device)
-        response = tx.send_message(stage_view.request, **push_context)
-        # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
-        if not response:
-            LOGGER.debug("mobile push response", result=response)
+        tx.send_message(stage_view.request, **push_context)
+        status = tx.wait_for_response()
+        if status == TransactionStates.deny:
+            LOGGER.debug("mobile push response", result=status)
             login_failed.send(
                 sender=__name__,
                 credentials={"username": user.username},
                 request=stage_view.request,
                 stage=stage_view.executor.current_stage,
                 device_class=DeviceClasses.MOBILE.value,
-                mobile_response=response,
+                mobile_response=status,
             )
             raise ValidationError("Mobile denied access", code="denied")
         return device
+    except TimeoutError:
+        raise ValidationError("Mobile push notification timed out.")
     except RuntimeError as exc:
         Event.new(
             EventAction.CONFIGURATION_ERROR,

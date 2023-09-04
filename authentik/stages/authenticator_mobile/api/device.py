@@ -4,7 +4,7 @@ from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ChoiceField
+from rest_framework.fields import CharField, ChoiceField, UUIDField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -70,7 +70,7 @@ class MobileDeviceSetPushKeySerializer(PassiveSerializer):
 class MobileDeviceResponseSerializer(PassiveSerializer):
     """Response from push sent to phone"""
 
-    tx_id = CharField(required=True)
+    tx_id = UUIDField(required=True)
     status = ChoiceField(
         TransactionStates.choices,
         required=True,
@@ -205,11 +205,12 @@ class MobileDeviceViewSet(
     def receive_response(self, request: Request, pk: str) -> Response:
         """Get response from notification on phone"""
         data = MobileDeviceResponseSerializer(data=request.data)
-        data.is_valid()
+        data.is_valid(raise_exception=True)
         transaction = MobileTransaction.objects.filter(tx_id=data.validated_data["tx_id"]).first()
         if not transaction:
             raise Http404
         transaction.status = data.validated_data["status"]
+        transaction.save()
         return Response(status=204)
 
 
