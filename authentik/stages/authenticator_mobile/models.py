@@ -1,4 +1,5 @@
 """Mobile authenticator stage"""
+from time import sleep
 from typing import Optional
 from uuid import uuid4
 
@@ -128,9 +129,6 @@ class MobileTransaction(ExpiringModel):
             branding = request.tenant.branding_title
             domain = request.get_host()
         message = Message(
-            data={
-                "tx_id": str(self.tx_id),
-            },
             notification=Notification(
                 title=__("%(brand)s authentication request" % {"brand": branding}),
                 body=__(
@@ -155,6 +153,7 @@ class MobileTransaction(ExpiringModel):
                         category="cat_authentik_push_authorization",
                     ),
                     interruption_level="time-sensitive",
+                    tx_id=str(self.tx_id),
                 ),
             ),
             token=self.device.firebase_token,
@@ -165,6 +164,20 @@ class MobileTransaction(ExpiringModel):
         except (ValueError, FirebaseError) as exc:
             LOGGER.warning("failed to push", exc=exc)
         return True
+
+    def wait_for_response(self, max_checks=30) -> TransactionStates:
+        """Wait for a change in status"""
+        checks = 0
+        while True:
+            self.refresh_from_db()
+            if self.status in [TransactionStates.accept, TransactionStates.deny]:
+                self.delete()
+                return self.status
+            checks += 1
+            if checks > max_checks:
+                self.delete()
+                raise TimeoutError()
+            sleep(1)
 
 
 class MobileDeviceToken(ExpiringModel):
