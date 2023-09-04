@@ -1,3 +1,4 @@
+import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
 import "@goauthentik/flow/FormStatic";
@@ -18,6 +19,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     AuthenticatorMobileChallenge,
     AuthenticatorMobileChallengeResponseRequest,
+    AuthenticatorsApi,
+    MobileDeviceEnrollmentStatusStatusEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-stage-authenticator-mobile")
@@ -41,6 +44,33 @@ export class AuthenticatorMobileStage extends BaseStage<
                 }
             `,
         ];
+    }
+
+    firstUpdated(): void {
+        const i = setInterval(() => {
+            this.checkEnrollStatus().then((shouldStop) => {
+                if (shouldStop) {
+                    clearInterval(i);
+                }
+            });
+        }, 3000);
+    }
+
+    async checkEnrollStatus(): Promise<boolean> {
+        const status = await new AuthenticatorsApi(
+            DEFAULT_CONFIG,
+        ).authenticatorsMobileEnrollmentStatusCreate({
+            uuid: this.challenge?.payload.s || "",
+        });
+        console.debug(`authentik/stages/authenticator_mobile: Enrollment status: ${status.status}`);
+        switch (status.status) {
+            case MobileDeviceEnrollmentStatusStatusEnum.Success:
+                this.host?.submit({});
+                return true;
+            case MobileDeviceEnrollmentStatusStatusEnum.Waiting:
+                break;
+        }
+        return false;
     }
 
     render(): TemplateResult {
