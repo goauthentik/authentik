@@ -1,5 +1,5 @@
 """AuthenticatorMobileStage API Views"""
-from django.utils.translation import gettext_lazy as _
+from django.http import Http404
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import mixins
@@ -16,7 +16,12 @@ from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer
 from authentik.stages.authenticator_mobile.api.auth import MobileDeviceTokenAuthentication
-from authentik.stages.authenticator_mobile.models import MobileDevice, MobileDeviceToken
+from authentik.stages.authenticator_mobile.models import (
+    MobileDevice,
+    MobileDeviceToken,
+    MobileTransaction,
+    TransactionStates,
+)
 
 
 class MobileDeviceSerializer(ModelSerializer):
@@ -66,16 +71,7 @@ class MobileDeviceResponseSerializer(PassiveSerializer):
 
     tx_id = CharField(required=True)
     status = ChoiceField(
-        (
-            (
-                "accept",
-                _("Accept"),
-            ),
-            (
-                "deny",
-                _("Deny"),
-            ),
-        ),
+        TransactionStates.choices,
         required=True,
     )
 
@@ -193,6 +189,7 @@ class MobileDeviceViewSet(
     @extend_schema(
         responses={
             204: OpenApiResponse(description="Key successfully set"),
+            404: OpenApiResponse(description="Transaction not found"),
         },
         request=MobileDeviceResponseSerializer,
     )
@@ -205,7 +202,12 @@ class MobileDeviceViewSet(
     )
     def receive_response(self, request: Request, pk: str) -> Response:
         """Get response from notification on phone"""
-        print(request.data)
+        data = MobileDeviceResponseSerializer(data=request.data)
+        data.is_valid()
+        transaction = MobileTransaction.objects.filter(tx_id=data.validated_data["tx_id"]).first()
+        if not transaction:
+            raise Http404
+        transaction.status = data.validated_data["status"]
         return Response(status=204)
 
 

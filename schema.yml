@@ -2266,6 +2266,8 @@ paths:
       responses:
         '204':
           description: Key successfully set
+        '404':
+          description: Transaction not found
         '400':
           content:
             application/json:
@@ -34354,10 +34356,12 @@ components:
       - tx_id
     MobileDeviceResponseStatusEnum:
       enum:
+      - wait
       - accept
       - deny
       type: string
       description: |-
+        * `wait` - Wait
         * `accept` - Accept
         * `deny` - Deny
     MobileDeviceSetPushKeyRequest:
