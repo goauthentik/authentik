@@ -125,8 +125,8 @@ class TestParserUtils(TestCase):
         """Test Redis URL parser with empty timeout arg"""
         url = urlparse("redis://myredis/0?timeout=")
         _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["socket_timeout"], 3)
-        self.assertEqual(redis_kwargs["socket_connect_timeout"], 5)
+        self.assertEqual(redis_kwargs["socket_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
 
     def test_get_redis_options_timeout_arg_invalid_format(self):
         """Test Redis URL parser with invalid format timeout arg"""

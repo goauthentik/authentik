@@ -228,8 +228,8 @@ def get_redis_options(
 
     redis_kwargs = get_credentials_from_url(redis_kwargs, url)
 
-    for name, value in parse_qs(url.query).items():
-        if value and len(value) > 0 and isinstance(name, str):
+    for name, value in parse_qs(url.query, keep_blank_values=True).items():
+        if value and isinstance(name, str):
             value_str = value[0]
             match name.lower():
                 case "addr":
