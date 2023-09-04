@@ -2259,17 +2259,13 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MobileDeviceRequest'
+              $ref: '#/components/schemas/MobileDeviceResponseRequest'
         required: true
       security:
       - mobile_device_token: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/MobileDevice'
-          description: ''
+        '204':
+          description: Key successfully set
         '400':
           content:
             application/json:
@@ -17919,6 +17915,8 @@ paths:
           - authentik_sources_saml.usersamlsourceconnection
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
+          - authentik_stages_authenticator_mobile.authenticatormobilestage
+          - authentik_stages_authenticator_mobile.mobiledevice
           - authentik_stages_authenticator_sms.authenticatorsmsstage
           - authentik_stages_authenticator_sms.smsdevice
           - authentik_stages_authenticator_static.authenticatorstaticstage
@@ -17988,6 +17986,8 @@ paths:
           * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
           * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
           * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+          * `authentik_stages_authenticator_mobile.authenticatormobilestage` - Mobile Authenticator Setup Stage
+          * `authentik_stages_authenticator_mobile.mobiledevice` - Mobile Device
           * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
           * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
           * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
@@ -18207,6 +18207,8 @@ paths:
           - authentik_sources_saml.usersamlsourceconnection
           - authentik_stages_authenticator_duo.authenticatorduostage
           - authentik_stages_authenticator_duo.duodevice
+          - authentik_stages_authenticator_mobile.authenticatormobilestage
+          - authentik_stages_authenticator_mobile.mobiledevice
           - authentik_stages_authenticator_sms.authenticatorsmsstage
           - authentik_stages_authenticator_sms.smsdevice
           - authentik_stages_authenticator_static.authenticatorstaticstage
@@ -18276,6 +18278,8 @@ paths:
           * `authentik_sources_saml.usersamlsourceconnection` - User SAML Source Connection
           * `authentik_stages_authenticator_duo.authenticatorduostage` - Duo Authenticator Setup Stage
           * `authentik_stages_authenticator_duo.duodevice` - Duo Device
+          * `authentik_stages_authenticator_mobile.authenticatormobilestage` - Mobile Authenticator Setup Stage
+          * `authentik_stages_authenticator_mobile.mobiledevice` - Mobile Device
           * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
           * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
           * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
@@ -34281,8 +34285,11 @@ components:
         device_uid:
           type: string
           minLength: 1
+        info:
+          $ref: '#/components/schemas/MobileDeviceInfoRequest'
       required:
       - device_uid
+      - info
     MobileDeviceEnrollmentStatus:
       type: object
       properties:
@@ -34298,6 +34305,22 @@ components:
       description: |-
         * `success` - Success
         * `waiting` - Waiting
+    MobileDeviceInfoRequest:
+      type: object
+      description: Info about a mobile device
+      properties:
+        platform:
+          $ref: '#/components/schemas/PlatformEnum'
+        version:
+          type: string
+          minLength: 1
+        app_version:
+          type: string
+          minLength: 1
+      required:
+      - app_version
+      - platform
+      - version
     MobileDeviceRequest:
       type: object
       description: Serializer for Mobile authenticator devices
@@ -34313,6 +34336,26 @@ components:
           maxLength: 64
       required:
       - name
+    MobileDeviceResponseRequest:
+      type: object
+      description: Response from push sent to phone
+      properties:
+        tx_id:
+          type: string
+          minLength: 1
+        status:
+          $ref: '#/components/schemas/MobileDeviceResponseStatusEnum'
+      required:
+      - status
+      - tx_id
+    MobileDeviceResponseStatusEnum:
+      enum:
+      - accept
+      - deny
+      type: string
+      description: |-
+        * `accept` - Accept
+        * `deny` - Deny
     MobileDeviceSetPushKeyRequest:
       type: object
       description: Set notification key
@@ -39385,6 +39428,14 @@ components:
           minLength: 1
       required:
       - permissions
+    PlatformEnum:
+      enum:
+      - ios
+      - android
+      type: string
+      description: |-
+        * `ios` - iOS
+        * `android` - Android
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage

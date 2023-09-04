@@ -1,4 +1,5 @@
 """AuthenticatorMobileStage API Views"""
+from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import mixins
@@ -27,16 +28,55 @@ class MobileDeviceSerializer(ModelSerializer):
         depth = 2
 
 
+class MobileDeviceInfoSerializer(PassiveSerializer):
+    """Info about a mobile device"""
+
+    platform = ChoiceField(
+        (
+            ("ios", "iOS"),
+            ("android", "Android"),
+        )
+    )
+    version = CharField()
+    app_version = CharField()
+
+
+class MobileDeviceCheckInSerializer(PassiveSerializer):
+    """Check info into authentik"""
+
+    info = MobileDeviceInfoSerializer()
+
+
 class MobileDeviceEnrollmentSerializer(PassiveSerializer):
     """Enrollment request, send the device's unique identifier"""
 
     device_uid = CharField(required=True)
+    info = MobileDeviceInfoSerializer()
 
 
 class MobileDeviceSetPushKeySerializer(PassiveSerializer):
     """Set notification key"""
 
     firebase_key = CharField(required=True)
+
+
+class MobileDeviceResponseSerializer(PassiveSerializer):
+    """Response from push sent to phone"""
+
+    tx_id = CharField(required=True)
+    status = ChoiceField(
+        (
+            (
+                "accept",
+                _("Accept"),
+            ),
+            (
+                "deny",
+                _("Deny"),
+            ),
+        ),
+        required=True,
+    )
 
 
 class MobileDeviceViewSet(
@@ -137,6 +177,7 @@ class MobileDeviceViewSet(
         methods=["POST"],
         detail=True,
         permission_classes=[],
+        filter_backends=[],
         authentication_classes=[MobileDeviceTokenAuthentication],
     )
     def set_notification_key(self, request: Request, pk: str) -> Response:
@@ -148,10 +189,17 @@ class MobileDeviceViewSet(
         device.save()
         return Response(status=204)
 
+    @extend_schema(
+        responses={
+            204: OpenApiResponse(description="Key successfully set"),
+        },
+        request=MobileDeviceResponseSerializer,
+    )
     @action(
         methods=["POST"],
         detail=True,
         permission_classes=[],
+        filter_backends=[],
         authentication_classes=[MobileDeviceTokenAuthentication],
     )
     def receive_response(self, request: Request, pk: str) -> Response:

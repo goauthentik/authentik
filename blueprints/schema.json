@@ -1613,7 +1613,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1649,7 +1650,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },

@@ -127,6 +127,7 @@ class MobileDevice(SerializerModel, Device):
                         badge=0,
                         sound="default",
                         content_available=True,
+                        category="authentik_push_authentication",
                     ),
                     interruption_level="time-sensitive",
                 ),
