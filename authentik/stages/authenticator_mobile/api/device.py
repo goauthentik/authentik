@@ -1,6 +1,6 @@
 """AuthenticatorMobileStage API Views"""
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from drf_spectacular.utils import extend_schema, inline_serializer, OpenApiResponse
+from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField
@@ -75,7 +75,7 @@ class MobileDeviceViewSet(
         methods=["POST"],
         detail=True,
         permission_classes=[],
-        filter_backends = [],
+        filter_backends=[],
         authentication_classes=[MobileDeviceTokenAuthentication],
     )
     def enrollment_callback(self, request: Request, pk: str) -> Response:
@@ -115,11 +115,13 @@ class MobileDeviceViewSet(
             ),
         },
     )
-    @action(methods=["POST"],
+    @action(
+        methods=["POST"],
         detail=True,
         permission_classes=[],
-        filter_backends = [],
-        authentication_classes=[MobileDeviceTokenAuthentication],)
+        filter_backends=[],
+        authentication_classes=[MobileDeviceTokenAuthentication],
+    )
     def enrollment_status(self, request: Request, pk: str) -> Response:
         """Check device enrollment status"""
         device: MobileDevice = self.get_object()

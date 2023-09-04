@@ -1,38 +1,41 @@
 """Mobile authenticator stage"""
 from typing import Optional
 from uuid import uuid4
+
+from django.contrib.auth import get_user_model
+from django.db import models
+from django.http import HttpRequest
+from django.utils.translation import gettext as __
+from django.utils.translation import gettext_lazy as _
+from django.views import View
+from django_otp.models import Device
+from firebase_admin import credentials, initialize_app
+from firebase_admin.exceptions import FirebaseError
 from firebase_admin.messaging import (
-    Message,
-    send,
     AndroidConfig,
     AndroidNotification,
     APNSConfig,
     APNSPayload,
-    Notification,
     Aps,
+    Message,
+    Notification,
+    send,
 )
-from firebase_admin.exceptions import FirebaseError
-from structlog.stdlib import get_logger
-from django.contrib.auth import get_user_model
-from django.db import models
-from django.utils.translation import gettext_lazy as _
-from django.views import View
-from django_otp.models import Device
 from rest_framework.serializers import BaseSerializer, Serializer
+from structlog.stdlib import get_logger
 
 from authentik.core.models import ExpiringModel
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.generators import generate_id
 from authentik.lib.models import SerializerModel
-
-from firebase_admin import initialize_app
-from firebase_admin import credentials
+from authentik.tenants.utils import DEFAULT_TENANT
 
 cred = credentials.Certificate("firebase.json")
 initialize_app(cred)
 
 LOGGER = get_logger()
+
 
 def default_token_key():
     """Default token key"""
@@ -95,11 +98,23 @@ class MobileDevice(SerializerModel, Device):
 
         return MobileDeviceSerializer
 
-    def send_message(self, **context):
+    def send_message(self, request: Optional[HttpRequest], **context):
+        """Send mobile message"""
+        branding = DEFAULT_TENANT.branding_title
+        domain = ""
+        if request:
+            branding = request.tenant.branding_title
+            domain = request.get_host()
         message = Message(
             notification=Notification(
-                title="$GOOG up 1.43% on the day",
-                body="$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.",
+                title=__("%(brand)s authentication request" % {"brand": branding}),
+                body=__(
+                    "%(user)s is attempting to log in to %(domain)s"
+                    % {
+                        "user": self.user.username,
+                        "domain": domain,
+                    }
+                ),
             ),
             android=AndroidConfig(
                 priority="normal",

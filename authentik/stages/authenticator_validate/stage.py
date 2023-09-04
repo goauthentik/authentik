@@ -142,7 +142,12 @@ class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     def validate(self, attrs: dict):
         # Checking if the given data is from a valid device class is done above
         # Here we only check if the any data was sent at all
-        if "code" not in attrs and "webauthn" not in attrs and "duo" not in attrs and "mobile" not in attrs:
+        if (
+            "code" not in attrs
+            and "webauthn" not in attrs
+            and "duo" not in attrs
+            and "mobile" not in attrs
+        ):
             raise ValidationError("Empty response")
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD, "auth_mfa")
         self.stage.executor.plan.context.setdefault(PLAN_CONTEXT_METHOD_ARGS, {})
