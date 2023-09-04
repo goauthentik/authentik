@@ -95,7 +95,7 @@ extension-pkg-whitelist = ["lxml", "xmlsec"]
 # Allow constants to be shorter than normal (and lowercase, for settings.py)
 const-rgx = "[a-zA-Z0-9_]{1,40}$"
 
-ignored-modules = ["django-otp", "binascii", "socket", "zlib"]
+ignored-modules = ["binascii", "socket", "zlib"]
 generated-members = ["xmlsec.constants.*", "xmlsec.tree.*", "xmlsec.template.*"]
 ignore = "migrations"
 max-attributes = 12
@@ -105,7 +105,7 @@ max-branches = 20
 DJANGO_SETTINGS_MODULE = "authentik.root.settings"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 junit_family = "xunit2"
-addopts = "-p no:celery --junitxml=unittest.xml"
+addopts = "-p no:celery --junitxml=unittest.xml -vv --full-trace --doctest-modules"
 filterwarnings = [
     "ignore:defusedxml.lxml is no longer supported and will be removed in a future release.:DeprecationWarning",
     "ignore:SelectableGroups dict interface is deprecated. Use select.:DeprecationWarning",
@@ -131,7 +131,6 @@ django = "*"
 django-filter = "*"
 django-guardian = "*"
 django-model-utils = "*"
-django-otp = "*"
 django-prometheus = "*"
 django-redis = "*"
 djangorestframework = "*"
@@ -183,6 +182,7 @@ coverage = { extras = ["toml"], version = "*" }
 debugpy = "*"
 django-silk = "*"
 drf-jsonschema-serializer = "*"
+freezegun = "*"
 importlib-metadata = "*"
 pdoc = "*"
 pylint = "*"

@@ -1633,6 +1633,42 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_stages_authenticator_static.staticdevice"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_static.staticdevice"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_static.staticdevice"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_authenticator_totp.authenticatortotpstage"
                             },
                             "id": {
@@ -1658,6 +1694,42 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_stages_authenticator_totp.authenticatortotpstage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_stages_authenticator_totp.totpdevice"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_totp.totpdevice"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_totp.totpdevice"
                             }
                         }
                     },
@@ -3232,6 +3304,7 @@
                         "authentik.sources.oauth",
                         "authentik.sources.plex",
                         "authentik.sources.saml",
+                        "authentik.stages.authenticator",
                         "authentik.stages.authenticator_duo",
                         "authentik.stages.authenticator_sms",
                         "authentik.stages.authenticator_static",
@@ -3310,7 +3383,9 @@
                         "authentik_stages_authenticator_sms.authenticatorsmsstage",
                         "authentik_stages_authenticator_sms.smsdevice",
                         "authentik_stages_authenticator_static.authenticatorstaticstage",
+                        "authentik_stages_authenticator_static.staticdevice",
                         "authentik_stages_authenticator_totp.authenticatortotpstage",
+                        "authentik_stages_authenticator_totp.totpdevice",
                         "authentik_stages_authenticator_validate.authenticatorvalidatestage",
                         "authentik_stages_authenticator_webauthn.authenticatewebauthnstage",
                         "authentik_stages_authenticator_webauthn.webauthndevice",
@@ -5872,6 +5947,19 @@
             },
             "required": []
         },
+        "model_authentik_stages_authenticator_static.staticdevice": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "The human-readable name of this device."
+                }
+            },
+            "required": []
+        },
         "model_authentik_stages_authenticator_totp.authenticatortotpstage": {
             "type": "object",
             "properties": {
@@ -5982,6 +6070,19 @@
                         8
                     ],
                     "title": "Digits"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_totp.totpdevice": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "The human-readable name of this device."
                 }
             },
             "required": []

@@ -1186,23 +1186,6 @@ files = [
 Django = ">=3.2"
 
 [[package]]
-name = "django-otp"
-version = "1.2.2"
-description = "A pluggable framework for adding two-factor authentication to Django using one-time passwords."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "django_otp-1.2.2-py3-none-any.whl", hash = "sha256:90765d5dac238a719f9550ac05681dd6307f513a81a10b6adb879b4abc6bc1a3"},
-    {file = "django_otp-1.2.2.tar.gz", hash = "sha256:007a6354dabb3a1a54574bf73abf045ebbde0bb8734a38e2ed7845ba450f345e"},
-]
-
-[package.dependencies]
-django = ">=3.2"
-
-[package.extras]
-qrcode = ["qrcode"]
-
-[[package]]
 name = "django-prometheus"
 version = "2.3.1"
 description = "Django middlewares to monitor your application with Prometheus.io."
@@ -1457,6 +1440,20 @@ humanize = "*"
 prometheus-client = ">=0.8.0"
 pytz = "*"
 tornado = ">=5.0.0,<7.0.0"
+
+[[package]]
+name = "freezegun"
+version = "1.2.2"
+description = "Let your Python tests travel through time"
+optional = false
+python-versions = ">=3.6"
+files = [
+    {file = "freezegun-1.2.2-py3-none-any.whl", hash = "sha256:ea1b963b993cb9ea195adbd893a48d573fda951b0da64f60883d7e988b606c9f"},
+    {file = "freezegun-1.2.2.tar.gz", hash = "sha256:cd22d1ba06941384410cd967d8a99d5ae2442f57dfafeff2fda5de8dc5c05446"},
+]
+
+[package.dependencies]
+python-dateutil = ">=2.7"
 
 [[package]]
 name = "frozenlist"
@@ -4456,4 +4453,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "8604e4dac9b0dcc55daccab83d4c182981d21201ef9901cf9c1acdc24288f979"
+content-hash = "e6b1df989cb5c50609540c1229d05d8458ef1cc343fb5868402db8b7679ad73c"

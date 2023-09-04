@@ -5,8 +5,6 @@ from time import sleep
 
 from django.test.client import RequestFactory
 from django.urls.base import reverse
-from django_otp.oath import TOTP
-from django_otp.plugins.otp_totp.models import TOTPDevice
 from jwt import encode
 from rest_framework.exceptions import ValidationError
 
@@ -17,6 +15,8 @@ from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import FlowExecutorView
 from authentik.lib.generators import generate_id
 from authentik.root.install_id import get_install_id
+from authentik.stages.authenticator.oath import TOTP
+from authentik.stages.authenticator_totp.models import TOTPDevice
 from authentik.stages.authenticator_validate.challenge import (
     get_challenge_for_device,
     validate_challenge_code,
