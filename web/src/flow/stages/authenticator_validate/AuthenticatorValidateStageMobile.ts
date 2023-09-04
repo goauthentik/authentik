@@ -39,7 +39,7 @@ export class AuthenticatorValidateStageWebMobile extends BaseStage<
 
     firstUpdated(): void {
         this.host?.submit({
-            duo: this.deviceChallenge?.deviceUid,
+            mobile: this.deviceChallenge?.deviceUid,
         });
     }
 
@@ -48,7 +48,7 @@ export class AuthenticatorValidateStageWebMobile extends BaseStage<
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        const errors = this.challenge.responseErrors?.duo || [];
+        const errors = this.challenge.responseErrors?.mobile || [];
         return html`<div class="pf-c-login__main-body">
                 <form
                     class="pf-c-form"
@@ -78,7 +78,7 @@ export class AuthenticatorValidateStageWebMobile extends BaseStage<
                               }
                               return html`<p>${err.string}</p>`;
                           })
-                        : html`${msg("Sending Duo push notification")}`}
+                        : html`${msg("Sending push notification")}`}
                 </form>
             </div>
             <footer class="pf-c-login__main-footer">
