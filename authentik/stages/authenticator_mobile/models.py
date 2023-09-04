@@ -1,8 +1,18 @@
 """Mobile authenticator stage"""
 from typing import Optional
 from uuid import uuid4
-from firebase_admin.messaging import Message, send
-
+from firebase_admin.messaging import (
+    Message,
+    send,
+    AndroidConfig,
+    AndroidNotification,
+    APNSConfig,
+    APNSPayload,
+    Notification,
+    Aps,
+)
+from firebase_admin.exceptions import FirebaseError
+from structlog.stdlib import get_logger
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -16,6 +26,13 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.generators import generate_id
 from authentik.lib.models import SerializerModel
 
+from firebase_admin import initialize_app
+from firebase_admin import credentials
+
+cred = credentials.Certificate("firebase.json")
+initialize_app(cred)
+
+LOGGER = get_logger()
 
 def default_token_key():
     """Default token key"""
@@ -78,21 +95,29 @@ class MobileDevice(SerializerModel, Device):
 
         return MobileDeviceSerializer
 
-    def send_message(self):
-        # See documentation on defining a message payload.
+    def send_message(self, **context):
         message = Message(
-            data={
-                'score': '850',
-                'time': '2:45',
-            },
+            notification=Notification(
+                title="$GOOG up 1.43% on the day",
+                body="$GOOG gained 11.80 points to close at 835.67, up 1.43% on the day.",
+            ),
+            android=AndroidConfig(
+                priority="normal",
+                notification=AndroidNotification(icon="stock_ticker_update", color="#f45342"),
+            ),
+            apns=APNSConfig(
+                payload=APNSPayload(
+                    aps=Aps(badge=0),
+                    interruption_level="time-sensitive",
+                ),
+            ),
             token=self.firebase_token,
         )
-
-        # Send a message to the device corresponding to the provided
-        # registration token.
-        response = send(message)
-        # Response is a message ID string.
-        print('Successfully sent message:', response)
+        try:
+            response = send(message)
+            LOGGER.debug("Sent notification", id=response)
+        except (ValueError, FirebaseError) as exc:
+            LOGGER.warning("failed to push", exc=exc)
 
     def __str__(self):
         return str(self.name) or str(self.user)

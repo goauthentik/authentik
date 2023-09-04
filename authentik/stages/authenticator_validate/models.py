@@ -20,6 +20,7 @@ class DeviceClasses(models.TextChoices):
     WEBAUTHN = "webauthn", _("WebAuthn")
     DUO = "duo", _("Duo")
     SMS = "sms", _("SMS")
+    MOBILE = "mobile", _("authentik Mobile")
 
 
 def default_device_classes() -> list:

@@ -1,7 +1,6 @@
 """AuthenticatorMobileStage API Views"""
 from django_filters.rest_framework.backends import DjangoFilterBackend
-from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema, inline_serializer
+from drf_spectacular.utils import extend_schema, inline_serializer, OpenApiResponse
 from rest_framework import mixins
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, ChoiceField
@@ -101,7 +100,7 @@ class MobileDeviceViewSet(
         )
 
     @extend_schema(
-        request=OpenApiTypes.NONE,
+        request=None,
         responses={
             200: inline_serializer(
                 "MobileDeviceEnrollmentStatusSerializer",
@@ -128,7 +127,7 @@ class MobileDeviceViewSet(
 
     @extend_schema(
         responses={
-            204: OpenApiTypes.STR,
+            204: OpenApiResponse(description="Key successfully set"),
         },
         request=MobileDeviceSetPushKeySerializer,
     )
@@ -138,10 +137,10 @@ class MobileDeviceViewSet(
         permission_classes=[],
         authentication_classes=[MobileDeviceTokenAuthentication],
     )
-    def set_notification_key(self, request: Request) -> Response:
+    def set_notification_key(self, request: Request, pk: str) -> Response:
         """Called by the phone whenever the firebase key changes and we need to update it"""
         device: MobileDevice = self.get_object()
-        data = MobileDeviceSetPushKeySerializer(data=request)
+        data = MobileDeviceSetPushKeySerializer(data=request.data)
         data.is_valid(raise_exception=True)
         device.firebase_token = data.validated_data["firebase_key"]
         device.save()
@@ -153,7 +152,7 @@ class MobileDeviceViewSet(
         permission_classes=[],
         authentication_classes=[MobileDeviceTokenAuthentication],
     )
-    def receive_response(self, request: Request) -> Response:
+    def receive_response(self, request: Request, pk: str) -> Response:
         """Get response from notification on phone"""
         print(request.data)
         return Response(status=204)
