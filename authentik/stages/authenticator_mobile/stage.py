@@ -62,7 +62,7 @@ class AuthenticatorMobileStageView(ChallengeStageView):
             data={
                 # TODO: use cloud gateway?
                 "u": self.request.build_absolute_uri("/"),
-                "s": self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL].device.pk,
+                "s": str(self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL].device.pk),
                 "t": self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL].token,
             }
         )
