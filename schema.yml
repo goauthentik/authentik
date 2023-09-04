@@ -34311,7 +34311,10 @@ components:
       properties:
         platform:
           $ref: '#/components/schemas/PlatformEnum'
-        version:
+        os_version:
+          type: string
+          minLength: 1
+        model:
           type: string
           minLength: 1
         app_version:
@@ -34319,8 +34322,9 @@ components:
           minLength: 1
       required:
       - app_version
+      - model
+      - os_version
       - platform
-      - version
     MobileDeviceRequest:
       type: object
       description: Serializer for Mobile authenticator devices
