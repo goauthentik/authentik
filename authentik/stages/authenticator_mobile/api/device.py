@@ -4,7 +4,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, ChoiceField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -76,6 +76,7 @@ class MobileDeviceViewSet(
         methods=["POST"],
         detail=True,
         permission_classes=[],
+        filter_backends = [],
         authentication_classes=[MobileDeviceTokenAuthentication],
     )
     def enrollment_callback(self, request: Request, pk: str) -> Response:
@@ -83,6 +84,7 @@ class MobileDeviceViewSet(
         device: MobileDevice = self.get_object()
         data = MobileDeviceEnrollmentSerializer(data=request.data)
         data.is_valid(raise_exception=True)
+        device.confirmed = True
         device.device_id = data.validated_data["device_uid"]
         device.save()
         MobileDeviceToken.objects.filter(
@@ -94,9 +96,35 @@ class MobileDeviceViewSet(
         )
         return Response(
             data={
-                "token": new_token,
+                "token": new_token.token,
             }
         )
+
+    @extend_schema(
+        request=OpenApiTypes.NONE,
+        responses={
+            200: inline_serializer(
+                "MobileDeviceEnrollmentStatusSerializer",
+                {
+                    "status": ChoiceField(
+                        (
+                            ("success", "Success"),
+                            ("waiting", "Waiting"),
+                        )
+                    )
+                },
+            ),
+        },
+    )
+    @action(methods=["POST"],
+        detail=True,
+        permission_classes=[],
+        filter_backends = [],
+        authentication_classes=[MobileDeviceTokenAuthentication],)
+    def enrollment_status(self, request: Request, pk: str) -> Response:
+        """Check device enrollment status"""
+        device: MobileDevice = self.get_object()
+        return Response({"status": "success" if device.confirmed else "waiting"})
 
     @extend_schema(
         responses={
