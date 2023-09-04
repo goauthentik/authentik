@@ -8,7 +8,6 @@ from django.http import HttpRequest
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django_otp.models import Device
 from firebase_admin import credentials, initialize_app
 from firebase_admin.exceptions import FirebaseError
 from firebase_admin.messaging import (
@@ -29,6 +28,7 @@ from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.generators import generate_id
 from authentik.lib.models import SerializerModel
+from authentik.stages.authenticator.models import Device
 from authentik.tenants.utils import DEFAULT_TENANT
 
 cred = credentials.Certificate("firebase.json")
