@@ -98,6 +98,20 @@ class MobileDevice(SerializerModel, Device):
 
         return MobileDeviceSerializer
 
+    def __str__(self):
+        return str(self.name) or str(self.user)
+
+    class Meta:
+        verbose_name = _("Mobile Device")
+        verbose_name_plural = _("Mobile Devices")
+
+
+class MobileTransaction(ExpiringModel):
+    """A single push transaction"""
+
+    tx_id = models.UUIDField(default=uuid4, primary_key=True)
+    device = models.ForeignKey(MobileDevice, on_delete=models.CASCADE)
+
     def send_message(self, request: Optional[HttpRequest], **context):
         """Send mobile message"""
         branding = DEFAULT_TENANT.branding_title
@@ -111,7 +125,7 @@ class MobileDevice(SerializerModel, Device):
                 body=__(
                     "%(user)s is attempting to log in to %(domain)s"
                     % {
-                        "user": self.user.username,
+                        "user": self.device.user.username,
                         "domain": domain,
                     }
                 ),
@@ -127,12 +141,13 @@ class MobileDevice(SerializerModel, Device):
                         badge=0,
                         sound="default",
                         content_available=True,
-                        category="authentik_push_authentication",
+                        category="cat_authentik_push_authorization",
                     ),
                     interruption_level="time-sensitive",
+                    tx_id=str(self.tx_id),
                 ),
             ),
-            token=self.firebase_token,
+            token=self.device.firebase_token,
         )
         try:
             response = send(message)
@@ -140,13 +155,6 @@ class MobileDevice(SerializerModel, Device):
         except (ValueError, FirebaseError) as exc:
             LOGGER.warning("failed to push", exc=exc)
         return True
-
-    def __str__(self):
-        return str(self.name) or str(self.user)
-
-    class Meta:
-        verbose_name = _("Mobile Device")
-        verbose_name_plural = _("Mobile Devices")
 
 
 class MobileDeviceToken(ExpiringModel):

@@ -37,7 +37,8 @@ class MobileDeviceInfoSerializer(PassiveSerializer):
             ("android", "Android"),
         )
     )
-    version = CharField()
+    os_version = CharField()
+    model = CharField()
     app_version = CharField()
 
 
