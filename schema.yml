@@ -2272,7 +2272,11 @@ paths:
       - mobile_device_token: []
       responses:
         '204':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                type: string
+          description: ''
         '400':
           content:
             application/json:
@@ -34236,6 +34240,7 @@ components:
       - token
     MobileDeviceEnrollmentRequest:
       type: object
+      description: Enrollment request, send the device's unique identifier
       properties:
         device_uid:
           type: string
@@ -34259,6 +34264,7 @@ components:
       - name
     MobileDeviceSetPushKeyRequest:
       type: object
+      description: Set notification key
       properties:
         firebase_key:
           type: string

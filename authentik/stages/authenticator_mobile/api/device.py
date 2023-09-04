@@ -29,10 +29,14 @@ class MobileDeviceSerializer(ModelSerializer):
 
 
 class MobileDeviceEnrollmentSerializer(PassiveSerializer):
+    """Enrollment request, send the device's unique identifier"""
+
     device_uid = CharField(required=True)
 
 
 class MobileDeviceSetPushKeySerializer(PassiveSerializer):
+    """Set notification key"""
+
     firebase_key = CharField(required=True)
 
 
