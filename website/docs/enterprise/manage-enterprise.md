@@ -113,6 +113,14 @@ License usage is calculated based on total user counts and log-in data data that
 An **internal** user is typically a team member, such as company employees, who gets access to the full Enterprise feature set. An **external** user might be an external consultant or a B2C customer who logged onto your website to shop. These users don't get access to enterprise features.
 :::
 
+### Upgrade the number of users in a license
+
+There are two ways to update the number of users in a license.
+
+You can either purchase a new license and enter it in the same authentik instance as the other one, in which case the total number of users in all your licenses is used to calculate the maximum number of users. However, this means that your licensing renewals will not happen at the same date.
+
+The second way is to [open a support ticket](./entsupport.md) with us and we'll upgrade the number of users in your license. You'll be charged the prorated amount for the remaining time until the next license renewal.
+
 ## Manage Billing
 
 Billing is based on each individual organization.
