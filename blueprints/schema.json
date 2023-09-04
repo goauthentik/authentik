@@ -6027,6 +6027,11 @@
         "model_authentik_stages_authenticator_mobile.mobiledevice": {
             "type": "object",
             "properties": {
+                "pk": {
+                    "type": "string",
+                    "format": "uuid",
+                    "title": "Uuid"
+                },
                 "name": {
                     "type": "string",
                     "maxLength": 64,

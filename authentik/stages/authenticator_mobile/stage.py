@@ -10,7 +10,10 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.stages.authenticator_mobile.models import AuthenticatorMobileStage, MobileDevice, MobileDeviceToken
+from authentik.stages.authenticator_mobile.models import (
+    MobileDevice,
+    MobileDeviceToken,
+)
 
 FLOW_PLAN_MOBILE_ENROLL = "authentik/stages/authenticator_mobile/enroll"
 

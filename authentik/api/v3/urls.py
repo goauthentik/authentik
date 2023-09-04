@@ -1,6 +1,7 @@
 """api v3 urls"""
 from importlib import import_module
 
+from django.conf import settings
 from django.urls import path
 from django.urls.resolvers import URLPattern
 from django.views.decorators.cache import cache_page
@@ -11,7 +12,6 @@ from structlog.stdlib import get_logger
 from authentik.api.v3.config import ConfigView
 from authentik.api.views import APIBrowserView
 from authentik.lib.utils.reflection import get_apps
-from django.conf import settings
 
 LOGGER = get_logger()
 

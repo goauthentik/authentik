@@ -648,16 +648,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /authenticators/admin/mobile/{id}/:
+  /authenticators/admin/mobile/{uuid}/:
     get:
       operationId: authenticators_admin_mobile_retrieve
       description: Viewset for Mobile authenticator devices (for admins)
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -687,10 +688,11 @@ paths:
       description: Viewset for Mobile authenticator devices (for admins)
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -726,10 +728,11 @@ paths:
       description: Viewset for Mobile authenticator devices (for admins)
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -764,10 +767,11 @@ paths:
       description: Viewset for Mobile authenticator devices (for admins)
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -2017,16 +2021,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /authenticators/mobile/{id}/:
+  /authenticators/mobile/{uuid}/:
     get:
       operationId: authenticators_mobile_retrieve
       description: Viewset for Mobile authenticator devices
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -2056,10 +2061,11 @@ paths:
       description: Viewset for Mobile authenticator devices
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -2095,10 +2101,11 @@ paths:
       description: Viewset for Mobile authenticator devices
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -2133,10 +2140,11 @@ paths:
       description: Viewset for Mobile authenticator devices
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -2157,16 +2165,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /authenticators/mobile/{id}/enrollment_callback/:
+  /authenticators/mobile/{uuid}/enrollment_callback/:
     post:
       operationId: authenticators_mobile_enrollment_callback_create
       description: Enrollment callback
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -2197,16 +2206,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /authenticators/mobile/{id}/receive_response/:
+  /authenticators/mobile/{uuid}/receive_response/:
     post:
       operationId: authenticators_mobile_receive_response_create
       description: Get response from notification on phone
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -2237,17 +2247,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /authenticators/mobile/{id}/set_notification_key/:
+  /authenticators/mobile/{uuid}/set_notification_key/:
     post:
       operationId: authenticators_mobile_set_notification_key_create
       description: Called by the phone whenever the firebase key changes and we need
         to update it
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -2274,16 +2285,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /authenticators/mobile/{id}/used_by/:
+  /authenticators/mobile/{uuid}/used_by/:
     get:
       operationId: authenticators_mobile_used_by_list
       description: Get a list of all objects that use this object
       parameters:
       - in: path
-        name: id
+        name: uuid
         schema:
-          type: integer
-        description: A unique integer value identifying this Mobile Device.
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
         required: true
       tags:
       - authenticators
@@ -34206,16 +34218,15 @@ components:
       description: Serializer for Mobile authenticator devices
       properties:
         pk:
-          type: integer
-          readOnly: true
-          title: ID
+          type: string
+          format: uuid
+          title: Uuid
         name:
           type: string
           description: The human-readable name of this device.
           maxLength: 64
       required:
       - name
-      - pk
     MobileDeviceEnrollmentCallback:
       type: object
       properties:
@@ -34239,6 +34250,10 @@ components:
       type: object
       description: Serializer for Mobile authenticator devices
       properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
         name:
           type: string
           minLength: 1
@@ -37998,6 +38013,10 @@ components:
       type: object
       description: Serializer for Mobile authenticator devices
       properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
         name:
           type: string
           minLength: 1

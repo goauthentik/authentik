@@ -1,5 +1,6 @@
 """Mobile authenticator stage"""
 from typing import Optional
+from uuid import uuid4
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -59,6 +60,8 @@ class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
 class MobileDevice(SerializerModel, Device):
     """Mobile authenticator for a single user"""
+
+    uuid = models.UUIDField(primary_key=True, default=uuid4)
 
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
 
