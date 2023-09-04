@@ -2206,6 +2206,41 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /authenticators/mobile/{uuid}/enrollment_status/:
+    post:
+      operationId: authenticators_mobile_enrollment_status_create
+      description: Check device enrollment status
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - mobile_device_token: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDeviceEnrollmentStatus'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /authenticators/mobile/{uuid}/receive_response/:
     post:
       operationId: authenticators_mobile_receive_response_create
@@ -34247,6 +34282,21 @@ components:
           minLength: 1
       required:
       - device_uid
+    MobileDeviceEnrollmentStatus:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/MobileDeviceEnrollmentStatusStatusEnum'
+      required:
+      - status
+    MobileDeviceEnrollmentStatusStatusEnum:
+      enum:
+      - success
+      - waiting
+      type: string
+      description: |-
+        * `success` - Success
+        * `waiting` - Waiting
     MobileDeviceRequest:
       type: object
       description: Serializer for Mobile authenticator devices

@@ -1,6 +1,7 @@
 """Mobile authenticator stage"""
 from typing import Optional
 from uuid import uuid4
+from firebase_admin.messaging import Message, send
 
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -76,6 +77,22 @@ class MobileDevice(SerializerModel, Device):
         from authentik.stages.authenticator_mobile.api.device import MobileDeviceSerializer
 
         return MobileDeviceSerializer
+
+    def send_message(self):
+        # See documentation on defining a message payload.
+        message = Message(
+            data={
+                'score': '850',
+                'time': '2:45',
+            },
+            token=self.firebase_token,
+        )
+
+        # Send a message to the device corresponding to the provided
+        # registration token.
+        response = send(message)
+        # Response is a message ID string.
+        print('Successfully sent message:', response)
 
     def __str__(self):
         return str(self.name) or str(self.user)
