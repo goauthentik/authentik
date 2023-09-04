@@ -69,6 +69,7 @@ class MobileDevice(SerializerModel, Device):
     stage = models.ForeignKey(AuthenticatorMobileStage, on_delete=models.CASCADE)
 
     device_id = models.TextField(unique=True)
+    firebase_token = models.TextField(blank=True)
 
     @property
     def serializer(self) -> Serializer:
@@ -90,5 +91,3 @@ class MobileDeviceToken(ExpiringModel):
     device = models.ForeignKey(MobileDevice, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     token = models.TextField(default=default_token_key)
-
-    firebase_token = models.TextField(blank=True)

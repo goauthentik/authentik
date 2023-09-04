@@ -34230,22 +34230,18 @@ components:
     MobileDeviceEnrollmentCallback:
       type: object
       properties:
-        device_token:
+        token:
           type: string
-        device_uuid:
-          type: string
-          format: uuid
       required:
-      - device_token
-      - device_uuid
+      - token
     MobileDeviceEnrollmentRequest:
       type: object
       properties:
-        token:
+        device_uid:
           type: string
           minLength: 1
       required:
-      - token
+      - device_uid
     MobileDeviceRequest:
       type: object
       description: Serializer for Mobile authenticator devices
