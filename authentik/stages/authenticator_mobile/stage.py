@@ -51,7 +51,7 @@ class AuthenticatorMobileStageView(ChallengeStageView):
             confirmed=False,
         )
         token = MobileDeviceToken.objects.create(
-            user=self.get_pending_user(),
+            user=device.user,
             device=device,
         )
         self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL] = token
