@@ -12,7 +12,8 @@ from authentik.flows.challenge import (
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_mobile.models import MobileDevice, MobileDeviceToken
 
-FLOW_PLAN_MOBILE_ENROLL = "authentik/stages/authenticator_mobile/enroll"
+FLOW_PLAN_MOBILE_ENROLL_TOKEN = "authentik/stages/authenticator_mobile/enroll/token"
+FLOW_PLAN_MOBILE_ENROLL_DEVICE = "authentik/stages/authenticator_mobile/enroll/device"
 
 
 class AuthenticatorMobilePayloadChallenge(PassiveSerializer):
@@ -43,7 +44,7 @@ class AuthenticatorMobileStageView(ChallengeStageView):
 
     def prepare(self):
         """Prepare the token"""
-        if FLOW_PLAN_MOBILE_ENROLL in self.executor.plan.context:
+        if FLOW_PLAN_MOBILE_ENROLL_TOKEN in self.executor.plan.context:
             return
         device = MobileDevice.objects.create(
             user=self.get_pending_user(),
@@ -54,7 +55,8 @@ class AuthenticatorMobileStageView(ChallengeStageView):
             user=device.user,
             device=device,
         )
-        self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL] = token
+        self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL_TOKEN] = token
+        self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL_DEVICE] = device
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
         self.prepare()
@@ -62,8 +64,8 @@ class AuthenticatorMobileStageView(ChallengeStageView):
             data={
                 # TODO: use cloud gateway?
                 "u": self.request.build_absolute_uri("/"),
-                "s": str(self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL].device.pk),
-                "t": self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL].token,
+                "s": str(self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL_DEVICE].pk),
+                "t": self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL_TOKEN].token,
             }
         )
         payload.is_valid()
@@ -75,4 +77,8 @@ class AuthenticatorMobileStageView(ChallengeStageView):
         )
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        device: MobileDevice = self.executor.plan.context[FLOW_PLAN_MOBILE_ENROLL_DEVICE]
+        device.refresh_from_db()
+        if not device.confirmed:
+            return self.challenge_invalid(response)
         return self.executor.stage_ok()
