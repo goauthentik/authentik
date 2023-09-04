@@ -143,8 +143,16 @@ class TestParserUtils(TestCase):
     def test_get_redis_options_timeout_arg_missing_unit(self):
         """Test Redis URL parser with missing unit timeout arg"""
         url = urlparse("redis://myredis/0?timeout=43")
-        with self.assertRaises(ValueError):
-            _, _, _ = get_redis_options(url)
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["socket_timeout"], 43e-9)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], 43e-9)
+
+    def test_get_redis_options_timeout_arg_no_number(self):
+        """Test Redis URL parser with no number timeout arg"""
+        url = urlparse("redis://myredis/0?timeout=ms")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["socket_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
 
     def test_get_redis_options_timeout_arg_milliseconds(self):
         """Test Redis URL parser with millisecond timeout arg"""

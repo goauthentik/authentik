@@ -32,8 +32,6 @@ def _parse_duration_to_sec(duration_str: str) -> float:
     It supports the following units: ns, us, ms, s, m, h.
     It returns a ValueError if the string is invalid or empty.
     """
-    if not duration_str:
-        raise ValueError("empty string")
     units = {"ns": 1e-9, "us": 1e-6, "ms": 1e-3, "s": 1.0, "m": 60.0, "h": 3600.0}
     result = 0.0
     num = ""
@@ -65,10 +63,17 @@ def _parse_duration_to_sec(duration_str: str) -> float:
 
 def _val_to_sec(values: list[bytes]):
     """Convert a list of string bytes into a duration in seconds"""
-    result = None
-    for value in values:
-        return _parse_duration_to_sec(str(value))
-    return result
+    for i, value in enumerate(values):
+        try:
+            return _parse_duration_to_sec(str(value))
+        except ValueError:
+            try:
+                # Default for Golang time.Duration is nanoseconds
+                return int(value) * 1e-9
+            except ValueError:
+                if i == len(values) - 1:
+                    return 0
+                continue
 
 
 def parse_hostport(addr_str, default_port=6379):
