@@ -10,10 +10,7 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.stages.authenticator_mobile.models import (
-    MobileDevice,
-    MobileDeviceToken,
-)
+from authentik.stages.authenticator_mobile.models import MobileDevice, MobileDeviceToken
 
 FLOW_PLAN_MOBILE_ENROLL = "authentik/stages/authenticator_mobile/enroll"
 
@@ -51,6 +48,7 @@ class AuthenticatorMobileStageView(ChallengeStageView):
         device = MobileDevice.objects.create(
             user=self.get_pending_user(),
             stage=self.executor.current_stage,
+            confirmed=False,
         )
         token = MobileDeviceToken.objects.create(
             user=self.get_pending_user(),

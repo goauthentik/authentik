@@ -1,9 +1,10 @@
 """AuthenticatorMobileStage API Views"""
 from django_filters.rest_framework.backends import DjangoFilterBackend
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, UUIDField
+from rest_framework.fields import CharField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -13,8 +14,9 @@ from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from authentik.api.authorization import OwnerFilter, OwnerPermissions
 from authentik.core.api.used_by import UsedByMixin
+from authentik.core.api.utils import PassiveSerializer
 from authentik.stages.authenticator_mobile.api.auth import MobileDeviceTokenAuthentication
-from authentik.stages.authenticator_mobile.models import MobileDevice
+from authentik.stages.authenticator_mobile.models import MobileDevice, MobileDeviceToken
 
 
 class MobileDeviceSerializer(ModelSerializer):
@@ -24,6 +26,14 @@ class MobileDeviceSerializer(ModelSerializer):
         model = MobileDevice
         fields = ["pk", "name"]
         depth = 2
+
+
+class MobileDeviceEnrollmentSerializer(PassiveSerializer):
+    device_uid = CharField(required=True)
+
+
+class MobileDeviceSetPushKeySerializer(PassiveSerializer):
+    firebase_key = CharField(required=True)
 
 
 class MobileDeviceViewSet(
@@ -46,52 +56,17 @@ class MobileDeviceViewSet(
 
     @extend_schema(
         responses={
-            204: "",
-        },
-        request=inline_serializer(
-            "MobileDeviceSetPushKeySerializer",
-            {
-                "firebase_key": CharField(required=True),
-            },
-        ),
-    )
-    @action(
-        methods=["POST"],
-        detail=True,
-        permission_classes=[],
-        authentication_classes=[MobileDeviceTokenAuthentication],
-    )
-    def set_notification_key(self):
-        """Called by the phone whenever the firebase key changes and we need to update it"""
-        device = self.get_object()
-        print(self.request.user)
-
-    @action(
-        methods=["POST"],
-        detail=True,
-        permission_classes=[],
-        authentication_classes=[MobileDeviceTokenAuthentication],
-    )
-    def receive_response():
-        """Get response from notification on phone"""
-        pass
-
-    @extend_schema(
-        responses={
             200: inline_serializer(
                 "MobileDeviceEnrollmentCallbackSerializer",
-                {"device_token": CharField(required=True), "device_uuid": UUIDField(required=True)},
+                {
+                    # New API token (that will be rotated at some point)
+                    # also used by the backend to sign requests to the cloud broker
+                    # also used by the app to check the signature of incoming requests
+                    "token": CharField(required=True),
+                },
             ),
         },
-        request=inline_serializer(
-            "MobileDeviceEnrollmentSerializer",
-            {
-                # New API token (that will be rotated at some point)
-                # also used by the backend to sign requests to the cloud broker
-                # also used by the app to check the signature of incoming requests
-                "token": CharField(required=True),
-            },
-        ),
+        request=MobileDeviceEnrollmentSerializer,
     )
     @action(
         methods=["POST"],
@@ -101,6 +76,53 @@ class MobileDeviceViewSet(
     )
     def enrollment_callback(self, request: Request, pk: str) -> Response:
         """Enrollment callback"""
+        device: MobileDevice = self.get_object()
+        data = MobileDeviceEnrollmentSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        device.device_id = data.validated_data["device_uid"]
+        device.save()
+        MobileDeviceToken.objects.filter(
+            device=device,
+        ).delete()
+        new_token = MobileDeviceToken.objects.create(
+            device=device,
+            user=device.user,
+        )
+        return Response(
+            data={
+                "token": new_token,
+            }
+        )
+
+    @extend_schema(
+        responses={
+            204: OpenApiTypes.STR,
+        },
+        request=MobileDeviceSetPushKeySerializer,
+    )
+    @action(
+        methods=["POST"],
+        detail=True,
+        permission_classes=[],
+        authentication_classes=[MobileDeviceTokenAuthentication],
+    )
+    def set_notification_key(self, request: Request) -> Response:
+        """Called by the phone whenever the firebase key changes and we need to update it"""
+        device: MobileDevice = self.get_object()
+        data = MobileDeviceSetPushKeySerializer(data=request)
+        data.is_valid(raise_exception=True)
+        device.firebase_token = data.validated_data["firebase_key"]
+        device.save()
+        return Response(status=204)
+
+    @action(
+        methods=["POST"],
+        detail=True,
+        permission_classes=[],
+        authentication_classes=[MobileDeviceTokenAuthentication],
+    )
+    def receive_response(self, request: Request) -> Response:
+        """Get response from notification on phone"""
         print(request.data)
         return Response(status=204)
 
