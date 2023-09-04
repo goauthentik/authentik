@@ -34319,11 +34319,15 @@ components:
         model:
           type: string
           minLength: 1
+        hostname:
+          type: string
+          minLength: 1
         app_version:
           type: string
           minLength: 1
       required:
       - app_version
+      - hostname
       - model
       - os_version
       - platform
