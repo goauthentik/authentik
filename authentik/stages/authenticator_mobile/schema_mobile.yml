@@ -1,0 +1,645 @@
+openapi: 3.0.3
+info:
+  title: authentik
+  version: 2023.8.2
+  description: Making authentication simple.
+  contact:
+    email: hello@goauthentik.io
+  license:
+    name: MIT
+    url: https://github.com/goauthentik/authentik/blob/main/LICENSE
+paths:
+  /authenticators/mobile/:
+    get:
+      operationId: authenticators_mobile_list
+      description: Viewset for Mobile authenticator devices
+      parameters:
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedMobileDeviceList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/{uuid}/:
+    get:
+      operationId: authenticators_mobile_retrieve
+      description: Viewset for Mobile authenticator devices
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: authenticators_mobile_update
+      description: Viewset for Mobile authenticator devices
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: authenticators_mobile_partial_update
+      description: Viewset for Mobile authenticator devices
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedMobileDeviceRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDevice'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: authenticators_mobile_destroy
+      description: Viewset for Mobile authenticator devices
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/{uuid}/enrollment_callback/:
+    post:
+      operationId: authenticators_mobile_enrollment_callback_create
+      description: Enrollment callback
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceEnrollmentRequest'
+        required: true
+      security:
+      - mobile_device_token: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDeviceEnrollmentCallback'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/{uuid}/enrollment_status/:
+    post:
+      operationId: authenticators_mobile_enrollment_status_create
+      description: Check device enrollment status
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - mobile_device_token: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MobileDeviceEnrollmentStatus'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/{uuid}/receive_response/:
+    post:
+      operationId: authenticators_mobile_receive_response_create
+      description: Get response from notification on phone
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceResponseRequest'
+        required: true
+      security:
+      - mobile_device_token: []
+      responses:
+        '204':
+          description: Key successfully set
+        '404':
+          description: Transaction not found
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/{uuid}/set_notification_key/:
+    post:
+      operationId: authenticators_mobile_set_notification_key_create
+      description: Called by the phone whenever the firebase key changes and we need
+        to update it
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceSetPushKeyRequest'
+        required: true
+      security:
+      - mobile_device_token: []
+      responses:
+        '204':
+          description: Key successfully set
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /authenticators/mobile/{uuid}/used_by/:
+    get:
+      operationId: authenticators_mobile_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+components:
+  schemas:
+    ActionEnum:
+      enum:
+      - CASCADE
+      - CASCADE_MANY
+      - SET_NULL
+      - SET_DEFAULT
+      type: string
+      description: |-
+        * `CASCADE` - CASCADE
+        * `CASCADE_MANY` - CASCADE_MANY
+        * `SET_NULL` - SET_NULL
+        * `SET_DEFAULT` - SET_DEFAULT
+    GenericError:
+      type: object
+      description: Generic API Error
+      properties:
+        detail:
+          type: string
+        code:
+          type: string
+      required:
+      - detail
+    MobileDevice:
+      type: object
+      description: Serializer for Mobile authenticator devices
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    MobileDeviceEnrollmentCallback:
+      type: object
+      properties:
+        token:
+          type: string
+      required:
+      - token
+    MobileDeviceEnrollmentRequest:
+      type: object
+      description: Enrollment request, send the device's unique identifier
+      properties:
+        device_uid:
+          type: string
+          minLength: 1
+        info:
+          $ref: '#/components/schemas/MobileDeviceInfoRequest'
+      required:
+      - device_uid
+      - info
+    MobileDeviceEnrollmentStatus:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/MobileDeviceEnrollmentStatusStatusEnum'
+      required:
+      - status
+    MobileDeviceEnrollmentStatusStatusEnum:
+      enum:
+      - success
+      - waiting
+      type: string
+      description: |-
+        * `success` - Success
+        * `waiting` - Waiting
+    MobileDeviceInfoRequest:
+      type: object
+      description: Info about a mobile device
+      properties:
+        platform:
+          $ref: '#/components/schemas/PlatformEnum'
+        os_version:
+          type: string
+          minLength: 1
+        model:
+          type: string
+          minLength: 1
+        hostname:
+          type: string
+          minLength: 1
+        app_version:
+          type: string
+          minLength: 1
+      required:
+      - app_version
+      - hostname
+      - model
+      - os_version
+      - platform
+    MobileDeviceRequest:
+      type: object
+      description: Serializer for Mobile authenticator devices
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+      required:
+      - name
+    MobileDeviceResponseRequest:
+      type: object
+      description: Response from push sent to phone
+      properties:
+        tx_id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/MobileDeviceResponseStatusEnum'
+      required:
+      - status
+      - tx_id
+    MobileDeviceResponseStatusEnum:
+      enum:
+      - wait
+      - accept
+      - deny
+      type: string
+      description: |-
+        * `wait` - Wait
+        * `accept` - Accept
+        * `deny` - Deny
+    MobileDeviceSetPushKeyRequest:
+      type: object
+      description: Set notification key
+      properties:
+        firebase_key:
+          type: string
+          minLength: 1
+      required:
+      - firebase_key
+    PaginatedMobileDeviceList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/MobileDevice'
+      required:
+      - pagination
+      - results
+    Pagination:
+      type: object
+      properties:
+        next:
+          type: number
+        previous:
+          type: number
+        count:
+          type: number
+        current:
+          type: number
+        total_pages:
+          type: number
+        start_index:
+          type: number
+        end_index:
+          type: number
+      required:
+      - next
+      - previous
+      - count
+      - current
+      - total_pages
+      - start_index
+      - end_index
+    PatchedMobileDeviceRequest:
+      type: object
+      description: Serializer for Mobile authenticator devices
+      properties:
+        pk:
+          type: string
+          format: uuid
+          title: Uuid
+        name:
+          type: string
+          minLength: 1
+          description: The human-readable name of this device.
+          maxLength: 64
+    PlatformEnum:
+      enum:
+      - ios
+      - android
+      type: string
+      description: |-
+        * `ios` - iOS
+        * `android` - Android
+    UsedBy:
+      type: object
+      description: A list of all objects referencing the queried object
+      properties:
+        app:
+          type: string
+        model_name:
+          type: string
+        pk:
+          type: string
+        name:
+          type: string
+        action:
+          $ref: '#/components/schemas/ActionEnum'
+      required:
+      - action
+      - app
+      - model_name
+      - name
+      - pk
+    ValidationError:
+      type: object
+      description: Validation Error
+      properties:
+        non_field_errors:
+          type: array
+          items:
+            type: string
+        code:
+          type: string
+      additionalProperties: {}
+  securitySchemes:
+    authentik:
+      type: apiKey
+      in: header
+      name: Authorization
+      scheme: bearer
+    mobile_device_token:
+      type: apiKey
+      in: header
+      name: Authorization
+      scheme: bearer
+servers:
+- url: /api/v3/
