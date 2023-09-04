@@ -1,11 +1,11 @@
 """ldap testing utils"""
 
-from ldap3 import MOCK_SYNC, OFFLINE_SLAPD_2_4, Connection, Server
+from ldap3 import MOCK_SYNC, OFFLINE_DS389_1_3_3, Connection, Server
 
 
-def mock_slapd_connection(password: str) -> Connection:
-    """Create mock SLAPD connection"""
-    server = Server("my_fake_server", get_info=OFFLINE_SLAPD_2_4)
+def mock_freeipa_connection(password: str) -> Connection:
+    """Create mock FreeIPA-ish connection"""
+    server = Server("my_fake_server", get_info=OFFLINE_DS389_1_3_3)
     _pass = "foo"  # noqa # nosec
     connection = Connection(
         server,
@@ -94,6 +94,17 @@ def mock_slapd_connection(password: str) -> Connection:
             "uid": "user-posix",
             "cn": "user-posix",
             "objectClass": "posixAccount",
+        },
+    )
+    # Locked out user
+    connection.strategy.add_entry(
+        "cn=user-nsaccountlock,ou=users,dc=goauthentik,dc=io",
+        {
+            "userPassword": password,
+            "uid": "user-nsaccountlock",
+            "cn": "user-nsaccountlock",
+            "objectClass": "person",
+            "nsaccountlock": ["TRUE"],
         },
     )
     connection.bind()
