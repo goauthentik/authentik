@@ -193,9 +193,9 @@ def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User)
         ).name
 
     try:
-        response = device.send_message(**push_context)
+        response = device.send_message(stage_view.request, **push_context)
         # {'result': 'allow', 'status': 'allow', 'status_msg': 'Success. Logging you in...'}
-        if response["result"] == "deny":
+        if not response:
             LOGGER.debug("mobile push response", result=response)
             login_failed.send(
                 sender=__name__,

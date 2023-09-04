@@ -121,8 +121,13 @@ class MobileDevice(SerializerModel, Device):
                 notification=AndroidNotification(icon="stock_ticker_update", color="#f45342"),
             ),
             apns=APNSConfig(
+                headers={"apns-push-type": "alert", "apns-priority": "10"},
                 payload=APNSPayload(
-                    aps=Aps(badge=0),
+                    aps=Aps(
+                        badge=0,
+                        sound="default",
+                        content_available=True,
+                    ),
                     interruption_level="time-sensitive",
                 ),
             ),
@@ -133,6 +138,7 @@ class MobileDevice(SerializerModel, Device):
             LOGGER.debug("Sent notification", id=response)
         except (ValueError, FirebaseError) as exc:
             LOGGER.warning("failed to push", exc=exc)
+        return True
 
     def __str__(self):
         return str(self.name) or str(self.user)
