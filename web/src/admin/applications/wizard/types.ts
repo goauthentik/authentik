@@ -6,11 +6,13 @@ import {
     RadiusProviderRequest,
     SAMLProviderRequest,
     SCIMProviderRequest,
+    ProvidersSamlImportMetadataCreateRequest,
 } from "@goauthentik/api";
 
 export type OneOfProvider =
     | Partial<SCIMProviderRequest>
     | Partial<SAMLProviderRequest>
+    | Partial<ProvidersSamlImportMetadataCreateRequest>
     | Partial<RadiusProviderRequest>
     | Partial<ProxyProviderRequest>
     | Partial<OAuth2ProviderRequest>

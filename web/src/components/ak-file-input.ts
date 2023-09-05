@@ -2,7 +2,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 
 import { msg } from "@lit/localize";
 import { html, nothing } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, query } from "lit/decorators.js";
 
 @customElement("ak-file-input")
 export class AkFileInput extends AKElement {
@@ -39,6 +39,13 @@ export class AkFileInput extends AKElement {
 
     @property({ type: String })
     help = "";
+
+    @query('input[type="file"]')
+    input!: HTMLInputElement;
+    
+    get files() {
+        return this.input.files;
+    }
 
     render() {
         const currentMsg =

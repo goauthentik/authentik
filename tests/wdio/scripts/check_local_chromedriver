@@ -20,7 +20,7 @@ fi;
 
 # The path to the working folder for the test project, as a subfolder of the monorepo. This will be
 # help us find where the driver is kept for comparison.
-SUBFOLDER="authentik-live-tests"
+SUBFOLDER="wdio"
 
 # The variant of Chrome we expect under Linux. There are a lot of variants, like Midori, chromium,
 # chromium-browser, etc. If you're not running the version supplied by Google, you'll have to change

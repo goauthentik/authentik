@@ -6,16 +6,54 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { html } from "lit";
+import { ifDefined } from "lit/directives/if-defined.js";
 
-import { FlowsInstancesListDesignationEnum } from "@goauthentik/api";
+import { FlowsInstancesListDesignationEnum, ProvidersSamlImportMetadataCreateRequest } from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel";
+import { query } from "lit/decorators.js";
+import { AkFileInput } from "@goauthentik/components/ak-file-input";
 
 @customElement("ak-application-wizard-authentication-by-saml-import")
 export class ApplicationWizardProviderSamlImport extends BaseProviderPanel {
+
+    @query('ak-file-input[name="metadata"]')
+    fileInput!: AkFileInput;
+
+    handleChange(ev: InputEvent) {
+        if (!ev.target) {
+            console.warn(`Received event with no target: ${ev}`);
+            return;
+        }
+        const target = ev.target as HTMLInputElement;
+        if (target.type === "file") {
+            const file = this.fileInput.files?.[0] ?? null;
+            if (file) {
+                this.dispatchWizardUpdate({
+                    update: {
+                        provider: {
+                            file
+                        },
+                    },
+                    status: this.form.checkValidity() ? "valid" : "invalid",
+                });
+            }
+            return;
+        }
+        super.handleChange(ev);
+    }
+
     render() {
+        const provider = this.wizard.provider as ProvidersSamlImportMetadataCreateRequest | undefined;
+
         return html` <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
-            <ak-text-input name="name" label=${msg("Name")} required></ak-text-input>
+            <ak-text-input
+                name="name"
+                value=${ifDefined(provider?.name)}
+                label=${msg("Name")}
+                required
+                help=${msg("Method's display Name.")}
+            ></ak-text-input>
 
             <ak-form-element-horizontal
                 label=${msg("Authorization flow")}

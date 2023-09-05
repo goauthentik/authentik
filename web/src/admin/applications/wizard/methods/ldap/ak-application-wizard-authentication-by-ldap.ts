@@ -117,7 +117,6 @@ export class ApplicationWizardApplicationDetails extends BaseProviderPanel {
 
                     <ak-text-input
                         label=${msg("TLS Server name")}
-                        required
                         name="tlsServerName"
                         value="${first(provider?.tlsServerName, "")}"
                         help=${tlsServerNameHelp}
