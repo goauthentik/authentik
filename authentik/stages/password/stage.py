@@ -111,7 +111,7 @@ class PasswordStageView(ChallengeStageView):
         current_stage: PasswordStage = self.executor.current_stage
         if (
             self.request.session[SESSION_KEY_INVALID_TRIES]
-            > current_stage.failed_attempts_before_cancel
+            >= current_stage.failed_attempts_before_cancel
         ):
             self.logger.debug("User has exceeded maximum tries")
             del self.request.session[SESSION_KEY_INVALID_TRIES]
