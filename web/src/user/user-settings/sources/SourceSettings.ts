@@ -1,4 +1,4 @@
-import { renderSourceIcon } from "@goauthentik/admin/sources/SourceViewPage";
+import { renderSourceIcon } from "@goauthentik/app/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
