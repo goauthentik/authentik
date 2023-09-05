@@ -69,7 +69,7 @@ export class AkCryptoCertificateSearch extends CustomListenerElement(AKElement) 
     }
 
     get value() {
-        return this.selectedKeypair ? renderValue(this.selectedKeypair) : undefined;
+        return this.selectedKeypair ? renderValue(this.selectedKeypair) : null;
     }
 
     connectedCallback() {
