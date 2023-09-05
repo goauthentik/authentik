@@ -83,7 +83,7 @@
         "@storybook/web-components": "^7.4.0",
         "@storybook/web-components-vite": "^7.4.0",
         "@trivago/prettier-plugin-sort-imports": "^4.2.0",
-        "@types/chart.js": "^2.9.37",
+        "@types/chart.js": "^2.9.38",
         "@types/codemirror": "5.60.10",
         "@types/grecaptcha": "^3.0.4",
         "@typescript-eslint/eslint-plugin": "^6.5.0",
