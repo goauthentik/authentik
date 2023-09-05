@@ -362,10 +362,15 @@ class FlowExecutorView(APIView):
     def restart_flow(self, keep_context=False) -> HttpResponse:
         """Restart the currently active flow, optionally keeping the current context"""
         planner = FlowPlanner(self.flow)
+        planner.use_cache = False
         default_context = None
         if keep_context:
             default_context = self.plan.context
-        plan = planner.plan(self.request, default_context)
+        try:
+            plan = planner.plan(self.request, default_context)
+        except FlowNonApplicableException as exc:
+            self._logger.warning("f(exec): Flow restart not applicable to current user", exc=exc)
+            return self.handle_invalid_flow(exc)
         self.request.session[SESSION_KEY_PLAN] = plan
         kwargs = self.kwargs
         kwargs.update({"flow_slug": self.flow.slug})
