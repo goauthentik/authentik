@@ -93,6 +93,9 @@ class MobileDevice(SerializerModel, Device):
     device_id = models.TextField(unique=True)
     firebase_token = models.TextField(blank=True)
 
+    state = models.JSONField(default=dict)
+    last_checkin = models.DateTimeField(auto_now=True)
+
     @property
     def serializer(self) -> Serializer:
         from authentik.stages.authenticator_mobile.api.device import MobileDeviceSerializer
@@ -108,6 +111,8 @@ class MobileDevice(SerializerModel, Device):
 
 
 class TransactionStates(models.TextChoices):
+    """States a transaction can be in"""
+
     wait = "wait"
     accept = "accept"
     deny = "deny"

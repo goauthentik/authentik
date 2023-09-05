@@ -1,10 +1,11 @@
 """AuthenticatorMobileStage API Views"""
 from django.http import Http404
+from django.utils.timezone import now
 from django_filters.rest_framework.backends import DjangoFilterBackend
 from drf_spectacular.utils import OpenApiResponse, extend_schema, inline_serializer
 from rest_framework import mixins
 from rest_framework.decorators import action
-from rest_framework.fields import CharField, ChoiceField, UUIDField
+from rest_framework.fields import CharField, ChoiceField, JSONField, UUIDField
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
@@ -24,15 +25,6 @@ from authentik.stages.authenticator_mobile.models import (
 )
 
 
-class MobileDeviceSerializer(ModelSerializer):
-    """Serializer for Mobile authenticator devices"""
-
-    class Meta:
-        model = MobileDevice
-        fields = ["pk", "name"]
-        depth = 2
-
-
 class MobileDeviceInfoSerializer(PassiveSerializer):
     """Info about a mobile device"""
 
@@ -46,6 +38,19 @@ class MobileDeviceInfoSerializer(PassiveSerializer):
     model = CharField()
     hostname = CharField()
     app_version = CharField()
+
+    others = JSONField()
+
+
+class MobileDeviceSerializer(ModelSerializer):
+    """Serializer for Mobile authenticator devices"""
+
+    last_checkin = MobileDeviceInfoSerializer(read_only=True)
+
+    class Meta:
+        model = MobileDevice
+        fields = ["pk", "name", "state", "last_checkin"]
+        depth = 2
 
 
 class MobileDeviceCheckInSerializer(PassiveSerializer):
@@ -211,6 +216,29 @@ class MobileDeviceViewSet(
             raise Http404
         transaction.status = data.validated_data["status"]
         transaction.save()
+        return Response(status=204)
+
+    @extend_schema(
+        responses={
+            204: OpenApiResponse(description="Checked in"),
+        },
+        request=MobileDeviceInfoSerializer,
+    )
+    @action(
+        methods=["POST"],
+        detail=True,
+        permission_classes=[],
+        filter_backends=[],
+        authentication_classes=[MobileDeviceTokenAuthentication],
+    )
+    def check_in(self, request: Request, pk: str) -> Response:
+        """Check in data about a device"""
+        data = MobileDeviceInfoSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        device: MobileDevice = self.get_object()
+        device.last_checkin = now()
+        device.state = data.validated_data
+        device.save()
         return Response(status=204)
 
 

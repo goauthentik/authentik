@@ -6040,6 +6040,11 @@
                     "minLength": 1,
                     "title": "Name",
                     "description": "The human-readable name of this device."
+                },
+                "state": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "State"
                 }
             },
             "required": []
