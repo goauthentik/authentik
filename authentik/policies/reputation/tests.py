@@ -3,6 +3,8 @@ from django.core.cache import cache
 from django.test import RequestFactory, TestCase
 
 from authentik.core.models import User
+from authentik.lib.generators import generate_id
+from authentik.policies.reputation.api import ReputationPolicySerializer
 from authentik.policies.reputation.models import CACHE_KEY_PREFIX, Reputation, ReputationPolicy
 from authentik.policies.reputation.tasks import save_reputation
 from authentik.policies.types import PolicyRequest
@@ -61,3 +63,8 @@ class TestReputationPolicy(TestCase):
             name="reputation-test", threshold=0
         )
         self.assertTrue(policy.passes(request).passing)
+
+    def test_api(self):
+        """Test API Validation"""
+        no_toggle = ReputationPolicySerializer(data={"name": generate_id(), "threshold": -5})
+        self.assertFalse(no_toggle.is_valid())

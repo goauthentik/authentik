@@ -93,7 +93,7 @@ doesn't pass when either or both of the selected options are equal or above the 
                             <input
                                 class="pf-c-switch__input"
                                 type="checkbox"
-                                ?checked=${first(this.instance?.checkIp, false)}
+                                ?checked=${first(this.instance?.checkIp, true)}
                             />
                             <span class="pf-c-switch__toggle">
                                 <span class="pf-c-switch__toggle-icon">
