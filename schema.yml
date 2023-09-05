@@ -28495,11 +28495,11 @@ components:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/Permission'
+            $ref: '#/components/schemas/ConsentPermission'
         additional_permissions:
           type: array
           items:
-            $ref: '#/components/schemas/Permission'
+            $ref: '#/components/schemas/ConsentPermission'
         token:
           type: string
       required:
@@ -28522,6 +28522,17 @@ components:
           minLength: 1
       required:
       - token
+    ConsentPermission:
+      type: object
+      description: Permission used for consent
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+      required:
+      - id
+      - name
     ConsentStage:
       type: object
       description: ConsentStage Serializer
@@ -36742,17 +36753,6 @@ components:
           type: string
           minLength: 1
           maxLength: 200
-    Permission:
-      type: object
-      description: Permission used for consent
-      properties:
-        name:
-          type: string
-        id:
-          type: string
-      required:
-      - id
-      - name
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
