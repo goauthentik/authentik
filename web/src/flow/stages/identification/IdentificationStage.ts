@@ -1,4 +1,4 @@
-import { renderSourceIcon } from "@goauthentik/admin/sources/SourceViewPage";
+import { renderSourceIcon } from "@goauthentik/app/admin/sources/utils";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/forms/FormElement";
