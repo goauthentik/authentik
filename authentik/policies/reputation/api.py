@@ -1,5 +1,7 @@
 """Reputation policy API Views"""
+from django.utils.translation import gettext_lazy as _
 from rest_framework import mixins
+from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
@@ -10,6 +12,11 @@ from authentik.policies.reputation.models import Reputation, ReputationPolicy
 
 class ReputationPolicySerializer(PolicySerializer):
     """Reputation Policy Serializer"""
+
+    def validate(self, attrs: dict) -> dict:
+        if not attrs.get("check_ip", False) and not attrs.get("check_username", False):
+            raise ValidationError(_("Either IP or Username must be checked"))
+        return super().validate(attrs)
 
     class Meta:
         model = ReputationPolicy
