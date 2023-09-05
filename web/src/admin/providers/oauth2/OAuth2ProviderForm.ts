@@ -205,8 +205,8 @@ ${this.instance?.redirectUris}</textarea
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
                         <ak-crypto-certificate-search
-                            certificate=${this.instance?.signingKey}
-                            singleton
+                            certificate=${ifDefined(this.instance?.signingKey || "")}
+                            ?singleton=${!this.instance}
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
                     </ak-form-element-horizontal>
