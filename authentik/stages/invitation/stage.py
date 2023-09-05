@@ -21,10 +21,6 @@ INVITATION = "invitation"
 class InvitationStageView(StageView):
     """Finalise Authentication flow by logging the user in"""
 
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Wrapper for post requests"""
-        return self.get(request)
-
     def get_token(self) -> Optional[str]:
         """Get token from saved get-arguments or prompt_data"""
         # Check for ?token= and ?itoken=
@@ -55,7 +51,7 @@ class InvitationStageView(StageView):
             return None
         return invite
 
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Apply data to the current flow based on a URL"""
         stage: InvitationStage = self.executor.current_stage
 

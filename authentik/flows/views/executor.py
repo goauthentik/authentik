@@ -295,7 +295,7 @@ class FlowExecutorView(APIView):
                 span.set_data("Method", "GET")
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
-                stage_response = self.current_stage_view.get(request, *args, **kwargs)
+                stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
             return self.handle_exception(exc)
@@ -339,7 +339,7 @@ class FlowExecutorView(APIView):
                 span.set_data("Method", "POST")
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
-                stage_response = self.current_stage_view.post(request, *args, **kwargs)
+                stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
             return self.handle_exception(exc)
