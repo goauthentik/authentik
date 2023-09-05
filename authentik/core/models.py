@@ -127,6 +127,11 @@ class Group(SerializerModel):
         )
 
 
+class Role(models.Model):
+    uuid = models.UUIDField(default=uuid4, editable=False, unique=True, primary_key=True)
+    group = models.OneToOneField("auth.Group", on_delete=models.CASCADE)
+
+
 class UserManager(DjangoUserManager):
     """User manager that doesn't assign is_superuser and is_staff"""
 

@@ -5,8 +5,8 @@ from uuid import uuid4
 from django.http import HttpRequest, HttpResponse
 from django.utils.timezone import now
 from rest_framework.fields import CharField
-from authentik.core.api.utils import PassiveSerializer
 
+from authentik.core.api.utils import PassiveSerializer
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,

@@ -8,6 +8,7 @@ import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/PermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -22,7 +23,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SAMLMetadata, SAMLSource, SourcesApi } from "@goauthentik/api";
+import { CoreRbacUserListModelEnum, SAMLMetadata, SAMLSource, SourcesApi } from "@goauthentik/api";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
@@ -206,6 +207,12 @@ export class SAMLSourceViewPage extends AKElement {
                     </div>
                 </div>
             </div>
+            <ak-rbac-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${CoreRbacUserListModelEnum.SourcesSamlSamlsource}
+                objectPk=${this.source.pk}
+            ></ak-rbac-permission-page>
         </ak-tabs>`;
     }
 }
