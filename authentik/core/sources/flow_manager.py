@@ -48,7 +48,7 @@ class Action(Enum):
 class MessageStage(StageView):
     """Show a pre-configured message after the flow is done"""
 
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Show a pre-configured message after the flow is done"""
         message = getattr(self.executor.current_stage, "message", "")
         level = getattr(self.executor.current_stage, "level", messages.SUCCESS)
@@ -58,10 +58,6 @@ class MessageStage(StageView):
             message,
         )
         return self.executor.stage_ok()
-
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Wrapper for post requests"""
-        return self.get(request)
 
 
 class SourceFlowManager:
