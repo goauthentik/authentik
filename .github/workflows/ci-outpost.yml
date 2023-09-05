@@ -12,7 +12,7 @@ on:
 
 jobs:
   lint-golint:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, arm64, ubuntu]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
@@ -33,7 +33,7 @@ jobs:
           args: --timeout 5000s --verbose
           skip-pkg-cache: true
   test-unittest:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, arm64, ubuntu]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
@@ -48,7 +48,7 @@ jobs:
     needs:
       - lint-golint
       - test-unittest
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, arm64, ubuntu]
     steps:
       - run: echo mark
   build-container:
@@ -62,7 +62,7 @@ jobs:
           - proxy
           - ldap
           - radius
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, arm64, ubuntu]
     steps:
       - uses: actions/checkout@v4
         with:
@@ -103,7 +103,7 @@ jobs:
     timeout-minutes: 120
     needs:
       - ci-outpost-mark
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, arm64, ubuntu]
     strategy:
       fail-fast: false
       matrix:
