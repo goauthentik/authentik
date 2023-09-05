@@ -1,10 +1,11 @@
 """API URLs"""
+from rest_framework import routers
+
 from authentik.stages.authenticator_mobile.api.device import (
     AdminMobileDeviceViewSet,
     MobileDeviceViewSet,
 )
 from authentik.stages.authenticator_mobile.api.stage import AuthenticatorMobileStageViewSet
-from rest_framework import routers
 
 # Separate router which is used for the subset-schema generation
 # for the cloud-gateway we (currently) only want the mobile device endpoints

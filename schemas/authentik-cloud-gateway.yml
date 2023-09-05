@@ -209,6 +209,43 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /authenticators/mobile/{uuid}/check_in/:
+    post:
+      operationId: authenticators_mobile_check_in_create
+      description: Check in data about a device
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Mobile Device.
+        required: true
+      tags:
+      - authenticators
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MobileDeviceInfoRequest'
+        required: true
+      security:
+      - mobile_device_token: []
+      responses:
+        '204':
+          description: Checked in
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /authenticators/mobile/{uuid}/enrollment_callback/:
     post:
       operationId: authenticators_mobile_enrollment_callback_create
@@ -435,7 +472,15 @@ components:
           type: string
           description: The human-readable name of this device.
           maxLength: 64
+        state:
+          type: object
+          additionalProperties: {}
+        last_checkin:
+          allOf:
+          - $ref: '#/components/schemas/MobileDeviceInfo'
+          readOnly: true
       required:
+      - last_checkin
       - name
     MobileDeviceEnrollmentCallback:
       type: object
@@ -471,6 +516,30 @@ components:
       description: |-
         * `success` - Success
         * `waiting` - Waiting
+    MobileDeviceInfo:
+      type: object
+      description: Info about a mobile device
+      properties:
+        platform:
+          $ref: '#/components/schemas/PlatformEnum'
+        os_version:
+          type: string
+        model:
+          type: string
+        hostname:
+          type: string
+        app_version:
+          type: string
+        others:
+          type: object
+          additionalProperties: {}
+      required:
+      - app_version
+      - hostname
+      - model
+      - os_version
+      - others
+      - platform
     MobileDeviceInfoRequest:
       type: object
       description: Info about a mobile device
@@ -489,11 +558,15 @@ components:
         app_version:
           type: string
           minLength: 1
+        others:
+          type: object
+          additionalProperties: {}
       required:
       - app_version
       - hostname
       - model
       - os_version
+      - others
       - platform
     MobileDeviceRequest:
       type: object
@@ -508,6 +581,9 @@ components:
           minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
+        state:
+          type: object
+          additionalProperties: {}
       required:
       - name
     MobileDeviceResponseRequest:
@@ -591,6 +667,9 @@ components:
           minLength: 1
           description: The human-readable name of this device.
           maxLength: 64
+        state:
+          type: object
+          additionalProperties: {}
     PlatformEnum:
       enum:
       - ios
