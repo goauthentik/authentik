@@ -6,6 +6,7 @@ from rest_framework.authentication import BaseAuthentication, get_authorization_
 from rest_framework.request import Request
 
 from authentik.api.authentication import validate_auth
+from authentik.core.middleware import CTX_AUTH_VIA
 from authentik.core.models import User
 from authentik.stages.authenticator_mobile.models import MobileDeviceToken
 
@@ -20,7 +21,7 @@ class MobileDeviceTokenAuthentication(BaseAuthentication):
         device_token: MobileDeviceToken = MobileDeviceToken.objects.filter(token=raw_token).first()
         if not device_token:
             return None
-
+        CTX_AUTH_VIA.set("mobile_token")
         return (device_token.user, None)
 
 
