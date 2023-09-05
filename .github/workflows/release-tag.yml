@@ -10,7 +10,7 @@ jobs:
     name: Create Release from Tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Pre-release test
         run: |
           echo "PG_PASS=$(openssl rand -base64 32)" >> .env
