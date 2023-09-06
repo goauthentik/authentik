@@ -4,15 +4,13 @@ title: "Reference topic"
 
 Create a title that specifies the component you are documenting. For example, "Group attributes".
 
+Provide a sentence or two about the topic.
+
 Reference documentation provides details, values, syntax, etc., about specific programming elements.
 
 The most common type of reference documentation is for REST APIs; the request syntax, a successful response, any parameters such as query, header, or request body parameters, and possible http status codes.
 
-Other types of reference content include lists of functions, parameters, event actions, and attributes.
-
-## Overview
-
-Provide a sentence or two about the topic.
+Other types of reference content include lists of functions, parameters, object properties, event actions, and attributes.
 
 ## Head 2
 
