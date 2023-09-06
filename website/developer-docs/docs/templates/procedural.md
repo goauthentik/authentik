@@ -3,9 +3,11 @@ title: "Procedural topic"
 ---
 
 :::info
-**How to use this template**: start with the [markdown version](./procedural-md.md) of the template, either a simple copy/paste or download the template file using the following command:
+**How to use this template**: start with the [markdown version](./procedural.tmpl.md) of the template, either copying the file from the local repo or download the template file using the following command:
 
-`wget https://github.com/goauthentik/authentik/tree/main/website/developer-docs/docs/templates/procedural-md.md`
+```
+wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/developer-docs/docs/templates/templates/procedural.tmpl.md
+```
 
 Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [General Guidelines](../writing-documentation#general-guidelines) for writing tips and authentik-specific rules.
 :::
