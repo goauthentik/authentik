@@ -2,6 +2,16 @@
 title: "Reference topic"
 ---
 
+:::info
+**How to use this template**: start with the markdown version of the template, either by copying the [`reference.tmpl.md`](https://github.com/goauthentik/authentik/tree/main/website/developer-docs/docs/templates) file from our GitHub repo or downloading the template file using the following command:
+
+```
+wget https://github.com/goauthentik/authentik/blob/main/website/developer-docs/docs/templates/reference.tmpl.md
+```
+
+Edit your markdown file as you work, reading this page for the descriptions of each section. You can build out a "stub file" with just headers, then gradually add content to each section. Use screenshots sparingly, only for complex UIs where it is difficult to describe a UI element with words. Refer to our [General Guidelines](../writing-documentation#general-guidelines) for writing tips and authentik-specific rules.
+:::
+
 Create a title that specifies the component you are documenting. For example, "Group attributes".
 
 Provide a sentence or two about the topic.
