@@ -22,10 +22,10 @@ Use tables, bullet lists, Head3s... whatever you need to clearly present the val
 
 Be sure to use a sentence after every heading, to explain what the section is about, how the values are used, etc.
 
-## Head 3 (optional, if needed)
+### Head 3 (optional, if needed)
 
 Add a sentence explaining the following grouping.
 
-## Head 3 (optional, if needed)
+### Head 3 (optional, if needed)
 
 Add a sentence explaining the following grouping.
