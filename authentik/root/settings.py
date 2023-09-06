@@ -324,6 +324,7 @@ LOCALE_PATHS = ["./locale"]
 CELERY = {
     "task_soft_time_limit": 600,
     "worker_max_tasks_per_child": 50,
+    "worker_cancel_long_running_tasks_on_connection_loss": False,
     "worker_concurrency": 2,
     "beat_schedule": {
         "clean_expired_models": {
