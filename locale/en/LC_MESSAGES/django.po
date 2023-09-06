@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-30 17:44+0000\n"
+"POT-Creation-Date: 2023-09-02 15:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -323,6 +323,14 @@ msgstr ""
 
 #: authentik/crypto/models.py:102
 msgid "Certificate-Key Pairs"
+msgstr ""
+
+#: authentik/enterprise/models.py:193
+msgid "License Usage"
+msgstr ""
+
+#: authentik/enterprise/models.py:194
+msgid "License Usage Records"
 msgstr ""
 
 #: authentik/events/models.py:290
@@ -804,12 +812,20 @@ msgstr ""
 msgid "Password Policies"
 msgstr ""
 
-#: authentik/policies/reputation/models.py:58
+#: authentik/policies/reputation/models.py:67
 msgid "Reputation Policy"
 msgstr ""
 
-#: authentik/policies/reputation/models.py:59
+#: authentik/policies/reputation/models.py:68
 msgid "Reputation Policies"
+msgstr ""
+
+#: authentik/policies/reputation/models.py:95
+msgid "Reputation Score"
+msgstr ""
+
+#: authentik/policies/reputation/models.py:96
+msgid "Reputation Scores"
 msgstr ""
 
 #: authentik/policies/templates/policies/denied.html:7
@@ -1242,11 +1258,11 @@ msgstr ""
 msgid "Radius Providers"
 msgstr ""
 
-#: authentik/providers/saml/api/providers.py:260
+#: authentik/providers/saml/api/providers.py:257
 msgid "Invalid XML Syntax"
 msgstr ""
 
-#: authentik/providers/saml/api/providers.py:270
+#: authentik/providers/saml/api/providers.py:267
 #, python-format
 msgid "Failed to import Metadata: %(message)s"
 msgstr ""

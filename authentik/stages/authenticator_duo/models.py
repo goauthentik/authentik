@@ -5,7 +5,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django_otp.models import Device
 from duo_client.admin import Admin
 from duo_client.auth import Auth
 from rest_framework.serializers import BaseSerializer, Serializer
@@ -14,6 +13,7 @@ from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.http import authentik_user_agent
+from authentik.stages.authenticator.models import Device
 
 
 class AuthenticatorDuoStage(ConfigurableStage, FriendlyNamedStage, Stage):

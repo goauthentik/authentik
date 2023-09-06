@@ -3,9 +3,6 @@ from base64 import b32decode
 from time import sleep
 from urllib.parse import parse_qs, urlparse
 
-from django_otp.oath import TOTP
-from django_otp.plugins.otp_static.models import StaticDevice, StaticToken
-from django_otp.plugins.otp_totp.models import TOTPDevice
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as ec
@@ -13,8 +10,13 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 from authentik.blueprints.tests import apply_blueprint
 from authentik.flows.models import Flow
-from authentik.stages.authenticator_static.models import AuthenticatorStaticStage
-from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
+from authentik.stages.authenticator.oath import TOTP
+from authentik.stages.authenticator_static.models import (
+    AuthenticatorStaticStage,
+    StaticDevice,
+    StaticToken,
+)
+from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDevice
 from tests.e2e.utils import SeleniumTestCase, retry
 
 

@@ -13,7 +13,6 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/debug"
-	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
 	sentryutils "goauthentik.io/internal/utils/sentry"
@@ -21,8 +20,6 @@ import (
 	"goauthentik.io/internal/web"
 	"goauthentik.io/internal/web/tenant_tls"
 )
-
-var running = true
 
 var rootCmd = &cobra.Command{
 	Use:     "authentik",
@@ -63,38 +60,23 @@ var rootCmd = &cobra.Command{
 		ex := common.Init()
 		defer common.Defer()
 
-		u, _ := url.Parse("http://localhost:8000")
-
-		g := gounicorn.New()
-		defer func() {
-			l.Info("shutting down gunicorn")
-			g.Kill()
-		}()
-		ws := web.NewWebServer(g)
-		g.HealthyCallback = func() {
-			if !config.Get().Outposts.DisableEmbeddedOutpost {
-				go attemptProxyStart(ws, u)
-			}
+		u, err := url.Parse(fmt.Sprintf("http://%s", config.Get().Listen.HTTP))
+		if err != nil {
+			panic(err)
 		}
-		go web.RunMetricsServer()
-		go attemptStartBackend(g)
+
+		ws := web.NewWebServer()
+		ws.Core().HealthyCallback = func() {
+			if config.Get().Outposts.DisableEmbeddedOutpost {
+				return
+			}
+			go attemptProxyStart(ws, u)
+		}
 		ws.Start()
 		<-ex
-		running = false
 		l.Info("shutting down webserver")
 		go ws.Shutdown()
-
 	},
-}
-
-func attemptStartBackend(g *gounicorn.GoUnicorn) {
-	for {
-		if !running {
-			return
-		}
-		err := g.Start()
-		log.WithField("logger", "authentik.router").WithError(err).Warning("gunicorn process died, restarting")
-	}
 }
 
 func attemptProxyStart(ws *web.WebServer, u *url.URL) {

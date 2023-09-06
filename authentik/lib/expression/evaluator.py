@@ -7,7 +7,6 @@ from typing import Any, Iterable, Optional
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError
-from django_otp import devices_for_user
 from guardian.shortcuts import get_anonymous_user
 from rest_framework.serializers import ValidationError
 from sentry_sdk.hub import Hub
@@ -20,6 +19,7 @@ from authentik.lib.utils.http import get_http_session
 from authentik.policies.models import Policy, PolicyBinding
 from authentik.policies.process import PolicyProcess
 from authentik.policies.types import PolicyRequest, PolicyResult
+from authentik.stages.authenticator import devices_for_user
 
 LOGGER = get_logger()
 

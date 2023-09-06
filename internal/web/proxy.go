@@ -2,10 +2,10 @@ package web
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/http/httputil"
-	"net/url"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
@@ -14,10 +14,9 @@ import (
 
 func (ws *WebServer) configureProxy() {
 	// Reverse proxy to the application server
-	u, _ := url.Parse("http://localhost:8000")
 	director := func(req *http.Request) {
-		req.URL.Scheme = u.Scheme
-		req.URL.Host = u.Host
+		req.URL.Scheme = ws.ul.Scheme
+		req.URL.Host = ws.ul.Host
 		if _, ok := req.Header["User-Agent"]; !ok {
 			// explicitly disable User-Agent so it's not set to default value
 			req.Header.Set("User-Agent", "")
@@ -27,7 +26,10 @@ func (ws *WebServer) configureProxy() {
 		}
 		ws.log.WithField("url", req.URL.String()).WithField("headers", req.Header).Trace("tracing request to backend")
 	}
-	rp := &httputil.ReverseProxy{Director: director}
+	rp := &httputil.ReverseProxy{
+		Director:  director,
+		Transport: ws.upstreamHttpClient().Transport,
+	}
 	rp.ErrorHandler = ws.proxyErrorHandler
 	rp.ModifyResponse = ws.proxyModifyResponse
 	ws.m.PathPrefix("/outpost.goauthentik.io").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
@@ -43,14 +45,14 @@ func (ws *WebServer) configureProxy() {
 			}).Observe(float64(elapsed))
 			return
 		}
-		ws.proxyErrorHandler(rw, r, fmt.Errorf("proxy not running"))
+		ws.proxyErrorHandler(rw, r, errors.New("proxy not running"))
 	})
 	ws.m.Path("/-/health/live/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(204)
 	}))
 	ws.m.PathPrefix("/").HandlerFunc(sentry.SentryNoSample(func(rw http.ResponseWriter, r *http.Request) {
-		if !ws.p.IsRunning() {
-			ws.proxyErrorHandler(rw, r, fmt.Errorf("authentik core not running yet"))
+		if !ws.g.IsRunning() {
+			ws.proxyErrorHandler(rw, r, errors.New("authentik starting"))
 			return
 		}
 		before := time.Now()
@@ -82,17 +84,14 @@ func (ws *WebServer) proxyErrorHandler(rw http.ResponseWriter, req *http.Request
 	ws.log.WithError(err).Warning("failed to proxy to backend")
 	rw.WriteHeader(http.StatusBadGateway)
 	em := fmt.Sprintf("failed to connect to authentik backend: %v", err)
-	if !ws.p.IsRunning() {
-		em = "authentik starting..."
-	}
 	// return json if the client asks for json
 	if req.Header.Get("Accept") == "application/json" {
-		eem, _ := json.Marshal(map[string]string{
+		err = json.NewEncoder(rw).Encode(map[string]string{
 			"error": em,
 		})
-		em = string(eem)
+	} else {
+		_, err = rw.Write([]byte(em))
 	}
-	_, err = rw.Write([]byte(em))
 	if err != nil {
 		ws.log.WithError(err).Warning("failed to write error message")
 	}

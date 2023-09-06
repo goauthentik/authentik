@@ -1,5 +1,5 @@
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/node:20 as website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as website-builder
 
 COPY ./website /work/website/
 COPY ./blueprints /work/blueprints/
@@ -10,7 +10,7 @@ WORKDIR /work/website
 RUN npm ci --include=dev && npm run build-docs-only
 
 # Stage 2: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/node:20 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as web-builder
 
 COPY ./web /work/web/
 COPY ./website /work/website/

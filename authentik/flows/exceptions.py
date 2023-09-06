@@ -26,3 +26,8 @@ class EmptyFlowException(SentryIgnoredException):
 
 class FlowSkipStageException(SentryIgnoredException):
     """Exception to skip a stage"""
+
+
+class StageInvalidException(SentryIgnoredException):
+    """Exception can be thrown in a `Challenge` or `ChallengeResponse` serializer's
+    validation to trigger a `executor.stage_invalid()` response"""

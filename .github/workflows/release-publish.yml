@@ -8,7 +8,7 @@ jobs:
   build-server:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2.2.0
       - name: Set up Docker Buildx
@@ -55,7 +55,7 @@ jobs:
           - ldap
           - radius
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
@@ -106,13 +106,13 @@ jobs:
         goos: [linux, darwin]
         goarch: [amd64, arm64]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - name: Build web
@@ -141,7 +141,7 @@ jobs:
       - build-outpost-binary
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Run test suite in final docker images
         run: |
           echo "PG_PASS=$(openssl rand -base64 32)" >> .env
@@ -157,7 +157,7 @@ jobs:
       - build-outpost-binary
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: prepare variables
         uses: ./.github/actions/docker-push-variables
         id: ev

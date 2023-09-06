@@ -295,7 +295,7 @@ class FlowExecutorView(APIView):
                 span.set_data("Method", "GET")
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
-                stage_response = self.current_stage_view.get(request, *args, **kwargs)
+                stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
             return self.handle_exception(exc)
@@ -339,7 +339,7 @@ class FlowExecutorView(APIView):
                 span.set_data("Method", "POST")
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
-                stage_response = self.current_stage_view.post(request, *args, **kwargs)
+                stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
             return self.handle_exception(exc)
@@ -362,10 +362,15 @@ class FlowExecutorView(APIView):
     def restart_flow(self, keep_context=False) -> HttpResponse:
         """Restart the currently active flow, optionally keeping the current context"""
         planner = FlowPlanner(self.flow)
+        planner.use_cache = False
         default_context = None
         if keep_context:
             default_context = self.plan.context
-        plan = planner.plan(self.request, default_context)
+        try:
+            plan = planner.plan(self.request, default_context)
+        except FlowNonApplicableException as exc:
+            self._logger.warning("f(exec): Flow restart not applicable to current user", exc=exc)
+            return self.handle_invalid_flow(exc)
         self.request.session[SESSION_KEY_PLAN] = plan
         kwargs = self.kwargs
         kwargs.update({"flow_slug": self.flow.slug})

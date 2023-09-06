@@ -13,7 +13,7 @@ class PostUserEnrollmentStage(StageView):
     """Dynamically injected stage which saves the Connection after
     the user has been enrolled."""
 
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Stage used after the user has been enrolled"""
         connection: UserSourceConnection = self.executor.plan.context[
             PLAN_CONTEXT_SOURCES_CONNECTION
@@ -27,7 +27,3 @@ class PostUserEnrollmentStage(StageView):
             source=connection.source,
         ).from_http(self.request)
         return self.executor.stage_ok()
-
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Wrapper for post requests"""
-        return self.get(request)

@@ -10,6 +10,6 @@ The most common types are:
 
 -   [**Conceptual**](./conceptual.md): these docs provide the WHY information, and explain when to use a feature (or when not to!), and general concepts behind the feature or functionality.
 
--   **Reference**: this is typically tables or lists of reference information, such as configuration values, or functions, or most commmonly APIs.
+-   [**Reference**](./reference.md): this is typically tables or lists of reference information, such as configuration values, or functions, or most commmonly APIs.
 
 We have templates for the different types, to make it super-easy for whomever wants to contribute some documentation!

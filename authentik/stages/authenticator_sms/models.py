@@ -6,7 +6,6 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.views import View
-from django_otp.models import SideChannelDevice
 from requests.exceptions import RequestException
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer
@@ -21,6 +20,7 @@ from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.utils.errors import exception_to_string
 from authentik.lib.utils.http import get_http_session
+from authentik.stages.authenticator.models import SideChannelDevice
 
 LOGGER = get_logger()
 
