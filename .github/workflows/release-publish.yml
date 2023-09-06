@@ -112,7 +112,7 @@ jobs:
           go-version-file: "go.mod"
       - uses: actions/setup-node@v3.8.1
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - name: Build web
