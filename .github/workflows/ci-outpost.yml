@@ -120,9 +120,9 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - name: Generate API

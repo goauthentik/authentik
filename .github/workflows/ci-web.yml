@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
@@ -31,9 +31,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
@@ -47,9 +47,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
@@ -63,9 +63,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
@@ -95,9 +95,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/

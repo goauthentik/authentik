@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
@@ -29,9 +29,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
@@ -50,9 +50,9 @@ jobs:
           - build-docs-only
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: website/package-lock.json
       - working-directory: website/
