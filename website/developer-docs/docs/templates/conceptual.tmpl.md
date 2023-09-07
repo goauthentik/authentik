@@ -18,4 +18,4 @@ Provide more conceptual details.
 
 ##Important considerations
 
-List anything users should know before implementing the fature/technology.
+List anything users should know before implementing the feature/technology.
