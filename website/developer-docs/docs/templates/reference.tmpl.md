@@ -14,8 +14,6 @@ After a brief description of this section, list the reference values.
 
 Consider using a table if that is cleaner looking.
 
-
-
 ### Head 3 (optional, if needed)
 
 After a brief description of this section, list the reference values.
