@@ -38,6 +38,7 @@
         "@lit-labs/context": "^0.4.0",
         "@lit-labs/task": "^3.0.2",
         "@lit/localize": "^0.11.4",
+        "@open-wc/lit-helpers": "^0.6.0",
         "@patternfly/elements": "^2.4.0",
         "@patternfly/patternfly": "^4.224.2",
         "@sentry/browser": "^7.68.0",
