@@ -184,8 +184,6 @@ export class AdminInterface extends Interface {
             children?: SidebarEntry[],
         ];
 
-        type SidebarRenderer = (_: SidebarEntry) => TemplateResult;
-
         // prettier-ignore
         const sidebarContent: SidebarEntry[] = [
             ["/if/user/", msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
@@ -223,6 +221,8 @@ export class AdminInterface extends Interface {
         ];
 
         // Typescript requires the type here to correctly type the recursive path
+        type SidebarRenderer = (_: SidebarEntry) => TemplateResult;
+
         const renderOneSidebarItem: SidebarRenderer = ([path, label, attributes, children]) => {
             const properties = Array.isArray(attributes)
                 ? { ".activeWhen": attributes }
@@ -236,43 +236,56 @@ export class AdminInterface extends Interface {
             </ak-sidebar-item>`;
         };
 
+        // prettier-ignore
         return html`
-            ${this.version && this.version.versionCurrent !== VERSION
-                ? html`
-                      <ak-sidebar-item ?highlight=${true}>
-                          <span slot="label"
-                              >${msg("A newer version of the frontend is available.")}</span
-                          >
-                      </ak-sidebar-item>
-                  `
-                : nothing}
-            ${this.user?.original
-                ? html`<ak-sidebar-item
-                      ?highlight=${true}
-                      @click=${() => {
-                          new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
-                              window.location.reload();
-                          });
-                      }}
-                  >
-                      <span slot="label"
-                          >${msg(
-                              str`You're currently impersonating ${this.user.user.username}. Click to stop.`,
-                          )}</span
-                      >
-                  </ak-sidebar-item>`
-                : nothing}
+            ${this.renderNewVersionMessage()}
+            ${this.renderImpersonationMessage()}
             ${map(sidebarContent, renderOneSidebarItem)}
-            ${this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
-                ? html`
-                      <ak-sidebar-item>
-                          <span slot="label">${msg("Enterprise")}</span>
-                          <ak-sidebar-item path="/enterprise/licenses">
-                              <span slot="label">${msg("Licenses")}</span>
-                          </ak-sidebar-item>
-                      </ak-sidebar-item>
-                  `
-                : nothing}
+            ${this.renderEnterpriseMessage()}
         `;
+    }
+
+    renderNewVersionMessage() {
+        return this.version && this.version.versionCurrent !== VERSION
+            ? html`
+                  <ak-sidebar-item ?highlight=${true}>
+                      <span slot="label"
+                          >${msg("A newer version of the frontend is available.")}</span
+                      >
+                  </ak-sidebar-item>
+              `
+            : nothing;
+    }
+
+    renderImpersonationMessage() {
+        return this.user?.original
+            ? html`<ak-sidebar-item
+                  ?highlight=${true}
+                  @click=${() => {
+                      new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
+                          window.location.reload();
+                      });
+                  }}
+              >
+                  <span slot="label"
+                      >${msg(
+                          str`You're currently impersonating ${this.user.user.username}. Click to stop.`,
+                      )}</span
+                  >
+              </ak-sidebar-item>`
+            : nothing;
+    }
+
+    renderEnterpriseMessage() {
+        return this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
+            ? html`
+                  <ak-sidebar-item>
+                      <span slot="label">${msg("Enterprise")}</span>
+                      <ak-sidebar-item path="/enterprise/licenses">
+                          <span slot="label">${msg("Licenses")}</span>
+                      </ak-sidebar-item>
+                  </ak-sidebar-item>
+              `
+            : nothing;
     }
 }
