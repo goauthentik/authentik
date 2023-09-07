@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM docker.io/golang:1.21.0-bookworm AS builder
+FROM docker.io/golang:1.21.1-bookworm AS builder
 
 WORKDIR /go/src/goauthentik.io
 
