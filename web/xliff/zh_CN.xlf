@@ -3042,11 +3042,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>当前没有策略绑定到此对象。</target>
         
       </trans-unit>
-      <trans-unit id="s6b66ad92d4c1a0a8">
-        <source>Create &amp; bind Policy</source>
-        <target>创建 &amp; 绑定策略</target>
-        
-      </trans-unit>
       <trans-unit id="sddb040c47daae56b">
         <source>Bind existing policy</source>
         <target>绑定已有策略</target>
@@ -3565,11 +3560,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s19b09f4fc72175d1">
         <source>Create a new source.</source>
         <target>创建一个新身份来源。</target>
-        
-      </trans-unit>
-      <trans-unit id="sf96b3cc66d2e25f8">
-        <source>Federation &amp; Social login</source>
-        <target>联结与社交登录</target>
         
       </trans-unit>
       <trans-unit id="s6152026c364ad974">
@@ -6141,11 +6131,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>绑定阶段</target>
         
       </trans-unit>
-      <trans-unit id="se8eb190d8f084f80">
-        <source>Create &amp; bind Stage</source>
-        <target>创建 &amp; 绑定阶段</target>
-        
-      </trans-unit>
       <trans-unit id="scc2e420c54dc8089">
         <source>Bind existing stage</source>
         <target>绑定已有阶段</target>
@@ -6890,19 +6875,9 @@ Bindings to groups/users are checked against the user of the event.</source>
         <target>自定义</target>
         
       </trans-unit>
-      <trans-unit id="s58398dbcff942947">
-        <source>Flows &amp; Stages</source>
-        <target>流程与阶段</target>
-        
-      </trans-unit>
       <trans-unit id="sc0829ee663ced008">
         <source>Directory</source>
         <target>目录</target>
-        
-      </trans-unit>
-      <trans-unit id="sdf4e926513e26458">
-        <source>Tokens &amp; App passwords</source>
-        <target>令牌和应用程序密码</target>
         
       </trans-unit>
       <trans-unit id="sa81e2cdaf6921adc">
@@ -7775,6 +7750,22 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s7f68101a50f526ee">
   <source>Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.</source>
   <target>静态拒绝流。要有效地使用此阶段，请在相应的绑定上禁用*规划时进行评估*。</target>
+</trans-unit>
+<trans-unit id="s911a27022aba349f">
+  <source>Create and bind Policy</source>
+  <target>创建与绑定策略</target>
+</trans-unit>
+<trans-unit id="sb1a4e9b288e2f005">
+  <source>Federation and Social login</source>
+  <target>联结与社交登录</target>
+</trans-unit>
+<trans-unit id="s6f367f5604d5056d">
+  <source>Create and bind Stage</source>
+  <target>创建与绑定阶段</target>
+</trans-unit>
+<trans-unit id="s1a65ee08832fbfe2">
+  <source>Flows and Stages</source>
+  <target>流程与阶段</target>
 </trans-unit>
     </body>
   </file>
