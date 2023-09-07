@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-06-19 17:34+0000\n"
+"POT-Creation-Date: 2023-09-02 15:45+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2023\n"
 "Language-Team: Chinese (China) (https://app.transifex.com/authentik/teams/119923/zh_CN/)\n"
@@ -29,11 +29,11 @@ msgstr ""
 msgid "Successfully re-scheduled Task %(name)s!"
 msgstr "已成功重新安排任务 %(name)s！"
 
-#: authentik/api/schema.py:21
+#: authentik/api/schema.py:25
 msgid "Generic API Error"
 msgstr "通用 API 错误"
 
-#: authentik/api/schema.py:29
+#: authentik/api/schema.py:33
 msgid "Validation Error"
 msgstr "校验错误"
 
@@ -64,11 +64,11 @@ msgstr ""
 "由 authentik 管理的对象。这些对象会自动创建和更新。此标记仅仅表明对象可以被 Migration 覆盖。您仍然可以通过 API "
 "修改对象，但这些修改可能会在之后的更新中被覆盖。"
 
-#: authentik/blueprints/models.py:109
+#: authentik/blueprints/models.py:112
 msgid "Blueprint Instance"
 msgstr "蓝图实例"
 
-#: authentik/blueprints/models.py:110
+#: authentik/blueprints/models.py:113
 msgid "Blueprint Instances"
 msgstr "蓝图实例"
 
@@ -90,141 +90,141 @@ msgstr "来自元数据的 SAML 提供程序"
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr "通过导入元数据来创建 SAML 提供程序。"
 
-#: authentik/core/api/users.py:143
+#: authentik/core/api/users.py:158
 msgid "No leading or trailing slashes allowed."
 msgstr "不允许前缀或后缀斜线。"
 
-#: authentik/core/api/users.py:146
+#: authentik/core/api/users.py:161
 msgid "No empty segments in user path allowed."
 msgstr "不允许用户路径包含空段。"
 
-#: authentik/core/models.py:74
+#: authentik/core/models.py:86
 msgid "name"
 msgstr "名称"
 
-#: authentik/core/models.py:76
+#: authentik/core/models.py:88
 msgid "Users added to this group will be superusers."
 msgstr "添加到该组的用户均为超级用户。"
 
-#: authentik/core/models.py:150
+#: authentik/core/models.py:142
 msgid "User's display name."
 msgstr "用户的显示名称。"
 
-#: authentik/core/models.py:243 authentik/providers/oauth2/models.py:294
+#: authentik/core/models.py:268 authentik/providers/oauth2/models.py:295
 msgid "User"
 msgstr "用户"
 
-#: authentik/core/models.py:244
+#: authentik/core/models.py:269
 msgid "Users"
 msgstr "用户"
 
-#: authentik/core/models.py:257
+#: authentik/core/models.py:282
 msgid ""
 "Flow used for authentication when the associated application is accessed by "
 "an un-authenticated user."
 msgstr "当关联应用程序被未验证身份的用户访问时，用于身份验证的流程。"
 
-#: authentik/core/models.py:267
+#: authentik/core/models.py:292
 msgid "Flow used when authorizing this provider."
 msgstr "授权此提供程序时使用的流程。"
 
-#: authentik/core/models.py:279
+#: authentik/core/models.py:304
 msgid ""
 "Accessed from applications; optional backchannel providers for protocols "
 "like LDAP and SCIM."
 msgstr "从应用程序访问；为类似 LDAP 和 SCIM 的协议提供的可选反向通道提供程序。"
 
-#: authentik/core/models.py:334
+#: authentik/core/models.py:359
 msgid "Application's display Name."
 msgstr "应用的显示名称。"
 
-#: authentik/core/models.py:335
+#: authentik/core/models.py:360
 msgid "Internal application name, used in URLs."
 msgstr "应用的内部名称，在 URL 中使用。"
 
-#: authentik/core/models.py:347
+#: authentik/core/models.py:372
 msgid "Open launch URL in a new browser tab or window."
 msgstr "在新浏览器标签页或窗口中打开启动 URL。"
 
-#: authentik/core/models.py:411
+#: authentik/core/models.py:436
 msgid "Application"
 msgstr "应用程序"
 
-#: authentik/core/models.py:412
+#: authentik/core/models.py:437
 msgid "Applications"
 msgstr "应用程序"
 
-#: authentik/core/models.py:418
+#: authentik/core/models.py:443
 msgid "Use the source-specific identifier"
 msgstr "使用源特定的标识符"
 
-#: authentik/core/models.py:420
+#: authentik/core/models.py:445
 msgid ""
 "Link to a user with identical email address. Can have security implications "
 "when a source doesn't validate email addresses."
 msgstr "链接到电子邮件地址相同的用户。当源不验证电子邮件地址时，可能会有安全隐患。"
 
-#: authentik/core/models.py:424
+#: authentik/core/models.py:449
 msgid ""
 "Use the user's email address, but deny enrollment when the email address "
 "already exists."
 msgstr "使用用户的电子邮件地址，但在电子邮件地址已存在时拒绝注册。"
 
-#: authentik/core/models.py:427
+#: authentik/core/models.py:452
 msgid ""
 "Link to a user with identical username. Can have security implications when "
 "a username is used with another source."
 msgstr "链接到用户名相同的用户。当其他源使用相同用户名时，可能会有安全隐患。"
 
-#: authentik/core/models.py:431
+#: authentik/core/models.py:456
 msgid ""
 "Use the user's username, but deny enrollment when the username already "
 "exists."
 msgstr "使用用户的用户名，但在用户名已存在时拒绝注册。"
 
-#: authentik/core/models.py:438
+#: authentik/core/models.py:463
 msgid "Source's display Name."
 msgstr "源的显示名称。"
 
-#: authentik/core/models.py:439
+#: authentik/core/models.py:464
 msgid "Internal source name, used in URLs."
 msgstr "源的内部名称，在 URL 中使用。"
 
-#: authentik/core/models.py:458
+#: authentik/core/models.py:483
 msgid "Flow to use when authenticating existing users."
 msgstr "认证已存在用户时所使用的流程。"
 
-#: authentik/core/models.py:467
+#: authentik/core/models.py:492
 msgid "Flow to use when enrolling new users."
 msgstr "新用户注册的流程。"
 
-#: authentik/core/models.py:475
+#: authentik/core/models.py:500
 msgid ""
 "How the source determines if an existing user should be authenticated or a "
 "new user enrolled."
 msgstr "源怎样确定应该验证已有用户的身份还是注册新用户。"
 
-#: authentik/core/models.py:647
+#: authentik/core/models.py:672
 msgid "Token"
 msgstr "令牌"
 
-#: authentik/core/models.py:648
+#: authentik/core/models.py:673
 msgid "Tokens"
 msgstr "令牌"
 
-#: authentik/core/models.py:689
+#: authentik/core/models.py:714
 msgid "Property Mapping"
 msgstr "属性映射"
 
-#: authentik/core/models.py:690
+#: authentik/core/models.py:715
 msgid "Property Mappings"
 msgstr "属性映射"
 
-#: authentik/core/models.py:725
+#: authentik/core/models.py:750
 msgid "Authenticated Session"
 msgstr "已认证会话"
 
-#: authentik/core/models.py:726
+#: authentik/core/models.py:751
 msgid "Authenticated Sessions"
 msgstr "已认证会话"
 
@@ -307,12 +307,12 @@ msgstr ""
 msgid "Go home"
 msgstr "前往首页"
 
-#: authentik/core/templates/login/base_full.html:90
+#: authentik/core/templates/login/base_full.html:89
 msgid "Powered by authentik"
 msgstr "由 authentik 强力驱动"
 
 #: authentik/core/views/apps.py:53
-#: authentik/providers/oauth2/views/authorize.py:386
+#: authentik/providers/oauth2/views/authorize.py:393
 #: authentik/providers/oauth2/views/device_init.py:70
 #: authentik/providers/saml/views/sso.py:70
 #, python-format
@@ -340,6 +340,14 @@ msgstr "证书密钥对"
 #: authentik/crypto/models.py:102
 msgid "Certificate-Key Pairs"
 msgstr "证书密钥对"
+
+#: authentik/enterprise/models.py:193
+msgid "License Usage"
+msgstr "许可证使用情况"
+
+#: authentik/enterprise/models.py:194
+msgid "License Usage Records"
+msgstr "许可证使用情况记录"
 
 #: authentik/events/models.py:290
 msgid "Event"
@@ -443,7 +451,7 @@ msgstr "Webhook 映射"
 msgid "Webhook Mappings"
 msgstr "Webhook 映射"
 
-#: authentik/events/monitored_tasks.py:195
+#: authentik/events/monitored_tasks.py:205
 msgid "Task has not been run yet."
 msgstr "任务尚未运行。"
 
@@ -452,55 +460,55 @@ msgstr "任务尚未运行。"
 msgid "Flow not applicable to current user/request: %(messages)s"
 msgstr "流程不适用于当前用户/请求：%(messages)s"
 
-#: authentik/flows/api/flows_diagram.py:67
-#: authentik/flows/api/flows_diagram.py:93
+#: authentik/flows/api/flows_diagram.py:68
+#: authentik/flows/api/flows_diagram.py:94
 #, python-format
 msgid "Policy (%(type)s)"
 msgstr "策略（%(type)s）"
 
-#: authentik/flows/api/flows_diagram.py:70
+#: authentik/flows/api/flows_diagram.py:71
 #, python-format
 msgid "Binding %(order)d"
 msgstr "绑定 %(order)d"
 
-#: authentik/flows/api/flows_diagram.py:117
+#: authentik/flows/api/flows_diagram.py:118
 msgid "Policy passed"
 msgstr "策略通过"
 
-#: authentik/flows/api/flows_diagram.py:121
+#: authentik/flows/api/flows_diagram.py:122
 #, python-format
 msgid "Stage (%(type)s)"
 msgstr "阶段（%(type)s）"
 
-#: authentik/flows/api/flows_diagram.py:145
-#: authentik/flows/api/flows_diagram.py:205
+#: authentik/flows/api/flows_diagram.py:146
+#: authentik/flows/api/flows_diagram.py:206
 msgid "Policy denied"
 msgstr "策略拒绝"
 
-#: authentik/flows/api/flows_diagram.py:155
-#: authentik/flows/api/flows_diagram.py:167
-#: authentik/flows/api/flows_diagram.py:204
-#: authentik/flows/api/flows_diagram.py:226
+#: authentik/flows/api/flows_diagram.py:156
+#: authentik/flows/api/flows_diagram.py:168
+#: authentik/flows/api/flows_diagram.py:205
+#: authentik/flows/api/flows_diagram.py:227
 msgid "End of the flow"
 msgstr "流程结束"
 
-#: authentik/flows/api/flows_diagram.py:168
+#: authentik/flows/api/flows_diagram.py:169
 msgid "Requirement not fulfilled"
 msgstr "需求条件未达成"
 
-#: authentik/flows/api/flows_diagram.py:176
+#: authentik/flows/api/flows_diagram.py:177
 msgid "Flow authentication requirement"
 msgstr "流程身份验证需求"
 
-#: authentik/flows/api/flows_diagram.py:182
+#: authentik/flows/api/flows_diagram.py:183
 msgid "Requirement fulfilled"
 msgstr "需求条件已达成"
 
-#: authentik/flows/api/flows_diagram.py:195
+#: authentik/flows/api/flows_diagram.py:196
 msgid "Pre-flow policies"
 msgstr "流程前置策略"
 
-#: authentik/flows/api/flows_diagram.py:213 authentik/flows/models.py:193
+#: authentik/flows/api/flows_diagram.py:214 authentik/flows/models.py:193
 msgid "Flow"
 msgstr "流程"
 
@@ -682,14 +690,14 @@ msgid "Dummy Policies"
 msgstr "虚拟策略"
 
 #: authentik/policies/event_matcher/api.py:20
-#: authentik/policies/event_matcher/models.py:55
+#: authentik/policies/event_matcher/models.py:56
 msgid ""
 "Match events created by selected application. When left empty, all "
 "applications are matched."
 msgstr "匹配选定应用程序创建的事件。如果留空，则匹配所有应用程序。"
 
 #: authentik/policies/event_matcher/api.py:29
-#: authentik/policies/event_matcher/models.py:63
+#: authentik/policies/event_matcher/models.py:64
 msgid ""
 "Match events created by selected model. When left empty, all models are "
 "matched. When an app is selected, all the application's models are matched."
@@ -699,23 +707,23 @@ msgstr "匹配选定模型创建的事件。如果留空，则匹配所有模型
 msgid "At least one criteria must be set."
 msgstr "必须至少设置一项标准。"
 
-#: authentik/policies/event_matcher/models.py:47
+#: authentik/policies/event_matcher/models.py:48
 msgid ""
 "Match created events with this action type. When left empty, all action "
 "types will be matched."
 msgstr "将创建的事件与此操作类型匹配。留空时，所有操作类型都将匹配。"
 
-#: authentik/policies/event_matcher/models.py:71
+#: authentik/policies/event_matcher/models.py:73
 msgid ""
 "Matches Event's Client IP (strict matching, for network matching use an "
 "Expression Policy)"
 msgstr "匹配事件的客户端 IP（严格匹配，要匹配网段请使用表达式策略）"
 
-#: authentik/policies/event_matcher/models.py:141
+#: authentik/policies/event_matcher/models.py:143
 msgid "Event Matcher Policy"
 msgstr "事件匹配策略"
 
-#: authentik/policies/event_matcher/models.py:142
+#: authentik/policies/event_matcher/models.py:144
 msgid "Event Matcher Policies"
 msgstr "事件匹配策略"
 
@@ -824,13 +832,21 @@ msgstr "密码策略"
 msgid "Password Policies"
 msgstr "密码策略"
 
-#: authentik/policies/reputation/models.py:58
+#: authentik/policies/reputation/models.py:67
 msgid "Reputation Policy"
 msgstr "信誉策略"
 
-#: authentik/policies/reputation/models.py:59
+#: authentik/policies/reputation/models.py:68
 msgid "Reputation Policies"
 msgstr "信誉策略"
+
+#: authentik/policies/reputation/models.py:95
+msgid "Reputation Score"
+msgstr "信誉分数"
+
+#: authentik/policies/reputation/models.py:96
+msgid "Reputation Scores"
+msgstr "信誉分数"
 
 #: authentik/policies/templates/policies/denied.html:7
 #: authentik/policies/templates/policies/denied.html:11
@@ -946,217 +962,217 @@ msgid ""
 "this method only if you have different UPN and Mail domains."
 msgstr "基于用户的 UPN，仅当用户设置了 'upn' 属性时才有效。仅当您有不同的 UPN 和 Mail 域时才使用此方法。"
 
-#: authentik/providers/oauth2/models.py:42
+#: authentik/providers/oauth2/models.py:43
 msgid "Confidential"
 msgstr "机密"
 
-#: authentik/providers/oauth2/models.py:43
+#: authentik/providers/oauth2/models.py:44
 msgid "Public"
 msgstr "公开"
 
-#: authentik/providers/oauth2/models.py:65
+#: authentik/providers/oauth2/models.py:66
 msgid "Same identifier is used for all providers"
 msgstr "所有提供程序都使用相同的标识符"
 
-#: authentik/providers/oauth2/models.py:67
+#: authentik/providers/oauth2/models.py:68
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr "根据应用程序 Slug，每个提供程序都有不同的颁发者。"
 
-#: authentik/providers/oauth2/models.py:74
+#: authentik/providers/oauth2/models.py:75
 msgid "code (Authorization Code Flow)"
 msgstr "code（授权码流程）"
 
-#: authentik/providers/oauth2/models.py:75
+#: authentik/providers/oauth2/models.py:76
 msgid "id_token (Implicit Flow)"
 msgstr "id_token（隐式流程）"
 
-#: authentik/providers/oauth2/models.py:76
+#: authentik/providers/oauth2/models.py:77
 msgid "id_token token (Implicit Flow)"
 msgstr "id_token token（隐式流程）"
 
-#: authentik/providers/oauth2/models.py:77
+#: authentik/providers/oauth2/models.py:78
 msgid "code token (Hybrid Flow)"
 msgstr "code token（混合流程）"
 
-#: authentik/providers/oauth2/models.py:78
+#: authentik/providers/oauth2/models.py:79
 msgid "code id_token (Hybrid Flow)"
 msgstr "code id_token（混合流程）"
 
-#: authentik/providers/oauth2/models.py:79
+#: authentik/providers/oauth2/models.py:80
 msgid "code id_token token (Hybrid Flow)"
 msgstr "code id_token token（混合流程）"
 
-#: authentik/providers/oauth2/models.py:85
+#: authentik/providers/oauth2/models.py:86
 msgid "HS256 (Symmetric Encryption)"
 msgstr "HS256（对称加密）"
 
-#: authentik/providers/oauth2/models.py:86
+#: authentik/providers/oauth2/models.py:87
 msgid "RS256 (Asymmetric Encryption)"
 msgstr "RS256（非对称加密）"
 
-#: authentik/providers/oauth2/models.py:87
+#: authentik/providers/oauth2/models.py:88
 msgid "ES256 (Asymmetric Encryption)"
 msgstr "ES256（非对称加密）"
 
-#: authentik/providers/oauth2/models.py:93
+#: authentik/providers/oauth2/models.py:94
 msgid "Scope used by the client"
 msgstr "客户端使用的作用域"
 
-#: authentik/providers/oauth2/models.py:97
+#: authentik/providers/oauth2/models.py:98
 msgid ""
 "Description shown to the user when consenting. If left empty, the user won't"
 " be informed."
 msgstr "同意授权时向用户显示的描述。如果留空，则不会告知用户。"
 
-#: authentik/providers/oauth2/models.py:116
+#: authentik/providers/oauth2/models.py:117
 msgid "Scope Mapping"
 msgstr "作用域映射"
 
-#: authentik/providers/oauth2/models.py:117
+#: authentik/providers/oauth2/models.py:118
 msgid "Scope Mappings"
 msgstr "作用域映射"
 
-#: authentik/providers/oauth2/models.py:127
+#: authentik/providers/oauth2/models.py:128
 msgid "Client Type"
 msgstr "客户端类型"
 
-#: authentik/providers/oauth2/models.py:129
+#: authentik/providers/oauth2/models.py:130
 msgid ""
 "Confidential clients are capable of maintaining the confidentiality of their"
 " credentials. Public clients are incapable"
 msgstr "机密客户端有能力维护其凭据的机密性。公开客户端无此能力。"
 
-#: authentik/providers/oauth2/models.py:136
+#: authentik/providers/oauth2/models.py:137
 msgid "Client ID"
 msgstr "客户端 ID"
 
-#: authentik/providers/oauth2/models.py:142
+#: authentik/providers/oauth2/models.py:143
 msgid "Client Secret"
 msgstr "客户端密钥"
 
-#: authentik/providers/oauth2/models.py:148
+#: authentik/providers/oauth2/models.py:149
 msgid "Redirect URIs"
 msgstr "重定向 URI"
 
-#: authentik/providers/oauth2/models.py:149
+#: authentik/providers/oauth2/models.py:150
 msgid "Enter each URI on a new line."
 msgstr "每行输入一个 URI。"
 
-#: authentik/providers/oauth2/models.py:154
+#: authentik/providers/oauth2/models.py:155
 msgid "Include claims in id_token"
 msgstr "在 id_token 中包含声明"
 
-#: authentik/providers/oauth2/models.py:156
+#: authentik/providers/oauth2/models.py:157
 msgid ""
 "Include User claims from scopes in the id_token, for applications that don't"
 " access the userinfo endpoint."
 msgstr "对于不访问 userinfo 端点的应用程序，将来自作用域的用户声明包含在 id_token 中。"
 
-#: authentik/providers/oauth2/models.py:165
+#: authentik/providers/oauth2/models.py:166
 msgid ""
 "Access codes not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
 msgstr "从当前时间经过多久时或之后，访问代码无效（格式：hours=1;minutes=2;seconds=3）。"
 
-#: authentik/providers/oauth2/models.py:173
-#: authentik/providers/oauth2/models.py:181
+#: authentik/providers/oauth2/models.py:174
+#: authentik/providers/oauth2/models.py:182
 msgid ""
 "Tokens not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
 msgstr "从当前时间经过多久时或之后，令牌无效（格式：hours=1;minutes=2;seconds=3）。"
 
-#: authentik/providers/oauth2/models.py:190
+#: authentik/providers/oauth2/models.py:191
 msgid ""
 "Configure what data should be used as unique User Identifier. For most "
 "cases, the default should be fine."
 msgstr "配置应将哪些数据用作唯一用户标识符。在大多数情况下保持默认值即可。"
 
-#: authentik/providers/oauth2/models.py:197
+#: authentik/providers/oauth2/models.py:198
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr "配置如何填写 ID 令牌的颁发者字段。"
 
-#: authentik/providers/oauth2/models.py:202
+#: authentik/providers/oauth2/models.py:203
 msgid "Signing Key"
 msgstr "签名密钥"
 
-#: authentik/providers/oauth2/models.py:206
+#: authentik/providers/oauth2/models.py:207
 msgid ""
 "Key used to sign the tokens. Only required when JWT Algorithm is set to "
 "RS256."
 msgstr "用于签名令牌的密钥。仅当 JWT 算法设置为 RS256 时才需要。"
 
-#: authentik/providers/oauth2/models.py:213
+#: authentik/providers/oauth2/models.py:214
 msgid ""
 "Any JWT signed by the JWK of the selected source can be used to "
 "authenticate."
 msgstr "任何由选定来源的 JWK 签发的 JWT 都可以用于身份验证。"
 
-#: authentik/providers/oauth2/models.py:286
+#: authentik/providers/oauth2/models.py:287
 msgid "OAuth2/OpenID Provider"
 msgstr "OAuth2/OpenID 提供程序"
 
-#: authentik/providers/oauth2/models.py:287
+#: authentik/providers/oauth2/models.py:288
 msgid "OAuth2/OpenID Providers"
 msgstr "OAuth2/OpenID 提供程序"
 
-#: authentik/providers/oauth2/models.py:296
-#: authentik/providers/oauth2/models.py:428
+#: authentik/providers/oauth2/models.py:297
+#: authentik/providers/oauth2/models.py:429
 msgid "Scopes"
 msgstr "作用域"
 
-#: authentik/providers/oauth2/models.py:315
+#: authentik/providers/oauth2/models.py:316
 msgid "Code"
 msgstr "代码"
 
-#: authentik/providers/oauth2/models.py:316
+#: authentik/providers/oauth2/models.py:317
 msgid "Nonce"
 msgstr "Nonce"
 
-#: authentik/providers/oauth2/models.py:317
+#: authentik/providers/oauth2/models.py:318
 msgid "Code Challenge"
 msgstr "代码质询"
 
-#: authentik/providers/oauth2/models.py:319
+#: authentik/providers/oauth2/models.py:320
 msgid "Code Challenge Method"
 msgstr "代码质询方法"
 
-#: authentik/providers/oauth2/models.py:339
+#: authentik/providers/oauth2/models.py:340
 msgid "Authorization Code"
 msgstr "授权代码"
 
-#: authentik/providers/oauth2/models.py:340
+#: authentik/providers/oauth2/models.py:341
 msgid "Authorization Codes"
 msgstr "授权代码"
 
-#: authentik/providers/oauth2/models.py:382
+#: authentik/providers/oauth2/models.py:383
 msgid "OAuth2 Access Token"
 msgstr "OAuth2 访问令牌"
 
-#: authentik/providers/oauth2/models.py:383
+#: authentik/providers/oauth2/models.py:384
 msgid "OAuth2 Access Tokens"
 msgstr "OAuth2 访问令牌"
 
-#: authentik/providers/oauth2/models.py:393
+#: authentik/providers/oauth2/models.py:394
 msgid "ID Token"
 msgstr "ID 令牌"
 
-#: authentik/providers/oauth2/models.py:412
+#: authentik/providers/oauth2/models.py:413
 msgid "OAuth2 Refresh Token"
 msgstr "OAuth2 刷新令牌"
 
-#: authentik/providers/oauth2/models.py:413
+#: authentik/providers/oauth2/models.py:414
 msgid "OAuth2 Refresh Tokens"
 msgstr "OAuth2 刷新令牌"
 
-#: authentik/providers/oauth2/models.py:440
+#: authentik/providers/oauth2/models.py:441
 msgid "Device Token"
 msgstr "设备令牌"
 
-#: authentik/providers/oauth2/models.py:441
+#: authentik/providers/oauth2/models.py:442
 msgid "Device Tokens"
 msgstr "设备令牌"
 
-#: authentik/providers/oauth2/views/authorize.py:441
+#: authentik/providers/oauth2/views/authorize.py:448
 #: authentik/providers/saml/views/flows.py:87
 #, python-format
 msgid "Redirecting to %(app)s..."
@@ -1166,20 +1182,20 @@ msgstr "正在跳转到 %(app)s…"
 msgid "Invalid code"
 msgstr "无效代码"
 
-#: authentik/providers/oauth2/views/userinfo.py:51
-#: authentik/providers/oauth2/views/userinfo.py:52
+#: authentik/providers/oauth2/views/userinfo.py:55
+#: authentik/providers/oauth2/views/userinfo.py:56
 msgid "GitHub Compatibility: Access your User Information"
 msgstr "GitHub 兼容性：访问您的用户信息"
 
-#: authentik/providers/oauth2/views/userinfo.py:53
+#: authentik/providers/oauth2/views/userinfo.py:57
 msgid "GitHub Compatibility: Access you Email addresses"
 msgstr "GitHub 兼容性：访问您的电子邮件地址"
 
-#: authentik/providers/oauth2/views/userinfo.py:54
+#: authentik/providers/oauth2/views/userinfo.py:58
 msgid "GitHub Compatibility: Access your Groups"
 msgstr "GitHub 兼容性：访问您的组"
 
-#: authentik/providers/oauth2/views/userinfo.py:55
+#: authentik/providers/oauth2/views/userinfo.py:59
 msgid "authentik API Access on behalf of your user"
 msgstr "代表您的用户访问 authentik API"
 
@@ -1187,7 +1203,7 @@ msgstr "代表您的用户访问 authentik API"
 msgid "User and password attributes must be set when basic auth is enabled."
 msgstr "启用 Basic Auth 时，必须设置用户和密码属性。"
 
-#: authentik/providers/proxy/api.py:62
+#: authentik/providers/proxy/api.py:63
 msgid "Internal host cannot be empty when forward auth is disabled."
 msgstr "禁用 Forward Auth  时，内部主机不能为空。"
 
@@ -1273,11 +1289,11 @@ msgstr "Radius 提供程序"
 msgid "Radius Providers"
 msgstr "Radius 提供程序"
 
-#: authentik/providers/saml/api/providers.py:260
+#: authentik/providers/saml/api/providers.py:257
 msgid "Invalid XML Syntax"
 msgstr "无效 XML 语法"
 
-#: authentik/providers/saml/api/providers.py:270
+#: authentik/providers/saml/api/providers.py:267
 #, python-format
 msgid "Failed to import Metadata: %(message)s"
 msgstr "导入元数据失败：%(message)s"
@@ -1404,31 +1420,31 @@ msgstr "SAML 属性映射"
 msgid "SAML Property Mappings"
 msgstr "SAML 属性映射"
 
-#: authentik/providers/scim/models.py:26
+#: authentik/providers/scim/models.py:20
 msgid "Base URL to SCIM requests, usually ends in /v2"
 msgstr "SCIM 请求的基础 URL，通常以 /v2 结尾"
 
-#: authentik/providers/scim/models.py:27
+#: authentik/providers/scim/models.py:21
 msgid "Authentication token"
 msgstr "身份验证令牌"
 
-#: authentik/providers/scim/models.py:33 authentik/sources/ldap/models.py:94
+#: authentik/providers/scim/models.py:27 authentik/sources/ldap/models.py:94
 msgid "Property mappings used for group creation/updating."
 msgstr "用于创建/更新组的属性映射。"
 
-#: authentik/providers/scim/models.py:75
+#: authentik/providers/scim/models.py:60
 msgid "SCIM Provider"
 msgstr "SCIM 提供程序"
 
-#: authentik/providers/scim/models.py:76
+#: authentik/providers/scim/models.py:61
 msgid "SCIM Providers"
 msgstr "SCIM 提供程序"
 
-#: authentik/providers/scim/models.py:96
+#: authentik/providers/scim/models.py:81
 msgid "SCIM Mapping"
 msgstr "SCIM 映射"
 
-#: authentik/providers/scim/models.py:97
+#: authentik/providers/scim/models.py:82
 msgid "SCIM Mappings"
 msgstr "SCIM 映射"
 
@@ -1558,7 +1574,7 @@ msgstr "LDAP 属性映射"
 msgid "LDAP Property Mappings"
 msgstr "LDAP 属性映射"
 
-#: authentik/sources/ldap/signals.py:59
+#: authentik/sources/ldap/signals.py:50
 msgid "Password does not match Active Directory Complexity."
 msgstr "密码与 Active Directory 复杂度不匹配。"
 
@@ -1907,11 +1923,11 @@ msgstr "代码不匹配"
 msgid "Invalid phone number"
 msgstr "无效电话号码"
 
-#: authentik/stages/authenticator_static/models.py:46
+#: authentik/stages/authenticator_static/models.py:47
 msgid "Static Authenticator Stage"
 msgstr "静态身份验证器阶段"
 
-#: authentik/stages/authenticator_static/models.py:47
+#: authentik/stages/authenticator_static/models.py:48
 msgid "Static Authenticator Stages"
 msgstr "静态身份验证器阶段"
 
@@ -1931,7 +1947,7 @@ msgstr "TOTP 身份验证器设置阶段"
 msgid "TOTP Authenticator Setup Stages"
 msgstr "TOTP 身份验证器设置阶段"
 
-#: authentik/stages/authenticator_validate/challenge.py:123
+#: authentik/stages/authenticator_validate/challenge.py:131
 msgid "Invalid Token"
 msgstr "无效令牌"
 
@@ -2053,45 +2069,45 @@ msgstr "虚拟阶段"
 msgid "Dummy Stages"
 msgstr "虚拟阶段"
 
-#: authentik/stages/email/models.py:25
+#: authentik/stages/email/models.py:26
 msgid "Password Reset"
 msgstr "密码重置"
 
-#: authentik/stages/email/models.py:29
+#: authentik/stages/email/models.py:30
 msgid "Account Confirmation"
 msgstr "账户确认"
 
-#: authentik/stages/email/models.py:58
+#: authentik/stages/email/models.py:59
 msgid ""
 "When enabled, global Email connection settings will be used and connection "
 "settings below will be ignored."
 msgstr "启用后，将使用全局电子邮件连接设置，下面的连接设置将被忽略。"
 
-#: authentik/stages/email/models.py:73
+#: authentik/stages/email/models.py:74
 msgid "Activate users upon completion of stage."
 msgstr "完成阶段后激活用户。"
 
-#: authentik/stages/email/models.py:77
+#: authentik/stages/email/models.py:78
 msgid "Time in minutes the token sent is valid."
 msgstr "发出令牌的有效时间（单位为分钟）。"
 
-#: authentik/stages/email/models.py:122
+#: authentik/stages/email/models.py:132
 msgid "Email Stage"
 msgstr "电子邮件阶段"
 
-#: authentik/stages/email/models.py:123
+#: authentik/stages/email/models.py:133
 msgid "Email Stages"
 msgstr "电子邮件阶段"
 
-#: authentik/stages/email/stage.py:112
+#: authentik/stages/email/stage.py:117
 msgid "Successfully verified Email."
 msgstr "已成功验证电子邮件。"
 
-#: authentik/stages/email/stage.py:119 authentik/stages/email/stage.py:141
+#: authentik/stages/email/stage.py:124 authentik/stages/email/stage.py:146
 msgid "No pending user."
 msgstr "没有待处理的用户。"
 
-#: authentik/stages/email/stage.py:131
+#: authentik/stages/email/stage.py:136
 msgid "Email sent."
 msgstr "电子邮件已发出。"
 
@@ -2225,11 +2241,11 @@ msgstr "识别阶段"
 msgid "Identification Stages"
 msgstr "识别阶段"
 
-#: authentik/stages/identification/stage.py:184
+#: authentik/stages/identification/stage.py:188
 msgid "Log in"
 msgstr "登录"
 
-#: authentik/stages/identification/stage.py:185
+#: authentik/stages/identification/stage.py:189
 msgid "Continue"
 msgstr "继续"
 
@@ -2477,16 +2493,16 @@ msgstr "用户写入阶段"
 msgid "User Write Stages"
 msgstr "用户写入阶段"
 
-#: authentik/stages/user_write/stage.py:133
+#: authentik/stages/user_write/stage.py:134
 msgid "No Pending data."
 msgstr "没有待处理的数据。"
 
-#: authentik/stages/user_write/stage.py:139
+#: authentik/stages/user_write/stage.py:140
 msgid "No user found and can't create new user."
 msgstr "未找到用户并且无法创建新用户。"
 
-#: authentik/stages/user_write/stage.py:156
-#: authentik/stages/user_write/stage.py:170
+#: authentik/stages/user_write/stage.py:157
+#: authentik/stages/user_write/stage.py:171
 msgid "Failed to update user. Please try again later."
 msgstr "更新用户失败。请稍后重试。"
 
