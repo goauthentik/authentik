@@ -34,8 +34,11 @@ def ldap_sync_all():
 
 
 @CELERY_APP.task(
-    soft_time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
-    task_time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
+    # We take the configured hours timeout time by 2.5 as we run user and
+    # group in parallel and then membership, so 2x is to cover the serial tasks,
+    # and 0.5x on top of that to give some more leeway
+    soft_time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 2.5,
+    task_time_limit=(60 * 60 * CONFIG.get_int("ldap.task_timeout_hours")) * 2.5,
 )
 def ldap_sync_single(source_pk: str):
     """Sync a single source"""
