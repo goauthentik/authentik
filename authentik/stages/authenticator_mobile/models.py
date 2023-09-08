@@ -32,9 +32,6 @@ from authentik.lib.models import SerializerModel
 from authentik.stages.authenticator.models import Device
 from authentik.tenants.utils import DEFAULT_TENANT
 
-cred = credentials.Certificate("firebase.json")
-initialize_app(cred)
-
 LOGGER = get_logger()
 
 
@@ -128,6 +125,8 @@ class MobileTransaction(ExpiringModel):
 
     def send_message(self, request: Optional[HttpRequest], **context):
         """Send mobile message"""
+        cred = credentials.Certificate("firebase.json")
+        initialize_app(cred)
         branding = DEFAULT_TENANT.branding_title
         domain = ""
         if request:
