@@ -87,6 +87,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends libpq5 openssl libxmlsec1-openssl libmaxminddb0 && \
     # Required for bootstrap & healtcheck
     apt-get install -y --no-install-recommends runit && \
+    # Required for outposts
+    apt-get install -y --no-install-recommends openssh-client && \
     pip install --no-cache-dir -r /requirements.txt && \
     apt-get remove --purge -y build-essential pkg-config libxmlsec1-dev libpq-dev python3-dev && \
     apt-get autoremove --purge -y && \
@@ -94,8 +96,9 @@ RUN apt-get update && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/ && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
     mkdir -p /certs /media /blueprints && \
-    mkdir -p /authentik/.ssh && \
-    chown authentik:authentik /certs /media /authentik/.ssh
+    chown authentik:authentik /certs /media && \
+    chmod g+w /etc/ssh/ssh_config.d/ && \
+    chgrp authentik /etc/ssh/ssh_config.d/
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /

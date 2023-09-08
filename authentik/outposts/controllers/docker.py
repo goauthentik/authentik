@@ -1,4 +1,5 @@
 """Docker controller"""
+from subprocess import SubprocessError  # nosec
 from time import sleep
 from typing import Optional
 from urllib.parse import urlparse
@@ -9,7 +10,6 @@ from docker import DockerClient as UpstreamDockerClient
 from docker.errors import DockerException, NotFound
 from docker.models.containers import Container
 from docker.utils.utils import kwargs_from_env
-from paramiko.ssh_exception import SSHException
 from structlog.stdlib import get_logger
 from yaml import safe_dump
 
@@ -58,8 +58,9 @@ class DockerClient(UpstreamDockerClient, BaseClient):
                 super().__init__(
                     base_url=connection.url,
                     tls=tls_config,
+                    use_ssh_client=True,
                 )
-            except SSHException as exc:
+            except SubprocessError as exc:
                 if self.ssh:
                     self.ssh.cleanup()
                 raise ServiceConnectionInvalid(exc) from exc
