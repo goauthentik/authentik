@@ -1,3 +1,4 @@
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
@@ -13,14 +14,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import {
-    CertificateKeyPair,
-    CoreApi,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
-    FlowsInstancesListDesignationEnum,
-    Tenant,
-} from "@goauthentik/api";
+import { CoreApi, FlowsInstancesListDesignationEnum, Tenant } from "@goauthentik/api";
 
 @customElement("ak-tenant-form")
 export class TenantForm extends ModelForm<Tenant, string> {
@@ -236,35 +230,9 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         label=${msg("Web Certificate")}
                         name="webCertificate"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.webCertificate;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            certificate=${this.instance?.webCertificate}
+                        ></ak-crypto-certificate-search>
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal
                         label=${msg("Event retention")}

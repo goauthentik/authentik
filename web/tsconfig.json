@@ -5,6 +5,7 @@
             "@goauthentik/app/*": ["src/*"],
             "@goauthentik/admin/*": ["src/admin/*"],
             "@goauthentik/common/*": ["src/common/*"],
+            "@goauthentik/components/*": ["src/components/*"],
             "@goauthentik/docs/*": ["../website/docs/*"],
             "@goauthentik/elements/*": ["src/elements/*"],
             "@goauthentik/flow/*": ["src/flow/*"],

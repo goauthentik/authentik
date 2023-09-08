@@ -263,7 +263,7 @@ export class AdminInterface extends Interface {
                 </ak-sidebar-item>
             </ak-sidebar-item>
             <ak-sidebar-item>
-                <span slot="label">${msg("Flows & Stages")}</span>
+                <span slot="label">${msg("Flows and Stages")}</span>
                 <ak-sidebar-item
                     path="/flow/flows"
                     .activeWhen=${[`^/flow/flows/(?<slug>${SLUG_REGEX})$`]}
@@ -295,10 +295,10 @@ export class AdminInterface extends Interface {
                     path="/core/sources"
                     .activeWhen=${[`^/core/sources/(?<slug>${SLUG_REGEX})$`]}
                 >
-                    <span slot="label">${msg("Federation & Social login")}</span>
+                    <span slot="label">${msg("Federation and Social login")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/core/tokens">
-                    <span slot="label">${msg("Tokens & App passwords")}</span>
+                    <span slot="label">${msg("Tokens and App passwords")}</span>
                 </ak-sidebar-item>
                 <ak-sidebar-item path="/flow/stages/invitations">
                     <span slot="label">${msg("Invitations")}</span>

@@ -4,7 +4,6 @@ from urllib.parse import quote
 from django.http import HttpRequest, HttpResponse
 from django.http.request import QueryDict
 from django.utils.translation import gettext_lazy as _
-from django_otp.plugins.otp_totp.models import TOTPDevice
 from rest_framework.fields import CharField, IntegerField
 from rest_framework.serializers import ValidationError
 
@@ -15,7 +14,7 @@ from authentik.flows.challenge import (
     WithUserInfoChallenge,
 )
 from authentik.flows.stage import ChallengeStageView
-from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage
+from authentik.stages.authenticator_totp.models import AuthenticatorTOTPStage, TOTPDevice
 from authentik.stages.authenticator_totp.settings import OTP_TOTP_ISSUER
 
 SESSION_TOTP_DEVICE = "totp_device"

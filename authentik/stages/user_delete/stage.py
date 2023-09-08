@@ -11,11 +11,7 @@ from authentik.flows.stage import StageView
 class UserDeleteStageView(StageView):
     """Finalise unenrollment flow by deleting the user object."""
 
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Wrapper for post requests"""
-        return self.get(request)
-
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Delete currently pending user"""
         user = self.get_pending_user()
         if not user.is_authenticated:

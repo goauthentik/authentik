@@ -4,9 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
-	"os/signal"
-	"syscall"
 	"time"
 
 	"github.com/getsentry/sentry-go"
@@ -17,7 +14,6 @@ import (
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"
 	"goauthentik.io/internal/debug"
-	"goauthentik.io/internal/gounicorn"
 	"goauthentik.io/internal/outpost/ak"
 	"goauthentik.io/internal/outpost/proxyv2"
 	sentryutils "goauthentik.io/internal/utils/sentry"
@@ -25,8 +21,6 @@ import (
 	"goauthentik.io/internal/web"
 	"goauthentik.io/internal/web/tenant_tls"
 )
-
-var running = true
 
 var rootCmd = &cobra.Command{
 	Use:     "authentik",
@@ -67,69 +61,23 @@ var rootCmd = &cobra.Command{
 		ex := common.Init()
 		defer common.Defer()
 
-		u, _ := url.Parse("http://localhost:8000")
-
-		g := gounicorn.New()
-		defer func() {
-			l.Info("shutting down gunicorn")
-			g.Kill()
-		}()
-
-		c := make(chan os.Signal, 1)
-		signal.Notify(c, syscall.SIGHUP, syscall.SIGUSR2)
-		go func() {
-			sig := <-c
-			if sig == syscall.SIGHUP {
-				log.Info("SIGHUP received, forwarding to gunicorn")
-				g.Reload()
-			}
-			if sig == syscall.SIGUSR2 {
-				log.Info("SIGUSR2 received, restarting gunicorn")
-				g.Restart()
-			}
-		}()
-
-		ws := web.NewWebServer(g)
-		g.HealthyCallback = func() {
-			if !config.Get().Outposts.DisableEmbeddedOutpost {
-				go attemptProxyStart(ws, u)
-			}
+		u, err := url.Parse(fmt.Sprintf("http://%s", config.Get().Listen.HTTP))
+		if err != nil {
+			panic(err)
 		}
-		go web.RunMetricsServer()
-		go attemptStartBackend(g)
+
+		ws := web.NewWebServer()
+		ws.Core().HealthyCallback = func() {
+			if config.Get().Outposts.DisableEmbeddedOutpost {
+				return
+			}
+			go attemptProxyStart(ws, u)
+		}
 		ws.Start()
 		<-ex
-		running = false
 		l.Info("shutting down webserver")
 		go ws.Shutdown()
-
 	},
-}
-
-func attemptStartBackend(g *gounicorn.GoUnicorn) {
-	for {
-		if !running {
-			return
-		}
-		g.Kill()
-		log.WithField("logger", "authentik.router").Info("starting gunicorn")
-		err := g.Start()
-		if err != nil {
-			log.WithField("logger", "authentik.router").WithError(err).Error("gunicorn failed to start, restarting")
-			continue
-		}
-		failedChecks := 0
-		for range time.Tick(30 * time.Second) {
-			if !g.IsRunning() {
-				log.WithField("logger", "authentik.router").Warningf("gunicorn process failed healthcheck %d times", failedChecks)
-				failedChecks += 1
-			}
-			if failedChecks >= 3 {
-				log.WithField("logger", "authentik.router").WithError(err).Error("gunicorn process failed healthcheck three times, restarting")
-				break
-			}
-		}
-	}
 }
 
 func attemptProxyStart(ws *web.WebServer, u *url.URL) {

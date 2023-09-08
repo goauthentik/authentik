@@ -208,9 +208,7 @@ export class AuthenticatorSMSStageForm extends ModelForm<AuthenticatorSMSStage, 
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
-                ${msg("Stage used to configure an SMS-based TOTP authenticator.")}
-            </div>
+            <span> ${msg("Stage used to configure an SMS-based TOTP authenticator.")} </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

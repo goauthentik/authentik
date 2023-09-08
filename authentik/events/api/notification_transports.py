@@ -39,7 +39,7 @@ class NotificationTransportSerializer(ModelSerializer):
         mode = attrs.get("mode")
         if mode in [TransportMode.WEBHOOK, TransportMode.WEBHOOK_SLACK]:
             if "webhook_url" not in attrs or attrs.get("webhook_url", "") == "":
-                raise ValidationError("Webhook URL may not be empty.")
+                raise ValidationError({"webhook_url": "Webhook URL may not be empty."})
         return attrs
 
     class Meta:

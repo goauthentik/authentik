@@ -2,7 +2,6 @@ package gounicorn
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"os/exec"
 	"runtime"
@@ -15,25 +14,25 @@ import (
 
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/utils"
-	"goauthentik.io/internal/utils/web"
 )
 
 type GoUnicorn struct {
+	Healthcheck     func() bool
 	HealthyCallback func()
 
 	log     *log.Entry
 	p       *exec.Cmd
-	pidFile *string
+	pidFile string
 	started bool
 	killed  bool
 	alive   bool
 }
 
-func New() *GoUnicorn {
+func New(healthcheck func() bool) *GoUnicorn {
 	logger := log.WithField("logger", "authentik.router.unicorn")
 	g := &GoUnicorn{
+		Healthcheck:     healthcheck,
 		log:             logger,
-		pidFile:         nil,
 		started:         false,
 		killed:          false,
 		alive:           false,
@@ -44,16 +43,19 @@ func New() *GoUnicorn {
 }
 
 func (g *GoUnicorn) initCmd() {
-	pidFile, _ := os.CreateTemp("", "authentik-gunicorn.*.pid")
-	g.pidFile = func() *string { s := pidFile.Name(); return &s }()
+	pidFile, err := os.CreateTemp("", "authentik-gunicorn.*.pid")
+	if err != nil {
+		panic(fmt.Errorf("failed to create temporary pid file: %v", err))
+	}
+	g.pidFile = pidFile.Name()
 	command := "gunicorn"
 	args := []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
-	if g.pidFile != nil {
-		args = append(args, "--pid", *g.pidFile)
+	if g.pidFile != "" {
+		args = append(args, "--pid", g.pidFile)
 	}
 	if config.Get().Debug {
 		command = "./manage.py"
-		args = []string{"runserver"}
+		args = []string{"dev_server"}
 	}
 	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
 	g.p = exec.Command(command, args...)
@@ -73,27 +75,16 @@ func (g *GoUnicorn) Start() error {
 	g.killed = false
 	g.started = true
 	go g.healthcheck()
-	return g.p.Start()
+	return g.p.Run()
 }
 
 func (g *GoUnicorn) healthcheck() {
 	g.log.Debug("starting healthcheck")
-	h := &http.Client{
-		Transport: web.NewUserAgentTransport("goauthentik.io/proxy/healthcheck", http.DefaultTransport),
-	}
-	check := func() bool {
-		res, err := h.Get("http://localhost:8000/-/health/live/")
-		if err == nil && res.StatusCode == 204 {
-			g.alive = true
-			return true
-		}
-		return false
-	}
-
 	// Default healthcheck is every 1 second on startup
 	// once we've been healthy once, increase to 30 seconds
 	for range time.Tick(time.Second) {
-		if check() {
+		if g.Healthcheck() {
+			g.alive = true
 			g.log.Info("backend is alive, backing off with healthchecks")
 			g.HealthyCallback()
 			break
@@ -101,7 +92,7 @@ func (g *GoUnicorn) healthcheck() {
 		g.log.Debug("backend not alive yet")
 	}
 	for range time.Tick(30 * time.Second) {
-		check()
+		g.Healthcheck()
 	}
 }
 
@@ -115,7 +106,7 @@ func (g *GoUnicorn) Reload() {
 
 func (g *GoUnicorn) Restart() {
 	g.log.WithField("method", "restart").Info("restart gunicorn")
-	if g.pidFile == nil {
+	if g.pidFile == "" {
 		g.log.Warning("pidfile is non existent, cannot restart")
 		return
 	}
@@ -126,10 +117,10 @@ func (g *GoUnicorn) Restart() {
 		return
 	}
 
-	newPidFile := fmt.Sprintf("%s.2", *g.pidFile)
+	newPidFile := fmt.Sprintf("%s.2", g.pidFile)
 
 	// Wait for the new PID file to be created
-	for range time.Tick(1 * time.Second) {
+	for range time.NewTicker(1 * time.Second).C {
 		_, err = os.Stat(newPidFile)
 		if err == nil || !os.IsNotExist(err) {
 			break
@@ -161,14 +152,13 @@ func (g *GoUnicorn) Restart() {
 	}
 
 	// The new process has started, let's gracefully kill the old one
-	g.log.Warningf("killing old gunicorn")
+	g.log.Warning("killing old gunicorn")
 	err = g.p.Process.Signal(syscall.SIGTERM)
 	if err != nil {
 		g.log.Warning("failed to kill old instance of gunicorn")
 	}
 
 	g.p.Process = newProcess
-
 	// No need to close any files and the .2 pid file is deleted by Gunicorn
 }
 
@@ -187,8 +177,11 @@ func (g *GoUnicorn) Kill() {
 	if err != nil {
 		g.log.WithError(err).Warning("failed to stop gunicorn")
 	}
-	if g.pidFile != nil {
-		os.Remove(*g.pidFile)
+	if g.pidFile != "" {
+		err := os.Remove(g.pidFile)
+		if err != nil {
+			g.log.WithError(err).Warning("failed to remove pidfile")
+		}
 	}
 	g.killed = true
 }

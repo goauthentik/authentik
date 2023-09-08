@@ -56,11 +56,11 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg(
                     "Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello).",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

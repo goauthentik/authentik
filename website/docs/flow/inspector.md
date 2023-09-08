@@ -14,7 +14,7 @@ The following infos are shown in the inspector
 
 ## Next stage
 
-This is the currently planned next stage. If you have stage bindings configured to evaluate on plan (default), then you will see the result here. If you however have them configured to re-evaluate, then this will not show up here, since the results will vary based on your input.
+This is the currently planned next stage. If you have stage bindings configured to _Evaluate when flow is planned_, then you will see the result here. If you however have them configured to re-evaluate (_Evaluate when stage is run_), then this will not show up here, since the results will vary based on your input.
 
 Shown is the name and kind of the stage, as well as the unique ID.
 

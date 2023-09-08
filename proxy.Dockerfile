@@ -1,5 +1,5 @@
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/node:20 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as web-builder
 
 COPY ./web /static/
 
@@ -8,7 +8,7 @@ WORKDIR /static
 RUN npm ci --include=dev && npm run build-proxy
 
 # Stage 2: Build
-FROM docker.io/golang:1.21.0-bookworm AS builder
+FROM docker.io/golang:1.21.1-bookworm AS builder
 
 WORKDIR /go/src/goauthentik.io
 

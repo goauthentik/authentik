@@ -46,11 +46,11 @@ export class UserDeviceList extends MFADevicesPage {
                 return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAdminSmsDestroy({
                     id: device.pk,
                 });
-            case "otp_totp.TOTPDevice":
+            case "authentik_stages_authenticator_totp.TOTPDevice":
                 return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAdminTotpDestroy({
                     id: device.pk,
                 });
-            case "otp_static.StaticDevice":
+            case "authentik_stages_authenticator_static.StaticDevice":
                 return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAdminStaticDestroy({
                     id: device.pk,
                 });

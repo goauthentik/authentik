@@ -63,7 +63,7 @@ export function getMetaContent(key: string): string {
 }
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: process.env.AK_API_BASE_PATH + "/api/v3",
+    basePath: (process.env.AK_API_BASE_PATH || window.location.origin) + "/api/v3",
     headers: {
         "sentry-trace": getMetaContent("sentry-trace"),
     },

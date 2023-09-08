@@ -127,13 +127,11 @@ body {
 }
 .theme-doc-sidebar-menu hr {
     margin-top: calc(var(--ifm-hr-margin-vertical) / 2);
+    margin-right: -0.5rem;
 }
 
 /* Nav header background color on mobile */
 .navbar-sidebar__brand,
 .navbar-sidebar__items {
     background-color: var(--ifm-color-primary);
-}
-.navbar-sidebar__items .menu__link {
-    color: var(--white);
 }

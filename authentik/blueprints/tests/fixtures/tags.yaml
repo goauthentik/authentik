@@ -36,6 +36,7 @@ entries:
       model: authentik_policies_expression.expressionpolicy
     - attrs:
           attributes:
+              env_null: !Env [bar-baz, null]
               policy_pk1:
                   !Format [
                       "%s-%s",

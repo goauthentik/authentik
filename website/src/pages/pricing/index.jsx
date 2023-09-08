@@ -2,6 +2,7 @@ import React from "react";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
 import Card from "../../components/PricingQuestions/Card";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
 export default function pricingPage() {
     return (
@@ -64,10 +65,12 @@ export default function pricingPage() {
                                         <small>/external user/month</small>
                                     </h1>
                                     <a
-                                        className="button button--info button--block"
-                                        href="./waitlist/enterprise"
+                                        className="button button--primary button--block"
+                                        href={useBaseUrl(
+                                            "/docs/enterprise/get-started",
+                                        )}
                                     >
-                                        Join waitlist
+                                        Get Started
                                     </a>
                                 </div>
                             </div>

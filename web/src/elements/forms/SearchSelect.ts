@@ -1,7 +1,8 @@
+import { PreventFormSubmit } from "@goauthentik/app/elements/forms/helpers";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { ascii_letters, digits, groupBy, randomString } from "@goauthentik/common/utils";
+import { adaptCSS } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
-import { PreventFormSubmit } from "@goauthentik/elements/forms/Form";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
@@ -75,7 +76,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
     constructor() {
         super();
         if (!document.adoptedStyleSheets.includes(PFDropdown)) {
-            document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFDropdown];
+            document.adoptedStyleSheets = adaptCSS([...document.adoptedStyleSheets, PFDropdown]);
         }
         this.dropdownContainer = document.createElement("div");
         this.observer = new IntersectionObserver(() => {

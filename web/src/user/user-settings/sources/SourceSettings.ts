@@ -1,4 +1,4 @@
-import { renderSourceIcon } from "@goauthentik/admin/sources/SourceViewPage";
+import { renderSourceIcon } from "@goauthentik/app/admin/sources/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { me } from "@goauthentik/common/users";
@@ -41,6 +41,9 @@ export class UserSourceSettingsPage extends AKElement {
                 }
                 :host([theme="dark"]) .pf-c-data-list__cell img {
                     filter: invert(1);
+                }
+                .pf-c-data-list__item {
+                    background-color: transparent;
                 }
             `,
         ];

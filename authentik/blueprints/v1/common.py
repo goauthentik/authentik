@@ -223,11 +223,11 @@ class Env(YAMLTag):
         if isinstance(node, ScalarNode):
             self.key = node.value
         if isinstance(node, SequenceNode):
-            self.key = node.value[0].value
-            self.default = node.value[1].value
+            self.key = loader.construct_object(node.value[0])
+            self.default = loader.construct_object(node.value[1])
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
-        return getenv(self.key, self.default)
+        return getenv(self.key) or self.default
 
 
 class Context(YAMLTag):
@@ -242,8 +242,8 @@ class Context(YAMLTag):
         if isinstance(node, ScalarNode):
             self.key = node.value
         if isinstance(node, SequenceNode):
-            self.key = node.value[0].value
-            self.default = node.value[1].value
+            self.key = loader.construct_object(node.value[0])
+            self.default = loader.construct_object(node.value[1])
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         value = self.default
@@ -262,7 +262,7 @@ class Format(YAMLTag):
 
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
-        self.format_string = node.value[0].value
+        self.format_string = loader.construct_object(node.value[0])
         self.args = []
         for raw_node in node.value[1:]:
             self.args.append(loader.construct_object(raw_node))
@@ -341,7 +341,7 @@ class Condition(YAMLTag):
 
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
-        self.mode = node.value[0].value
+        self.mode = loader.construct_object(node.value[0])
         self.args = []
         for raw_node in node.value[1:]:
             self.args.append(loader.construct_object(raw_node))
@@ -416,7 +416,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
     def __init__(self, loader: "BlueprintLoader", node: SequenceNode) -> None:
         super().__init__()
         self.iterable = loader.construct_object(node.value[0])
-        self.output_body = node.value[1].value
+        self.output_body = loader.construct_object(node.value[1])
         self.item_body = loader.construct_object(node.value[2])
         self.__current_context: tuple[Any, Any] = tuple()
 

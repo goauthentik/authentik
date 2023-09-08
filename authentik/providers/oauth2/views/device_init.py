@@ -55,7 +55,7 @@ def validate_code(code: int, request: HttpRequest) -> Optional[HttpResponse]:
     if not app:
         return None
 
-    scope_descriptions = UserInfoView().get_scope_descriptions(token.scope)
+    scope_descriptions = UserInfoView().get_scope_descriptions(token.scope, token.provider)
     planner = FlowPlanner(token.provider.authorization_flow)
     planner.allow_empty_flows = True
     try:

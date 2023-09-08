@@ -39,13 +39,13 @@ export class MFADeviceForm extends ModelForm<Device, number> {
                     sMSDeviceRequest: device,
                 });
                 break;
-            case "otp_totp.TOTPDevice":
+            case "authentik_stages_authenticator_totp.TOTPDevice":
                 await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpUpdate({
                     id: this.instance?.pk,
                     tOTPDeviceRequest: device,
                 });
                 break;
-            case "otp_static.StaticDevice":
+            case "authentik_stages_authenticator_static.StaticDevice":
                 await new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsStaticUpdate({
                     id: this.instance?.pk,
                     staticDeviceRequest: device,

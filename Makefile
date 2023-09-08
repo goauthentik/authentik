@@ -148,8 +148,7 @@ web-lint-fix:
 
 web-lint:
 	cd web && npm run lint
-	# TODO: The analyzer hasn't run correctly in awhile.
-	# cd web && npm run lit-analyse
+	cd web && npm run lit-analyse
 
 web-check-compile:
 	cd web && npm run tsc

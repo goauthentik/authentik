@@ -1,16 +1,16 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first, groupBy } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
-import { CSSResult, css } from "lit";
+import { CSSResult } from "lit";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
-import PFToggleGroup from "@patternfly/patternfly/components/ToggleGroup/toggle-group.css";
 
 import {
     CoreApi,
@@ -25,9 +25,9 @@ import {
 } from "@goauthentik/api";
 
 enum target {
-    policy,
-    group,
-    user,
+    policy = "policy",
+    group = "group",
+    user = "user",
 }
 
 @customElement("ak-policy-binding-form")
@@ -52,7 +52,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     @property()
     targetPk?: string;
 
-    @property({ type: Number })
+    @state()
     policyGroupUser: target = target.policy;
 
     @property({ type: Boolean })
@@ -70,21 +70,28 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     }
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(
-            PFToggleGroup,
-            PFContent,
-            css`
-                .pf-c-toggle-group {
-                    justify-content: center;
-                }
-            `,
-        );
+        return [...super.styles, PFContent];
     }
 
     send(data: PolicyBinding): Promise<unknown> {
         if (this.targetPk) {
             data.target = this.targetPk;
         }
+        switch (this.policyGroupUser) {
+            case target.policy:
+                data.user = null;
+                data.group = null;
+                break;
+            case target.group:
+                data.policy = null;
+                data.user = null;
+                break;
+            case target.user:
+                data.policy = null;
+                data.group = null;
+                break;
+        }
+        console.log(data);
         if (this.instance?.pk) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUpdate({
                 policyBindingUuid: this.instance.pk,
@@ -112,55 +119,22 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     }
 
     renderModeSelector(): TemplateResult {
-        return html` <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.policyGroupUser === target.policy
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.policyGroupUser = target.policy;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text">${msg("Policy")}</span>
-                </button>
-            </div>
-            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-            <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.policyGroupUser === target.group
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.policyGroupUser = target.group;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text">${msg("Group")}</span>
-                </button>
-            </div>
-            <div class="pf-c-divider pf-m-vertical" role="separator"></div>
-            <div class="pf-c-toggle-group__item">
-                <button
-                    class="pf-c-toggle-group__button ${this.policyGroupUser === target.user
-                        ? "pf-m-selected"
-                        : ""}"
-                    type="button"
-                    @click=${() => {
-                        this.policyGroupUser = target.user;
-                    }}
-                >
-                    <span class="pf-c-toggle-group__text">${msg("User")}</span>
-                </button>
-            </div>`;
+        return html` <ak-toggle-group
+            value=${this.policyGroupUser}
+            @ak-toggle=${(ev: CustomEvent<{ value: target }>) => {
+                this.policyGroupUser = ev.detail.value;
+            }}
+        >
+            <option value=${target.policy}>${msg("Policy")}</option>
+            <option value=${target.group}>${msg("Group")}</option>
+            <option value=${target.user}>${msg("User")}</option>
+        </ak-toggle-group>`;
     }
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
             <div class="pf-c-card pf-m-selectable pf-m-selected">
-                <div class="pf-c-card__body">
-                    <div class="pf-c-toggle-group">${this.renderModeSelector()}</div>
-                </div>
+                <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">
                     <ak-form-element-horizontal
                         label=${msg("Policy")}

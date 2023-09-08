@@ -142,7 +142,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     renderToolbar(): TemplateResult {
         return html`
             <ak-stage-wizard
-                createText=${msg("Create & bind Stage")}
+                createText=${msg("Create and bind Stage")}
                 ?showBindingPage=${true}
                 bindingTarget=${ifDefined(this.target)}
             ></ak-stage-wizard>

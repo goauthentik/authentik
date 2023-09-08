@@ -23,6 +23,7 @@ from authentik.flows.challenge import (
     RedirectChallenge,
     WithUserInfoChallenge,
 )
+from authentik.flows.exceptions import StageInvalidException
 from authentik.flows.models import InvalidResponseAction
 from authentik.flows.planner import PLAN_CONTEXT_APPLICATION, PLAN_CONTEXT_PENDING_USER
 from authentik.lib.avatars import DEFAULT_AVATAR
@@ -100,8 +101,14 @@ class ChallengeStageView(StageView):
 
     def post(self, request: Request, *args, **kwargs) -> HttpResponse:
         """Handle challenge response"""
-        challenge: ChallengeResponse = self.get_response_instance(data=request.data)
-        if not challenge.is_valid():
+        valid = False
+        try:
+            challenge: ChallengeResponse = self.get_response_instance(data=request.data)
+            valid = challenge.is_valid()
+        except StageInvalidException as exc:
+            self.logger.debug("Got StageInvalidException", exc=exc)
+            return self.executor.stage_invalid()
+        if not valid:
             if self.executor.current_binding.invalid_response_action in [
                 InvalidResponseAction.RESTART,
                 InvalidResponseAction.RESTART_WITH_CONTEXT,

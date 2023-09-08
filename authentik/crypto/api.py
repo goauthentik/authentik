@@ -189,6 +189,8 @@ class CertificateKeyPairFilter(FilterSet):
 
     def filter_has_key(self, queryset, name, value):  # pragma: no cover
         """Only return certificate-key pairs with keys"""
+        if not value:
+            return queryset
         return queryset.exclude(key_data__exact="")
 
     class Meta:
