@@ -26,10 +26,7 @@ SYNC_CLASSES = [
 CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 
 
-@CELERY_APP.task(
-    soft_time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
-    task_time_limit=60 * 60 * CONFIG.get_int("ldap.task_timeout_hours"),
-)
+@CELERY_APP.task()
 def ldap_sync_all():
     """Sync all sources"""
     for source in LDAPSource.objects.filter(enabled=True):
