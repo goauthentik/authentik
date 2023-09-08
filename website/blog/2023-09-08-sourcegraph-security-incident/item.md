@@ -1,5 +1,5 @@
 ---
-title: “Sourcegraph security incident:the good, the bad and the dangers of access tokens”
+title: "Sourcegraph security incident: the good, the bad, and the dangers of access tokens"
 slug: 2023-09-08-sourcegraph-security-incident
 authors:
     - name: Jens Langhammer
@@ -26,14 +26,13 @@ Last week’s [announcement](https://about.sourcegraph.com/blog/security-update-
 
 This incident prompts all of us in the software industry to take yet another look at how our security around user identity and access can be best handled, to see if there are lessons to be learned and improvements to be made. These closer looks are not only at how our own software and users utilizes (and protects) access tokens, but also in how such incidents are caught, mitigated, and communicated.
 
-![Photo by <a href="https://unsplash.com/@juvnsky?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Anton Maksimov 5642.su</a> on <a href="https://unsplash.com/photos/wrkNQmhmdvY?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
-  ](./image1.jpg)
+![Photo by <a href="https://unsplash.com/@juvnsky?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Anton Maksimov 5642.su</a> on <a href="https://unsplash.com/photos/wrkNQmhmdvY?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>](./image1.jpg)
 
 <!--truncate-->
 
 ## What happened at Sourcegraph
 
-The process by which the malicious hacker accessed the platform, and their subsequent steps, reveal a fairly typical pattern: access the system, gain additional rights by creating new user accounts, switching accounts to fully probe the system, and finally, inviting other malicious actors in through the breach. Unfortunately, it is usually that last step, not the first, that sets off alarm bells.
+The behavior of the malicious hacker after they accessed the platform reveal a fairly typical pattern: access the system, gain additional rights by creating new user accounts, switching accounts to fully probe the system, and finally, inviting other malicious actors in through the breach. Unfortunately, it is usually that last step, not the first, that sets off alarm bells.
 
 Let’s take a look at what occurred at Sourcegraph.
 
@@ -49,7 +48,7 @@ However, the intruder didn’t stop with seeing the license keys; they went on t
 
 The subsequent spike in API usage is what alerted the Sourcegraph security team to a problem, the very same day, August 30, 2023. The team identified the hacker’s site-admin account, closed the account and then began an investigation and mitigation process.
 
-One significant detail is how the malicious hacker obtained the access token in the first place: from a commit made to the SourceGraph repository on GitHub. It’s unlikely we will ever know how the token was included in the commit. What we do know is that shortly after the breach was announced a [PR](https://github.com/sourcegraph/sourcegraph/pull/56363) was opened to remove from the Sourcegraph documentation instructions about hardcodong access tokens .
+One significant detail is how the malicious hacker obtained the access token in the first place: from a commit made to the Sourcegraph repository on GitHub. It’s unlikely we will ever know how the token was included in the commit. What we do know is that shortly after the breach was announced a [PR](https://github.com/sourcegraph/sourcegraph/pull/56363) was opened to remove from the Sourcegraph documentation instructions about hardcodong access tokens .
 
 Most companies have serious checks in their automated build processes, and it sounds like Sourcegraph did have some checks in place, but it didn’t catch the exposure of this access token in the commit. Back to the statement about these types of incidents causing us all to look again, more closely, at our practices; here at Authentik Security we do indeed have a very robust set of checks in place as part of our required CI/CD pipeline, and we use [Semgrep](https://github.com/returntocorp/semgrep) to search for tokens and other artifacts that we not want to expose. With Semgrep, you can write a custom rule to look for an exact token schema, so that no matter what type of tokens you use, their presence in the code base can be discovered.
 
@@ -57,7 +56,7 @@ Most companies have serious checks in their automated build processes, and it so
 
 Access tokens have for decades been an essential artifact used in application systems to efficiently and securely manage authentication. They are not going away anytime soon. The onus is on the software companies, and their security engineers, to optimize the protection of access tokens.
 
-The best known best practice around access tokens is to make sure that they have a very short shelf-life; they should expire and be unusable within minutes, not hours or days. This is standard practice. In authentik, by default we set the expiration for access tokens at 5 minutes, and we use JWT (JSON Web Tokens) for added security. (We blogged about this recently, have a [read](https://goauthentik.io/blog/2023-03-30-JWT-a-token-that-changed-how-we-see-identity).)
+The best known best practice around access tokens is to make sure that they have a very short shelf-life; they should expire and be unusable within minutes, not hours or days. This is standard practice. In authentik, by default we set the expiration for access tokens at 5 minutes, and we use JWT (JSON Web Tokens) for added security. We blogged about this recently, have a [read](https://goauthentik.io/blog/2023-03-30-JWT-a-token-that-changed-how-we-see-identity).
 
 Of course, there are also refresh tokens to be considered, and protected. There also needs to be strong security around refresh tokens, because they can be used to create new access tokens. Refresh tokens are typically never passed externally, and if the authorization server is a different one than the application server, then the application server will not even see refresh tokens (only short-lived access tokens). Note that this would not have helped in the Sourcegraph incident, since the malicious hacker had admin-level access, and thus had access to the secure cookie with the refresh token.
 
@@ -73,10 +72,12 @@ Sourcegraph did a great job here; they let us know the same day they knew, and t
 
 Could the breach have been prevented? Sure, of course, on several fronts. The leaked access token should have been found and removed from the code _before_ the commit was made, thus never even available in GitHub repository. Or even if it got into the code base on the repo, a subsequent Semgrep analysis could have caught it, and the token revoked and removed. As it was, two weeks passed with the token sitting there, in public view, before a malicious hacker found and used it.
 
-However, another thing that Sourcegraph got right was their internal architecture and security practices; the fact that they did not store all of the data in one place prevented the intruder from going very deep. Sourcegraph [stated](https://about.sourcegraph.com/blog/security-update-august-2023?utm_medium=email&utm_content=272411222&utm_source=hs_email) “Customer private data and code resides in isolated environments and were therefore not impacted by this event.**”**
+However, another thing that Sourcegraph got right was their internal architecture and security practices; the fact that they did not store all of the data in one place prevented the intruder from going very deep.
 
-Sourcegraph was clear and open about exactly who was impacted, and exactly how they were impacted. For open source users it was email addresses. For paid customers, the malicious user could only view the first 20 license key items on the admin dashboard page.
+> Sourcegraph [stated](https://about.sourcegraph.com/blog/security-update-august-2023?utm_medium=email&utm_content=272411222&utm_source=hs_email) “Customer private data and code resides in isolated environments and were therefore not impacted by this event.**”**
+
+Sourcegraph was clear and open about exactly who was impacted, and exactly how they were impacted. For open source users it was email addresses. For paid customers, the malicious user could only view the first 20 license key items on the admin dashboard page, and the license keys did not provide access to the users' instances.
 
 ## Lessons learned, by all of us
 
-In hindsight, it’s easy to comment on how SourceGraph handled this breach, what they did right and where they could have done better. But the truth is, that with every security incident, ever leaked token, every malicious hack, we all learn new ways to strengthen our security. Hopefully we also continue to learn the importance of transparency, rapid acknowledgement, and full disclosure about the breaches to do, nonetheless, occur.
+In hindsight, it’s easy to comment on how SourceGraph handled this breach, what they did right and where they could have done better. But the truth is, that with every security incident, ever leaked token, every malicious hack, we all learn new ways to strengthen our security. Hopefully we also continue to learn the importance of transparency, rapid acknowledgement, and full disclosure about the breaches that do, nonetheless, occur.
