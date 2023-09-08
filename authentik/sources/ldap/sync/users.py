@@ -20,6 +20,9 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
         return "users"
 
     def get_objects(self, **kwargs) -> Generator:
+        if not self._source.sync_users:
+            self.message("User syncing is disabled for this Source")
+            return iter(())
         return self.search_paginator(
             search_base=self.base_dn_users,
             search_filter=self._source.user_object_filter,
