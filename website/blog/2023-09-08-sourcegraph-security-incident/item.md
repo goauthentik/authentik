@@ -1,5 +1,5 @@
 ---
-title: “Sourcegraph security incident: the good, the bad and the dangers of access tokens”
+title: “Sourcegraph security incident:the good, the bad and the dangers of access tokens”
 slug: 2023-09-08-sourcegraph-security-incident
 authors:
     - name: Jens Langhammer
@@ -26,7 +26,8 @@ Last week’s [announcement](https://about.sourcegraph.com/blog/security-update-
 
 This incident prompts all of us in the software industry to take yet another look at how our security around user identity and access can be best handled, to see if there are lessons to be learned and improvements to be made. These closer looks are not only at how our own software and users utilizes (and protects) access tokens, but also in how such incidents are caught, mitigated, and communicated.
 
-![](./image1.png)
+![Photo by <a href="https://unsplash.com/@juvnsky?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Anton Maksimov 5642.su</a> on <a href="https://unsplash.com/photos/wrkNQmhmdvY?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>
+  ](./image1.jpg)
 
 <!--truncate-->
 
@@ -36,7 +37,7 @@ The process by which the malicious hacker accessed the platform, and their subse
 
 Let’s take a look at what occurred at Sourcegraph.
 
-On July 14, 2023, an engineer at Sourcegraph created a PR and committed a code change  to GitHub that contained an active site-admin access token. This level of access token had privileges to not only view but also edit user account information.
+On July 14, 2023, an engineer at Sourcegraph created a PR and committed a code change to GitHub that contained an active site-admin access token. This level of access token had privileges to not only view but also edit user account information.
 
 For the next two weeks, the leak seems to have remained undetected, but on Aug 28 a new account was created, apparently by the hacker-to-be, and on Aug 30th the hacker used the leaked token to grant their account admin-level privileges, thereby gaining access to the Admin dashboard.
 
@@ -44,12 +45,11 @@ On the dashboard, the hacker was able to see the first 20 accounts displayed, al
 
 However, the intruder didn’t stop with seeing the license keys; they went on to create a proxy app that allowed any users of the app to access Sourcegraph’s APIs for free. Instructions on how to use the app were widely circulated on the internet, with almost 2 million views.
 
-> “*Users were instructed to create free Sourcegraph.com accounts, generate access tokens, and then request the malicious user to greatly increase their rate limit.*” ([source](https://about.sourcegraph.com/blog/security-update-august-2023?utm_medium=email&utm_content=272411222&utm_source=hs_email))
->
+> “_Users were instructed to create free Sourcegraph.com accounts, generate access tokens, and then request the malicious user to greatly increase their rate limit._” ([source](https://about.sourcegraph.com/blog/security-update-august-2023?utm_medium=email&utm_content=272411222&utm_source=hs_email))
 
 The subsequent spike in API usage is what alerted the Sourcegraph security team to a problem, the very same day, August 30, 2023. The team identified the hacker’s site-admin account, closed the account and then began an investigation and mitigation process.
 
-One significant detail is how the malicious hacker obtained the access token in the first place: from a commit made to the SourceGraph repository on GitHub.  It’s unlikely we will ever know how the token was included in the commit.  What we do know is that shortly  after the breach was announced a [PR](https://github.com/sourcegraph/sourcegraph/pull/56363)  was opened to remove from the Sourcegraph documentation instructions about hardcodong access tokens .
+One significant detail is how the malicious hacker obtained the access token in the first place: from a commit made to the SourceGraph repository on GitHub. It’s unlikely we will ever know how the token was included in the commit. What we do know is that shortly after the breach was announced a [PR](https://github.com/sourcegraph/sourcegraph/pull/56363) was opened to remove from the Sourcegraph documentation instructions about hardcodong access tokens .
 
 Most companies have serious checks in their automated build processes, and it sounds like Sourcegraph did have some checks in place, but it didn’t catch the exposure of this access token in the commit. Back to the statement about these types of incidents causing us all to look again, more closely, at our practices; here at Authentik Security we do indeed have a very robust set of checks in place as part of our required CI/CD pipeline, and we use [Semgrep](https://github.com/returntocorp/semgrep) to search for tokens and other artifacts that we not want to expose. With Semgrep, you can write a custom rule to look for an exact token schema, so that no matter what type of tokens you use, their presence in the code base can be discovered.
 
@@ -63,16 +63,15 @@ Of course, there are also refresh tokens to be considered, and protected. There 
 
 ### Security breaches are inevitable
 
-Constant effort is required to stay ahead of malicious hackers, and we can’t always, not every time. Beyond specific best practices for tokens, security teams can focus on building a company culture that includes an in-depth defense strategy that use encryption for tokens (and other sensitive values) in transit and at rest. Other basic, low-hanging fruit in a solid security plan include purposeful secrets management, granting the “least privilege” needed, and implementing SCA (*software composition analysis*) tooling.
+Constant effort is required to stay ahead of malicious hackers, and we can’t always, not every time. Beyond specific best practices for tokens, security teams can focus on building a company culture that includes an in-depth defense strategy that use encryption for tokens (and other sensitive values) in transit and at rest. Other basic, low-hanging fruit in a solid security plan include purposeful secrets management, granting the “least privilege” needed, and implementing SCA (_software composition analysis_) tooling.
 
-However if a security breach does occur, it’s very important (on many levels) how the hacked company responds to the incident. And the very first part of the response is the *acknowledgement* that a breach occurred. This act alone, of announcing what happened, when, how, who was impacted, and what the mitigation plans are is absolutely crucial.
+However if a security breach does occur, it’s very important (on many levels) how the hacked company responds to the incident. And the very first part of the response is the _acknowledgement_ that a breach occurred. This act alone, of announcing what happened, when, how, who was impacted, and what the mitigation plans are is absolutely crucial.
 
 Sourcegraph did a great job here; they let us know the same day they knew, and they shared as many details as possible.
 
 > Transparency about the discovery and all the gory details of the breach is vital; it rebuilds trust with users.
->
 
-Could the breach have been prevented? Sure, of course, on several fronts. The leaked access token should have been found and removed from the code *before* the commit was made, thus never even available in GitHub repository. Or even if it got into the code base on the repo, a subsequent Semgrep analysis could have caught it, and the token revoked and removed. As it was, two weeks passed with the token sitting there, in public view, before a malicious hacker found and used it.
+Could the breach have been prevented? Sure, of course, on several fronts. The leaked access token should have been found and removed from the code _before_ the commit was made, thus never even available in GitHub repository. Or even if it got into the code base on the repo, a subsequent Semgrep analysis could have caught it, and the token revoked and removed. As it was, two weeks passed with the token sitting there, in public view, before a malicious hacker found and used it.
 
 However, another thing that Sourcegraph got right was their internal architecture and security practices; the fact that they did not store all of the data in one place prevented the intruder from going very deep. Sourcegraph [stated](https://about.sourcegraph.com/blog/security-update-august-2023?utm_medium=email&utm_content=272411222&utm_source=hs_email) “Customer private data and code resides in isolated environments and were therefore not impacted by this event.**”**
 
