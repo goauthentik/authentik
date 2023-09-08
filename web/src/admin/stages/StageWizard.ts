@@ -1,5 +1,6 @@
 import { StageBindingForm } from "@goauthentik/admin/flows/StageBindingForm";
 import "@goauthentik/admin/stages/authenticator_duo/AuthenticatorDuoStageForm";
+import "@goauthentik/admin/stages/authenticator_mobile/AuthenticatorMobileStageForm";
 import "@goauthentik/admin/stages/authenticator_sms/AuthenticatorSMSStageForm";
 import "@goauthentik/admin/stages/authenticator_static/AuthenticatorStaticStageForm";
 import "@goauthentik/admin/stages/authenticator_totp/AuthenticatorTOTPStageForm";
