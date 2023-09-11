@@ -8,7 +8,7 @@ authors:
       image_url: https://github.com/BeryJu.png
 tags:
     - Sourcegraph
-    - access token
+    - token
     - transparency
     - identity provider
     - leaks
@@ -22,7 +22,7 @@ image: ./image1.jpg
 
 Access tokens make identity management and authentication relatively painless for our end-users. But, like anything to do with access, tokens also can be fraught with risk and abuse.
 
-The recent [announcement](https://about.sourcegraph.com/blog/security-update-august-2023?utm_medium=email&utm_content=272411222&utm_source=hs_email) from Sourcegraph that their platform had been penetrated by a malicious hacker using a leaked access token is a classic example of this balance of tokens being great… until they are in the wrong hands.
+The recent [announcement](https://about.sourcegraph.com/blog/security-update-august-2023) from Sourcegraph that their platform had been penetrated by a malicious hacker using a leaked access token is a classic example of this balance of tokens being great… until they are in the wrong hands.
 
 This incident prompts all of us in the software industry to take yet another look at how our security around user identity and access can be best handled, to see if there are lessons to be learned and improvements to be made. These closer looks are not only at how our own software and users utilizes (and protects) access tokens, but also in how such incidents are caught, mitigated, and communicated.
 
@@ -44,7 +44,7 @@ On the dashboard, the hacker was able to see the first 20 accounts displayed, al
 
 However, the intruder didn’t stop with seeing the license keys; they went on to create a proxy app that allowed any users of the app to access Sourcegraph’s APIs for free. Instructions on how to use the app were widely circulated on the internet, with almost 2 million views.
 
-> “_Users were instructed to create free Sourcegraph.com accounts, generate access tokens, and then request the malicious user to greatly increase their rate limit._” ([source](https://about.sourcegraph.com/blog/security-update-august-2023?utm_medium=email&utm_content=272411222&utm_source=hs_email))
+> “_Users were instructed to create free Sourcegraph.com accounts, generate access tokens, and then request the malicious user to greatly increase their rate limit._” ([source](https://about.sourcegraph.com/blog/security-update-august-2023))
 
 The subsequent spike in API usage is what alerted the Sourcegraph security team to a problem, the very same day, August 30, 2023. The team identified the hacker’s site-admin account, closed the account and then began an investigation and mitigation process.
 
@@ -74,7 +74,7 @@ Could the breach have been prevented? Sure, of course, on several fronts. The le
 
 However, another thing that Sourcegraph got right was their internal architecture and security practices; the fact that they did not store all of the data in one place prevented the intruder from going very deep.
 
-> Sourcegraph [stated](https://about.sourcegraph.com/blog/security-update-august-2023?utm_medium=email&utm_content=272411222&utm_source=hs_email) “Customer private data and code resides in isolated environments and were therefore not impacted by this event.**”**
+> Sourcegraph [stated](https://about.sourcegraph.com/blog/security-update-august-2023) “Customer private data and code resides in isolated environments and were therefore not impacted by this event.**”**
 
 Sourcegraph was clear and open about exactly who was impacted, and exactly how they were impacted. For open source users it was email addresses. For paid customers, the malicious user could only view the first 20 license key items on the admin dashboard page, and the license keys did not provide access to the users' instances.
 
