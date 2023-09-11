@@ -1,6 +1,6 @@
 ---
 title: "Sourcegraph security incident: the good, the bad, and the dangers of access tokens"
-slug: 2023-09-08-sourcegraph-security-incident
+slug: 2023-08-11-sourcegraph-security-incident
 authors:
     - name: Jens Langhammer
       title: CTO at Authentik Security Inc
