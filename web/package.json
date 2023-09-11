@@ -111,7 +111,7 @@
         "tslib": "^2.6.2",
         "turnstile-types": "^1.1.2",
         "typescript": "^5.2.2",
-        "vite-tsconfig-paths": "^4.2.0"
+        "vite-tsconfig-paths": "^4.2.1"
     },
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.19.2",
