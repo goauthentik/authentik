@@ -114,3 +114,8 @@ web:
 
 worker:
   concurrency: 2
+  priority:
+    default: 4
+    scheduled: 9
+    sync: 9
+    events: 8

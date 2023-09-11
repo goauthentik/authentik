@@ -339,17 +339,23 @@ CELERY = {
         "clean_expired_models": {
             "task": "authentik.core.tasks.clean_expired_models",
             "schedule": crontab(minute="2-59/5"),
-            "options": {"queue": "authentik_scheduled"},
+            "options": {"priority": CONFIG.get_int("worker.priority.scheduled")},
         },
         "user_cleanup": {
             "task": "authentik.core.tasks.clean_temporary_users",
             "schedule": crontab(minute="9-59/5"),
-            "options": {"queue": "authentik_scheduled"},
+            "options": {"priority": CONFIG.get_int("worker.priority.scheduled")},
         },
     },
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
+    "task_default_priority": 4,
+    "task_inherit_parent_priority": True,
     "broker_url": f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
+    "broker_transport_options": {
+        "queue_order_strategy": "priority",
+        "priority_steps": list(range(10)),
+    },
     "result_backend": f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
 }
 

@@ -20,6 +20,7 @@ from authentik.events.monitored_tasks import (
     TaskResultStatus,
     prefill_task,
 )
+from authentik.lib.config import CONFIG
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.models import PolicyBinding, PolicyEngineMode
 from authentik.root.celery import CELERY_APP
@@ -89,7 +90,7 @@ def event_trigger_handler(event_uuid: str, trigger_name: str):
                     user.pk,
                     str(trigger.pk),
                 ],
-                queue="authentik_events",
+                priority=CONFIG.get_int("worker.priority.events"),
             )
             if transport.send_once:
                 break
