@@ -26,7 +26,6 @@ class Command(BaseCommand):
             no_color=False,
             quiet=True,
             optimization="fair",
-            max_tasks_per_child=1,
             autoscale=(3, 1),
             task_events=True,
             beat=True,
