@@ -29,9 +29,11 @@ export const eventActionToLabel = new Map<EventActions | undefined, string>([
     [EventActions.ImpersonationStarted, msg("Impersonation started")],
     [EventActions.ImpersonationEnded, msg("Impersonation ended")],
     [EventActions.FlowExecution, msg("Flow execution")],
+    // These are different: look closely.
     [EventActions.PolicyExecution, msg("Policy execution")],
     [EventActions.PolicyException, msg("Policy exception")],
     [EventActions.PropertyMappingException, msg("Property Mapping exception")],
+    // These are different: look closely.
     [EventActions.SystemTaskExecution, msg("System task execution")],
     [EventActions.SystemTaskException, msg("System task exception")],
     [EventActions.SystemException, msg("General system exception")],
