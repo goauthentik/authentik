@@ -332,7 +332,7 @@ LOCALE_PATHS = ["./locale"]
 CELERY = {
     "task_soft_time_limit": 600,
     "worker_max_tasks_per_child": 50,
-    "worker_concurrency": 2,
+    "worker_concurrency": CONFIG.get_int("worker.concurrency"),
     "beat_schedule": {
         "clean_expired_models": {
             "task": "authentik.core.tasks.clean_expired_models",
