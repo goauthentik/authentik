@@ -60,7 +60,7 @@ The best known best practice around access tokens is to make sure that they have
 
 Of course, there are also refresh tokens to be considered, and protected. There also needs to be strong security around refresh tokens, because they can be used to create new access tokens. Refresh tokens are typically never passed externally, and if the authorization server is a different one than the application server, then the application server will not even see refresh tokens (only short-lived access tokens). Note that this would not have helped in the Sourcegraph incident, since the malicious hacker had admin-level access, and thus had access to the secure cookie with the refresh token.
 
-### Security breaches are inevitable
+## Security breaches are inevitable
 
 Constant effort is required to stay ahead of malicious hackers, and we can’t always, not every time. Beyond specific best practices for tokens, security teams can focus on building a company culture that includes an in-depth defense strategy that use encryption for tokens (and other sensitive values) in transit and at rest. Other basic, low-hanging fruit in a solid security plan include purposeful secrets management, granting the “least privilege” needed, and implementing SCA (_software composition analysis_) tooling.
 
