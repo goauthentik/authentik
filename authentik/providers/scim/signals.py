@@ -23,6 +23,8 @@ def post_save_provider(sender: type[Model], instance, created: bool, **_):
 @receiver(post_save, sender=Group)
 def post_save_scim(sender: type[Model], instance: User | Group, created: bool, **_):
     """Post save handler"""
+    if not SCIMProvider.objects.filter(backchannel_application__isnull=False).exists():
+        return
     scim_signal_direct.delay(class_to_path(instance.__class__), instance.pk, PatchOp.add.value)
 
 
@@ -30,6 +32,8 @@ def post_save_scim(sender: type[Model], instance: User | Group, created: bool, *
 @receiver(pre_delete, sender=Group)
 def pre_delete_scim(sender: type[Model], instance: User | Group, **_):
     """Pre-delete handler"""
+    if not SCIMProvider.objects.filter(backchannel_application__isnull=False).exists():
+        return
     scim_signal_direct.delay(class_to_path(instance.__class__), instance.pk, PatchOp.remove.value)
 
 
@@ -39,6 +43,8 @@ def m2m_changed_scim(
 ):
     """Sync group membership"""
     if action not in ["post_add", "post_remove"]:
+        return
+    if not SCIMProvider.objects.filter(backchannel_application__isnull=False).exists():
         return
     # reverse: instance is a Group, pk_set is a list of user pks
     # non-reverse: instance is a User, pk_set is a list of groups
