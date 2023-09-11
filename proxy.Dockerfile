@@ -1,21 +1,35 @@
 # Stage 1: Build website
 FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as web-builder
 
-COPY ./web /static/
-
 ENV NODE_ENV=production
 WORKDIR /static
-RUN npm ci --include=dev && npm run build-proxy
+
+COPY web/package.json .
+COPY web/package-lock.json .
+RUN --mount=type=bind,target=/static/package.json,src=./web/package.json \
+    --mount=type=bind,target=/static/package-lock.json,src=./web/package-lock.json \
+    --mount=type=cache,target=/root/.npm \
+    npm ci --include=dev
+
+COPY web .
+RUN npm run build-proxy
 
 # Stage 2: Build
 FROM docker.io/golang:1.21.1-bookworm AS builder
 
 WORKDIR /go/src/goauthentik.io
 
-COPY . .
+RUN --mount=type=bind,target=/go/src/goauthentik.io/go.mod,src=./go.mod \
+    --mount=type=bind,target=/go/src/goauthentik.io/go.sum,src=./go.sum \
+    --mount=type=bind,target=/go/src/goauthentik.io/gen-go-api,src=./gen-go-api \
+    --mount=type=cache,target=/go/pkg/mod \
+    go mod download
 
 ENV CGO_ENABLED=0
-RUN go build -o /go/proxy ./cmd/proxy
+COPY . .
+RUN --mount=type=cache,target=/go/pkg/mod \
+    --mount=type=cache,target=/root/.cache/go-build \
+    go build -o /go/proxy ./cmd/proxy
 
 # Stage 3: Run
 FROM gcr.io/distroless/static-debian11:debug

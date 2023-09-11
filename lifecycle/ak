@@ -55,7 +55,7 @@ function cleanup {
 }
 
 function prepare_debug {
-    pip install --no-cache-dir -r /requirements-dev.txt
+    poetry install --no-ansi --no-interaction
     touch /unittest.xml
     chown authentik:authentik /unittest.xml
 }

@@ -31,7 +31,7 @@ jobs:
         with:
           version: v1.52.2
           args: --timeout 5000s --verbose
-          skip-pkg-cache: true
+          skip-cache: true
   test-unittest:
     runs-on: ubuntu-latest
     steps:
@@ -99,6 +99,8 @@ jobs:
             VERSION_FAMILY=${{ steps.ev.outputs.versionFamily }}
           platforms: linux/amd64,linux/arm64
           context: .
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
   build-binary:
     timeout-minutes: 120
     needs:
