@@ -4,7 +4,7 @@ import { EventActions, IntentEnum, SeverityEnum } from "@goauthentik/api";
 
 /* Various tables in the API for which we need to supply labels */
 
-export const intentToLabelMap = new Map<IntentEnum, string>([
+export const intentEnumToLabel = new Map<IntentEnum, string>([
     [IntentEnum.Api, msg("API Access")],
     [IntentEnum.AppPassword, msg("App password")],
     [IntentEnum.Recovery, msg("Recovery")],
@@ -12,7 +12,7 @@ export const intentToLabelMap = new Map<IntentEnum, string>([
     [IntentEnum.UnknownDefaultOpenApi, msg("Unknown intent")],
 ]);
 
-export const intentToLabel = (intent: IntentEnum) => intentToLabelMap.get(intent);
+export const intentToLabel = (intent: IntentEnum) => intentEnumToLabel.get(intent);
 
 export const eventActionToLabel = new Map<EventActions | undefined, string>([
     [EventActions.Login, msg("Login")],
