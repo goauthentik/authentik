@@ -29,7 +29,7 @@ jobs:
        github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - id: generate_token
-        uses: tibdex/github-app-token@v1
+        uses: tibdex/github-app-token@v2
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}
