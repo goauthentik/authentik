@@ -365,4 +365,3 @@ To modify additional settings further than the options above allow, you can crea
 :::caution
 Using these custom settings is not supported and can prevent your authentik instance from starting. Use with caution.
 :::
-
