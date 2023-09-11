@@ -121,7 +121,8 @@ RUN apt-get update && \
     adduser --system --no-create-home --uid 1000 --group --home /authentik authentik && \
     mkdir -p /certs /media /blueprints && \
     mkdir -p /authentik/.ssh && \
-    chown authentik:authentik /certs /media /authentik/.ssh
+    mkdir -p /ak-root && \
+    chown authentik:authentik /certs /media /authentik/.ssh /ak-root
 
 COPY ./authentik/ /authentik
 COPY ./pyproject.toml /
@@ -133,7 +134,7 @@ COPY ./manage.py /
 COPY ./blueprints /blueprints
 COPY ./lifecycle/ /lifecycle
 COPY --from=go-builder /go/authentik /bin/authentik
-COPY --from=python-deps /work/venv /venv
+COPY --from=python-deps /work/venv /ak-root/venv
 COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/
 COPY --from=website-builder /work/website/help/ /website/help/
@@ -144,8 +145,8 @@ USER 1000
 ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PATH="/venv/bin:$PATH" \
-    VENV_PATH="/venv" \
+    PATH="/ak-root/venv/bin:$PATH" \
+    VENV_PATH="/ak-root/venv" \
     POETRY_VIRTUALENVS_CREATE=false
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "/lifecycle/ak", "healthcheck" ]
