@@ -110,8 +110,6 @@ LABEL org.opencontainers.image.revision ${GIT_BUILD_HASH}
 
 WORKDIR /
 
-COPY --from=geoip /usr/share/GeoIP /geoip
-
 # We cannot cache this layer otherwise we'll end up with a bigger image
 RUN apt-get update && \
     # Required for runtime
@@ -139,6 +137,7 @@ COPY --from=python-deps /work/venv /venv
 COPY --from=web-builder /work/web/dist/ /web/dist/
 COPY --from=web-builder /work/web/authentik/ /web/authentik/
 COPY --from=website-builder /work/website/help/ /website/help/
+COPY --from=geoip /usr/share/GeoIP /geoip
 
 USER 1000
 
