@@ -24,6 +24,9 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         return "membership"
 
     def get_objects(self, **kwargs) -> Generator:
+        if not self._source.sync_groups:
+            self.message("Group syncing is disabled for this Source")
+            return iter(())
         return self.search_paginator(
             search_base=self.base_dn_groups,
             search_filter=self._source.group_object_filter,
