@@ -2,12 +2,30 @@
 title: Configuration
 ---
 
-These are all the configuration options you can set via environment variables.
+This page details all the authentik configuration options that you can set via environment variables.
 
-Append any of the following keys to your `.env` file, and run `docker-compose up -d` to apply them.
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+<Tabs>
+  <TabItem value="docker-compose" label="Docker Compose" default>
+    If you are using Docker Compose, append any of the following keys to your `.env` file, and then run the following command to apply them:
+
+    docker-compose up -d
+
+  </TabItem>
+  <TabItem value="kubernetes" label="Kubernetes">
+    If you are running in Kubernetes, append any of the following keys to your `values.yaml` file, and then run the following commands to apply:
+
+    helm repo update
+    helm upgrade --install authentik authentik/authentik -f values.yaml
+
+  </TabItem>
+
+</Tabs>
 
 :::info
-The double-underscores are intentional, as all these settings are translated to yaml internally, a double-underscore indicates the next level.
+The double-underscores are intentional, as all these settings are translated to yaml internally, and a double-underscore indicates the next level (a subsetting).
 :::
 
 All of these variables can be set to values, but you can also use a URI-like format to load values from other places:
@@ -15,15 +33,23 @@ All of these variables can be set to values, but you can also use a URI-like for
 -   `env://<name>` Loads the value from the environment variable `<name>`. Fallback can be optionally set like `env://<name>?<default>`
 -   `file://<name>` Loads the value from the file `<name>`. Fallback can be optionally set like `file://<name>?<default>`
 
-## Checking settings
+## Verify your configuration settings
 
 To check if your config has been applied correctly, you can run the following command to output the full config:
 
-```
-docker-compose run --rm worker dump_config
-# Or for kubernetes
-kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
-```
+<Tabs>
+  <TabItem value="docker-compose" label="Docker Compose" default>
+
+    docker-compose run --rm worker dump_config
+
+  </TabItem>
+  <TabItem value="kubernetes" label="Kubernetes">
+
+    kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
+
+  </TabItem>
+
+</Tabs>
 
 ## PostgreSQL Settings
 
@@ -339,3 +365,4 @@ To modify additional settings further than the options above allow, you can crea
 :::caution
 Using these custom settings is not supported and can prevent your authentik instance from starting. Use with caution.
 :::
+
