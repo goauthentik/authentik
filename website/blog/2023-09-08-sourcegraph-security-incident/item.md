@@ -22,7 +22,7 @@ image: ./image1.jpg
 
 Access tokens make identity management and authentication relatively painless for our end-users. But, like anything to do with access, tokens also can be fraught with risk and abuse.
 
-Last week’s [announcement](https://about.sourcegraph.com/blog/security-update-august-2023?utm_medium=email&utm_content=272411222&utm_source=hs_email) from Sourcegraph that their platform had been penetrated by a malicious hacker using a leaked access token is a classic example of this balance of tokens being great… until they are in the wrong hands.
+The recent [announcement](https://about.sourcegraph.com/blog/security-update-august-2023?utm_medium=email&utm_content=272411222&utm_source=hs_email) from Sourcegraph that their platform had been penetrated by a malicious hacker using a leaked access token is a classic example of this balance of tokens being great… until they are in the wrong hands.
 
 This incident prompts all of us in the software industry to take yet another look at how our security around user identity and access can be best handled, to see if there are lessons to be learned and improvements to be made. These closer looks are not only at how our own software and users utilizes (and protects) access tokens, but also in how such incidents are caught, mitigated, and communicated.
 
