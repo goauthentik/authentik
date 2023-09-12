@@ -7,6 +7,11 @@
   from = "/docs/integrations/*"
   to = "/integrations/:splat"
 
+# Docs with file name changes
+[[redirects]]
+  from = "/docs/installation/configuration.md"
+  to = "/docs/installation/configuration.mdx"
+
 # Docusaurus update removes index
 [[redirects]]
   from = "/docs/:firstPart/index"
