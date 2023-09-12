@@ -30,6 +30,7 @@ RUN --mount=type=bind,target=/work/web/package.json,src=./web/package.json \
 
 COPY ./web /work/web/
 COPY ./website /work/website/
+COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 
 RUN npm run build
 
