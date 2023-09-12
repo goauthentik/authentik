@@ -12,7 +12,7 @@ from authentik.lib.xml import lxml_from_string
 from authentik.providers.saml.models import SAMLBindings, SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
-from authentik.sources.saml.processors.constants import NS_MAP
+from authentik.sources.saml.processors.constants import NS_MAP, NS_SAML_METADATA
 
 
 class TestServiceProviderMetadataParser(TestCase):
@@ -54,6 +54,24 @@ class TestServiceProviderMetadataParser(TestCase):
 
         schema = etree.XMLSchema(etree.parse("schemas/saml-schema-metadata-2.0.xsd"))  # nosec
         self.assertTrue(schema.validate(metadata))
+
+    def test_schema_want_authn_requests_signed(self):
+        """Test metadata generation with WantAuthnRequestsSigned"""
+        cert = create_test_cert()
+        provider = SAMLProvider.objects.create(
+            name=generate_id(),
+            authorization_flow=self.flow,
+            verification_kp=cert,
+        )
+        Application.objects.create(
+            name=generate_id(),
+            slug=generate_id(),
+            provider=provider,
+        )
+        request = self.factory.get("/")
+        metadata = lxml_from_string(MetadataProcessor(provider, request).build_entity_descriptor())
+        idp_sso_descriptor = metadata.findall(f"{{{NS_SAML_METADATA}}}IDPSSODescriptor")[0]
+        self.assertEqual(idp_sso_descriptor.attrib["WantAuthnRequestsSigned"], "true")
 
     def test_simple(self):
         """Test simple metadata without Signing"""
