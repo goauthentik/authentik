@@ -137,6 +137,7 @@ class LDAPSyncTests(TestCase):
             user_sync.sync_full()
             self.assertTrue(User.objects.filter(username="user0_sn").exists())
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
+            self.assertFalse(User.objects.get(username="user-nsaccountlock").is_active)
 
     def test_sync_groups_ad(self):
         """Test group sync"""
