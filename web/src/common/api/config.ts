@@ -43,7 +43,7 @@ export function tenantSetLocale(tenant: CurrentTenant) {
             composed: true,
             bubbles: true,
             detail: { locale: tenant.defaultLocale },
-        })
+        }),
     );
 }
 
