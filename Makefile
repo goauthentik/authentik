@@ -174,8 +174,19 @@ website-build:
 website-watch:
 	cd website && npm run watch
 
+#########################
+## Docker
+#########################
+
+docker:
+	DOCKER_BUILDKIT=1 docker build . --progress plain --tag authentik:test
+
+#########################
+## CI
+#########################
 # These targets are use by GitHub actions to allow usage of matrix
 # which makes the YAML File a lot smaller
+
 ci--meta-debug:
 	python -V
 	node --version
