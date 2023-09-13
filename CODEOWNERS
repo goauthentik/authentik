@@ -9,3 +9,5 @@ tests/**   @goauthentik/backend
 website/**    @goauthentik/docs
 web/**    @goauthentik/frontend
 website/docs/security/**    @goauthentik/security
+# Fallback for other files
+* @goauthentik/everyone
