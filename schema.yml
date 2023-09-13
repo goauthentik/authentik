@@ -35954,7 +35954,7 @@ components:
         timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
           description: Timeout after which Policy execution is terminated.
         failure_result:
           type: boolean
@@ -37049,7 +37049,7 @@ components:
         timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
           description: Timeout after which Policy execution is terminated.
         failure_result:
           type: boolean
@@ -37091,7 +37091,7 @@ components:
         timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
           description: Timeout after which Policy execution is terminated.
         failure_result:
           type: boolean
