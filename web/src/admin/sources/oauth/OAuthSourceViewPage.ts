@@ -3,11 +3,11 @@ import "@goauthentik/admin/sources/oauth/OAuthSourceDiagram";
 import "@goauthentik/admin/sources/oauth/OAuthSourceForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
+import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 import "@goauthentik/elements/forms/ModalForm";
 
 import { msg } from "@lit/localize";
