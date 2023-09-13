@@ -171,6 +171,8 @@ class MetadataProcessor:
             entity_descriptor, f"{{{NS_SAML_METADATA}}}IDPSSODescriptor"
         )
         idp_sso_descriptor.attrib["protocolSupportEnumeration"] = NS_SAML_PROTOCOL
+        if self.provider.verification_kp:
+            idp_sso_descriptor.attrib["WantAuthnRequestsSigned"] = "true"
 
         signing_descriptor = self.get_signing_key_descriptor()
         if signing_descriptor is not None:
