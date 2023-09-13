@@ -1,5 +1,6 @@
 import "@goauthentik/admin/tokens/TokenForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { intentToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -16,21 +17,6 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
-
-export function IntentToLabel(intent: IntentEnum): string {
-    switch (intent) {
-        case IntentEnum.Api:
-            return msg("API Access");
-        case IntentEnum.AppPassword:
-            return msg("App password");
-        case IntentEnum.Recovery:
-            return msg("Recovery");
-        case IntentEnum.Verification:
-            return msg("Verification");
-        case IntentEnum.UnknownDefaultOpenApi:
-            return msg("Unknown intent");
-    }
-}
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
@@ -121,7 +107,7 @@ export class TokenListPage extends TablePage<Token> {
                 ${item.expiring ? msg("Yes") : msg("No")}
             </ak-label>`,
             html`${item.expiring ? item.expires?.toLocaleString() : msg("-")}`,
-            html`${IntentToLabel(item.intent || IntentEnum.Api)}`,
+            html`${intentToLabel(item.intent ?? IntentEnum.Api)}`,
             html`
                 ${!item.managed
                     ? html`<ak-forms-modal>

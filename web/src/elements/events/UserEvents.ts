@@ -1,8 +1,8 @@
 import "@goauthentik/admin/events/EventInfo";
 import "@goauthentik/admin/events/EventInfo";
-import { ActionToLabel } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
+import { actionToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -47,7 +47,7 @@ export class UserEvents extends Table<Event> {
 
     row(item: EventWithContext): TemplateResult[] {
         return [
-            html`${ActionToLabel(item.action)}`,
+            html`${actionToLabel(item.action)}`,
             html`<div>${item.user?.username}</div>
                 ${item.user.on_behalf_of
                     ? html`<small>
