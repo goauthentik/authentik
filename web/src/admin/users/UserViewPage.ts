@@ -21,7 +21,6 @@ import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/oauth/UserRefreshList";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
-import "@goauthentik/elements/user/UserDevicesList";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -39,6 +38,8 @@ import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { CapabilitiesEnum, CoreApi, User } from "@goauthentik/api";
+
+import "./UserDevicesList";
 
 @customElement("ak-user-view")
 export class UserViewPage extends AKElement {
