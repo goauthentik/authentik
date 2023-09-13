@@ -9,6 +9,12 @@ lifecycle/                      @goauthentik/backend
 schemas/                        @goauthentik/backend
 scripts/                        @goauthentik/backend
 tests/                          @goauthentik/backend
+# Infrastructure
+.github/                        @goauthentik/infrastructure
+Dockerfile                      @goauthentik/infrastructure
+*Dockerfile                     @goauthentik/infrastructure
+.dockerignore                   @goauthentik/infrastructure
+docker-compose.yml              @goauthentik/infrastructure
 # Web
 web/                            @goauthentik/frontend
 # Docs & Website
