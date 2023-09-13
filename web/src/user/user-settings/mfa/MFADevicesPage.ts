@@ -43,8 +43,12 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     columns(): TableColumn[] {
-        const headers = [msg("Name"), msg("Type"), ""];
-        return headers.map((th) => new TableColumn(th, ""));
+        // prettier-ignore
+        return [
+            msg("Name"),
+            msg("Type"),
+            ""
+        ].map((th) => new TableColumn(th, ""));
     }
 
     renderToolbar(): TemplateResult {

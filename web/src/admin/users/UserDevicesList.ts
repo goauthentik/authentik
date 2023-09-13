@@ -37,8 +37,12 @@ export class UserDeviceList extends Table<Device> {
     }
 
     columns(): TableColumn[] {
-        const headers = [msg("Name"), msg("Type"), msg("Confirmed")];
-        return headers.map((th) => new TableColumn(th, ""));
+        // prettier-ignore
+        return [
+            msg("Name"),
+            msg("Type"),
+            msg("Confirmed")
+        ].map((th) => new TableColumn(th, ""))
     }
 
     async deleteWrapper(device: Device) {
