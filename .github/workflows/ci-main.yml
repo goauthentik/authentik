@@ -199,7 +199,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       - name: Login to Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
           registry: ghcr.io
@@ -246,7 +246,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
       - name: Login to Container Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         if: ${{ steps.ev.outputs.shouldBuild == 'true' }}
         with:
           registry: ghcr.io
