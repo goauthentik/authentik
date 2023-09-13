@@ -1,6 +1,5 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_LOCALE_REQUEST } from "@goauthentik/common/constants";
-import { customEvent } from "@goauthentik/elements/utils/customEvents";
 
 import { CoreApi, ResponseError, SessionUser } from "@goauthentik/api";
 
@@ -22,9 +21,15 @@ export function me(): Promise<SessionUser> {
                 const locale = user.user.settings.locale;
                 if (locale && locale !== "") {
                     console.debug(
-                        `authentik/locale: Activating user's configured locale '${locale}'`,
+                        `authentik/locale: Activating user's configured locale '${locale}'`
                     );
-                    window.dispatchEvent(customEvent(EVENT_LOCALE_REQUEST, { locale }));
+                    window.dispatchEvent(
+                        new CustomEvent(EVENT_LOCALE_REQUEST, {
+                            composed: true,
+                            bubbles: true,
+                            detail: { locale },
+                        })
+                    );
                 }
                 return user;
             })
@@ -47,7 +52,7 @@ export function me(): Promise<SessionUser> {
                         .toString()
                         .substring(window.location.origin.length);
                     window.location.assign(
-                        `/flows/-/default/authentication/?next=${encodeURIComponent(relativeUrl)}`,
+                        `/flows/-/default/authentication/?next=${encodeURIComponent(relativeUrl)}`
                     );
                 }
                 return defaultUser;
