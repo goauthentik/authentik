@@ -1,2 +1,11 @@
-*   @goauthentik/core
+authentik/**   @goauthentik/backend
+blueprints/**   @goauthentik/backend
+cmd/**   @goauthentik/backend
+internal/**   @goauthentik/backend
+lifecycle/**   @goauthentik/backend
+schemas/**   @goauthentik/backend
+scripts/**   @goauthentik/backend
+tests/**   @goauthentik/backend
+website/**    @goauthentik/docs
+web/**    @goauthentik/frontend
 website/docs/security/**    @goauthentik/security
