@@ -47,9 +47,11 @@ class FreeIPA(BaseLDAPSynchronizer):
             return
         # For some reason, nsaccountlock is not defined properly in the schema as bool
         # hence we get it as a list of strings
-        _is_active = str(self._flatten(attributes.get("nsaccountlock", ["FALSE"])))
+        _is_locked = str(self._flatten(attributes.get("nsaccountlock", ["FALSE"])))
         # So we have to attempt to convert it to a bool
-        is_active = _is_active.lower() == "true"
+        is_locked = _is_locked.lower() == "true"
+        # And then invert it since freeipa saves locked and we save active
+        is_active = not is_locked
         if is_active != user.is_active:
             user.is_active = is_active
             user.save()
