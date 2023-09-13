@@ -88,6 +88,9 @@ class PolicyBinding(SerializerModel):
     timeout = models.IntegerField(
         default=30, help_text=_("Timeout after which Policy execution is terminated.")
     )
+    failure_result = models.BooleanField(
+        default=False, help_text=_("Result if the Policy execution fails.")
+    )
 
     order = models.IntegerField()
 

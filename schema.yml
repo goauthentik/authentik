@@ -35956,6 +35956,9 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
     PatchedPromptRequest:
       type: object
       description: Prompt Serializer
@@ -37048,6 +37051,9 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
       required:
       - group_obj
       - order
@@ -37087,6 +37093,9 @@ components:
           maximum: 2147483647
           minimum: -2147483648
           description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
       required:
       - order
       - target

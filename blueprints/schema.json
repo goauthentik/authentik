@@ -3654,6 +3654,11 @@
                     "maximum": 2147483647,
                     "title": "Timeout",
                     "description": "Timeout after which Policy execution is terminated."
+                },
+                "failure_result": {
+                    "type": "boolean",
+                    "title": "Failure result",
+                    "description": "Result if the Policy execution fails."
                 }
             },
             "required": []
