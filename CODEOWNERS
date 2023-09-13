@@ -9,9 +9,9 @@ lifecycle/                      @goauthentik/backend
 schemas/                        @goauthentik/backend
 scripts/                        @goauthentik/backend
 tests/                          @goauthentik/backend
-# Docs & Website
-website/**                      @goauthentik/docs
 # Web
-web/**                          @goauthentik/frontend
+web/                            @goauthentik/frontend
+# Docs & Website
+website/                        @goauthentik/docs
 # Security
-website/docs/security/**        @goauthentik/security
+website/docs/security/          @goauthentik/security
