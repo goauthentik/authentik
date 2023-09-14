@@ -1,5 +1,5 @@
 ---
-title: Closed source != secure
+title: Closed source != more secure
 slug: 2023-09-14-closed-source-does-not-equal-secure
 authors:
     - name: Jens Langhammer
