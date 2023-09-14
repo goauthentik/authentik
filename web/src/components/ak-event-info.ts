@@ -25,7 +25,7 @@ type Pair = [string, string | number | EventContext | EventModel | string[] | Te
 
 // https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/about-automation-for-issues-and-pull-requests-with-query-parameters
 
-const emailMessageBody = (context: EventContext) => `
+const githubIssueMessageBody = (context: EventContext) => `
 **Describe the bug**
 A clear and concise description of what the bug is.
 
@@ -168,7 +168,7 @@ export class EventInfo extends AKElement {
             "https://github.com/goauthentik/authentik/issues/new",
             "?labels=bug,from_authentik",
             `&title=${encodeURIComponent(title)}`,
-            `&body=${encodeURIComponent(emailMessageBody(context))}`,
+            `&body=${encodeURIComponent(githubIssueMessageBody(context))}`,
         ]
             .join("")
             .trim();
