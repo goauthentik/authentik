@@ -54,6 +54,7 @@ def structlog_configure():
 def get_logger_config():
     """Configure python stdlib's logging"""
     debug = CONFIG.get_bool("debug")
+    log_path = CONFIG.get("log_path")
     global_level = get_log_level()
     base_config = {
         "version": 1,
@@ -78,7 +79,7 @@ def get_logger_config():
             },
             "file": {
                 "class": "logging.handlers.WatchedFileHandler",
-                "filename": "/var/log/authentik/authentik.log",
+                "filename": log_path,
                 "formatter": "json"
             }
         },
