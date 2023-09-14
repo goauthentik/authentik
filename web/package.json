@@ -15,7 +15,7 @@
         "build-proxy": "run-s build-locales rollup:build-proxy",
         "watch": "run-s build-locales rollup:watch",
         "lint": "eslint . --max-warnings 0 --fix",
-        "lint:precommit": "eslint --max-warnings 0 --config ./.eslintrc.precommit.json $(git status --porcelain | cut -c2- | grep '^[M?]' | cut -c7- | grep -E '\\.(ts|js|tsx|jsx)$') ",
+        "lint:precommit": "eslint --max-warnings 0 --config ./.eslintrc.precommit.json $(git status --porcelain | grep '^[M?][M?]' | cut -c8- | grep -E '\\.(ts|js|tsx|jsx)$') ",
         "lint:spelling": "codespell -D - -D ../.github/codespell-dictionary.txt -I ../.github/codespell-words.txt -S './src/locales/**' ./src -s",
         "lit-analyse": "lit-analyzer src",
         "precommit": "run-s tsc lit-analyse lint:precommit lint:spelling prettier",
