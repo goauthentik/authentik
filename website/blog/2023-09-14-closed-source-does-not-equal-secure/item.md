@@ -52,7 +52,7 @@ However, with closed source solutions, you’re completely reliant on the vendor
 
 ### Getting ahead of vulnerabilities
 
-Bug bounty programs are one way for closed source security vendors to preempt exploitation, but the prizes need to be sufficiently compelling. Bad actors can still choose to disclose their findings to the highest bidder instead of the vendor. 
+Bug bounty programs are one way for closed source security vendors to preempt exploitation, but the prizes need to be sufficiently compelling. Bad actors can still choose to disclose their findings to the highest bidder instead of the vendor.
 
 At least with open source projects, on balance there are likely to be more good actors actively working with and on the code, or ready to respond to Common Vulnerabilities and Exposures (CVEs).
 
