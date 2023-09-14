@@ -23,7 +23,7 @@ import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -69,6 +69,12 @@ export class UserViewPage extends AKElement {
             PFCard,
             PFDescriptionList,
             PFSizing,
+            css`
+                #impersonate-user-button::part(spinner-button),
+                #reset-password-button::part(spinner-button) {
+                    width: 11em;
+                }
+            `,
         ];
     }
 
@@ -195,7 +201,11 @@ export class UserViewPage extends AKElement {
                                 <span slot="header"> ${msg("Update User")} </span>
                                 <ak-user-form slot="form" .instancePk=${this.user.pk}>
                                 </ak-user-form>
-                                <button slot="trigger" class="pf-m-primary pf-c-button">
+                                <button
+                                    style="min-width: 11em;"
+                                    slot="trigger"
+                                    class="pf-m-primary pf-c-button"
+                                >
                                     ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
@@ -207,6 +217,8 @@ export class UserViewPage extends AKElement {
                                   <div class="pf-c-card__footer">
                                       <ak-action-button
                                           class="pf-m-tertiary"
+                                          style="min-width: 11em;"
+                                          id="impersonate-user-button"
                                           .apiRequest=${() => {
                                               return new CoreApi(DEFAULT_CONFIG)
                                                   .coreUsersImpersonateCreate({
@@ -217,7 +229,14 @@ export class UserViewPage extends AKElement {
                                                   });
                                           }}
                                       >
-                                          ${msg("Impersonate")}
+                                          <pf-tooltip
+                                              position="top"
+                                              content=${msg(
+                                                  "Temporarily assume the identity of this user",
+                                              )}
+                                          >
+                                              ${msg("Impersonate")}
+                                          </pf-tooltip>
                                       </ak-action-button>
                                   </div>
                               `
@@ -235,13 +254,25 @@ export class UserViewPage extends AKElement {
                                     });
                                 }}
                             >
-                                <button slot="trigger" class="pf-c-button pf-m-warning">
-                                    ${this.user.isActive ? msg("Deactivate") : msg("Activate")}
+                                <button
+                                    style="min-width: 11em;"
+                                    slot="trigger"
+                                    class="pf-c-button pf-m-warning"
+                                >
+                                    <pf-tooltip
+                                        position="top"
+                                        content=${this.user.isActive
+                                            ? msg("Lock the user out of this system")
+                                            : msg("Allow the user to log in and use this system")}
+                                    >
+                                        ${this.user.isActive ? msg("Deactivate") : msg("Activate")}
+                                    </pf-tooltip>
                                 </button>
                             </ak-user-active-form>
                         </div>
                         <div class="pf-c-card__footer">
                             <ak-action-button
+                                id="reset-password-button"
                                 class="pf-m-secondary"
                                 .apiRequest=${() => {
                                     return new CoreApi(DEFAULT_CONFIG)
@@ -268,7 +299,12 @@ export class UserViewPage extends AKElement {
                                         });
                                 }}
                             >
-                                ${msg("Reset Password")}
+                                <pf-tooltip
+                                    position="top"
+                                    content=${msg("Send this user a link to enter a new password")}
+                                >
+                                    ${msg("Reset Password")}
+                                </pf-tooltip>
                             </ak-action-button>
                         </div>
                         <div class="pf-c-card__footer">
@@ -279,8 +315,17 @@ export class UserViewPage extends AKElement {
                                     slot="form"
                                     .instancePk=${this.user?.pk}
                                 ></ak-user-password-form>
-                                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                    ${msg("Set password")}
+                                <button
+                                    style="min-width: 11em;"
+                                    slot="trigger"
+                                    class="pf-c-button pf-m-secondary"
+                                >
+                                    <pf-tooltip
+                                        position="top"
+                                        content=${msg("Enter a new password for this user")}
+                                    >
+                                        ${msg("Set password")}
+                                    </pf-tooltip>
                                 </button>
                             </ak-forms-modal>
                         </div>
