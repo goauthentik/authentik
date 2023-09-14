@@ -153,10 +153,6 @@
         <source>Messages</source>
         <target>Messages</target>
       </trans-unit>
-      <trans-unit id="sd6edc7752cdf0ef5">
-        <source>New version available!</source>
-        <target>Une nouvelle version est disponible !</target>
-      </trans-unit>
       <trans-unit id="s0a5401d4419f9958">
         <source>Using source</source>
         <target>Utilisation de la source</target>
@@ -5900,6 +5896,36 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s1a65ee08832fbfe2">
   <source>Flows and Stages</source>
+</trans-unit>
+<trans-unit id="s4ba4473f3d4ec896">
+  <source>New version available</source>
+</trans-unit>
+<trans-unit id="s6b1ed7507f26cb4a">
+  <source>Failure result</source>
+</trans-unit>
+<trans-unit id="s2e422519ed38f7d8">
+  <source>Pass</source>
+</trans-unit>
+<trans-unit id="s81a45c4fd11e8e1a">
+  <source>Don't pass</source>
+</trans-unit>
+<trans-unit id="s95b73e0f4e47eb9a">
+  <source>Result used when policy execution fails.</source>
+</trans-unit>
+<trans-unit id="s43fe853bf219a9b8">
+  <source>Temporarily assume the identity of this user</source>
+</trans-unit>
+<trans-unit id="s028d385389b5aac0">
+  <source>Lock the user out of this system</source>
+</trans-unit>
+<trans-unit id="sd2122c514f0778b5">
+  <source>Allow the user to log in and use this system</source>
+</trans-unit>
+<trans-unit id="sb31b1d4e45bdbbee">
+  <source>Send this user a link to enter a new password</source>
+</trans-unit>
+<trans-unit id="se28b5f3fcadaeeb1">
+  <source>Enter a new password for this user</source>
 </trans-unit>
     </body>
   </file>
