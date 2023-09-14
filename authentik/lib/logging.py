@@ -76,6 +76,11 @@ def get_logger_config():
                 "class": "logging.StreamHandler",
                 "formatter": "console" if debug else "json",
             },
+            "file": {
+                "class": "logging.handlers.WatchedFileHandler",
+                "filename": "/var/log/authentik/authentik.log",
+                "formatter": "json"
+            }
         },
         "loggers": {},
     }
@@ -101,7 +106,7 @@ def get_logger_config():
     }
     for handler_name, level in handler_level_map.items():
         base_config["loggers"][handler_name] = {
-            "handlers": ["console"],
+            "handlers": ["console", "file"],
             "level": level,
             "propagate": False,
         }
