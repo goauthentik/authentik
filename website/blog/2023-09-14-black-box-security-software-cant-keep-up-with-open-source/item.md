@@ -1,6 +1,6 @@
 ---
-title: Closed source != more secure
-slug: 2023-09-14-closed-source-does-not-equal-secure
+title: Black box security software can’t keep up with open source
+slug: 2023-09-14-black-box-security-software-cant-keep-up-with-open-source
 authors:
     - name: Jens Langhammer
       title: CTO at Authentik Security Inc
