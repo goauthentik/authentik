@@ -1,6 +1,7 @@
 """logging helpers"""
 import logging
 from logging import Logger
+import os
 from os import getpid
 
 import structlog
@@ -55,6 +56,9 @@ def get_logger_config():
     """Configure python stdlib's logging"""
     debug = CONFIG.get_bool("debug")
     log_path = CONFIG.get("log_path")
+    # If path doesn't exist create it, this allows for new dirs as well.
+    if log_path:
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
     global_level = get_log_level()
     base_config = {
         "version": 1,
