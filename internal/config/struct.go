@@ -4,6 +4,7 @@ type Config struct {
 	// Core specific config
 	Paths          PathsConfig          `yaml:"paths"`
 	LogLevel       string               `yaml:"log_level" env:"AUTHENTIK_LOG_LEVEL"`
+	LogPath        string               `yaml:"log_path" env:"AUTHENTIK_LOG_PATH"`
 	ErrorReporting ErrorReportingConfig `yaml:"error_reporting"`
 	Redis          RedisConfig          `yaml:"redis"`
 	Outposts       OutpostConfig        `yaml:"outposts"`
