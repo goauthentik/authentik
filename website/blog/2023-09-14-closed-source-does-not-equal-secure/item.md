@@ -89,7 +89,7 @@ There are some legitimate concerns to raise with closed source support though. S
 Security, authentication, and identity management are mission-critical services. For most companies, it’s wiser to be able to run and manage these in house. Again, open core can provide a happy medium solution, as you get:
 
 -   The visibility and transparency of open source
--   Total flexibility and modifiability over the open core
+-   Total flexibility and modifiability over the open source core
 -   A contract with a company who is actively contributing to and improving the product, and
 -   Support for setup and remediation (we just launched dedicated [support for Authentik Security Enterprise](https://goauthentik.io/blog/2023-08-31-announcing-the-authentik-enterprise-release)!)
 
