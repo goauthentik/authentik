@@ -9,3 +9,5 @@ build_docs/**
 authentik/enterprise
 blueprints/local
 .git
+!gen-ts-api/node_modules
+!gen-ts-api/dist/**

@@ -1,5 +1,5 @@
-import { IntentToLabel } from "@goauthentik/admin/tokens/TokenListPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { intentToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { PFColor } from "@goauthentik/elements/Label";
@@ -119,7 +119,7 @@ export class UserTokenList extends Table<Token> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${IntentToLabel(item.intent || IntentEnum.Api)}
+                                    ${intentToLabel(item.intent ?? IntentEnum.Api)}
                                 </div>
                             </dd>
                         </div>

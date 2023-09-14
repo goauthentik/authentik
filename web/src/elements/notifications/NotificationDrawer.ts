@@ -1,6 +1,6 @@
-import { ActionToLabel } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_NOTIFICATION_DRAWER_TOGGLE, EVENT_REFRESH } from "@goauthentik/common/constants";
+import { actionToLabel } from "@goauthentik/common/labels";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { me } from "@goauthentik/common/users";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -90,7 +90,7 @@ export class NotificationDrawer extends AKElement {
                     <i class="fas fa-info-circle" aria-hidden="true"></i>
                 </span>
                 <h2 class="pf-c-notification-drawer__list-item-header-title">
-                    ${ActionToLabel(item.event?.action)}
+                    ${actionToLabel(item.event?.action)}
                 </h2>
             </div>
             <div class="pf-c-notification-drawer__list-item-action">

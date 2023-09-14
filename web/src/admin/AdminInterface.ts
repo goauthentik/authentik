@@ -21,10 +21,12 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import "@goauthentik/elements/router/RouterOutlet";
 import "@goauthentik/elements/sidebar/Sidebar";
 import "@goauthentik/elements/sidebar/SidebarItem";
+import { spread } from "@open-wc/lit-helpers";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { map } from "lit/directives/map.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFDrawer from "@patternfly/patternfly/components/Drawer/drawer.css";
@@ -173,159 +175,117 @@ export class AdminInterface extends Interface {
     }
 
     renderSidebarItems(): TemplateResult {
+        // The second attribute type is of string[] to help with the 'activeWhen' control, which was
+        // commonplace and singular enough to merit its own handler.
+        type SidebarEntry = [
+            path: string | null,
+            label: string,
+            attributes?: Record<string, any> | string[] | null, // eslint-disable-line
+            children?: SidebarEntry[],
+        ];
+
+        // prettier-ignore
+        const sidebarContent: SidebarEntry[] = [
+            ["/if/user/", msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
+            [null, msg("Dashboards"), { "?expanded": true }, [
+                ["/administration/overview", msg("Overview")],
+                ["/administration/dashboard/users", msg("Users")],
+                ["/administration/system-tasks", msg("System Tasks")]]],
+            [null, msg("Applications"), null, [
+                ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
+                ["/core/applications", msg("Applications"), [`^/core/applications/(?<slug>${SLUG_REGEX})$`]],
+                ["/outpost/outposts", msg("Outposts")]]],
+            [null, msg("Events"), null, [
+                ["/events/log", msg("Logs"), [`^/events/log/(?<id>${UUID_REGEX})$`]],
+                ["/events/rules", msg("Notification Rules")],
+                ["/events/transports", msg("Notification Transports")]]],
+            [null, msg("Customisation"), null, [
+                ["/policy/policies", msg("Policies")],
+                ["/core/property-mappings", msg("Property Mappings")],
+                ["/blueprints/instances", msg("Blueprints")],
+                ["/policy/reputation", msg("Reputation scores")]]],
+            [null, msg("Flows and Stages"), null, [
+                ["/flow/flows", msg("Flows"), [`^/flow/flows/(?<slug>${SLUG_REGEX})$`]],
+                ["/flow/stages", msg("Stages")],
+                ["/flow/stages/prompts", msg("Prompts")]]],
+            [null, msg("Directory"), null, [
+                ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
+                ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
+                ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`]],
+                ["/core/tokens", msg("Tokens and App passwords")],
+                ["/flow/stages/invitations", msg("Invitations")]]],
+            [null, msg("System"), null, [
+                ["/core/tenants", msg("Tenants")],
+                ["/crypto/certificates", msg("Certificates")],
+                ["/outpost/integrations", msg("Outpost Integrations")]]]
+        ];
+
+        // Typescript requires the type here to correctly type the recursive path
+        type SidebarRenderer = (_: SidebarEntry) => TemplateResult;
+
+        const renderOneSidebarItem: SidebarRenderer = ([path, label, attributes, children]) => {
+            const properties = Array.isArray(attributes)
+                ? { ".activeWhen": attributes }
+                : attributes ?? {};
+            if (path) {
+                properties["path"] = path;
+            }
+            return html`<ak-sidebar-item ${spread(properties)}>
+                ${label ? html`<span slot="label">${label}</span>` : nothing}
+                ${map(children, renderOneSidebarItem)}
+            </ak-sidebar-item>`;
+        };
+
+        // prettier-ignore
         return html`
-            ${this.version && this.version.versionCurrent !== VERSION
-                ? html`
-                      <ak-sidebar-item ?highlight=${true}>
-                          <span slot="label"
-                              >${msg("A newer version of the frontend is available.")}</span
-                          >
-                      </ak-sidebar-item>
-                  `
-                : html``}
-            ${this.user?.original
-                ? html`<ak-sidebar-item
-                      ?highlight=${true}
-                      @click=${() => {
-                          new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
-                              window.location.reload();
-                          });
-                      }}
-                  >
-                      <span slot="label"
-                          >${msg(
-                              str`You're currently impersonating ${this.user.user.username}. Click to stop.`,
-                          )}</span
-                      >
-                  </ak-sidebar-item>`
-                : html``}
-            <ak-sidebar-item path="/if/user/" ?isAbsoluteLink=${true} ?highlight=${true}>
-                <span slot="label">${msg("User interface")}</span>
-            </ak-sidebar-item>
-            <ak-sidebar-item .expanded=${true}>
-                <span slot="label">${msg("Dashboards")}</span>
-                <ak-sidebar-item path="/administration/overview">
-                    <span slot="label">${msg("Overview")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/administration/dashboard/users">
-                    <span slot="label">${msg("Users")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/administration/system-tasks">
-                    <span slot="label">${msg("System Tasks")}</span>
-                </ak-sidebar-item>
-            </ak-sidebar-item>
-            <ak-sidebar-item>
-                <span slot="label">${msg("Applications")}</span>
-                <ak-sidebar-item
-                    path="/core/providers"
-                    .activeWhen=${[`^/core/providers/(?<id>${ID_REGEX})$`]}
-                >
-                    <span slot="label">${msg("Providers")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item
-                    path="/core/applications"
-                    .activeWhen=${[`^/core/applications/(?<slug>${SLUG_REGEX})$`]}
-                >
-                    <span slot="label">${msg("Applications")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/outpost/outposts">
-                    <span slot="label">${msg("Outposts")}</span>
-                </ak-sidebar-item>
-            </ak-sidebar-item>
-            <ak-sidebar-item>
-                <span slot="label">${msg("Events")}</span>
-                <ak-sidebar-item
-                    path="/events/log"
-                    .activeWhen=${[`^/events/log/(?<id>${UUID_REGEX})$`]}
-                >
-                    <span slot="label">${msg("Logs")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/events/rules">
-                    <span slot="label">${msg("Notification Rules")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/events/transports">
-                    <span slot="label">${msg("Notification Transports")}</span>
-                </ak-sidebar-item>
-            </ak-sidebar-item>
-            <ak-sidebar-item>
-                <span slot="label">${msg("Customisation")}</span>
-                <ak-sidebar-item path="/policy/policies">
-                    <span slot="label">${msg("Policies")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/core/property-mappings">
-                    <span slot="label">${msg("Property Mappings")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/blueprints/instances">
-                    <span slot="label">${msg("Blueprints")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/policy/reputation">
-                    <span slot="label">${msg("Reputation scores")}</span>
-                </ak-sidebar-item>
-            </ak-sidebar-item>
-            <ak-sidebar-item>
-                <span slot="label">${msg("Flows and Stages")}</span>
-                <ak-sidebar-item
-                    path="/flow/flows"
-                    .activeWhen=${[`^/flow/flows/(?<slug>${SLUG_REGEX})$`]}
-                >
-                    <span slot="label">${msg("Flows")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/flow/stages">
-                    <span slot="label">${msg("Stages")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/flow/stages/prompts">
-                    <span slot="label">${msg("Prompts")}</span>
-                </ak-sidebar-item>
-            </ak-sidebar-item>
-            <ak-sidebar-item>
-                <span slot="label">${msg("Directory")}</span>
-                <ak-sidebar-item
-                    path="/identity/users"
-                    .activeWhen=${[`^/identity/users/(?<id>${ID_REGEX})$`]}
-                >
-                    <span slot="label">${msg("Users")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item
-                    path="/identity/groups"
-                    .activeWhen=${[`^/identity/groups/(?<id>${UUID_REGEX})$`]}
-                >
-                    <span slot="label">${msg("Groups")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item
-                    path="/core/sources"
-                    .activeWhen=${[`^/core/sources/(?<slug>${SLUG_REGEX})$`]}
-                >
-                    <span slot="label">${msg("Federation and Social login")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/core/tokens">
-                    <span slot="label">${msg("Tokens and App passwords")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/flow/stages/invitations">
-                    <span slot="label">${msg("Invitations")}</span>
-                </ak-sidebar-item>
-            </ak-sidebar-item>
-            <ak-sidebar-item>
-                <span slot="label">${msg("System")}</span>
-                <ak-sidebar-item path="/core/tenants">
-                    <span slot="label">${msg("Tenants")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/crypto/certificates">
-                    <span slot="label">${msg("Certificates")}</span>
-                </ak-sidebar-item>
-                <ak-sidebar-item path="/outpost/integrations">
-                    <span slot="label">${msg("Outpost Integrations")}</span>
-                </ak-sidebar-item>
-            </ak-sidebar-item>
-            ${this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
-                ? html`
-                      <ak-sidebar-item>
-                          <span slot="label">${msg("Enterprise")}</span>
-                          <ak-sidebar-item path="/enterprise/licenses">
-                              <span slot="label">${msg("Licenses")}</span>
-                          </ak-sidebar-item>
-                      </ak-sidebar-item>
-                  `
-                : html``}
+            ${this.renderNewVersionMessage()}
+            ${this.renderImpersonationMessage()}
+            ${map(sidebarContent, renderOneSidebarItem)}
+            ${this.renderEnterpriseMessage()}
         `;
+    }
+
+    renderNewVersionMessage() {
+        return this.version && this.version.versionCurrent !== VERSION
+            ? html`
+                  <ak-sidebar-item ?highlight=${true}>
+                      <span slot="label"
+                          >${msg("A newer version of the frontend is available.")}</span
+                      >
+                  </ak-sidebar-item>
+              `
+            : nothing;
+    }
+
+    renderImpersonationMessage() {
+        return this.user?.original
+            ? html`<ak-sidebar-item
+                  ?highlight=${true}
+                  @click=${() => {
+                      new CoreApi(DEFAULT_CONFIG).coreUsersImpersonateEndRetrieve().then(() => {
+                          window.location.reload();
+                      });
+                  }}
+              >
+                  <span slot="label"
+                      >${msg(
+                          str`You're currently impersonating ${this.user.user.username}. Click to stop.`,
+                      )}</span
+                  >
+              </ak-sidebar-item>`
+            : nothing;
+    }
+
+    renderEnterpriseMessage() {
+        return this.config?.capabilities.includes(CapabilitiesEnum.IsEnterprise)
+            ? html`
+                  <ak-sidebar-item>
+                      <span slot="label">${msg("Enterprise")}</span>
+                      <ak-sidebar-item path="/enterprise/licenses">
+                          <span slot="label">${msg("Licenses")}</span>
+                      </ak-sidebar-item>
+                  </ak-sidebar-item>
+              `
+            : nothing;
     }
 }

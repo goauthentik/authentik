@@ -1,7 +1,7 @@
 {
     "presets": ["@babel/env", "@babel/typescript"],
     "plugins": [
-        ["@babel/plugin-proposal-private-methods", { "loose": true }],
+        ["@babel/plugin-transform-private-methods", { "loose": true }],
         ["babel-plugin-tsconfig-paths", {}],
         [
             "@babel/plugin-proposal-decorators",
@@ -10,7 +10,7 @@
             }
         ],
         [
-            "@babel/plugin-proposal-class-properties",
+            "@babel/plugin-transform-class-properties",
             {
                 "loose": true
             }
@@ -23,7 +23,7 @@
         ],
         "macros",
         [
-            "@babel/plugin-proposal-private-property-in-object",
+            "@babel/plugin-transform-private-property-in-object",
             {
                 "loose": true
             }

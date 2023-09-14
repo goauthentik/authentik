@@ -1,7 +1,8 @@
 import "@goauthentik/admin/events/EventInfo";
-import { ActionToLabel, EventGeo } from "@goauthentik/admin/events/utils";
+import { EventGeo } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
+import { actionToLabel } from "@goauthentik/common/labels";
 import { truncate } from "@goauthentik/common/utils";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -68,7 +69,7 @@ export class RecentEventsCard extends Table<Event> {
 
     row(item: EventWithContext): TemplateResult[] {
         return [
-            html`<div><a href="${`#/events/log/${item.pk}`}">${ActionToLabel(item.action)}</a></div>
+            html`<div><a href="${`#/events/log/${item.pk}`}">${actionToLabel(item.action)}</a></div>
                 <small>${item.app}</small>`,
             item.user?.username
                 ? html`<div>

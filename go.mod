@@ -6,7 +6,7 @@ require (
 	beryju.io/ldap v0.1.0
 	github.com/Netflix/go-env v0.0.0-20210215222557-e437a7e7f9fb
 	github.com/coreos/go-oidc v2.2.1+incompatible
-	github.com/getsentry/sentry-go v0.24.0
+	github.com/getsentry/sentry-go v0.24.1
 	github.com/go-http-utils/etag v0.0.0-20161124023236-513ea8f21eb1
 	github.com/go-ldap/ldap/v3 v3.4.5
 	github.com/go-openapi/runtime v0.26.0
@@ -27,7 +27,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
 	github.com/stretchr/testify v1.8.4
-	goauthentik.io/api/v3 v3.2023082.6
+	goauthentik.io/api/v3 v3.2023083.1
 	golang.org/x/exp v0.0.0-20230210204819-062eb4c674ab
 	golang.org/x/oauth2 v0.12.0
 	golang.org/x/sync v0.3.0
