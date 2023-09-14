@@ -43,6 +43,7 @@ debug: false
 remote_debug: false
 
 log_level: info
+log_path: ""
 
 error_reporting:
   enabled: false
