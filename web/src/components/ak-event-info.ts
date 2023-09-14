@@ -25,6 +25,13 @@ type Pair = [string, string | number | EventContext | EventModel | string[] | Te
 
 // https://docs.github.com/en/issues/tracking-your-work-with-issues/creating-issues/about-automation-for-issues-and-pull-requests-with-query-parameters
 
+// This is the template message body with our stacktrace passed to github via a querystring. It is
+// 702 bytes long in UTF-8. [As of July
+// 2023](https://saturncloud.io/blog/what-is-the-maximum-length-of-a-url-in-different-browsers/),
+// the longest URL (not query string, **URL**) passable via this method is 2048 bytes. This is a bit
+// of a hack, but it will get the top of the context across even if it exceeds the limit of the more
+// restrictive browsers.
+
 const githubIssueMessageBody = (context: EventContext) => `
 **Describe the bug**
 A clear and concise description of what the bug is.
