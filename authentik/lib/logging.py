@@ -55,10 +55,6 @@ def structlog_configure():
 def get_logger_config():
     """Configure python stdlib's logging"""
     debug = CONFIG.get_bool("debug")
-    log_path = CONFIG.get("log_path")
-    # If path doesn't exist create it, this allows for new dirs as well.
-    if log_path:
-        os.makedirs(os.path.dirname(log_path), exist_ok=True)
     global_level = get_log_level()
     base_config = {
         "version": 1,
@@ -81,11 +77,6 @@ def get_logger_config():
                 "class": "logging.StreamHandler",
                 "formatter": "console" if debug else "json",
             },
-            "file": {
-                "class": "logging.handlers.WatchedFileHandler",
-                "filename": log_path,
-                "formatter": "json"
-            }
         },
         "loggers": {},
     }
@@ -109,9 +100,26 @@ def get_logger_config():
         "uvicorn": "WARNING",
         "gunicorn": "INFO",
     }
+
+    handlers = ["console"]
+
+    log_path = CONFIG.get("log_path")
+    # If file doesn't exist create it, this allows for new dirs aswell.
+
+    if log_path:
+        os.makedirs(os.path.dirname(log_path), exist_ok=True)
+
+        base_config["handlers"]["file"] = {
+            "class": "logging.handlers.WatchedFileHandler",
+            "filename": log_path,
+            "formatter": "console" if debug else "json",
+        }
+
+        handlers.append("file")
+
     for handler_name, level in handler_level_map.items():
         base_config["loggers"][handler_name] = {
-            "handlers": ["console", "file"],
+            "handlers": handlers,
             "level": level,
             "propagate": False,
         }
