@@ -82,7 +82,7 @@ With [supply chain attacks](https://goauthentik.io/blog/2023-04-07-supply-chain-
 
 > “... big corporations want a neck to choke when things go wrong and Linus is hard to track down” — [steppinraz0r on reddit](https://www.reddit.com/r/cybersecurity/comments/15c3h0q/told_by_a_senior_programmer_that_open_source/jtz0yzx/)
 
-Having a security vendor means accountability: formal support for implementation, bugs, and vulnerabilities. If you choose open source, you do have to consider, do you have the in-house expertise for management and maintenance? How confident are you in community support?
+Having a security vendor means accountability: formal support for implementation, bugs, and vulnerabilities. When choosing open source, you do have to consider whether you have the in-house expertise for management and maintenance. Or how confident are you in community support? 
 
 There are some legitimate concerns to raise with closed source support though. Some vendors outsource technical support to a third party, which may or may not be vetted (as in the [Okta breach of January 2022](https://www.forbes.com/sites/thomasbrewster/2022/03/23/okta-hack-exposes-a-huge-hole-in-tech-giant-security/)). And, as we saw above, [open source projects actually beat closed source vendors on TTF](https://go.snyk.io/state-of-open-source-security-report-2023-dwn-typ.html).
 
