@@ -81,7 +81,6 @@ With [supply chain attacks](https://goauthentik.io/blog/2023-04-07-supply-chain-
 ## Support and accountability
 
 > “... big corporations want a neck to choke when things go wrong and Linus is hard to track down” — [steppinraz0r on reddit](https://www.reddit.com/r/cybersecurity/comments/15c3h0q/told_by_a_senior_programmer_that_open_source/jtz0yzx/)
->
 
 Having a security vendor means accountability: formal support for implementation, bugs, and vulnerabilities. If you choose open source, you do have to consider, do you have the in-house expertise for management and maintenance? How confident are you in community support?
 
@@ -89,20 +88,18 @@ There are some legitimate concerns to raise with closed source support though. S
 
 Security, authentication, and identity management are mission-critical services. For most companies, it’s wiser to be able to run and manage these in house. Again, open core can provide a happy medium solution, as you get:
 
-- The visibility and transparency of open source
-- Total flexibility and modifiability over the open core
-- A contract with a company who is actively contributing to and improving the product, and
-- Support for setup and remediation (we just launched dedicated [support for Authentik Security Enterprise](https://goauthentik.io/blog/2023-08-31-announcing-the-authentik-enterprise-release)!)
+-   The visibility and transparency of open source
+-   Total flexibility and modifiability over the open core
+-   A contract with a company who is actively contributing to and improving the product, and
+-   Support for setup and remediation (we just launched dedicated [support for Authentik Security Enterprise](https://goauthentik.io/blog/2023-08-31-announcing-the-authentik-enterprise-release)!)
 
-# Neither open nor closed source is *inherently* more secure
+# Neither open nor closed source is _inherently_ more secure
 
 > “The idea that software is inherently safer because it’s released under an open source license is overly simplistic in the extreme. Just the most obvious reason for this is that opportunity for independent review doesn't guarantee that review will happen. The wisdom of the crowd doesn’t guarantee a third-party review will be better or more thorough than a solid first-party system. Open source provides the possibility of review, and that’s all. Hypothetical eyes make no bugs shallow.” — [godel_unicode on Hacker News](https://news.ycombinator.com/item?id=12284600)
->
 
 Open source is not a silver bullet for security. The code may be open for inspection, but that doesn’t mean that people are actively examining the code for vulnerabilities.
 
 > “There is evidence that the people who have access to open source are more active in creating new code and extensions than auditing existing code. [One recent study](https://www.darkreading.com/application-security/open-source-developers-still-not-interested-in-secure-coding) showed that OSS developers spent less than 3% of their time working on improving security.” — Eugene H. Spafford, Josiah Dykstra, Leigh Metcalf, [What is Cybersecurity?](https://www.informit.com/articles/article.aspx?p=3172442&seqNum=9)
->
 
 On the other hand, while closed source code may be hidden and has dedicated teams actively working to secure it, reverse engineering is still possible.
 
@@ -114,7 +111,7 @@ With open source, you can fork the project. This can also be true for tools with
 
 There will always be bugs and vulnerabilities in software, whatever the distribution model. Accepting that, which model gives you more confidence?
 
-Whatever solution you choose (whether it’s for authentication, authorization, or scanning), you need to trust that your security vendor will be honest and practice *responsible disclosure*.
+Whatever solution you choose (whether it’s for authentication, authorization, or scanning), you need to trust that your security vendor will be honest and practice _responsible disclosure_.
 
 The Okta breach eroded trust and reminded us of some critical considerations:
 
@@ -130,10 +127,10 @@ Open source projects can also suffer reputation damage. However it’s harder to
 
 These factors make it hard to take closed source vendors at their word. With open source code (and some source available solutions, depending on the license), you have the reassurance of being able to:
 
-- Validate what the code does and how it does it
-- Know what developments are being made
-- Modify the code yourself
-- For greatest confidence and control, [self host](https://goauthentik.io/blog/2023-01-24-saas-should-not-be-the-default)
+-   Validate what the code does and how it does it
+-   Know what developments are being made
+-   Modify the code yourself
+-   For greatest confidence and control, [self host](https://goauthentik.io/blog/2023-01-24-saas-should-not-be-the-default)
 
 For mission-critical services like authentication and identity management, you don’t want to be beholden to a third party to be transparent and act quickly in the event of a CVE. Using security tools that build on open source gives you the most visibility and the flexibility.
 
