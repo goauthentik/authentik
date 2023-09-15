@@ -42,7 +42,7 @@ export class UserDeviceList extends Table<Device> {
             msg("Name"),
             msg("Type"),
             msg("Confirmed")
-        ].map((th) => new TableColumn(th, ""))
+        ].map((th) => new TableColumn(th, ""));
     }
 
     async deleteWrapper(device: Device) {
