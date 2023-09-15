@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-02 15:45+0000\n"
+"POT-Creation-Date: 2023-09-15 09:51+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2023\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -228,29 +228,29 @@ msgstr "已认证会话"
 msgid "Authenticated Sessions"
 msgstr "已认证会话"
 
-#: authentik/core/sources/flow_manager.py:193
+#: authentik/core/sources/flow_manager.py:189
 #, python-format
 msgid ""
 "Request to authenticate with %(source)s has been denied. Please authenticate"
 " with the source you've previously signed up with."
 msgstr "来自 %(source)s 的身份验证请求被拒绝。请用您注册时使用的方式验证身份。"
 
-#: authentik/core/sources/flow_manager.py:245
+#: authentik/core/sources/flow_manager.py:241
 msgid "Configured flow does not exist."
 msgstr "配置的流程不存在。"
 
-#: authentik/core/sources/flow_manager.py:275
-#: authentik/core/sources/flow_manager.py:327
+#: authentik/core/sources/flow_manager.py:271
+#: authentik/core/sources/flow_manager.py:323
 #, python-format
 msgid "Successfully authenticated with %(source)s!"
 msgstr "成功通过 %(source)s 认证！"
 
-#: authentik/core/sources/flow_manager.py:299
+#: authentik/core/sources/flow_manager.py:295
 #, python-format
 msgid "Successfully linked %(source)s!"
 msgstr "成功链接 %(source)s！"
 
-#: authentik/core/sources/flow_manager.py:318
+#: authentik/core/sources/flow_manager.py:314
 msgid "Source is not configured for enrollment."
 msgstr "源未被配置用于注册。"
 
@@ -776,25 +776,29 @@ msgstr "反转策略的结果。消息不受影响。"
 msgid "Timeout after which Policy execution is terminated."
 msgstr "策略执行终止的超时时间。"
 
-#: authentik/policies/models.py:142
+#: authentik/policies/models.py:92
+msgid "Result if the Policy execution fails."
+msgstr "策略执行失败时的结果。"
+
+#: authentik/policies/models.py:145
 msgid "Policy Binding"
 msgstr "策略绑定"
 
-#: authentik/policies/models.py:143
+#: authentik/policies/models.py:146
 msgid "Policy Bindings"
 msgstr "策略绑定"
 
-#: authentik/policies/models.py:164
+#: authentik/policies/models.py:167
 msgid ""
 "When this option is enabled, all executions of this policy will be logged. "
 "By default, only execution errors are logged."
 msgstr "启用此选项后，将记录此策略的所有执行日志。默认情况下，只记录执行错误。"
 
-#: authentik/policies/models.py:186
+#: authentik/policies/models.py:189
 msgid "Policy"
 msgstr "策略"
 
-#: authentik/policies/models.py:187
+#: authentik/policies/models.py:190
 msgid "Policies"
 msgstr "策略"
 
@@ -831,6 +835,10 @@ msgstr "密码策略"
 #: authentik/policies/password/models.py:163
 msgid "Password Policies"
 msgstr "密码策略"
+
+#: authentik/policies/reputation/api.py:18
+msgid "Either IP or Username must be checked"
+msgstr "必须检查 IP 或用户名"
 
 #: authentik/policies/reputation/models.py:67
 msgid "Reputation Policy"
@@ -1914,8 +1922,8 @@ msgid "SMS Devices"
 msgstr "短信设备"
 
 #: authentik/stages/authenticator_sms/stage.py:55
-#: authentik/stages/authenticator_totp/stage.py:42
-#: authentik/stages/authenticator_totp/stage.py:45
+#: authentik/stages/authenticator_totp/stage.py:41
+#: authentik/stages/authenticator_totp/stage.py:44
 msgid "Code does not match"
 msgstr "代码不匹配"
 
@@ -1923,29 +1931,45 @@ msgstr "代码不匹配"
 msgid "Invalid phone number"
 msgstr "无效电话号码"
 
-#: authentik/stages/authenticator_static/models.py:47
+#: authentik/stages/authenticator_static/models.py:52
 msgid "Static Authenticator Stage"
 msgstr "静态身份验证器阶段"
 
-#: authentik/stages/authenticator_static/models.py:48
+#: authentik/stages/authenticator_static/models.py:53
 msgid "Static Authenticator Stages"
 msgstr "静态身份验证器阶段"
 
-#: authentik/stages/authenticator_totp/models.py:16
+#: authentik/stages/authenticator_static/models.py:98
+msgid "Static device"
+msgstr "静态设备"
+
+#: authentik/stages/authenticator_static/models.py:99
+msgid "Static devices"
+msgstr "静态设备"
+
+#: authentik/stages/authenticator_totp/models.py:25
 msgid "6 digits, widely compatible"
 msgstr "6 位数字，广泛兼容"
 
-#: authentik/stages/authenticator_totp/models.py:17
+#: authentik/stages/authenticator_totp/models.py:26
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr "8 位数字，与 Google 身份验证器等应用不兼容"
 
-#: authentik/stages/authenticator_totp/models.py:53
+#: authentik/stages/authenticator_totp/models.py:62
 msgid "TOTP Authenticator Setup Stage"
 msgstr "TOTP 身份验证器设置阶段"
 
-#: authentik/stages/authenticator_totp/models.py:54
+#: authentik/stages/authenticator_totp/models.py:63
 msgid "TOTP Authenticator Setup Stages"
 msgstr "TOTP 身份验证器设置阶段"
+
+#: authentik/stages/authenticator_totp/models.py:244
+msgid "TOTP device"
+msgstr "TOTP 设备"
+
+#: authentik/stages/authenticator_totp/models.py:245
+msgid "TOTP devices"
+msgstr "TOTP 设备"
 
 #: authentik/stages/authenticator_validate/challenge.py:131
 msgid "Invalid Token"
@@ -2284,7 +2308,7 @@ msgstr "邀请"
 msgid "Invitations"
 msgstr "邀请"
 
-#: authentik/stages/invitation/stage.py:66
+#: authentik/stages/invitation/stage.py:62
 msgid "Invalid invite/invite not found"
 msgstr "邀请无效/未找到"
 
@@ -2318,7 +2342,7 @@ msgstr "密码阶段"
 msgid "Password Stages"
 msgstr "密码阶段"
 
-#: authentik/stages/password/stage.py:159
+#: authentik/stages/password/stage.py:124
 msgid "Invalid password"
 msgstr "无效密码"
 
@@ -2430,7 +2454,7 @@ msgstr "用户删除阶段"
 msgid "User Delete Stages"
 msgstr "用户删除阶段"
 
-#: authentik/stages/user_delete/stage.py:22
+#: authentik/stages/user_delete/stage.py:18
 msgid "No Pending User."
 msgstr "没有待处理的用户。"
 
@@ -2461,11 +2485,11 @@ msgstr "用户登录阶段"
 msgid "User Login Stages"
 msgstr "用户登录阶段"
 
-#: authentik/stages/user_login/stage.py:63
+#: authentik/stages/user_login/stage.py:57
 msgid "No Pending user to login."
 msgstr "没有待定用户可以登录。"
 
-#: authentik/stages/user_login/stage.py:96
+#: authentik/stages/user_login/stage.py:90
 msgid "Successfully logged in!"
 msgstr "已成功登录！"
 
@@ -2493,16 +2517,16 @@ msgstr "用户写入阶段"
 msgid "User Write Stages"
 msgstr "用户写入阶段"
 
-#: authentik/stages/user_write/stage.py:134
+#: authentik/stages/user_write/stage.py:130
 msgid "No Pending data."
 msgstr "没有待处理的数据。"
 
-#: authentik/stages/user_write/stage.py:140
+#: authentik/stages/user_write/stage.py:136
 msgid "No user found and can't create new user."
 msgstr "未找到用户并且无法创建新用户。"
 
-#: authentik/stages/user_write/stage.py:157
-#: authentik/stages/user_write/stage.py:171
+#: authentik/stages/user_write/stage.py:153
+#: authentik/stages/user_write/stage.py:167
 msgid "Failed to update user. Please try again later."
 msgstr "更新用户失败。请稍后重试。"
 
