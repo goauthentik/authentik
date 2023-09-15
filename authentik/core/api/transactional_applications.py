@@ -13,6 +13,7 @@ from authentik.blueprints.v1.common import (
     Blueprint,
     BlueprintEntry,
     BlueprintEntryDesiredState,
+    EntryInvalidError,
     KeyOf,
 )
 from authentik.blueprints.v1.importer import Importer
@@ -66,11 +67,51 @@ class TransactionApplicationSerializer(PassiveSerializer):
             raise ValidationError("Invalid provider model")
         return fq_model_name
 
+    def validate(self, data: dict) -> dict:
+        blueprint = Blueprint()
+        blueprint.entries.append(
+            BlueprintEntry(
+                model=data["provider_model"],
+                state=BlueprintEntryDesiredState.MUST_CREATED,
+                identifiers={
+                    "name": data["provider"]["name"],
+                },
+                # Must match the name of the field on `self`
+                id="provider",
+                attrs=data["provider"],
+            )
+        )
+        app_data = data["app"]
+        app_data["provider"] = KeyOf(None, ScalarNode(tag="", value="provider"))
+        blueprint.entries.append(
+            BlueprintEntry(
+                model="authentik_core.application",
+                state=BlueprintEntryDesiredState.MUST_CREATED,
+                identifiers={
+                    "slug": data["app"]["slug"],
+                },
+                attrs=app_data,
+                # Must match the name of the field on `self`
+                id="app",
+            )
+        )
+        importer = Importer(blueprint, {})
+        try:
+            valid, _ = importer.validate(raise_validation_errors=True)
+            if not valid:
+                raise ValidationError("Invalid blueprint")
+        except EntryInvalidError as exc:
+            raise ValidationError(
+                {
+                    exc.entry_id: exc.validation_error.detail,
+                }
+            )
+        return blueprint
+
 
 class TransactionApplicationResponseSerializer(PassiveSerializer):
     """Transactional creation response"""
 
-    valid = BooleanField()
     applied = BooleanField()
     logs = ListField(child=CharField())
 
@@ -90,38 +131,9 @@ class TransactionalApplicationView(APIView):
         """Convert data into a blueprint, validate it and apply it"""
         data = TransactionApplicationSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        print(data.validated_data)
 
-        blueprint = Blueprint()
-        blueprint.entries.append(
-            BlueprintEntry(
-                model=data.validated_data["provider_model"],
-                state=BlueprintEntryDesiredState.MUST_CREATED,
-                identifiers={
-                    "name": data.validated_data["provider"]["name"],
-                },
-                id="provider",
-                attrs=data.validated_data["provider"],
-            )
-        )
-        app_data = data.validated_data["app"]
-        app_data["provider"] = KeyOf(None, ScalarNode(tag="", value="provider"))
-        blueprint.entries.append(
-            BlueprintEntry(
-                model="authentik_core.application",
-                state=BlueprintEntryDesiredState.MUST_CREATED,
-                identifiers={
-                    "slug": data.validated_data["app"]["slug"],
-                },
-                attrs=app_data,
-            )
-        )
-        importer = Importer(blueprint, {})
-        response = {"valid": False, "applied": False, "logs": []}
-        valid, logs = importer.validate()
-        response["logs"] = [x["event"] for x in logs]
-        response["valid"] = valid
-        if valid:
-            applied = importer.apply()
-            response["applied"] = applied
+        importer = Importer(data.validated_data, {})
+        applied = importer.apply()
+        response = {"applied": False, "logs": []}
+        response["applied"] = applied
         return Response(response, status=200)

@@ -40020,8 +40020,6 @@ components:
       type: object
       description: Transactional creation response
       properties:
-        valid:
-          type: boolean
         applied:
           type: boolean
         logs:
@@ -40031,7 +40029,6 @@ components:
       required:
       - applied
       - logs
-      - valid
     TypeCreate:
       type: object
       description: Types of an object that can be created

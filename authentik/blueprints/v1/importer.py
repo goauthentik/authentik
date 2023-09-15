@@ -155,7 +155,7 @@ class Importer:
         model: type[SerializerModel] = registry.get_model(model_app_label, model_name)
         # Don't use isinstance since we don't want to check for inheritance
         if not is_model_allowed(model):
-            raise EntryInvalidError(f"Model {model} not allowed")
+            raise EntryInvalidError.from_entry(f"Model {model} not allowed", entry)
         if issubclass(model, BaseMetaModel):
             serializer_class: type[Serializer] = model.serializer()
             serializer = serializer_class(
@@ -167,8 +167,10 @@ class Importer:
             try:
                 serializer.is_valid(raise_exception=True)
             except ValidationError as exc:
-                raise EntryInvalidError(
-                    f"Serializer errors {serializer.errors}", serializer_errors=serializer.errors
+                raise EntryInvalidError.from_entry(
+                    f"Serializer errors {serializer.errors}",
+                    validation_error=exc,
+                    entry=entry,
                 ) from exc
             return serializer
 
@@ -185,12 +187,12 @@ class Importer:
 
         query = self.__query_from_identifier(updated_identifiers)
         if not query:
-            raise EntryInvalidError("No or invalid identifiers")
+            raise EntryInvalidError.from_entry("No or invalid identifiers", entry)
 
         try:
             existing_models = model.objects.filter(query)
         except FieldError as exc:
-            raise EntryInvalidError(f"Invalid identifier field: {exc}") from exc
+            raise EntryInvalidError.from_entry(f"Invalid identifier field: {exc}", entry) from exc
 
         serializer_kwargs = {}
         model_instance = existing_models.first()
@@ -204,10 +206,11 @@ class Importer:
             serializer_kwargs["instance"] = model_instance
             serializer_kwargs["partial"] = True
         elif model_instance and entry.state == BlueprintEntryDesiredState.MUST_CREATED:
-            raise EntryInvalidError(
+            raise EntryInvalidError.from_entry(
                 (
-                    f"state is set to {BlueprintEntryDesiredState.MUST_CREATED}"
-                    " and object exists already"
+                    f"state is set to {BlueprintEntryDesiredState.MUST_CREATED} "
+                    "and object exists already",
+                    entry,
                 )
             )
         else:
@@ -224,7 +227,7 @@ class Importer:
         try:
             full_data = self.__update_pks_for_attrs(entry.get_attrs(self._import))
         except ValueError as exc:
-            raise EntryInvalidError(exc) from exc
+            raise EntryInvalidError.from_entry(exc, entry) from exc
         always_merger.merge(full_data, updated_identifiers)
         serializer_kwargs["data"] = full_data
 
@@ -237,8 +240,10 @@ class Importer:
         try:
             serializer.is_valid(raise_exception=True)
         except ValidationError as exc:
-            raise EntryInvalidError(
-                f"Serializer errors {serializer.errors}", serializer_errors=serializer.errors
+            raise EntryInvalidError.from_entry(
+                f"Serializer errors {serializer.errors}",
+                validation_error=exc,
+                entry=entry,
             ) from exc
         return serializer
 
@@ -254,7 +259,7 @@ class Importer:
         self.logger.debug("Committing changes")
         return True
 
-    def _apply_models(self) -> bool:
+    def _apply_models(self, raise_errors=False) -> bool:
         """Apply (create/update) models yaml"""
         self.__pk_map = {}
         for entry in self._import.entries:
@@ -274,6 +279,8 @@ class Importer:
                 if entry.get_state(self._import) == BlueprintEntryDesiredState.ABSENT:
                     continue
                 self.logger.warning(f"entry invalid: {exc}", entry=entry, error=exc)
+                if raise_errors:
+                    raise exc
                 return False
             if not serializer:
                 continue
@@ -311,7 +318,7 @@ class Importer:
                 self.logger.debug("entry to delete with no instance, skipping")
         return True
 
-    def validate(self) -> tuple[bool, list[EventDict]]:
+    def validate(self, raise_validation_errors=False) -> tuple[bool, list[EventDict]]:
         """Validate loaded blueprint export, ensure all models are allowed
         and serializers have no errors"""
         self.logger.debug("Starting blueprint import validation")
@@ -323,7 +330,7 @@ class Importer:
             transaction_rollback(),
             capture_logs() as logs,
         ):
-            successful = self._apply_models()
+            successful = self._apply_models(raise_errors=raise_validation_errors)
             if not successful:
                 self.logger.debug("Blueprint validation failed")
         for log in logs:
