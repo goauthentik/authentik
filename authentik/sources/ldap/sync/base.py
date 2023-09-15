@@ -153,8 +153,10 @@ class BaseLDAPSynchronizer:
             try:
                 value = mapping.evaluate(user=None, request=None, ldap=kwargs, dn=object_dn)
                 if value is None:
+                    self._logger.warning("property mapping returned None", mapping=mapping)
                     continue
                 if isinstance(value, (bytes)):
+                    self._logger.warning("property mapping returned bytes", mapping=mapping)
                     continue
                 object_field = mapping.object_field
                 if object_field.startswith("attributes."):
