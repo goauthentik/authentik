@@ -5860,11 +5860,11 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sd2122c514f0778b5">
   <source>Allow the user to log in and use this system</source>
 </trans-unit>
-<trans-unit id="sb31b1d4e45bdbbee">
-  <source>Send this user a link to enter a new password</source>
-</trans-unit>
 <trans-unit id="se28b5f3fcadaeeb1">
   <source>Enter a new password for this user</source>
+</trans-unit>
+<trans-unit id="s6f5bb31e2733ecd5">
+  <source>Create a link for this user to reset their password</source>
 </trans-unit>
     </body>
   </file>
