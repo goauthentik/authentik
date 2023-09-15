@@ -301,7 +301,7 @@ export class UserViewPage extends AKElement {
                             >
                                 <pf-tooltip
                                     position="top"
-                                    content=${msg("Send this user a link to enter a new password")}
+                                    content=${msg("Create a link for this user to reset their password")}
                                 >
                                     ${msg("Reset Password")}
                                 </pf-tooltip>
