@@ -8480,6 +8480,46 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /managed/blueprints/procedural/:
+    put:
+      operationId: managed_blueprints_procedural_update
+      description: |-
+        Run a client-provided blueprint once, as-is. Blueprint is not kept in memory/database
+        and will not be continuously applied
+      parameters:
+      - in: query
+        name: validate_only
+        schema:
+          type: boolean
+      tags:
+      - managed
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BlueprintRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlueprintProceduralResult'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /oauth2/access_tokens/:
     get:
       operationId: oauth2_access_tokens_list
@@ -27981,6 +28021,26 @@ components:
         * `REDIRECT` - Redirect Binding
         * `POST` - POST Binding
         * `POST_AUTO` - POST Binding with auto-confirmation
+    BlueprintEntryRequest:
+      type: object
+      description: Validate a single blueprint entry, similar to a subset of regular
+        blueprints
+      properties:
+        model:
+          type: string
+          minLength: 1
+        id:
+          type: string
+        identifiers:
+          type: object
+          additionalProperties: {}
+        attrs:
+          type: object
+          additionalProperties: {}
+      required:
+      - attrs
+      - identifiers
+      - model
     BlueprintFile:
       type: object
       properties:
@@ -28082,6 +28142,36 @@ components:
         * `error` - Error
         * `orphaned` - Orphaned
         * `unknown` - Unknown
+    BlueprintProceduralResult:
+      type: object
+      description: Result of applying a procedural blueprint
+      properties:
+        valid:
+          type: boolean
+        applied:
+          type: boolean
+        logs:
+          type: array
+          items:
+            type: string
+      required:
+      - applied
+      - logs
+      - valid
+    BlueprintRequest:
+      type: object
+      description: Validate a procedural blueprint, which is a subset of a regular
+        blueprint
+      properties:
+        entries:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlueprintEntryRequest'
+        context:
+          type: object
+          additionalProperties: {}
+      required:
+      - entries
     Cache:
       type: object
       description: Generic cache stats for an object
@@ -40885,6 +40975,6 @@ components:
       type: apiKey
       in: header
       name: Authorization
-      scheme: bearer
+      scheme: Bearer
 servers:
-- url: /api/v3/
+- url: /api/v3

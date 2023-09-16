@@ -1,0 +1,44 @@
+{
+    "$schema": "https://goauthentik.io/blueprints/schema.json",
+    "version": 1,
+    "metadata": {
+        "name": "test-json"
+    },
+    "entries": [
+        {
+            "model": "authentik_providers_oauth2.oauth2provider",
+            "id": "provider",
+            "identifiers": {
+                "name": "grafana-json"
+            },
+            "attrs": {
+                "authorization_flow": {
+                    "goauthentik.io/yaml-key": "!Find",
+                    "args": [
+                        "authentik_flows.flow",
+                        [
+                            "pk",
+                            {
+                                "goauthentik.io/yaml-key": "!Context",
+                                "args": "flow"
+                            }
+                        ]
+                    ]
+                }
+            }
+        },
+        {
+            "model": "authentik_core.application",
+            "identifiers": {
+                "slug": "test-json"
+            },
+            "attrs": {
+                "name": "test-json",
+                "provider": {
+                    "goauthentik.io/yaml-key": "!KeyOf",
+                    "args": "provider"
+                }
+            }
+        }
+    ]
+}
