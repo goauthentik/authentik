@@ -89,7 +89,7 @@ def transaction_rollback():
 
 
 class Importer:
-    """Import Blueprint from YAML"""
+    """Import Blueprint from raw dict or YAML/JSON"""
 
     logger: BoundLogger
     _import: Blueprint
@@ -103,6 +103,18 @@ class Importer:
         if context:
             always_merger.merge(ctx, context)
         self._import.context = ctx
+
+    @staticmethod
+    def from_string(yaml_input: str, context: dict | None = None) -> "Importer":
+        """Parse YAML string and create blueprint importer from it"""
+        import_dict = load(yaml_input, BlueprintLoader)
+        try:
+            _import = from_dict(
+                Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
+            )
+        except DaciteError as exc:
+            raise EntryInvalidError from exc
+        return Importer(_import, context)
 
     @property
     def blueprint(self) -> Blueprint:
@@ -344,17 +356,3 @@ class Importer:
         self.logger.debug("Finished blueprint import validation")
         self._import = orig_import
         return successful, logs
-
-
-class StringImporter(Importer):
-    """Importer that also parses from string"""
-
-    def __init__(self, yaml_input: str, context: dict | None = None):
-        import_dict = load(yaml_input, BlueprintLoader)
-        try:
-            _import = from_dict(
-                Blueprint, import_dict, config=Config(cast=[BlueprintEntryDesiredState])
-            )
-        except DaciteError as exc:
-            raise EntryInvalidError from exc
-        super().__init__(_import, context)
