@@ -8,9 +8,9 @@ from dacite.core import from_dict
 from dacite.exceptions import DaciteError
 from deepmerge import always_merger
 from django.core.exceptions import FieldError
-from django.db import transaction
 from django.db.models import Model
 from django.db.models.query_utils import Q
+from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from rest_framework.exceptions import ValidationError
 from rest_framework.serializers import BaseSerializer, Serializer
@@ -38,6 +38,7 @@ from authentik.core.models import (
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
+from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 
@@ -72,14 +73,19 @@ def is_model_allowed(model: type[Model]) -> bool:
     return model not in excluded_models and issubclass(model, (SerializerModel, BaseMetaModel))
 
 
+class DoRollback(SentryIgnoredException):
+    """Exception to trigger a rollback"""
+
+
 @contextmanager
 def transaction_rollback():
     """Enters an atomic transaction and always triggers a rollback at the end of the block."""
-    atomic = transaction.atomic()
-    # pylint: disable=unnecessary-dunder-call
-    atomic.__enter__()
-    yield
-    atomic.__exit__(IntegrityError, None, None)
+    try:
+        with atomic():
+            yield
+            raise DoRollback()
+    except DoRollback:
+        pass
 
 
 class Importer:
@@ -250,7 +256,7 @@ class Importer:
     def apply(self) -> bool:
         """Apply (create/update) models yaml, in database transaction"""
         try:
-            with transaction.atomic():
+            with atomic():
                 if not self._apply_models():
                     self.logger.debug("Reverting changes due to error")
                     raise IntegrityError
