@@ -585,7 +585,7 @@ class EntryInvalidError(SentryIgnoredException):
     entry_id: Optional[str]
     validation_error: Optional[ValidationError]
 
-    def __init__(self, *args: object, validation_error: Optional[ValidationError]) -> None:
+    def __init__(self, *args: object, validation_error: Optional[ValidationError] = None) -> None:
         super().__init__(*args)
         self.entry_model = None
         self.entry_id = None
@@ -597,6 +597,8 @@ class EntryInvalidError(SentryIgnoredException):
     ) -> "EntryInvalidError":
         """Create EntryInvalidError with the context of an entry"""
         error = EntryInvalidError(msg_or_exc, *args, **kwargs)
+        if isinstance(msg_or_exc, ValidationError):
+            error.validation_error = msg_or_exc
         # Make sure the model and id are strings, depending where the error happens
         # they might still be YAMLTag instances
         error.entry_model = str(entry.model)
