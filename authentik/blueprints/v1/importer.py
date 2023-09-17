@@ -210,8 +210,8 @@ class Importer:
                 (
                     f"state is set to {BlueprintEntryDesiredState.MUST_CREATED} "
                     "and object exists already",
-                    entry,
-                )
+                ),
+                entry,
             )
         else:
             self.logger.debug(

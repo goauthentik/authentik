@@ -67,28 +67,28 @@ class TransactionApplicationSerializer(PassiveSerializer):
             raise ValidationError("Invalid provider model")
         return fq_model_name
 
-    def validate(self, data: dict) -> dict:
+    def validate(self, attrs: dict) -> dict:
         blueprint = Blueprint()
         blueprint.entries.append(
             BlueprintEntry(
-                model=data["provider_model"],
+                model=attrs["provider_model"],
                 state=BlueprintEntryDesiredState.MUST_CREATED,
                 identifiers={
-                    "name": data["provider"]["name"],
+                    "name": attrs["provider"]["name"],
                 },
                 # Must match the name of the field on `self`
                 id="provider",
-                attrs=data["provider"],
+                attrs=attrs["provider"],
             )
         )
-        app_data = data["app"]
+        app_data = attrs["app"]
         app_data["provider"] = KeyOf(None, ScalarNode(tag="", value="provider"))
         blueprint.entries.append(
             BlueprintEntry(
                 model="authentik_core.application",
                 state=BlueprintEntryDesiredState.MUST_CREATED,
                 identifiers={
-                    "slug": data["app"]["slug"],
+                    "slug": attrs["app"]["slug"],
                 },
                 attrs=app_data,
                 # Must match the name of the field on `self`

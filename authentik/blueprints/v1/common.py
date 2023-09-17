@@ -280,7 +280,7 @@ class Format(YAMLTag):
         try:
             return self.format_string % tuple(args)
         except TypeError as exc:
-            raise EntryInvalidError(exc)
+            raise EntryInvalidError.from_entry(exc, entry)
 
 
 class Find(YAMLTag):
@@ -592,8 +592,11 @@ class EntryInvalidError(SentryIgnoredException):
         self.validation_error = validation_error
 
     @staticmethod
-    def from_entry(*args, entry: BlueprintEntry, **kwargs) -> "EntryInvalidError":
-        error = EntryInvalidError(*args, **kwargs)
+    def from_entry(
+        msg_or_exc: str | Exception, entry: BlueprintEntry, *args, **kwargs
+    ) -> "EntryInvalidError":
+        """Create EntryInvalidError with the context of an entry"""
+        error = EntryInvalidError(msg_or_exc, *args, **kwargs)
         # Make sure the model and id are strings, depending where the error happens
         # they might still be YAMLTag instances
         error.entry_model = str(entry.model)
