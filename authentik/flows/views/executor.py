@@ -73,22 +73,21 @@ QS_QUERY = "query"
 
 
 def challenge_types():
-    """This function returns a class which is an iterator, which returns the
+    """This function returns a mapping which contains all subclasses of challenges
     subclasses of Challenge, and Challenge itself."""
     mapping = {}
-    classes = all_subclasses(Challenge)
-    classes.remove(WithUserInfoChallenge)
-    for cls in classes:
+    for cls in all_subclasses(Challenge):
+        if cls == WithUserInfoChallenge:
+            continue
         mapping[cls().fields["component"].default] = cls
     return mapping
 
 
 def challenge_response_types():
-    """This function returns a class which is an iterator, which returns the
+    """This function returns a mapping which contains all subclasses of challenges
     subclasses of Challenge, and Challenge itself."""
     mapping = {}
-    classes = all_subclasses(ChallengeResponse)
-    for cls in classes:
+    for cls in all_subclasses(ChallengeResponse):
         mapping[cls(stage=None).fields["component"].default] = cls
     return mapping
 
