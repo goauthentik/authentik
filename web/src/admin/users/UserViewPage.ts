@@ -204,7 +204,7 @@ export class UserViewPage extends AKElement {
                                             content=${this.user.isActive
                                                 ? msg("Lock the user out of this system")
                                                 : msg(
-                                                      "Allow the user to log in and use this system"
+                                                      "Allow the user to log in and use this system",
                                                   )}
                                         >
                                             ${this.user.isActive
@@ -214,7 +214,7 @@ export class UserViewPage extends AKElement {
                                     </button>
                                 </ak-user-active-form>
                                 ${rootInterface()?.config?.capabilities.includes(
-                                    CapabilitiesEnum.CanImpersonate
+                                    CapabilitiesEnum.CanImpersonate,
                                 )
                                     ? html`
                                           <ak-action-button
@@ -233,7 +233,7 @@ export class UserViewPage extends AKElement {
                                               <pf-tooltip
                                                   position="top"
                                                   content=${msg(
-                                                      "Temporarily assume the identity of this user"
+                                                      "Temporarily assume the identity of this user",
                                                   )}
                                               >
                                                   ${msg("Impersonate")}
@@ -281,7 +281,7 @@ export class UserViewPage extends AKElement {
                                                 showMessage({
                                                     level: MessageLevel.success,
                                                     message: msg(
-                                                        "Successfully generated recovery link"
+                                                        "Successfully generated recovery link",
                                                     ),
                                                     description: rec.link,
                                                 });
@@ -290,7 +290,7 @@ export class UserViewPage extends AKElement {
                                                 showMessage({
                                                     level: MessageLevel.error,
                                                     message: msg(
-                                                        "To create a recovery link, the current tenant needs to have a recovery flow configured."
+                                                        "To create a recovery link, the current tenant needs to have a recovery flow configured.",
                                                     ),
                                                     description: "",
                                                 });
@@ -300,7 +300,7 @@ export class UserViewPage extends AKElement {
                                     <pf-tooltip
                                         position="top"
                                         content=${msg(
-                                            "Create a link for this user to reset their password"
+                                            "Create a link for this user to reset their password",
                                         )}
                                     >
                                         ${msg("Reset Password")}
@@ -350,7 +350,7 @@ export class UserViewPage extends AKElement {
                                 : html`
                                       <p>
                                           ${msg(
-                                              "Edit the notes attribute of this user to add notes here."
+                                              "Edit the notes attribute of this user to add notes here.",
                                           )}
                                       </p>
                                   `}
