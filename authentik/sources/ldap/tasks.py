@@ -4,7 +4,8 @@ from uuid import uuid4
 from celery import chain, group
 from django.core.cache import cache
 from ldap3.core.exceptions import LDAPException
-from redis.lock import Lock, LockError
+from redis.exceptions import LockError
+from redis.lock import Lock
 from structlog.stdlib import get_logger
 
 from authentik.events.monitored_tasks import MonitoredTask, TaskResult, TaskResultStatus
