@@ -25,7 +25,7 @@ image: ./image1.jpg
 
 ---
 
-Legacy security vendors that rely on black box development can't keep up with open source. It's an oft-discussed topic-the ability of open source communities to quickly jump in and collectively solve problems and innovate solutions-but it is equally believed that "serious" security software companies have proprietary software.
+Legacy security vendors that rely on black box development can't keep up with open source. It's an oft—discussed topic-the ability of open source communities to quickly jump in and collectively solve problems and innovate solutions—but it is equally believed that "serious" security software companies have proprietary software.
 
 In this blog, we will take a closer look at the pros and cons of the various source availability types of SSO and other security software.
 
