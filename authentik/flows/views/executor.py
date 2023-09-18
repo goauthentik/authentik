@@ -73,40 +73,23 @@ QS_QUERY = "query"
 
 
 def challenge_types():
-    """This is a workaround for PolymorphicProxySerializer not accepting a callable for
-    `serializers`. This function returns a class which is an iterator, which returns the
+    """This function returns a mapping which contains all subclasses of challenges
     subclasses of Challenge, and Challenge itself."""
-
-    class Inner(dict):
-        """dummy class with custom callback on .items()"""
-
-        def items(self):
-            mapping = {}
-            classes = all_subclasses(Challenge)
-            classes.remove(WithUserInfoChallenge)
-            for cls in classes:
-                mapping[cls().fields["component"].default] = cls
-            return mapping.items()
-
-    return Inner()
+    mapping = {}
+    for cls in all_subclasses(Challenge):
+        if cls == WithUserInfoChallenge:
+            continue
+        mapping[cls().fields["component"].default] = cls
+    return mapping
 
 
 def challenge_response_types():
-    """This is a workaround for PolymorphicProxySerializer not accepting a callable for
-    `serializers`. This function returns a class which is an iterator, which returns the
+    """This function returns a mapping which contains all subclasses of challenges
     subclasses of Challenge, and Challenge itself."""
-
-    class Inner(dict):
-        """dummy class with custom callback on .items()"""
-
-        def items(self):
-            mapping = {}
-            classes = all_subclasses(ChallengeResponse)
-            for cls in classes:
-                mapping[cls(stage=None).fields["component"].default] = cls
-            return mapping.items()
-
-    return Inner()
+    mapping = {}
+    for cls in all_subclasses(ChallengeResponse):
+        mapping[cls(stage=None).fields["component"].default] = cls
+    return mapping
 
 
 class InvalidStageError(SentryIgnoredException):
@@ -264,7 +247,7 @@ class FlowExecutorView(APIView):
         responses={
             200: PolymorphicProxySerializer(
                 component_name="ChallengeTypes",
-                serializers=challenge_types(),
+                serializers=challenge_types,
                 resource_type_field_name="component",
             ),
         },
@@ -304,13 +287,13 @@ class FlowExecutorView(APIView):
         responses={
             200: PolymorphicProxySerializer(
                 component_name="ChallengeTypes",
-                serializers=challenge_types(),
+                serializers=challenge_types,
                 resource_type_field_name="component",
             ),
         },
         request=PolymorphicProxySerializer(
             component_name="FlowChallengeResponse",
-            serializers=challenge_response_types(),
+            serializers=challenge_response_types,
             resource_type_field_name="component",
         ),
         parameters=[

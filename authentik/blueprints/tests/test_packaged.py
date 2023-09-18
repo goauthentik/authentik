@@ -25,7 +25,7 @@ def blueprint_tester(file_name: Path) -> Callable:
     def tester(self: TestPackaged):
         base = Path("blueprints/")
         rel_path = Path(file_name).relative_to(base)
-        importer = Importer(BlueprintInstance(path=str(rel_path)).retrieve())
+        importer = Importer.from_string(BlueprintInstance(path=str(rel_path)).retrieve())
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 

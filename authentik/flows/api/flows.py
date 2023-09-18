@@ -181,7 +181,7 @@ class FlowViewSet(UsedByMixin, ModelViewSet):
         if not file:
             return Response(data=import_response.initial_data, status=400)
 
-        importer = Importer(file.read().decode())
+        importer = Importer.from_string(file.read().decode())
         valid, logs = importer.validate()
         import_response.initial_data["logs"] = [sanitize_dict(log) for log in logs]
         import_response.initial_data["success"] = valid

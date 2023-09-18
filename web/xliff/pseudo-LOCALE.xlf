@@ -4225,18 +4225,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Resident key requirement</source>
         
       </trans-unit>
-      <trans-unit id="s437ab6d95ca1ac78">
-        <source>The authenticator should not create a dedicated credential</source>
-        
-      </trans-unit>
-      <trans-unit id="sf6d55598b52348a5">
-        <source>The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
-        
-      </trans-unit>
-      <trans-unit id="s81356cab25498851">
-        <source>The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur</source>
-        
-      </trans-unit>
       <trans-unit id="s5fbaeb14f42815e5">
         <source>Authenticator Attachment</source>
         
@@ -6148,20 +6136,23 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s95b73e0f4e47eb9a">
   <source>Result used when policy execution fails.</source>
 </trans-unit>
-<trans-unit id="s43fe853bf219a9b8">
-  <source>Temporarily assume the identity of this user</source>
+<trans-unit id="s6a3cf855140b9511">
+  <source>Required: User verification must occur.</source>
 </trans-unit>
-<trans-unit id="s028d385389b5aac0">
-  <source>Lock the user out of this system</source>
+<trans-unit id="sc498a3b05cfe2b08">
+  <source>Preferred: User verification is preferred if available, but not required.</source>
 </trans-unit>
-<trans-unit id="sd2122c514f0778b5">
-  <source>Allow the user to log in and use this system</source>
+<trans-unit id="s9d2239d2b0402795">
+  <source>Discouraged: User verification should not occur.</source>
 </trans-unit>
-<trans-unit id="sb31b1d4e45bdbbee">
-  <source>Send this user a link to enter a new password</source>
+<trans-unit id="s428b7859907f6db2">
+  <source>Required: The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur</source>
 </trans-unit>
-<trans-unit id="se28b5f3fcadaeeb1">
-  <source>Enter a new password for this user</source>
+<trans-unit id="s33e3766d4a02b042">
+  <source>Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
+</trans-unit>
+<trans-unit id="sfb852dd507c25c24">
+  <source>Discouraged: The authenticator should not create a dedicated credential</source>
 </trans-unit>
     </body>
   </file>
