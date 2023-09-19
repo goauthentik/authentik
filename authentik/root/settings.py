@@ -1,24 +1,20 @@
 """root settings for authentik"""
 
 import importlib
-import logging
 import os
 from hashlib import sha512
 from pathlib import Path
 from urllib.parse import quote_plus
 
-import structlog
 from celery.schedules import crontab
 from sentry_sdk import set_tag
 
 from authentik import ENV_GIT_HASH_KEY, __version__
 from authentik.lib.config import CONFIG
-from authentik.lib.logging import add_process_id
+from authentik.lib.logging import get_logger_config, structlog_configure
 from authentik.lib.sentry import sentry_init
 from authentik.lib.utils.reflection import get_env
 from authentik.stages.password import BACKEND_APP_PASSWORD, BACKEND_INBUILT, BACKEND_LDAP
-
-LOGGER = structlog.get_logger()
 
 BASE_DIR = Path(__file__).absolute().parent.parent.parent
 STATICFILES_DIRS = [BASE_DIR / Path("web")]
@@ -85,6 +81,7 @@ INSTALLED_APPS = [
     "authentik.sources.oauth",
     "authentik.sources.plex",
     "authentik.sources.saml",
+    "authentik.stages.authenticator",
     "authentik.stages.authenticator_duo",
     "authentik.stages.authenticator_sms",
     "authentik.stages.authenticator_static",
@@ -368,90 +365,9 @@ MEDIA_URL = "/media/"
 
 TEST = False
 TEST_RUNNER = "authentik.root.test_runner.PytestTestRunner"
-# We can't check TEST here as its set later by the test runner
-LOG_LEVEL = CONFIG.get("log_level").upper() if "TF_BUILD" not in os.environ else "DEBUG"
-# We could add a custom level to stdlib logging and structlog, but it's not easy or clean
-# https://stackoverflow.com/questions/54505487/custom-log-level-not-working-with-structlog
-# Additionally, the entire code uses debug as highest level so that would have to be re-written too
-if LOG_LEVEL == "TRACE":
-    LOG_LEVEL = "DEBUG"
 
-structlog.configure_once(
-    processors=[
-        structlog.stdlib.add_log_level,
-        structlog.stdlib.add_logger_name,
-        structlog.contextvars.merge_contextvars,
-        add_process_id,
-        structlog.stdlib.PositionalArgumentsFormatter(),
-        structlog.processors.TimeStamper(fmt="iso", utc=False),
-        structlog.processors.StackInfoRenderer(),
-        structlog.processors.dict_tracebacks,
-        structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
-    ],
-    logger_factory=structlog.stdlib.LoggerFactory(),
-    wrapper_class=structlog.make_filtering_bound_logger(
-        getattr(logging, LOG_LEVEL, logging.WARNING)
-    ),
-    cache_logger_on_first_use=True,
-)
-
-LOG_PRE_CHAIN = [
-    # Add the log level and a timestamp to the event_dict if the log entry
-    # is not from structlog.
-    structlog.stdlib.add_log_level,
-    structlog.stdlib.add_logger_name,
-    structlog.processors.TimeStamper(),
-    structlog.processors.StackInfoRenderer(),
-]
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "json": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.processors.JSONRenderer(sort_keys=True),
-            "foreign_pre_chain": LOG_PRE_CHAIN,
-        },
-        "console": {
-            "()": structlog.stdlib.ProcessorFormatter,
-            "processor": structlog.dev.ConsoleRenderer(colors=DEBUG),
-            "foreign_pre_chain": LOG_PRE_CHAIN,
-        },
-    },
-    "handlers": {
-        "console": {
-            "level": "DEBUG",
-            "class": "logging.StreamHandler",
-            "formatter": "console" if DEBUG else "json",
-        },
-    },
-    "loggers": {},
-}
-
-_LOGGING_HANDLER_MAP = {
-    "": LOG_LEVEL,
-    "authentik": LOG_LEVEL,
-    "django": "WARNING",
-    "django.request": "ERROR",
-    "celery": "WARNING",
-    "selenium": "WARNING",
-    "docker": "WARNING",
-    "urllib3": "WARNING",
-    "websockets": "WARNING",
-    "daphne": "WARNING",
-    "kubernetes": "INFO",
-    "asyncio": "WARNING",
-    "redis": "WARNING",
-    "silk": "INFO",
-    "fsevents": "WARNING",
-}
-for handler_name, level in _LOGGING_HANDLER_MAP.items():
-    LOGGING["loggers"][handler_name] = {
-        "handlers": ["console"],
-        "level": level,
-        "propagate": False,
-    }
+structlog_configure()
+LOGGING = get_logger_config()
 
 
 _DISALLOWED_ITEMS = [

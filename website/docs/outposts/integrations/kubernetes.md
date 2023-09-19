@@ -18,7 +18,7 @@ This integration creates the following objects:
 The following outpost settings are used:
 
 -   `object_naming_template`: Configures how the container is called
--   `container_image`: Optionally overwrites the standard container image (see [Configuration](../../installation/configuration.md) to configure the global default)
+-   `container_image`: Optionally overwrites the standard container image (see [Configuration](../../installation/configuration.mdx) to configure the global default)
 -   `kubernetes_replicas`: Replica count for the deployment of the outpost
 -   `kubernetes_namespace`: Namespace to deploy in, defaults to the same namespace authentik is deployed in (if available)
 -   `kubernetes_ingress_annotations`: Any additional annotations to add to the ingress object, for example cert-manager

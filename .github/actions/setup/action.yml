@@ -23,7 +23,7 @@ runs:
     - name: Setup node
       uses: actions/setup-node@v3
       with:
-        node-version: "20"
+        node-version: "20.5"
         cache: "npm"
         cache-dependency-path: web/package-lock.json
     - name: Setup dependencies

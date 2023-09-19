@@ -9,7 +9,6 @@ from django.core.exceptions import SuspiciousOperation
 from django.db.models import Model
 from django.db.models.signals import m2m_changed, post_save, pre_delete
 from django.http import HttpRequest, HttpResponse
-from django_otp.plugins.otp_static.models import StaticToken
 from guardian.models import UserObjectPermission
 
 from authentik.core.models import (
@@ -30,6 +29,7 @@ from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
 from authentik.providers.oauth2.models import AccessToken, AuthorizationCode, RefreshToken
 from authentik.providers.scim.models import SCIMGroup, SCIMUser
+from authentik.stages.authenticator_static.models import StaticToken
 
 IGNORED_MODELS = (
     Event,

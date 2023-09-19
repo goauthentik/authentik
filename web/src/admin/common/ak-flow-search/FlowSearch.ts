@@ -66,7 +66,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
     selectedFlow?: T;
 
     get value() {
-        return this.selectedFlow ? getFlowValue(this.selectedFlow) : undefined;
+        return this.selectedFlow ? getFlowValue(this.selectedFlow) : null;
     }
 
     constructor() {

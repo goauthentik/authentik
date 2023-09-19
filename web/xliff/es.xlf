@@ -148,10 +148,6 @@
         <source>Messages</source>
         <target>Mensajes</target>
       </trans-unit>
-      <trans-unit id="sd6edc7752cdf0ef5">
-        <source>New version available!</source>
-        <target>¡Nueva versión disponible!</target>
-      </trans-unit>
       <trans-unit id="s0a5401d4419f9958">
         <source>Using source</source>
         <target>Uso de la fuente</target>
@@ -2250,9 +2246,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>No policies are currently bound to this object.</source>
         <target>Actualmente, no hay políticas vinculadas a este objeto.</target>
       </trans-unit>
-      <trans-unit id="s6b66ad92d4c1a0a8">
-        <source>Create &amp; bind Policy</source>
-      </trans-unit>
       <trans-unit id="sddb040c47daae56b">
         <source>Bind existing policy</source>
       </trans-unit>
@@ -2648,10 +2641,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s19b09f4fc72175d1">
         <source>Create a new source.</source>
-      </trans-unit>
-      <trans-unit id="sf96b3cc66d2e25f8">
-        <source>Federation &amp; Social login</source>
-        <target>Inicio de sesión de federación y redes</target>
       </trans-unit>
       <trans-unit id="s6152026c364ad974">
         <source>Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.</source>
@@ -3975,18 +3964,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Resident key requirement</source>
         <target>Requisito clave residente</target>
       </trans-unit>
-      <trans-unit id="s437ab6d95ca1ac78">
-        <source>The authenticator should not create a dedicated credential</source>
-        <target>El autenticador no debe crear una credencial dedicada</target>
-      </trans-unit>
-      <trans-unit id="sf6d55598b52348a5">
-        <source>The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
-        <target>El autenticador puede crear y almacenar una credencial dedicada, pero si no es así, también está bien</target>
-      </trans-unit>
-      <trans-unit id="s81356cab25498851">
-        <source>The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur</source>
-        <target>El autenticador DEBE crear una credencial dedicada. Si no puede, el RP está preparado para que se produzca un error</target>
-      </trans-unit>
       <trans-unit id="s5fbaeb14f42815e5">
         <source>Authenticator Attachment</source>
         <target>Adjunto de autenticador</target>
@@ -4565,9 +4542,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Bind stage</source>
         <target>Etapa Bind</target>
       </trans-unit>
-      <trans-unit id="se8eb190d8f084f80">
-        <source>Create &amp; bind Stage</source>
-      </trans-unit>
       <trans-unit id="scc2e420c54dc8089">
         <source>Bind existing stage</source>
       </trans-unit>
@@ -5131,17 +5105,9 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Customisation</source>
         <target>Personalización</target>
       </trans-unit>
-      <trans-unit id="s58398dbcff942947">
-        <source>Flows &amp; Stages</source>
-        <target>Flujos y etapas</target>
-      </trans-unit>
       <trans-unit id="sc0829ee663ced008">
         <source>Directory</source>
         <target>Directorio</target>
-      </trans-unit>
-      <trans-unit id="sdf4e926513e26458">
-        <source>Tokens &amp; App passwords</source>
-        <target>Tokens y contraseñas de aplicaciones</target>
       </trans-unit>
       <trans-unit id="sa81e2cdaf6921adc">
         <source>System</source>
@@ -5801,6 +5767,51 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s7f68101a50f526ee">
   <source>Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.</source>
+</trans-unit>
+<trans-unit id="s911a27022aba349f">
+  <source>Create and bind Policy</source>
+</trans-unit>
+<trans-unit id="sb1a4e9b288e2f005">
+  <source>Federation and Social login</source>
+</trans-unit>
+<trans-unit id="s6f367f5604d5056d">
+  <source>Create and bind Stage</source>
+</trans-unit>
+<trans-unit id="s1a65ee08832fbfe2">
+  <source>Flows and Stages</source>
+</trans-unit>
+<trans-unit id="s4ba4473f3d4ec896">
+  <source>New version available</source>
+</trans-unit>
+<trans-unit id="s6b1ed7507f26cb4a">
+  <source>Failure result</source>
+</trans-unit>
+<trans-unit id="s2e422519ed38f7d8">
+  <source>Pass</source>
+</trans-unit>
+<trans-unit id="s81a45c4fd11e8e1a">
+  <source>Don't pass</source>
+</trans-unit>
+<trans-unit id="s95b73e0f4e47eb9a">
+  <source>Result used when policy execution fails.</source>
+</trans-unit>
+<trans-unit id="s6a3cf855140b9511">
+  <source>Required: User verification must occur.</source>
+</trans-unit>
+<trans-unit id="sc498a3b05cfe2b08">
+  <source>Preferred: User verification is preferred if available, but not required.</source>
+</trans-unit>
+<trans-unit id="s9d2239d2b0402795">
+  <source>Discouraged: User verification should not occur.</source>
+</trans-unit>
+<trans-unit id="s428b7859907f6db2">
+  <source>Required: The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur</source>
+</trans-unit>
+<trans-unit id="s33e3766d4a02b042">
+  <source>Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
+</trans-unit>
+<trans-unit id="sfb852dd507c25c24">
+  <source>Discouraged: The authenticator should not create a dedicated credential</source>
 </trans-unit>
     </body>
   </file>

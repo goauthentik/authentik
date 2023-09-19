@@ -3,6 +3,7 @@ import "@goauthentik/admin/applications/wizard/ak-application-wizard";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/components/ak-app-icon";
 import MDApplication from "@goauthentik/docs/core/applications.md";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -12,7 +13,6 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
-import "@goauthentik/user/LibraryApplication/AppIcon";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";

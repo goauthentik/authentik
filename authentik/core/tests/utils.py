@@ -25,10 +25,10 @@ def create_test_admin_user(name: Optional[str] = None, **kwargs) -> User:
     """Generate a test-admin user"""
     uid = generate_id(20) if not name else name
     group = Group.objects.create(name=uid, is_superuser=True)
+    kwargs.setdefault("email", f"{uid}@goauthentik.io")
+    kwargs.setdefault("username", uid)
     user: User = User.objects.create(
-        username=uid,
         name=uid,
-        email=f"{uid}@goauthentik.io",
         **kwargs,
     )
     user.set_password(uid)

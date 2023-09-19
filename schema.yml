@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: authentik
-  version: 2023.8.1
+  version: 2023.8.3
   description: Making authentication simple.
   contact:
     email: hello@goauthentik.io
@@ -885,7 +885,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this static device.
+        description: A unique integer value identifying this Static device.
         required: true
       tags:
       - authenticators
@@ -918,7 +918,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this static device.
+        description: A unique integer value identifying this Static device.
         required: true
       tags:
       - authenticators
@@ -957,7 +957,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this static device.
+        description: A unique integer value identifying this Static device.
         required: true
       tags:
       - authenticators
@@ -995,7 +995,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this static device.
+        description: A unique integer value identifying this Static device.
         required: true
       tags:
       - authenticators
@@ -2030,7 +2030,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this static device.
+        description: A unique integer value identifying this Static device.
         required: true
       tags:
       - authenticators
@@ -2063,7 +2063,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this static device.
+        description: A unique integer value identifying this Static device.
         required: true
       tags:
       - authenticators
@@ -2102,7 +2102,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this static device.
+        description: A unique integer value identifying this Static device.
         required: true
       tags:
       - authenticators
@@ -2140,7 +2140,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this static device.
+        description: A unique integer value identifying this Static device.
         required: true
       tags:
       - authenticators
@@ -2170,7 +2170,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this static device.
+        description: A unique integer value identifying this Static device.
         required: true
       tags:
       - authenticators
@@ -12994,7 +12994,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this reputation.
+        description: A UUID string identifying this Reputation Score.
         required: true
       tags:
       - policies
@@ -13028,7 +13028,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this reputation.
+        description: A UUID string identifying this Reputation Score.
         required: true
       tags:
       - policies
@@ -13059,7 +13059,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this reputation.
+        description: A UUID string identifying this Reputation Score.
         required: true
       tags:
       - policies
@@ -26726,6 +26726,7 @@ components:
       - authentik.sources.oauth
       - authentik.sources.plex
       - authentik.sources.saml
+      - authentik.stages.authenticator
       - authentik.stages.authenticator_duo
       - authentik.stages.authenticator_sms
       - authentik.stages.authenticator_static
@@ -26775,6 +26776,7 @@ components:
         * `authentik.sources.oauth` - authentik Sources.OAuth
         * `authentik.sources.plex` - authentik Sources.Plex
         * `authentik.sources.saml` - authentik Sources.SAML
+        * `authentik.stages.authenticator` - authentik Stages.Authenticator
         * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
         * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
         * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
@@ -29509,6 +29511,7 @@ components:
             * `authentik.sources.oauth` - authentik Sources.OAuth
             * `authentik.sources.plex` - authentik Sources.Plex
             * `authentik.sources.saml` - authentik Sources.SAML
+            * `authentik.stages.authenticator` - authentik Stages.Authenticator
             * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
             * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
             * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
@@ -29556,7 +29559,7 @@ components:
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies_reputation.reputation` - Reputation Score
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -29583,7 +29586,9 @@ components:
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
             * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_static.staticdevice` - Static device
             * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+            * `authentik_stages_authenticator_totp.totpdevice` - TOTP device
             * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
             * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
             * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
@@ -29699,6 +29704,7 @@ components:
             * `authentik.sources.oauth` - authentik Sources.OAuth
             * `authentik.sources.plex` - authentik Sources.Plex
             * `authentik.sources.saml` - authentik Sources.SAML
+            * `authentik.stages.authenticator` - authentik Stages.Authenticator
             * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
             * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
             * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
@@ -29746,7 +29752,7 @@ components:
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies_reputation.reputation` - Reputation Score
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -29773,7 +29779,9 @@ components:
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
             * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_static.staticdevice` - Static device
             * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+            * `authentik_stages_authenticator_totp.totpdevice` - TOTP device
             * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
             * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
             * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
@@ -31931,7 +31939,9 @@ components:
       - authentik_stages_authenticator_sms.authenticatorsmsstage
       - authentik_stages_authenticator_sms.smsdevice
       - authentik_stages_authenticator_static.authenticatorstaticstage
+      - authentik_stages_authenticator_static.staticdevice
       - authentik_stages_authenticator_totp.authenticatortotpstage
+      - authentik_stages_authenticator_totp.totpdevice
       - authentik_stages_authenticator_validate.authenticatorvalidatestage
       - authentik_stages_authenticator_webauthn.authenticatewebauthnstage
       - authentik_stages_authenticator_webauthn.webauthndevice
@@ -31976,7 +31986,7 @@ components:
         * `authentik_policies_expression.expressionpolicy` - Expression Policy
         * `authentik_policies_password.passwordpolicy` - Password Policy
         * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-        * `authentik_policies_reputation.reputation` - reputation
+        * `authentik_policies_reputation.reputation` - Reputation Score
         * `authentik_policies.policybinding` - Policy Binding
         * `authentik_providers_ldap.ldapprovider` - LDAP Provider
         * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -32003,7 +32013,9 @@ components:
         * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
         * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
         * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+        * `authentik_stages_authenticator_static.staticdevice` - Static device
         * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+        * `authentik_stages_authenticator_totp.totpdevice` - TOTP device
         * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
         * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
         * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
@@ -34916,6 +34928,7 @@ components:
             * `authentik.sources.oauth` - authentik Sources.OAuth
             * `authentik.sources.plex` - authentik Sources.Plex
             * `authentik.sources.saml` - authentik Sources.SAML
+            * `authentik.stages.authenticator` - authentik Stages.Authenticator
             * `authentik.stages.authenticator_duo` - authentik Stages.Authenticator.Duo
             * `authentik.stages.authenticator_sms` - authentik Stages.Authenticator.SMS
             * `authentik.stages.authenticator_static` - authentik Stages.Authenticator.Static
@@ -34963,7 +34976,7 @@ components:
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
-            * `authentik_policies_reputation.reputation` - reputation
+            * `authentik_policies_reputation.reputation` - Reputation Score
             * `authentik_policies.policybinding` - Policy Binding
             * `authentik_providers_ldap.ldapprovider` - LDAP Provider
             * `authentik_providers_oauth2.scopemapping` - Scope Mapping
@@ -34990,7 +35003,9 @@ components:
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
             * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
+            * `authentik_stages_authenticator_static.staticdevice` - Static device
             * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
+            * `authentik_stages_authenticator_totp.totpdevice` - TOTP device
             * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
             * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
             * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
@@ -35972,8 +35987,11 @@ components:
         timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
           description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
     PatchedPromptRequest:
       type: object
       description: Prompt Serializer
@@ -37064,8 +37082,11 @@ components:
         timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
           description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
       required:
       - group_obj
       - order
@@ -37103,8 +37124,11 @@ components:
         timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
           description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
       required:
       - order
       - target
@@ -38508,8 +38532,7 @@ components:
           minLength: 1
         authorization_flow:
           type: string
-          minLength: 1
-          description: Visible in the URL.
+          format: uuid
         file:
           type: string
           format: binary
@@ -39997,8 +40020,6 @@ components:
       type: object
       description: Transactional creation response
       properties:
-        valid:
-          type: boolean
         applied:
           type: boolean
         logs:
@@ -40008,7 +40029,6 @@ components:
       required:
       - applied
       - logs
-      - valid
     TypeCreate:
       type: object
       description: Types of an object that can be created

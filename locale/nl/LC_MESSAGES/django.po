@@ -15,7 +15,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-08-23 10:04+0000\n"
+"POT-Creation-Date: 2023-09-02 15:45+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: ServusNL, 2023\n"
 "Language-Team: Dutch (https://app.transifex.com/authentik/teams/119923/nl/)\n"
@@ -30,11 +30,11 @@ msgstr ""
 msgid "Successfully re-scheduled Task %(name)s!"
 msgstr "Taak %(name)s succesvol opnieuw ingepland!"
 
-#: authentik/api/schema.py:24
+#: authentik/api/schema.py:25
 msgid "Generic API Error"
 msgstr "Algemene API-fout"
 
-#: authentik/api/schema.py:32
+#: authentik/api/schema.py:33
 msgid "Validation Error"
 msgstr "Validatiefout"
 
@@ -94,11 +94,11 @@ msgstr "SAML-provider uit metagegevens"
 msgid "Create a SAML Provider by importing its Metadata."
 msgstr "Maak een SAML-provider door de metagegevens te importeren."
 
-#: authentik/core/api/users.py:150
+#: authentik/core/api/users.py:158
 msgid "No leading or trailing slashes allowed."
 msgstr "Geen voor- of achtervoegsels toegestaan."
 
-#: authentik/core/api/users.py:153
+#: authentik/core/api/users.py:161
 msgid "No empty segments in user path allowed."
 msgstr "Geen lege segmenten in het gebruikerspad toegestaan."
 
@@ -115,7 +115,7 @@ msgstr ""
 msgid "User's display name."
 msgstr "Weergavenaam van de gebruiker."
 
-#: authentik/core/models.py:268 authentik/providers/oauth2/models.py:294
+#: authentik/core/models.py:268 authentik/providers/oauth2/models.py:295
 msgid "User"
 msgstr "Gebruiker"
 
@@ -328,12 +328,12 @@ msgstr ""
 msgid "Go home"
 msgstr "Ga naar startpagina"
 
-#: authentik/core/templates/login/base_full.html:90
+#: authentik/core/templates/login/base_full.html:89
 msgid "Powered by authentik"
 msgstr "Aangedreven door authentik"
 
 #: authentik/core/views/apps.py:53
-#: authentik/providers/oauth2/views/authorize.py:391
+#: authentik/providers/oauth2/views/authorize.py:393
 #: authentik/providers/oauth2/views/device_init.py:70
 #: authentik/providers/saml/views/sso.py:70
 #, python-format
@@ -363,6 +363,14 @@ msgstr "Certificaat-Sleutelpaar"
 #: authentik/crypto/models.py:102
 msgid "Certificate-Key Pairs"
 msgstr "Certificaat-Sleutelparen"
+
+#: authentik/enterprise/models.py:193
+msgid "License Usage"
+msgstr "Licentie Gebruik"
+
+#: authentik/enterprise/models.py:194
+msgid "License Usage Records"
+msgstr "Licentie Gebruik Records"
 
 #: authentik/events/models.py:290
 msgid "Event"
@@ -899,13 +907,21 @@ msgstr "Wachtwoordbeleid"
 msgid "Password Policies"
 msgstr "Wachtwoordbeleiden"
 
-#: authentik/policies/reputation/models.py:58
+#: authentik/policies/reputation/models.py:67
 msgid "Reputation Policy"
 msgstr "Reputatiebeleid"
 
-#: authentik/policies/reputation/models.py:59
+#: authentik/policies/reputation/models.py:68
 msgid "Reputation Policies"
 msgstr "Reputatiebeleiden"
+
+#: authentik/policies/reputation/models.py:95
+msgid "Reputation Score"
+msgstr "Reputatie Score"
+
+#: authentik/policies/reputation/models.py:96
+msgid "Reputation Scores"
+msgstr "Reputatie Scores"
 
 #: authentik/policies/templates/policies/denied.html:7
 #: authentik/policies/templates/policies/denied.html:11
@@ -1037,64 +1053,64 @@ msgstr ""
 "'upn'-attribuut heeft ingesteld. Gebruik deze methode alleen als u "
 "verschillende UPN- en Mail-domeinen heeft."
 
-#: authentik/providers/oauth2/models.py:42
+#: authentik/providers/oauth2/models.py:43
 msgid "Confidential"
 msgstr "Vertrouwelijk"
 
-#: authentik/providers/oauth2/models.py:43
+#: authentik/providers/oauth2/models.py:44
 msgid "Public"
 msgstr "Openbaar"
 
-#: authentik/providers/oauth2/models.py:65
+#: authentik/providers/oauth2/models.py:66
 msgid "Same identifier is used for all providers"
 msgstr "Hetzelfde identificatiemiddel wordt voor alle providers gebruikt"
 
-#: authentik/providers/oauth2/models.py:67
+#: authentik/providers/oauth2/models.py:68
 msgid "Each provider has a different issuer, based on the application slug."
 msgstr ""
 "Elke provider heeft een andere uitgever, gebaseerd op de toepassingsslug."
 
-#: authentik/providers/oauth2/models.py:74
+#: authentik/providers/oauth2/models.py:75
 msgid "code (Authorization Code Flow)"
 msgstr "code (Autorisatiecode-flow)"
 
-#: authentik/providers/oauth2/models.py:75
+#: authentik/providers/oauth2/models.py:76
 msgid "id_token (Implicit Flow)"
 msgstr "id_token (Impliciete Flow)"
 
-#: authentik/providers/oauth2/models.py:76
+#: authentik/providers/oauth2/models.py:77
 msgid "id_token token (Implicit Flow)"
 msgstr "id_token token (Impliciete Flow)"
 
-#: authentik/providers/oauth2/models.py:77
+#: authentik/providers/oauth2/models.py:78
 msgid "code token (Hybrid Flow)"
 msgstr "code token (Hybride Flow)"
 
-#: authentik/providers/oauth2/models.py:78
+#: authentik/providers/oauth2/models.py:79
 msgid "code id_token (Hybrid Flow)"
 msgstr "code id_token (Hybride Flow)"
 
-#: authentik/providers/oauth2/models.py:79
+#: authentik/providers/oauth2/models.py:80
 msgid "code id_token token (Hybrid Flow)"
 msgstr "code id_token token (Hybride Flow)"
 
-#: authentik/providers/oauth2/models.py:85
+#: authentik/providers/oauth2/models.py:86
 msgid "HS256 (Symmetric Encryption)"
 msgstr "HS256 (Symmetrische Versleuteling)"
 
-#: authentik/providers/oauth2/models.py:86
+#: authentik/providers/oauth2/models.py:87
 msgid "RS256 (Asymmetric Encryption)"
 msgstr "RS256 (Asymmetrische Versleuteling)"
 
-#: authentik/providers/oauth2/models.py:87
+#: authentik/providers/oauth2/models.py:88
 msgid "ES256 (Asymmetric Encryption)"
 msgstr "ES256 (Asymmetrische Versleuteling)"
 
-#: authentik/providers/oauth2/models.py:93
+#: authentik/providers/oauth2/models.py:94
 msgid "Scope used by the client"
 msgstr "Scope gebruikt door de cliënt"
 
-#: authentik/providers/oauth2/models.py:97
+#: authentik/providers/oauth2/models.py:98
 msgid ""
 "Description shown to the user when consenting. If left empty, the user won't"
 " be informed."
@@ -1102,19 +1118,19 @@ msgstr ""
 "Beschrijving getoond aan de gebruiker bij toestemming. Als leeg gelaten, "
 "wordt de gebruiker niet geïnformeerd."
 
-#: authentik/providers/oauth2/models.py:116
+#: authentik/providers/oauth2/models.py:117
 msgid "Scope Mapping"
 msgstr "Scope-mapping"
 
-#: authentik/providers/oauth2/models.py:117
+#: authentik/providers/oauth2/models.py:118
 msgid "Scope Mappings"
 msgstr "Scope-mappings"
 
-#: authentik/providers/oauth2/models.py:127
+#: authentik/providers/oauth2/models.py:128
 msgid "Client Type"
 msgstr "Clienttype"
 
-#: authentik/providers/oauth2/models.py:129
+#: authentik/providers/oauth2/models.py:130
 msgid ""
 "Confidential clients are capable of maintaining the confidentiality of their"
 " credentials. Public clients are incapable"
@@ -1122,27 +1138,27 @@ msgstr ""
 "Vertrouwelijke clients zijn in staat om de vertrouwelijkheid van hun "
 "referenties te behouden. Openbare clients zijn dat niet."
 
-#: authentik/providers/oauth2/models.py:136
+#: authentik/providers/oauth2/models.py:137
 msgid "Client ID"
 msgstr "Client-ID"
 
-#: authentik/providers/oauth2/models.py:142
+#: authentik/providers/oauth2/models.py:143
 msgid "Client Secret"
 msgstr "Client Geheim"
 
-#: authentik/providers/oauth2/models.py:148
+#: authentik/providers/oauth2/models.py:149
 msgid "Redirect URIs"
 msgstr "Omleidings-URI's"
 
-#: authentik/providers/oauth2/models.py:149
+#: authentik/providers/oauth2/models.py:150
 msgid "Enter each URI on a new line."
 msgstr "Voer elke URI op een nieuwe regel in."
 
-#: authentik/providers/oauth2/models.py:154
+#: authentik/providers/oauth2/models.py:155
 msgid "Include claims in id_token"
 msgstr "Inclusief claims in id_token"
 
-#: authentik/providers/oauth2/models.py:156
+#: authentik/providers/oauth2/models.py:157
 msgid ""
 "Include User claims from scopes in the id_token, for applications that don't"
 " access the userinfo endpoint."
@@ -1150,7 +1166,7 @@ msgstr ""
 "Inclusief Gebruikersclaims uit scopes in id_token, voor toepassingen die "
 "geen toegang hebben tot het userinfo-eindpunt."
 
-#: authentik/providers/oauth2/models.py:165
+#: authentik/providers/oauth2/models.py:166
 msgid ""
 "Access codes not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
@@ -1158,8 +1174,8 @@ msgstr ""
 "Toegangscodes zijn niet geldig op of na de huidige tijd + deze waarde "
 "(Formaat: uren=1;minuten=2;seconden=3)."
 
-#: authentik/providers/oauth2/models.py:173
-#: authentik/providers/oauth2/models.py:181
+#: authentik/providers/oauth2/models.py:174
+#: authentik/providers/oauth2/models.py:182
 msgid ""
 "Tokens not valid on or after current time + this value (Format: "
 "hours=1;minutes=2;seconds=3)."
@@ -1167,7 +1183,7 @@ msgstr ""
 "Tokens zijn niet geldig op of na de huidige tijd + deze waarde (Formaat: "
 "uren=1;minuten=2;seconden=3)."
 
-#: authentik/providers/oauth2/models.py:190
+#: authentik/providers/oauth2/models.py:191
 msgid ""
 "Configure what data should be used as unique User Identifier. For most "
 "cases, the default should be fine."
@@ -1176,16 +1192,16 @@ msgstr ""
 "gebruikersidentificatie. In de meeste gevallen is de standaardinstelling "
 "prima."
 
-#: authentik/providers/oauth2/models.py:197
+#: authentik/providers/oauth2/models.py:198
 msgid "Configure how the issuer field of the ID Token should be filled."
 msgstr ""
 "Configureer hoe het uitgeversveld van het ID-token moet worden ingevuld."
 
-#: authentik/providers/oauth2/models.py:202
+#: authentik/providers/oauth2/models.py:203
 msgid "Signing Key"
 msgstr "Ondertekeningsleutel"
 
-#: authentik/providers/oauth2/models.py:206
+#: authentik/providers/oauth2/models.py:207
 msgid ""
 "Key used to sign the tokens. Only required when JWT Algorithm is set to "
 "RS256."
@@ -1193,7 +1209,7 @@ msgstr ""
 "Sleutel gebruikt om de tokens te ondertekenen. Alleen vereist wanneer het "
 "JWT-algoritme is ingesteld op RS256."
 
-#: authentik/providers/oauth2/models.py:213
+#: authentik/providers/oauth2/models.py:214
 msgid ""
 "Any JWT signed by the JWK of the selected source can be used to "
 "authenticate."
@@ -1201,72 +1217,72 @@ msgstr ""
 "Elke JWT ondertekend door de JWK van de geselecteerde bron kan worden "
 "gebruikt voor authenticatie."
 
-#: authentik/providers/oauth2/models.py:286
+#: authentik/providers/oauth2/models.py:287
 msgid "OAuth2/OpenID Provider"
 msgstr "OAuth2/OpenID-provider"
 
-#: authentik/providers/oauth2/models.py:287
+#: authentik/providers/oauth2/models.py:288
 msgid "OAuth2/OpenID Providers"
 msgstr "OAuth2/OpenID-providers"
 
-#: authentik/providers/oauth2/models.py:296
-#: authentik/providers/oauth2/models.py:428
+#: authentik/providers/oauth2/models.py:297
+#: authentik/providers/oauth2/models.py:429
 msgid "Scopes"
 msgstr "Scopes"
 
-#: authentik/providers/oauth2/models.py:315
+#: authentik/providers/oauth2/models.py:316
 msgid "Code"
 msgstr "Code"
 
-#: authentik/providers/oauth2/models.py:316
+#: authentik/providers/oauth2/models.py:317
 msgid "Nonce"
 msgstr "Nonce"
 
-#: authentik/providers/oauth2/models.py:317
+#: authentik/providers/oauth2/models.py:318
 msgid "Code Challenge"
 msgstr "Code-uitdaging"
 
-#: authentik/providers/oauth2/models.py:319
+#: authentik/providers/oauth2/models.py:320
 msgid "Code Challenge Method"
 msgstr "Code-uitdaging methode"
 
-#: authentik/providers/oauth2/models.py:339
+#: authentik/providers/oauth2/models.py:340
 msgid "Authorization Code"
 msgstr "Autorisatiecode"
 
-#: authentik/providers/oauth2/models.py:340
+#: authentik/providers/oauth2/models.py:341
 msgid "Authorization Codes"
 msgstr "Autorisatiecodes"
 
-#: authentik/providers/oauth2/models.py:382
+#: authentik/providers/oauth2/models.py:383
 msgid "OAuth2 Access Token"
 msgstr "OAuth2 Toegangstoken"
 
-#: authentik/providers/oauth2/models.py:383
+#: authentik/providers/oauth2/models.py:384
 msgid "OAuth2 Access Tokens"
 msgstr "OAuth2 Toegangstokens"
 
-#: authentik/providers/oauth2/models.py:393
+#: authentik/providers/oauth2/models.py:394
 msgid "ID Token"
 msgstr "ID-token"
 
-#: authentik/providers/oauth2/models.py:412
+#: authentik/providers/oauth2/models.py:413
 msgid "OAuth2 Refresh Token"
 msgstr "OAuth2 Verversingstoken"
 
-#: authentik/providers/oauth2/models.py:413
+#: authentik/providers/oauth2/models.py:414
 msgid "OAuth2 Refresh Tokens"
 msgstr "OAuth2 Verversingstokens"
 
-#: authentik/providers/oauth2/models.py:440
+#: authentik/providers/oauth2/models.py:441
 msgid "Device Token"
 msgstr "Apparaattoken"
 
-#: authentik/providers/oauth2/models.py:441
+#: authentik/providers/oauth2/models.py:442
 msgid "Device Tokens"
 msgstr "Apparaattokens"
 
-#: authentik/providers/oauth2/views/authorize.py:446
+#: authentik/providers/oauth2/views/authorize.py:448
 #: authentik/providers/saml/views/flows.py:87
 #, python-format
 msgid "Redirecting to %(app)s..."
@@ -1276,20 +1292,20 @@ msgstr "Doorverwijzen naar %(app)s..."
 msgid "Invalid code"
 msgstr "Ongeldige code"
 
-#: authentik/providers/oauth2/views/userinfo.py:51
-#: authentik/providers/oauth2/views/userinfo.py:52
+#: authentik/providers/oauth2/views/userinfo.py:55
+#: authentik/providers/oauth2/views/userinfo.py:56
 msgid "GitHub Compatibility: Access your User Information"
 msgstr "GitHub-compatibiliteit: Toegang tot uw Gebruikersinformatie"
 
-#: authentik/providers/oauth2/views/userinfo.py:53
+#: authentik/providers/oauth2/views/userinfo.py:57
 msgid "GitHub Compatibility: Access you Email addresses"
 msgstr "GitHub-compatibiliteit: Toegang tot uw E-mailadressen"
 
-#: authentik/providers/oauth2/views/userinfo.py:54
+#: authentik/providers/oauth2/views/userinfo.py:58
 msgid "GitHub Compatibility: Access your Groups"
 msgstr "GitHub-compatibiliteit: Toegang tot uw Groepen"
 
-#: authentik/providers/oauth2/views/userinfo.py:55
+#: authentik/providers/oauth2/views/userinfo.py:59
 msgid "authentik API Access on behalf of your user"
 msgstr "authentik API-toegang namens uw gebruiker"
 
@@ -1299,7 +1315,7 @@ msgstr ""
 "Gebruikers- en wachtwoordeigenschappen moeten worden ingesteld wanneer "
 "basisverificatie is ingeschakeld."
 
-#: authentik/providers/proxy/api.py:62
+#: authentik/providers/proxy/api.py:63
 msgid "Internal host cannot be empty when forward auth is disabled."
 msgstr ""
 "Interne host kan niet leeg zijn wanneer doorsturen van verificatie is "
@@ -1403,11 +1419,11 @@ msgstr "Radius-provider"
 msgid "Radius Providers"
 msgstr "Radius-providers"
 
-#: authentik/providers/saml/api/providers.py:260
+#: authentik/providers/saml/api/providers.py:257
 msgid "Invalid XML Syntax"
 msgstr "Ongeldige XML-syntaxis"
 
-#: authentik/providers/saml/api/providers.py:270
+#: authentik/providers/saml/api/providers.py:267
 #, python-format
 msgid "Failed to import Metadata: %(message)s"
 msgstr "Mislukt om Metadata te importeren: %(message)s"
@@ -2109,7 +2125,7 @@ msgstr "TOTP Authenticator Installatiestadium"
 msgid "TOTP Authenticator Setup Stages"
 msgstr "TOTP Authenticator Installatiestadia"
 
-#: authentik/stages/authenticator_validate/challenge.py:123
+#: authentik/stages/authenticator_validate/challenge.py:131
 msgid "Invalid Token"
 msgstr "Ongeldig token"
 
@@ -2269,15 +2285,15 @@ msgstr "E-mailstadium"
 msgid "Email Stages"
 msgstr "E-mailstadia"
 
-#: authentik/stages/email/stage.py:112
+#: authentik/stages/email/stage.py:117
 msgid "Successfully verified Email."
 msgstr "E-mail succesvol geverifieerd."
 
-#: authentik/stages/email/stage.py:119 authentik/stages/email/stage.py:141
+#: authentik/stages/email/stage.py:124 authentik/stages/email/stage.py:146
 msgid "No pending user."
 msgstr "Geen wachtende gebruiker."
 
-#: authentik/stages/email/stage.py:131
+#: authentik/stages/email/stage.py:136
 msgid "Email sent."
 msgstr "E-mail verzonden."
 
@@ -2418,11 +2434,11 @@ msgstr "Identificatiestadium"
 msgid "Identification Stages"
 msgstr "Identificatiestadia"
 
-#: authentik/stages/identification/stage.py:184
+#: authentik/stages/identification/stage.py:188
 msgid "Log in"
 msgstr "Inloggen"
 
-#: authentik/stages/identification/stage.py:185
+#: authentik/stages/identification/stage.py:189
 msgid "Continue"
 msgstr "Doorgaan"
 

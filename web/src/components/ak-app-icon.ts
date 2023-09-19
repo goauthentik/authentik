@@ -81,3 +81,5 @@ export class AppIcon extends AKElement {
         return html`<span class="icon">${this.app?.name.charAt(0).toUpperCase()}</span>`;
     }
 }
+
+export default AppIcon;

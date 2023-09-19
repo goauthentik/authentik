@@ -16,6 +16,9 @@ LOGGER = get_logger()
 class Command(BaseCommand):
     """Run worker"""
 
+    def add_arguments(self, parser):
+        parser.add_argument("-b", "--beat", action="store_true")
+
     def handle(self, **options):
         close_old_connections()
         if CONFIG.get_bool("remote_debug"):
@@ -26,10 +29,9 @@ class Command(BaseCommand):
             no_color=False,
             quiet=True,
             optimization="fair",
-            max_tasks_per_child=1,
             autoscale=(3, 1),
             task_events=True,
-            beat=True,
+            beat=options.get("beat", True),
             schedule_filename=f"{tempdir}/celerybeat-schedule",
             queues=["authentik", "authentik_scheduled", "authentik_events"],
         )

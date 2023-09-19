@@ -172,7 +172,7 @@ class ChannelsLoggingMiddleware:
         LOGGER.info(
             scope["path"],
             scheme="ws",
-            remote=scope.get("client", [""])[0],
+            remote=headers.get(b"x-forwarded-for", b"").decode(),
             user_agent=headers.get(b"user-agent", b"").decode(),
             **kwargs,
         )

@@ -1,4 +1,4 @@
-# update website/docs/installation/configuration.md
+# update website/docs/installation/configuration.mdx
 # This is the default configuration file
 postgresql:
   host: localhost
@@ -83,6 +83,9 @@ ldap:
   page_size: 50
   tls:
     ciphers: null
+
+reputation:
+  expiry: 86400
 
 cookie_domain: null
 disable_update_check: false

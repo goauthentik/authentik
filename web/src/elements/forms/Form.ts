@@ -1,4 +1,4 @@
-import { FlowSearch } from "@goauthentik/admin/common/ak-flow-search/FlowSearch";
+import { PreventFormSubmit } from "@goauthentik/app/elements/forms/helpers";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { camelToSnake, convertToSlug } from "@goauthentik/common/utils";
@@ -20,14 +20,6 @@ import PFSwitch from "@patternfly/patternfly/components/Switch/switch.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { ResponseError, ValidationError, ValidationErrorFromJSON } from "@goauthentik/api";
-
-export class PreventFormSubmit {
-    // Stub class which can be returned by form elements to prevent the form from submitting
-    constructor(
-        public message: string,
-        public element?: HorizontalFormElement,
-    ) {}
-}
 
 export class APIError extends Error {
     constructor(public response: ValidationError) {
@@ -231,7 +223,7 @@ export abstract class Form<T> extends AKElement {
                 inputElement.type === "checkbox"
             ) {
                 json[element.name] = inputElement.checked;
-            } else if (inputElement instanceof FlowSearch) {
+            } else if ("selectedFlow" in inputElement) {
                 json[element.name] = inputElement.value;
             } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
                 const select = inputElement as unknown as SearchSelect<unknown>;

@@ -51,10 +51,6 @@ class UserWriteStageView(StageView):
             attrs = attrs.get(comp)
         attrs[parts[-1]] = value
 
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Wrapper for post requests"""
-        return self.get(request)
-
     def ensure_user(self) -> tuple[Optional[User], bool]:
         """Ensure a user exists"""
         user_created = False
@@ -127,7 +123,7 @@ class UserWriteStageView(StageView):
             if connection.source.name not in user.attributes[USER_ATTRIBUTE_SOURCES]:
                 user.attributes[USER_ATTRIBUTE_SOURCES].append(connection.source.name)
 
-    def get(self, request: HttpRequest) -> HttpResponse:
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Save data in the current flow to the currently pending user. If no user is pending,
         a new user is created."""
         if PLAN_CONTEXT_PROMPT not in self.executor.plan.context:

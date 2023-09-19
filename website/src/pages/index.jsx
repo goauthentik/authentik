@@ -63,8 +63,8 @@ function Home() {
                                 <div>with a unified platform.</div>
                             </h1>
                             <p className="hero__subtitle">
-                                authentik is an open-source Identity Provider
-                                focused on flexibility and versatility
+                                Unify all of your identity needs into a single
+                                platform
                             </p>
                             <div className={styles.buttons}>
                                 <Link
@@ -94,7 +94,7 @@ function Home() {
                         >
                             <img
                                 alt="authentik logo"
-                                src={useBaseUrl("img/landing_login_card.jpg")}
+                                src={useBaseUrl("img/landing_login_card.png")}
                             />
                         </div>
                     </div>

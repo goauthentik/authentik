@@ -118,6 +118,7 @@ export abstract class BaseTaskButton extends CustomEmitterElement(AKElement) {
     render() {
         return html`<button
             id="spinner-button"
+            part="spinner-button"
             class="pf-c-button pf-m-progress ${this.buttonClasses}"
             @click=${this.onClick}
         >

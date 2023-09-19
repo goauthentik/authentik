@@ -10,7 +10,7 @@ jobs:
     name: Create Release from Tag
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Pre-release test
         run: |
           echo "PG_PASS=$(openssl rand -base64 32)" >> .env
@@ -23,7 +23,7 @@ jobs:
           docker-compose start postgresql redis
           docker-compose run -u root server test-all
       - id: generate_token
-        uses: tibdex/github-app-token@v1
+        uses: tibdex/github-app-token@v2
         with:
           app_id: ${{ secrets.GH_APP_ID }}
           private_key: ${{ secrets.GH_APP_PRIVATE_KEY }}

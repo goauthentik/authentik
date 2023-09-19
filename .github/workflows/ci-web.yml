@@ -14,10 +14,10 @@ jobs:
   lint-eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
@@ -30,10 +30,10 @@ jobs:
   lint-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
@@ -46,10 +46,10 @@ jobs:
   lint-prettier:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
@@ -62,10 +62,10 @@ jobs:
   lint-lit-analyse:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/
@@ -94,10 +94,10 @@ jobs:
       - ci-web-mark
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.8.1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
-          node-version: "20"
+          node-version: "20.5"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - working-directory: web/

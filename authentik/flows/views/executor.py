@@ -73,22 +73,21 @@ QS_QUERY = "query"
 
 
 def challenge_types():
-    """This function returns a class which is an iterator, which returns the
+    """This function returns a mapping which contains all subclasses of challenges
     subclasses of Challenge, and Challenge itself."""
     mapping = {}
-    classes = all_subclasses(Challenge)
-    classes.remove(WithUserInfoChallenge)
-    for cls in classes:
+    for cls in all_subclasses(Challenge):
+        if cls == WithUserInfoChallenge:
+            continue
         mapping[cls().fields["component"].default] = cls
     return mapping
 
 
 def challenge_response_types():
-    """This function returns a class which is an iterator, which returns the
+    """This function returns a mapping which contains all subclasses of challenges
     subclasses of Challenge, and Challenge itself."""
     mapping = {}
-    classes = all_subclasses(ChallengeResponse)
-    for cls in classes:
+    for cls in all_subclasses(ChallengeResponse):
         mapping[cls(stage=None).fields["component"].default] = cls
     return mapping
 
@@ -279,7 +278,7 @@ class FlowExecutorView(APIView):
                 span.set_data("Method", "GET")
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
-                stage_response = self.current_stage_view.get(request, *args, **kwargs)
+                stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
             return self.handle_exception(exc)
@@ -323,7 +322,7 @@ class FlowExecutorView(APIView):
                 span.set_data("Method", "POST")
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
-                stage_response = self.current_stage_view.post(request, *args, **kwargs)
+                stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
             return self.handle_exception(exc)
@@ -346,10 +345,15 @@ class FlowExecutorView(APIView):
     def restart_flow(self, keep_context=False) -> HttpResponse:
         """Restart the currently active flow, optionally keeping the current context"""
         planner = FlowPlanner(self.flow)
+        planner.use_cache = False
         default_context = None
         if keep_context:
             default_context = self.plan.context
-        plan = planner.plan(self.request, default_context)
+        try:
+            plan = planner.plan(self.request, default_context)
+        except FlowNonApplicableException as exc:
+            self._logger.warning("f(exec): Flow restart not applicable to current user", exc=exc)
+            return self.handle_invalid_flow(exc)
         self.request.session[SESSION_KEY_PLAN] = plan
         kwargs = self.kwargs
         kwargs.update({"flow_slug": self.flow.slug})

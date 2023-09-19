@@ -5,6 +5,9 @@ htmlcov
 dist/**
 build/**
 build_docs/**
-Dockerfile
+*Dockerfile
 authentik/enterprise
 blueprints/local
+.git
+!gen-ts-api/node_modules
+!gen-ts-api/dist/**

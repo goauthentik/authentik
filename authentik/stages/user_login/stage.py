@@ -41,17 +41,11 @@ class UserLoginStageView(ChallengeStageView):
             }
         )
 
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Wrapper for post requests"""
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
+        """Check for remember_me, and do login"""
         stage: UserLoginStage = self.executor.current_stage
         if timedelta_from_string(stage.remember_me_offset).total_seconds() > 0:
-            return super().post(request, *args, **kwargs)
-        return self.do_login(request)
-
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        stage: UserLoginStage = self.executor.current_stage
-        if timedelta_from_string(stage.remember_me_offset).total_seconds() > 0:
-            return super().get(request, *args, **kwargs)
+            return super().dispatch(request)
         return self.do_login(request)
 
     def challenge_valid(self, response: UserLoginChallengeResponse) -> HttpResponse:

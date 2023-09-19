@@ -1,7 +1,7 @@
 import "@goauthentik/admin/events/RuleForm";
-import { SeverityToLabel } from "@goauthentik/admin/events/utils";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { severityToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -83,7 +83,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     row(item: NotificationRule): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${SeverityToLabel(item.severity)}`,
+            html`${severityToLabel(item.severity)}`,
             html`${item.groupObj
                 ? html`<a href="#/identity/groups/${item.groupObj.pk}">${item.groupObj.name}</a>`
                 : msg("None (rule disabled)")}`,

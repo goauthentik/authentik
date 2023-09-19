@@ -21,8 +21,9 @@ def view_tester_factory(view_class: type[StageView]) -> Callable:
 
     def tester(self: TestViews):
         model_class = view_class(self.exec)
-        self.assertIsNotNone(model_class.post)
-        self.assertIsNotNone(model_class.get)
+        if not hasattr(model_class, "dispatch"):
+            self.assertIsNotNone(model_class.post)
+            self.assertIsNotNone(model_class.get)
 
     return tester
 

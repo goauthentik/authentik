@@ -26,4 +26,11 @@ class Migration(migrations.Migration):
                 fields=["key"], name="authentik_e_key_523e13_hash"
             ),
         ),
+        migrations.AlterModelOptions(
+            name="licenseusage",
+            options={
+                "verbose_name": "License Usage",
+                "verbose_name_plural": "License Usage Records",
+            },
+        ),
     ]

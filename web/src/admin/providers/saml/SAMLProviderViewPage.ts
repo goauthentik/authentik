@@ -3,6 +3,7 @@ import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
+import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
@@ -10,7 +11,6 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { msg } from "@lit/localize";
