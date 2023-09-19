@@ -94,7 +94,7 @@ function Home() {
                         >
                             <img
                                 alt="authentik logo"
-                                src={useBaseUrl("img/landing_login_card.jpg")}
+                                src={useBaseUrl("img/landing_login_card.png")}
                             />
                         </div>
                     </div>

@@ -190,7 +190,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         self.set_uid(slugify(instance.name))
         blueprint_content = instance.retrieve()
         file_hash = sha512(blueprint_content.encode()).hexdigest()
-        importer = Importer(blueprint_content, instance.context)
+        importer = Importer.from_string(blueprint_content, instance.context)
         if importer.blueprint.metadata:
             instance.metadata = asdict(importer.blueprint.metadata)
         valid, logs = importer.validate()

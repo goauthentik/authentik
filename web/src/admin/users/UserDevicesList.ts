@@ -1,8 +1,8 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { deviceTypeName } from "@goauthentik/common/labels";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
-import { TableColumn } from "@goauthentik/elements/table/Table";
-import { MFADevicesPage, deviceTypeName } from "@goauthentik/user/user-settings/mfa/MFADevicesPage";
+import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -11,7 +11,7 @@ import { customElement, property } from "lit/decorators.js";
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
 
 @customElement("ak-user-device-list")
-export class UserDeviceList extends MFADevicesPage {
+export class UserDeviceList extends Table<Device> {
     @property({ type: Number })
     userId?: number;
 
@@ -36,39 +36,32 @@ export class UserDeviceList extends MFADevicesPage {
             });
     }
 
+    columns(): TableColumn[] {
+        // prettier-ignore
+        return [
+            msg("Name"),
+            msg("Type"),
+            msg("Confirmed")
+        ].map((th) => new TableColumn(th, ""));
+    }
+
     async deleteWrapper(device: Device) {
+        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
+        const id = { id: device.pk };
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAdminDuoDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsAdminDuoDestroy(id);
             case "authentik_stages_authenticator_sms.SMSDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAdminSmsDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsAdminSmsDestroy(id);
             case "authentik_stages_authenticator_totp.TOTPDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAdminTotpDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsAdminTotpDestroy(id);
             case "authentik_stages_authenticator_static.StaticDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAdminStaticDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsAdminStaticDestroy(id);
             case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsAdminWebauthnDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsAdminWebauthnDestroy(id);
             default:
                 break;
         }
-    }
-
-    columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), ""),
-            new TableColumn(msg("Type"), ""),
-            new TableColumn(msg("Confirmed"), ""),
-        ];
     }
 
     renderToolbar(): TemplateResult {

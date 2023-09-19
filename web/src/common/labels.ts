@@ -1,6 +1,6 @@
 import { msg } from "@lit/localize";
 
-import { EventActions, IntentEnum, SeverityEnum } from "@goauthentik/api";
+import { Device, EventActions, IntentEnum, SeverityEnum } from "@goauthentik/api";
 
 /* Various tables in the API for which we need to supply labels */
 
@@ -56,3 +56,12 @@ export const severityEnumToLabel = new Map<SeverityEnum | null | undefined, stri
 
 export const severityToLabel = (severity: SeverityEnum | null | undefined) =>
     severityEnumToLabel.get(severity) ?? msg("Unknown severity");
+
+// TODO: Add verbose_name field to now vendored OTP devices
+export const deviceTypeToLabel = new Map<string, string>([
+    ["authentik_stages_authenticator_static.StaticDevice", msg("Static tokens")],
+    ["authentik_stages_authenticator_totp.TOTPDevice", msg("TOTP Device")],
+]);
+
+export const deviceTypeName = (device: Device) =>
+    deviceTypeToLabel.get(device.type) ?? device?.verboseName ?? "";

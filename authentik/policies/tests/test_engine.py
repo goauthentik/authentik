@@ -97,6 +97,17 @@ class TestPolicyEngine(TestCase):
         self.assertEqual(result.passing, False)
         self.assertEqual(result.messages, ("division by zero",))
 
+    def test_engine_policy_error_failure(self):
+        """Test policy raising an error flag"""
+        pbm = PolicyBindingModel.objects.create()
+        PolicyBinding.objects.create(
+            target=pbm, policy=self.policy_raises, order=0, failure_result=True
+        )
+        engine = PolicyEngine(pbm, self.user)
+        result = engine.build().result
+        self.assertEqual(result.passing, True)
+        self.assertEqual(result.messages, ("division by zero",))
+
     def test_engine_policy_type(self):
         """Test invalid policy type"""
         pbm = PolicyBindingModel.objects.create()

@@ -12,6 +12,7 @@ from uuid import UUID
 from deepmerge import always_merger
 from django.apps import apps
 from django.db.models import Model, Q
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import Field
 from rest_framework.serializers import Serializer
 from yaml import SafeDumper, SafeLoader, ScalarNode, SequenceNode
@@ -52,6 +53,7 @@ class BlueprintEntryDesiredState(Enum):
     ABSENT = "absent"
     PRESENT = "present"
     CREATED = "created"
+    MUST_CREATED = "must_created"
 
 
 @dataclass
@@ -206,8 +208,8 @@ class KeyOf(YAMLTag):
                 ):
                     return _entry._state.instance.pbm_uuid
                 return _entry._state.instance.pk
-        raise EntryInvalidError(
-            f"KeyOf: failed to find entry with `id` of `{self.id_from}` and a model instance"
+        raise EntryInvalidError.from_entry(
+            f"KeyOf: failed to find entry with `id` of `{self.id_from}` and a model instance", entry
         )
 
 
@@ -278,7 +280,7 @@ class Format(YAMLTag):
         try:
             return self.format_string % tuple(args)
         except TypeError as exc:
-            raise EntryInvalidError(exc)
+            raise EntryInvalidError.from_entry(exc, entry)
 
 
 class Find(YAMLTag):
@@ -355,13 +357,15 @@ class Condition(YAMLTag):
                 args.append(arg)
 
         if not args:
-            raise EntryInvalidError("At least one value is required after mode selection.")
+            raise EntryInvalidError.from_entry(
+                "At least one value is required after mode selection.", entry
+            )
 
         try:
             comparator = self._COMPARATORS[self.mode.upper()]
             return comparator(tuple(bool(x) for x in args))
         except (TypeError, KeyError) as exc:
-            raise EntryInvalidError(exc)
+            raise EntryInvalidError.from_entry(exc, entry)
 
 
 class If(YAMLTag):
@@ -393,7 +397,7 @@ class If(YAMLTag):
                 blueprint,
             )
         except TypeError as exc:
-            raise EntryInvalidError(exc)
+            raise EntryInvalidError.from_entry(exc, entry)
 
 
 class Enumerate(YAMLTag, YAMLTagContext):
@@ -425,9 +429,10 @@ class Enumerate(YAMLTag, YAMLTagContext):
 
     def resolve(self, entry: BlueprintEntry, blueprint: Blueprint) -> Any:
         if isinstance(self.iterable, EnumeratedItem) and self.iterable.depth == 0:
-            raise EntryInvalidError(
+            raise EntryInvalidError.from_entry(
                 f"{self.__class__.__name__} tag's iterable references this tag's context. "
-                "This is a noop. Check you are setting depth bigger than 0."
+                "This is a noop. Check you are setting depth bigger than 0.",
+                entry,
             )
 
         if isinstance(self.iterable, YAMLTag):
@@ -436,9 +441,10 @@ class Enumerate(YAMLTag, YAMLTagContext):
             iterable = self.iterable
 
         if not isinstance(iterable, Iterable):
-            raise EntryInvalidError(
+            raise EntryInvalidError.from_entry(
                 f"{self.__class__.__name__}'s iterable must be an iterable "
-                "such as a sequence or a mapping"
+                "such as a sequence or a mapping",
+                entry,
             )
 
         if isinstance(iterable, Mapping):
@@ -449,7 +455,7 @@ class Enumerate(YAMLTag, YAMLTagContext):
         try:
             output_class, add_fn = self._OUTPUT_BODIES[self.output_body.upper()]
         except KeyError as exc:
-            raise EntryInvalidError(exc)
+            raise EntryInvalidError.from_entry(exc, entry)
 
         result = output_class()
 
@@ -461,8 +467,8 @@ class Enumerate(YAMLTag, YAMLTagContext):
                 resolved_body = entry.tag_resolver(self.item_body, blueprint)
                 result = add_fn(result, resolved_body)
                 if not isinstance(result, output_class):
-                    raise EntryInvalidError(
-                        f"Invalid {self.__class__.__name__} item found: {resolved_body}"
+                    raise EntryInvalidError.from_entry(
+                        f"Invalid {self.__class__.__name__} item found: {resolved_body}", entry
                     )
         finally:
             self.__current_context = tuple()
@@ -489,12 +495,13 @@ class EnumeratedItem(YAMLTag):
             )
         except ValueError as exc:
             if self.depth == 0:
-                raise EntryInvalidError(
+                raise EntryInvalidError.from_entry(
                     f"{self.__class__.__name__} tags are only usable "
-                    f"inside an {Enumerate.__name__} tag"
+                    f"inside an {Enumerate.__name__} tag",
+                    entry,
                 )
 
-            raise EntryInvalidError(f"{self.__class__.__name__} tag: {exc}")
+            raise EntryInvalidError.from_entry(f"{self.__class__.__name__} tag: {exc}", entry)
 
         return context_tag.get_context(entry, blueprint)
 
@@ -508,7 +515,7 @@ class Index(EnumeratedItem):
         try:
             return context[0]
         except IndexError:  # pragma: no cover
-            raise EntryInvalidError(f"Empty/invalid context: {context}")
+            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry)
 
 
 class Value(EnumeratedItem):
@@ -520,7 +527,7 @@ class Value(EnumeratedItem):
         try:
             return context[1]
         except IndexError:  # pragma: no cover
-            raise EntryInvalidError(f"Empty/invalid context: {context}")
+            raise EntryInvalidError.from_entry(f"Empty/invalid context: {context}", entry)
 
 
 class BlueprintDumper(SafeDumper):
@@ -574,8 +581,26 @@ class BlueprintLoader(SafeLoader):
 class EntryInvalidError(SentryIgnoredException):
     """Error raised when an entry is invalid"""
 
-    serializer_errors: Optional[dict]
+    entry_model: Optional[str]
+    entry_id: Optional[str]
+    validation_error: Optional[ValidationError]
 
-    def __init__(self, *args: object, serializer_errors: Optional[dict] = None) -> None:
+    def __init__(self, *args: object, validation_error: Optional[ValidationError] = None) -> None:
         super().__init__(*args)
-        self.serializer_errors = serializer_errors
+        self.entry_model = None
+        self.entry_id = None
+        self.validation_error = validation_error
+
+    @staticmethod
+    def from_entry(
+        msg_or_exc: str | Exception, entry: BlueprintEntry, *args, **kwargs
+    ) -> "EntryInvalidError":
+        """Create EntryInvalidError with the context of an entry"""
+        error = EntryInvalidError(msg_or_exc, *args, **kwargs)
+        if isinstance(msg_or_exc, ValidationError):
+            error.validation_error = msg_or_exc
+        # Make sure the model and id are strings, depending where the error happens
+        # they might still be YAMLTag instances
+        error.entry_model = str(entry.model)
+        error.entry_id = str(entry.id)
+        return error

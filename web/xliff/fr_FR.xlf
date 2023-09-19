@@ -153,10 +153,6 @@
         <source>Messages</source>
         <target>Messages</target>
       </trans-unit>
-      <trans-unit id="sd6edc7752cdf0ef5">
-        <source>New version available!</source>
-        <target>Une nouvelle version est disponible !</target>
-      </trans-unit>
       <trans-unit id="s0a5401d4419f9958">
         <source>Using source</source>
         <target>Utilisation de la source</target>
@@ -4046,15 +4042,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s9ea472b555374771">
         <source>Resident key requirement</source>
       </trans-unit>
-      <trans-unit id="s437ab6d95ca1ac78">
-        <source>The authenticator should not create a dedicated credential</source>
-      </trans-unit>
-      <trans-unit id="sf6d55598b52348a5">
-        <source>The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
-      </trans-unit>
-      <trans-unit id="s81356cab25498851">
-        <source>The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur</source>
-      </trans-unit>
       <trans-unit id="s5fbaeb14f42815e5">
         <source>Authenticator Attachment</source>
       </trans-unit>
@@ -5900,6 +5887,39 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s1a65ee08832fbfe2">
   <source>Flows and Stages</source>
+</trans-unit>
+<trans-unit id="s4ba4473f3d4ec896">
+  <source>New version available</source>
+</trans-unit>
+<trans-unit id="s6b1ed7507f26cb4a">
+  <source>Failure result</source>
+</trans-unit>
+<trans-unit id="s2e422519ed38f7d8">
+  <source>Pass</source>
+</trans-unit>
+<trans-unit id="s81a45c4fd11e8e1a">
+  <source>Don't pass</source>
+</trans-unit>
+<trans-unit id="s95b73e0f4e47eb9a">
+  <source>Result used when policy execution fails.</source>
+</trans-unit>
+<trans-unit id="s6a3cf855140b9511">
+  <source>Required: User verification must occur.</source>
+</trans-unit>
+<trans-unit id="sc498a3b05cfe2b08">
+  <source>Preferred: User verification is preferred if available, but not required.</source>
+</trans-unit>
+<trans-unit id="s9d2239d2b0402795">
+  <source>Discouraged: User verification should not occur.</source>
+</trans-unit>
+<trans-unit id="s428b7859907f6db2">
+  <source>Required: The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur</source>
+</trans-unit>
+<trans-unit id="s33e3766d4a02b042">
+  <source>Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
+</trans-unit>
+<trans-unit id="sfb852dd507c25c24">
+  <source>Discouraged: The authenticator should not create a dedicated credential</source>
 </trans-unit>
     </body>
   </file>

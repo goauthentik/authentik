@@ -98,8 +98,8 @@ class PolicyProcess(PROCESS_CLASS):
             # Create policy exception event, only when we're not debugging
             if not self.request.debug:
                 self.create_event(EventAction.POLICY_EXCEPTION, message=error_string)
-            LOGGER.debug("P_ENG(proc): error", exc=src_exc)
-            policy_result = PolicyResult(False, str(src_exc))
+            LOGGER.debug("P_ENG(proc): error, using failure result", exc=src_exc)
+            policy_result = PolicyResult(self.binding.failure_result, str(src_exc))
         policy_result.source_binding = self.binding
         should_cache = self.request.should_cache
         if should_cache:

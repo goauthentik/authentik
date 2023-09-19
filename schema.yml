@@ -4349,6 +4349,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /core/transactional/applications/:
+    put:
+      operationId: core_transactional_applications_update
+      description: Convert data into a blueprint, validate it and apply it
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransactionApplicationRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransactionApplicationResponse'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /core/user_consent/:
     get:
       operationId: core_user_consent_list
@@ -35954,8 +35987,11 @@ components:
         timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
           description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
     PatchedPromptRequest:
       type: object
       description: Prompt Serializer
@@ -37046,8 +37082,11 @@ components:
         timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
           description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
       required:
       - group_obj
       - order
@@ -37085,8 +37124,11 @@ components:
         timeout:
           type: integer
           maximum: 2147483647
-          minimum: -2147483648
+          minimum: 0
           description: Timeout after which Policy execution is terminated.
+        failure_result:
+          type: boolean
+          description: Result if the Policy execution fails.
       required:
       - order
       - target
@@ -37534,6 +37576,22 @@ components:
       description: |-
         * `twilio` - Twilio
         * `generic` - Generic
+    ProviderModelEnum:
+      enum:
+      - authentik_providers_ldap.ldapprovider
+      - authentik_providers_oauth2.oauth2provider
+      - authentik_providers_proxy.proxyprovider
+      - authentik_providers_radius.radiusprovider
+      - authentik_providers_saml.samlprovider
+      - authentik_providers_scim.scimprovider
+      type: string
+      description: |-
+        * `authentik_providers_ldap.ldapprovider` - authentik_providers_ldap.ldapprovider
+        * `authentik_providers_oauth2.oauth2provider` - authentik_providers_oauth2.oauth2provider
+        * `authentik_providers_proxy.proxyprovider` - authentik_providers_proxy.proxyprovider
+        * `authentik_providers_radius.radiusprovider` - authentik_providers_radius.radiusprovider
+        * `authentik_providers_saml.samlprovider` - authentik_providers_saml.samlprovider
+        * `authentik_providers_scim.scimprovider` - authentik_providers_scim.scimprovider
     ProviderRequest:
       type: object
       description: Provider Serializer
@@ -39944,6 +40002,33 @@ components:
           readOnly: true
       required:
       - key
+    TransactionApplicationRequest:
+      type: object
+      description: Serializer for creating a provider and an application in one transaction
+      properties:
+        app:
+          $ref: '#/components/schemas/ApplicationRequest'
+        provider_model:
+          $ref: '#/components/schemas/ProviderModelEnum'
+        provider:
+          $ref: '#/components/schemas/modelRequest'
+      required:
+      - app
+      - provider
+      - provider_model
+    TransactionApplicationResponse:
+      type: object
+      description: Transactional creation response
+      properties:
+        applied:
+          type: boolean
+        logs:
+          type: array
+          items:
+            type: string
+      required:
+      - applied
+      - logs
     TypeCreate:
       type: object
       description: Types of an object that can be created
@@ -40871,6 +40956,23 @@ components:
           type: integer
       required:
       - count
+    modelRequest:
+      oneOf:
+      - $ref: '#/components/schemas/LDAPProviderRequest'
+      - $ref: '#/components/schemas/OAuth2ProviderRequest'
+      - $ref: '#/components/schemas/ProxyProviderRequest'
+      - $ref: '#/components/schemas/RadiusProviderRequest'
+      - $ref: '#/components/schemas/SAMLProviderRequest'
+      - $ref: '#/components/schemas/SCIMProviderRequest'
+      discriminator:
+        propertyName: provider_model
+        mapping:
+          authentik_providers_ldap.ldapprovider: '#/components/schemas/LDAPProviderRequest'
+          authentik_providers_oauth2.oauth2provider: '#/components/schemas/OAuth2ProviderRequest'
+          authentik_providers_proxy.proxyprovider: '#/components/schemas/ProxyProviderRequest'
+          authentik_providers_radius.radiusprovider: '#/components/schemas/RadiusProviderRequest'
+          authentik_providers_saml.samlprovider: '#/components/schemas/SAMLProviderRequest'
+          authentik_providers_scim.scimprovider: '#/components/schemas/SCIMProviderRequest'
   securitySchemes:
     authentik:
       type: apiKey

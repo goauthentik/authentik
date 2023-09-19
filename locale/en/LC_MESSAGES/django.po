@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-02 15:45+0000\n"
+"POT-Creation-Date: 2023-09-15 09:51+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -220,29 +220,29 @@ msgstr ""
 msgid "Authenticated Sessions"
 msgstr ""
 
-#: authentik/core/sources/flow_manager.py:193
+#: authentik/core/sources/flow_manager.py:189
 #, python-format
 msgid ""
 "Request to authenticate with %(source)s has been denied. Please authenticate "
 "with the source you've previously signed up with."
 msgstr ""
 
-#: authentik/core/sources/flow_manager.py:245
+#: authentik/core/sources/flow_manager.py:241
 msgid "Configured flow does not exist."
 msgstr ""
 
-#: authentik/core/sources/flow_manager.py:275
-#: authentik/core/sources/flow_manager.py:327
+#: authentik/core/sources/flow_manager.py:271
+#: authentik/core/sources/flow_manager.py:323
 #, python-format
 msgid "Successfully authenticated with %(source)s!"
 msgstr ""
 
-#: authentik/core/sources/flow_manager.py:299
+#: authentik/core/sources/flow_manager.py:295
 #, python-format
 msgid "Successfully linked %(source)s!"
 msgstr ""
 
-#: authentik/core/sources/flow_manager.py:318
+#: authentik/core/sources/flow_manager.py:314
 msgid "Source is not configured for enrollment."
 msgstr ""
 
@@ -756,25 +756,29 @@ msgstr ""
 msgid "Timeout after which Policy execution is terminated."
 msgstr ""
 
-#: authentik/policies/models.py:142
+#: authentik/policies/models.py:92
+msgid "Result if the Policy execution fails."
+msgstr ""
+
+#: authentik/policies/models.py:145
 msgid "Policy Binding"
 msgstr ""
 
-#: authentik/policies/models.py:143
+#: authentik/policies/models.py:146
 msgid "Policy Bindings"
 msgstr ""
 
-#: authentik/policies/models.py:164
+#: authentik/policies/models.py:167
 msgid ""
 "When this option is enabled, all executions of this policy will be logged. "
 "By default, only execution errors are logged."
 msgstr ""
 
-#: authentik/policies/models.py:186
+#: authentik/policies/models.py:189
 msgid "Policy"
 msgstr ""
 
-#: authentik/policies/models.py:187
+#: authentik/policies/models.py:190
 msgid "Policies"
 msgstr ""
 
@@ -810,6 +814,10 @@ msgstr ""
 
 #: authentik/policies/password/models.py:163
 msgid "Password Policies"
+msgstr ""
+
+#: authentik/policies/reputation/api.py:18
+msgid "Either IP or Username must be checked"
 msgstr ""
 
 #: authentik/policies/reputation/models.py:67
@@ -1878,8 +1886,8 @@ msgid "SMS Devices"
 msgstr ""
 
 #: authentik/stages/authenticator_sms/stage.py:55
-#: authentik/stages/authenticator_totp/stage.py:42
-#: authentik/stages/authenticator_totp/stage.py:45
+#: authentik/stages/authenticator_totp/stage.py:41
+#: authentik/stages/authenticator_totp/stage.py:44
 msgid "Code does not match"
 msgstr ""
 
@@ -1887,28 +1895,44 @@ msgstr ""
 msgid "Invalid phone number"
 msgstr ""
 
-#: authentik/stages/authenticator_static/models.py:47
+#: authentik/stages/authenticator_static/models.py:52
 msgid "Static Authenticator Stage"
 msgstr ""
 
-#: authentik/stages/authenticator_static/models.py:48
+#: authentik/stages/authenticator_static/models.py:53
 msgid "Static Authenticator Stages"
 msgstr ""
 
-#: authentik/stages/authenticator_totp/models.py:16
+#: authentik/stages/authenticator_static/models.py:98
+msgid "Static device"
+msgstr ""
+
+#: authentik/stages/authenticator_static/models.py:99
+msgid "Static devices"
+msgstr ""
+
+#: authentik/stages/authenticator_totp/models.py:25
 msgid "6 digits, widely compatible"
 msgstr ""
 
-#: authentik/stages/authenticator_totp/models.py:17
+#: authentik/stages/authenticator_totp/models.py:26
 msgid "8 digits, not compatible with apps like Google Authenticator"
 msgstr ""
 
-#: authentik/stages/authenticator_totp/models.py:53
+#: authentik/stages/authenticator_totp/models.py:62
 msgid "TOTP Authenticator Setup Stage"
 msgstr ""
 
-#: authentik/stages/authenticator_totp/models.py:54
+#: authentik/stages/authenticator_totp/models.py:63
 msgid "TOTP Authenticator Setup Stages"
+msgstr ""
+
+#: authentik/stages/authenticator_totp/models.py:244
+msgid "TOTP device"
+msgstr ""
+
+#: authentik/stages/authenticator_totp/models.py:245
+msgid "TOTP devices"
 msgstr ""
 
 #: authentik/stages/authenticator_validate/challenge.py:131
@@ -2237,7 +2261,7 @@ msgstr ""
 msgid "Invitations"
 msgstr ""
 
-#: authentik/stages/invitation/stage.py:66
+#: authentik/stages/invitation/stage.py:62
 msgid "Invalid invite/invite not found"
 msgstr ""
 
@@ -2271,7 +2295,7 @@ msgstr ""
 msgid "Password Stages"
 msgstr ""
 
-#: authentik/stages/password/stage.py:159
+#: authentik/stages/password/stage.py:124
 msgid "Invalid password"
 msgstr ""
 
@@ -2383,7 +2407,7 @@ msgstr ""
 msgid "User Delete Stages"
 msgstr ""
 
-#: authentik/stages/user_delete/stage.py:22
+#: authentik/stages/user_delete/stage.py:18
 msgid "No Pending User."
 msgstr ""
 
@@ -2412,11 +2436,11 @@ msgstr ""
 msgid "User Login Stages"
 msgstr ""
 
-#: authentik/stages/user_login/stage.py:63
+#: authentik/stages/user_login/stage.py:57
 msgid "No Pending user to login."
 msgstr ""
 
-#: authentik/stages/user_login/stage.py:96
+#: authentik/stages/user_login/stage.py:90
 msgid "Successfully logged in!"
 msgstr ""
 
@@ -2444,16 +2468,16 @@ msgstr ""
 msgid "User Write Stages"
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:134
+#: authentik/stages/user_write/stage.py:130
 msgid "No Pending data."
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:140
+#: authentik/stages/user_write/stage.py:136
 msgid "No user found and can't create new user."
 msgstr ""
 
-#: authentik/stages/user_write/stage.py:157
-#: authentik/stages/user_write/stage.py:171
+#: authentik/stages/user_write/stage.py:153
+#: authentik/stages/user_write/stage.py:167
 msgid "Failed to update user. Please try again later."
 msgstr ""
 
