@@ -144,9 +144,13 @@ class TestConfig(TestCase):
 
     def test_attr_json_encoder_no_attr(self):
         """Test AttrEncoder if no Attr is passed"""
-        test_str = "foo"
-        json_str = dumps(test_str, indent=4, cls=AttrEncoder)
-        self.assertEqual(json_str, '"foo"')
+
+        class Test:
+            pass
+
+        with self.assertRaises(TypeError):
+            test_obj = Test()
+            dumps(test_obj, indent=4, cls=AttrEncoder)
 
     @mock.patch.dict(environ, check_deprecations_env_vars)
     def test_check_deprecations(self):
