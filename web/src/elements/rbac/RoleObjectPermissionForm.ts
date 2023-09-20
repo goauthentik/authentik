@@ -11,21 +11,21 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import {
     CoreApi,
-    CoreUsersListRequest,
+    CoreRolesListRequest,
     ModelEnum,
     PaginatedPermissionList,
-    User,
+    Role,
 } from "@goauthentik/api";
 
-interface UserAssignData {
-    user: number;
+interface RoleAssignData {
+    role: string;
     permissions: {
         [key: string]: boolean;
     };
 }
 
-@customElement("ak-rbac-user-object-permission-form")
-export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> {
+@customElement("ak-rbac-role-object-permission-form")
+export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> {
     @property()
     model?: ModelEnum;
 
@@ -44,7 +44,7 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         });
     }
 
-    loadInstance(): Promise<UserAssignData> {
+    loadInstance(): Promise<RoleAssignData> {
         throw new Error("Method not implemented.");
     }
 
@@ -52,9 +52,9 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
         return msg("Successfully assigned permission.");
     }
 
-    send(data: UserAssignData): Promise<unknown> {
-        return new CoreApi(DEFAULT_CONFIG).coreRbacUserAssignCreate({
-            id: data.user,
+    send(data: RoleAssignData): Promise<unknown> {
+        return new CoreApi(DEFAULT_CONFIG).coreRbacRoleAssignCreate({
+            uuid: data.role,
             permissionAssignRequest: {
                 permissions: Object.keys(data.permissions).filter((key) => data.permissions[key]),
                 model: this.model!,
@@ -68,26 +68,23 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
             return html``;
         }
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("User")} name="user">
+            <ak-form-element-horizontal label=${msg("Role")} name="role">
                 <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<User[]> => {
-                        const args: CoreUsersListRequest = {
-                            ordering: "username",
+                    .fetchObjects=${async (query?: string): Promise<Role[]> => {
+                        const args: CoreRolesListRequest = {
+                            ordering: "name",
                         };
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList(args);
-                        return users.results;
+                        const roles = await new CoreApi(DEFAULT_CONFIG).coreRolesList(args);
+                        return roles.results;
                     }}
-                    .renderElement=${(user: User): string => {
-                        return user.username;
+                    .renderElement=${(role: Role): string => {
+                        return role.name;
                     }}
-                    .renderDescription=${(user: User): TemplateResult => {
-                        return html`${user.name}`;
-                    }}
-                    .value=${(user: User | undefined): number | undefined => {
-                        return user?.pk;
+                    .value=${(role: Role | undefined): string | undefined => {
+                        return role?.pk;
                     }}
                 >
                 </ak-search-select>

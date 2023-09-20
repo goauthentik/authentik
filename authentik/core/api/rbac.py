@@ -1,9 +1,12 @@
 """common RBAC serializers"""
 from django.contrib.auth.models import Permission
 from guardian.models import GroupObjectPermission, UserObjectPermission
-from rest_framework.fields import ReadOnlyField
+from rest_framework.fields import CharField, ChoiceField, ListField, ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
+
+from authentik.core.api.utils import PassiveSerializer
+from authentik.policies.event_matcher.models import model_choices
 
 
 class PermissionSerializer(ModelSerializer):
@@ -42,3 +45,9 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
     serializer_class = PermissionSerializer
     ordering = ["name"]
     filterset_fields = ["codename", "content_type__model", "content_type__app_label"]
+
+
+class PermissionAssignSerializer(PassiveSerializer):
+    permissions = ListField(child=CharField())
+    model = ChoiceField(choices=model_choices())
+    object_pk = CharField()

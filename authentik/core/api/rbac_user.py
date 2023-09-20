@@ -7,15 +7,14 @@ from django_filters.filterset import FilterSet
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.shortcuts import assign_perm
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField, CharField, ChoiceField, ListField
+from rest_framework.fields import BooleanField
 from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import GroupMemberSerializer
-from authentik.core.api.rbac import UserObjectPermissionSerializer
-from authentik.core.api.utils import PassiveSerializer
+from authentik.core.api.rbac import PermissionAssignSerializer, UserObjectPermissionSerializer
 from authentik.core.models import User
 from authentik.policies.event_matcher.models import model_choices
 
@@ -53,12 +52,6 @@ class AssignedPermissionFilter(FilterSet):
         ).distinct()
 
 
-class UserAssignSerializer(PassiveSerializer):
-    permissions = ListField(child=CharField())
-    model = ChoiceField(choices=model_choices())
-    object_pk = CharField()
-
-
 class UserAssignedPermissionViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
     """Get assigned object permissions for a single object"""
 
@@ -69,7 +62,7 @@ class UserAssignedPermissionViewSet(CreateModelMixin, ListModelMixin, GenericVie
     filterset_class = AssignedPermissionFilter
 
     @extend_schema(
-        request=UserAssignSerializer(),
+        request=PermissionAssignSerializer(),
         responses={
             204: OpenApiResponse(description="Successfully assigned"),
         },
@@ -78,7 +71,7 @@ class UserAssignedPermissionViewSet(CreateModelMixin, ListModelMixin, GenericVie
     def assign(self, request: Request, *args, **kwargs) -> Response:
         """Assign permission(s) to user"""
         user = self.get_object()
-        data = UserAssignSerializer(data=request.data)
+        data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
         model = apps.get_model(data.validated_data["model"])
         model_instance = model.objects.filter(pk=data.validated_data["object_pk"])

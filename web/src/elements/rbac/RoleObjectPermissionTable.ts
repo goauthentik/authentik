@@ -1,10 +1,13 @@
 import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/app/elements/table/Table";
+import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/RoleObjectPermissionForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
     CoreApi,
@@ -47,6 +50,22 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             baseColumns.push(new TableColumn(perm.name, perm.codename));
         });
         return baseColumns;
+    }
+
+    renderObjectCreate(): TemplateResult {
+        return html`<ak-forms-modal>
+            <span slot="submit"> ${msg("Assign")} </span>
+            <span slot="header"> ${msg("Assign permission to role")} </span>
+            <ak-rbac-role-object-permission-form
+                model=${ifDefined(this.model)}
+                objectPk=${ifDefined(this.objectPk)}
+                slot="form"
+            >
+            </ak-rbac-role-object-permission-form>
+            <button slot="trigger" class="pf-c-button pf-m-primary">
+                ${msg("Assign to new role")}
+            </button>
+        </ak-forms-modal>`;
     }
 
     row(item: RoleAssignedObjectPermission): TemplateResult[] {

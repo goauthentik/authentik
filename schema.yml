@@ -3933,6 +3933,43 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /core/rbac/role/{uuid}/assign/:
+    post:
+      operationId: core_rbac_role_assign_create
+      description: Assign permission(s) to role
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this role.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PermissionAssignRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully assigned
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /core/rbac/user/:
     get:
       operationId: core_rbac_user_list
@@ -4189,7 +4226,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserAssignRequest'
+              $ref: '#/components/schemas/PermissionAssignRequest'
         required: true
       security:
       - authentik: []
@@ -37130,6 +37167,7 @@ components:
         name:
           type: string
           minLength: 1
+          maxLength: 150
     PatchedSAMLPropertyMappingRequest:
       type: object
       description: SAMLPropertyMapping Serializer
@@ -37699,6 +37737,24 @@ components:
       - id
       - model
       - name
+    PermissionAssignRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        permissions:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        model:
+          $ref: '#/components/schemas/ModelEnum'
+        object_pk:
+          type: string
+          minLength: 1
+      required:
+      - model
+      - object_pk
+      - permissions
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
@@ -39237,48 +39293,24 @@ components:
           title: Uuid
         name:
           type: string
+          maxLength: 150
       required:
       - name
       - pk
     RoleAssignedObjectPermission:
       type: object
-      description: Simplified Group Serializer for user's groups
+      description: Base serializer class which doesn't implement create/update methods
       properties:
-        pk:
-          type: string
-          format: uuid
-          readOnly: true
-          title: Group uuid
-        num_pk:
-          type: integer
-          description: Get a numerical, int32 ID for the group
-          readOnly: true
         name:
           type: string
-          maxLength: 80
-        is_superuser:
-          type: boolean
-          description: Users added to this group will be superusers.
-        parent:
-          type: string
-          format: uuid
-          nullable: true
-        parent_name:
-          type: string
           readOnly: true
-        attributes:
-          type: object
-          additionalProperties: {}
         permissions:
           type: array
           items:
             $ref: '#/components/schemas/GroupObjectPermission'
       required:
       - name
-      - num_pk
-      - parent_name
       - permissions
-      - pk
     RoleRequest:
       type: object
       description: Role serializer
@@ -39286,6 +39318,7 @@ components:
         name:
           type: string
           minLength: 1
+          maxLength: 150
       required:
       - name
     SAMLMetadata:
@@ -41184,24 +41217,6 @@ components:
           type: integer
       required:
       - pk
-    UserAssignRequest:
-      type: object
-      description: Base serializer class which doesn't implement create/update methods
-      properties:
-        permissions:
-          type: array
-          items:
-            type: string
-            minLength: 1
-        model:
-          $ref: '#/components/schemas/ModelEnum'
-        object_pk:
-          type: string
-          minLength: 1
-      required:
-      - model
-      - object_pk
-      - permissions
     UserAssignedObjectPermission:
       type: object
       description: Stripped down user serializer to show relevant users for groups
