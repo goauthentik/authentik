@@ -44,12 +44,12 @@ class AssignedPermissionFilter(FilterSet):
                 userobjectpermission__permission__content_type__model=model,
             )
             | Q(ak_groups__is_superuser=True)
-        )
+        ).distinct()
 
     def filter_object_pk(self, queryset: QuerySet, name, value: str) -> QuerySet:
         return queryset.filter(
             Q(userobjectpermission__object_pk=value) | Q(ak_groups__is_superuser=True),
-        )
+        ).distinct()
 
 
 class UserAssignSerializer(PassiveSerializer):
@@ -68,9 +68,12 @@ class UserAssignedPermissionViewSet(CreateModelMixin, ListModelMixin, GenericVie
     filterset_class = AssignedPermissionFilter
 
     @extend_schema(
-        request=UserAssignSerializer()
+        request=UserAssignSerializer(),
+        responses={
+            204: OpenApiResponse(description="Successfully assigned"),
+        }
     )
-    @action(methods=["POST"], detail=True)
+    @action(methods=["POST"], detail=True, pagination_class=None, filter_backends=[])
     def assign(self, request: Request, *args, **kwargs) -> Response:
         """Assign permission(s) to user"""
         user = self.get_object()
@@ -81,4 +84,4 @@ class UserAssignedPermissionViewSet(CreateModelMixin, ListModelMixin, GenericVie
         with atomic():
             for perm in data.validated_data["permissions"]:
                 assign_perm(perm, user, model_instance)
-        return Response(status=200)
+        return Response(status=204)

@@ -4194,12 +4194,8 @@ paths:
       security:
       - authentik: []
       responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserAssignedObjectPermission'
-          description: ''
+        '204':
+          description: Successfully assigned
         '400':
           content:
             application/json:
