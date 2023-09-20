@@ -19,6 +19,8 @@ from rest_framework.fields import ChoiceField, ListField, CharField
 from guardian.shortcuts import assign_perm
 from django.db.transaction import atomic
 from django.apps import apps
+
+
 class UserAssignedObjectPermissionSerializer(GroupMemberSerializer):
     permissions = UserObjectPermissionSerializer(many=True, source="userobjectpermission_set")
     is_superuser = BooleanField()
@@ -53,10 +55,10 @@ class AssignedPermissionFilter(FilterSet):
 
 
 class UserAssignSerializer(PassiveSerializer):
-
     permissions = ListField(child=CharField())
     model = ChoiceField(choices=model_choices())
     object_pk = CharField()
+
 
 class UserAssignedPermissionViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
     """Get assigned object permissions for a single object"""
@@ -71,7 +73,7 @@ class UserAssignedPermissionViewSet(CreateModelMixin, ListModelMixin, GenericVie
         request=UserAssignSerializer(),
         responses={
             204: OpenApiResponse(description="Successfully assigned"),
-        }
+        },
     )
     @action(methods=["POST"], detail=True, pagination_class=None, filter_backends=[])
     def assign(self, request: Request, *args, **kwargs) -> Response:

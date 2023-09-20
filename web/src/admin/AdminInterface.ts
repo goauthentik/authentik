@@ -211,6 +211,7 @@ export class AdminInterface extends Interface {
             [null, msg("Directory"), null, [
                 ["/identity/users", msg("Users"), [`^/identity/users/(?<id>${ID_REGEX})$`]],
                 ["/identity/groups", msg("Groups"), [`^/identity/groups/(?<id>${UUID_REGEX})$`]],
+                ["/identity/roles", msg("Roles")],
                 ["/core/sources", msg("Federation and Social login"), [`^/core/sources/(?<slug>${SLUG_REGEX})$`]],
                 ["/core/tokens", msg("Tokens and App passwords")],
                 ["/flow/stages/invitations", msg("Invitations")]]],

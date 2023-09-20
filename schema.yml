@@ -4210,14 +4210,44 @@ paths:
           description: ''
   /core/roles/:
     get:
-      operationId: core_roles_retrieve
+      operationId: core_roles_list
+      description: Role viewset
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
       tags:
       - core
       security:
       - authentik: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRoleList'
+          description: ''
         '400':
           content:
             application/json:
@@ -4232,13 +4262,24 @@ paths:
           description: ''
     post:
       operationId: core_roles_create
+      description: Role viewset
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleRequest'
+        required: true
       security:
       - authentik: []
       responses:
         '201':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
         '400':
           content:
             application/json:
@@ -4253,7 +4294,8 @@ paths:
           description: ''
   /core/roles/{uuid}/:
     get:
-      operationId: core_roles_retrieve_2
+      operationId: core_roles_retrieve
+      description: Role viewset
       parameters:
       - in: path
         name: uuid
@@ -4268,7 +4310,11 @@ paths:
       - authentik: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
         '400':
           content:
             application/json:
@@ -4283,6 +4329,7 @@ paths:
           description: ''
     put:
       operationId: core_roles_update
+      description: Role viewset
       parameters:
       - in: path
         name: uuid
@@ -4293,11 +4340,21 @@ paths:
         required: true
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RoleRequest'
+        required: true
       security:
       - authentik: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
         '400':
           content:
             application/json:
@@ -4312,6 +4369,7 @@ paths:
           description: ''
     patch:
       operationId: core_roles_partial_update
+      description: Role viewset
       parameters:
       - in: path
         name: uuid
@@ -4322,11 +4380,20 @@ paths:
         required: true
       tags:
       - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRoleRequest'
       security:
       - authentik: []
       responses:
         '200':
-          description: No response body
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+          description: ''
         '400':
           content:
             application/json:
@@ -4341,6 +4408,7 @@ paths:
           description: ''
     delete:
       operationId: core_roles_destroy
+      description: Role viewset
       parameters:
       - in: path
         name: uuid
@@ -4356,6 +4424,43 @@ paths:
       responses:
         '204':
           description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/roles/{uuid}/used_by/:
+    get:
+      operationId: core_roles_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this role.
+        required: true
+      tags:
+      - core
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
         '400':
           content:
             application/json:
@@ -34520,6 +34625,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedRoleList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+      required:
+      - pagination
+      - results
     PaginatedSAMLPropertyMappingList:
       type: object
       properties:
@@ -37006,6 +37123,13 @@ components:
           type: integer
           maximum: 2147483647
           minimum: -2147483648
+    PatchedRoleRequest:
+      type: object
+      description: Role serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
     PatchedSAMLPropertyMappingRequest:
       type: object
       description: SAMLPropertyMapping Serializer
@@ -39102,6 +39226,20 @@ components:
         * `discouraged` - Discouraged
         * `preferred` - Preferred
         * `required` - Required
+    Role:
+      type: object
+      description: Role serializer
+      properties:
+        pk:
+          type: string
+          format: uuid
+          readOnly: true
+          title: Uuid
+        name:
+          type: string
+      required:
+      - name
+      - pk
     RoleAssignedObjectPermission:
       type: object
       description: Simplified Group Serializer for user's groups
@@ -39141,6 +39279,15 @@ components:
       - parent_name
       - permissions
       - pk
+    RoleRequest:
+      type: object
+      description: Role serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+      required:
+      - name
     SAMLMetadata:
       type: object
       description: SAML Provider Metadata serializer
