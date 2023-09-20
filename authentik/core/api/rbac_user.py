@@ -1,24 +1,23 @@
 """common RBAC serializers"""
+from django.apps import apps
 from django.db.models import Q, QuerySet
+from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
 from django_filters.filterset import FilterSet
-from rest_framework.fields import BooleanField
-from rest_framework.mixins import ListModelMixin, CreateModelMixin
-from rest_framework.viewsets import GenericViewSet
+from drf_spectacular.utils import OpenApiResponse, extend_schema
+from guardian.shortcuts import assign_perm
+from rest_framework.decorators import action
+from rest_framework.fields import BooleanField, CharField, ChoiceField, ListField
+from rest_framework.mixins import CreateModelMixin, ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.api.rbac import UserObjectPermissionSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import User
 from authentik.policies.event_matcher.models import model_choices
-from rest_framework.decorators import action
-from drf_spectacular.utils import OpenApiParameter, OpenApiResponse, extend_schema
-from drf_spectacular.types import OpenApiTypes
-from rest_framework.fields import ChoiceField, ListField, CharField
-from guardian.shortcuts import assign_perm
-from django.db.transaction import atomic
-from django.apps import apps
 
 
 class UserAssignedObjectPermissionSerializer(GroupMemberSerializer):

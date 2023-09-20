@@ -1,4 +1,5 @@
 """common RBAC serializers"""
+from django.contrib.auth.models import Group
 from django.db.models import Q, QuerySet
 from django_filters.filters import CharFilter, ChoiceFilter
 from django_filters.filterset import FilterSet
@@ -6,7 +7,6 @@ from rest_framework.mixins import ListModelMixin
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.rbac import GroupObjectPermissionSerializer
-from django.contrib.auth.models import Group
 from authentik.core.api.users import UserGroupSerializer
 from authentik.policies.event_matcher.models import model_choices
 
@@ -37,9 +37,7 @@ class AssignedPermissionFilter(FilterSet):
         )
 
     def filter_object_pk(self, queryset: QuerySet, name, value: str) -> QuerySet:
-        return queryset.filter(
-            Q(groupobjectpermission__object_pk=value)
-        )
+        return queryset.filter(Q(groupobjectpermission__object_pk=value))
 
 
 class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
