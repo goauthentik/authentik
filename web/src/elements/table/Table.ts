@@ -249,13 +249,17 @@ export abstract class Table<T> extends AKElement {
                     <div class="pf-l-bullseye">
                         ${inner
                             ? inner
-                            : html`<ak-empty-state
-                                  header="${msg("No objects found.")}"
-                              ></ak-empty-state>`}
+                            : html`<ak-empty-state header="${msg("No objects found.")}"
+                                  ><div slot="primary">${this.renderObjectCreate()}</div>
+                              </ak-empty-state>`}
                     </div>
                 </td>
             </tr>
         </tbody>`;
+    }
+
+    renderObjectCreate(): TemplateResult {
+        return html``;
     }
 
     renderError(): TemplateResult {
@@ -397,14 +401,15 @@ export abstract class Table<T> extends AKElement {
     }
 
     renderToolbar(): TemplateResult {
-        return html` <ak-spinner-button
-            .callAction=${() => {
-                return this.fetch();
-            }}
-            class="pf-m-secondary"
-        >
-            ${msg("Refresh")}</ak-spinner-button
-        >`;
+        return html` ${this.renderObjectCreate()}
+            <ak-spinner-button
+                .callAction=${() => {
+                    return this.fetch();
+                }}
+                class="pf-m-secondary"
+            >
+                ${msg("Refresh")}</ak-spinner-button
+            >`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -419,18 +424,20 @@ export abstract class Table<T> extends AKElement {
         if (!this.searchEnabled()) {
             return html``;
         }
-        return html`<ak-table-search
-            class="pf-c-toolbar__item pf-m-search-filter"
-            value=${ifDefined(this.search)}
-            .onSearch=${(value: string) => {
-                this.search = value;
-                this.fetch();
-                updateURLParams({
-                    search: value,
-                });
-            }}
-        >
-        </ak-table-search>`;
+        return html`<div class="pf-c-toolbar__group pf-m-search-filter">
+            <ak-table-search
+                class="pf-c-toolbar__item pf-m-search-filter"
+                value=${ifDefined(this.search)}
+                .onSearch=${(value: string) => {
+                    this.search = value;
+                    this.fetch();
+                    updateURLParams({
+                        search: value,
+                    });
+                }}
+            >
+            </ak-table-search>
+        </div>`;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -441,7 +448,7 @@ export abstract class Table<T> extends AKElement {
     renderToolbarContainer(): TemplateResult {
         return html`<div class="pf-c-toolbar">
             <div class="pf-c-toolbar__content">
-                <div class="pf-c-toolbar__group pf-m-search-filter">${this.renderSearch()}</div>
+                ${this.renderSearch()}
                 <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
                 <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
                 <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>
