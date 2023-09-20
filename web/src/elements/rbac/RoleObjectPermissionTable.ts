@@ -10,11 +10,11 @@ import {
     CoreApi,
     CoreRbacUserListModelEnum,
     PaginatedPermissionList,
-    UserAssignedObjectPermission,
+    RoleAssignedObjectPermission,
 } from "@goauthentik/api";
 
-@customElement("ak-rbac-user-object-permission-table")
-export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectPermission> {
+@customElement("ak-rbac-role-object-permission-table")
+export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
     @property()
     model?: CoreRbacUserListModelEnum;
 
@@ -24,8 +24,8 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
     @state()
     modelPermissions?: PaginatedPermissionList;
 
-    async apiEndpoint(page: number): Promise<PaginatedResponse<UserAssignedObjectPermission>> {
-        const perms = await new CoreApi(DEFAULT_CONFIG).coreRbacUserList({
+    async apiEndpoint(page: number): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
+        const perms = await new CoreApi(DEFAULT_CONFIG).coreRbacRoleList({
             page: page,
             // TODO: better default
             model: this.model || CoreRbacUserListModelEnum.CoreUser,
@@ -49,8 +49,8 @@ export class UserAssignedObjectPermissionTable extends Table<UserAssignedObjectP
         return baseColumns;
     }
 
-    row(item: UserAssignedObjectPermission): TemplateResult[] {
-        const baseRow = [html` <a href="#/identity/users/${item.pk}"> ${item.username} </a> `];
+    row(item: RoleAssignedObjectPermission): TemplateResult[] {
+        const baseRow = [html` <a href="#/identity/users/"> ${item.name} </a> `];
         this.modelPermissions?.results.forEach((perm) => {
             let cell = html`X`;
             if (item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0) {

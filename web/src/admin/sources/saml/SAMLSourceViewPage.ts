@@ -1,5 +1,6 @@
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/sources/saml/SAMLSourceForm";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -8,7 +9,6 @@ import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
-import "@goauthentik/elements/rbac/PermissionsPage";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -207,12 +207,12 @@ export class SAMLSourceViewPage extends AKElement {
                     </div>
                 </div>
             </div>
-            <ak-rbac-permission-page
+            <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
                 model=${CoreRbacUserListModelEnum.SourcesSamlSamlsource}
                 objectPk=${this.source.pk}
-            ></ak-rbac-permission-page>
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

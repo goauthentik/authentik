@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/app/elements/Base";
-import "@goauthentik/elements/Tabs";
 import "@goauthentik/app/elements/rbac/RoleObjectPermissionTable";
 import "@goauthentik/app/elements/rbac/UserObjectPermissionTable";
+import "@goauthentik/elements/Tabs";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -14,8 +14,8 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { CoreRbacUserListModelEnum } from "@goauthentik/api";
 
-@customElement("ak-rbac-permission-page")
-export class PermissionPage extends AKElement {
+@customElement("ak-rbac-object-permission-page")
+export class ObjectPermissionPage extends AKElement {
     @property()
     model?: CoreRbacUserListModelEnum;
 
@@ -27,28 +27,6 @@ export class PermissionPage extends AKElement {
     }
     render(): TemplateResult {
         return html`<ak-tabs pageIdentifier="permissionPage">
-            <section
-                slot="page-global-user"
-                data-tab-title="${msg("User Global Permissions")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">User Global Permissions</div>
-                    </div>
-                </div>
-            </section>
-            <section
-                slot="page-global-role"
-                data-tab-title="${msg("Role Global Permissions")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
-            >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">Role Global Permissions</div>
-                    </div>
-                </div>
-            </section>
             <section
                 slot="page-object-user"
                 data-tab-title="${msg("User Object Permissions")}"
@@ -74,7 +52,14 @@ export class PermissionPage extends AKElement {
             >
                 <div class="pf-l-grid pf-m-gutter">
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">Role Object Permissions</div>
+                        <div class="pf-c-card__title">Role Object Permissions</div>
+                        <div class="pf-c-card__body">
+                            <ak-rbac-role-object-permission-table
+                                .model=${this.model}
+                                .objectPk=${this.objectPk}
+                            >
+                            </ak-rbac-role-object-permission-table>
+                        </div>
                     </div>
                 </div>
             </section>
