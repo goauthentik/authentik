@@ -1,5 +1,5 @@
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:20 as website-builder
 
 ENV NODE_ENV=production
 
@@ -17,7 +17,7 @@ COPY ./SECURITY.md /work/
 RUN npm run build-docs-only
 
 # Stage 2: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:20 as web-builder
 
 ENV NODE_ENV=production
 
