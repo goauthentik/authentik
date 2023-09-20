@@ -4140,6 +4140,78 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+    post:
+      operationId: core_rbac_user_create
+      description: Get assigned object permissions for a single object
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAssignedObjectPermissionRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAssignedObjectPermission'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/rbac/user/{id}/assign/:
+    post:
+      operationId: core_rbac_user_assign_create
+      description: Assign permission(s) to user
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAssignRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserAssignedObjectPermission'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /core/roles/:
     get:
       operationId: core_roles_retrieve
@@ -40969,6 +41041,24 @@ components:
           type: integer
       required:
       - pk
+    UserAssignRequest:
+      type: object
+      description: Base serializer class which doesn't implement create/update methods
+      properties:
+        permissions:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        model:
+          $ref: '#/components/schemas/ModelEnum'
+        object_pk:
+          type: string
+          minLength: 1
+      required:
+      - model
+      - object_pk
+      - permissions
     UserAssignedObjectPermission:
       type: object
       description: Stripped down user serializer to show relevant users for groups
@@ -41018,6 +41108,44 @@ components:
       - permissions
       - pk
       - uid
+      - username
+    UserAssignedObjectPermissionRequest:
+      type: object
+      description: Stripped down user serializer to show relevant users for groups
+      properties:
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        name:
+          type: string
+          minLength: 1
+          description: User's display name.
+        is_active:
+          type: boolean
+          title: Active
+          description: Designates whether this user should be treated as active. Unselect
+            this instead of deleting accounts.
+        last_login:
+          type: string
+          format: date-time
+          nullable: true
+        email:
+          type: string
+          format: email
+          title: Email address
+          maxLength: 254
+        attributes:
+          type: object
+          additionalProperties: {}
+        is_superuser:
+          type: boolean
+      required:
+      - is_superuser
+      - name
       - username
     UserConsent:
       type: object
