@@ -6022,6 +6022,12 @@
                     ],
                     "minLength": 1,
                     "title": "Friendly name"
+                },
+                "firebase_config": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Firebase config",
+                    "description": "temp"
                 }
             },
             "required": []
