@@ -9,7 +9,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
-import { TemplateResult, html, nothing } from "lit";
+import { TemplateResult, css, html, nothing } from "lit";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
@@ -43,14 +43,40 @@ const idleState: State = { state: "idle", label: "" };
 const runningState: State = { state: "running", label: msg("Saving Application...") };
 const errorState: State = {
     state: "error",
-    label: msg(html`There was an error in saving your application.<br />The error message was:`),
+    label: msg("There was an error in saving your application:"),
 };
 const doneState: State = { state: "done", label: msg("Your application has been saved") };
+
+function extract(o: Record<string, any>): string[] {
+    function inner(o: Record<string, any>): string[] {
+        if (typeof o !== "object") {
+            return [];
+        }
+        if (Array.isArray(o)) {
+            return o;
+        }
+        return Object.keys(o)
+            .map((k) => inner(o[k]))
+            .flat();
+    }
+    return inner(o);
+}
 
 @customElement("ak-application-wizard-commit-application")
 export class ApplicationWizardCommitApplication extends BasePanel {
     static get styles() {
-        return [...super.styles, PFBullseye, PFEmptyState, PFTitle, PFProgressStepper];
+        return [
+            ...super.styles,
+            PFBullseye,
+            PFEmptyState,
+            PFTitle,
+            PFProgressStepper,
+            css`
+                .pf-c-title {
+                    padding-bottom: var(--pf-global--spacer--md);
+                }
+            `,
+        ];
     }
 
     @state()
@@ -67,15 +93,15 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             this.response = undefined;
             this.commitState = runningState;
             const provider = providerModelsList.find(
-                ({ formName }) => formName === this.wizard.providerModel,
+                ({ formName }) => formName === this.wizard.providerModel
             );
             if (!provider) {
                 throw new Error(
                     `Could not determine provider model from user request: ${JSON.stringify(
                         this.wizard,
                         null,
-                        2,
-                    )}`,
+                        2
+                    )}`
                 );
             }
 
@@ -91,34 +117,26 @@ export class ApplicationWizardCommitApplication extends BasePanel {
     }
 
     async send(
-        data: TransactionApplicationRequest,
+        data: TransactionApplicationRequest
     ): Promise<TransactionApplicationResponse | void> {
         this.errors = [];
-        const timeout = new Promise((resolve) => {
-            setTimeout(resolve, 1200);
-        });
-        const network = new CoreApi(DEFAULT_CONFIG).coreTransactionalApplicationsUpdate({
-            transactionApplicationRequest: data,
-        });
 
-        Promise.allSettled([network, timeout]).then(([network_resolution]) => {
-            if (network_resolution.status === "rejected") {
-                this.commitState = errorState;
-                return;
-            }
-
-            if (network_resolution.status === "fulfilled") {
-                if (!network_resolution.value.valid) {
-                    this.commitState = errorState;
-                    this.errors = network_resolution.value.logs;
-                    return;
-                }
-                this.response = network_resolution.value;
+        new CoreApi(DEFAULT_CONFIG)
+            .coreTransactionalApplicationsUpdate({
+                transactionApplicationRequest: data,
+            })
+            .then((response: TransactionApplicationResponse) => {
+                this.response = response;
                 this.dispatchCustomEvent(EVENT_REFRESH);
                 this.dispatchWizardUpdate({ status: "submitted" });
                 this.commitState = doneState;
-            }
-        });
+            })
+            .catch((resolution: any) => {
+                resolution.response.json().then((body: Record<string, any>) => {
+                    this.errors = extract(body);
+                    this.commitState = errorState;
+                });
+            });
     }
 
     render(): TemplateResult {
@@ -135,7 +153,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                             ${this.errors.length > 0
                                 ? html`<ul>
                                       ${this.errors.map(
-                                          (msg) => html`<li><code>${msg}</code></li>`,
+                                          (msg) => html`<li><code>${msg}</code></li>`
                                       )}
                                   </ul>`
                                 : nothing}

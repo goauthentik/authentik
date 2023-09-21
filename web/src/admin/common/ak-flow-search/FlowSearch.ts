@@ -7,6 +7,7 @@ import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter"
 
 import { html } from "lit";
 import { property, query } from "lit/decorators.js";
+import { ifDefined } from "lit/directives/if-defined.js";
 
 import { FlowsApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 import type { Flow, FlowsInstancesListRequest } from "@goauthentik/api";
@@ -123,6 +124,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
                 .renderElement=${renderElement}
                 .renderDescription=${renderDescription}
                 .value=${getFlowValue}
+                .name=${this.name}
                 ?blankable=${!this.required}
             >
             </ak-search-select>

@@ -1,23 +1,16 @@
 {
-    "name": "authentik-live-tests",
-    "version": "1.0.0",
-    "description": "",
-    "main": "index.js",
-    "author": "",
-    "license": "ISC",
-    "devDependencies": {
-        "@wdio/junit-reporter": "^8.15.6",
-        "@wdio/local-runner": "^8.15.6",
-        "@wdio/mocha-framework": "^8.15.6",
-        "@wdio/spec-reporter": "^8.15.6",
-        "@wdio/sync": "^7.27.0",
-        "chromedriver": "^116.0.0",
-        "wdio-chromedriver-service": "^8.1.1",
-        "wdio-safaridriver-service": "^2.1.1"
-    },
-    "dependencies": {
-        "@wdio/cli": "^8.15.6",
-        "@wdio/types": "^8.15.7",
-        "prettier": "^3.0.2"
-    }
+  "name": "my-new-project",
+  "type": "module",
+  "devDependencies": {
+    "@wdio/cli": "^8.16.11",
+    "@wdio/local-runner": "^8.16.11",
+    "@wdio/mocha-framework": "^8.16.11",
+    "@wdio/spec-reporter": "^8.16.9",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2",
+    "wdio-wait-for": "^3.0.7"
+  },
+  "scripts": {
+    "wdio": "wdio run ./wdio.conf.ts"
+  }
 }

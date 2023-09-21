@@ -67,7 +67,7 @@ export class LibraryPage extends AKElement {
         this.filteredApps = this.apps?.results;
         if (this.filteredApps === undefined) {
             throw new Error(
-                "Application.results should never be undefined when passed to the Library Page.",
+                "Application.results should never be undefined when passed to the Library Page."
             );
         }
         this.addEventListener(SEARCH_UPDATED, this.searchUpdated);
@@ -136,7 +136,9 @@ export class LibraryPage extends AKElement {
     render() {
         return html`<main role="main" class="pf-c-page__main" tabindex="-1" id="main-content">
             <div class="pf-c-content header">
-                <h1 id="library-page-title">${msg("My applications")}</h1>
+                <h1 role="heading" aria-level="1" id="library-page-title">
+                    ${msg("My applications")}
+                </h1>
                 ${this.uiConfig.searchEnabled ? this.renderSearch() : html``}
             </div>
             <section class="pf-c-page__main-section">
@@ -144,7 +146,7 @@ export class LibraryPage extends AKElement {
                     this.apps,
                     html`${this.filteredApps.find(appHasLaunchUrl)
                         ? this.renderApps()
-                        : this.renderEmptyState()}`,
+                        : this.renderEmptyState()}`
                 )}
             </section>
         </main>`;
