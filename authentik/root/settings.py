@@ -279,6 +279,9 @@ DATABASES = {
     }
 }
 
+if CONFIG.get_bool("postgresql.use_pgpool", False):
+    DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
+
 if CONFIG.get_bool("postgresql.use_pgbouncer", False):
     # https://docs.djangoproject.com/en/4.0/ref/databases/#transaction-pooling-server-side-cursors
     DATABASES["default"]["DISABLE_SERVER_SIDE_CURSORS"] = True
