@@ -24,7 +24,7 @@ from firebase_admin.messaging import (
 from rest_framework.serializers import BaseSerializer, Serializer
 from structlog.stdlib import get_logger
 
-from authentik.core.models import ExpiringModel
+from authentik.core.models import ExpiringModel, User
 from authentik.core.types import UserSettingSerializer
 from authentik.flows.models import ConfigurableStage, FriendlyNamedStage, Stage
 from authentik.lib.generators import generate_id
@@ -112,9 +112,9 @@ class MobileDevice(SerializerModel, Device):
 class TransactionStates(models.TextChoices):
     """States a transaction can be in"""
 
-    wait = "wait"
-    accept = "accept"
-    deny = "deny"
+    WAIT = "wait"
+    ACCEPT = "accept"
+    DENY = "deny"
 
 
 class MobileTransaction(ExpiringModel):
@@ -123,7 +123,7 @@ class MobileTransaction(ExpiringModel):
     tx_id = models.UUIDField(default=uuid4, primary_key=True)
     device = models.ForeignKey(MobileDevice, on_delete=models.CASCADE)
 
-    status = models.TextField(choices=TransactionStates.choices, default=TransactionStates.wait)
+    status = models.TextField(choices=TransactionStates.choices, default=TransactionStates.WAIT)
 
     def send_message(self, request: Optional[HttpRequest], **context):
         """Send mobile message"""
@@ -133,13 +133,14 @@ class MobileTransaction(ExpiringModel):
         if request:
             branding = request.tenant.branding_title
             domain = request.get_host()
+        user: User = self.device.user
         message = Message(
             notification=Notification(
                 title=__("%(brand)s authentication request" % {"brand": branding}),
                 body=__(
                     "%(user)s is attempting to log in to %(domain)s"
                     % {
-                        "user": self.device.user.username,
+                        "user": user.username,  # pylint: disable=no-member
                         "domain": domain,
                     }
                 ),
@@ -175,7 +176,7 @@ class MobileTransaction(ExpiringModel):
         checks = 0
         while True:
             self.refresh_from_db()
-            if self.status in [TransactionStates.accept, TransactionStates.deny]:
+            if self.status in [TransactionStates.ACCEPT, TransactionStates.DENY]:
                 self.delete()
                 return self.status
             checks += 1

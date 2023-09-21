@@ -12,7 +12,7 @@ from authentik.flows.challenge import (
 from authentik.flows.stage import ChallengeStageView
 from authentik.stages.authenticator_mobile.models import MobileDevice, MobileDeviceToken
 
-FLOW_PLAN_MOBILE_ENROLL_TOKEN = "authentik/stages/authenticator_mobile/enroll/token"
+FLOW_PLAN_MOBILE_ENROLL_TOKEN = "authentik/stages/authenticator_mobile/enroll/token"  # nosec
 FLOW_PLAN_MOBILE_ENROLL_DEVICE = "authentik/stages/authenticator_mobile/enroll/device"
 
 
