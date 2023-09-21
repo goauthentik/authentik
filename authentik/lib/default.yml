@@ -7,6 +7,7 @@ postgresql:
   port: 5432
   password: "env://POSTGRES_PASSWORD"
   use_pgbouncer: false
+  use_pgpool: false
 
 listen:
   listen_http: 0.0.0.0:9000
