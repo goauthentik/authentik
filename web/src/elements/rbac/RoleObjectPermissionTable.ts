@@ -69,17 +69,24 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     }
 
     row(item: RoleAssignedObjectPermission): TemplateResult[] {
-        const baseRow = [html` <a href="#/identity/users/"> ${item.name} </a> `];
+        const baseRow = [html` <a href="#/identity/users/"> ${item.name} </a>`];
         this.modelPermissions?.results.forEach((perm) => {
-            let cell = html`X`;
-            if (item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0) {
-                cell = html`<pf-tooltip position="top" content=${msg("Directly assigned")}
-                    >✓</pf-tooltip
-                >`;
-            } else if (item.isSuperuser) {
-                cell = html`<pf-tooltip position="top" content=${msg("Superuser")}>✓</pf-tooltip>`;
-            }
-            baseRow.push(cell);
+            const granted =
+                item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0;
+            baseRow.push(html`
+                <ak-action-button
+                    .apiRequest=${async () => {
+                        console.log(granted);
+                    }}
+                    class="pf-m-link"
+                >
+                    ${granted
+                        ? html`<pf-tooltip position="top" content=${msg("Directly assigned")}
+                              >✓</pf-tooltip
+                          >`
+                        : html`X`}
+                </ak-action-button>
+            `);
         });
         return baseRow;
     }
