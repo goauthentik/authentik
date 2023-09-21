@@ -182,6 +182,7 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
 
 
 def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User) -> Device:
+    """Validate mobile authenticator"""
     device: MobileDevice = get_object_or_404(MobileDevice, pk=device_pk)
     if device.user != user:
         LOGGER.warning("device mismatch")
@@ -197,10 +198,10 @@ def validate_challenge_mobile(device_pk: str, stage_view: StageView, user: User)
         ).name
 
     try:
-        tx = MobileTransaction.objects.create(device=device)
-        tx.send_message(stage_view.request, **push_context)
-        status = tx.wait_for_response()
-        if status == TransactionStates.deny:
+        transaction = MobileTransaction.objects.create(device=device)
+        transaction.send_message(stage_view.request, **push_context)
+        status = transaction.wait_for_response()
+        if status == TransactionStates.DENY:
             LOGGER.debug("mobile push response", result=status)
             login_failed.send(
                 sender=__name__,
