@@ -93,15 +93,15 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             this.response = undefined;
             this.commitState = runningState;
             const provider = providerModelsList.find(
-                ({ formName }) => formName === this.wizard.providerModel
+                ({ formName }) => formName === this.wizard.providerModel,
             );
             if (!provider) {
                 throw new Error(
                     `Could not determine provider model from user request: ${JSON.stringify(
                         this.wizard,
                         null,
-                        2
-                    )}`
+                        2,
+                    )}`,
                 );
             }
 
@@ -117,7 +117,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
     }
 
     async send(
-        data: TransactionApplicationRequest
+        data: TransactionApplicationRequest,
     ): Promise<TransactionApplicationResponse | void> {
         this.errors = [];
 
@@ -153,7 +153,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                             ${this.errors.length > 0
                                 ? html`<ul>
                                       ${this.errors.map(
-                                          (msg) => html`<li><code>${msg}</code></li>`
+                                          (msg) => html`<li><code>${msg}</code></li>`,
                                       )}
                                   </ul>`
                                 : nothing}

@@ -2,11 +2,11 @@ import {
     ApplicationRequest,
     LDAPProviderRequest,
     OAuth2ProviderRequest,
+    ProvidersSamlImportMetadataCreateRequest,
     ProxyProviderRequest,
     RadiusProviderRequest,
     SAMLProviderRequest,
     SCIMProviderRequest,
-    ProvidersSamlImportMetadataCreateRequest,
 } from "@goauthentik/api";
 
 export type OneOfProvider =

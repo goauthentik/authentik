@@ -1,5 +1,8 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { CustomEmitterElement, CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
+import {
+    CustomEmitterElement,
+    CustomListenerElement,
+} from "@goauthentik/elements/utils/eventEmitter";
 
 import { html } from "lit";
 import { customElement, property, query, state } from "lit/decorators.js";
@@ -167,7 +170,7 @@ export class AkWizardMain extends CustomEmitterElement(CustomListenerElement(AKE
             case "close": {
                 this.currentStep = 0;
                 this.frame.open = false;
-                this.dispatchCustomEvent('ak-wizard-closed');
+                this.dispatchCustomEvent("ak-wizard-closed");
             }
         }
     }

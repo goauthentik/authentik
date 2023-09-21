@@ -67,7 +67,7 @@ export class LibraryPage extends AKElement {
         this.filteredApps = this.apps?.results;
         if (this.filteredApps === undefined) {
             throw new Error(
-                "Application.results should never be undefined when passed to the Library Page."
+                "Application.results should never be undefined when passed to the Library Page.",
             );
         }
         this.addEventListener(SEARCH_UPDATED, this.searchUpdated);
@@ -146,7 +146,7 @@ export class LibraryPage extends AKElement {
                     this.apps,
                     html`${this.filteredApps.find(appHasLaunchUrl)
                         ? this.renderApps()
-                        : this.renderEmptyState()}`
+                        : this.renderEmptyState()}`,
                 )}
             </section>
         </main>`;

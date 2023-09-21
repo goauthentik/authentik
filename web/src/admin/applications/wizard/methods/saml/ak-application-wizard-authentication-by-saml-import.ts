@@ -1,22 +1,24 @@
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search-no-default";
 import "@goauthentik/components/ak-file-input";
+import { AkFileInput } from "@goauthentik/components/ak-file-input";
 import "@goauthentik/components/ak-text-input";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 
 import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { html } from "lit";
+import { query } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { FlowsInstancesListDesignationEnum, ProvidersSamlImportMetadataCreateRequest } from "@goauthentik/api";
+import {
+    FlowsInstancesListDesignationEnum,
+    ProvidersSamlImportMetadataCreateRequest,
+} from "@goauthentik/api";
 
 import BaseProviderPanel from "../BaseProviderPanel";
-import { query } from "lit/decorators.js";
-import { AkFileInput } from "@goauthentik/components/ak-file-input";
 
 @customElement("ak-application-wizard-authentication-by-saml-import")
 export class ApplicationWizardProviderSamlImport extends BaseProviderPanel {
-
     @query('ak-file-input[name="metadata"]')
     fileInput!: AkFileInput;
 
@@ -32,7 +34,7 @@ export class ApplicationWizardProviderSamlImport extends BaseProviderPanel {
                 this.dispatchWizardUpdate({
                     update: {
                         provider: {
-                            file
+                            file,
                         },
                     },
                     status: this.form.checkValidity() ? "valid" : "invalid",
@@ -44,7 +46,9 @@ export class ApplicationWizardProviderSamlImport extends BaseProviderPanel {
     }
 
     render() {
-        const provider = this.wizard.provider as ProvidersSamlImportMetadataCreateRequest | undefined;
+        const provider = this.wizard.provider as
+            | ProvidersSamlImportMetadataCreateRequest
+            | undefined;
 
         return html` <form class="pf-c-form pf-m-horizontal" @input=${this.handleChange}>
             <ak-text-input

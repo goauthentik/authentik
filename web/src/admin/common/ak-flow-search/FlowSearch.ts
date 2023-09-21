@@ -7,7 +7,6 @@ import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter"
 
 import { html } from "lit";
 import { property, query } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
 import { FlowsApi, FlowsInstancesListDesignationEnum } from "@goauthentik/api";
 import type { Flow, FlowsInstancesListRequest } from "@goauthentik/api";
