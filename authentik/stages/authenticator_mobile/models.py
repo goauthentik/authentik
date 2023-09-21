@@ -43,6 +43,8 @@ def default_token_key():
 class AuthenticatorMobileStage(ConfigurableStage, FriendlyNamedStage, Stage):
     """Setup Mobile authenticator devices"""
 
+    firebase_config = models.JSONField(default=dict, help_text="temp")
+
     @property
     def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.authenticator_mobile.api.stage import (
@@ -125,8 +127,7 @@ class MobileTransaction(ExpiringModel):
 
     def send_message(self, request: Optional[HttpRequest], **context):
         """Send mobile message"""
-        cred = credentials.Certificate("firebase.json")
-        initialize_app(cred)
+        initialize_app(credentials.Certificate(self.device.stage.firebase_config))
         branding = DEFAULT_TENANT.branding_title
         domain = ""
         if request:

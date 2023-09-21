@@ -84,6 +84,18 @@ export class AuthenticatorMobileStageForm extends ModelForm<AuthenticatorMobileS
                 <span slot="header"> ${msg("Stage-specific settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal
+                        label=${msg("Firebase config")}
+                        ?required=${false}
+                        name="firebaseConfig"
+                    >
+                        <ak-codemirror
+                            mode="javascript"
+                            value="${first(this.instance?.firebaseConfig, {})}"
+                        >
+                        </ak-codemirror>
+                        <p class="pf-c-form__helper-text">${msg("Firebase JSON.")}</p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
                         label=${msg("Configuration flow")}
                         name="configureFlow"
                     >
