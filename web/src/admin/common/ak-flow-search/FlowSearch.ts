@@ -122,6 +122,7 @@ export class FlowSearch<T extends Flow> extends CustomListenerElement(AKElement)
                 .renderElement=${renderElement}
                 .renderDescription=${renderDescription}
                 .value=${getFlowValue}
+                .name=${this.name}
                 ?blankable=${!this.required}
             >
             </ak-search-select>
