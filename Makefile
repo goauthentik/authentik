@@ -129,7 +129,7 @@ gen: gen-build gen-clean gen-client-ts
 web-build: web-install
 	cd web && npm run build
 
-web: web-lint-fix web-lint web-check-compile
+web: web-lint-fix web-lint web-check-compile web-i18n-extract
 
 web-install:
 	cd web && npm ci
