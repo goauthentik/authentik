@@ -3,8 +3,8 @@ import { browser } from "@wdio/globals";
 const CLICK_TIME_DELAY = 250;
 
 /**
- * main page object containing all methods, selectors and functionality
- * that is shared across all page objects
+ * Main page object containing all methods, selectors and functionality that is shared across all
+ * page objects
  */
 export default class Page {
     /**
@@ -21,6 +21,15 @@ export default class Page {
         }
         return browser.pause(CLICK_TIME_DELAY);
     }
+
+    /**
+     * Target a specific entry in SearchSelect. Requires that the SearchSelect have the `name`
+     * attribute set, so that the managed selector can find the *right* SearchSelect if there are
+     * multiple open SearchSelects on the board. See `./ldap-form.view:LdapForm.setBindFlow` for an
+     * example, and see `./oauth-form.view:OauthForm:setAuthorizationFlow` for a further example of
+     * why it would be hard to simplify this further (`flow` vs `tentanted-flow` vs a straight-up
+     * SearchSelect each have different a `searchSelector`).
+     */
 
     async searchSelect(searchSelector: string, managedSelector: string, buttonSelector: string) {
         const inputBind = await $(searchSelector);
