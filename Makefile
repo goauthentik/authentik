@@ -21,7 +21,13 @@ CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		website/integrations \
 		website/src
 
-all: lint-fix lint test gen web
+all: lint-fix lint test gen web  ## Lint, build, and test everything
+
+help:  ## Show this help
+	@echo "\nSpecify a command. The choices are:\n"
+	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+	    awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[0;36m%-24s\033[m %s\n", $$1, $$2}'
+	@echo ""
 
 test-go:
 	go test -timeout 0 -v -race -cover ./...
@@ -35,26 +41,26 @@ test-docker:
 	docker-compose run -u root server test
 	rm -f .env
 
-test:
+test: ## Run the server tests and produce a coverage report
 	coverage run manage.py test --keepdb authentik
 	coverage html
 	coverage report
 
-lint-fix:
+lint-fix:  ## Lint and automatically fix errors in the python source code. Reports spelling errors.
 	isort authentik $(PY_SOURCES)
 	black authentik $(PY_SOURCES)
 	ruff authentik $(PY_SOURCES)
 	codespell -w $(CODESPELL_ARGS)
 
-lint:
+lint: ## Lint the python and golang sources
 	pylint $(PY_SOURCES)
 	bandit -r $(PY_SOURCES) -x node_modules
 	golangci-lint run -v
 
-migrate:
+migrate: ## Run the Authentik Django server's migrations
 	python -m lifecycle.migrate
 
-i18n-extract: i18n-extract-core web-i18n-extract
+i18n-extract: i18n-extract-core web-i18n-extract  ## Extract strings that require translation into files to send to a translation service
 
 i18n-extract-core:
 	ak makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
@@ -63,7 +69,7 @@ i18n-extract-core:
 ## API Schema
 #########################
 
-gen-build:
+gen-build:  ## Extract the schema from the database
 	AUTHENTIK_DEBUG=true ak make_blueprint_schema > blueprints/schema.json
 	AUTHENTIK_DEBUG=true ak spectacular --file schema.yml
 
@@ -86,7 +92,7 @@ gen-clean:
 	rm -rf web/api/src/
 	rm -rf api/
 
-gen-client-ts:
+gen-client-ts:  ## Build and install the Authentik API for Typescript into the Authentik UI Application
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
@@ -128,24 +134,24 @@ gen: gen-build gen-clean gen-client-ts
 ## Web
 #########################
 
-web-build: web-install
+web-build: web-install  ## Build the Authentik UI
 	cd web && npm run build
 
 web: web-lint-fix web-lint web-check-compile web-i18n-extract
 
-web-install:
+web-install:  ## Install the necessary libraries to build the Authentik UI
 	cd web && npm ci
 
-web-watch:
+web-watch:  ## Build and watch the Authentik UI for changes, updating automatically
 	rm -rf web/dist/
 	mkdir web/dist/
 	touch web/dist/.gitkeep
 	cd web && npm run watch
 
-web-storybook-watch:
+web-storybook-watch:  ## Build and run the storybook documentation server
 	cd web && npm run storybook
 
-web-lint-fix:
+web-lint-fix:  ## Automatically fix formatting issues in the Authentik UI source code
 	cd web && npm run prettier
 
 web-lint:
@@ -162,7 +168,7 @@ web-i18n-extract:
 ## Website
 #########################
 
-website: website-lint-fix website-build
+website: website-lint-fix website-build  ## Build the documentation website
 
 website-install:
 	cd website && npm ci
@@ -173,7 +179,7 @@ website-lint-fix:
 website-build:
 	cd website && npm run build
 
-website-watch:
+website-watch:  ## Build and watch the documentation website, updating automatically
 	cd website && npm run watch
 
 #########################
