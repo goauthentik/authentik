@@ -12,7 +12,6 @@ tags:
     - SSO
     - open source
     - identity provider
-    - licensing
     - security
     - authentication
     - Docker
@@ -106,9 +105,9 @@ This third use case is a twist on the first two use cases, but even more simple.
 
 We can utilize GitOps to configure [Loki alerting rules](https://grafana.com/docs/loki/latest/alert/), by using GitHub actions and a proxy provider to make Loki publicly accessible. This setup combines the use of a CI platform (as in the first use case) and using a proxy provider to authenticate requests (as in the second use case). In this third case, the authetnication is for the requests from GitHub Actions to Loki.
 
-- Create an OAuth Source for GitHub, selecting **OpenID OAuth Source** as the type. Then, instead of populating the **OIDC JWKS** field, you use the **OIDC JWKS URL** field and set that to https://token.actions.githubusercontent.com/.well-known/jwks.
-- As with the second use case, create proxy provider, which acts like a traditional reverse-proxy, sending traffic to Loki, but also authenticating any requests.
-- Create an expression policy, using the following syntax:
+-   Create an OAuth Source for GitHub, selecting **OpenID OAuth Source** as the type. Then, instead of populating the **OIDC JWKS** field, you use the **OIDC JWKS URL** field and set that to https://token.actions.githubusercontent.com/.well-known/jwks.
+-   As with the second use case, create proxy provider, which acts like a traditional reverse-proxy, sending traffic to Loki, but also authenticating any requests.
+-   Create an expression policy, using the following syntax:
 
 ```python
 # Replace the two values below
@@ -124,9 +123,9 @@ if jwt["repository"] != f"{github_user}/{github_repo}":
   return False
 return True
 
-````
+```
 
-- Finally, call a snippet in a GitHub composite action (this can be done manually or programmatically) to exchange the tokens between the GitHub action and Loki. The proxy provider then verifies the tokens and forwards the requests to Loki.
+-   Finally, call a snippet in a GitHub composite action (this can be done manually or programmatically) to exchange the tokens between the GitHub action and Loki. The proxy provider then verifies the tokens and forwards the requests to Loki.
 
 ### What’s next
 
