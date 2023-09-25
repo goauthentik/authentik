@@ -93,7 +93,7 @@
         "babel-plugin-macros": "^3.1.0",
         "babel-plugin-tsconfig-paths": "^1.0.3",
         "cross-env": "^7.0.3",
-        "eslint": "^8.49.0",
+        "eslint": "^8.50.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-custom-elements": "0.0.8",
         "eslint-plugin-lit": "^1.9.1",
