@@ -1,4 +1,3 @@
-import { $ } from "@wdio/globals";
 import AdminPage from "./admin.page.js";
 
 /**

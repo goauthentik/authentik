@@ -3,12 +3,7 @@
         "moduleResolution": "node",
         "module": "ESNext",
         "target": "es2022",
-        "types": [
-            "node",
-            "@wdio/globals/types",
-            "expect-webdriverio",
-            "@wdio/mocha-framework"
-        ],
+        "types": ["node", "@wdio/globals/types", "expect-webdriverio", "@wdio/mocha-framework"],
         "skipLibCheck": true,
         "noEmit": true,
         "allowImportingTsExtensions": true,
@@ -19,7 +14,5 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true
     },
-    "include": [
-        "test"
-    ]
+    "include": ["test"]
 }

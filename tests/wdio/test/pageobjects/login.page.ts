@@ -1,13 +1,13 @@
-import { $ } from "@wdio/globals";
 import Page from "./page.js";
 import UserLibraryPage from "./user-library.page.js";
+import { $ } from "@wdio/globals";
 
 /**
  * sub page containing specific selectors and methods for a specific page
  */
 class LoginPage extends Page {
     /**
-     * define selectors using getter methods
+     * Selectors
      */
     get inputUsername() {
         return $('>>>input[name="uidField"]');
@@ -26,20 +26,20 @@ class LoginPage extends Page {
     }
 
     /**
-     * a method to encapsule automation code to interact with the page
-     * e.g. to login using username and password
+     * Specific interactions
      */
+
     async username(username: string) {
-        await this.inputPassword.isDisplayed();
+        await this.inputUsername.waitForClickable();
         await this.inputUsername.setValue(username);
-        await this.btnSubmit.isEnabled();
+        await this.btnSubmit.waitForEnabled();
         await this.btnSubmit.click();
     }
 
     async password(password: string) {
-        await this.inputPassword.isDisplayed();
+        await this.inputPassword.waitForClickable();
         await this.inputPassword.setValue(password);
-        await this.btnSubmit.isEnabled();
+        await this.btnSubmit.waitForEnabled();
         await this.btnSubmit.click();
     }
 
@@ -53,7 +53,7 @@ class LoginPage extends Page {
     }
 
     /**
-     * overwrite specific options to adapt it to page object
+     * URL for accessing this page (if necessary)
      */
     open() {
         return super.open("");

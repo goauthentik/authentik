@@ -5,7 +5,7 @@ export class OauthForm extends Page {
         await this.searchSelect(
             '>>>ak-flow-search[name="authorizationFlow"] input[type="text"]',
             "authorizationFlow",
-            `button*=${selector}`
+            `button*=${selector}`,
         );
     }
 }
