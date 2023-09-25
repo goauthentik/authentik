@@ -219,9 +219,9 @@ install: web-install website-install
 	poetry install
 
 dev-reset:
-	dropdb -U postgres -h localhost authentik
+	dropdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} $${PG_DB:-authentik}
 	# Also remove the test-db if it exists
-	dropdb -U postgres -h localhost test_authentik || true
-	createdb -U postgres -h localhost authentik
+	dropdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} test_authentik || true
+	createdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} $${PG_DB:-authentik}
 	redis-cli -n 0 flushall
 	make migrate
