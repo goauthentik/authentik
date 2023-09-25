@@ -22,11 +22,11 @@ hide_table_of_contents: false
 image: ./image1.png
 ---
 
-We have provided M2M communication in authentik for the past year, and in this blog we want to share some more information about how it works in authentik, and take a look at some common use cases.
+We have provided M2M communication in authentik for the past year, and in this blog we want to share some more information about how it works in authentik, and take a look at three use cases.
 
 ## What is M2M?
 
-Broadly speaking, M2M communication is the process by which machines (devices, laptops, servers, smart appliances, any _thing_ that can be digitally communicated with (or more precisely, the client interface of any thing). Machine-to-machine communication is an important component of IoT, the Internet of Things; M2M is how all of the “things” communicate. So M2M is more about the communication between the devices, while IoT is the larger, more complex, overarching technology.
+Broadly speaking, M2M communication is the process by which machines (devices, laptops, servers, smart appliances, any _thing_ that can be digitally communicated with) or more precisely, the client interface of any thing. Machine-to-machine communication is an important component of IoT, the Internet of Things; M2M is how all of the “things” communicate. So M2M is more about the communication between the devices, while IoT is the larger, more complex, overarching technology.
 
 Interestingly, M2M is also implemented as a communication process between business systems, such as banking services, or payroll workflows. One of the first fields to heavily utilize M2M is the [oil and gas industry](https://blog.orbcomm.com/onshore-to-offshore-how-m2m-is-changing-oil-gas-world/); everything from monitoring the production (volume, pressure, etc.) of gas wells, to tracking fleets of trucks and sea vessels, to the health of pipelines can be done using M2M communication.
 
@@ -34,7 +34,7 @@ Financial systems, analytics, really any work that involves multi-machine data p
 
 > “Machine to machine systems are the key to reliable data processing with near to zero errors” ([source](https://dataconomy.com/2023/07/14/what-is-machine-to-machine-m2m/))
 
-Where there is communication in software systems, there is both authentication and authorization. The basic definition of the terms is that _authentication_ is about assessing and verify WHO (the person, device, thing) is involved, while **_authorization_** is about what access rights that person or device has. So we choose to use the phrase “machine-to-machine communication” in order to capture both of those important aspects.
+Where there is communication in software systems, there is both authentication and authorization. The basic definition of the terms is that _authentication_ is about assessing and verifying WHO (the person, device, thing) is involved, while **_authorization_** is about what access rights that person or device has. So we choose to use the phrase “machine-to-machine communication” in order to capture both of those important aspects.
 
 > Or we could use fun terms like **AuthN** (authentication) and **AuthZ** (authorization).
 
@@ -46,7 +46,7 @@ So in some ways you can think of M2M as being like an internal API, with data (t
 
 ## M2M communication in authentik
 
-As part of our providing a unified platform for authentication, authentik supports OAuth2-based M2M communication. By “unified platform”, we mean that authentik provides workplace authentication for team members, B2C login by web site visitors, global communities and non-profit teams, educational societies, and [coming soon] mobile authentication.
+As part of our providing a unified platform for authentication, authentik supports OAuth2-based M2M communication. By “unified platform” we mean that authentik provides workplace authentication for team members, B2C login by web site visitors, global communities and non-profit teams, educational societies, and [coming soon] mobile authentication. So that all authentications needs are met by authentik, as a unified platform.
 
 ### Use cases for M2M in authentik
 
@@ -54,9 +54,9 @@ Macine-to-machine communication speeds processing and adds a layer of security t
 
 **Common workflow**
 
-The workflow for all three of the use cases that we discuss below share several core common steps/tasks/components:
+The workflow for all three of the use cases that we discuss below share several core common steps:
 
-1. Obtain a token from the environment (i.e. a build/CI tool such as GitLab or GitHub, or Kubernetes for applications running on Kubernetes)
+1. Obtain a token from the environment you are working in (i.e. a build/CI tool such as GitLab or GitHub, or Kubernetes for applications running on Kubernetes).
 2. Pass the token, via [client_credentials](https://goauthentik.io/docs/providers/oauth2/client_credentials), to authentik.
 3. In the response, authentik returns a JWT (JSON Web Token).
 4. The token is then used to authenticate requests to other services elsewhere. (These other services need to check the token for its validity, which can be done with the [proxy provider](https://goauthentik.io/docs/providers/proxy/) in authentik for example).
@@ -77,27 +77,30 @@ For a real-life example, with code samples, take a look at my blog “[Setup a d
 
 If you use Prometheus to monitor multiple Kubernetes clusters, you might want to collect all Prometheus metrics and put them in one place, using something like [Thanos](https://thanos.io/) or [Mimir](https://grafana.com/oss/mimir/) in order to better analyze the data. Using M2M functionality in authentik, you can simplify authentication, so that the source (the cluster sending the metrics, in this case) can authenticate itself with the receiving target cluster.
 
-In this use case, you will create an expression policy, in which you define service accounts in order to allow communication between that specific cluster and authentik.
+In this use case, you will create an expression policy, in which you define service accounts to allow communication between that specific cluster and authentik.
 
 -   You create an OAuth Source for each cluster (since each cluster usually has its own unique JWT Signing key). On the **Create a new source** panel, select **OpenID OAuth Source** as the type, and then click **Next**. Then you will need to populate the following fields:
     -   **Consumer key**, **Consumer secret**, **Authorization URL**, **Access token URL**, and **Profile URL, and OIDC JWKS** (to obtain the key for the cluster, run the command `kubectl get --raw /openid/v1/jwks`).
--   You can create a proxy provider to authenticate the incoming requests, where the proxy provider functions like a traditional reverse-proxy, sending traffic to Thanos/Mimir in the cluster but also requiring authentication for any requests. When defining your proxy provider, use the following syntax:
-    ```python # Replace these values with the namespace and service-account name for your prometheus instance
+-   You can create a proxy provider to authenticate the incoming requests, where the proxy provider functions like a traditional reverse-proxy, sending traffic to Thanos or Mimir in the cluster but also requiring authentication for any requests. When defining your proxy provider, use the following syntax:
+
+    ```python
+
+    # Replace these values with the namespace and service-account name for your prometheus instance
     allowed_namespace = "prometheus-namespace"
     allowed_service_account = "prometheus-sa"
+
+    jwt = request.context.get("oauth_jwt", None)
+    if not jwt:
+        return False
+    allowed_sa = [
+    f"system:serviceaccount:{allowed_namespace}:{allowed_service_account}",
+    ]
+    return jwt["sub"] in allowed_sa
     ```
 
-jwt = request.context.get("oauth_jwt", None)
-if not jwt:
-return False
-allowed_sa = [
-f"system:serviceaccount:{allowed_namespace}:{allowed_service_account}",
-]
-return jwt["sub"] in allowed_sa
+    Then the rest is same as in the first use case; obtain a JWT from the K8s cluster, send the token to authentik, get back a diff token, then send that token to Thanos, Mimir, or where ever you want to store the metrics. Prometheus then uses that token to authenticate incoming requests from the other clusters. Actually, you can configure Promethesus to do the token exchange work, by using their `remote_write` feature. For an example of how this can be set up, refer to this YAML file, where I configured `remote_write`.
 
-````
-
-1. **GitOps with M2M and Loki**
+**3. GitOps with M2M and Loki**
 
 This third use case is a twist on the first two use cases, but even more simple.
 
@@ -123,7 +126,7 @@ return True
 
 ````
 
-Finally, call a snippet in a GitHub composite action (this can be done manually or programmatically) to exchange the tokens between the GitHub action and Loki. The proxy provider then verifies the tokens and forwards the requests to Loki.
+- Finally, call a snippet in a GitHub composite action (this can be done manually or programmatically) to exchange the tokens between the GitHub action and Loki. The proxy provider then verifies the tokens and forwards the requests to Loki.
 
 ### What’s next
 
