@@ -127,6 +127,6 @@ Finally, call a snippet in a GitHub composite action (this can be done manually 
 
 ### What’s next
 
-Look for our upcoming tutorial on configuring machine-to-machine communication using authentik. As part of the tutorial, we will provide a GitHub composite action that bundles the multiple steps token creation and exchange into a single, reusable action, instead of multiple `run` commands.
+Look for our upcoming tutorial on configuring machine-to-machine communication using authentik. As part of the tutorial, we will provide a GitHub composite action that bundles the multiple steps involved in token creation and exchange into a single, reusable action, instead of needing multiple `run` commands.
 
 We’d like to hear from you about how you use M2M, or how you plan to in the future. And as always, if you are interested in collaborating with us on our M2M functionality, or contributing to our documentation, visit us in our [GitHub repository](https://github.com/goauthentik/authentik) or reach out to us at [hello@goauthentik.io](mailto:hello@goauthentik.io).
