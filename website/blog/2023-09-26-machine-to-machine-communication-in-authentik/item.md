@@ -85,6 +85,7 @@ In this use case, you will create an expression policy, in which you define serv
     ```python # Replace these values with the namespace and service-account name for your prometheus instance
     allowed_namespace = "prometheus-namespace"
     allowed_service_account = "prometheus-sa"
+    ```
 
 jwt = request.context.get("oauth_jwt", None)
 if not jwt:
