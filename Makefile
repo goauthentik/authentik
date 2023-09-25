@@ -218,10 +218,18 @@ ci-pending-migrations: ci--meta-debug
 install: web-install website-install
 	poetry install
 
-dev-reset:
+
+.PHONY: dev-drop-db dev-create-db dev-reset
+
+dev-drop-db:
 	dropdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} $${PG_DB:-authentik}
 	# Also remove the test-db if it exists
 	dropdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} test_authentik || true
-	createdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} $${PG_DB:-authentik}
 	redis-cli -n 0 flushall
-	make migrate
+
+
+dev-create-db:
+	createdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} $${PG_DB:-authentik}
+
+
+dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
