@@ -1,3 +1,5 @@
+.PHONY: gen dev-reset all clean test web website
+
 .SHELLFLAGS += -x -e
 PWD = $(shell pwd)
 UID = $(shell id -u)
@@ -219,7 +221,6 @@ install: web-install website-install
 	poetry install
 
 
-.PHONY: dev-drop-db dev-create-db dev-reset
 
 dev-drop-db:
 	dropdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} $${PG_DB:-authentik}
@@ -227,9 +228,7 @@ dev-drop-db:
 	dropdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} test_authentik || true
 	redis-cli -n 0 flushall
 
-
 dev-create-db:
 	createdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} $${PG_DB:-authentik}
-
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
