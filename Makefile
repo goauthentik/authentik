@@ -7,6 +7,10 @@ GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
 PY_SOURCES = authentik tests scripts lifecycle
 
+pg_user := $(shell python -m authentik.lib.config postgresql.user 2>/dev/null)
+pg_host := $(shell python -m authentik.lib.config postgresql.host 2>/dev/null)
+pg_name := $(shell python -m authentik.lib.config postgresql.name 2>/dev/null)
+
 CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 		-I .github/codespell-words.txt \
 		-S 'web/src/locales/**' \
@@ -26,7 +30,7 @@ all: lint-fix lint test gen web  ## Lint, build, and test everything
 help:  ## Show this help
 	@echo "\nSpecify a command. The choices are:\n"
 	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-	    awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[0;36m%-24s\033[m %s\n", $$1, $$2}'
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[0;36m%-24s\033[m %s\n", $$1, $$2}'
 	@echo ""
 
 test-go:
@@ -229,12 +233,12 @@ install: web-install website-install
 
 
 dev-drop-db:
-	dropdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} $${PG_DB:-authentik}
+	echo dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
 	# Also remove the test-db if it exists
-	dropdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} test_authentik || true
-	redis-cli -n 0 flushall
+	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
+	echo redis-cli -n 0 flushall
 
 dev-create-db:
-	createdb -U $${PG_USER:-postgres} -h $${PG_HOST:-localhost} $${PG_DB:-authentik}
+	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
 
 dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
