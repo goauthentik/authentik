@@ -436,32 +436,39 @@ class NotificationTransport(SerializerModel):
 
     def send_email(self, notification: "Notification") -> list[str]:
         """Send notification via global email configuration"""
-        subject = "authentik Notification: "
-        key_value = {
-            "user_email": notification.user.email,
-            "user_username": notification.user.username,
+        subject_prefix = "authentik Notification: "
+        context = {
+            "key_value": {
+                "user_email": notification.user.email,
+                "user_username": notification.user.username,
+            },
+            "body": notification.body,
+            "title": "",
         }
         if notification.event and notification.event.user:
-            key_value["event_user_email"] = notification.event.user.get("email", None)
-            key_value["event_user_username"] = notification.event.user.get("username", None)
+            context["key_value"]["event_user_email"] = notification.event.user.get("email", None)
+            context["key_value"]["event_user_username"] = notification.event.user.get(
+                "username", None
+            )
         if notification.event:
-            subject += notification.event.action
+            context["title"] += notification.event.action
             for key, value in notification.event.context.items():
                 if not isinstance(value, str):
                     continue
-                key_value[key] = value
+                context["key_value"][key] = value
         else:
-            subject += notification.body[:75]
+            context["title"] += notification.body[:75]
+        # TODO: improve permission check
+        if notification.user.is_superuser:
+            context["source"] = {
+                "from": self.name,
+            }
         mail = TemplateEmailMessage(
-            subject=subject,
+            subject=subject_prefix + context["title"],
             to=[notification.user.email],
             language=notification.user.locale(),
-            template_name="email/generic.html",
-            template_context={
-                "title": subject,
-                "body": notification.body,
-                "key_value": key_value,
-            },
+            template_name="email/event_notification.html",
+            template_context=context,
         )
         # Email is sent directly here, as the call to send() should have been from a task.
         try:

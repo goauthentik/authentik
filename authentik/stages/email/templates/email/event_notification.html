@@ -1,0 +1,52 @@
+{% extends "email/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+<tr>
+  <td align="center">
+    <h1>
+      {{ title }}
+    </h1>
+  </td>
+</tr>
+<tr>
+  <td align="center">
+    <table border="0">
+      <tr>
+        <td align="center" style="max-width: 300px; padding: 20px 0; color: #212124;">
+          {{ body }}
+        </td>
+      </tr>
+      {% if key_value %}
+      <tr>
+        <td>
+          <table class="properties-table" width="100%">
+            <tbody>
+              {% for key, value in key_value.items %}
+              <tr>
+                <td class="td-right">{{ key }}</td>
+                <td class="td-left">{{ value }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </td>
+      </tr>
+      {% endif %}
+    </table>
+  </td>
+</tr>
+{% endblock %}
+
+{% block sub_content %}
+{% if source %}
+<tr>
+  <td style="padding: 20px; font-size: 12px; color: #212124;" align="center">
+    {% blocktranslate with name=source.from %}
+    This email was sent from the notification transport <code>{{name}}</code>.
+    {% endblocktranslate %}
+  </td>
+</tr>
+{% endif %}
+{% endblock %}
