@@ -1,0 +1,18 @@
+context: {}
+entries:
+- attrs:
+    attributes: {}
+    email: test-admin@goauthentik.io
+    is_active: true
+    name: authentik Default Admin
+    password: test-runner
+    path: users
+    type: internal
+    groups:
+    - !Find [authentik_core.group, [name, "authentik Admins"]]
+    conditions: []
+  id: null
+  identifiers:
+    username: akadmin
+  model: authentik_core.user
+  state: present

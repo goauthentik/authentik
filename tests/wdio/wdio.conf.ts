@@ -60,7 +60,22 @@ export const config: Options.Testrunner = {
     //
     capabilities: [
         {
-            browserName: "chrome",
+            "browserName": "chrome",
+            "goog:chromeOptions": {
+                args: ["--disable-infobars", "--window-size=1280,800"].concat(
+                    (function () {
+                        return process.env.HEADLESS_CHROME === "1"
+                            ? [
+                                  "--headless",
+                                  "--no-sandbox",
+                                  "--disable-gpu",
+                                  "--disable-setuid-sandbox",
+                                  "--disable-dev-shm-usage",
+                              ]
+                            : [];
+                    })()
+                ),
+            },
         },
     ],
 

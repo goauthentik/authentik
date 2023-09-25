@@ -1,5 +1,5 @@
-import Page from "../pageobjects/page.js";
 import { browser } from "@wdio/globals";
+import Page from "../pageobjects/page.js";
 
 const CLICK_TIME_DELAY = 250;
 
