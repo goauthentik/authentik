@@ -1,4 +1,5 @@
 import {
+    checkWebAuthnSupport,
     transformAssertionForServer,
     transformCredentialRequestOptions,
 } from "@goauthentik/common/helpers/webauthn";
@@ -57,6 +58,7 @@ export class AuthenticatorValidateStageWebAuthn extends BaseStage<
         // request the authenticator to create an assertion signature using the
         // credential private key
         let assertion;
+        checkWebAuthnSupport();
         try {
             assertion = await navigator.credentials.get({
                 publicKey: this.transformedCredentialRequestOptions,
