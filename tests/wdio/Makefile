@@ -8,7 +8,7 @@ help:  ## Show this help
 
 ROOT := $(shell git rev-parse --show-toplevel 2> /dev/null)
 WDIO = npm run wdio
-SPEC = $(WDIO) -- --spec ./test/specs
+SPEC = $(WDIO) -- --logLevel warn --spec ./test/specs
 
 LOCAL_BLUEPRINTS=$(ROOT)/blueprints/local
 
@@ -35,3 +35,7 @@ test-good-login: node_modules admin-user  ## Test that we can log into the serve
 
 test-bad-login: node_modules admin-user  ## Test that bad usernames and passwords create appropriate error messages
 	$(SPEC)/bad-logins.ts
+
+
+test-application-wizard-ldap: node_modules admin-user
+	$(SPEC)/new-wizard-ldap-application.ts

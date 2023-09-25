@@ -17,7 +17,7 @@ class ApplicationWizardView extends AdminPage {
     app = ApplicationForm;
 
     get wizardTitle() {
-        return $(">>>ak-application-wizard-commit-application h1.pf-c-title");
+        return $(">>>ak-wizard-frame .pf-c-wizard__header h1.pf-c-title");
     }
 
     get providerList() {
