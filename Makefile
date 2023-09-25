@@ -6,6 +6,7 @@ UID = $(shell id -u)
 GID = $(shell id -g)
 NPM_VERSION = $(shell python -m scripts.npm_version)
 PY_SOURCES = authentik tests scripts lifecycle
+DOCKER_IMAGE ?= "authentik:test"
 
 pg_user := $(shell python -m authentik.lib.config postgresql.user 2>/dev/null)
 pg_host := $(shell python -m authentik.lib.config postgresql.host 2>/dev/null)
@@ -37,16 +38,16 @@ help:  ## Show this help
 test-go:
 	go test -timeout 0 -v -race -cover ./...
 
-test-docker:
+test-docker:  ## Run all tests in a docker-compose
 	echo "PG_PASS=$(openssl rand -base64 32)" >> .env
 	echo "AUTHENTIK_SECRET_KEY=$(openssl rand -base64 32)" >> .env
 	docker-compose pull -q
 	docker-compose up --no-start
 	docker-compose start postgresql redis
-	docker-compose run -u root server test
+	docker-compose run -u root server test-all
 	rm -f .env
 
-test: ## Run the server tests and produce a coverage report
+test: ## Run the server tests and produce a coverage report (locally)
 	coverage run manage.py test --keepdb authentik
 	coverage html
 	coverage report
@@ -70,6 +71,20 @@ i18n-extract: i18n-extract-core web-i18n-extract  ## Extract strings that requir
 i18n-extract-core:
 	ak makemessages --ignore web --ignore internal --ignore web --ignore web-api --ignore website -l en
 
+install: web-install website-install  ## Install all requires dependencies for `web`, `website` and `core`
+	poetry install
+
+dev-drop-db:
+	echo dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
+	# Also remove the test-db if it exists
+	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
+	echo redis-cli -n 0 flushall
+
+dev-create-db:
+	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
+
+dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
+
 #########################
 ## API Schema
 #########################
@@ -78,11 +93,11 @@ gen-build:  ## Extract the schema from the database
 	AUTHENTIK_DEBUG=true ak make_blueprint_schema > blueprints/schema.json
 	AUTHENTIK_DEBUG=true ak spectacular --file schema.yml
 
-gen-changelog:
+gen-changelog:  ## (Release) generate the changelog based from the commits since the last tag
 	git log --pretty=format:" - %s" $(shell git describe --tags $(shell git rev-list --tags --max-count=1))...$(shell git branch --show-current) | sort > changelog.md
 	npx prettier --write changelog.md
 
-gen-diff:
+gen-diff:  ## (Release) generate the changelog diff between the current schema and the last tag
 	git show $(shell git describe --tags $(shell git rev-list --tags --max-count=1)):schema.yml > old_schema.yml
 	docker run \
 		--rm -v ${PWD}:/local \
@@ -97,7 +112,7 @@ gen-clean:
 	rm -rf web/api/src/
 	rm -rf api/
 
-gen-client-ts:  ## Build and install the Authentik API for Typescript into the Authentik UI Application
+gen-client-ts:  ## Build and install the authentik API for Typescript into the authentik UI Application
 	docker run \
 		--rm -v ${PWD}:/local \
 		--user ${UID}:${GID} \
@@ -113,7 +128,7 @@ gen-client-ts:  ## Build and install the Authentik API for Typescript into the A
 	cd gen-ts-api && npm i
 	\cp -rfv gen-ts-api/* web/node_modules/@goauthentik/api
 
-gen-client-go:
+gen-client-go:  ## Build and install the authentik API for Golang
 	mkdir -p ./gen-go-api ./gen-go-api/templates
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/config.yaml -O ./gen-go-api/config.yaml
 	wget https://raw.githubusercontent.com/goauthentik/client-go/main/templates/README.mustache -O ./gen-go-api/templates/README.mustache
@@ -130,7 +145,7 @@ gen-client-go:
 	go mod edit -replace goauthentik.io/api/v3=./gen-go-api
 	rm -rf ./gen-go-api/config.yaml ./gen-go-api/templates/
 
-gen-dev-config:
+gen-dev-config:  ## Generate a local development config file
 	python -m scripts.generate_config
 
 gen: gen-build gen-clean gen-client-ts
@@ -142,7 +157,7 @@ gen: gen-build gen-clean gen-client-ts
 web-build: web-install  ## Build the Authentik UI
 	cd web && npm run build
 
-web: web-lint-fix web-lint web-check-compile web-i18n-extract
+web: web-lint-fix web-lint web-check-compile web-i18n-extract  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
 web-install:  ## Install the necessary libraries to build the Authentik UI
 	cd web && npm ci
@@ -156,7 +171,7 @@ web-watch:  ## Build and watch the Authentik UI for changes, updating automatica
 web-storybook-watch:  ## Build and run the storybook documentation server
 	cd web && npm run storybook
 
-web-lint-fix:  ## Automatically fix formatting issues in the Authentik UI source code
+web-lint-fix:
 	cd web && npm run prettier
 
 web-lint:
@@ -173,7 +188,7 @@ web-i18n-extract:
 ## Website
 #########################
 
-website: website-lint-fix website-build  ## Build the documentation website
+website: website-lint-fix website-build  ## Automatically fix formatting issues in the Authentik website/docs source code, lint the code, and compile it
 
 website-install:
 	cd website && npm ci
@@ -191,8 +206,8 @@ website-watch:  ## Build and watch the documentation website, updating automatic
 ## Docker
 #########################
 
-docker:
-	DOCKER_BUILDKIT=1 docker build . --progress plain --tag authentik:test
+docker:  ## Build a docker image of the current source tree
+	DOCKER_BUILDKIT=1 docker build . --progress plain --tag ${DOCKER_IMAGE}
 
 #########################
 ## CI
@@ -227,19 +242,3 @@ ci-pyright: ci--meta-debug
 
 ci-pending-migrations: ci--meta-debug
 	ak makemigrations --check
-
-install: web-install website-install
-	poetry install
-
-
-
-dev-drop-db:
-	echo dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
-	# Also remove the test-db if it exists
-	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
-	echo redis-cli -n 0 flushall
-
-dev-create-db:
-	createdb -U ${pg_user} -h ${pg_host} ${pg_name}
-
-dev-reset: dev-drop-db dev-create-db migrate  ## Drop and restore the Authentik PostgreSQL instance to a "fresh install" state.
