@@ -1,6 +1,6 @@
 .PHONY: gen dev-reset all clean test web website
 
-.SHELLFLAGS += -x -e
+.SHELLFLAGS += ${SHELLFLAGS} -e
 PWD = $(shell pwd)
 UID = $(shell id -u)
 GID = $(shell id -g)
