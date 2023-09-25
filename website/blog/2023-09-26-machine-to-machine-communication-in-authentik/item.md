@@ -26,23 +26,21 @@ We have provided M2M communication in authentik for the past year, and in this b
 
 ## What is M2M?
 
-Broadly speaking, M2M communication is the process by which machines (devices, laptops, servers, smart appliances, any *thing* that can be digitally communicated with (or more precisely, the client interface of any thing). Machine-to-machine communication is an important component of IoT, the Internet of Things; M2M is how all of the “things” communicate. So M2M is more about the communication between the devices, while IoT is the larger, more complex, overarching technology.
+Broadly speaking, M2M communication is the process by which machines (devices, laptops, servers, smart appliances, any _thing_ that can be digitally communicated with (or more precisely, the client interface of any thing). Machine-to-machine communication is an important component of IoT, the Internet of Things; M2M is how all of the “things” communicate. So M2M is more about the communication between the devices, while IoT is the larger, more complex, overarching technology.
 
 Interestingly, M2M is also implemented as a communication process between business systems, such as banking services, or payroll workflows. One of the first fields to heavily utilize M2M is the [oil and gas industry](https://blog.orbcomm.com/onshore-to-offshore-how-m2m-is-changing-oil-gas-world/); everything from monitoring the production (volume, pressure, etc.) of gas wells, to tracking fleets of trucks and sea vessels, to the health of pipelines can be done using M2M communication.
 
 Financial systems, analytics, really any work that involves multi-machine data processing, can be optimized using M2M.
 
 > “Machine to machine systems are the key to reliable data processing with near to zero errors” ([source](https://dataconomy.com/2023/07/14/what-is-machine-to-machine-m2m/))
->
 
-Where there is communication in software systems, there is both authentication and authorization. The basic definition of the terms is that *authentication* is about assessing and verify WHO (the person, device, thing) is involved, while ***authorization*** is about what access rights that person or device has. So we choose to use the phrase “machine-to-machine communication” in order to capture both of those important aspects.
+Where there is communication in software systems, there is both authentication and authorization. The basic definition of the terms is that _authentication_ is about assessing and verify WHO (the person, device, thing) is involved, while **_authorization_** is about what access rights that person or device has. So we choose to use the phrase “machine-to-machine communication” in order to capture both of those important aspects.
 
 > Or we could use fun terms like **AuthN** (authentication) and **AuthZ** (authorization).
->
 
 So in some ways you can think of M2M as being like an internal API, with data (tokens and keys and certs and all thing access-related) being passed back and forth, but specifically for authentication and authorization processes.
 
-!["Screenshot of authetnik UI"](./image1.jpg)
+!["Screenshot of authetnik UI"](./image1.png)
 
 <!--truncate-->
 
@@ -81,22 +79,22 @@ If you use Prometheus to monitor multiple Kubernetes clusters, you might want to
 
 In this use case, you will create an expression policy, in which you define service accounts in order to allow communication between that specific cluster and authentik.
 
-- You create an OAuth Source for each cluster (since each cluster usually has its own unique JWT Signing key). On the **Create a new source** panel, select **OpenID OAuth Source** as the type, and then click **Next**. Then you will need to populate the following fields:
-    - **Consumer key**, **Consumer secret**, **Authorization URL**, **Access token URL**, and  **Profile URL, and OIDC JWKS** (to obtain the key for the cluster, run the command `kubectl get --raw /openid/v1/jwks`).
-- You can create a proxy provider to authenticate the incoming requests, where the proxy provider functions like a traditional reverse-proxy, sending traffic to Thanos/Mimir in the cluster but also requiring authentication for any requests. When defining your proxy provider, use the following syntax:
-    ```python
-    # Replace these values with the namespace and service-account name for your prometheus instance
-allowed_namespace = "prometheus-namespace"
-allowed_service_account = "prometheus-sa"
+-   You create an OAuth Source for each cluster (since each cluster usually has its own unique JWT Signing key). On the **Create a new source** panel, select **OpenID OAuth Source** as the type, and then click **Next**. Then you will need to populate the following fields:
+    -   **Consumer key**, **Consumer secret**, **Authorization URL**, **Access token URL**, and **Profile URL, and OIDC JWKS** (to obtain the key for the cluster, run the command `kubectl get --raw /openid/v1/jwks`).
+-   You can create a proxy provider to authenticate the incoming requests, where the proxy provider functions like a traditional reverse-proxy, sending traffic to Thanos/Mimir in the cluster but also requiring authentication for any requests. When defining your proxy provider, use the following syntax:
+    ```python # Replace these values with the namespace and service-account name for your prometheus instance
+    allowed_namespace = "prometheus-namespace"
+    allowed_service_account = "prometheus-sa"
 
 jwt = request.context.get("oauth_jwt", None)
 if not jwt:
-  return False
+return False
 allowed_sa = [
-  f"system:serviceaccount:{allowed_namespace}:{allowed_service_account}",
+f"system:serviceaccount:{allowed_namespace}:{allowed_service_account}",
 ]
 return jwt["sub"] in allowed_sa
-```
+
+````
 
 1. **GitOps with M2M and Loki**
 
@@ -122,7 +120,7 @@ if jwt["repository"] != f"{github_user}/{github_repo}":
   return False
 return True
 
-```
+````
 
 Finally, call a snippet in a GitHub composite action (this can be done manually or programmatically) to exchange the tokens between the GitHub action and Loki. The proxy provider then verifies the tokens and forwards the requests to Loki.
 
