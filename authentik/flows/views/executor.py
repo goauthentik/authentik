@@ -123,7 +123,7 @@ class FlowExecutorView(APIView):
     flow: Flow
 
     plan: Optional[FlowPlan] = None
-    current_binding: FlowStageBinding
+    current_binding: Optional[FlowStageBinding] = None
     current_stage: Stage
     current_stage_view: View
 
@@ -429,7 +429,7 @@ class FlowExecutorView(APIView):
         Optionally, an exception can be passed, which will be shown if the current user
         is a superuser."""
         self._logger.debug("f(exec): Stage invalid")
-        if self.current_binding.invalid_response_action in [
+        if self.current_binding and self.current_binding.invalid_response_action in [
             InvalidResponseAction.RESTART,
             InvalidResponseAction.RESTART_WITH_CONTEXT,
         ]:
@@ -437,7 +437,7 @@ class FlowExecutorView(APIView):
                 self.current_binding.invalid_response_action
                 == InvalidResponseAction.RESTART_WITH_CONTEXT
             )
-            self.logger.debug(
+            self._logger.debug(
                 "f(exec): Invalid response, restarting flow",
                 keep_context=keep_context,
             )
