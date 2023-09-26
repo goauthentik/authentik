@@ -116,11 +116,21 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Outposts",
+            label: "Sources",
             link: {
                 type: "doc",
-                id: "outposts/index",
+                id: "sources/index",
             },
+            items: [
+                "sources/ldap/index",
+                "sources/oauth/index",
+                "sources/saml/index",
+            ],
+        },
+        {
+            type: "category",
+            label: "Outposts",
+            link: {},
             items: [
                 "outposts/embedded/embedded",
                 {

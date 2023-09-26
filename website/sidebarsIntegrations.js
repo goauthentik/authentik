@@ -149,11 +149,8 @@ module.exports = {
             type: "category",
             label: "Federation & Social login",
             link: {
-                type: "generated-index",
-                title: "Sources",
-                slug: "sources",
-                description:
-                    "Sources of users which can be federated with authentik",
+                type: "doc",
+                id: "sources/index",
             },
             items: [
                 {
@@ -162,16 +159,6 @@ module.exports = {
                     items: [
                         "sources/active-directory/index",
                         "sources/freeipa/index",
-                    ],
-                },
-                "sources/general",
-                {
-                    type: "category",
-                    label: "Protocols",
-                    items: [
-                        "sources/ldap/index",
-                        "sources/oauth/index",
-                        "sources/saml/index",
                     ],
                 },
                 {
