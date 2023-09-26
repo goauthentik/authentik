@@ -29,6 +29,14 @@
   status = 301
   force = true
 
+# Migrate API and blueprints into main docs
+[[redirects]]
+  from = "/developer-docs/api*"
+  to = "/docs/api:splat"
+[[redirects]]
+  from = "/developer-docs/blueprints*"
+  to = "/docs/blueprints:splat"
+
 [[headers]]
   for = "/*"
   [headers.values]
