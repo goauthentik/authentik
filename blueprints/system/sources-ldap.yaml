@@ -8,7 +8,7 @@ entries:
       managed: goauthentik.io/sources/ldap/default-dn-path
     model: authentik_sources_ldap.ldappropertymapping
     attrs:
-      name: "authentik default LDAP Mapping: Path"
+      name: "authentik default LDAP Mapping: DN to User Path"
       object_field: "path"
       expression: |
         dn = ldap.get("distinguishedName")
