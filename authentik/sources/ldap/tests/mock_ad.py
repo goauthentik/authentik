@@ -55,7 +55,7 @@ def mock_ad_connection(password: str) -> Connection:
             "revision": 0,
             "objectSid": "user0",
             "objectClass": "person",
-            "distinguishedName": "cn=user0,ou=users,dc=goauthentik,dc=io",
+            "distinguishedName": "cn=user0,ou=foo,ou=users,dc=goauthentik,dc=io",
             "userAccountControl": (
                 UserAccountControl.ACCOUNTDISABLE + UserAccountControl.NORMAL_ACCOUNT
             ),
