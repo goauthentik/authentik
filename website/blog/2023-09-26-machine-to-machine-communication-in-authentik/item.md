@@ -25,7 +25,7 @@ We have provided M2M communication in authentik for the past year, and in this b
 
 ## What is M2M?
 
-Broadly speaking, M2M communication is the process by which machines (devices, laptops, servers, smart appliances, any _thing_ that can be digitally communicated with) or more precisely, the client interface of any thing. Machine-to-machine communication is an important component of IoT, the Internet of Things; M2M is how all of the “things” communicate. So M2M is more about the communication between the devices, while IoT is the larger, more complex, overarching technology.
+Broadly speaking, M2M communication is the process by which machines (devices, laptops, servers, smart appliances, or more precisely the client interface of any thing that can be digitally communicated with) exchange data. Machine-to-machine communication is an important component of IoT, the Internet of Things; M2M is how all of the “things” communicate. So M2M is more about the communication between the devices, while IoT is the larger, more complex, overarching technology.
 
 Interestingly, M2M is also implemented as a communication process between business systems, such as banking services, or payroll workflows. One of the first fields to heavily utilize M2M is the [oil and gas industry](https://blog.orbcomm.com/onshore-to-offshore-how-m2m-is-changing-oil-gas-world/); everything from monitoring the production (volume, pressure, etc.) of gas wells, to tracking fleets of trucks and sea vessels, to the health of pipelines can be done using M2M communication.
 
