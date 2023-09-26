@@ -44,5 +44,5 @@ You will need to create a new project, and OAuth credentials in the Twitter Deve
 5. **Consumer Secret:** Your Client Secret from step 25
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../general#add-sources-to-default-login-page).
+For more details on how-to have the new source display on the Login Page see [here](../../../docs/sources/#add-sources-to-default-login-page).
 :::

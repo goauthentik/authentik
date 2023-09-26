@@ -9,9 +9,9 @@ Sources allow you to connect authentik to an existing user directory. They can a
 This source allows you to import users and groups from an LDAP Server.
 
 :::info
-For Active Directory, follow the [Active Directory Integration](../active-directory/)
+For Active Directory, follow the [Active Directory Integration](../../../integrations/sources/active-directory/)
 
-For FreeIPA, follow the [FreeIPA Integration](../freeipa/)
+For FreeIPA, follow the [FreeIPA Integration](../../../integrations/sources/freeipa/)
 :::
 
 -   Server URI: URI to your LDAP server/Domain Controller.

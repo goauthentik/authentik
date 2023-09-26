@@ -56,5 +56,5 @@ Here is an example of a complete authentik Twitch OAuth Source
 Save, and you now have Twitch as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../general#add-sources-to-default-login-page).
+For more details on how-to have the new source display on the Login Page see [here](../../../docs/sources/#add-sources-to-default-login-page).
 :::

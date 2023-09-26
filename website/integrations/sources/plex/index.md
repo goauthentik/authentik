@@ -23,5 +23,5 @@ Add _Plex_ as a _source_
 Save, and you now have Plex as a source.
 
 :::note
-For more details on how-to have the new source display on the Login Page see [here](../general#add-sources-to-default-login-page).
+For more details on how-to have the new source display on the Login Page see [here](../../../docs/sources/#add-sources-to-default-login-page).
 :::

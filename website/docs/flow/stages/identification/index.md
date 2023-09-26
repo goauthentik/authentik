@@ -12,7 +12,11 @@ Select which fields the user can use to identify themselves. Multiple fields can
 -   Email
 -   UPN
 
-    UPN will attempt to identify the user based on the `upn` attribute, which can be imported with an [LDAP Source](/integrations/sources/ldap/)
+    UPN will attempt to identify the user based on the `upn` attribute, which can be imported with an [LDAP Source](../../../sources/ldap/)
+
+:::info
+Starting with authentik 2023.5, when no user fields are selected and only one source is selected, authentik will automatically redirect the user to that source.
+:::
 
 ## Password stage
 
