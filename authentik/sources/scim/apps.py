@@ -9,4 +9,3 @@ class AuthentikSourceSCIMConfig(AppConfig):
     name = "authentik.sources.scim"
     label = "authentik_sources_scim"
     verbose_name = "authentik Sources.SCIM"
-    mountpoint = "source/scim/"

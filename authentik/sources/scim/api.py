@@ -6,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 from authentik.core.api.sources import SourceSerializer
 from authentik.core.api.tokens import TokenSerializer
 from authentik.core.api.used_by import UsedByMixin
-from authentik.core.models import USER_ATTRIBUTE_SA, Token, TokenIntents, User
+from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.sources.scim.models import SCIMSource
 
 
@@ -32,7 +32,7 @@ class SCIMSourceSerializer(SourceSerializer):
         user = User.objects.create(
             username=identifier,
             name=f"SCIM Source {instance.name} Service-Account",
-            attributes={USER_ATTRIBUTE_SA: True},
+            type=UserTypes.SERVICE_ACCOUNT,
         )
         token = Token.objects.create(
             user=user,
