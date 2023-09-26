@@ -29,7 +29,7 @@ class Command(BaseCommand):
             no_color=False,
             quiet=True,
             optimization="fair",
-            autoscale=(3, 1),
+            autoscale=(CONFIG.get_int("worker.concurrency"), 1),
             task_events=True,
             beat=options.get("beat", True),
             schedule_filename=f"{tempdir}/celerybeat-schedule",
