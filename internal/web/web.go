@@ -8,9 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"os/signal"
 	"path"
-	"syscall"
 	"time"
 
 	"github.com/gorilla/handlers"
@@ -95,19 +93,6 @@ func NewWebServer() *WebServer {
 		}
 		return false
 	})
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, syscall.SIGHUP, syscall.SIGUSR2)
-	go func() {
-		sig := <-c
-		if sig == syscall.SIGHUP {
-			log.Info("SIGHUP received, forwarding to gunicorn")
-			ws.g.Reload()
-		}
-		if sig == syscall.SIGUSR2 {
-			log.Info("SIGUSR2 received, restarting gunicorn")
-			ws.g.Restart()
-		}
-	}()
 	return ws
 }
 

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"os/signal"
 	"runtime"
 	"strconv"
 	"strings"
@@ -39,23 +40,36 @@ func New(healthcheck func() bool) *GoUnicorn {
 		HealthyCallback: func() {},
 	}
 	g.initCmd()
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, syscall.SIGHUP, syscall.SIGUSR2)
+	go func() {
+		for sig := range c {
+			if sig == syscall.SIGHUP {
+				g.log.Info("SIGHUP received, forwarding to gunicorn")
+				g.Reload()
+			} else if sig == syscall.SIGUSR2 {
+				g.log.Info("SIGUSR2 received, restarting gunicorn")
+				g.Restart()
+			}
+		}
+	}()
 	return g
 }
 
 func (g *GoUnicorn) initCmd() {
-	pidFile, err := os.CreateTemp("", "authentik-gunicorn.*.pid")
-	if err != nil {
-		panic(fmt.Errorf("failed to create temporary pid file: %v", err))
-	}
-	g.pidFile = pidFile.Name()
-	command := "gunicorn"
-	args := []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
-	if g.pidFile != "" {
-		args = append(args, "--pid", g.pidFile)
-	}
-	if config.Get().Debug {
-		command = "./manage.py"
-		args = []string{"dev_server"}
+	command := "./manage.py"
+	args := []string{"dev_server"}
+	if !config.Get().Debug {
+		pidFile, err := os.CreateTemp("", "authentik-gunicorn.*.pid")
+		if err != nil {
+			panic(fmt.Errorf("failed to create temporary pid file: %v", err))
+		}
+		g.pidFile = pidFile.Name()
+		command = "gunicorn"
+		args = []string{"-c", "./lifecycle/gunicorn.conf.py", "authentik.root.asgi:application"}
+		if g.pidFile != "" {
+			args = append(args, "--pid", g.pidFile)
+		}
 	}
 	g.log.WithField("args", args).WithField("cmd", command).Debug("Starting gunicorn")
 	g.p = exec.Command(command, args...)

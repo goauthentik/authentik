@@ -14,7 +14,7 @@ func FindProcess(pid int) (*os.Process, error) {
 	// The error doesn't mean anything on Unix systems, let's just check manually
 	// that the new gunicorn master has properly started
 	// https://github.com/golang/go/issues/34396
-	proc, err := os.FindProcess(int(pid))
+	proc, err := os.FindProcess(pid)
 	if err != nil {
 		return nil, err
 	}
