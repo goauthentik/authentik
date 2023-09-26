@@ -97,7 +97,7 @@ In this use case, you will create an expression policy, in which you define serv
     return jwt["sub"] in allowed_sa
     ```
 
-    Then the rest is same as in the first use case; obtain a JWT from the K8s cluster, send the token to authentik, get back a diff token, then send that token to Thanos, Mimir, or where ever you want to store the metrics. Prometheus then uses that token to authenticate incoming requests from the other clusters. Actually, you can configure Promethesus to do the token exchange work, by using their `remote_write` feature. For an example of how this can be set up, refer to this YAML file, where I configured `remote_write`.
+    Then the rest is same as in the first use case; obtain a JWT from the K8s cluster, send the token to authentik, get back a diff token, then send that token to Thanos, Mimir, or where ever you want to store the metrics. Prometheus then uses that token to authenticate incoming requests from the other clusters. Actually, you can configure Promethesus to do the token exchange work, by using the `oauth2` configuration option. For an example of how this can be set up, refer to [this YAML file](https://github.com/BeryJu/k8s/blob/b4b26e5/common-monitoring/monitoring-system/prom-agent.yaml#L24-L39), where I configured `remote_write`.
 
 **3. GitOps with M2M and Loki**
 
