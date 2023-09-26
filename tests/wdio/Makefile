@@ -37,5 +37,5 @@ test-bad-login: node_modules admin-user  ## Test that bad usernames and password
 	$(SPEC)/bad-logins.ts
 
 
-test-application-wizard-ldap: node_modules admin-user
-	$(SPEC)/new-wizard-ldap-application.ts
+test-application-wizard:
+	$(SPEC)/new-application-by-wizard.ts

@@ -4,8 +4,9 @@ import Page from "../pageobjects/page.js";
 const CLICK_TIME_DELAY = 250;
 
 export default class AdminPage extends Page {
+
     public get pageHeader() {
-        return $(">>>ak-page-header h1");
+        return $('>>>ak-page-header slot[name="header"]');
     }
 
     async openApplicationsListPage() {

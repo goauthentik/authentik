@@ -7,7 +7,7 @@ import "./oauth/ak-application-wizard-authentication-by-oauth";
 import "./proxy/ak-application-wizard-authentication-for-reverse-proxy";
 import "./proxy/ak-application-wizard-authentication-for-single-forward-proxy";
 import "./saml/ak-application-wizard-authentication-by-saml-configuration";
-import "./saml/ak-application-wizard-authentication-by-saml-import";
+import "./scim/ak-application-wizard-authentication-by-scim";
 
 // prettier-ignore
 

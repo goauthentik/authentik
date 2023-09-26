@@ -10,6 +10,7 @@ import "@goauthentik/elements/forms/HorizontalFormElement";
 import { msg } from "@lit/localize";
 import { customElement, state } from "@lit/reactive-element/decorators.js";
 import { TemplateResult, css, html, nothing } from "lit";
+import { classMap } from "lit/directives/class-map.js";
 
 import PFEmptyState from "@patternfly/patternfly/components/EmptyState/empty-state.css";
 import PFProgressStepper from "@patternfly/patternfly/components/ProgressStepper/progress-stepper.css";
@@ -19,6 +20,7 @@ import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import {
     ApplicationRequest,
     CoreApi,
+    ProxyMode,
     TransactionApplicationRequest,
     TransactionApplicationResponse,
 } from "@goauthentik/api";
@@ -37,15 +39,34 @@ function cleanApplication(app: Partial<ApplicationRequest>): ApplicationRequest 
 
 type ProviderModelType = Exclude<ModelRequest["providerModel"], "11184809">;
 
-type State = { state: "idle" | "running" | "error" | "done"; label: string | TemplateResult };
+type State = {
+    state: "idle" | "running" | "error" | "success";
+    label: string | TemplateResult;
+    icon: string[];
+};
 
-const idleState: State = { state: "idle", label: "" };
-const runningState: State = { state: "running", label: msg("Saving Application...") };
+const idleState: State = {
+    state: "idle",
+    label: "",
+    icon: ["fa-cogs", "pf-m-pending"],
+};
+
+const runningState: State = {
+    state: "running",
+    label: msg("Saving Application..."),
+    icon: ["fa-cogs", "pf-m-info"],
+};
 const errorState: State = {
     state: "error",
     label: msg("There was an error in saving your application:"),
+    icon: ["fa-times-circle", "pf-m-danger"],
 };
-const doneState: State = { state: "done", label: msg("Your application has been saved") };
+
+const successState: State = {
+    state: "success",
+    label: msg("Your application has been saved"),
+    icon: ["fa-check-circle", "pf-m-success"],
+};
 
 function extract(o: Record<string, any>): string[] {
     function inner(o: Record<string, any>): string[] {
@@ -92,10 +113,10 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         if (this.commitState === idleState) {
             this.response = undefined;
             this.commitState = runningState;
-            const provider = providerModelsList.find(
+            const providerModel = providerModelsList.find(
                 ({ formName }) => formName === this.wizard.providerModel,
             );
-            if (!provider) {
+            if (!providerModel) {
                 throw new Error(
                     `Could not determine provider model from user request: ${JSON.stringify(
                         this.wizard,
@@ -105,10 +126,26 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                 );
             }
 
+            const provider = (() => {
+                if (this.wizard.providerModel === "proxyprovider-forwardsingle") {
+                    return {
+                        ...providerModel.converter(this.wizard.provider),
+                        mode: ProxyMode.ForwardSingle,
+                    };
+                }
+                if (this.wizard.providerModel === "proxyprovider-proxy") {
+                    return {
+                        ...providerModel.converter(this.wizard.provider),
+                        mode: ProxyMode.Proxy,
+                    };
+                }
+                return providerModel.converter(this.wizard.provider);
+            })();
+
             const request: TransactionApplicationRequest = {
-                providerModel: provider.modelName as ProviderModelType,
+                providerModel: providerModel.modelName as ProviderModelType,
                 app: cleanApplication(this.wizard.app),
-                provider: provider.converter(this.wizard.provider),
+                provider,
             };
 
             this.send(request);
@@ -129,7 +166,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                 this.response = response;
                 this.dispatchCustomEvent(EVENT_REFRESH);
                 this.dispatchWizardUpdate({ status: "submitted" });
-                this.commitState = doneState;
+                this.commitState = successState;
             })
             .catch((resolution: any) => {
                 resolution.response.json().then((body: Record<string, any>) => {
@@ -140,16 +177,23 @@ export class ApplicationWizardCommitApplication extends BasePanel {
     }
 
     render(): TemplateResult {
+        const icon = classMap(this.commitState.icon.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}));
+
         return html`
             <div>
                 <div class="pf-l-bullseye">
                     <div class="pf-c-empty-state pf-m-lg">
                         <div class="pf-c-empty-state__content">
                             <i
-                                class="fas fa- fa-cogs pf-c-empty-state__icon"
+                                class="fas fa- ${icon} pf-c-empty-state__icon"
                                 aria-hidden="true"
                             ></i>
-                            <h1 class="pf-c-title pf-m-lg">${this.commitState.label}</h1>
+                            <h1
+                                data-commit-state=${this.commitState.state}
+                                class="pf-c-title pf-m-lg"
+                            >
+                                ${this.commitState.label}
+                            </h1>
                             ${this.errors.length > 0
                                 ? html`<ul>
                                       ${this.errors.map(

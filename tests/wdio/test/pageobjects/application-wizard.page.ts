@@ -1,12 +1,17 @@
-import { $ } from "@wdio/globals";
 import AdminPage from "./admin.page.js";
-import ApplicationForm from "./application-form.view.js";
-import LdapForm from "./ldap-form.view.js";
-import OauthForm from "./oauth-form.view.js";
+import ApplicationForm from "./forms/application.form.js";
+import LdapForm from "./forms/ldap.form.js";
+import OauthForm from "./forms/oauth.form.js";
+import TransparentProxyForm from "./forms/transparent-proxy.form.js";
+import ForwardProxyForm from "./forms/forward-proxy.form.js";
+import SamlForm from "./forms/saml.form.js";
+import ScimForm from "./forms/scim.form.js";
+import { $ } from "@wdio/globals";
 
 /**
  * sub page containing specific selectors and methods for a specific page
  */
+
 class ApplicationWizardView extends AdminPage {
     /**
      * define selectors using getter methods
@@ -14,6 +19,10 @@ class ApplicationWizardView extends AdminPage {
 
     ldap = LdapForm;
     oauth = OauthForm;
+    transparentProxy = TransparentProxyForm;
+    forwardProxy = ForwardProxyForm;
+    saml = SamlForm;
+    scim = ScimForm;
     app = ApplicationForm;
 
     get wizardTitle() {
@@ -32,9 +41,33 @@ class ApplicationWizardView extends AdminPage {
         return await this.providerList.$(`>>>input[value="${type}"]`);
     }
 
-    get commitMessage() {
-        return $(">>>ak-application-wizard-commit-application h1.pf-c-title");
+    get successMessage() {
+        return $('>>>[data-commit-state="success"]')
     }
 }
+
+type Pair = [string, string];
+
+// Define a getter for each provider type in the radio button collection.
+
+const providerValues: Pair[] = [
+    ["oauth2provider", "oauth2Provider"],
+    ["ldapprovider", "ldapProvider"],
+    ["proxyprovider-proxy", "proxyProviderProxy"],
+    ["proxyprovider-forwardsingle", "proxyProviderForwardsingle"],
+    ["radiusprovider", "radiusProvider"],
+    ["samlprovider", "samlProvider"],
+    ["scimprovider", "scimProvider"],
+];
+
+providerValues.forEach(([value, name]: Pair) => {
+    Object.defineProperties(ApplicationWizardView.prototype, {
+        [name]: {
+            get: function () {
+                return this.providerList.$(`>>>input[value="${value}"]`);
+            },
+        },
+    });
+});
 
 export default new ApplicationWizardView();

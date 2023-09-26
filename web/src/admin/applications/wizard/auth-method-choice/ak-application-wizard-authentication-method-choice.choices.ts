@@ -9,6 +9,7 @@ import type {
     OAuth2ProviderRequest,
     ProxyProviderRequest,
     SAMLProviderRequest,
+    SCIMProviderRequest,
 } from "@goauthentik/api";
 
 import { OneOfProvider } from "../types";
@@ -57,18 +58,18 @@ const _providerModelsTable: ProviderType[] = [
 
     ],
     [
-        "samlprovider-manual",
+        "samlprovider",
         msg("SAML Manual configuration"),
         msg("Configure SAML provider manually"),
         () => html`<ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>`,
         ProviderModelEnum.SamlSamlprovider
     ],
     [
-        "samlprovider-import",
-        msg("SAML Import Configuration"),
-        msg("Create a SAML provider by importing its metadata"),
-        () => html`<ak-application-wizard-authentication-by-saml-import></ak-application-wizard-authentication-by-saml-import>`,
-        ProviderModelEnum.SamlSamlprovider
+        "scimprovider",
+        msg("SCIM Manual configuration"),
+        msg("Configure SCIM provider manually"),
+        () => html`<ak-application-wizard-authentication-by-scim></ak-application-wizard-authentication-by-scim>`,
+        ProviderModelEnum.ScimScimprovider
     ],
 ];
 
@@ -99,6 +100,13 @@ const converters = new Map<ProviderModelEnumType, ModelConverter>([
         (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.SamlSamlprovider,
             ...(provider as SAMLProviderRequest),
+        }),
+    ],
+    [
+        ProviderModelEnum.ScimScimprovider,
+        (provider: OneOfProvider) => ({
+            providerModel: ProviderModelEnum.ScimScimprovider,
+            ...(provider as SCIMProviderRequest),
         }),
     ],
 ]);
