@@ -616,8 +616,10 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         if not request.user.has_perm("impersonate"):
             LOGGER.debug("User attempted to impersonate without permissions", user=request.user)
             return Response(status=401)
-
         user_to_be = self.get_object()
+        if user_to_be.pk == self.request.user.pk:
+            LOGGER.debug("User attempted to impersonate themselves", user=request.user)
+            return Response(status=401)
 
         request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
         request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be
