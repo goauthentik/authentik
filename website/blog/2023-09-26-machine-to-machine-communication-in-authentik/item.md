@@ -39,7 +39,7 @@ Where there is communication in software systems, there is both authentication a
 
 So in some ways you can think of M2M as being like an internal API, with data (tokens and keys and certs and all thing access-related) being passed back and forth, but specifically for authentication and authorization processes.
 
-!["Screenshot of authetnik UI"](./image1.png)
+!["Screenshot of authentik UI"](./image1.png)
 
 <!--truncate-->
 
