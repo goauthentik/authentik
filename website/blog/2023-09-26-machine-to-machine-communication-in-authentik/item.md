@@ -18,7 +18,7 @@ tags:
     - Kubernetes
     - Loki
 hide_table_of_contents: false
-image: ./image1.png
+image: ./Image1.png
 ---
 
 We have provided M2M communication in authentik for the past year, and in this blog we want to share some more information about how it works in authentik, and take a look at three use cases.
@@ -39,7 +39,7 @@ Where there is communication in software systems, there is both authentication a
 
 So in some ways you can think of M2M as being like an internal API, with data (tokens and keys and certs and all thing access-related) being passed back and forth, but specifically for authentication and authorization processes.
 
-!["Screenshot of authentik UI"](./image1.png)
+!["Screenshot of authentik UI"](./Image1.png)
 
 <!--truncate-->
 
