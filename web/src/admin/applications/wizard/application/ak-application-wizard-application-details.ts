@@ -72,8 +72,8 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
                 .options=${policyOptions}
                 .value=${this.wizard.app?.policyEngineMode}
             ></ak-radio-input>
-            <ak-form-group>
-                <span slot="header"> ${msg("UI settings")} </span>
+            <ak-form-group aria-label="UI Settings">
+                <span slot="header"> ${msg("UI Settings")} </span>
                 <div slot="body" class="pf-c-form">
                     <ak-text-input
                         name="metaLaunchUrl"

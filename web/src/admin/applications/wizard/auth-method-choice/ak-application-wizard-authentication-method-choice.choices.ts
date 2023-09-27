@@ -8,6 +8,7 @@ import type {
     ModelRequest,
     OAuth2ProviderRequest,
     ProxyProviderRequest,
+    RadiusProviderRequest,
     SAMLProviderRequest,
     SCIMProviderRequest,
 } from "@goauthentik/api";
@@ -59,10 +60,17 @@ const _providerModelsTable: ProviderType[] = [
     ],
     [
         "samlprovider",
-        msg("SAML Manual configuration"),
+        msg("SAML Configuration"),
         msg("Configure SAML provider manually"),
         () => html`<ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>`,
         ProviderModelEnum.SamlSamlprovider
+    ],
+    [
+        "radiusprovider",
+        msg("RADIUS Configuration"),
+        msg("Configure RADIUS provider manually"),
+        () => html`<ak-application-wizard-authentication-by-radius></ak-application-wizard-authentication-by-radius>`,
+        ProviderModelEnum.RadiusRadiusprovider
     ],
     [
         "scimprovider",
@@ -107,6 +115,13 @@ const converters = new Map<ProviderModelEnumType, ModelConverter>([
         (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.ScimScimprovider,
             ...(provider as SCIMProviderRequest),
+        }),
+    ],
+    [
+        ProviderModelEnum.RadiusRadiusprovider,
+        (provider: OneOfProvider) => ({
+            providerModel: ProviderModelEnum.RadiusRadiusprovider,
+            ...(provider as RadiusProviderRequest),
         }),
     ],
 ]);

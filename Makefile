@@ -28,10 +28,13 @@ CODESPELL_ARGS = -D - -D .github/codespell-dictionary.txt \
 
 all: lint-fix lint test gen web  ## Lint, build, and test everything
 
+HELP_WIDTH := $(shell grep -h '^[a-z][^ ]*:.*\#\#' $(MAKEFILE_LIST) 2>/dev/null | \
+	cut -d':' -f1 | awk '{printf "%d\n", length}' | sort -rn | head -1)
+
 help:  ## Show this help
 	@echo "\nSpecify a command. The choices are:\n"
-	@grep -E '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[0;36m%-24s\033[m %s\n", $$1, $$2}' | \
+	@grep -Eh '^[0-9a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[0;36m%-$(HELP_WIDTH)s  \033[m %s\n", $$1, $$2}' | \
 		sort
 	@echo ""
 

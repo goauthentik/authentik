@@ -25,6 +25,9 @@ export class FormGroup extends AKElement {
     @property({ type: Boolean, reflect: true })
     expanded = false;
 
+    @property({ type: String, attribute: "aria-label", reflect: true })
+    ariaLabel = "Details";
+
     static get styles(): CSSResult[] {
         return [
             PFBase,
@@ -47,7 +50,7 @@ export class FormGroup extends AKElement {
                         class="pf-c-button pf-m-plain"
                         type="button"
                         aria-expanded="${this.expanded}"
-                        aria-label="Details"
+                        aria-label=${this.ariaLabel}
                         @click=${() => {
                             this.expanded = !this.expanded;
                         }}

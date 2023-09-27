@@ -177,7 +177,9 @@ export class ApplicationWizardCommitApplication extends BasePanel {
     }
 
     render(): TemplateResult {
-        const icon = classMap(this.commitState.icon.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}));
+        const icon = classMap(
+            this.commitState.icon.reduce((acc, icon) => ({ ...acc, [icon]: true }), {}),
+        );
 
         return html`
             <div>

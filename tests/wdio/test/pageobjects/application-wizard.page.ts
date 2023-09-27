@@ -6,6 +6,7 @@ import TransparentProxyForm from "./forms/transparent-proxy.form.js";
 import ForwardProxyForm from "./forms/forward-proxy.form.js";
 import SamlForm from "./forms/saml.form.js";
 import ScimForm from "./forms/scim.form.js";
+import RadiusForm from "./forms/radius.form.js";
 import { $ } from "@wdio/globals";
 
 /**
@@ -23,6 +24,7 @@ class ApplicationWizardView extends AdminPage {
     forwardProxy = ForwardProxyForm;
     saml = SamlForm;
     scim = ScimForm;
+    radius = RadiusForm;
     app = ApplicationForm;
 
     get wizardTitle() {
