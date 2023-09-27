@@ -21,6 +21,10 @@ hide_table_of_contents: false
 image: ./Image1.png
 ---
 
+> **_authentik is a unified identity platform that helps with all of your authentication needs, replacing Okta, Active Directory, Auth0 and more. Building on the open-source project, Authentik Security Inc is a public benefit company that provides additional features and support._**
+
+---
+
 We have provided M2M communication in authentik for the past year, and in this blog we want to share some more information about how it works in authentik, and take a look at three use cases.
 
 ## What is M2M?
