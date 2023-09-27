@@ -3,6 +3,7 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
+import { me } from "@goauthentik/app/common/users";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -37,6 +38,7 @@ import {
     CoreUsersListTypeEnum,
     Group,
     ResponseError,
+    SessionUser,
     User,
 } from "@goauthentik/api";
 
@@ -123,12 +125,15 @@ export class RelatedUserList extends Table<User> {
     @property({ type: Boolean })
     hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
 
+    @state()
+    me?: SessionUser;
+
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDescriptionList, PFAlert, PFBanner);
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersList({
+        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
@@ -138,6 +143,8 @@ export class RelatedUserList extends Table<User> {
                 ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]
                 : undefined,
         });
+        this.me = await me();
+        return users;
     }
 
     columns(): TableColumn[] {
@@ -181,6 +188,9 @@ export class RelatedUserList extends Table<User> {
     }
 
     row(item: User): TemplateResult[] {
+        const canImpersonate =
+            rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
+            item.pk !== this.me?.user.pk;
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
@@ -200,7 +210,7 @@ export class RelatedUserList extends Table<User> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate)
+                ${canImpersonate
                     ? html`
                           <ak-action-button
                               class="pf-m-tertiary"

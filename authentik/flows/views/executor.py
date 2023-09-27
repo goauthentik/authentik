@@ -42,6 +42,7 @@ from authentik.flows.models import (
     FlowDesignation,
     FlowStageBinding,
     FlowToken,
+    InvalidResponseAction,
     Stage,
 )
 from authentik.flows.planner import (
@@ -105,7 +106,7 @@ class FlowExecutorView(APIView):
     flow: Flow
 
     plan: Optional[FlowPlan] = None
-    current_binding: FlowStageBinding
+    current_binding: Optional[FlowStageBinding] = None
     current_stage: Stage
     current_stage_view: View
 
@@ -411,6 +412,19 @@ class FlowExecutorView(APIView):
         Optionally, an exception can be passed, which will be shown if the current user
         is a superuser."""
         self._logger.debug("f(exec): Stage invalid")
+        if self.current_binding and self.current_binding.invalid_response_action in [
+            InvalidResponseAction.RESTART,
+            InvalidResponseAction.RESTART_WITH_CONTEXT,
+        ]:
+            keep_context = (
+                self.current_binding.invalid_response_action
+                == InvalidResponseAction.RESTART_WITH_CONTEXT
+            )
+            self._logger.debug(
+                "f(exec): Invalid response, restarting flow",
+                keep_context=keep_context,
+            )
+            return self.restart_flow(keep_context)
         self.cancel()
         challenge_view = AccessDeniedChallengeView(self, error_message)
         challenge_view.request = self.request

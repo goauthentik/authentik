@@ -160,7 +160,7 @@ gen: gen-build gen-clean gen-client-ts
 web-build: web-install  ## Build the Authentik UI
 	cd web && npm run build
 
-web: web-lint-fix web-lint web-check-compile ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
+web: web-lint-fix web-lint web-check-compile web-i18n-extract  ## Automatically fix formatting issues in the Authentik UI source code, lint the code, and compile it
 
 web-install:  ## Install the necessary libraries to build the Authentik UI
 	cd web && npm ci

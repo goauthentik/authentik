@@ -9,6 +9,7 @@ import (
 	"github.com/getsentry/sentry-go"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+
 	"goauthentik.io/internal/common"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/constants"

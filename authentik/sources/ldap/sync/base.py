@@ -133,7 +133,7 @@ class BaseLDAPSynchronizer:
     def build_user_properties(self, user_dn: str, **kwargs) -> dict[str, Any]:
         """Build attributes for User object based on property mappings."""
         props = self._build_object_properties(user_dn, self._source.property_mappings, **kwargs)
-        props["path"] = self._source.get_user_path()
+        props.setdefault("path", self._source.get_user_path())
         return props
 
     def build_group_properties(self, group_dn: str, **kwargs) -> dict[str, Any]:
@@ -151,7 +151,9 @@ class BaseLDAPSynchronizer:
                 continue
             mapping: LDAPPropertyMapping
             try:
-                value = mapping.evaluate(user=None, request=None, ldap=kwargs, dn=object_dn)
+                value = mapping.evaluate(
+                    user=None, request=None, ldap=kwargs, dn=object_dn, source=self._source
+                )
                 if value is None:
                     self._logger.warning("property mapping returned None", mapping=mapping)
                     continue

@@ -5921,6 +5921,27 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="sfb852dd507c25c24">
   <source>Discouraged: The authenticator should not create a dedicated credential</source>
 </trans-unit>
+<trans-unit id="s028d385389b5aac0">
+  <source>Lock the user out of this system</source>
+</trans-unit>
+<trans-unit id="sd2122c514f0778b5">
+  <source>Allow the user to log in and use this system</source>
+</trans-unit>
+<trans-unit id="s43fe853bf219a9b8">
+  <source>Temporarily assume the identity of this user</source>
+</trans-unit>
+<trans-unit id="se28b5f3fcadaeeb1">
+  <source>Enter a new password for this user</source>
+</trans-unit>
+<trans-unit id="s6f5bb31e2733ecd5">
+  <source>Create a link for this user to reset their password</source>
+</trans-unit>
+<trans-unit id="s67ac11d47f1ce794">
+  <source>WebAuthn requires this page to be accessed via HTTPS.</source>
+</trans-unit>
+<trans-unit id="se9e9e1d6799b86a5">
+  <source>WebAuthn not supported by browser.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
