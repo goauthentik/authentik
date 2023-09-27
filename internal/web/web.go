@@ -9,6 +9,7 @@ import (
 	"net/url"
 	"os"
 	"path"
+	"time"
 
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
@@ -109,6 +110,21 @@ func (ws *WebServer) attemptStartBackend() {
 		}
 		err := ws.g.Start()
 		log.WithField("logger", "authentik.router").WithError(err).Warning("gunicorn process died, restarting")
+		if err != nil {
+			log.WithField("logger", "authentik.router").WithError(err).Error("gunicorn failed to start, restarting")
+			continue
+		}
+		failedChecks := 0
+		for range time.NewTicker(30 * time.Second).C {
+			if !ws.g.IsRunning() {
+				log.WithField("logger", "authentik.router").Warningf("gunicorn process failed healthcheck %d times", failedChecks)
+				failedChecks += 1
+			}
+			if failedChecks >= 3 {
+				log.WithField("logger", "authentik.router").WithError(err).Error("gunicorn process failed healthcheck three times, restarting")
+				break
+			}
+		}
 	}
 }
 
