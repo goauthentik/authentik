@@ -32,7 +32,7 @@ module.exports = async function (): Promise<Config> {
                     },
                     {
                         to: "docs/",
-                        label: "Docs",
+                        label: "Documentation",
                         position: "left",
                     },
                     {
