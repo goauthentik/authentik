@@ -60,6 +60,12 @@ const docsSidebar = {
         {
             type: "category",
             label: "Providers",
+            link: {
+                type: "generated-index",
+                title: "Providers",
+                slug: "providers",
+                description: "Overview of all available provider types",
+            },
             items: [
                 {
                     type: "category",
