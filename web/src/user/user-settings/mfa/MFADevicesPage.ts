@@ -1,4 +1,5 @@
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { deviceTypeName } from "@goauthentik/common/labels";
 import "@goauthentik/elements/buttons/Dropdown";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/TokenCopyButton";
@@ -15,23 +16,8 @@ import { ifDefined } from "lit/directives/if-defined.js";
 
 import { AuthenticatorsApi, Device, UserSetting } from "@goauthentik/api";
 
-export function stageToAuthenticatorName(stage: UserSetting): string {
-    if (stage.title) {
-        return stage.title;
-    }
-    return `Invalid stage component ${stage.component}`;
-}
-
-export function deviceTypeName(device: Device): string {
-    switch (device.type) {
-        case "authentik_stages_authenticator_static.StaticDevice":
-            return msg("Static tokens");
-        case "authentik_stages_authenticator_totp.TOTPDevice":
-            return msg("TOTP Device");
-        default:
-            return device.verboseName;
-    }
-}
+export const stageToAuthenticatorName = (stage: UserSetting) =>
+    stage.title ?? `Invalid stage component ${stage.component}`;
 
 @customElement("ak-user-settings-mfa")
 export class MFADevicesPage extends Table<Device> {
@@ -57,7 +43,12 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn(msg("Name")), new TableColumn(msg("Type")), new TableColumn("")];
+        // prettier-ignore
+        return [
+            msg("Name"),
+            msg("Type"),
+            ""
+        ].map((th) => new TableColumn(th, ""));
     }
 
     renderToolbar(): TemplateResult {
@@ -93,27 +84,19 @@ export class MFADevicesPage extends Table<Device> {
     }
 
     async deleteWrapper(device: Device) {
+        const api = new AuthenticatorsApi(DEFAULT_CONFIG);
+        const id = { id: device.pk };
         switch (device.type) {
             case "authentik_stages_authenticator_duo.DuoDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsDuoDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsDuoDestroy(id);
             case "authentik_stages_authenticator_sms.SMSDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsSmsDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsSmsDestroy(id);
             case "authentik_stages_authenticator_totp.TOTPDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsTotpDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsTotpDestroy(id);
             case "authentik_stages_authenticator_static.StaticDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsStaticDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsStaticDestroy(id);
             case "authentik_stages_authenticator_webauthn.WebAuthnDevice":
-                return new AuthenticatorsApi(DEFAULT_CONFIG).authenticatorsWebauthnDestroy({
-                    id: device.pk,
-                });
+                return api.authenticatorsWebauthnDestroy(id);
             default:
                 break;
         }

@@ -3,6 +3,7 @@ import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { convertToTitle } from "@goauthentik/common/utils";
+import "@goauthentik/components/events/ObjectChangelog";
 import MDProviderOAuth2 from "@goauthentik/docs/providers/oauth2/index.md";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
@@ -11,7 +12,6 @@ import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";

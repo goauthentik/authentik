@@ -3,6 +3,7 @@ import { first, groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
 
 import { msg } from "@lit/localize";
@@ -297,6 +298,26 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                     class="pf-c-form-control"
                     required
                 />
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal name="failureResult" label=${msg("Failure result")}>
+                <ak-radio
+                    .options=${[
+                        {
+                            label: msg("Pass"),
+                            value: true,
+                        },
+                        {
+                            label: msg("Don't pass"),
+                            value: false,
+                            default: true,
+                        },
+                    ]}
+                    .value=${this.instance?.failureResult}
+                >
+                </ak-radio>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Result used when policy execution fails.")}
+                </p>
             </ak-form-element-horizontal>
         </form>`;
     }

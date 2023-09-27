@@ -42,6 +42,7 @@ from authentik.flows.models import (
     FlowDesignation,
     FlowStageBinding,
     FlowToken,
+    InvalidResponseAction,
     Stage,
 )
 from authentik.flows.planner import (
@@ -73,40 +74,23 @@ QS_QUERY = "query"
 
 
 def challenge_types():
-    """This is a workaround for PolymorphicProxySerializer not accepting a callable for
-    `serializers`. This function returns a class which is an iterator, which returns the
+    """This function returns a mapping which contains all subclasses of challenges
     subclasses of Challenge, and Challenge itself."""
-
-    class Inner(dict):
-        """dummy class with custom callback on .items()"""
-
-        def items(self):
-            mapping = {}
-            classes = all_subclasses(Challenge)
-            classes.remove(WithUserInfoChallenge)
-            for cls in classes:
-                mapping[cls().fields["component"].default] = cls
-            return mapping.items()
-
-    return Inner()
+    mapping = {}
+    for cls in all_subclasses(Challenge):
+        if cls == WithUserInfoChallenge:
+            continue
+        mapping[cls().fields["component"].default] = cls
+    return mapping
 
 
 def challenge_response_types():
-    """This is a workaround for PolymorphicProxySerializer not accepting a callable for
-    `serializers`. This function returns a class which is an iterator, which returns the
+    """This function returns a mapping which contains all subclasses of challenges
     subclasses of Challenge, and Challenge itself."""
-
-    class Inner(dict):
-        """dummy class with custom callback on .items()"""
-
-        def items(self):
-            mapping = {}
-            classes = all_subclasses(ChallengeResponse)
-            for cls in classes:
-                mapping[cls(stage=None).fields["component"].default] = cls
-            return mapping.items()
-
-    return Inner()
+    mapping = {}
+    for cls in all_subclasses(ChallengeResponse):
+        mapping[cls(stage=None).fields["component"].default] = cls
+    return mapping
 
 
 class InvalidStageError(SentryIgnoredException):
@@ -122,7 +106,7 @@ class FlowExecutorView(APIView):
     flow: Flow
 
     plan: Optional[FlowPlan] = None
-    current_binding: FlowStageBinding
+    current_binding: Optional[FlowStageBinding] = None
     current_stage: Stage
     current_stage_view: View
 
@@ -264,7 +248,7 @@ class FlowExecutorView(APIView):
         responses={
             200: PolymorphicProxySerializer(
                 component_name="ChallengeTypes",
-                serializers=challenge_types(),
+                serializers=challenge_types,
                 resource_type_field_name="component",
             ),
         },
@@ -304,13 +288,13 @@ class FlowExecutorView(APIView):
         responses={
             200: PolymorphicProxySerializer(
                 component_name="ChallengeTypes",
-                serializers=challenge_types(),
+                serializers=challenge_types,
                 resource_type_field_name="component",
             ),
         },
         request=PolymorphicProxySerializer(
             component_name="FlowChallengeResponse",
-            serializers=challenge_response_types(),
+            serializers=challenge_response_types,
             resource_type_field_name="component",
         ),
         parameters=[
@@ -428,6 +412,19 @@ class FlowExecutorView(APIView):
         Optionally, an exception can be passed, which will be shown if the current user
         is a superuser."""
         self._logger.debug("f(exec): Stage invalid")
+        if self.current_binding and self.current_binding.invalid_response_action in [
+            InvalidResponseAction.RESTART,
+            InvalidResponseAction.RESTART_WITH_CONTEXT,
+        ]:
+            keep_context = (
+                self.current_binding.invalid_response_action
+                == InvalidResponseAction.RESTART_WITH_CONTEXT
+            )
+            self._logger.debug(
+                "f(exec): Invalid response, restarting flow",
+                keep_context=keep_context,
+            )
+            return self.restart_flow(keep_context)
         self.cancel()
         challenge_view = AccessDeniedChallengeView(self, error_message)
         challenge_view.request = self.request

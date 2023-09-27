@@ -2,12 +2,12 @@
 title: Configuration
 ---
 
-These are all the configuration options you can set via environment variables.
+This page details all the authentik configuration options that you can set via environment variables.
 
-Append any of the following keys to your `.env` file, and run `docker-compose up -d` to apply them.
+## About authentik configurations
 
 :::info
-The double-underscores are intentional, as all these settings are translated to yaml internally, a double-underscore indicates the next level.
+The double-underscores are intentional, as all these settings are translated to YAML internally, and a double-underscore indicates the next level (a subsetting).
 :::
 
 All of these variables can be set to values, but you can also use a URI-like format to load values from other places:
@@ -15,15 +15,45 @@ All of these variables can be set to values, but you can also use a URI-like for
 -   `env://<name>` Loads the value from the environment variable `<name>`. Fallback can be optionally set like `env://<name>?<default>`
 -   `file://<name>` Loads the value from the file `<name>`. Fallback can be optionally set like `file://<name>?<default>`
 
-## Checking settings
+## Set your environment variables
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+<Tabs>
+  <TabItem value="docker-compose" label="Docker Compose" default>
+    If you are using Docker Compose, edit your <code>.env</code> file to append any keys that you want to add, and then run the following command to apply them:
+
+    docker-compose up -d
+
+  </TabItem>
+  <TabItem value="kubernetes" label="Kubernetes">
+    If you are running in Kubernetes, edit your <code>values.yaml</code> file to append any keys that you want to add, and then run the following commands to apply:
+
+    helm repo update
+    helm upgrade --install authentik authentik/authentik -f values.yaml
+
+  </TabItem>
+
+</Tabs>
+
+## Verify your configuration settings
 
 To check if your config has been applied correctly, you can run the following command to output the full config:
 
-```
-docker-compose run --rm worker dump_config
-# Or for kubernetes
-kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
-```
+<Tabs>
+  <TabItem value="docker-compose" label="Docker Compose" default>
+
+    docker-compose run --rm worker dump_config
+
+  </TabItem>
+  <TabItem value="kubernetes" label="Kubernetes">
+
+    kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
+
+  </TabItem>
+
+</Tabs>
 
 ## PostgreSQL Settings
 
@@ -33,6 +63,7 @@ kubectl exec -it deployment/authentik-worker -c authentik -- ak dump_config
 -   `AUTHENTIK_POSTGRESQL__PORT`: Database port, defaults to 5432
 -   `AUTHENTIK_POSTGRESQL__PASSWORD`: Database password, defaults to the environment variable `POSTGRES_PASSWORD`
 -   `AUTHENTIK_POSTGRESQL__USE_PGBOUNCER`: Adjust configuration to support connection to PgBouncer
+-   `AUTHENTIK_POSTGRESQL__USE_PGPOOL`: Adjust configuration to support connection to Pgpool
 -   `AUTHENTIK_POSTGRESQL__SSLMODE`: Strictness of ssl verification. Defaults to `verify-ca`
 -   `AUTHENTIK_POSTGRESQL__SSLROOTCERT`: CA root for server ssl verification
 -   `AUTHENTIK_POSTGRESQL__SSLCERT`: Path to x509 client certificate to authenticate to server
@@ -331,6 +362,16 @@ Requires authentik 2022.9
 Configure how many gunicorn threads a worker processes should have (see https://docs.gunicorn.org/en/stable/design.html).
 
 Defaults to 4.
+
+### `AUTHENTIK_WORKER__CONCURRENCY`
+
+:::info
+Requires authentik 2023.9.0
+:::
+
+Configure Celery worker concurrency for authentik worker (see https://docs.celeryq.dev/en/latest/userguide/configuration.html#worker-concurrency). This essentially defines the number of worker processes spawned for a single worker.
+
+Defaults to 2.
 
 ## Custom python settings
 

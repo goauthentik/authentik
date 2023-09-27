@@ -96,18 +96,18 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                         <ak-radio
                             .options=${[
                                 {
-                                    label: msg("User verification must occur."),
+                                    label: msg("Required: User verification must occur."),
                                     value: UserVerificationEnum.Required,
                                     default: true,
                                 },
                                 {
                                     label: msg(
-                                        "User verification is preferred if available, but not required.",
+                                        "Preferred: User verification is preferred if available, but not required.",
                                     ),
                                     value: UserVerificationEnum.Preferred,
                                 },
                                 {
-                                    label: msg("User verification should not occur."),
+                                    label: msg("Discouraged: User verification should not occur."),
                                     value: UserVerificationEnum.Discouraged,
                                 },
                             ]}
@@ -124,20 +124,20 @@ export class AuthenticateWebAuthnStageForm extends ModelForm<AuthenticateWebAuth
                             .options=${[
                                 {
                                     label: msg(
-                                        "The authenticator should not create a dedicated credential",
+                                        "Required: The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur",
                                     ),
                                     value: ResidentKeyRequirementEnum.Required,
                                     default: true,
                                 },
                                 {
                                     label: msg(
-                                        "The authenticator can create and store a dedicated credential, but if it doesn't that's alright too",
+                                        "Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too",
                                     ),
                                     value: ResidentKeyRequirementEnum.Preferred,
                                 },
                                 {
                                     label: msg(
-                                        "The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur",
+                                        "Discouraged: The authenticator should not create a dedicated credential",
                                     ),
                                     value: ResidentKeyRequirementEnum.Discouraged,
                                 },

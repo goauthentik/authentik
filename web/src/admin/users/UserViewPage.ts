@@ -3,9 +3,12 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
+import { me } from "@goauthentik/app/common/users";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
+import "@goauthentik/components/events/ObjectChangelog";
+import "@goauthentik/components/events/UserEvents";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import { PFColor } from "@goauthentik/elements/Label";
@@ -14,18 +17,15 @@ import { PFSize } from "@goauthentik/elements/Spinner";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
-import "@goauthentik/elements/events/UserEvents";
 import "@goauthentik/elements/forms/ModalForm";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/oauth/UserRefreshList";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
-import "@goauthentik/elements/user/UserDevicesList";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { CSSResult, TemplateResult, css, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -38,23 +38,31 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { CapabilitiesEnum, CoreApi, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, SessionUser, User } from "@goauthentik/api";
+
+import "./UserDevicesList";
 
 @customElement("ak-user-view")
 export class UserViewPage extends AKElement {
     @property({ type: Number })
     set userId(id: number) {
-        new CoreApi(DEFAULT_CONFIG)
-            .coreUsersRetrieve({
-                id: id,
-            })
-            .then((user) => {
-                this.user = user;
-            });
+        me().then((me) => {
+            this.me = me;
+            new CoreApi(DEFAULT_CONFIG)
+                .coreUsersRetrieve({
+                    id: id,
+                })
+                .then((user) => {
+                    this.user = user;
+                });
+        });
     }
 
     @property({ attribute: false })
     user?: User;
+
+    @state()
+    me?: SessionUser;
 
     static get styles(): CSSResult[] {
         return [
@@ -68,6 +76,15 @@ export class UserViewPage extends AKElement {
             PFCard,
             PFDescriptionList,
             PFSizing,
+            css`
+                .pf-c-description-list__description ak-action-button {
+                    margin-right: 6px;
+                    margin-bottom: 6px;
+                }
+                .ak-button-collection {
+                    max-width: 12em;
+                }
+            `,
         ];
     }
 
@@ -89,6 +106,222 @@ export class UserViewPage extends AKElement {
             ${this.renderBody()}`;
     }
 
+    renderUserCard(): TemplateResult {
+        if (!this.user) {
+            return html``;
+        }
+        const canImpersonate =
+            rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
+            this.user.pk !== this.me?.user.pk;
+        return html`
+            <div class="pf-c-card__title">${msg("User Info")}</div>
+            <div class="pf-c-card__body">
+                <dl class="pf-c-description-list">
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Username")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">${this.user.username}</div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Name")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">${this.user.name}</div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Email")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">${this.user.email || "-"}</div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Last login")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                ${this.user.lastLogin?.toLocaleString()}
+                            </div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Active")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-label
+                                    color=${this.user.isActive ? PFColor.Green : PFColor.Orange}
+                                ></ak-label>
+                            </div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Superuser")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text">
+                                <ak-label
+                                    color=${this.user.isSuperuser ? PFColor.Green : PFColor.Orange}
+                                ></ak-label>
+                            </div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Actions")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description ak-button-collection">
+                            <div class="pf-c-description-list__text">
+                                <ak-forms-modal>
+                                    <span slot="submit"> ${msg("Update")} </span>
+                                    <span slot="header"> ${msg("Update User")} </span>
+                                    <ak-user-form slot="form" .instancePk=${this.user.pk}>
+                                    </ak-user-form>
+                                    <button
+                                        slot="trigger"
+                                        class="pf-m-primary pf-c-button pf-m-block"
+                                    >
+                                        ${msg("Edit")}
+                                    </button>
+                                </ak-forms-modal>
+                                <ak-user-active-form
+                                    .obj=${this.user}
+                                    objectLabel=${msg("User")}
+                                    .delete=${() => {
+                                        return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
+                                            id: this.user?.pk || 0,
+                                            patchedUserRequest: {
+                                                isActive: !this.user?.isActive,
+                                            },
+                                        });
+                                    }}
+                                >
+                                    <button
+                                        slot="trigger"
+                                        class="pf-c-button pf-m-warning pf-m-block"
+                                    >
+                                        <pf-tooltip
+                                            position="top"
+                                            content=${this.user.isActive
+                                                ? msg("Lock the user out of this system")
+                                                : msg(
+                                                      "Allow the user to log in and use this system",
+                                                  )}
+                                        >
+                                            ${this.user.isActive
+                                                ? msg("Deactivate")
+                                                : msg("Activate")}
+                                        </pf-tooltip>
+                                    </button>
+                                </ak-user-active-form>
+                                ${canImpersonate
+                                    ? html`
+                                          <ak-action-button
+                                              class="pf-m-secondary pf-m-block"
+                                              id="impersonate-user-button"
+                                              .apiRequest=${() => {
+                                                  return new CoreApi(DEFAULT_CONFIG)
+                                                      .coreUsersImpersonateCreate({
+                                                          id: this.user?.pk || 0,
+                                                      })
+                                                      .then(() => {
+                                                          window.location.href = "/";
+                                                      });
+                                              }}
+                                          >
+                                              <pf-tooltip
+                                                  position="top"
+                                                  content=${msg(
+                                                      "Temporarily assume the identity of this user",
+                                                  )}
+                                              >
+                                                  ${msg("Impersonate")}
+                                              </pf-tooltip>
+                                          </ak-action-button>
+                                      `
+                                    : html``}
+                            </div>
+                        </dd>
+                    </div>
+                    <div class="pf-c-description-list__group">
+                        <dt class="pf-c-description-list__term">
+                            <span class="pf-c-description-list__text">${msg("Recovery")}</span>
+                        </dt>
+                        <dd class="pf-c-description-list__description">
+                            <div class="pf-c-description-list__text ak-button-collection">
+                                <ak-forms-modal size=${PFSize.Medium}>
+                                    <span slot="submit">${msg("Update password")}</span>
+                                    <span slot="header">${msg("Update password")}</span>
+                                    <ak-user-password-form
+                                        slot="form"
+                                        .instancePk=${this.user?.pk}
+                                    ></ak-user-password-form>
+                                    <button
+                                        slot="trigger"
+                                        class="pf-c-button pf-m-secondary pf-m-block"
+                                    >
+                                        <pf-tooltip
+                                            position="top"
+                                            content=${msg("Enter a new password for this user")}
+                                        >
+                                            ${msg("Set password")}
+                                        </pf-tooltip>
+                                    </button>
+                                </ak-forms-modal>
+                                <ak-action-button
+                                    id="reset-password-button"
+                                    class="pf-m-secondary pf-m-block"
+                                    .apiRequest=${() => {
+                                        return new CoreApi(DEFAULT_CONFIG)
+                                            .coreUsersRecoveryRetrieve({
+                                                id: this.user?.pk || 0,
+                                            })
+                                            .then((rec) => {
+                                                showMessage({
+                                                    level: MessageLevel.success,
+                                                    message: msg(
+                                                        "Successfully generated recovery link",
+                                                    ),
+                                                    description: rec.link,
+                                                });
+                                            })
+                                            .catch(() => {
+                                                showMessage({
+                                                    level: MessageLevel.error,
+                                                    message: msg(
+                                                        "To create a recovery link, the current tenant needs to have a recovery flow configured.",
+                                                    ),
+                                                    description: "",
+                                                });
+                                            });
+                                    }}
+                                >
+                                    <pf-tooltip
+                                        position="top"
+                                        content=${msg(
+                                            "Create a link for this user to reset their password",
+                                        )}
+                                    >
+                                        ${msg("Reset Password")}
+                                    </pf-tooltip>
+                                </ak-action-button>
+                            </div>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
+        `;
+    }
+
     renderBody(): TemplateResult {
         if (!this.user) {
             return html``;
@@ -103,186 +336,7 @@ export class UserViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${msg("User Info")}</div>
-                        <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list pf-m-2-col">
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Username")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.user.username}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Name")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.user.name}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Email")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.user.email || "-"}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Last login")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            ${this.user.lastLogin?.toLocaleString()}
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Active")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            <ak-label
-                                                color=${this.user.isActive
-                                                    ? PFColor.Green
-                                                    : PFColor.Orange}
-                                            ></ak-label>
-                                        </div>
-                                    </dd>
-                                </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
-                                            >${msg("Superuser")}</span
-                                        >
-                                    </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
-                                            <ak-label
-                                                color=${this.user.isSuperuser
-                                                    ? PFColor.Green
-                                                    : PFColor.Orange}
-                                            ></ak-label>
-                                        </div>
-                                    </dd>
-                                </div>
-                            </dl>
-                        </div>
-                        <div class="pf-c-card__footer">
-                            <ak-forms-modal>
-                                <span slot="submit"> ${msg("Update")} </span>
-                                <span slot="header"> ${msg("Update User")} </span>
-                                <ak-user-form slot="form" .instancePk=${this.user.pk}>
-                                </ak-user-form>
-                                <button slot="trigger" class="pf-m-primary pf-c-button">
-                                    ${msg("Edit")}
-                                </button>
-                            </ak-forms-modal>
-                        </div>
-                        ${rootInterface()?.config?.capabilities.includes(
-                            CapabilitiesEnum.CanImpersonate,
-                        )
-                            ? html`
-                                  <div class="pf-c-card__footer">
-                                      <ak-action-button
-                                          class="pf-m-tertiary"
-                                          .apiRequest=${() => {
-                                              return new CoreApi(DEFAULT_CONFIG)
-                                                  .coreUsersImpersonateCreate({
-                                                      id: this.user?.pk || 0,
-                                                  })
-                                                  .then(() => {
-                                                      window.location.href = "/";
-                                                  });
-                                          }}
-                                      >
-                                          ${msg("Impersonate")}
-                                      </ak-action-button>
-                                  </div>
-                              `
-                            : html``}
-                        <div class="pf-c-card__footer">
-                            <ak-user-active-form
-                                .obj=${this.user}
-                                objectLabel=${msg("User")}
-                                .delete=${() => {
-                                    return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
-                                        id: this.user?.pk || 0,
-                                        patchedUserRequest: {
-                                            isActive: !this.user?.isActive,
-                                        },
-                                    });
-                                }}
-                            >
-                                <button slot="trigger" class="pf-c-button pf-m-warning">
-                                    ${this.user.isActive ? msg("Deactivate") : msg("Activate")}
-                                </button>
-                            </ak-user-active-form>
-                        </div>
-                        <div class="pf-c-card__footer">
-                            <ak-action-button
-                                class="pf-m-secondary"
-                                .apiRequest=${() => {
-                                    return new CoreApi(DEFAULT_CONFIG)
-                                        .coreUsersRecoveryRetrieve({
-                                            id: this.user?.pk || 0,
-                                        })
-                                        .then((rec) => {
-                                            showMessage({
-                                                level: MessageLevel.success,
-                                                message: msg(
-                                                    "Successfully generated recovery link",
-                                                ),
-                                                description: rec.link,
-                                            });
-                                        })
-                                        .catch(() => {
-                                            showMessage({
-                                                level: MessageLevel.error,
-                                                message: msg(
-                                                    "To create a recovery link, the current tenant needs to have a recovery flow configured.",
-                                                ),
-                                                description: "",
-                                            });
-                                        });
-                                }}
-                            >
-                                ${msg("Reset Password")}
-                            </ak-action-button>
-                        </div>
-                        <div class="pf-c-card__footer">
-                            <ak-forms-modal size=${PFSize.Medium}>
-                                <span slot="submit">${msg("Update password")}</span>
-                                <span slot="header">${msg("Update password")}</span>
-                                <ak-user-password-form
-                                    slot="form"
-                                    .instancePk=${this.user?.pk}
-                                ></ak-user-password-form>
-                                <button slot="trigger" class="pf-c-button pf-m-secondary">
-                                    ${msg("Set password")}
-                                </button>
-                            </ak-forms-modal>
-                        </div>
+                        ${this.renderUserCard()}
                     </div>
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"

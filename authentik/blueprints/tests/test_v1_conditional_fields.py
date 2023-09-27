@@ -18,7 +18,7 @@ class TestBlueprintsV1ConditionalFields(TransactionTestCase):
         self.uid = generate_id()
         import_yaml = load_fixture("fixtures/conditional_fields.yaml", uid=self.uid, user=user.pk)
 
-        importer = Importer(import_yaml)
+        importer = Importer.from_string(import_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 

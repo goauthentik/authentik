@@ -1,5 +1,5 @@
-import { SeverityToLabel } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { severityToLabel } from "@goauthentik/common/labels";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
@@ -125,16 +125,16 @@ export class RuleForm extends ModelForm<NotificationRule, string> {
                 <ak-radio
                     .options=${[
                         {
-                            label: SeverityToLabel(SeverityEnum.Alert),
+                            label: severityToLabel(SeverityEnum.Alert),
                             value: SeverityEnum.Alert,
                             default: true,
                         },
                         {
-                            label: SeverityToLabel(SeverityEnum.Warning),
+                            label: severityToLabel(SeverityEnum.Warning),
                             value: SeverityEnum.Warning,
                         },
                         {
-                            label: SeverityToLabel(SeverityEnum.Notice),
+                            label: severityToLabel(SeverityEnum.Notice),
                             value: SeverityEnum.Notice,
                         },
                     ]}

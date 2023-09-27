@@ -77,6 +77,7 @@ class PolicyBindingSerializer(ModelSerializer):
             "enabled",
             "order",
             "timeout",
+            "failure_result",
         ]
 
     def validate(self, attrs: OrderedDict) -> OrderedDict:
