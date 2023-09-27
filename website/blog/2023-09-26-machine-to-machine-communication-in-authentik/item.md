@@ -21,7 +21,7 @@ hide_table_of_contents: false
 image: ./Image1.png
 ---
 
-> **_authentik is a unified identity platform that helps with all of your authentication needs, replacing Okta, Active Directory, Auth0 and more. Building on the open-source project, Authentik Security Inc is a public benefit company that provides additional features and support._**
+> **_authentik is a unified identity platform that helps with all of your authentication needs, replacing Okta, Active Directory, Auth0, and more. Building on the open-source project, Authentik Security Inc is a [public benefit company](https://github.com/OpenCoreVentures/ocv-public-benefit-company/blob/main/ocv-public-benefit-company-charter.md) that provides additional features and dedicated support._**
 
 ---
 
