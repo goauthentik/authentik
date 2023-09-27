@@ -67,8 +67,8 @@ class GroupLDAPSynchronizer(BaseLDAPSynchronizer):
                 LDAPGroupSourceConnection.objects.update_or_create(
                     defaults={
                         "unique_identifier": uniq,
-                        "source": self._source,
                     },
+                    source=self._source,
                     group=ak_group,
                 )
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:

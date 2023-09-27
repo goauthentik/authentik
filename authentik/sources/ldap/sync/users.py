@@ -62,8 +62,8 @@ class UserLDAPSynchronizer(BaseLDAPSynchronizer):
                 LDAPUserSourceConnection.objects.update_or_create(
                     defaults={
                         "unique_identifier": uniq,
-                        "source": self._source,
                     },
+                    source=self._source,
                     user=ak_user,
                 )
             except (IntegrityError, FieldError, TypeError, AttributeError) as exc:
