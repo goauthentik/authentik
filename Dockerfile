@@ -146,10 +146,10 @@ USER 1000
 ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PATH="/ak-root/venv/bin:$PATH" \
+    PATH="/ak-root/venv/bin:/lifecycle:$PATH" \
     VENV_PATH="/ak-root/venv" \
     POETRY_VIRTUALENVS_CREATE=false
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "/lifecycle/ak", "healthcheck" ]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
 
-ENTRYPOINT [ "dumb-init", "--", "/lifecycle/ak" ]
+ENTRYPOINT [ "dumb-init", "--", "ak" ]
