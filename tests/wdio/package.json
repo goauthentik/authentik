@@ -1,5 +1,6 @@
 {
-    "name": "my-new-project",
+    "name": "@goauthentik/web-tests",
+    "private": true,
     "type": "module",
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^4.2.0",
