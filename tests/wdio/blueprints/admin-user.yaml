@@ -1,7 +1,6 @@
-context: {}
+version: 1
 entries:
 - attrs:
-    attributes: {}
     email: test-admin@goauthentik.io
     is_active: true
     name: authentik Default Admin
@@ -11,7 +10,6 @@ entries:
     groups:
     - !Find [authentik_core.group, [name, "authentik Admins"]]
     conditions: []
-  id: null
   identifiers:
     username: akadmin
   model: authentik_core.user
