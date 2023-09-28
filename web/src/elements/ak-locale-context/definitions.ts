@@ -24,9 +24,6 @@ export { enLocale };
 // language uses both "regional" and "script" suffixes. The regexes use the language and any region
 // or script.
 //
-// French is currently an oddity; the translator provided the France regional version explicitly,
-// and we fall back to that regardless of region. Sorry, Québécois.
-//
 // Chinese locales usually (but not always) use the script rather than region suffix. The default
 // (optional) fallback for Chinese (zh) is "Chinese (simplified)", which is why it has that odd
 // regex syntax at the end which means "match zh as long as it's not followed by a [:word:] token";
@@ -43,7 +40,7 @@ const LOCALE_TABLE: LocaleRow[] = [
     ["en",      /^en([_-]|$)/i,      () => msg("English"),               async () => await import("@goauthentik/locales/en")],
     ["es",      /^es([_-]|$)/i,      () => msg("Spanish"),               async () => await import("@goauthentik/locales/es")],
     ["de",      /^de([_-]|$)/i,      () => msg("German"),                async () => await import("@goauthentik/locales/de")],
-    ["fr_FR",   /^fr([_-]|$)/i,      () => msg("French"),                async () => await import("@goauthentik/locales/fr_FR")],
+    ["fr",      /^fr([_-]|$)/i,      () => msg("French"),                async () => await import("@goauthentik/locales/fr")],
     ["pl",      /^pl([_-]|$)/i,      () => msg("Polish"),                async () => await import("@goauthentik/locales/pl")],
     ["tr",      /^tr([_-]|$)/i,      () => msg("Turkish"),               async () => await import("@goauthentik/locales/tr")],
     ["zh-Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), async () => await import("@goauthentik/locales/zh-Hant")],

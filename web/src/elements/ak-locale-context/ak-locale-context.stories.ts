@@ -29,7 +29,7 @@ export class AKLocaleSensitiveDemoComponent extends LitElement {
 
 export const InFrench = () =>
     html`<div style="background: #fff; padding: 4em">
-        <ak-locale-context locale="fr_FR"
+        <ak-locale-context locale="fr"
             ><ak-locale-demo-component
                 >Everything is not ok.</ak-locale-demo-component
             ></ak-locale-context
@@ -39,12 +39,12 @@ export const InFrench = () =>
 export const SwitchingBackAndForth = () => {
     let lang = "en";
     window.setInterval(() => {
-        lang = lang === "en" ? "fr_FR" : "en";
+        lang = lang === "en" ? "fr" : "en";
         window.dispatchEvent(customEvent(EVENT_LOCALE_REQUEST, { locale: lang }));
     }, 1000);
 
     return html`<div style="background: #fff; padding: 4em">
-        <ak-locale-context locale="fr_FR">
+        <ak-locale-context locale="fr">
             <ak-locale-sensitive-demo-component></ak-locale-sensitive-demo-component
         ></ak-locale-context>
     </div>`;
