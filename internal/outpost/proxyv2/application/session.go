@@ -1,23 +1,23 @@
 package application
 
 import (
-	"context"
 	"fmt"
 	"math"
 	"net/http"
 	"net/url"
 	"os"
 	"path"
+	"strconv"
 	"strings"
 
+	"github.com/garyburd/redigo/redis"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
-	"github.com/redis/go-redis/v9"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
 	"goauthentik.io/internal/outpost/proxyv2/constants"
-	"goauthentik.io/internal/outpost/proxyv2/redisstore"
+	"gopkg.in/boj/redistore.v1"
 )
 
 const RedisKeyPrefix = "authentik_proxy_session_"
@@ -30,26 +30,20 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		maxAge = int(*t) + 1
 	}
 	if a.isEmbedded {
-		client := redis.NewClient(&redis.Options{
-			Addr: fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port),
-			// Username: config.Get().Redis.Password,
-			Password: config.Get().Redis.Password,
-			DB:       config.Get().Redis.DB,
-		})
-
-		// New default RedisStore
-		rs, err := redisstore.NewRedisStore(context.Background(), client)
+		rs, err := redistore.NewRediStoreWithDB(10, "tcp", fmt.Sprintf("%s:%d", config.Get().Redis.Host, config.Get().Redis.Port), config.Get().Redis.Password, strconv.Itoa(config.Get().Redis.DB))
 		if err != nil {
 			panic(err)
 		}
+		rs.Codecs = codecs.CodecsFromPairs(maxAge, []byte(*p.CookieSecret))
+		rs.SetMaxLength(math.MaxInt)
+		rs.SetKeyPrefix(RedisKeyPrefix)
 
-		rs.KeyPrefix(RedisKeyPrefix)
-		rs.Options(sessions.Options{
-			HttpOnly: strings.ToLower(externalHost.Scheme) == "https",
-			Domain:   *p.CookieDomain,
-			SameSite: http.SameSiteLaxMode,
-		})
-
+		rs.Options.HttpOnly = true
+		if strings.ToLower(externalHost.Scheme) == "https" {
+			rs.Options.Secure = true
+		}
+		rs.Options.Domain = *p.CookieDomain
+		rs.Options.SameSite = http.SameSiteLaxMode
 		a.log.Trace("using redis session backend")
 		return rs
 	}
@@ -86,7 +80,7 @@ func (a *Application) getAllCodecs() []securecookie.Codec {
 	return cs
 }
 
-func (a *Application) Logout(ctx context.Context, sub string) error {
+func (a *Application) Logout(sub string) error {
 	if _, ok := a.sessions.(*sessions.FilesystemStore); ok {
 		files, err := os.ReadDir(os.TempDir())
 		if err != nil {
@@ -126,22 +120,31 @@ func (a *Application) Logout(ctx context.Context, sub string) error {
 			}
 		}
 	}
-	if rs, ok := a.sessions.(*redisstore.RedisStore); ok {
-		client := rs.Client()
-		defer client.Close()
-		keys, err := client.Keys(ctx, fmt.Sprintf("%s*", RedisKeyPrefix)).Result()
+	if rs, ok := a.sessions.(*redistore.RediStore); ok {
+		pool := rs.Pool.Get()
+		defer pool.Close()
+		rep, err := pool.Do("KEYS", fmt.Sprintf("%s*", RedisKeyPrefix))
 		if err != nil {
 			return err
 		}
-		serializer := redisstore.GobSerializer{}
+		keys, err := redis.Strings(rep, err)
+		if err != nil {
+			return err
+		}
+		serializer := redistore.GobSerializer{}
 		for _, key := range keys {
-			v, err := client.Get(ctx, key).Result()
+			v, err := pool.Do("GET", key)
 			if err != nil {
 				a.log.WithError(err).Warning("failed to get value")
 				continue
 			}
+			b, err := redis.Bytes(v, err)
+			if err != nil {
+				a.log.WithError(err).Warning("failed to load value")
+				continue
+			}
 			s := sessions.Session{}
-			err = serializer.Deserialize([]byte(v), &s)
+			err = serializer.Deserialize(b, &s)
 			if err != nil {
 				a.log.WithError(err).Warning("failed to deserialize")
 				continue
@@ -153,7 +156,7 @@ func (a *Application) Logout(ctx context.Context, sub string) error {
 			claims := c.(Claims)
 			if claims.Sub == sub {
 				a.log.WithField("key", key).Trace("deleting session")
-				_, err := client.Del(ctx, key).Result()
+				_, err := pool.Do("DEL", key)
 				if err != nil {
 					a.log.WithError(err).Warning("failed to delete key")
 					continue
