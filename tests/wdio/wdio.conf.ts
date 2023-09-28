@@ -73,7 +73,7 @@ export const config: Options.Testrunner = {
                                   "--disable-dev-shm-usage",
                               ]
                             : [];
-                    })()
+                    })(),
                 ),
             },
         },
