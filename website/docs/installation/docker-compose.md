@@ -12,7 +12,12 @@ This installation method is for test-setups and small-scale production setups.
 
 ## Preparation
 
-Download the latest `docker-compose.yml` from [here](https://goauthentik.io/docker-compose.yml). Place it in a directory of your choice.
+To download the latest `docker-compose.yml` open your terminal and navigate to the directory of your choice.
+Run the following command:
+
+```shell
+wget https://goauthentik.io/docker-compose.yml
+```
 
 If this is a fresh authentik installation, you need to generate a password and a secret key. If you don't already have a password generator installed, you can run this command to install **pwgen**, a popular generator:
 
@@ -71,6 +76,13 @@ See [Configuration](../installation/configuration) to change the internal ports.
 
 ## Startup
 
+:::warning
+The server assumes to have local timezone as UTC.
+All internals are handled in UTC; whenever a time is displayed to the user in UI, the time shown is localized.
+Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers.
+This will not give any advantages. It will cause problems with OAuth and SAML authentication, e.g. [see this GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
+:::
+
 Afterwards, run these commands to finish:
 
 ```shell
@@ -80,33 +92,8 @@ docker-compose up -d
 
 The `docker-compose.yml` file statically references the latest version available at the time of downloading the compose file. Each time you upgrade to a newer version of authentik, you download a new `docker-compose.yml` file, which points to the latest available version. For more information, refer to the **Upgrading** section in the [Release Notes](../releases).
 
-By default, authentik is reachable (by default) on port 9000 (HTTP) and port 9443 (HTTPS).
-
-To start the initial setup, navigate to `https://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
+To start the initial setup, navigate to `http://<your server's IP or hostname>:9000/if/flow/initial-setup/`.
 
 There you are prompted to set a password for the akadmin user (the default user).
 
-## Explanation
-
-:::warning
-The server assumes to have local timezone as UTC.
-All internals are handled in UTC; whenever a time is displayed to the user in UI it gets localized.
-Do not update or mount `/etc/timezone` or `/etc/localtime` in the authentik containers.
-This will not give any advantages.
-On the contrary, it will cause problems with OAuth and SAML authentication,
-e.g. [see this GitHub issue](https://github.com/goauthentik/authentik/issues/3005).
-:::
-
-The Docker-Compose project contains the following containers:
-
--   server
-
-    This is the backend service, which does all the logic, plus runs the API and the SSO functionality. It also runs the frontend, hosts the JS/CSS files, and serves the files you've uploaded for icons/etc.
-
--   worker
-
-    This container executes background tasks, everything you can see on the _System Tasks_ page in the frontend.
-
--   redis (for cache)
-
--   postgresql (default database)
+An explanation about what each service in the docker compose file does, see [Architecture](../core/architecture.md).

@@ -15,10 +15,20 @@ import (
 
 var (
 	Requests = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name: "authentik_outpost_radius_request_duration_seconds",
+		Help: "RADIUS request latencies in seconds",
+	}, []string{"outpost_name", "app"})
+	RequestsRejected = promauto.NewCounterVec(prometheus.CounterOpts{
+		Name: "authentik_outpost_radius_requests_rejected_total",
+		Help: "Total number of rejected requests",
+	}, []string{"outpost_name", "reason", "app"})
+
+	// NOTE: the following metric is kept for compatibility purpose
+	RequestsLegacy = promauto.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "authentik_outpost_radius_requests",
 		Help: "The total number of successful requests",
 	}, []string{"outpost_name", "app"})
-	RequestsRejected = promauto.NewCounterVec(prometheus.CounterOpts{
+	RequestsRejectedLegacy = promauto.NewCounterVec(prometheus.CounterOpts{
 		Name: "authentik_outpost_radius_requests_rejected",
 		Help: "Total number of rejected requests",
 	}, []string{"outpost_name", "reason", "app"})

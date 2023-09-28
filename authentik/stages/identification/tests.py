@@ -188,7 +188,7 @@ class TestIdentificationStage(FlowTestCase):
             ],
         )
 
-    def test_recovery_flow(self):
+    def test_link_recovery_flow(self):
         """Test that recovery flow is linked correctly"""
         flow = create_test_flow()
         self.stage.recovery_flow = flow
@@ -225,6 +225,38 @@ class TestIdentificationStage(FlowTestCase):
                 }
             ],
         )
+
+    def test_recovery_flow_invalid_user(self):
+        """Test that an invalid user can proceed in a recovery flow"""
+        self.flow.designation = FlowDesignation.RECOVERY
+        self.flow.save()
+        response = self.client.get(
+            reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
+        )
+        self.assertStageResponse(
+            response,
+            self.flow,
+            component="ak-stage-identification",
+            user_fields=["email"],
+            password_fields=False,
+            show_source_labels=False,
+            primary_action="Continue",
+            sources=[
+                {
+                    "challenge": {
+                        "component": "xak-flow-redirect",
+                        "to": "/source/oauth/login/test/",
+                        "type": ChallengeTypes.REDIRECT.value,
+                    },
+                    "icon_url": "/static/authentik/sources/default.svg",
+                    "name": "test",
+                }
+            ],
+        )
+        form_data = {"uid_field": generate_id()}
+        url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug})
+        response = self.client.post(url, form_data)
+        self.assertEqual(response.status_code, 200)
 
     def test_api_validate(self):
         """Test API validation"""

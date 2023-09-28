@@ -6,11 +6,9 @@ title: Google Workspace
 
 ## What is Google Workspace
 
-From https://en.wikipedia.org/wiki/Google_Workspace
-
-:::note
-Google Workspace is a collection of cloud computing, productivity and collaboration tools, software and products developed and marketed by Google.
-:::
+> Google Workspace is a collection of cloud computing, productivity and collaboration tools, software and products developed and marketed by Google.
+>
+> -- https://en.wikipedia.org/wiki/Google_Workspace
 
 ## Preparation
 

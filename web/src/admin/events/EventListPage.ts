@@ -1,11 +1,13 @@
-import "@goauthentik/admin/events/EventInfo";
-import { ActionToLabel, EventGeo } from "@goauthentik/admin/events/utils";
+import { EventGeo } from "@goauthentik/admin/events/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EventWithContext } from "@goauthentik/common/events";
+import { actionToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/components/ak-event-info";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -55,7 +57,7 @@ export class EventListPage extends TablePage<Event> {
 
     row(item: EventWithContext): TemplateResult[] {
         return [
-            html`<div>${ActionToLabel(item.action)}</div>
+            html`<div>${actionToLabel(item.action)}</div>
                 <small>${item.app}</small>`,
             item.user?.username
                 ? html`<div>
@@ -75,7 +77,9 @@ export class EventListPage extends TablePage<Event> {
                 <small>${EventGeo(item)}</small>`,
             html`<span>${item.tenant?.name || msg("-")}</span>`,
             html`<a href="#/events/log/${item.pk}">
-                <i class="fas fa-share-square"></i>
+                <pf-tooltip position="top" content=${msg("Show details")}>
+                    <i class="fas fa-share-square"></i>
+                </pf-tooltip>
             </a>`,
         ];
     }

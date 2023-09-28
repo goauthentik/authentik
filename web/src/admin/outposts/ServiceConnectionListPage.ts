@@ -12,6 +12,7 @@ import "@goauthentik/elements/forms/ProxyForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -99,7 +100,9 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
                 >
                 </ak-proxy-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-edit"></i>
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit"></i>
+                    </pf-tooltip>
                 </button>
             </ak-forms-modal>`,
         ];

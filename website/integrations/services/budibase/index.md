@@ -6,11 +6,9 @@ title: Budibase
 
 ## What is Budibase
 
-From https://github.com/Budibase/budibase
-
-:::note
-Budibase is an open source low-code platform, and the easiest way to build internal tools that improve productivity.
-:::
+> Budibase is an open source low-code platform, and the easiest way to build internal tools that improve productivity.
+>
+> -- https://github.com/Budibase/budibase
 
 ## Preparation
 

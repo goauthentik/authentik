@@ -1,6 +1,4 @@
 """authentik core signals"""
-from typing import TYPE_CHECKING
-
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
@@ -10,15 +8,12 @@ from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from django.http.request import HttpRequest
 
-from authentik.core.models import Application, AuthenticatedSession, BackchannelProvider
+from authentik.core.models import Application, AuthenticatedSession, BackchannelProvider, User
 
 # Arguments: user: User, password: str
 password_changed = Signal()
 # Arguments: credentials: dict[str, any], request: HttpRequest, stage: Stage
 login_failed = Signal()
-
-if TYPE_CHECKING:
-    from authentik.core.models import User
 
 
 @receiver(post_save, sender=Application)
@@ -35,7 +30,7 @@ def post_save_application(sender: type[Model], instance, created: bool, **_):
 
 
 @receiver(user_logged_in)
-def user_logged_in_session(sender, request: HttpRequest, user: "User", **_):
+def user_logged_in_session(sender, request: HttpRequest, user: User, **_):
     """Create an AuthenticatedSession from request"""
 
     session = AuthenticatedSession.from_request(request, user)
@@ -44,7 +39,7 @@ def user_logged_in_session(sender, request: HttpRequest, user: "User", **_):
 
 
 @receiver(user_logged_out)
-def user_logged_out_session(sender, request: HttpRequest, user: "User", **_):
+def user_logged_out_session(sender, request: HttpRequest, user: User, **_):
     """Delete AuthenticatedSession if it exists"""
     AuthenticatedSession.objects.filter(session_key=request.session.session_key).delete()
 

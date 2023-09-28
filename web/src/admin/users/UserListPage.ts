@@ -4,6 +4,7 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
+import { me } from "@goauthentik/app/common/users";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { DefaultUIConfig, uiConfig } from "@goauthentik/common/ui/config";
@@ -20,6 +21,7 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -29,7 +31,14 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CapabilitiesEnum, CoreApi, ResponseError, User, UserPath } from "@goauthentik/api";
+import {
+    CapabilitiesEnum,
+    CoreApi,
+    ResponseError,
+    SessionUser,
+    User,
+    UserPath,
+} from "@goauthentik/api";
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
@@ -61,6 +70,9 @@ export class UserListPage extends TablePage<User> {
     @state()
     userPaths?: UserPath;
 
+    @state()
+    me?: SessionUser;
+
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDescriptionList, PFCard, PFAlert);
     }
@@ -87,13 +99,14 @@ export class UserListPage extends TablePage<User> {
         this.userPaths = await new CoreApi(DEFAULT_CONFIG).coreUsersPathsRetrieve({
             search: this.search,
         });
+        this.me = await me();
         return users;
     }
 
     columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "active"),
+            new TableColumn(msg("Active"), "is_active"),
             new TableColumn(msg("Last login"), "last_login"),
             new TableColumn(msg("Actions")),
         ];
@@ -178,6 +191,9 @@ export class UserListPage extends TablePage<User> {
     }
 
     row(item: User): TemplateResult[] {
+        const canImpersonate =
+            rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
+            item.pk !== this.me?.user.pk;
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
@@ -192,10 +208,12 @@ export class UserListPage extends TablePage<User> {
                     <span slot="header"> ${msg("Update User")} </span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate)
+                ${canImpersonate
                     ? html`
                           <ak-action-button
                               class="pf-m-tertiary"

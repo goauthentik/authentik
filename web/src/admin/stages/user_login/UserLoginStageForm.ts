@@ -43,7 +43,7 @@ export class UserLoginStageForm extends ModelForm<UserLoginStage, string> {
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">${msg("Log the currently pending user in.")}</div>
+            <span>${msg("Log the currently pending user in.")}</span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

@@ -16,10 +16,12 @@ LOGGER = get_logger()
 
 def _get_client_ip_from_meta(meta: dict[str, Any]) -> str:
     """Attempt to get the client's IP by checking common HTTP Headers.
-    Returns none if no IP Could be found"""
+    Returns none if no IP Could be found
+
+    No additional validation is done here as requests are expected to only arrive here
+    via the go proxy, which deals with validating these headers for us"""
     headers = (
         "HTTP_X_FORWARDED_FOR",
-        "HTTP_X_REAL_IP",
         "REMOTE_ADDR",
     )
     for _header in headers:
@@ -31,9 +33,8 @@ def _get_client_ip_from_meta(meta: dict[str, Any]) -> str:
 
 def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
     """Get the actual remote IP when set by an outpost. Only
-    allowed when the request is authenticated, by a user with USER_ATTRIBUTE_CAN_OVERRIDE_IP set
-    to outpost"""
-    from authentik.core.models import USER_ATTRIBUTE_CAN_OVERRIDE_IP, Token, TokenIntents
+    allowed when the request is authenticated, by an outpost internal service account"""
+    from authentik.core.models import Token, TokenIntents, UserTypes
 
     if OUTPOST_REMOTE_IP_HEADER not in request.META or OUTPOST_TOKEN_HEADER not in request.META:
         return None
@@ -49,7 +50,7 @@ def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
         LOGGER.warning("Attempted remote-ip override without token", fake_ip=fake_ip)
         return None
     user = token.user
-    if not user.group_attributes(request).get(USER_ATTRIBUTE_CAN_OVERRIDE_IP, False):
+    if user.type != UserTypes.INTERNAL_SERVICE_ACCOUNT:
         LOGGER.warning(
             "Remote-IP override: user doesn't have permission",
             user=user,

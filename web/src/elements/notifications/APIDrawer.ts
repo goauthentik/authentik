@@ -38,6 +38,9 @@ export class APIDrawer extends AKElement {
                     white-space: pre-wrap;
                     font-family: monospace;
                 }
+                .pf-c-notification-drawer__body {
+                    overflow-x: hidden;
+                }
             `,
         ];
     }

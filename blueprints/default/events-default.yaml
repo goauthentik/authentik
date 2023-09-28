@@ -2,6 +2,12 @@ version: 1
 metadata:
   name: Default - Events Transport & Rules
 entries:
+# Run bootstrap blueprint first to ensure we have the group created
+- model: authentik_blueprints.metaapplyblueprint
+  attrs:
+    identifiers:
+      path: system/bootstrap.yaml
+    required: false
 - model: authentik_events.notificationtransport
   id: default-email-transport
   attrs:
@@ -16,6 +22,7 @@ entries:
     name: default-local-transport
 - model: authentik_core.group
   id: group
+  state: created
   identifiers:
     name: authentik Admins
 

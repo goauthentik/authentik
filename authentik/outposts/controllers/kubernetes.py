@@ -64,12 +64,19 @@ class KubernetesController(BaseController):
         super().__init__(outpost, connection)
         self.client = KubernetesClient(connection)
         self.reconcilers = {
-            "secret": SecretReconciler,
-            "deployment": DeploymentReconciler,
-            "service": ServiceReconciler,
-            "prometheus servicemonitor": PrometheusServiceMonitorReconciler,
+            SecretReconciler.reconciler_name(): SecretReconciler,
+            DeploymentReconciler.reconciler_name(): DeploymentReconciler,
+            ServiceReconciler.reconciler_name(): ServiceReconciler,
+            PrometheusServiceMonitorReconciler.reconciler_name(): (
+                PrometheusServiceMonitorReconciler
+            ),
         }
-        self.reconcile_order = ["secret", "deployment", "service", "prometheus servicemonitor"]
+        self.reconcile_order = [
+            SecretReconciler.reconciler_name(),
+            DeploymentReconciler.reconciler_name(),
+            ServiceReconciler.reconciler_name(),
+            PrometheusServiceMonitorReconciler.reconciler_name(),
+        ]
 
     def up(self):
         try:

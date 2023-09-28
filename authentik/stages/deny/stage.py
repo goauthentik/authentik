@@ -9,7 +9,7 @@ from authentik.policies.expression.evaluator import PolicyEvaluator
 class DenyStageView(StageView):
     """Cancels the current flow"""
 
-    def get(self, request: HttpRequest, message="Denied") -> HttpResponse:
+    def dispatch(self, request: HttpRequest) -> HttpResponse:
         """Cancels the current flow"""
         evaluator = PolicyEvaluator("deny")
         template = f'ak_message("{message}");return False'
@@ -20,7 +20,3 @@ class DenyStageView(StageView):
 
         self.logger.warning(message)
         return self.executor.stage_invalid()
-
-    def post(self, request: HttpRequest) -> HttpResponse:
-        """Wrapper for post requests"""
-        return self.get(request)

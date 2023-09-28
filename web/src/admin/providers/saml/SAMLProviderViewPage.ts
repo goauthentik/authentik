@@ -3,6 +3,7 @@ import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
+import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
@@ -10,7 +11,6 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 
 import { msg } from "@lit/localize";
@@ -120,58 +120,62 @@ export class SAMLProviderViewPage extends AKElement {
     renderRelatedObjects(): TemplateResult {
         const relatedObjects = [];
         if (this.provider?.assignedApplicationName) {
-            relatedObjects.push(html`<div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text">${msg("Metadata")}</span>
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
-                        <a
-                            class="pf-c-button pf-m-primary"
-                            target="_blank"
-                            href=${ifDefined(this.provider?.urlDownloadMetadata)}
-                        >
-                            ${msg("Download")}
-                        </a>
-                        <ak-action-button
-                            class="pf-m-secondary"
-                            .apiRequest=${() => {
-                                if (!navigator.clipboard) {
-                                    return Promise.resolve(
-                                        showMessage({
-                                            level: MessageLevel.info,
-                                            message: this.provider?.urlDownloadMetadata || "",
-                                        }),
+            relatedObjects.push(
+                html`<div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text">${msg("Metadata")}</span>
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <a
+                                class="pf-c-button pf-m-primary"
+                                target="_blank"
+                                href=${ifDefined(this.provider?.urlDownloadMetadata)}
+                            >
+                                ${msg("Download")}
+                            </a>
+                            <ak-action-button
+                                class="pf-m-secondary"
+                                .apiRequest=${() => {
+                                    if (!navigator.clipboard) {
+                                        return Promise.resolve(
+                                            showMessage({
+                                                level: MessageLevel.info,
+                                                message: this.provider?.urlDownloadMetadata || "",
+                                            }),
+                                        );
+                                    }
+                                    return navigator.clipboard.writeText(
+                                        this.provider?.urlDownloadMetadata || "",
                                     );
-                                }
-                                return navigator.clipboard.writeText(
-                                    this.provider?.urlDownloadMetadata || "",
-                                );
-                            }}
-                        >
-                            ${msg("Copy download URL")}
-                        </ak-action-button>
-                    </div>
-                </dd>
-            </div>`);
+                                }}
+                            >
+                                ${msg("Copy download URL")}
+                            </ak-action-button>
+                        </div>
+                    </dd>
+                </div>`,
+            );
         }
         if (this.signer) {
-            relatedObjects.push(html`<div class="pf-c-description-list__group">
-                <dt class="pf-c-description-list__term">
-                    <span class="pf-c-description-list__text"
-                        >${msg("Download signing certificate")}</span
-                    >
-                </dt>
-                <dd class="pf-c-description-list__description">
-                    <div class="pf-c-description-list__text">
-                        <a
-                            class="pf-c-button pf-m-primary"
-                            href=${this.signer.certificateDownloadUrl}
-                            >${msg("Download")}</a
+            relatedObjects.push(
+                html`<div class="pf-c-description-list__group">
+                    <dt class="pf-c-description-list__term">
+                        <span class="pf-c-description-list__text"
+                            >${msg("Download signing certificate")}</span
                         >
-                    </div>
-                </dd>
-            </div>`);
+                    </dt>
+                    <dd class="pf-c-description-list__description">
+                        <div class="pf-c-description-list__text">
+                            <a
+                                class="pf-c-button pf-m-primary"
+                                href=${this.signer.certificateDownloadUrl}
+                                >${msg("Download")}</a
+                            >
+                        </div>
+                    </dd>
+                </div>`,
+            );
         }
         return html` <div class="pf-c-card pf-l-grid__item pf-m-12-col">
             <div class="pf-c-card__title">${msg("Related objects")}</div>

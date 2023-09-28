@@ -6,11 +6,9 @@ title: Nextcloud
 
 ## What is Nextcloud
 
-From https://en.wikipedia.org/wiki/Nextcloud
-
-:::note
-Nextcloud is a suite of client-server software for creating and using file hosting services. Nextcloud is free and open-source, which means that anyone is allowed to install and operate it on their own private server devices.
-:::
+> Nextcloud is a suite of client-server software for creating and using file hosting services. Nextcloud is free and open-source, which means that anyone is allowed to install and operate it on their own private server devices.
+>
+> -- https://en.wikipedia.org/wiki/Nextcloud
 
 :::caution
 This setup only works, when Nextcloud is running with HTTPS enabled. See [here](https://docs.nextcloud.com/server/stable/admin_manual/configuration_server/reverse_proxy_configuration.html?highlight=overwriteprotocol#overwrite-parameters) on how to configure this.

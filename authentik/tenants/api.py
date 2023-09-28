@@ -36,7 +36,7 @@ class TenantSerializer(ModelSerializer):
             if self.instance:
                 tenants = tenants.exclude(pk=self.instance.pk)
             if tenants.exists():
-                raise ValidationError("Only a single Tenant can be set as default.")
+                raise ValidationError({"default": "Only a single Tenant can be set as default."})
         return super().validate(attrs)
 
     class Meta:
@@ -78,7 +78,7 @@ class CurrentTenantSerializer(PassiveSerializer):
     ui_footer_links = ListField(
         child=FooterLinkSerializer(),
         read_only=True,
-        default=CONFIG.y("footer_links", []),
+        default=CONFIG.get("footer_links", []),
     )
     ui_theme = ChoiceField(
         choices=Themes.choices,

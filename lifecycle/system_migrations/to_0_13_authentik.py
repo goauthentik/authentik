@@ -108,14 +108,14 @@ class Migration(BaseMigration):
         self.con.commit()
         # We also need to clean the cache to make sure no pickeled objects still exist
         for db in [
-            CONFIG.y("redis.message_queue_db"),
-            CONFIG.y("redis.cache_db"),
-            CONFIG.y("redis.ws_db"),
+            CONFIG.get("redis.message_queue_db"),
+            CONFIG.get("redis.cache_db"),
+            CONFIG.get("redis.ws_db"),
         ]:
             redis = Redis(
-                host=CONFIG.y("redis.host"),
+                host=CONFIG.get("redis.host"),
                 port=6379,
                 db=db,
-                password=CONFIG.y("redis.password"),
+                password=CONFIG.get("redis.password"),
             )
             redis.flushall()

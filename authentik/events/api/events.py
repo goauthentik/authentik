@@ -4,7 +4,7 @@ from json import loads
 
 import django_filters
 from django.db.models.aggregates import Count
-from django.db.models.fields.json import KeyTextTransform
+from django.db.models.fields.json import KeyTextTransform, KeyTransform
 from django.db.models.functions import ExtractDay
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
@@ -134,11 +134,11 @@ class EventViewSet(ModelViewSet):
         """Get the top_n events grouped by user count"""
         filtered_action = request.query_params.get("action", EventAction.LOGIN)
         top_n = int(request.query_params.get("top_n", "15"))
-        return Response(
+        events = (
             get_objects_for_user(request.user, "authentik_events.view_event")
             .filter(action=filtered_action)
             .exclude(context__authorized_application=None)
-            .annotate(application=KeyTextTransform("authorized_application", "context"))
+            .annotate(application=KeyTransform("authorized_application", "context"))
             .annotate(user_pk=KeyTextTransform("pk", "user"))
             .values("application")
             .annotate(counted_events=Count("application"))
@@ -146,6 +146,7 @@ class EventViewSet(ModelViewSet):
             .values("unique_users", "application", "counted_events")
             .order_by("-counted_events")[:top_n]
         )
+        return Response(EventTopPerUserSerializer(instance=events, many=True).data)
 
     @extend_schema(
         methods=["GET"],

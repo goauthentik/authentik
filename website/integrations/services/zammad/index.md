@@ -6,11 +6,10 @@ title: Zammad
 
 ## What is Zammad
 
-From https://zammad.org/
-:::note
-Zammad is a web-based, open source user support/ticketing solution.
-Download and install it on your own servers. For free.
-:::
+> Zammad is a web-based, open source user support/ticketing solution.
+> Download and install it on your own servers. For free.
+>
+> -- https://zammad.org/
 
 ## Preparation
 

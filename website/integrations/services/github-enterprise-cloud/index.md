@@ -6,11 +6,9 @@ title: GitHub Enterprise Cloud
 
 ## What is GitHub Enterprise Cloud
 
-From https://docs.github.com/en/enterprise-cloud@latest/admin/overview/about-github-for-enterprises
-
-:::note
-GitHub is a complete developer platform to build, scale, and deliver secure software. Businesses use our suite of products to support the entire software development lifecycle, increasing development velocity and improving code quality.
-:::
+> GitHub is a complete developer platform to build, scale, and deliver secure software. Businesses use our suite of products to support the entire software development lifecycle, increasing development velocity and improving code quality.
+>
+> -- https://docs.github.com/en/enterprise-cloud@latest/admin/overview/about-github-for-enterprises
 
 :::note
 GitHub Enterprise Cloud EMU (Enterprise Managed Users) are not compatible with authentik. GitHub currently only permits SAML/OIDC for EMU organizations with Okta and/or Azure AD.

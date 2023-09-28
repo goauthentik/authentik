@@ -58,7 +58,7 @@ def clear_update_notifications():
 @prefill_task
 def update_latest_version(self: MonitoredTask):
     """Update latest version info"""
-    if CONFIG.y_bool("disable_update_check"):
+    if CONFIG.get_bool("disable_update_check"):
         cache.set(VERSION_CACHE_KEY, "0.0.0", VERSION_CACHE_TIMEOUT)
         self.set_status(TaskResult(TaskResultStatus.WARNING, messages=["Version check disabled."]))
         return

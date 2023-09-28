@@ -3,6 +3,7 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/admin/users/UserResetEmailForm";
+import { me } from "@goauthentik/app/common/users";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -20,6 +21,7 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 import { UserOption } from "@goauthentik/elements/user/utils";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -30,7 +32,15 @@ import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CapabilitiesEnum, CoreApi, Group, ResponseError, User } from "@goauthentik/api";
+import {
+    CapabilitiesEnum,
+    CoreApi,
+    CoreUsersListTypeEnum,
+    Group,
+    ResponseError,
+    SessionUser,
+    User,
+} from "@goauthentik/api";
 
 @customElement("ak-user-related-add")
 export class RelatedUserAdd extends Form<{ users: number[] }> {
@@ -70,7 +80,9 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
                         }}
                     >
                         <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                            <i class="fas fa-plus" aria-hidden="true"></i>
+                            <pf-tooltip position="top" content=${msg("Add users")}>
+                                <i class="fas fa-plus" aria-hidden="true"></i>
+                            </pf-tooltip>
                         </button>
                     </ak-group-member-select-table>
                     <div class="pf-c-form-control">
@@ -113,29 +125,32 @@ export class RelatedUserList extends Table<User> {
     @property({ type: Boolean })
     hideServiceAccounts = getURLParam<boolean>("hideServiceAccounts", true);
 
+    @state()
+    me?: SessionUser;
+
     static get styles(): CSSResult[] {
         return super.styles.concat(PFDescriptionList, PFAlert, PFBanner);
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<User>> {
-        return new CoreApi(DEFAULT_CONFIG).coreUsersList({
+        const users = await new CoreApi(DEFAULT_CONFIG).coreUsersList({
             ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
             search: this.search || "",
             groupsByPk: this.targetGroup ? [this.targetGroup.pk] : [],
-            attributes: this.hideServiceAccounts
-                ? JSON.stringify({
-                      "goauthentik.io/user/service-account__isnull": true,
-                  })
+            type: this.hideServiceAccounts
+                ? [CoreUsersListTypeEnum.External, CoreUsersListTypeEnum.Internal]
                 : undefined,
         });
+        this.me = await me();
+        return users;
     }
 
     columns(): TableColumn[] {
         return [
             new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Active"), "active"),
+            new TableColumn(msg("Active"), "is_active"),
             new TableColumn(msg("Last login"), "last_login"),
             new TableColumn(msg("Actions")),
         ];
@@ -173,6 +188,9 @@ export class RelatedUserList extends Table<User> {
     }
 
     row(item: User): TemplateResult[] {
+        const canImpersonate =
+            rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
+            item.pk !== this.me?.user.pk;
         return [
             html`<a href="#/identity/users/${item.pk}">
                 <div>${item.username}</div>
@@ -187,10 +205,12 @@ export class RelatedUserList extends Table<User> {
                     <span slot="header"> ${msg("Update User")} </span>
                     <ak-user-form slot="form" .instancePk=${item.pk}> </ak-user-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
-                ${rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate)
+                ${canImpersonate
                     ? html`
                           <ak-action-button
                               class="pf-m-tertiary"

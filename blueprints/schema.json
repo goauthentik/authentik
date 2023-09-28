@@ -59,7 +59,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -95,7 +96,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -131,7 +133,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -167,7 +170,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -203,7 +207,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -239,7 +244,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -275,7 +281,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -311,7 +318,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -347,7 +355,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -383,7 +392,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -419,7 +429,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -455,7 +466,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -491,7 +503,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -527,7 +540,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -563,7 +577,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -599,7 +614,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -635,7 +651,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -671,7 +688,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -707,7 +725,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -743,7 +762,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -779,7 +799,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -815,7 +836,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -851,7 +873,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -887,7 +910,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -923,7 +947,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -959,7 +984,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -995,7 +1021,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1031,7 +1058,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1067,7 +1095,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1103,7 +1132,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1139,7 +1169,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1175,7 +1206,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1211,7 +1243,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1247,7 +1280,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1283,7 +1317,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1319,7 +1354,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1355,7 +1391,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1391,7 +1428,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1427,7 +1465,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1463,7 +1502,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1499,7 +1539,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1535,7 +1576,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1571,7 +1613,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1607,7 +1650,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1622,6 +1666,43 @@
                             },
                             "identifiers": {
                                 "$ref": "#/$defs/model_authentik_stages_authenticator_static.authenticatorstaticstage"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
+                                "const": "authentik_stages_authenticator_static.staticdevice"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_static.staticdevice"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_static.staticdevice"
                             }
                         }
                     },
@@ -1643,7 +1724,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1669,6 +1751,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_stages_authenticator_totp.totpdevice"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_totp.totpdevice"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_stages_authenticator_totp.totpdevice"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_stages_authenticator_validate.authenticatorvalidatestage"
                             },
                             "id": {
@@ -1679,7 +1798,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1715,7 +1835,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1751,7 +1872,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1787,7 +1909,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1823,7 +1946,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1859,7 +1983,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1895,7 +2020,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1931,7 +2057,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -1967,7 +2094,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2003,7 +2131,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2039,7 +2168,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2075,7 +2205,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2111,7 +2242,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2147,7 +2279,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2183,7 +2316,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2219,7 +2353,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2255,7 +2390,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2291,7 +2427,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2327,7 +2464,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2363,7 +2501,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2399,7 +2538,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2435,7 +2575,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2471,7 +2612,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2507,7 +2649,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2543,7 +2686,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -2579,7 +2723,8 @@
                                 "enum": [
                                     "absent",
                                     "present",
-                                    "created"
+                                    "created",
+                                    "must_created"
                                 ],
                                 "default": "present"
                             },
@@ -3213,7 +3358,6 @@
                         "authentik.crypto",
                         "authentik.events",
                         "authentik.flows",
-                        "authentik.lib",
                         "authentik.outposts",
                         "authentik.policies.dummy",
                         "authentik.policies.event_matcher",
@@ -3233,6 +3377,7 @@
                         "authentik.sources.oauth",
                         "authentik.sources.plex",
                         "authentik.sources.saml",
+                        "authentik.stages.authenticator",
                         "authentik.stages.authenticator_duo",
                         "authentik.stages.authenticator_sms",
                         "authentik.stages.authenticator_static",
@@ -3311,7 +3456,9 @@
                         "authentik_stages_authenticator_sms.authenticatorsmsstage",
                         "authentik_stages_authenticator_sms.smsdevice",
                         "authentik_stages_authenticator_static.authenticatorstaticstage",
+                        "authentik_stages_authenticator_static.staticdevice",
                         "authentik_stages_authenticator_totp.authenticatortotpstage",
+                        "authentik_stages_authenticator_totp.totpdevice",
                         "authentik_stages_authenticator_validate.authenticatorvalidatestage",
                         "authentik_stages_authenticator_webauthn.authenticatewebauthnstage",
                         "authentik_stages_authenticator_webauthn.webauthndevice",
@@ -3576,10 +3723,15 @@
                 },
                 "timeout": {
                     "type": "integer",
-                    "minimum": -2147483648,
+                    "minimum": 0,
                     "maximum": 2147483647,
                     "title": "Timeout",
                     "description": "Timeout after which Policy execution is terminated."
+                },
+                "failure_result": {
+                    "type": "boolean",
+                    "title": "Failure result",
+                    "description": "Result if the Policy execution fails."
                 }
             },
             "required": []
@@ -3980,6 +4132,16 @@
                             "type": "string",
                             "minLength": 1,
                             "title": "Path"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "internal",
+                                "external",
+                                "service_account",
+                                "internal_service_account"
+                            ],
+                            "title": "Type"
                         }
                     },
                     "required": [
@@ -4171,6 +4333,16 @@
                             "type": "string",
                             "minLength": 1,
                             "title": "Path"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "internal",
+                                "external",
+                                "service_account",
+                                "internal_service_account"
+                            ],
+                            "title": "Type"
                         }
                     },
                     "required": [
@@ -4366,6 +4538,16 @@
                             "type": "string",
                             "minLength": 1,
                             "title": "Path"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "internal",
+                                "external",
+                                "service_account",
+                                "internal_service_account"
+                            ],
+                            "title": "Type"
                         }
                     },
                     "required": [
@@ -5830,9 +6012,28 @@
                 },
                 "token_count": {
                     "type": "integer",
-                    "minimum": -2147483648,
+                    "minimum": 0,
                     "maximum": 2147483647,
                     "title": "Token count"
+                },
+                "token_length": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 2147483647,
+                    "title": "Token length"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_static.staticdevice": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "The human-readable name of this device."
                 }
             },
             "required": []
@@ -5947,6 +6148,19 @@
                         8
                     ],
                     "title": "Digits"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_stages_authenticator_totp.totpdevice": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 64,
+                    "minLength": 1,
+                    "title": "Name",
+                    "description": "The human-readable name of this device."
                 }
             },
             "required": []
@@ -6522,6 +6736,16 @@
                             "type": "string",
                             "minLength": 1,
                             "title": "Path"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "internal",
+                                "external",
+                                "service_account",
+                                "internal_service_account"
+                            ],
+                            "title": "Type"
                         }
                     },
                     "required": [
@@ -7257,6 +7481,16 @@
                             "type": "string",
                             "minLength": 1,
                             "title": "Path"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "internal",
+                                "external",
+                                "service_account",
+                                "internal_service_account"
+                            ],
+                            "title": "Type"
                         }
                     },
                     "required": [
@@ -8334,8 +8568,21 @@
                     "minLength": 1,
                     "title": "Path"
                 },
-                "password": {
+                "type": {
                     "type": "string",
+                    "enum": [
+                        "internal",
+                        "external",
+                        "service_account",
+                        "internal_service_account"
+                    ],
+                    "title": "Type"
+                },
+                "password": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
                     "minLength": 1,
                     "title": "Password"
                 }

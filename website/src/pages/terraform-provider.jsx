@@ -15,7 +15,7 @@ function TerraformProviderPage() {
             <BrowserOnly>
                 {() => {
                     window.location.assign(
-                        "https://registry.terraform.io/providers/goauthentik/authentik/latest/docs"
+                        "https://registry.terraform.io/providers/goauthentik/authentik/latest/docs",
                     );
                 }}
             </BrowserOnly>

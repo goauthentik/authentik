@@ -6,11 +6,9 @@ title: HashiCorp Cloud Platform
 
 ## What is HashiCorp Cloud
 
-From https://cloud.hashicorp.com/
-
-:::note
-HashiCorp Cloud Platform is a fully managed platform for Terraform, Vault, Consul, and more.
-:::
+> HashiCorp Cloud Platform is a fully managed platform for Terraform, Vault, Consul, and more.
+>
+> -- https://cloud.hashicorp.com/
 
 ## Preparation
 

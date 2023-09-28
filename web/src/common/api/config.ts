@@ -3,9 +3,8 @@ import {
     EventMiddleware,
     LoggingMiddleware,
 } from "@goauthentik/common/api/middleware";
-import { EVENT_REFRESH, VERSION } from "@goauthentik/common/constants";
+import { EVENT_LOCALE_REQUEST, EVENT_REFRESH, VERSION } from "@goauthentik/common/constants";
 import { globalAK } from "@goauthentik/common/global";
-import { activateLocale } from "@goauthentik/common/ui/locale";
 
 import { Config, Configuration, CoreApi, CurrentTenant, RootApi } from "@goauthentik/api";
 
@@ -39,7 +38,13 @@ export function tenantSetLocale(tenant: CurrentTenant) {
         return;
     }
     console.debug("authentik/locale: setting locale from tenant default");
-    activateLocale(tenant.defaultLocale);
+    window.dispatchEvent(
+        new CustomEvent(EVENT_LOCALE_REQUEST, {
+            composed: true,
+            bubbles: true,
+            detail: { locale: tenant.defaultLocale },
+        }),
+    );
 }
 
 let globalTenantPromise: Promise<CurrentTenant> | undefined = Promise.resolve(globalAK().tenant);
@@ -63,7 +68,7 @@ export function getMetaContent(key: string): string {
 }
 
 export const DEFAULT_CONFIG = new Configuration({
-    basePath: process.env.AK_API_BASE_PATH + "/api/v3",
+    basePath: (process.env.AK_API_BASE_PATH || window.location.origin) + "/api/v3",
     headers: {
         "sentry-trace": getMetaContent("sentry-trace"),
     },

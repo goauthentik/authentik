@@ -6,11 +6,9 @@ title: Wordpress
 
 ## What is Wordpress
 
-From https://en.wikipedia.org/wiki/WordPress
-
-:::note
-WordPress is a free and open-source content management system written in PHP and paired with a MySQL or MariaDB database. Features include a plugin architecture and a template system, referred to within WordPress as Themes
-:::
+> WordPress is a free and open-source content management system written in PHP and paired with a MySQL or MariaDB database. Features include a plugin architecture and a template system, referred to within WordPress as Themes
+>
+> -- https://en.wikipedia.org/wiki/WordPress
 
 :::note
 There are many different plugins for Wordpress that allow you to setup SSO using different authentication methods. The plugin that is explained in this tutorial is "OpenID Connect Generic" version 3.8.5 by daggerhart. This plugin uses OpenID/OAUTH2 and is free without paywalls or subscriptions at the time of writing this. The plugin is available for free in the Wordpress Plugin gallery.
@@ -36,7 +34,7 @@ Only settings that have been modified from default have been listed.
 -   Name: Wordpress
 -   Client ID: Copy and Save this for Later
 -   Client Secret: Copy and Save this for later
--   Redirect URIs/Origins: `https://wp.company/wp-admin/admin-ajax.php?action=openid-connect-authorize`
+-   Redirect URIs/Origins: `https://wp.company/wp-admin/admin-ajax.php\?action=openid-connect-authorize`
 
 ### Step 2 - Wordpress
 

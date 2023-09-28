@@ -13,6 +13,7 @@ from authentik.flows.models import FlowDesignation, FlowStageBinding, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlan
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import QS_KEY_TOKEN, SESSION_KEY_PLAN
+from authentik.lib.config import CONFIG
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.stage import PLAN_CONTEXT_EMAIL_OVERRIDE
 
@@ -120,7 +121,7 @@ class TestEmailStage(FlowTestCase):
     def test_use_global_settings(self):
         """Test use_global_settings"""
         host = "some-unique-string"
-        with self.settings(EMAIL_HOST=host):
+        with CONFIG.patch("email.host", host):
             self.assertEqual(EmailStage(use_global_settings=True).backend.host, host)
 
     def test_token(self):

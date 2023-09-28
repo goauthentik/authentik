@@ -5,8 +5,6 @@ from typing import Optional
 
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse
-from django_otp import devices_for_user
-from django_otp.models import Device
 from jwt import PyJWTError, decode, encode
 from rest_framework.fields import CharField, IntegerField, JSONField, ListField, UUIDField
 from rest_framework.serializers import ValidationError
@@ -21,6 +19,8 @@ from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
 from authentik.lib.utils.time import timedelta_from_string
 from authentik.root.install_id import get_install_id
+from authentik.stages.authenticator import devices_for_user
+from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.challenge import (
     DeviceChallenge,

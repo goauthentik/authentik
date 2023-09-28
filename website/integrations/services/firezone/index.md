@@ -6,19 +6,17 @@ title: Firezone
 
 ## What is Firezone
 
-From https://www.firezone.dev
-
-:::note
-Firezone is an open-source remote access platform built on WireGuard?, a modern VPN protocol that's 4-6x faster than OpenVPN.
-Deploy on your infrastructure and start onboarding users in minutes.
-:::
+> Firezone is an open-source remote access platform built on WireGuard?, a modern VPN protocol that's 4-6x faster than OpenVPN.
+> Deploy on your infrastructure and start onboarding users in minutes.
+>
+> -- https://www.firezone.dev
 
 ## Preparation
 
 The following placeholders will be used:
 
 -   `firezone.company` is the FQDN of the Firezone install.
--   `authenik` is the unique ID used to generate logins for this provider.
+-   `authentik` is the unique ID used to generate logins for this provider.
 -   `authentik.company` is the FQDN of the authentik install.
 
 Create an OAuth2/OpenID provider with the following parameters:

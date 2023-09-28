@@ -121,29 +121,28 @@ export class BoundStagesList extends Table<FlowStageBinding> {
     }
 
     renderEmpty(): TemplateResult {
-        return super.renderEmpty(html`<ak-empty-state
-            header=${msg("No Stages bound")}
-            icon="pf-icon-module"
-        >
-            <div slot="body">${msg("No stages are currently bound to this flow.")}</div>
-            <div slot="primary">
-                <ak-forms-modal>
-                    <span slot="submit"> ${msg("Create")} </span>
-                    <span slot="header"> ${msg("Create Stage binding")} </span>
-                    <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
-                    </ak-stage-binding-form>
-                    <button slot="trigger" class="pf-c-button pf-m-primary">
-                        ${msg("Bind stage")}
-                    </button>
-                </ak-forms-modal>
-            </div>
-        </ak-empty-state>`);
+        return super.renderEmpty(
+            html`<ak-empty-state header=${msg("No Stages bound")} icon="pf-icon-module">
+                <div slot="body">${msg("No stages are currently bound to this flow.")}</div>
+                <div slot="primary">
+                    <ak-forms-modal>
+                        <span slot="submit"> ${msg("Create")} </span>
+                        <span slot="header"> ${msg("Create Stage binding")} </span>
+                        <ak-stage-binding-form slot="form" targetPk=${ifDefined(this.target)}>
+                        </ak-stage-binding-form>
+                        <button slot="trigger" class="pf-c-button pf-m-primary">
+                            ${msg("Bind stage")}
+                        </button>
+                    </ak-forms-modal>
+                </div>
+            </ak-empty-state>`,
+        );
     }
 
     renderToolbar(): TemplateResult {
         return html`
             <ak-stage-wizard
-                createText=${msg("Create & bind Stage")}
+                createText=${msg("Create and bind Stage")}
                 ?showBindingPage=${true}
                 bindingTarget=${ifDefined(this.target)}
             ></ak-stage-wizard>

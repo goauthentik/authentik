@@ -19,6 +19,9 @@ export class AggregateCard extends AKElement {
     @property()
     headerLink?: string;
 
+    @property()
+    subtext?: string;
+
     @property({ type: Boolean })
     isCenter = true;
 
@@ -79,6 +82,7 @@ export class AggregateCard extends AKElement {
             </div>
             <div class="pf-c-card__body ${this.isCenter ? "center-value" : ""}">
                 ${this.renderInner()}
+                ${this.subtext ? html`<p class="subtext">${this.subtext}</p>` : html``}
             </div>
         </div>`;
     }

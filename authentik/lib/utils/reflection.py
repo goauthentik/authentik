@@ -50,7 +50,7 @@ def get_env() -> str:
     """Get environment in which authentik is currently running"""
     if "CI" in os.environ:
         return "ci"
-    if CONFIG.y_bool("debug"):
+    if CONFIG.get_bool("debug"):
         return "dev"
     if SERVICE_HOST_ENV_NAME in os.environ:
         return "kubernetes"

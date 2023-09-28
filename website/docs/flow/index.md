@@ -10,7 +10,7 @@ For example, a standard login flow would consist of the following stages:
 -   Password, the user's password is checked against the hash in the database
 -   Log the user in
 
-Upon flow execution, a plan containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Re-evaluate Policies** option on the binding.
+Upon flow execution, a plan containing all stages is generated. This means that all attached policies are evaluated upon execution. This behaviour can be altered by enabling the **Evaluate when stage is run** option on the binding.
 
 To determine which flow is linked, authentik searches all flows with the required designation and chooses the first instance the current user has access to.
 

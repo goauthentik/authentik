@@ -6,11 +6,9 @@ title: NetBox
 
 ## What is NetBox
 
-From https://github.com/netbox-community/netbox
-
-:::note
-NetBox is the leading solution for modeling and documenting modern networks.
-:::
+> NetBox is the leading solution for modeling and documenting modern networks.
+>
+> -- https://github.com/netbox-community/netbox
 
 ## Preparation
 

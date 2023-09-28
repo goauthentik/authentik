@@ -32,11 +32,21 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 			"reason":       "flow_error",
 			"app":          r.pi.appSlug,
 		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
+			"outpost_name": rs.ac.Outpost.Name,
+			"reason":       "flow_error",
+			"app":          r.pi.appSlug,
+		}).Inc()
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		return
 	}
 	if !passed {
 		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": rs.ac.Outpost.Name,
+			"reason":       "invalid_credentials",
+			"app":          r.pi.appSlug,
+		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 			"outpost_name": rs.ac.Outpost.Name,
 			"reason":       "invalid_credentials",
 			"app":          r.pi.appSlug,
@@ -53,12 +63,22 @@ func (rs *RadiusServer) Handle_AccessRequest(w radius.ResponseWriter, r *RadiusR
 			"reason":       "access_check_fail",
 			"app":          r.pi.appSlug,
 		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
+			"outpost_name": rs.ac.Outpost.Name,
+			"reason":       "access_check_fail",
+			"app":          r.pi.appSlug,
+		}).Inc()
 		return
 	}
 	if !access {
 		r.Log().WithField("username", username).Info("Access denied for user")
 		_ = w.Write(r.Response(radius.CodeAccessReject))
 		metrics.RequestsRejected.With(prometheus.Labels{
+			"outpost_name": rs.ac.Outpost.Name,
+			"reason":       "access_denied",
+			"app":          r.pi.appSlug,
+		}).Inc()
+		metrics.RequestsRejectedLegacy.With(prometheus.Labels{
 			"outpost_name": rs.ac.Outpost.Name,
 			"reason":       "access_denied",
 			"app":          r.pi.appSlug,

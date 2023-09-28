@@ -256,7 +256,7 @@ def _outpost_single_update(outpost: Outpost, layer=None):
 def outpost_connection_discovery(self: MonitoredTask):
     """Checks the local environment and create Service connections."""
     status = TaskResult(TaskResultStatus.SUCCESSFUL)
-    if not CONFIG.y_bool("outposts.discover"):
+    if not CONFIG.get_bool("outposts.discover"):
         status.messages.append("Outpost integration discovery is disabled")
         self.set_status(status)
         return

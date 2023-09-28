@@ -71,6 +71,10 @@ class PrometheusServiceMonitorReconciler(KubernetesObjectReconciler[PrometheusSe
         self.api_ex = ApiextensionsV1Api(controller.client)
         self.api = CustomObjectsApi(controller.client)
 
+    @staticmethod
+    def reconciler_name() -> str:
+        return "prometheus servicemonitor"
+
     @property
     def noop(self) -> bool:
         return (not self._crd_exists()) or (self.is_embedded)

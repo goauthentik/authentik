@@ -1,4 +1,5 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-crypto-certificate-search";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -13,14 +14,8 @@ import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CertificateKeyPair,
-    CryptoApi,
-    CryptoCertificatekeypairsListRequest,
     DigestAlgorithmEnum,
-    Flow,
-    FlowsApi,
     FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
     PaginatedSAMLPropertyMappingList,
     PropertymappingsApi,
     PropertymappingsSamlListRequest,
@@ -85,32 +80,11 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 ?required=${false}
                 name="authenticationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Authentication,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.authenticationFlow;
-                    }}
-                >
-                </ak-search-select>
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authentication}
+                    .currentFlow=${this.instance?.authenticationFlow}
+                    required
+                ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when a user access this provider and is not authenticated.")}
                 </p>
@@ -120,32 +94,11 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Authorization,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.pk;
-                    }}
-                    .selected=${(flow: Flow): boolean => {
-                        return flow.pk === this.instance?.authorizationFlow;
-                    }}
-                >
-                </ak-search-select>
+                <ak-flow-search
+                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    .currentFlow=${this.instance?.authorizationFlow}
+                    required
+                ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when authorizing this provider.")}
                 </p>
@@ -222,35 +175,9 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         label=${msg("Signing Certificate")}
                         name="signingKp"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    hasKey: true,
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.signingKp;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            certificate=${this.instance?.signingKp}
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "Certificate used to sign outgoing Responses going to the Service Provider.",
@@ -261,41 +188,16 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         label=${msg("Verification Certificate")}
                         name="verificationKp"
                     >
-                        <ak-search-select
-                            .fetchObjects=${async (
-                                query?: string,
-                            ): Promise<CertificateKeyPair[]> => {
-                                const args: CryptoCertificatekeypairsListRequest = {
-                                    ordering: "name",
-                                    includeDetails: false,
-                                };
-                                if (query !== undefined) {
-                                    args.search = query;
-                                }
-                                const certificates = await new CryptoApi(
-                                    DEFAULT_CONFIG,
-                                ).cryptoCertificatekeypairsList(args);
-                                return certificates.results;
-                            }}
-                            .renderElement=${(item: CertificateKeyPair): string => {
-                                return item.name;
-                            }}
-                            .value=${(item: CertificateKeyPair | undefined): string | undefined => {
-                                return item?.pk;
-                            }}
-                            .selected=${(item: CertificateKeyPair): boolean => {
-                                return item.pk === this.instance?.verificationKp;
-                            }}
-                            ?blankable=${true}
-                        >
-                        </ak-search-select>
+                        <ak-crypto-certificate-search
+                            certificate=${this.instance?.verificationKp}
+                            nokey
+                        ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">
                             ${msg(
                                 "When selected, incoming assertion's Signatures will be validated against this certificate. To allow unsigned Requests, leave on default.",
                             )}
                         </p>
                     </ak-form-element-horizontal>
-
                     <ak-form-element-horizontal
                         label=${msg("Property mappings")}
                         ?required=${true}

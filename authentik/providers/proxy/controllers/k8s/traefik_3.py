@@ -67,6 +67,10 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         self.crd_version = "v1alpha1"
         self.crd_plural = "middlewares"
 
+    @staticmethod
+    def reconciler_name() -> str:
+        return "traefik middleware"
+
     @property
     def noop(self) -> bool:
         if not ProxyProvider.objects.filter(

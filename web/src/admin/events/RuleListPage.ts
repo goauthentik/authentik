@@ -1,7 +1,7 @@
 import "@goauthentik/admin/events/RuleForm";
-import { SeverityToLabel } from "@goauthentik/admin/events/utils";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { severityToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
@@ -9,6 +9,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -82,7 +83,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
     row(item: NotificationRule): TemplateResult[] {
         return [
             html`${item.name}`,
-            html`${SeverityToLabel(item.severity)}`,
+            html`${severityToLabel(item.severity)}`,
             html`${item.groupObj
                 ? html`<a href="#/identity/groups/${item.groupObj.pk}">${item.groupObj.name}</a>`
                 : msg("None (rule disabled)")}`,
@@ -91,7 +92,9 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 <span slot="header"> ${msg("Update Notification Rule")} </span>
                 <ak-event-rule-form slot="form" .instancePk=${item.pk}> </ak-event-rule-form>
                 <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <i class="fas fa-edit"></i>
+                    <pf-tooltip position="top" content=${msg("Edit")}>
+                        <i class="fas fa-edit"></i>
+                    </pf-tooltip>
                 </button>
             </ak-forms-modal>`,
         ];

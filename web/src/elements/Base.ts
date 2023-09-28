@@ -1,9 +1,10 @@
 import { config, tenant } from "@goauthentik/common/api/config";
-import { EVENT_LOCALE_CHANGE, EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
+import { EVENT_THEME_CHANGE } from "@goauthentik/common/constants";
 import { UIConfig, uiConfig } from "@goauthentik/common/ui/config";
 import { adaptCSS } from "@goauthentik/common/utils";
 
-import { LitElement } from "lit";
+import { localized } from "@lit/localize";
+import { CSSResult, LitElement } from "lit";
 import { state } from "lit/decorators.js";
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
@@ -17,6 +18,13 @@ export function rootInterface<T extends Interface>(): T | undefined {
         (el) => el instanceof Interface,
     );
     return el[0] as T;
+}
+
+export function ensureCSSStyleSheet(css: CSSStyleSheet | CSSResult): CSSStyleSheet {
+    if (css instanceof CSSResult) {
+        return css.styleSheet!;
+    }
+    return css;
 }
 
 let css: Promise<string[]> | undefined;
@@ -45,6 +53,7 @@ export interface AdoptedStyleSheetsElement {
 
 const QUERY_MEDIA_COLOR_LIGHT = "(prefers-color-scheme: light)";
 
+@localized()
 export class AKElement extends LitElement {
     _mediaMatcher?: MediaQueryList;
     _mediaMatcherHandler?: (ev?: MediaQueryListEvent) => void;
@@ -53,14 +62,9 @@ export class AKElement extends LitElement {
     get activeTheme(): UiThemeEnum | undefined {
         return this._activeTheme;
     }
-    private _handleLocaleChange: () => void;
 
     constructor() {
         super();
-        this._handleLocaleChange = (() => {
-            this.requestUpdate();
-        }).bind(this);
-        window.addEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
     }
 
     protected createRenderRoot(): ShadowRoot | Element {
@@ -69,7 +73,10 @@ export class AKElement extends LitElement {
         if ("ShadyDOM" in window) {
             styleRoot = document;
         }
-        styleRoot.adoptedStyleSheets = adaptCSS([...styleRoot.adoptedStyleSheets, AKGlobal]);
+        styleRoot.adoptedStyleSheets = adaptCSS([
+            ...styleRoot.adoptedStyleSheets,
+            ensureCSSStyleSheet(AKGlobal),
+        ]);
         this._initTheme(styleRoot);
         this._initCustomCSS(styleRoot);
         return root;
@@ -154,18 +161,13 @@ export class AKElement extends LitElement {
         const stylesheet = AKElement.themeToStylesheet(theme);
         const oldStylesheet = AKElement.themeToStylesheet(this._activeTheme);
         if (stylesheet) {
-            root.adoptedStyleSheets = [...root.adoptedStyleSheets, stylesheet];
+            root.adoptedStyleSheets = [...root.adoptedStyleSheets, ensureCSSStyleSheet(stylesheet)];
         }
         if (oldStylesheet) {
             root.adoptedStyleSheets = root.adoptedStyleSheets.filter((v) => v !== oldStylesheet);
         }
         this._activeTheme = theme;
         this.requestUpdate();
-    }
-
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        window.removeEventListener(EVENT_LOCALE_CHANGE, this._handleLocaleChange);
     }
 }
 
@@ -181,7 +183,7 @@ export class Interface extends AKElement {
 
     constructor() {
         super();
-        document.adoptedStyleSheets = [...document.adoptedStyleSheets, PFBase];
+        document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
         tenant().then((tenant) => (this.tenant = tenant));
         config().then((config) => (this.config = config));
     }

@@ -8,3 +8,4 @@ coverage
 poly.ts
 src/locale-codes.ts
 src/locales/
+storybook-static/

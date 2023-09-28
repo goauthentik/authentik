@@ -29,7 +29,7 @@ async function getToken(event) {
         });
     }
     const tokenUrl = `${config.registryTokenEndpoint}?${querystring.stringify(
-        tokenParams
+        tokenParams,
     )}`;
     console.debug(`oci-proxy[token]: final URL to fetch: ${tokenUrl}`);
     const tokenRes = await fetch.default(tokenUrl, {
@@ -64,7 +64,7 @@ exports.handler = async function (event, context) {
         };
     }
     console.debug(
-        "oci-proxy: root handler, returning 401 with www-authenticate"
+        "oci-proxy: root handler, returning 401 with www-authenticate",
     );
     return {
         statusCode: 401,

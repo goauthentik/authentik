@@ -1,22 +1,34 @@
-# update website/docs/installation/configuration.md
+# update website/docs/installation/configuration.mdx
 # This is the default configuration file
 postgresql:
   host: localhost
   name: authentik
   user: authentik
   port: 5432
-  password: 'env://POSTGRES_PASSWORD'
+  password: "env://POSTGRES_PASSWORD"
   use_pgbouncer: false
+  use_pgpool: false
 
 listen:
   listen_http: 0.0.0.0:9000
   listen_https: 0.0.0.0:9443
+  listen_ldap: 0.0.0.0:3389
+  listen_ldaps: 0.0.0.0:6636
+  listen_radius: 0.0.0.0:1812
   listen_metrics: 0.0.0.0:9300
+  listen_debug: 0.0.0.0:9900
+  trusted_proxy_cidrs:
+    - 127.0.0.0/8
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+    - fe80::/10
+    - ::1/128
 
 redis:
   host: localhost
   port: 6379
-  password: ''
+  password: ""
   tls: false
   tls_reqs: "none"
   db: 0
@@ -24,6 +36,9 @@ redis:
   cache_timeout_flows: 300
   cache_timeout_policies: 300
   cache_timeout_reputation: 300
+
+paths:
+  media: ./media
 
 debug: false
 remote_debug: false
@@ -66,8 +81,12 @@ outposts:
 
 ldap:
   task_timeout_hours: 2
+  page_size: 50
   tls:
     ciphers: null
+
+reputation:
+  expiry: 86400
 
 cookie_domain: null
 disable_update_check: false
@@ -92,3 +111,6 @@ web:
   # No default here as it's set dynamically
   # workers: 2
   threads: 4
+
+worker:
+  concurrency: 2

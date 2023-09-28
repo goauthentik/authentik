@@ -19,25 +19,37 @@ import (
 func (ps *ProxyServer) HandlePing(rw http.ResponseWriter, r *http.Request) {
 	before := time.Now()
 	rw.WriteHeader(204)
-	after := time.Since(before)
+	elapsed := time.Since(before)
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
 		"method":       r.Method,
 		"host":         web.GetHost(r),
 		"type":         "ping",
-	}).Observe(float64(after))
+	}).Observe(float64(elapsed) / float64(time.Second))
+	metrics.RequestsLegacy.With(prometheus.Labels{
+		"outpost_name": ps.akAPI.Outpost.Name,
+		"method":       r.Method,
+		"host":         web.GetHost(r),
+		"type":         "ping",
+	}).Observe(float64(elapsed))
 }
 
 func (ps *ProxyServer) HandleStatic(rw http.ResponseWriter, r *http.Request) {
 	before := time.Now()
 	web.DisableIndex(http.StripPrefix("/outpost.goauthentik.io/static/dist", staticWeb.StaticHandler)).ServeHTTP(rw, r)
-	after := time.Since(before)
+	elapsed := time.Since(before)
 	metrics.Requests.With(prometheus.Labels{
 		"outpost_name": ps.akAPI.Outpost.Name,
 		"method":       r.Method,
 		"host":         web.GetHost(r),
 		"type":         "static",
-	}).Observe(float64(after))
+	}).Observe(float64(elapsed) / float64(time.Second))
+	metrics.RequestsLegacy.With(prometheus.Labels{
+		"outpost_name": ps.akAPI.Outpost.Name,
+		"method":       r.Method,
+		"host":         web.GetHost(r),
+		"type":         "static",
+	}).Observe(float64(elapsed))
 }
 
 func (ps *ProxyServer) lookupApp(r *http.Request) (*application.Application, string) {

@@ -3,7 +3,10 @@ from django.core.management.base import BaseCommand
 from structlog.stdlib import get_logger
 
 from authentik.sources.ldap.models import LDAPSource
-from authentik.sources.ldap.tasks import ldap_sync_single
+from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
+from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
+from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
+from authentik.sources.ldap.tasks import ldap_sync_paginator
 
 LOGGER = get_logger()
 
@@ -20,4 +23,10 @@ class Command(BaseCommand):
             if not source:
                 LOGGER.warning("Source does not exist", slug=source_slug)
                 continue
-            ldap_sync_single(source)
+            tasks = (
+                ldap_sync_paginator(source, UserLDAPSynchronizer)
+                + ldap_sync_paginator(source, GroupLDAPSynchronizer)
+                + ldap_sync_paginator(source, MembershipLDAPSynchronizer)
+            )
+            for task in tasks:
+                task()

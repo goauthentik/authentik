@@ -1,0 +1,47 @@
+.slider {
+    --height: 1.25em;
+}
+
+.slider {
+    height: var(--height);
+    overflow: hidden;
+}
+
+.sliderEntry:first-of-type {
+    animation: slide 5s linear infinite;
+}
+
+.sliderEntry {
+    height: var(--height);
+    padding: 0px 15px;
+    text-align: center;
+    margin-bottom: var(--height);
+    box-sizing: border-box;
+}
+
+@keyframes slide {
+    0% {
+        margin-top: calc(-6 * var(--height));
+    }
+    5% {
+        /* For stopping effect */
+        margin-top: calc(-4 * var(--height));
+    }
+    33% {
+        margin-top: calc(-4 * var(--height));
+    }
+    38% {
+        /* For stopping effect */
+        margin-top: calc(-2 * var(--height));
+    }
+    66% {
+        margin-top: calc(-2 * var(--height));
+    }
+    71% {
+        /* For stopping effect */
+        margin-top: 0px;
+    }
+    100% {
+        margin-top: 0px;
+    }
+}

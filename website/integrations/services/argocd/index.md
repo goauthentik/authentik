@@ -6,11 +6,9 @@ title: ArgoCD
 
 ## What is ArgoCD
 
-From https://argoproj.github.io/cd/
-
-:::note
-Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes.
-:::
+> Argo CD is a declarative, GitOps continuous delivery tool for Kubernetes.
+>
+> -- https://argoproj.github.io/cd/
 
 ## Preparation
 
@@ -30,6 +28,7 @@ Only settings that have been modified from default have been listed.
 In authentik, create an _OAuth2/OpenID Provider_ (under _Applications/Providers_) with these settings:
 
 -   Name: ArgoCD
+-   Client Type: `Confidential`
 -   Signing Key: Select any available key
 -   Redirect URIs:
 
@@ -47,6 +46,7 @@ Create a new _Application_ (under _Applications/Applications_) with these settin
 -   Name: ArgoCD
 -   Provider: ArgoCD
 -   Slug: argocd
+-   Launch URL: http://argocd.company/auth/login
 
 ### Step 3 - ArgoCD Admin Group creation
 
@@ -85,7 +85,6 @@ dex.config: |
           - openid
           - profile
           - email
-          - groups
       name: authentik
       type: oidc
       id: authentik

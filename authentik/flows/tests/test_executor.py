@@ -18,7 +18,6 @@ from authentik.flows.planner import FlowPlan, FlowPlanner
 from authentik.flows.stage import PLAN_CONTEXT_PENDING_USER_IDENTIFIER, StageView
 from authentik.flows.tests import FlowTestCase
 from authentik.flows.views.executor import NEXT_ARG_NAME, SESSION_KEY_PLAN, FlowExecutorView
-from authentik.lib.config import CONFIG
 from authentik.lib.generators import generate_id
 from authentik.policies.dummy.models import DummyPolicy
 from authentik.policies.models import PolicyBinding
@@ -85,7 +84,6 @@ class TestFlowExecutor(FlowTestCase):
             FlowDesignation.AUTHENTICATION,
         )
 
-        CONFIG.update_from_dict({"domain": "testserver"})
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
@@ -111,7 +109,6 @@ class TestFlowExecutor(FlowTestCase):
             denied_action=FlowDeniedAction.CONTINUE,
         )
 
-        CONFIG.update_from_dict({"domain": "testserver"})
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )
@@ -128,7 +125,6 @@ class TestFlowExecutor(FlowTestCase):
             FlowDesignation.AUTHENTICATION,
         )
 
-        CONFIG.update_from_dict({"domain": "testserver"})
         dest = "/unique-string"
         url = reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug})
         response = self.client.get(url + f"?{NEXT_ARG_NAME}={dest}")
@@ -145,7 +141,6 @@ class TestFlowExecutor(FlowTestCase):
             FlowDesignation.AUTHENTICATION,
         )
 
-        CONFIG.update_from_dict({"domain": "testserver"})
         response = self.client.get(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": flow.slug}),
         )

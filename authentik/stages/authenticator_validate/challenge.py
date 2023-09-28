@@ -1,5 +1,4 @@
 """Validation stage challenge checking"""
-from json import dumps, loads
 from typing import Optional
 from urllib.parse import urlencode
 
@@ -8,8 +7,6 @@ from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.utils.translation import gettext as __
 from django.utils.translation import gettext_lazy as _
-from django_otp import match_token
-from django_otp.models import Device
 from rest_framework.fields import CharField, JSONField
 from rest_framework.serializers import ValidationError
 from structlog.stdlib import get_logger
@@ -17,7 +14,6 @@ from webauthn.authentication.generate_authentication_options import generate_aut
 from webauthn.authentication.verify_authentication_response import verify_authentication_response
 from webauthn.helpers.base64url_to_bytes import base64url_to_bytes
 from webauthn.helpers.exceptions import InvalidAuthenticationResponse
-from webauthn.helpers.options_to_json import options_to_json
 from webauthn.helpers.structs import AuthenticationCredential
 
 from authentik.core.api.utils import PassiveSerializer
@@ -27,6 +23,8 @@ from authentik.events.models import Event, EventAction
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import SESSION_KEY_APPLICATION_PRE
 from authentik.lib.utils.http import get_client_ip
+from authentik.stages.authenticator import match_token
+from authentik.stages.authenticator.models import Device
 from authentik.stages.authenticator_duo.models import AuthenticatorDuoStage, DuoDevice
 from authentik.stages.authenticator_sms.models import SMSDevice
 from authentik.stages.authenticator_validate.models import AuthenticatorValidateStage, DeviceClasses
@@ -68,7 +66,12 @@ def get_webauthn_challenge_without_user(
     )
     request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
-    return loads(options_to_json(authentication_options))
+    return authentication_options.model_dump(
+        mode="json",
+        by_alias=True,
+        exclude_unset=False,
+        exclude_none=True,
+    )
 
 
 def get_webauthn_challenge(
@@ -93,7 +96,12 @@ def get_webauthn_challenge(
 
     request.session[SESSION_KEY_WEBAUTHN_CHALLENGE] = authentication_options.challenge
 
-    return loads(options_to_json(authentication_options))
+    return authentication_options.model_dump(
+        mode="json",
+        by_alias=True,
+        exclude_unset=False,
+        exclude_none=True,
+    )
 
 
 def select_challenge(request: HttpRequest, device: Device):
@@ -144,7 +152,7 @@ def validate_challenge_webauthn(data: dict, stage_view: StageView, user: User) -
 
     try:
         authentication_verification = verify_authentication_response(
-            credential=AuthenticationCredential.parse_raw(dumps(data)),
+            credential=AuthenticationCredential.model_validate(data),
             expected_challenge=challenge,
             expected_rp_id=get_rp_id(request),
             expected_origin=get_origin(request),

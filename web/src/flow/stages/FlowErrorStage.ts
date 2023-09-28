@@ -27,8 +27,9 @@ export class FlowErrorStage extends BaseStage<FlowErrorChallenge, FlowChallengeR
                 pre {
                     overflow-x: scroll;
                     max-width: calc(
-                        35rem - var(--pf-c-login__main-body--PaddingRight) -
-                            var(--pf-c-login__main-body--PaddingRight)
+                        35rem - var(--pf-c-login__main-body--PaddingRight) - var(
+                                --pf-c-login__main-body--PaddingRight
+                            )
                     );
                 }
             `,

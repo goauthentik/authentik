@@ -43,6 +43,10 @@ class DeploymentReconciler(KubernetesObjectReconciler[V1Deployment]):
         self.api = AppsV1Api(controller.client)
         self.outpost = self.controller.outpost
 
+    @staticmethod
+    def reconciler_name() -> str:
+        return "deployment"
+
     def reconcile(self, current: V1Deployment, reference: V1Deployment):
         compare_ports(
             current.spec.template.spec.containers[0].ports,

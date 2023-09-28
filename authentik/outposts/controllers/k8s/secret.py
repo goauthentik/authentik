@@ -24,6 +24,10 @@ class SecretReconciler(KubernetesObjectReconciler[V1Secret]):
         super().__init__(controller)
         self.api = CoreV1Api(controller.client)
 
+    @staticmethod
+    def reconciler_name() -> str:
+        return "secret"
+
     def reconcile(self, current: V1Secret, reference: V1Secret):
         super().reconcile(current, reference)
         for key in reference.data.keys():

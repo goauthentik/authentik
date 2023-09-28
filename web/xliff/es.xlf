@@ -148,10 +148,6 @@
         <source>Messages</source>
         <target>Mensajes</target>
       </trans-unit>
-      <trans-unit id="sd6edc7752cdf0ef5">
-        <source>New version available!</source>
-        <target>¡Nueva versión disponible!</target>
-      </trans-unit>
       <trans-unit id="s0a5401d4419f9958">
         <source>Using source</source>
         <target>Uso de la fuente</target>
@@ -2250,9 +2246,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>No policies are currently bound to this object.</source>
         <target>Actualmente, no hay políticas vinculadas a este objeto.</target>
       </trans-unit>
-      <trans-unit id="s6b66ad92d4c1a0a8">
-        <source>Create &amp; bind Policy</source>
-      </trans-unit>
       <trans-unit id="sddb040c47daae56b">
         <source>Bind existing policy</source>
       </trans-unit>
@@ -2648,10 +2641,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="s19b09f4fc72175d1">
         <source>Create a new source.</source>
-      </trans-unit>
-      <trans-unit id="sf96b3cc66d2e25f8">
-        <source>Federation &amp; Social login</source>
-        <target>Inicio de sesión de federación y redes</target>
       </trans-unit>
       <trans-unit id="s6152026c364ad974">
         <source>Sources of identities, which can either be synced into authentik's database, or can be used by users to authenticate and enroll themselves.</source>
@@ -3975,18 +3964,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>Resident key requirement</source>
         <target>Requisito clave residente</target>
       </trans-unit>
-      <trans-unit id="s437ab6d95ca1ac78">
-        <source>The authenticator should not create a dedicated credential</source>
-        <target>El autenticador no debe crear una credencial dedicada</target>
-      </trans-unit>
-      <trans-unit id="sf6d55598b52348a5">
-        <source>The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
-        <target>El autenticador puede crear y almacenar una credencial dedicada, pero si no es así, también está bien</target>
-      </trans-unit>
-      <trans-unit id="s81356cab25498851">
-        <source>The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur</source>
-        <target>El autenticador DEBE crear una credencial dedicada. Si no puede, el RP está preparado para que se produzca un error</target>
-      </trans-unit>
       <trans-unit id="s5fbaeb14f42815e5">
         <source>Authenticator Attachment</source>
         <target>Adjunto de autenticador</target>
@@ -4060,10 +4037,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       </trans-unit>
       <trans-unit id="se0c660020d9cf5b7">
         <source>Offset after which consent expires.</source>
-      </trans-unit>
-      <trans-unit id="s5e9527b6481a94ce">
-        <source>Statically deny the flow. To use this stage effectively, disable *Evaluate on plan* on the respective binding.</source>
-        <target>Niega el flujo estáticamente. Para usar esta etapa de manera efectiva, desactive *Evaluar en plan* en el encuadernado respectivo.</target>
       </trans-unit>
       <trans-unit id="s22b10ed263b96194">
         <source>Dummy stage used for testing. Shows a simple continue button and always passes.</source>
@@ -4568,9 +4541,6 @@ doesn't pass when either or both of the selected options are equal or above the 
       <trans-unit id="s207e8b106806d7e4">
         <source>Bind stage</source>
         <target>Etapa Bind</target>
-      </trans-unit>
-      <trans-unit id="se8eb190d8f084f80">
-        <source>Create &amp; bind Stage</source>
       </trans-unit>
       <trans-unit id="scc2e420c54dc8089">
         <source>Bind existing stage</source>
@@ -5135,17 +5105,9 @@ Bindings to groups/users are checked against the user of the event.</source>
         <source>Customisation</source>
         <target>Personalización</target>
       </trans-unit>
-      <trans-unit id="s58398dbcff942947">
-        <source>Flows &amp; Stages</source>
-        <target>Flujos y etapas</target>
-      </trans-unit>
       <trans-unit id="sc0829ee663ced008">
         <source>Directory</source>
         <target>Directorio</target>
-      </trans-unit>
-      <trans-unit id="sdf4e926513e26458">
-        <source>Tokens &amp; App passwords</source>
-        <target>Tokens y contraseñas de aplicaciones</target>
       </trans-unit>
       <trans-unit id="sa81e2cdaf6921adc">
         <source>System</source>
@@ -5655,6 +5617,222 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s1889ba2eaeec2f1e">
   <source>When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon.</source>
+</trans-unit>
+<trans-unit id="s9f9492d30a96b9c6">
+  <source>User type</source>
+</trans-unit>
+<trans-unit id="s0e427111d750cc02">
+  <source>Successfully updated license.</source>
+</trans-unit>
+<trans-unit id="s06ae64e621f302eb">
+  <source>Successfully created license.</source>
+</trans-unit>
+<trans-unit id="s2905c425adae99bd">
+  <source>Install ID</source>
+</trans-unit>
+<trans-unit id="sb18ec434a8a3aafb">
+  <source>License key</source>
+</trans-unit>
+<trans-unit id="s2e109263b73c12d5">
+  <source>Licenses</source>
+</trans-unit>
+<trans-unit id="sd49099e9522635f4">
+  <source>License(s)</source>
+</trans-unit>
+<trans-unit id="s3be1d90ffa46b7f1">
+  <source>Enterprise is in preview.</source>
+</trans-unit>
+<trans-unit id="sd22bd01bdf28c548">
+  <source>Cumulative license expiry</source>
+</trans-unit>
+<trans-unit id="sdeb6cee42435dd07">
+  <source>Update License</source>
+</trans-unit>
+<trans-unit id="s7df5b92a3f93544f">
+  <source>Warning: The current user count has exceeded the configured licenses.</source>
+</trans-unit>
+<trans-unit id="s0141f42936495787">
+  <source>Click here for more info.</source>
+</trans-unit>
+<trans-unit id="s7be2df39f727faa2">
+  <source>Enterprise</source>
+</trans-unit>
+<trans-unit id="s9ce7cc01fb9b5b53">
+  <source>Manage enterprise licenses</source>
+</trans-unit>
+<trans-unit id="sf9ebf11ac2645820">
+  <source>No licenses found.</source>
+</trans-unit>
+<trans-unit id="sa1db89262360550b">
+  <source>Send us feedback!</source>
+</trans-unit>
+<trans-unit id="s4015746f55a8d89f">
+  <source>Get a license</source>
+</trans-unit>
+<trans-unit id="sb2cbd06f8e25b47e">
+  <source>Go to Customer Portal</source>
+</trans-unit>
+<trans-unit id="sf58825457d61c429">
+  <source>Forecast internal users</source>
+</trans-unit>
+<trans-unit id="sde9a3f41977ec1f8">
+  <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.internalUsers}"/> current internal users and <x id="1" equiv-text="${this.forecast?.forecastedInternalUsers}"/> forecasted internal users.</source>
+</trans-unit>
+<trans-unit id="s4557b6b9da258643">
+  <source>Forecast external users</source>
+</trans-unit>
+<trans-unit id="sf52479d6daa0a4a8">
+  <source>Estimated user count one year from now based on <x id="0" equiv-text="${this.forecast?.externalUsers}"/> current external users and <x id="1" equiv-text="${this.forecast?.forecastedExternalUsers}"/> forecasted external users.</source>
+</trans-unit>
+<trans-unit id="s6196153c4b0c1ea0">
+  <source>Install</source>
+</trans-unit>
+<trans-unit id="s0285b4bd69130fa3">
+  <source>Install License</source>
+</trans-unit>
+<trans-unit id="scef2eb6a2bfe3110">
+  <source>Internal users might be users such as company employees, which will get access to the full Enterprise feature set.</source>
+</trans-unit>
+<trans-unit id="sf66389b04fcc219c">
+  <source>External users might be external consultants or B2C customers. These users don't get access to enterprise features.</source>
+</trans-unit>
+<trans-unit id="s77e8668a27dbc402">
+  <source>Service accounts should be used for machine-to-machine authentication or other automations.</source>
+</trans-unit>
+<trans-unit id="s28cbd874ba450b4e">
+  <source>Less details</source>
+</trans-unit>
+<trans-unit id="s8fa26f65aed77c96">
+  <source>More details</source>
+</trans-unit>
+<trans-unit id="s08df8d0a773a3ea0">
+  <source>Remove item</source>
+</trans-unit>
+<trans-unit id="s364c4f177a2f8322">
+  <source>Open API drawer</source>
+</trans-unit>
+<trans-unit id="s9ba989e69344ff29">
+  <source>Open Notification drawer</source>
+</trans-unit>
+<trans-unit id="s14bf17e2a1a2c381">
+  <source>Restart task</source>
+</trans-unit>
+<trans-unit id="s19409e8712ddd369">
+  <source>Add provider</source>
+</trans-unit>
+<trans-unit id="s1f7698c061c208c9">
+  <source>Open</source>
+</trans-unit>
+<trans-unit id="scc3487e74c5a3e89">
+  <source>Copy token</source>
+</trans-unit>
+<trans-unit id="s424f57afae0caac4">
+  <source>Add users</source>
+</trans-unit>
+<trans-unit id="sd9f67fbf3f86efcf">
+  <source>Add group</source>
+</trans-unit>
+<trans-unit id="s254a9a23dc1635df">
+  <source>Import devices</source>
+</trans-unit>
+<trans-unit id="sc4fdeccf14be5378">
+  <source>Execute</source>
+</trans-unit>
+<trans-unit id="s3b3c333481944862">
+  <source>Show details</source>
+</trans-unit>
+<trans-unit id="sb8f855b49234b81b">
+  <source>Apply</source>
+</trans-unit>
+<trans-unit id="s9d8b8aa2b404c2c8">
+  <source>Settings</source>
+</trans-unit>
+<trans-unit id="s7cfe12cd14df9950">
+  <source>Sign out</source>
+</trans-unit>
+<trans-unit id="s7caa8f7edb920909">
+  <source>The number of tokens generated whenever this stage is used. Every token generated per stage execution will be attached to a single static device.</source>
+</trans-unit>
+<trans-unit id="s4aacc4e0277c1042">
+  <source>Token length</source>
+</trans-unit>
+<trans-unit id="s6931695c4f563bc4">
+  <source>The length of the individual generated tokens. Can be increased to improve security.</source>
+</trans-unit>
+<trans-unit id="s0dd031b58ed4017c">
+  <source>Internal: <x id="0" equiv-text="${item.internalUsers}"/></source>
+</trans-unit>
+<trans-unit id="s57b07e524f8f5c2a">
+  <source>External: <x id="0" equiv-text="${item.externalUsers}"/></source>
+</trans-unit>
+<trans-unit id="s7f68101a50f526ee">
+  <source>Statically deny the flow. To use this stage effectively, disable *Evaluate when flow is planned* on the respective binding.</source>
+</trans-unit>
+<trans-unit id="s911a27022aba349f">
+  <source>Create and bind Policy</source>
+</trans-unit>
+<trans-unit id="sb1a4e9b288e2f005">
+  <source>Federation and Social login</source>
+</trans-unit>
+<trans-unit id="s6f367f5604d5056d">
+  <source>Create and bind Stage</source>
+</trans-unit>
+<trans-unit id="s1a65ee08832fbfe2">
+  <source>Flows and Stages</source>
+</trans-unit>
+<trans-unit id="s4ba4473f3d4ec896">
+  <source>New version available</source>
+</trans-unit>
+<trans-unit id="s6b1ed7507f26cb4a">
+  <source>Failure result</source>
+</trans-unit>
+<trans-unit id="s2e422519ed38f7d8">
+  <source>Pass</source>
+</trans-unit>
+<trans-unit id="s81a45c4fd11e8e1a">
+  <source>Don't pass</source>
+</trans-unit>
+<trans-unit id="s95b73e0f4e47eb9a">
+  <source>Result used when policy execution fails.</source>
+</trans-unit>
+<trans-unit id="s6a3cf855140b9511">
+  <source>Required: User verification must occur.</source>
+</trans-unit>
+<trans-unit id="sc498a3b05cfe2b08">
+  <source>Preferred: User verification is preferred if available, but not required.</source>
+</trans-unit>
+<trans-unit id="s9d2239d2b0402795">
+  <source>Discouraged: User verification should not occur.</source>
+</trans-unit>
+<trans-unit id="s428b7859907f6db2">
+  <source>Required: The authenticator MUST create a dedicated credential. If it cannot, the RP is prepared for an error to occur</source>
+</trans-unit>
+<trans-unit id="s33e3766d4a02b042">
+  <source>Preferred: The authenticator can create and store a dedicated credential, but if it doesn't that's alright too</source>
+</trans-unit>
+<trans-unit id="sfb852dd507c25c24">
+  <source>Discouraged: The authenticator should not create a dedicated credential</source>
+</trans-unit>
+<trans-unit id="s028d385389b5aac0">
+  <source>Lock the user out of this system</source>
+</trans-unit>
+<trans-unit id="sd2122c514f0778b5">
+  <source>Allow the user to log in and use this system</source>
+</trans-unit>
+<trans-unit id="s43fe853bf219a9b8">
+  <source>Temporarily assume the identity of this user</source>
+</trans-unit>
+<trans-unit id="se28b5f3fcadaeeb1">
+  <source>Enter a new password for this user</source>
+</trans-unit>
+<trans-unit id="s6f5bb31e2733ecd5">
+  <source>Create a link for this user to reset their password</source>
+</trans-unit>
+<trans-unit id="s67ac11d47f1ce794">
+  <source>WebAuthn requires this page to be accessed via HTTPS.</source>
+</trans-unit>
+<trans-unit id="se9e9e1d6799b86a5">
+  <source>WebAuthn not supported by browser.</source>
 </trans-unit>
     </body>
   </file>

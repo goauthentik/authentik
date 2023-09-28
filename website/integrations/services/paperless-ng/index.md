@@ -6,11 +6,9 @@ title: Paperless-ng
 
 ## What is Paperless-ng
 
-Modified from https://github.com/jonaswinkler/paperless-ng
-
-:::note
-Paperless-ng is an application that indexes your scanned documents and allows you to easily search for documents and store metadata alongside your documents. It was a fork from the original Paperless that is no longer maintained.
-:::
+> Paperless-ng is an application that indexes your scanned documents and allows you to easily search for documents and store metadata alongside your documents. It was a fork from the original Paperless that is no longer maintained.
+>
+> -- https://github.com/jonaswinkler/paperless-ng
 
 :::caution
 This setup uses HTTP headers to log you in simply by providing your username as a header. Your authentik username and Paperless username MUST match. If you intend for this to be accessed externally, this requires careful setup of your reverse proxy server to not forward these headers from other sources.

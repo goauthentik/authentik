@@ -38,13 +38,14 @@ type RedisConfig struct {
 }
 
 type ListenConfig struct {
-	HTTP    string `yaml:"listen_http" env:"AUTHENTIK_LISTEN__HTTP"`
-	HTTPS   string `yaml:"listen_https" env:"AUTHENTIK_LISTEN__HTTPS"`
-	LDAP    string `yaml:"listen_ldap" env:"AUTHENTIK_LISTEN__LDAP"`
-	LDAPS   string `yaml:"listen_ldaps" env:"AUTHENTIK_LISTEN__LDAPS"`
-	Radius  string `yaml:"listen_radius" env:"AUTHENTIK_LISTEN__RADIUS"`
-	Metrics string `yaml:"listen_metrics" env:"AUTHENTIK_LISTEN__METRICS"`
-	Debug   string `yaml:"listen_debug" env:"AUTHENTIK_LISTEN__DEBUG"`
+	HTTP              string   `yaml:"listen_http" env:"AUTHENTIK_LISTEN__HTTP"`
+	HTTPS             string   `yaml:"listen_https" env:"AUTHENTIK_LISTEN__HTTPS"`
+	LDAP              string   `yaml:"listen_ldap" env:"AUTHENTIK_LISTEN__LDAP"`
+	LDAPS             string   `yaml:"listen_ldaps" env:"AUTHENTIK_LISTEN__LDAPS"`
+	Radius            string   `yaml:"listen_radius" env:"AUTHENTIK_LISTEN__RADIUS"`
+	Metrics           string   `yaml:"listen_metrics" env:"AUTHENTIK_LISTEN__METRICS"`
+	Debug             string   `yaml:"listen_debug" env:"AUTHENTIK_LISTEN__DEBUG"`
+	TrustedProxyCIDRs []string `yaml:"trusted_proxy_cidrs" env:"AUTHENTIK_LISTEN__TRUSTED_PROXY_CIDRS"`
 }
 
 type PathsConfig struct {

@@ -69,7 +69,7 @@ class ProxyProviderTests(APITestCase):
         self.assertEqual(response.status_code, 400)
         self.assertJSONEqual(
             response.content.decode(),
-            {"non_field_errors": ["Internal host cannot be empty when forward auth is disabled."]},
+            {"internal_host": ["Internal host cannot be empty when forward auth is disabled."]},
         )
 
     def test_create_defaults(self):

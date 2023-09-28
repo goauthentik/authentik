@@ -78,5 +78,7 @@ class MicrosoftActiveDirectory(BaseLDAPSynchronizer):
         #   /useraccountcontrol-manipulate-account-properties
         uac_bit = attributes.get("userAccountControl", 512)
         uac = UserAccountControl(uac_bit)
-        user.is_active = UserAccountControl.ACCOUNTDISABLE not in uac
-        user.save()
+        is_active = UserAccountControl.ACCOUNTDISABLE not in uac
+        if is_active != user.is_active:
+            user.is_active = is_active
+            user.save()

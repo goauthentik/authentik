@@ -6,11 +6,9 @@ title: PowerDNS-Admin
 
 ## What is PowerDNS-Admin
 
-From https://github.com/ngoduykhanh/PowerDNS-Admin
-
-:::note
-A PowerDNS web interface with advanced features.
-:::
+> A PowerDNS web interface with advanced features.
+>
+> -- https://github.com/ngoduykhanh/PowerDNS-Admin
 
 ## Preparation
 

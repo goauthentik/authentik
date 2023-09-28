@@ -64,7 +64,7 @@ class PolicyEngine:
         self.use_cache = True
         self.__expected_result_count = 0
 
-    def _iter_bindings(self) -> Iterator[PolicyBinding]:
+    def iterate_bindings(self) -> Iterator[PolicyBinding]:
         """Make sure all Policies are their respective classes"""
         return (
             PolicyBinding.objects.filter(target=self.__pbm, enabled=True)
@@ -88,7 +88,7 @@ class PolicyEngine:
             span: Span
             span.set_data("pbm", self.__pbm)
             span.set_data("request", self.request)
-            for binding in self._iter_bindings():
+            for binding in self.iterate_bindings():
                 self.__expected_result_count += 1
 
                 self._check_policy_type(binding)

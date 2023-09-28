@@ -179,7 +179,7 @@ class ListPolicyEngine(PolicyEngine):
         self.__list = policies
         self.use_cache = False
 
-    def _iter_bindings(self) -> Iterator[PolicyBinding]:
+    def iterate_bindings(self) -> Iterator[PolicyBinding]:
         for policy in self.__list:
             yield PolicyBinding(
                 policy=policy,

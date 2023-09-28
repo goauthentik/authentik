@@ -175,7 +175,7 @@ def get_avatar(user: "User") -> str:
         "initials": avatar_mode_generated,
         "gravatar": avatar_mode_gravatar,
     }
-    modes: str = CONFIG.y("avatars", "none")
+    modes: str = CONFIG.get("avatars", "none")
     for mode in modes.split(","):
         avatar = None
         if mode in mode_map:

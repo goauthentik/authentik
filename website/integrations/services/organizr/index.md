@@ -6,11 +6,10 @@ title: organizr
 
 ## What is organizr
 
-From https://github.com/causefx/Organizr
+> Organizr allows you to setup "Tabs" that will be loaded all in one webpage.
+>
+> -- https://github.com/causefx/Organizr
 
-:::note
-Organizr allows you to setup "Tabs" that will be loaded all in one webpage.
-:::
 This integration leverages authentik's LDAP for the identity provider to achieve an SSO experience. See [ldap provider generic setup](../../../docs/providers/ldap/generic_setup) for setting up the LDAP provider.
 
 ## Preparation
@@ -40,7 +39,7 @@ _Optionally_, create a new group like `organizr users` to scope access to the or
    _Optionally_, bind the group to control access to the organizr to the application.
    ![](./organizr4.png)
 
-![](./organizr5.png)  
+![](./organizr5.png)
 ::: 3. Add the Application to the authentik Embedded Outpost.
 
 ## organizr Configuration
@@ -51,24 +50,24 @@ Ensure any local usernames/email addresses in organizr do not conflict with user
 
 1. Enable Auth Proxy in organizr _system settings_ -> _main_ -> _Auth Proxy_
 
-Auth Proxy Header Name: `X-authentik-username`  
- Auth Proxy Whitelist: _your network subnet in CIDR notation IE_ `10.0.0.0/8`  
- Auth Proxy Header Name for Email: `X-authentik-email`  
- Logout URL: `/outpost.goauthentik.io/sign_out`  
- ![](./organizr6.png)
+Auth Proxy Header Name: `X-authentik-username`
+Auth Proxy Whitelist: _your network subnet in CIDR notation IE_ `10.0.0.0/8`
+Auth Proxy Header Name for Email: `X-authentik-email`
+Logout URL: `/outpost.goauthentik.io/sign_out`
+![](./organizr6.png)
 
 2. Setup Authentication in organizr _system settings_ -> _main_ -> _Authentication_
 
-Authentication Type: `Organizr DB + Backend`  
- Authentication Backend: `Ldap`  
- Host Address: `<LDAP Outpost IP address:port>`  
- Host Base DN: `dc=ldap,dc=goauthentik,dc=io`  
- Account Prefix: `cn=`  
- Account Suffix: `,ou=users,dc=ldap,dc=goauthentik,dc=io`  
- Bind Username: `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`  
- Bind Password: `<LDAP bind account password>`  
- LDAP Backend Type: `OpenLDAP`  
- ![](./organizr7.png)
+Authentication Type: `Organizr DB + Backend`
+Authentication Backend: `Ldap`
+Host Address: `<LDAP Outpost IP address:port>`
+Host Base DN: `dc=ldap,dc=goauthentik,dc=io`
+Account Prefix: `cn=`
+Account Suffix: `,ou=users,dc=ldap,dc=goauthentik,dc=io`
+Bind Username: `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
+Bind Password: `<LDAP bind account password>`
+LDAP Backend Type: `OpenLDAP`
+![](./organizr7.png)
 
 :::info
 Access for authentik users is managed locally within organizr under _User Management_. By default, new users are assigned the `User` group.

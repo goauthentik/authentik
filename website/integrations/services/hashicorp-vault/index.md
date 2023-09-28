@@ -6,11 +6,9 @@ title: Hashicorp Vault
 
 ## What is Vault
 
-From https://vaultproject.io
-
-:::note
-Secure, store and tightly control access to tokens, passwords, certificates, encryption keys for protecting secrets and other sensitive data using a UI, CLI, or HTTP API.
-:::
+> Secure, store and tightly control access to tokens, passwords, certificates, encryption keys for protecting secrets and other sensitive data using a UI, CLI, or HTTP API.
+>
+> -- https://vaultproject.io
 
 :::note
 This is based on authentik 2022.2.1 and Vault 1.9.3. Instructions may differ between versions. This guide does not cover vault policies. See https://learn.hashicorp.com/tutorials/vault/oidc-auth?in=vault/auth-methods for a more in depth vault guide

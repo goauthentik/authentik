@@ -28,6 +28,16 @@ export abstract class TablePage<T> extends Table<T> {
         return html``;
     }
 
+    // Optionally render section above the table
+    renderSectionBefore(): TemplateResult {
+        return html``;
+    }
+
+    // Optionally render section below the table
+    renderSectionAfter(): TemplateResult {
+        return html``;
+    }
+
     renderEmpty(inner?: TemplateResult): TemplateResult {
         return super.renderEmpty(html`
             ${inner
@@ -75,6 +85,7 @@ export abstract class TablePage<T> extends Table<T> {
                 description=${ifDefined(this.pageDescription())}
             >
             </ak-page-header>
+            ${this.renderSectionBefore()}
             <section class="pf-c-page__main-section pf-m-no-padding-mobile">
                 <div class="pf-c-sidebar pf-m-gutter">
                     <div class="pf-c-sidebar__main">
@@ -85,6 +96,7 @@ export abstract class TablePage<T> extends Table<T> {
                         ${this.renderSidebarAfter()}
                     </div>
                 </div>
-            </section>`;
+            </section>
+            ${this.renderSectionAfter()}`;
     }
 }

@@ -8,6 +8,7 @@ import (
 	"net/http/cookiejar"
 	"net/url"
 	"strings"
+	"time"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/prometheus/client_golang/prometheus"
@@ -21,10 +22,20 @@ import (
 
 var (
 	FlowTimingGet = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name: "authentik_outpost_flow_timing_get_seconds",
+		Help: "Duration it took to get a challenge in seconds",
+	}, []string{"stage", "flow"})
+	FlowTimingPost = promauto.NewHistogramVec(prometheus.HistogramOpts{
+		Name: "authentik_outpost_flow_timing_post_seconds",
+		Help: "Duration it took to send a challenge in seconds",
+	}, []string{"stage", "flow"})
+
+	// NOTE: the following metrics are kept for compatibility purpose
+	FlowTimingGetLegacy = promauto.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "authentik_outpost_flow_timing_get",
 		Help: "Duration it took to get a challenge",
 	}, []string{"stage", "flow"})
-	FlowTimingPost = promauto.NewHistogramVec(prometheus.HistogramOpts{
+	FlowTimingPostLegacy = promauto.NewHistogramVec(prometheus.HistogramOpts{
 		Name: "authentik_outpost_flow_timing_post",
 		Help: "Duration it took to send a challenge",
 	}, []string{"stage", "flow"})
@@ -186,6 +197,10 @@ func (fe *FlowExecutor) getInitialChallenge() (*api.ChallengeTypes, error) {
 	FlowTimingGet.With(prometheus.Labels{
 		"stage": ch.GetComponent(),
 		"flow":  fe.flowSlug,
+	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)) / float64(time.Second))
+	FlowTimingGetLegacy.With(prometheus.Labels{
+		"stage": ch.GetComponent(),
+		"flow":  fe.flowSlug,
 	}).Observe(float64(gcsp.EndTime.Sub(gcsp.StartTime)))
 	return challenge, nil
 }
@@ -241,6 +256,10 @@ func (fe *FlowExecutor) solveFlowChallenge(challenge *api.ChallengeTypes, depth 
 	scsp.SetTag("authentik.flow.component", ch.GetComponent())
 	scsp.Finish()
 	FlowTimingPost.With(prometheus.Labels{
+		"stage": ch.GetComponent(),
+		"flow":  fe.flowSlug,
+	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)) / float64(time.Second))
+	FlowTimingPostLegacy.With(prometheus.Labels{
 		"stage": ch.GetComponent(),
 		"flow":  fe.flowSlug,
 	}).Observe(float64(scsp.EndTime.Sub(scsp.StartTime)))

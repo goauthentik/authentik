@@ -8,6 +8,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -84,7 +85,9 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                     <ak-event-transport-form slot="form" .instancePk=${item.pk}>
                     </ak-event-transport-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <ak-action-button
@@ -95,7 +98,9 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                         });
                     }}
                 >
-                    <i class="fas fa-vial" aria-hidden="true"></i>
+                    <pf-tooltip position="top" content=${msg("Test")}>
+                        <i class="fas fa-vial" aria-hidden="true"></i>
+                    </pf-tooltip>
                 </ak-action-button>`,
         ];
     }

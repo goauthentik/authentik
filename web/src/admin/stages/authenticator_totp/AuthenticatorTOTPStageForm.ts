@@ -51,11 +51,11 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg(
                     "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

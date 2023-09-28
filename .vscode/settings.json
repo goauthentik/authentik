@@ -31,7 +31,8 @@
         "!Format sequence",
         "!Condition sequence",
         "!Env sequence",
-        "!Env scalar"
+        "!Env scalar",
+        "!If sequence"
     ],
     "typescript.preferences.importModuleSpecifier": "non-relative",
     "typescript.preferences.importModuleSpecifierEnding": "index",

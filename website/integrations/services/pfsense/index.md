@@ -6,11 +6,9 @@ title: pfSense
 
 ## What is pfSense
 
-From https://www.pfsense.org/
-
-:::note
-The pfSense project is a free network firewall distribution, based on the FreeBSD operating system with a custom kernel and including third party free software packages for additional functionality.
-:::
+> The pfSense project is a free network firewall distribution, based on the FreeBSD operating system with a custom kernel and including third party free software packages for additional functionality.
+>
+> -- https://www.pfsense.org/
 
 :::note
 This is based on authentik 2022.3.31 and pfSense 2.6.0-amd64

@@ -9,3 +9,7 @@ class AuthentikEnterpriseConfig(ManagedAppConfig):
     label = "authentik_enterprise"
     verbose_name = "authentik Enterprise"
     default = True
+
+    def reconcile_load_enterprise_signals(self):
+        """Load enterprise signals"""
+        self.import_module("authentik.enterprise.signals")

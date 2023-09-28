@@ -33,7 +33,7 @@ class GeoIPReader:
 
     def __open(self):
         """Get GeoIP Reader, if configured, otherwise none"""
-        path = CONFIG.y("geoip")
+        path = CONFIG.get("geoip")
         if path == "" or not path:
             return
         try:
@@ -46,7 +46,7 @@ class GeoIPReader:
     def __check_expired(self):
         """Check if the modification date of the GeoIP database has
         changed, and reload it if so"""
-        path = CONFIG.y("geoip")
+        path = CONFIG.get("geoip")
         try:
             mtime = stat(path).st_mtime
             diff = self.__last_mtime < mtime

@@ -16,23 +16,23 @@ class TestConfig(TestCase):
         config = ConfigLoader()
         environ[ENV_PREFIX + "_test__test"] = "bar"
         config.update_from_env()
-        self.assertEqual(config.y("test.test"), "bar")
+        self.assertEqual(config.get("test.test"), "bar")
 
     def test_patch(self):
         """Test patch decorator"""
         config = ConfigLoader()
-        config.y_set("foo.bar", "bar")
-        self.assertEqual(config.y("foo.bar"), "bar")
+        config.set("foo.bar", "bar")
+        self.assertEqual(config.get("foo.bar"), "bar")
         with config.patch("foo.bar", "baz"):
-            self.assertEqual(config.y("foo.bar"), "baz")
-        self.assertEqual(config.y("foo.bar"), "bar")
+            self.assertEqual(config.get("foo.bar"), "baz")
+        self.assertEqual(config.get("foo.bar"), "bar")
 
     def test_uri_env(self):
         """Test URI parsing (environment)"""
         config = ConfigLoader()
         environ["foo"] = "bar"
-        self.assertEqual(config.parse_uri("env://foo"), "bar")
-        self.assertEqual(config.parse_uri("env://foo?bar"), "bar")
+        self.assertEqual(config.parse_uri("env://foo").value, "bar")
+        self.assertEqual(config.parse_uri("env://foo?bar").value, "bar")
 
     def test_uri_file(self):
         """Test URI parsing (file load)"""
@@ -41,10 +41,30 @@ class TestConfig(TestCase):
         write(file, "foo".encode())
         _, file2_name = mkstemp()
         chmod(file2_name, 0o000)  # Remove all permissions so we can't read the file
-        self.assertEqual(config.parse_uri(f"file://{file_name}"), "foo")
-        self.assertEqual(config.parse_uri(f"file://{file2_name}?def"), "def")
+        self.assertEqual(config.parse_uri(f"file://{file_name}").value, "foo")
+        self.assertEqual(config.parse_uri(f"file://{file2_name}?def").value, "def")
         unlink(file_name)
         unlink(file2_name)
+
+    def test_uri_file_update(self):
+        """Test URI parsing (file load and update)"""
+        file, file_name = mkstemp()
+        write(file, "foo".encode())
+        config = ConfigLoader(file_test=f"file://{file_name}")
+        self.assertEqual(config.get("file_test"), "foo")
+
+        # Update config file
+        write(file, "bar".encode())
+        config.refresh("file_test")
+        self.assertEqual(config.get("file_test"), "foobar")
+
+        unlink(file_name)
+
+    def test_uri_env_full(self):
+        """Test URI set as env variable"""
+        environ["AUTHENTIK_TEST_VAR"] = "file:///foo?bar"
+        config = ConfigLoader()
+        self.assertEqual(config.get("test_var"), "bar")
 
     def test_file_update(self):
         """Test update_from_file"""
@@ -59,3 +79,15 @@ class TestConfig(TestCase):
         config.update_from_file(file2_name)
         unlink(file_name)
         unlink(file2_name)
+
+    def test_get_int(self):
+        """Test get_int"""
+        config = ConfigLoader()
+        config.set("foo", 1234)
+        self.assertEqual(config.get_int("foo"), 1234)
+
+    def test_get_int_invalid(self):
+        """Test get_int"""
+        config = ConfigLoader()
+        config.set("foo", "bar")
+        self.assertEqual(config.get_int("foo", 1234), 1234)

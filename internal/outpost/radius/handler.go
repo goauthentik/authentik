@@ -2,6 +2,7 @@ package radius
 
 import (
 	"crypto/sha512"
+	"time"
 
 	"github.com/getsentry/sentry-go"
 	"github.com/google/uuid"
@@ -43,6 +44,10 @@ func (rs *RadiusServer) ServeRADIUS(w radius.ResponseWriter, r *radius.Request) 
 	defer func() {
 		span.Finish()
 		metrics.Requests.With(prometheus.Labels{
+			"outpost_name": rs.ac.Outpost.Name,
+			"app":          selectedApp,
+		}).Observe(float64(span.EndTime.Sub(span.StartTime)) / float64(time.Second))
+		metrics.RequestsLegacy.With(prometheus.Labels{
 			"outpost_name": rs.ac.Outpost.Name,
 			"app":          selectedApp,
 		}).Observe(float64(span.EndTime.Sub(span.StartTime)))

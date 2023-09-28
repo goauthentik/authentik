@@ -1,5 +1,13 @@
+const docsSidebar = require("./sidebars.js");
+const generateVersionDropdown =
+    require("./src/utils.js").generateVersionDropdown;
+
 module.exports = {
     docs: [
+        {
+            type: "html",
+            value: generateVersionDropdown(docsSidebar),
+        },
         {
             type: "doc",
             id: "index",
@@ -55,8 +63,27 @@ module.exports = {
             id: "translation",
         },
         {
-            type: "doc",
-            id: "docs/writing-documentation",
+            type: "category",
+            label: "Writing documentation",
+            link: {
+                type: "doc",
+                id: "docs/writing-documentation",
+            },
+            items: [
+                {
+                    type: "category",
+                    label: "Templates",
+                    link: {
+                        type: "doc",
+                        id: "docs/templates/index",
+                    },
+                    items: [
+                        "docs/templates/procedural",
+                        "docs/templates/conceptual",
+                        "docs/templates/reference",
+                    ],
+                },
+            ],
         },
         {
             type: "doc",

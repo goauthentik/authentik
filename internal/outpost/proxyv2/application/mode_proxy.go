@@ -55,7 +55,7 @@ func (a *Application) configureProxy() error {
 		}
 		before := time.Now()
 		rp.ServeHTTP(rw, r)
-		after := time.Since(before)
+		elapsed := time.Since(before)
 
 		metrics.UpstreamTiming.With(prometheus.Labels{
 			"outpost_name":  a.outpostName,
@@ -63,7 +63,14 @@ func (a *Application) configureProxy() error {
 			"method":        r.Method,
 			"scheme":        r.URL.Scheme,
 			"host":          web.GetHost(r),
-		}).Observe(float64(after))
+		}).Observe(float64(elapsed) / float64(time.Second))
+		metrics.UpstreamTimingLegacy.With(prometheus.Labels{
+			"outpost_name":  a.outpostName,
+			"upstream_host": r.URL.Host,
+			"method":        r.Method,
+			"scheme":        r.URL.Scheme,
+			"host":          web.GetHost(r),
+		}).Observe(float64(elapsed))
 	})
 	return nil
 }

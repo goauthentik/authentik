@@ -1,19 +1,15 @@
 const fs = require("fs").promises;
-const sidebar = require("./sidebars.js");
-
-const releases = sidebar.docs
-    .filter((doc) => doc.link?.slug === "releases")[0]
-    .items.filter((release) => typeof release === "string");
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = async function () {
     const remarkGithub = (await import("remark-github")).default;
+    const defaultBuildUrl = (await import("remark-github")).defaultBuildUrl;
     const footerEmail = await fs.readFile("src/footer.html", {
         encoding: "utf-8",
     });
     return {
         title: "authentik",
-        tagline: "Making authentication simple.",
+        tagline: "Bring all of your authentication into a unified platform.",
         url: "https://goauthentik.io",
         baseUrl: "/",
         onBrokenLinks: "throw",
@@ -21,11 +17,11 @@ module.exports = async function () {
         organizationName: "Authentik Security Inc.",
         projectName: "authentik",
         themeConfig: {
+            image: "img/social.png",
             navbar: {
-                title: "authentik",
                 logo: {
                     alt: "authentik logo",
-                    src: "img/icon.svg",
+                    src: "img/icon_left_brand.svg",
                 },
                 items: [
                     { to: "blog", label: "Blog", position: "left" },
@@ -48,26 +44,6 @@ module.exports = async function () {
                         to: "pricing/",
                         label: "Pricing",
                         position: "left",
-                    },
-                    {
-                        type: "dropdown",
-                        label: `Version: ${releases[0].replace(
-                            /releases\/\d+\/v/,
-                            ""
-                        )}`,
-                        position: "right",
-                        items: releases.map((release) => {
-                            const version = release.replace(
-                                /releases\/\d+\/v/,
-                                ""
-                            );
-                            const subdomain = version.replace(".", "-");
-                            const label = `Version: ${version}`;
-                            return {
-                                label: label,
-                                href: `https://version-${subdomain}.goauthentik.io`,
-                            };
-                        }),
                     },
                     {
                         href: "https://github.com/goauthentik/authentik",
@@ -162,10 +138,7 @@ module.exports = async function () {
                                 {
                                     repository: "goauthentik/authentik",
                                     // Only replace issues and PR links
-                                    buildUrl: function (
-                                        values,
-                                        defaultBuildUrl
-                                    ) {
+                                    buildUrl: function (values) {
                                         return values.type === "issue"
                                             ? defaultBuildUrl(values)
                                             : false;

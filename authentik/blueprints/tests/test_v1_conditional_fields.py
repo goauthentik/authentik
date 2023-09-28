@@ -18,7 +18,7 @@ class TestBlueprintsV1ConditionalFields(TransactionTestCase):
         self.uid = generate_id()
         import_yaml = load_fixture("fixtures/conditional_fields.yaml", uid=self.uid, user=user.pk)
 
-        importer = Importer(import_yaml)
+        importer = Importer.from_string(import_yaml)
         self.assertTrue(importer.validate()[0])
         self.assertTrue(importer.apply())
 
@@ -51,3 +51,9 @@ class TestBlueprintsV1ConditionalFields(TransactionTestCase):
         user: User = User.objects.filter(username=self.uid).first()
         self.assertIsNotNone(user)
         self.assertTrue(user.check_password(self.uid))
+
+    def test_user_null(self):
+        """Test user"""
+        user: User = User.objects.filter(username=f"{self.uid}-no-password").first()
+        self.assertIsNotNone(user)
+        self.assertFalse(user.has_usable_password())

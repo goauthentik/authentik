@@ -118,8 +118,12 @@ class IdentificationChallengeResponse(ChallengeResponse):
                 username=uid_field,
                 email=uid_field,
             )
+            self.pre_user = self.stage.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
             if not current_stage.show_matched_user:
                 self.stage.executor.plan.context[PLAN_CONTEXT_PENDING_USER_IDENTIFIER] = uid_field
+            if self.stage.executor.flow.designation == FlowDesignation.RECOVERY:
+                # When used in a recovery flow, always continue to not disclose if a user exists
+                return attrs
             raise ValidationError("Failed to authenticate.")
         self.pre_user = pre_user
         if not current_stage.password_stage:

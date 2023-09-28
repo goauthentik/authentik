@@ -1,4 +1,3 @@
-import { autoDetectLanguage } from "@goauthentik/common/ui/locale";
 import "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/flow/FlowExecutor";
 // Statically import some stages to speed up load speed
@@ -14,5 +13,3 @@ import "@goauthentik/flow/stages/identification/IdentificationStage";
 import "@goauthentik/flow/stages/password/PasswordStage";
 
 // end of stage import
-
-autoDetectLanguage();

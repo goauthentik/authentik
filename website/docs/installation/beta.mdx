@@ -5,7 +5,7 @@ title: Beta versions
 You can test upcoming authentik versions by switching to the _next_ images. It is recommended to upgrade to the latest stable release before upgrading to Beta images. It is always possible to upgrade from the Beta to the next stable release.
 
 :::warning
-Downgrading from the Beta is not supported. It is recommended to take a backup before upgrading, or test Beta versions on a separate install.
+Downgrading from the Beta is not supported. It is recommended to take a backup before upgrading, or test Beta versions on a separate install. Upgrading from Beta versions to the next release is usually possible, however also not supported.
 :::
 
 import Tabs from "@theme/Tabs";
@@ -14,9 +14,10 @@ import TabItem from "@theme/TabItem";
 <Tabs
   defaultValue="docker-compose"
   values={[
-    {label: 'docker-compose', value: 'docker-compose'},
+    {label: 'Docker Compose', value: 'docker-compose'},
     {label: 'Kubernetes', value: 'kubernetes'},
-  ]}>
+  ]}
+  groupId="platform">
   <TabItem value="docker-compose">
 Add the following block to your `.env` file:
 
@@ -28,9 +29,10 @@ AUTHENTIK_OUTPOSTS__CONTAINER_IMAGE_BASE=ghcr.io/goauthentik/dev-%(type)s:gh-%(b
 
 The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
 
-Next, run the upgrade commands from the latest [Release Notes](../releases).
+Next, run the upgrade commands below.
 
   </TabItem>
+
   <TabItem value="kubernetes">
 Add the following block to your `values.yml` file:
 
@@ -47,7 +49,36 @@ image:
 
 The Beta image is amd64 only. For arm64 platforms, append `-arm64` to the tag name (no spaces).
 
-Next, run the upgrade commands from the latest [Release Notes](../releases).
+Next, run the upgrade commands below.
 
   </TabItem>
 </Tabs>
+
+<Tabs
+  defaultValue="docker-compose"
+  values={[
+    {label: 'Docker Compose', value: 'docker-compose'},
+    {label: 'Kubernetes', value: 'kubernetes'},
+  ]}
+  groupId="platform">
+  <TabItem value="docker-compose">
+
+```shell
+docker-compose pull
+docker-compose up -d
+```
+
+  </TabItem>
+
+  <TabItem value="kubernetes">
+
+```shell
+helm repo update
+helm upgrade authentik authentik/authentik -f values.yaml
+```
+
+  </TabItem>
+
+</Tabs>
+
+To verify whether the upgrade was successful, go to your Admin panel and navigate to the Overview dashboard. There, you can check the version number to ensure that you are using the Beta version you intended.

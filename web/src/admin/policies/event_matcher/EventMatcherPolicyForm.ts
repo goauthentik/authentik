@@ -36,6 +36,10 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
     }
 
     async send(data: EventMatcherPolicy): Promise<EventMatcherPolicy> {
+        if (data.action?.toString() === "") data.action = null;
+        if (data.clientIp?.toString() === "") data.clientIp = null;
+        if (data.app?.toString() === "") data.app = null;
+        if (data.model?.toString() === "") data.model = null;
         if (this.instance) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesEventMatcherUpdate({
                 policyUuid: this.instance.pk || "",
@@ -50,11 +54,11 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
 
     renderForm(): TemplateResult {
         return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="form-help-text">
+            <span>
                 ${msg(
                     "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",
                 )}
-            </div>
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"

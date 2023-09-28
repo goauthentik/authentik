@@ -6,11 +6,9 @@ title: Gitea
 
 ## What is Gitea
 
-From https://gitea.io/
-
-:::note
-Gitea is a community managed lightweight code hosting solution written in Go. It is published under the MIT license.
-:::
+> Gitea is a community managed lightweight code hosting solution written in Go. It is published under the MIT license.
+>
+> -- https://gitea.io/
 
 :::note
 This is based on authentik 2022.10.1 and Gitea 1.17.3 installed using the official docker image [https://docs.gitea.io/en-us/install-with-docker/](https://docs.gitea.io/en-us/install-with-docker/). Instructions may differ between versions.

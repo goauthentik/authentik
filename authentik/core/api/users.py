@@ -15,7 +15,13 @@ from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
-from django_filters.filters import BooleanFilter, CharFilter, ModelMultipleChoiceFilter
+from django_filters.filters import (
+    BooleanFilter,
+    CharFilter,
+    ModelMultipleChoiceFilter,
+    MultipleChoiceFilter,
+    UUIDFilter,
+)
 from django_filters.filterset import FilterSet
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import (
@@ -59,7 +65,6 @@ from authentik.core.middleware import (
     SESSION_KEY_IMPERSONATE_USER,
 )
 from authentik.core.models import (
-    USER_ATTRIBUTE_SA,
     USER_ATTRIBUTE_TOKEN_EXPIRING,
     USER_PATH_SERVICE_ACCOUNT,
     AuthenticatedSession,
@@ -67,6 +72,7 @@ from authentik.core.models import (
     Token,
     TokenIntents,
     User,
+    UserTypes,
 )
 from authentik.events.models import Event, EventAction
 from authentik.flows.exceptions import FlowNonApplicableException
@@ -117,26 +123,34 @@ class UserSerializer(ModelSerializer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context:
-            self.fields["password"] = CharField(required=False)
+            self.fields["password"] = CharField(required=False, allow_null=True)
 
     def create(self, validated_data: dict) -> User:
         """If this serializer is used in the blueprint context, we allow for
         directly setting a password. However should be done via the `set_password`
         method instead of directly setting it like rest_framework."""
+        password = validated_data.pop("password", None)
         instance: User = super().create(validated_data)
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and "password" in validated_data:
-            instance.set_password(validated_data["password"])
-            instance.save()
+        self._set_password(instance, password)
         return instance
 
     def update(self, instance: User, validated_data: dict) -> User:
         """Same as `create` above, set the password directly if we're in a blueprint
         context"""
+        password = validated_data.pop("password", None)
         instance = super().update(instance, validated_data)
-        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and "password" in validated_data:
-            instance.set_password(validated_data["password"])
-            instance.save()
+        self._set_password(instance, password)
         return instance
+
+    def _set_password(self, instance: User, password: Optional[str]):
+        """Set password of user if we're in a blueprint context, and if it's an empty
+        string then use an unusable password"""
+        if SERIALIZER_CONTEXT_BLUEPRINT in self.context and password:
+            instance.set_password(password)
+            instance.save()
+        if len(instance.password) == 0:
+            instance.set_unusable_password()
+            instance.save()
 
     def validate_path(self, path: str) -> str:
         """Validate path"""
@@ -146,6 +160,18 @@ class UserSerializer(ModelSerializer):
             if segment == "":
                 raise ValidationError(_("No empty segments in user path allowed."))
         return path
+
+    def validate_type(self, user_type: str) -> str:
+        """Validate user type, internal_service_account is an internal value"""
+        if (
+            self.instance
+            and self.instance.type == UserTypes.INTERNAL_SERVICE_ACCOUNT
+            and user_type != UserTypes.INTERNAL_SERVICE_ACCOUNT.value
+        ):
+            raise ValidationError("Can't change internal service account to other user type.")
+        if not self.instance and user_type == UserTypes.INTERNAL_SERVICE_ACCOUNT.value:
+            raise ValidationError("Setting a user to internal service account is not allowed.")
+        return user_type
 
     class Meta:
         model = User
@@ -163,6 +189,7 @@ class UserSerializer(ModelSerializer):
             "attributes",
             "uid",
             "path",
+            "type",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},
@@ -188,7 +215,7 @@ class UserSelfSerializer(ModelSerializer):
     )
     def get_groups(self, _: User):
         """Return only the group names a user is member of"""
-        for group in self.instance.ak_groups.all():
+        for group in self.instance.all_groups().order_by("name"):
             yield {
                 "name": group.name,
                 "pk": group.pk,
@@ -211,6 +238,7 @@ class UserSelfSerializer(ModelSerializer):
             "avatar",
             "uid",
             "settings",
+            "type",
         ]
         extra_kwargs = {
             "is_active": {"read_only": True},
@@ -284,12 +312,12 @@ class UsersFilter(FilterSet):
     )
 
     is_superuser = BooleanFilter(field_name="ak_groups", lookup_expr="is_superuser")
-    uuid = CharFilter(field_name="uuid")
+    uuid = UUIDFilter(field_name="uuid")
 
-    path = CharFilter(
-        field_name="path",
-    )
+    path = CharFilter(field_name="path")
     path_startswith = CharFilter(field_name="path", lookup_expr="startswith")
+
+    type = MultipleChoiceFilter(choices=UserTypes.choices, field_name="type")
 
     groups_by_name = ModelMultipleChoiceFilter(
         field_name="ak_groups__name",
@@ -329,6 +357,7 @@ class UsersFilter(FilterSet):
             "attributes",
             "groups_by_name",
             "groups_by_pk",
+            "type",
         ]
 
 
@@ -421,7 +450,8 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 user: User = User.objects.create(
                     username=username,
                     name=username,
-                    attributes={USER_ATTRIBUTE_SA: True, USER_ATTRIBUTE_TOKEN_EXPIRING: expiring},
+                    type=UserTypes.SERVICE_ACCOUNT,
+                    attributes={USER_ATTRIBUTE_TOKEN_EXPIRING: expiring},
                     path=USER_PATH_SERVICE_ACCOUNT,
                 )
                 user.set_unusable_password()
@@ -580,14 +610,16 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     @action(detail=True, methods=["POST"])
     def impersonate(self, request: Request, pk: int) -> Response:
         """Impersonate a user"""
-        if not CONFIG.y_bool("impersonation"):
+        if not CONFIG.get_bool("impersonation"):
             LOGGER.debug("User attempted to impersonate", user=request.user)
             return Response(status=401)
         if not request.user.has_perm("impersonate"):
             LOGGER.debug("User attempted to impersonate without permissions", user=request.user)
             return Response(status=401)
-
         user_to_be = self.get_object()
+        if user_to_be.pk == self.request.user.pk:
+            LOGGER.debug("User attempted to impersonate themselves", user=request.user)
+            return Response(status=401)
 
         request.session[SESSION_KEY_IMPERSONATE_ORIGINAL_USER] = request.user
         request.session[SESSION_KEY_IMPERSONATE_USER] = user_to_be

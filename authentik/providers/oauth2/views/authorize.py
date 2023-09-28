@@ -375,7 +375,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
             ):
                 self.request.session[SESSION_KEY_LAST_LOGIN_UID] = login_uid
                 return self.handle_no_permission()
-        scope_descriptions = UserInfoView().get_scope_descriptions(self.params.scope)
+        scope_descriptions = UserInfoView().get_scope_descriptions(
+            self.params.scope, self.params.provider
+        )
         # Regardless, we start the planner and return to it
         planner = FlowPlanner(self.provider.authorization_flow)
         planner.allow_empty_flows = True

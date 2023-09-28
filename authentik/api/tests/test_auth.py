@@ -9,7 +9,7 @@ from rest_framework.exceptions import AuthenticationFailed
 
 from authentik.api.authentication import bearer_auth
 from authentik.blueprints.tests import reconcile_app
-from authentik.core.models import USER_ATTRIBUTE_SA, Token, TokenIntents
+from authentik.core.models import Token, TokenIntents, User, UserTypes
 from authentik.core.tests.utils import create_test_admin_user, create_test_flow
 from authentik.lib.generators import generate_id
 from authentik.providers.oauth2.constants import SCOPE_AUTHENTIK_API
@@ -57,8 +57,8 @@ class TestAPIAuth(TestCase):
     @reconcile_app("authentik_outposts")
     def test_managed_outpost_success(self):
         """Test managed outpost"""
-        user = bearer_auth(f"Bearer {settings.SECRET_KEY}".encode())
-        self.assertEqual(user.attributes[USER_ATTRIBUTE_SA], True)
+        user: User = bearer_auth(f"Bearer {settings.SECRET_KEY}".encode())
+        self.assertEqual(user.type, UserTypes.INTERNAL_SERVICE_ACCOUNT)
 
     def test_jwt_valid(self):
         """Test valid JWT"""

@@ -1,5 +1,11 @@
-module.exports = {
+const generateVersionDropdown =
+    require("./src/utils.js").generateVersionDropdown;
+
+const docsSidebar = {
     docs: [
+        {
+            type: "html",
+        },
         {
             type: "doc",
             id: "index",
@@ -26,13 +32,28 @@ module.exports = {
         {
             type: "category",
             label: "Core Concepts",
-            collapsed: false,
+            collapsed: true,
             items: [
                 "core/terminology",
                 "core/applications",
                 "core/tenants",
                 "core/certificates",
                 "core/geoip",
+                "core/architecture",
+            ],
+        },
+        {
+            type: "category",
+            label: "Enterprise",
+            collapsed: true,
+            link: {
+                type: "doc",
+                id: "enterprise/index",
+            },
+            items: [
+                "enterprise/get-started",
+                "enterprise/manage-enterprise",
+                "enterprise/entsupport",
             ],
         },
         {
@@ -182,7 +203,20 @@ module.exports = {
                 type: "doc",
                 id: "policies/index",
             },
-            items: ["policies/expression"],
+            items: [
+                {
+                    type: "category",
+                    label: "Working with policies",
+                    items: ["policies/working_with_policies/whitelist_email"],
+                    link: {
+                        type: "generated-index",
+                        title: "Working with policies",
+                        slug: "policies/working_with_policies",
+                        description: "Overview of policies configuration",
+                    },
+                },
+                "policies/expression",
+            ],
         },
         {
             type: "category",
@@ -238,13 +272,15 @@ module.exports = {
                 description: "Release notes for recent authentik versions",
             },
             items: [
+                "releases/2023/v2023.8",
+                "releases/2023/v2023.6",
                 "releases/2023/v2023.5",
-                "releases/2023/v2023.4",
-                "releases/2023/v2023.3",
                 {
                     type: "category",
                     label: "Previous versions",
                     items: [
+                        "releases/2023/v2023.4",
+                        "releases/2023/v2023.3",
                         "releases/2023/v2023.2",
                         "releases/2023/v2023.1",
                         "releases/2022/v2022.12",
@@ -301,6 +337,11 @@ module.exports = {
                             "Steps to help debug forward auth setups with various reverse proxies.",
                     },
                 },
+                {
+                    type: "category",
+                    label: "PostgreSQL",
+                    items: ["troubleshooting/postgres/upgrade_kubernetes"],
+                },
                 "troubleshooting/access",
                 "troubleshooting/login",
                 "troubleshooting/image_upload",
@@ -321,12 +362,17 @@ module.exports = {
             },
             items: [
                 "security/policy",
+                "security/CVE-2023-39522",
+                "security/CVE-2023-36456",
                 "security/2023-06-cure53",
+                "security/CVE-2023-26481",
                 "security/CVE-2022-23555",
                 "security/CVE-2022-46145",
                 "security/CVE-2022-46172",
-                "security/CVE-2023-26481",
             ],
         },
     ],
 };
+
+docsSidebar.docs[0].value = generateVersionDropdown(docsSidebar);
+module.exports = docsSidebar;

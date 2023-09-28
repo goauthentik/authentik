@@ -42,6 +42,7 @@ from authentik.flows.models import (
     FlowDesignation,
     FlowStageBinding,
     FlowToken,
+    InvalidResponseAction,
     Stage,
 )
 from authentik.flows.planner import (
@@ -73,40 +74,23 @@ QS_QUERY = "query"
 
 
 def challenge_types():
-    """This is a workaround for PolymorphicProxySerializer not accepting a callable for
-    `serializers`. This function returns a class which is an iterator, which returns the
+    """This function returns a mapping which contains all subclasses of challenges
     subclasses of Challenge, and Challenge itself."""
-
-    class Inner(dict):
-        """dummy class with custom callback on .items()"""
-
-        def items(self):
-            mapping = {}
-            classes = all_subclasses(Challenge)
-            classes.remove(WithUserInfoChallenge)
-            for cls in classes:
-                mapping[cls().fields["component"].default] = cls
-            return mapping.items()
-
-    return Inner()
+    mapping = {}
+    for cls in all_subclasses(Challenge):
+        if cls == WithUserInfoChallenge:
+            continue
+        mapping[cls().fields["component"].default] = cls
+    return mapping
 
 
 def challenge_response_types():
-    """This is a workaround for PolymorphicProxySerializer not accepting a callable for
-    `serializers`. This function returns a class which is an iterator, which returns the
+    """This function returns a mapping which contains all subclasses of challenges
     subclasses of Challenge, and Challenge itself."""
-
-    class Inner(dict):
-        """dummy class with custom callback on .items()"""
-
-        def items(self):
-            mapping = {}
-            classes = all_subclasses(ChallengeResponse)
-            for cls in classes:
-                mapping[cls(stage=None).fields["component"].default] = cls
-            return mapping.items()
-
-    return Inner()
+    mapping = {}
+    for cls in all_subclasses(ChallengeResponse):
+        mapping[cls(stage=None).fields["component"].default] = cls
+    return mapping
 
 
 class InvalidStageError(SentryIgnoredException):
@@ -122,7 +106,7 @@ class FlowExecutorView(APIView):
     flow: Flow
 
     plan: Optional[FlowPlan] = None
-    current_binding: FlowStageBinding
+    current_binding: Optional[FlowStageBinding] = None
     current_stage: Stage
     current_stage_view: View
 
@@ -264,7 +248,7 @@ class FlowExecutorView(APIView):
         responses={
             200: PolymorphicProxySerializer(
                 component_name="ChallengeTypes",
-                serializers=challenge_types(),
+                serializers=challenge_types,
                 resource_type_field_name="component",
             ),
         },
@@ -295,7 +279,7 @@ class FlowExecutorView(APIView):
                 span.set_data("Method", "GET")
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
-                stage_response = self.current_stage_view.get(request, *args, **kwargs)
+                stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
             return self.handle_exception(exc)
@@ -304,13 +288,13 @@ class FlowExecutorView(APIView):
         responses={
             200: PolymorphicProxySerializer(
                 component_name="ChallengeTypes",
-                serializers=challenge_types(),
+                serializers=challenge_types,
                 resource_type_field_name="component",
             ),
         },
         request=PolymorphicProxySerializer(
             component_name="FlowChallengeResponse",
-            serializers=challenge_response_types(),
+            serializers=challenge_response_types,
             resource_type_field_name="component",
         ),
         parameters=[
@@ -339,7 +323,7 @@ class FlowExecutorView(APIView):
                 span.set_data("Method", "POST")
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
-                stage_response = self.current_stage_view.post(request, *args, **kwargs)
+                stage_response = self.current_stage_view.dispatch(request)
                 return to_stage_response(request, stage_response)
         except Exception as exc:  # pylint: disable=broad-except
             return self.handle_exception(exc)
@@ -362,10 +346,15 @@ class FlowExecutorView(APIView):
     def restart_flow(self, keep_context=False) -> HttpResponse:
         """Restart the currently active flow, optionally keeping the current context"""
         planner = FlowPlanner(self.flow)
+        planner.use_cache = False
         default_context = None
         if keep_context:
             default_context = self.plan.context
-        plan = planner.plan(self.request, default_context)
+        try:
+            plan = planner.plan(self.request, default_context)
+        except FlowNonApplicableException as exc:
+            self._logger.warning("f(exec): Flow restart not applicable to current user", exc=exc)
+            return self.handle_invalid_flow(exc)
         self.request.session[SESSION_KEY_PLAN] = plan
         kwargs = self.kwargs
         kwargs.update({"flow_slug": self.flow.slug})
@@ -423,6 +412,19 @@ class FlowExecutorView(APIView):
         Optionally, an exception can be passed, which will be shown if the current user
         is a superuser."""
         self._logger.debug("f(exec): Stage invalid")
+        if self.current_binding and self.current_binding.invalid_response_action in [
+            InvalidResponseAction.RESTART,
+            InvalidResponseAction.RESTART_WITH_CONTEXT,
+        ]:
+            keep_context = (
+                self.current_binding.invalid_response_action
+                == InvalidResponseAction.RESTART_WITH_CONTEXT
+            )
+            self._logger.debug(
+                "f(exec): Invalid response, restarting flow",
+                keep_context=keep_context,
+            )
+            return self.restart_flow(keep_context)
         self.cancel()
         challenge_view = AccessDeniedChallengeView(self, error_message)
         challenge_view.request = self.request

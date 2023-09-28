@@ -2,8 +2,10 @@
     "compilerOptions": {
         "strict": true,
         "paths": {
+            "@goauthentik/app/*": ["src/*"],
             "@goauthentik/admin/*": ["src/admin/*"],
             "@goauthentik/common/*": ["src/common/*"],
+            "@goauthentik/components/*": ["src/components/*"],
             "@goauthentik/docs/*": ["../website/docs/*"],
             "@goauthentik/elements/*": ["src/elements/*"],
             "@goauthentik/flow/*": ["src/flow/*"],
@@ -52,7 +54,9 @@
                 "rules": {
                     "no-unknown-tag-name": "off",
                     "no-missing-import": "off",
-                    "no-incompatible-type-binding": "warn"
+                    "no-incompatible-type-binding": "off",
+                    "no-unknown-property": "off",
+                    "no-unknown-attribute": "off"
                 }
             }
         ]

@@ -26,4 +26,4 @@ return DuoDevice.objects.filter(user=request.context['pending_user'], confirmed=
 
 Afterwards, bind the policy you've created to the stage binding of the password stage.
 
-Make sure to uncheck _Evaluate on plan_ and check _Re-evaluate policies_, otherwise an invalid result will be cached.
+Make sure to uncheck _Evaluate when flow is planned_ and check _Evaluate when stage is run_, otherwise an invalid result will be cached.

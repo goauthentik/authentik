@@ -6,11 +6,9 @@ title: Skyhigh Security
 
 ## What is Skyhigh Security
 
-:::note
-Skyhigh Security is a Security Services Edge (SSE), Cloud Access Security Broker (CASB), and Secure Web Gateway (SWG), and Private Access (PA / ZTNA) cloud provider.
-:::
-
-From https://www.skyhighsecurity.com/en-us/about.html
+> Skyhigh Security is a Security Services Edge (SSE), Cloud Access Security Broker (CASB), and Secure Web Gateway (SWG), and Private Access (PA / ZTNA) cloud provider.
+>
+> -- https://www.skyhighsecurity.com/en-us/about.html
 
 :::note
 We were among the first to recognize the cloud’s potential and knew that protecting data in this new hybrid world required an entirely new approach. We make managing your web and unifying your data policies easy to create and enforce, giving you a single console to provide visibility across all of your infrastructure.

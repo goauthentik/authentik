@@ -6,7 +6,7 @@ from inspect import getmembers, isclass
 from pathlib import Path
 from typing import Any
 
-from psycopg2 import connect
+from psycopg import connect
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
@@ -52,15 +52,15 @@ def release_lock():
 
 if __name__ == "__main__":
     conn = connect(
-        dbname=CONFIG.y("postgresql.name"),
-        user=CONFIG.y("postgresql.user"),
-        password=CONFIG.y("postgresql.password"),
-        host=CONFIG.y("postgresql.host"),
-        port=int(CONFIG.y("postgresql.port")),
-        sslmode=CONFIG.y("postgresql.sslmode"),
-        sslrootcert=CONFIG.y("postgresql.sslrootcert"),
-        sslcert=CONFIG.y("postgresql.sslcert"),
-        sslkey=CONFIG.y("postgresql.sslkey"),
+        dbname=CONFIG.get("postgresql.name"),
+        user=CONFIG.get("postgresql.user"),
+        password=CONFIG.get("postgresql.password"),
+        host=CONFIG.get("postgresql.host"),
+        port=CONFIG.get_int("postgresql.port"),
+        sslmode=CONFIG.get("postgresql.sslmode"),
+        sslrootcert=CONFIG.get("postgresql.sslrootcert"),
+        sslcert=CONFIG.get("postgresql.sslcert"),
+        sslkey=CONFIG.get("postgresql.sslkey"),
     )
     curr = conn.cursor()
     try:

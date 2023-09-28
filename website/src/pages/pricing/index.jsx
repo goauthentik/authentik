@@ -2,6 +2,7 @@ import React from "react";
 import Layout from "@theme/Layout";
 import Link from "@docusaurus/Link";
 import Card from "../../components/PricingQuestions/Card";
+import useBaseUrl from "@docusaurus/useBaseUrl";
 
 export default function pricingPage() {
     return (
@@ -64,10 +65,12 @@ export default function pricingPage() {
                                         <small>/external user/month</small>
                                     </h1>
                                     <a
-                                        className="button button--info button--block"
-                                        href="./waitlist/enterprise"
+                                        className="button button--primary button--block"
+                                        href={useBaseUrl(
+                                            "/docs/enterprise/get-started",
+                                        )}
                                     >
-                                        Join waitlist
+                                        Get Started
                                     </a>
                                 </div>
                             </div>
@@ -114,12 +117,12 @@ export default function pricingPage() {
 
             <section>
                 <div className="container" style={{ marginBottom: "3rem" }}>
-                    <div class="row">
+                    <div className="row">
                         <div className="col col--8 col--offset-2">
                             <h2 className="hero__subtitle margin--md">
                                 Frequently Asked Questions
                             </h2>
-                            <div class="card-demo margin--md">
+                            <div className="card-demo margin--md">
                                 <Card
                                     title="Will any feature of the open-source version ever become enterprise?"
                                     body="No. As part of our core principle, we will not move any features from the open source version to the enterprise version. Features from the enterprise version are periodically moved to the open source version."

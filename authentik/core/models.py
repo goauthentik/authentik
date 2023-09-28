@@ -36,7 +36,6 @@ from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
-USER_ATTRIBUTE_SA = "goauthentik.io/user/service-account"
 USER_ATTRIBUTE_GENERATED = "goauthentik.io/user/generated"
 USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
 USER_ATTRIBUTE_DELETE_ON_LOGOUT = "goauthentik.io/user/delete-on-logout"
@@ -45,8 +44,6 @@ USER_ATTRIBUTE_TOKEN_EXPIRING = "goauthentik.io/user/token-expires"  # nosec
 USER_ATTRIBUTE_CHANGE_USERNAME = "goauthentik.io/user/can-change-username"
 USER_ATTRIBUTE_CHANGE_NAME = "goauthentik.io/user/can-change-name"
 USER_ATTRIBUTE_CHANGE_EMAIL = "goauthentik.io/user/can-change-email"
-USER_ATTRIBUTE_CAN_OVERRIDE_IP = "goauthentik.io/user/override-ips"
-
 USER_PATH_SYSTEM_PREFIX = "goauthentik.io"
 USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
@@ -63,11 +60,26 @@ def default_token_key():
     """Default token key"""
     # We use generate_id since the chars in the key should be easy
     # to use in Emails (for verification) and URLs (for recovery)
-    return generate_id(int(CONFIG.y("default_token_length")))
+    return generate_id(CONFIG.get_int("default_token_length"))
+
+
+class UserTypes(models.TextChoices):
+    """User types, both for grouping, licensing and permissions in the case
+    of the internal_service_account"""
+
+    INTERNAL = "internal"
+    EXTERNAL = "external"
+
+    # User-created service accounts
+    SERVICE_ACCOUNT = "service_account"
+
+    # Special user type for internally managed and created service
+    # accounts, such as outpost users
+    INTERNAL_SERVICE_ACCOUNT = "internal_service_account"
 
 
 class Group(SerializerModel):
-    """Custom Group model which supports a basic hierarchy"""
+    """Group model which supports a basic hierarchy and has attributes"""
 
     group_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
 
@@ -101,27 +113,7 @@ class Group(SerializerModel):
 
     def is_member(self, user: "User") -> bool:
         """Recursively check if `user` is member of us, or any parent."""
-        query = """
-        WITH RECURSIVE parents AS (
-            SELECT authentik_core_group.*, 0 AS relative_depth
-            FROM authentik_core_group
-            WHERE authentik_core_group.group_uuid = %s
-
-            UNION ALL
-
-            SELECT authentik_core_group.*, parents.relative_depth - 1
-            FROM authentik_core_group,parents
-            WHERE (
-                authentik_core_group.parent_id = parents.group_uuid and
-                parents.relative_depth > -20
-            )
-        )
-        SELECT group_uuid
-        FROM parents
-        GROUP BY group_uuid;
-        """
-        groups = Group.objects.raw(query, [self.group_uuid])
-        return user.ak_groups.filter(pk__in=[group.pk for group in groups]).exists()
+        return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
     def __str__(self):
         return f"Group {self.name}"
@@ -136,19 +128,20 @@ class Group(SerializerModel):
 
 
 class UserManager(DjangoUserManager):
-    """Custom user manager that doesn't assign is_superuser and is_staff"""
+    """User manager that doesn't assign is_superuser and is_staff"""
 
     def create_user(self, username, email=None, password=None, **extra_fields):
-        """Custom user manager that doesn't assign is_superuser and is_staff"""
+        """User manager that doesn't assign is_superuser and is_staff"""
         return self._create_user(username, email, password, **extra_fields)
 
 
 class User(SerializerModel, GuardianUserMixin, AbstractUser):
-    """Custom User model to allow easier adding of user-based settings"""
+    """authentik User model, based on django's contrib auth user model."""
 
     uuid = models.UUIDField(default=uuid4, editable=False, unique=True)
     name = models.TextField(help_text=_("User's display name."))
     path = models.TextField(default="users")
+    type = models.TextField(choices=UserTypes.choices, default=UserTypes.INTERNAL)
 
     sources = models.ManyToManyField("Source", through="UserSourceConnection")
     ak_groups = models.ManyToManyField("Group", related_name="users")
@@ -163,13 +156,45 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Get the default user path"""
         return User._meta.get_field("path").default
 
+    def all_groups(self) -> QuerySet[Group]:
+        """Recursively get all groups this user is a member of.
+        At least one query is done to get the direct groups of the user, with groups
+        there are at most 3 queries done"""
+        direct_groups = list(
+            x for x in self.ak_groups.all().values_list("pk", flat=True).iterator()
+        )
+        if len(direct_groups) < 1:
+            return Group.objects.none()
+        query = """
+        WITH RECURSIVE parents AS (
+            SELECT authentik_core_group.*, 0 AS relative_depth
+            FROM authentik_core_group
+            WHERE authentik_core_group.group_uuid = ANY(%s)
+
+            UNION ALL
+
+            SELECT authentik_core_group.*, parents.relative_depth + 1
+            FROM authentik_core_group, parents
+            WHERE (
+                authentik_core_group.group_uuid = parents.parent_id and
+                parents.relative_depth < 20
+            )
+        )
+        SELECT group_uuid
+        FROM parents
+        GROUP BY group_uuid, name
+        ORDER BY name;
+        """
+        group_pks = [group.pk for group in Group.objects.raw(query, [direct_groups]).iterator()]
+        return Group.objects.filter(pk__in=group_pks)
+
     def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}
         if request and hasattr(request, "tenant"):
             always_merger.merge(final_attributes, request.tenant.attributes)
-        for group in self.ak_groups.all().order_by("name"):
+        for group in self.all_groups().order_by("name"):
             always_merger.merge(final_attributes, group.attributes)
         always_merger.merge(final_attributes, self.attributes)
         return final_attributes
@@ -183,7 +208,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
     @cached_property
     def is_superuser(self) -> bool:
         """Get supseruser status based on membership in a group with superuser status"""
-        return self.ak_groups.filter(is_superuser=True).exists()
+        return self.all_groups().filter(is_superuser=True).exists()
 
     @property
     def is_staff(self) -> bool:

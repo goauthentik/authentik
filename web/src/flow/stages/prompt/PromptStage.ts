@@ -1,7 +1,7 @@
-import { LOCALES } from "@goauthentik/common/ui/locale";
 import { rootInterface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/Divider";
 import "@goauthentik/elements/EmptyState";
+import { LOCALES } from "@goauthentik/elements/ak-locale-context/definitions";
 import "@goauthentik/elements/forms/FormElement";
 import { BaseStage } from "@goauthentik/flow/stages/base";
 
@@ -200,12 +200,13 @@ ${prompt.initialValue}</textarea
                     ? LOCALES
                     : LOCALES.filter((locale) => locale.code !== "debug");
                 const options = locales.map(
-                    (locale) => html`<option
-                        value=${locale.code}
-                        ?selected=${locale.code === prompt.initialValue}
-                    >
-                        ${locale.code.toUpperCase()} - ${locale.label()}
-                    </option> `,
+                    (locale) =>
+                        html`<option
+                            value=${locale.code}
+                            ?selected=${locale.code === prompt.initialValue}
+                        >
+                            ${locale.code.toUpperCase()} - ${locale.label()}
+                        </option> `,
                 );
 
                 return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">

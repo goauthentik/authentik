@@ -3,6 +3,7 @@ import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { convertToSlug } from "@goauthentik/common/utils";
+import "@goauthentik/components/events/ObjectChangelog";
 import MDCaddyStandalone from "@goauthentik/docs/providers/proxy/_caddy_standalone.md";
 import MDNginxIngress from "@goauthentik/docs/providers/proxy/_nginx_ingress.md";
 import MDNginxPM from "@goauthentik/docs/providers/proxy/_nginx_proxy_manager.md";
@@ -20,7 +21,6 @@ import { Replacer } from "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ModalButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
-import "@goauthentik/elements/events/ObjectChangelog";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";

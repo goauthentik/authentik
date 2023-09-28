@@ -4,7 +4,7 @@ from ldap3 import MOCK_SYNC, OFFLINE_SLAPD_2_4, Connection, Server
 
 
 def mock_slapd_connection(password: str) -> Connection:
-    """Create mock AD connection"""
+    """Create mock SLAPD connection"""
     server = Server("my_fake_server", get_info=OFFLINE_SLAPD_2_4)
     _pass = "foo"  # noqa # nosec
     connection = Connection(

@@ -44,7 +44,11 @@ def config_loggers(*args, **kwargs):
 def after_task_publish_hook(sender=None, headers=None, body=None, **kwargs):
     """Log task_id after it was published"""
     info = headers if "task" in headers else body
-    LOGGER.info("Task published", task_id=info.get("id", ""), task_name=info.get("task", ""))
+    LOGGER.info(
+        "Task published",
+        task_id=info.get("id", "").replace("-", ""),
+        task_name=info.get("task", ""),
+    )
 
 
 @task_prerun.connect
@@ -59,7 +63,9 @@ def task_prerun_hook(task_id: str, task, *args, **kwargs):
 def task_postrun_hook(task_id, task, *args, retval=None, state=None, **kwargs):
     """Log task_id on worker"""
     CTX_TASK_ID.set(...)
-    LOGGER.info("Task finished", task_id=task_id, task_name=task.__name__, state=state)
+    LOGGER.info(
+        "Task finished", task_id=task_id.replace("-", ""), task_name=task.__name__, state=state
+    )
 
 
 @task_failure.connect

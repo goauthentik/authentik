@@ -1,4 +1,4 @@
-import { RenderFlowOption } from "@goauthentik/admin/flows/utils";
+import "@goauthentik/admin/common/ak-flow-search/ak-flow-search-no-default";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { SentryIgnoredError } from "@goauthentik/common/errors";
 import { Form } from "@goauthentik/elements/forms/Form";
@@ -9,14 +9,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
-import {
-    Flow,
-    FlowsApi,
-    FlowsInstancesListDesignationEnum,
-    FlowsInstancesListRequest,
-    ProvidersApi,
-    SAMLProvider,
-} from "@goauthentik/api";
+import { FlowsInstancesListDesignationEnum, ProvidersApi, SAMLProvider } from "@goauthentik/api";
 
 @customElement("ak-provider-saml-import-form")
 export class SAMLProviderImportForm extends Form<SAMLProvider> {
@@ -45,29 +38,10 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
                 ?required=${true}
                 name="authorizationFlow"
             >
-                <ak-search-select
-                    .fetchObjects=${async (query?: string): Promise<Flow[]> => {
-                        const args: FlowsInstancesListRequest = {
-                            ordering: "slug",
-                            designation: FlowsInstancesListDesignationEnum.Authorization,
-                        };
-                        if (query !== undefined) {
-                            args.search = query;
-                        }
-                        const flows = await new FlowsApi(DEFAULT_CONFIG).flowsInstancesList(args);
-                        return flows.results;
-                    }}
-                    .renderElement=${(flow: Flow): string => {
-                        return RenderFlowOption(flow);
-                    }}
-                    .renderDescription=${(flow: Flow): TemplateResult => {
-                        return html`${flow.name}`;
-                    }}
-                    .value=${(flow: Flow | undefined): string | undefined => {
-                        return flow?.slug;
-                    }}
-                >
-                </ak-search-select>
+                <ak-flow-search-no-default
+                    flowType=${FlowsInstancesListDesignationEnum.Authorization}
+                    required
+                ></ak-flow-search-no-default>
                 <p class="pf-c-form__helper-text">
                     ${msg("Flow used when authorizing this provider.")}
                 </p>

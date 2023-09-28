@@ -8,17 +8,7 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFPagination from "@patternfly/patternfly/components/Pagination/pagination.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-export interface Pagination {
-    next?: number;
-    previous?: number;
-
-    count: number;
-    current: number;
-    totalPages: number;
-
-    startIndex: number;
-    endIndex: number;
-}
+import { Pagination } from "@goauthentik/api";
 
 @customElement("ak-table-pagination")
 export class TablePagination extends AKElement {
@@ -48,6 +38,9 @@ export class TablePagination extends AKElement {
     }
 
     render(): TemplateResult {
+        if (!this.pages) {
+            return html``;
+        }
         return html` <div class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md">
             <div class="pf-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">
                 <div class="pf-c-options-menu">

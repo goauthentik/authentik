@@ -1,5 +1,6 @@
 import "@goauthentik/admin/tokens/TokenForm";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { intentToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { PFColor } from "@goauthentik/elements/Label";
 import "@goauthentik/elements/buttons/Dropdown";
@@ -9,27 +10,13 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, IntentEnum, Token } from "@goauthentik/api";
-
-export function IntentToLabel(intent: IntentEnum): string {
-    switch (intent) {
-        case IntentEnum.Api:
-            return msg("API Access");
-        case IntentEnum.AppPassword:
-            return msg("App password");
-        case IntentEnum.Recovery:
-            return msg("Recovery");
-        case IntentEnum.Verification:
-            return msg("Verification");
-        case IntentEnum.UnknownDefaultOpenApi:
-            return msg("Unknown intent");
-    }
-}
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
@@ -120,7 +107,7 @@ export class TokenListPage extends TablePage<Token> {
                 ${item.expiring ? msg("Yes") : msg("No")}
             </ak-label>`,
             html`${item.expiring ? item.expires?.toLocaleString() : msg("-")}`,
-            html`${IntentToLabel(item.intent || IntentEnum.Api)}`,
+            html`${intentToLabel(item.intent ?? IntentEnum.Api)}`,
             html`
                 ${!item.managed
                     ? html`<ak-forms-modal>
@@ -128,7 +115,9 @@ export class TokenListPage extends TablePage<Token> {
                           <span slot="header"> ${msg("Update Token")} </span>
                           <ak-token-form slot="form" .instancePk=${item.identifier}></ak-token-form>
                           <button slot="trigger" class="pf-c-button pf-m-plain">
-                              <i class="fas fa-edit"></i>
+                              <pf-tooltip position="top" content=${msg("Edit")}>
+                                  <i class="fas fa-edit"></i>
+                              </pf-tooltip>
                           </button>
                       </ak-forms-modal>`
                     : html``}
@@ -136,7 +125,9 @@ export class TokenListPage extends TablePage<Token> {
                     class="pf-c-button pf-m-plain"
                     identifier="${item.identifier}"
                 >
-                    <i class="fas fa-copy"></i>
+                    <pf-tooltip position="top" content=${msg("Copy token")}>
+                        <i class="fas fa-copy"></i>
+                    </pf-tooltip>
                 </ak-token-copy-button>
             `,
         ];

@@ -46,7 +46,7 @@ def certificate_discovery(self: MonitoredTask):
     certs = {}
     private_keys = {}
     discovered = 0
-    for file in glob(CONFIG.y("cert_discovery_dir") + "/**", recursive=True):
+    for file in glob(CONFIG.get("cert_discovery_dir") + "/**", recursive=True):
         path = Path(file)
         if not path.exists():
             continue

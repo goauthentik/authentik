@@ -30,7 +30,7 @@ def check_blueprint_v1_file(BlueprintInstance: type, path: Path):
             return
         blueprint_file.seek(0)
     instance: BlueprintInstance = BlueprintInstance.objects.filter(path=path).first()
-    rel_path = path.relative_to(Path(CONFIG.y("blueprints_dir")))
+    rel_path = path.relative_to(Path(CONFIG.get("blueprints_dir")))
     meta = None
     if metadata:
         meta = from_dict(BlueprintMetadata, metadata)
@@ -55,7 +55,7 @@ def migration_blueprint_import(apps: Apps, schema_editor: BaseDatabaseSchemaEdit
     Flow = apps.get_model("authentik_flows", "Flow")
 
     db_alias = schema_editor.connection.alias
-    for file in glob(f"{CONFIG.y('blueprints_dir')}/**/*.yaml", recursive=True):
+    for file in glob(f"{CONFIG.get('blueprints_dir')}/**/*.yaml", recursive=True):
         check_blueprint_v1_file(BlueprintInstance, Path(file))
 
     for blueprint in BlueprintInstance.objects.using(db_alias).all():

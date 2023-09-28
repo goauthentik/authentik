@@ -8,13 +8,16 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.models import Group, User
 from authentik.core.tests.utils import create_test_admin_user
 from authentik.events.models import Event, EventAction
-from authentik.lib.generators import generate_key
+from authentik.events.monitored_tasks import TaskInfo, TaskResultStatus
+from authentik.lib.generators import generate_id, generate_key
+from authentik.lib.utils.reflection import class_to_path
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
 from authentik.sources.ldap.sync.groups import GroupLDAPSynchronizer
 from authentik.sources.ldap.sync.membership import MembershipLDAPSynchronizer
 from authentik.sources.ldap.sync.users import UserLDAPSynchronizer
-from authentik.sources.ldap.tasks import ldap_sync_all
+from authentik.sources.ldap.tasks import ldap_sync, ldap_sync_all
 from authentik.sources.ldap.tests.mock_ad import mock_ad_connection
+from authentik.sources.ldap.tests.mock_freeipa import mock_freeipa_connection
 from authentik.sources.ldap.tests.mock_slapd import mock_slapd_connection
 
 LDAP_PASSWORD = generate_key()
@@ -32,6 +35,14 @@ class LDAPSyncTests(TestCase):
             additional_user_dn="ou=users",
             additional_group_dn="ou=groups",
         )
+
+    def test_sync_missing_page(self):
+        """Test sync with missing page"""
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            ldap_sync.delay(self.source.pk, class_to_path(UserLDAPSynchronizer), "foo").get()
+        status = TaskInfo.by_name("ldap_sync:ldap:users:foo")
+        self.assertEqual(status.result.status, TaskResultStatus.ERROR)
 
     def test_sync_error(self):
         """Test user sync"""
@@ -60,6 +71,28 @@ class LDAPSyncTests(TestCase):
         )
         self.assertTrue(events.exists())
 
+    def test_sync_mapping(self):
+        """Test property mappings"""
+        none = LDAPPropertyMapping.objects.create(
+            name=generate_id(), object_field="none", expression="return None"
+        )
+        byte_mapping = LDAPPropertyMapping.objects.create(
+            name=generate_id(), object_field="bytes", expression="return b''"
+        )
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
+            )
+        )
+        self.source.property_mappings.add(none, byte_mapping)
+        connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
+
+        # we basically just test that the mappings don't throw errors
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync.sync_full()
+
     def test_sync_users_ad(self):
         """Test user sync"""
         self.source.property_mappings.set(
@@ -68,7 +101,6 @@ class LDAPSyncTests(TestCase):
                 | Q(managed__startswith="goauthentik.io/sources/ldap/ms")
             )
         )
-        self.source.save()
         connection = MagicMock(return_value=mock_ad_connection(LDAP_PASSWORD))
 
         # Create the user beforehand so we can set attributes and check they aren't removed
@@ -91,6 +123,7 @@ class LDAPSyncTests(TestCase):
             user = User.objects.filter(username="user0_sn").first()
             self.assertEqual(user.attributes["foo"], "bar")
             self.assertFalse(user.is_active)
+            self.assertEqual(user.path, "goauthentik.io/sources/ldap/users/foo")
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
 
     def test_sync_users_openldap(self):
@@ -102,13 +135,29 @@ class LDAPSyncTests(TestCase):
                 | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
             )
         )
-        self.source.save()
         connection = MagicMock(return_value=mock_slapd_connection(LDAP_PASSWORD))
         with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
             user_sync = UserLDAPSynchronizer(self.source)
             user_sync.sync_full()
             self.assertTrue(User.objects.filter(username="user0_sn").exists())
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
+
+    def test_sync_users_freeipa_ish(self):
+        """Test user sync (FreeIPA-ish), mainly testing vendor quirks"""
+        self.source.object_uniqueness_field = "uid"
+        self.source.property_mappings.set(
+            LDAPPropertyMapping.objects.filter(
+                Q(managed__startswith="goauthentik.io/sources/ldap/default")
+                | Q(managed__startswith="goauthentik.io/sources/ldap/openldap")
+            )
+        )
+        connection = MagicMock(return_value=mock_freeipa_connection(LDAP_PASSWORD))
+        with patch("authentik.sources.ldap.models.LDAPSource.connection", connection):
+            user_sync = UserLDAPSynchronizer(self.source)
+            user_sync.sync_full()
+            self.assertTrue(User.objects.filter(username="user0_sn").exists())
+            self.assertFalse(User.objects.filter(username="user1_sn").exists())
+            self.assertFalse(User.objects.get(username="user-nsaccountlock").is_active)
 
     def test_sync_groups_ad(self):
         """Test group sync"""

@@ -6,11 +6,9 @@ title: Home-Assistant
 
 ## What is Home-Assistant
 
-From https://www.home-assistant.io/
-
-:::note
-Open source home automation that puts local control and privacy first. Powered by a worldwide community of tinkerers and DIY enthusiasts. Perfect to run on a Raspberry Pi or a local server.
-:::
+> Open source home automation that puts local control and privacy first. Powered by a worldwide community of tinkerers and DIY enthusiasts. Perfect to run on a Raspberry Pi or a local server.
+>
+> -- https://www.home-assistant.io/
 
 :::caution
 You might run into CSRF errors, this is caused by a technology Home-assistant uses and not authentik, see [this GitHub issue](https://github.com/goauthentik/authentik/issues/884#issuecomment-851542477).

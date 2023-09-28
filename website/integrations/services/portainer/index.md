@@ -6,11 +6,9 @@ title: Portainer
 
 ## What is Portainer
 
-From https://www.portainer.io/
-
-:::note
-Portainer is a powerful, GUI-based Container-as-a-Service solution that helps organizations manage and deploy cloud-native applications easily and securely.
-:::
+> Portainer is a powerful, GUI-based Container-as-a-Service solution that helps organizations manage and deploy cloud-native applications easily and securely.
+>
+> -- https://www.portainer.io/
 
 :::note
 This is based on authentik 2021.7.3 and Portainer 2.6.x-CE. Portainer 2.6 supports OAuth without additional licenses, 1.x Series requires a paid license for OAuth.

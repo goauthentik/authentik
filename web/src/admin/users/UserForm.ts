@@ -1,9 +1,11 @@
 import "@goauthentik/admin/users/GroupSelectModal";
+import { UserTypeEnum } from "@goauthentik/api/dist/models/UserTypeEnum";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
+import "@goauthentik/elements/forms/Radio";
 import YAML from "yaml";
 
 import { msg } from "@lit/localize";
@@ -15,6 +17,10 @@ import { CoreApi, User } from "@goauthentik/api";
 
 @customElement("ak-user-form")
 export class UserForm extends ModelForm<User, number> {
+    static get defaultUserAttributes(): { [key: string]: unknown } {
+        return {};
+    }
+
     static get styles(): CSSResult[] {
         return super.styles.concat(css`
             .pf-c-button.pf-m-control {
@@ -41,6 +47,9 @@ export class UserForm extends ModelForm<User, number> {
     }
 
     async send(data: User): Promise<User> {
+        if (data.attributes === null) {
+            data.attributes = UserForm.defaultUserAttributes;
+        }
         if (this.instance?.pk) {
             return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
                 id: this.instance.pk,
@@ -74,6 +83,36 @@ export class UserForm extends ModelForm<User, number> {
                     class="pf-c-form-control"
                 />
                 <p class="pf-c-form__helper-text">${msg("User's display name.")}</p>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("User type")} ?required=${true} name="type">
+                <ak-radio
+                    .options=${[
+                        {
+                            label: "Internal",
+                            value: UserTypeEnum.Internal,
+                            default: true,
+                            description: html`${msg(
+                                "Internal users might be users such as company employees, which will get access to the full Enterprise feature set.",
+                            )}`,
+                        },
+                        {
+                            label: "External",
+                            value: UserTypeEnum.External,
+                            description: html`${msg(
+                                "External users might be external consultants or B2C customers. These users don't get access to enterprise features.",
+                            )}`,
+                        },
+                        {
+                            label: "Service account",
+                            value: UserTypeEnum.ServiceAccount,
+                            description: html`${msg(
+                                "Service accounts should be used for machine-to-machine authentication or other automations.",
+                            )}`,
+                        },
+                    ]}
+                    .value=${this.instance?.type}
+                >
+                </ak-radio>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Email")} name="email">
                 <input
@@ -113,12 +152,14 @@ export class UserForm extends ModelForm<User, number> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Attributes")}
-                ?required=${true}
+                ?required=${false}
                 name="attributes"
             >
                 <ak-codemirror
                     mode="yaml"
-                    value="${YAML.stringify(first(this.instance?.attributes, {}))}"
+                    value="${YAML.stringify(
+                        first(this.instance?.attributes, UserForm.defaultUserAttributes),
+                    )}"
                 >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">

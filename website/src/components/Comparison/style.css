@@ -1,0 +1,155 @@
+.header {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+table {
+    display: table;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+/**
+* comparison
+*
+* Comparison table used in both the performance and correctness tables.
+*/
+
+table.comparison {
+    width: 100%;
+}
+
+table.comparison [title],
+table.comparison [title] {
+    text-decoration: underline;
+    text-decoration-style: dotted;
+}
+
+table.comparison th,
+table.comparison td,
+table.comparison tr {
+    border: 0px none;
+    white-space: nowrap;
+}
+
+table.comparison th {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+table.comparison tr th.authentik {
+    color: var(--ifm-color-primary);
+}
+
+table.comparison thead.group tr {
+    border-top: 1px;
+    border-bottom: 1px;
+    border-bottom-color: var(--ifm-table-head-color);
+    border-top-style: solid;
+    border-bottom-style: solid;
+}
+
+table.comparison thead.group th:first-child {
+    padding: 10px;
+    text-align: left;
+    font-weight: 800;
+}
+
+table.comparison tr td {
+    padding-left: 10px;
+    min-width: 90px;
+    text-align: center;
+}
+
+table.comparison tr td:first-child {
+    font-weight: bold;
+    text-align: left;
+    white-space: nowrap;
+    width: 25%;
+}
+
+table.comparison tr td.description {
+    font-weight: normal;
+    min-width: 250px;
+    padding-top: 0;
+    vertical-align: top;
+    white-space: normal;
+}
+
+table.comparison tr td.description .label {
+    color: var(--ifm-heading-color);
+    font-weight: bold;
+}
+
+table.comparison tr td.description .text {
+    color: var(--ifm-color-emphasis-600);
+}
+
+table.comparison tr td.description .links {
+    font-size: 0.9em;
+    margin-top: var(--ifm-spacing-vertical);
+}
+
+table.comparison tr td.result {
+    background-color: var(--ifm-panel-background-color);
+}
+
+table.comparison tr td.result.failed {
+    color: var(--ifm-color-danger);
+}
+
+table.comparison tr td.result.lost {
+    background: var(--ifm-color-emphasis-1000);
+    color: transparent;
+}
+
+table.comparison tr td.result.not-applicable {
+    background: var(--ifm-color-emphasis-1000);
+    color: rgba(var(--ifm-background-color-rgb), 0.5);
+}
+
+table.comparison tr td.result.passed {
+    color: var(--ifm-color-success);
+}
+
+table.comparison tr td.result.warning {
+    color: var(--ifm-color-warning);
+}
+
+table.comparison tr td.result.authentik {
+    background: var(--ifm-color-primary);
+    color: var(--ifm-color-secondary);
+}
+
+table.comparison tr td.bar {
+    padding: 0;
+    vertical-align: bottom;
+}
+
+table.comparison tr td.bar .place {
+    font-size: 0.9em;
+}
+
+table.comparison tr td.bar .measurement {
+    font-weight: bold;
+}
+
+table.comparison tr td.bar .bar {
+    background: var(--ifm-color-emphasis-1000);
+    margin: 0 auto;
+}
+
+table.comparison tr td.bar.authentik {
+    color: var(--ifm-color-primary);
+}
+
+table.comparison tr td.bar.authentik .bar {
+    background: var(--ifm-color-primary);
+}
+
+@media (max-width: 996px) {
+    table.comparison td.description {
+        display: none;
+    }
+}

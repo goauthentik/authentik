@@ -68,7 +68,7 @@ class SCIMClient(Generic[T, SchemaType]):
         """Get Service provider config"""
         default_config = ServiceProviderConfiguration.default()
         try:
-            return ServiceProviderConfiguration.parse_obj(
+            return ServiceProviderConfiguration.model_validate(
                 self._request("GET", "/ServiceProviderConfig")
             )
         except (ValidationError, SCIMRequestException) as exc:

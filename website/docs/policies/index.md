@@ -43,4 +43,4 @@ authentik keeps track of failed login attempts by source IP and attempted userna
 
 This policy can be used, for example, to prompt clients with a low score to pass a captcha before they can continue.
 
-To make sure this policy is executed correctly, set `Re-evaluate policies` when using it with a flow.
+To make sure this policy is executed correctly, set _Evaluate when stage is run_ when using it with a flow.

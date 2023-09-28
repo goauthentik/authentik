@@ -2,6 +2,7 @@ const config = require("./docusaurus.config");
 
 module.exports = async function () {
     const remarkGithub = (await import("remark-github")).default;
+    const defaultBuildUrl = (await import("remark-github")).defaultBuildUrl;
     const mainConfig = await config();
     return {
         title: "authentik",
@@ -14,10 +15,9 @@ module.exports = async function () {
         projectName: "authentik",
         themeConfig: {
             navbar: {
-                title: "authentik",
                 logo: {
                     alt: "authentik logo",
-                    src: "img/icon.svg",
+                    src: "img/icon_left_brand.svg",
                 },
                 items: [
                     {
@@ -72,10 +72,7 @@ module.exports = async function () {
                                 {
                                     repository: "goauthentik/authentik",
                                     // Only replace issues and PR links
-                                    buildUrl: function (
-                                        values,
-                                        defaultBuildUrl
-                                    ) {
+                                    buildUrl: function (values) {
                                         return values.type === "issue"
                                             ? defaultBuildUrl(values)
                                             : false;

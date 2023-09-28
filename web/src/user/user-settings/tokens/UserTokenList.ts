@@ -1,5 +1,5 @@
-import { IntentToLabel } from "@goauthentik/admin/tokens/TokenListPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import { intentToLabel } from "@goauthentik/common/labels";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import { me } from "@goauthentik/common/users";
 import { PFColor } from "@goauthentik/elements/Label";
@@ -11,6 +11,7 @@ import "@goauthentik/elements/forms/ModalForm";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { Table, TableColumn } from "@goauthentik/elements/table/Table";
 import "@goauthentik/user/user-settings/tokens/UserTokenForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
@@ -118,7 +119,7 @@ export class UserTokenList extends Table<Token> {
                             </dt>
                             <dd class="pf-c-description-list__description">
                                 <div class="pf-c-description-list__text">
-                                    ${IntentToLabel(item.intent || IntentEnum.Api)}
+                                    ${intentToLabel(item.intent ?? IntentEnum.Api)}
                                 </div>
                             </dd>
                         </div>
@@ -155,14 +156,18 @@ export class UserTokenList extends Table<Token> {
                     <ak-user-token-form slot="form" .instancePk=${item.identifier}>
                     </ak-user-token-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 <ak-token-copy-button
                     class="pf-c-button pf-m-plain"
                     identifier="${item.identifier}"
                 >
-                    <i class="fas fa-copy"></i>
+                    <pf-tooltip position="top" content=${msg("Copy token")}>
+                        <i class="fas fa-copy"></i>
+                    </pf-tooltip>
                 </ak-token-copy-button>
             `,
         ];

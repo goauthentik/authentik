@@ -1,6 +1,6 @@
 """id_token utils"""
 from dataclasses import asdict, dataclass, field
-from typing import TYPE_CHECKING, Any, Optional
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from django.db import models
 from django.http import HttpRequest
@@ -57,7 +57,7 @@ class IDToken:
     # Subject, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2
     sub: Optional[str] = None
     # Audience, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3
-    aud: Optional[str] = None
+    aud: Optional[Union[str, list[str]]] = None
     # Expiration time, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.4
     exp: Optional[int] = None
     # Issued at, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.6

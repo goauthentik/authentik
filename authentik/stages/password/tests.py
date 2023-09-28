@@ -108,7 +108,7 @@ class TestPasswordStage(FlowTestCase):
         session[SESSION_KEY_PLAN] = plan
         session.save()
 
-        for _ in range(self.stage.failed_attempts_before_cancel):
+        for _ in range(self.stage.failed_attempts_before_cancel - 1):
             response = self.client.post(
                 reverse(
                     "authentik_api:flow-executor",
@@ -118,6 +118,11 @@ class TestPasswordStage(FlowTestCase):
                 {"password": self.user.username + "test"},
             )
             self.assertEqual(response.status_code, 200)
+            self.assertStageResponse(
+                response,
+                flow=self.flow,
+                response_errors={"password": [{"string": "Invalid password", "code": "invalid"}]},
+            )
 
         response = self.client.post(
             reverse("authentik_api:flow-executor", kwargs={"flow_slug": self.flow.slug}),
@@ -127,6 +132,7 @@ class TestPasswordStage(FlowTestCase):
         self.assertEqual(response.status_code, 200)
         # To ensure the plan has been cancelled, check SESSION_KEY_PLAN
         self.assertNotIn(SESSION_KEY_PLAN, self.client.session)
+        self.assertStageResponse(response, flow=self.flow, error_message="Unknown error")
 
     @patch(
         "authentik.flows.views.executor.to_stage_response",

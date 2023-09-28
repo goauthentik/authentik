@@ -1,7 +1,9 @@
 import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/applications/wizard/ApplicationWizard";
+import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import "@goauthentik/components/ak-app-icon";
 import MDApplication from "@goauthentik/docs/core/applications.md";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -11,13 +13,12 @@ import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
-import PFAvatar from "@patternfly/patternfly/components/Avatar/avatar.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
@@ -56,7 +57,6 @@ export class ApplicationListPage extends TablePage<Application> {
 
     static get styles(): CSSResult[] {
         return super.styles.concat(
-            PFAvatar,
             PFCard,
             css`
                 /* Fix alignment issues with images in tables */
@@ -125,24 +125,9 @@ export class ApplicationListPage extends TablePage<Application> {
         </ak-forms-delete-bulk>`;
     }
 
-    renderIcon(item: Application): TemplateResult {
-        if (item?.metaIcon) {
-            if (item.metaIcon.startsWith("fa://")) {
-                const icon = item.metaIcon.replaceAll("fa://", "");
-                return html`<i class="fas ${icon}"></i>`;
-            }
-            return html`<img
-                class="app-icon pf-c-avatar"
-                src="${ifDefined(item.metaIcon)}"
-                alt="${msg("Application Icon")}"
-            />`;
-        }
-        return html`<i class="fas fa-share-square"></i>`;
-    }
-
     row(item: Application): TemplateResult[] {
         return [
-            this.renderIcon(item),
+            html`<ak-app-icon size=${PFSize.Medium} .app=${item}></ak-app-icon>`,
             html`<a href="#/core/applications/${item.slug}">
                 <div>${item.name}</div>
                 ${item.metaPublisher ? html`<small>${item.metaPublisher}</small>` : html``}
@@ -160,12 +145,16 @@ export class ApplicationListPage extends TablePage<Application> {
                     <ak-application-form slot="form" .instancePk=${item.slug}>
                     </ak-application-form>
                     <button slot="trigger" class="pf-c-button pf-m-plain">
-                        <i class="fas fa-edit"></i>
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
                     </button>
                 </ak-forms-modal>
                 ${item.launchUrl
                     ? html`<a href=${item.launchUrl} target="_blank" class="pf-c-button pf-m-plain">
-                          <i class="fas fa-share-square"></i>
+                          <pf-tooltip position="top" content=${msg("Open")}>
+                              <i class="fas fa-share-square"></i>
+                          </pf-tooltip>
                       </a>`
                     : html``}`,
         ];

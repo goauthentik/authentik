@@ -7,7 +7,5 @@ entries:
       state: absent
     - identifiers:
           name: "%(id)s"
-          expression: |
-            return True
       model: authentik_policies_expression.expressionpolicy
       state: absent

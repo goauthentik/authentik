@@ -41,7 +41,7 @@ func (ds *DirectSearcher) SearchSubschema(req *search.Request) (ldap.ServerSearc
 							// Custom attributes
 							// Temporarily use 1.3.6.1.4.1.26027.1.1 as a base
 							// https://docs.oracle.com/cd/E19450-01/820-6169/working-with-object-identifiers.html#obtaining-a-base-oid
-							"( 1.3.6.1.4.1.26027.1.1.1 NAME 'goauthentik.io/ldap/user' SUP organizationalPerson STRUCTURAL MAY ( ak-active $ sAMAccountName $ goauthentikio-user-sources $ goauthentik.io/user/sources $ goauthentik.io/ldap/active $ goauthentik.io/ldap/superuser $ goauthentikio-user-override-ips $ goauthentikio-user-service-account ) )",
+							"( 1.3.6.1.4.1.26027.1.1.1 NAME 'goauthentik.io/ldap/user' SUP organizationalPerson STRUCTURAL MAY ( ak-active $ sAMAccountName $ goauthentikio-user-sources $ goauthentik.io/user/sources $ goauthentik.io/ldap/active $ goauthentik.io/ldap/superuser ) )",
 						},
 					},
 					{
@@ -85,8 +85,6 @@ func (ds *DirectSearcher) SearchSubschema(req *search.Request) (ldap.ServerSearc
 							// https://docs.oracle.com/cd/E19450-01/820-6169/working-with-object-identifiers.html#obtaining-a-base-oid
 							"( 1.3.6.1.4.1.26027.1.1.2 NAME ( 'goauthentik.io/ldap/superuser' 'ak-superuser' ) SYNTAX '1.3.6.1.4.1.1466.115.121.1.7' SINGLE-VALUE )",
 							"( 1.3.6.1.4.1.26027.1.1.3 NAME ( 'goauthentik.io/ldap/active' 'ak-active' ) SYNTAX '1.3.6.1.4.1.1466.115.121.1.7' SINGLE-VALUE )",
-							"( 1.3.6.1.4.1.26027.1.1.4 NAME 'goauthentikio-user-override-ips' SYNTAX '1.3.6.1.4.1.1466.115.121.1.7' SINGLE-VALUE )",
-							"( 1.3.6.1.4.1.26027.1.1.5 NAME 'goauthentikio-user-service-account' SYNTAX '1.3.6.1.4.1.1466.115.121.1.7 SINGLE-VALUE' )",
 						},
 					},
 				},

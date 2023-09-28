@@ -6,11 +6,9 @@ title: Jellyfin
 
 ## What is Jellyfin
 
-From https://jellyfin.org
-
-:::note
-Jellyfin is a free and open source media management and streaming platform for movies, TV shows, and music.
-:::
+> Jellyfin is a free and open source media management and streaming platform for movies, TV shows, and music.
+>
+> -- https://jellyfin.org
 
 :::note
 Jellyfin does not have any native external authentication support as of the writing of this page.

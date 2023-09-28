@@ -14,8 +14,8 @@ jobs:
   lint-eslint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: "npm"
@@ -30,8 +30,8 @@ jobs:
   lint-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: "npm"
@@ -46,8 +46,8 @@ jobs:
   lint-prettier:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: "npm"
@@ -62,8 +62,8 @@ jobs:
   lint-lit-analyse:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: "npm"
@@ -94,8 +94,8 @@ jobs:
       - ci-web-mark
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3.6.0
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: "npm"
