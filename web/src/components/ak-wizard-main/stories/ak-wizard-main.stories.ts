@@ -3,8 +3,8 @@ import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
 
+import AkWizard from "../ak-wizard-frame";
 import "../ak-wizard-main";
-import AkWizard from "../ak-wizard-main";
 import { BackStep, CancelWizard, CloseWizard, NextStep } from "../commonWizardButtons";
 import type { WizardStep } from "../types";
 

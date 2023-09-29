@@ -1,12 +1,14 @@
+import { type WizardStep } from "@goauthentik/components/ak-wizard-main/types";
+
 import {
-    ApplicationRequest,
-    LDAPProviderRequest,
-    OAuth2ProviderRequest,
-    ProvidersSamlImportMetadataCreateRequest,
-    ProxyProviderRequest,
-    RadiusProviderRequest,
-    SAMLProviderRequest,
-    SCIMProviderRequest,
+    type ApplicationRequest,
+    type LDAPProviderRequest,
+    type OAuth2ProviderRequest,
+    type ProvidersSamlImportMetadataCreateRequest,
+    type ProxyProviderRequest,
+    type RadiusProviderRequest,
+    type SAMLProviderRequest,
+    type SCIMProviderRequest,
 } from "@goauthentik/api";
 
 export type OneOfProvider =
@@ -18,7 +20,7 @@ export type OneOfProvider =
     | Partial<OAuth2ProviderRequest>
     | Partial<LDAPProviderRequest>;
 
-export interface WizardState {
+export interface ApplicationWizardState {
     providerModel: string;
     app: Partial<ApplicationRequest>;
     provider: OneOfProvider;
@@ -26,7 +28,12 @@ export interface WizardState {
 
 type StatusType = "invalid" | "valid" | "submitted" | "failed";
 
-export type WizardStateUpdate = {
-    update?: Partial<WizardState>;
+export type ApplicationWizardStateUpdate = {
+    update?: Partial<ApplicationWizardState>;
     status?: StatusType;
+};
+
+export type ApplicationStep = WizardStep & {
+    id: string;
+    valid: boolean;
 };

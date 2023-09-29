@@ -3,13 +3,13 @@ import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
 import { msg } from "@lit/localize";
 import { customElement, property, query } from "@lit/reactive-element/decorators.js";
-import { html, nothing } from "lit";
+import { TemplateResult, html, nothing } from "lit";
 import { classMap } from "lit/directives/class-map.js";
 import { map } from "lit/directives/map.js";
 
 import PFWizard from "@patternfly/patternfly/components/Wizard/wizard.css";
 
-import { type WizardButton, type WizardStep } from "./types";
+import { type WizardButton, WizardStepLabel } from "./types";
 
 /**
  * AKWizardFrame is the main container for displaying Wizard pages.
@@ -22,10 +22,9 @@ import { type WizardButton, type WizardStep } from "./types";
  *
  * @element ak-wizard-frame
  *
- * @fires ak-wizard-nav - Tell the orchestrator what page the user wishes to move to. This is the
- * only event that causes this wizard to change its appearance.
+ * @slot - Where the form itself should go
  *
- * NOTE: The event name is configurable as an attribute.
+ * @fires ak-wizard-nav - Tell the orchestrator what page the user wishes to move to.
  *
  */
 
@@ -35,35 +34,44 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
         return [...super.styles, PFWizard];
     }
 
-    /* Prop-drilled.  Do not alter. */
+    /**
+     * The text for the title of the wizard
+     */
     @property()
     header?: string;
 
+    /**
+     * The text for a descriptive subtitle for the wizard
+     */
     @property()
     description?: string;
 
-    @property()
-    eventName: string = "ak-wizard-nav";
-
+    /**
+     * The labels for all current steps, including their availability
+     */
     @property({ attribute: false, type: Array })
-    steps!: WizardStep[];
+    stepLabels!: WizardStepLabel[];
 
-    @property({ attribute: false, type: Number })
-    currentStep!: number;
+    /**
+     * What buttons to Show
+     */
+    @property({ attribute: false, type: Array })
+    buttons: WizardButton[] = [];
+
+    /**
+     * Show the [Cancel] icon and offer the [Cancel] button
+     */
+    @property({ type: Boolean, attribute: "can-cancel" })
+    canCancel = false;
+
+    /**
+     * The form renderer, passed as a function
+     */
+    @property({ type: Object })
+    form!: () => TemplateResult;
 
     @query("#main-content *:first-child")
     content!: HTMLElement;
-
-    @property({ type: Boolean })
-    canCancel!: boolean;
-
-    get step() {
-        const step = this.steps[this.currentStep];
-        if (!step) {
-            throw new Error(`Request for step that does not exist: ${this.currentStep}`);
-        }
-        return step;
-    }
 
     constructor() {
         super();
@@ -71,11 +79,13 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     }
 
     renderModalInner() {
+        // prettier-ignore
         return html`<div class="pf-c-wizard">
             ${this.renderHeader()}
             <div class="pf-c-wizard__outer-wrap">
                 <div class="pf-c-wizard__inner-wrap">
-                    ${this.renderNavigation()} ${this.renderMainSection()}
+                    ${this.renderNavigation()} 
+                    ${this.renderMainSection()}
                 </div>
                 ${this.renderFooter()}
             </div>
@@ -95,38 +105,38 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
             class="pf-c-button pf-m-plain pf-c-wizard__close"
             type="button"
             aria-label="${msg("Close")}"
-            @click=${() => this.dispatchCustomEvent(this.eventName, { command: "close" })}
+            @click=${() => this.dispatchCustomEvent("ak-wizard-nav", { command: "close" })}
         >
             <i class="fas fa-times" aria-hidden="true"></i>
         </button>`;
     }
 
     renderNavigation() {
-        let disabled = false;
-
         return html`<nav class="pf-c-wizard__nav">
             <ol class="pf-c-wizard__nav-list">
-                ${this.steps.map((step, idx) => {
-                    disabled = disabled || this.step.disabled;
-                    return this.renderNavigationStep(step, disabled, idx);
+                ${this.stepLabels.map((step) => {
+                    return this.renderNavigationStep(step);
                 })}
             </ol>
         </nav>`;
     }
 
-    renderNavigationStep(step: WizardStep, disabled: boolean, idx: number) {
+    renderNavigationStep(step: WizardStepLabel) {
         const buttonClasses = {
             "pf-c-wizard__nav-link": true,
-            "pf-m-current": idx === this.currentStep,
+            "pf-m-current": step.active,
         };
 
         return html`
             <li class="pf-c-wizard__nav-item">
                 <button
                     class=${classMap(buttonClasses)}
-                    ?disabled=${disabled}
+                    ?disabled=${step.disabled}
                     @click=${() =>
-                        this.dispatchCustomEvent(this.eventName, { command: "goto", step: idx })}
+                        this.dispatchCustomEvent("ak-wizard-nav", {
+                            command: "goto",
+                            step: step.index,
+                        })}
                 >
                     ${step.label}
                 </button>
@@ -138,24 +148,22 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
     // independent context.
     renderMainSection() {
         return html`<main class="pf-c-wizard__main">
-            <div id="main-content" class="pf-c-wizard__main-body">${this.step.render()}</div>
+            <div id="main-content" class="pf-c-wizard__main-body">${this.form()}</div>
         </main>`;
     }
 
     renderFooter() {
         return html`
-            <footer class="pf-c-wizard__footer">
-                ${map(this.step.buttons, this.renderButtons)}
-            </footer>
+            <footer class="pf-c-wizard__footer">${map(this.buttons, this.renderButtons)}</footer>
         `;
     }
 
     renderButtons([label, command]: WizardButton) {
-        switch (command) {
+        switch (command.command) {
             case "next":
-                return this.renderButton(label, "pf-m-primary", command);
+                return this.renderButton(label, "pf-m-primary", command.command);
             case "back":
-                return this.renderButton(label, "pf-m-secondary", command);
+                return this.renderButton(label, "pf-m-secondary", command.command);
             case "close":
                 return this.renderLink(label, "pf-m-link");
             default:
@@ -169,7 +177,7 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
             class=${classMap(buttonClasses)}
             type="button"
             @click=${() => {
-                this.dispatchCustomEvent(this.eventName, { command });
+                this.dispatchCustomEvent("ak-wizard-nav", { command });
             }}
         >
             ${label}
@@ -182,7 +190,7 @@ export class AkWizardFrame extends CustomEmitterElement(ModalButton) {
             <button
                 class=${classMap(buttonClasses)}
                 type="button"
-                @click=${() => this.dispatchCustomEvent(this.eventName, { command: "close" })}
+                @click=${() => this.dispatchCustomEvent("ak-wizard-nav", { command: "close" })}
             >
                 ${label}
             </button>

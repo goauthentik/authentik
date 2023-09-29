@@ -1,23 +1,19 @@
-import { type AkWizardMain } from "@goauthentik/app/components/ak-wizard-main/ak-wizard-main";
 import { merge } from "@goauthentik/common/merge";
-import "@goauthentik/components/ak-wizard-main";
-import { CloseWizard } from "@goauthentik/components/ak-wizard-main/commonWizardButtons";
-import { AKElement } from "@goauthentik/elements/Base";
+import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { ContextProvider, ContextRoot } from "@lit-labs/context";
+import { ContextProvider } from "@lit-labs/context";
 import { msg } from "@lit/localize";
-import { CSSResult, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import { type Ref, createRef, ref } from "lit/directives/ref.js";
+import { customElement, state } from "lit/decorators.js";
 
-import PFButton from "@patternfly/patternfly/components/Button/button.css";
-import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
-import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
-import applicationWizardContext from "./ak-application-wizard-context-name";
+import applicationWizardContext from "./ContextIdentity";
 import { newSteps } from "./steps";
-import { OneOfProvider, WizardState, WizardStateUpdate } from "./types";
+import {
+    ApplicationStep,
+    ApplicationWizardState,
+    ApplicationWizardStateUpdate,
+    OneOfProvider,
+} from "./types";
 
 const freshWizardState = () => ({
     providerModel: "",
@@ -26,54 +22,40 @@ const freshWizardState = () => ({
 });
 
 @customElement("ak-application-wizard")
-export class ApplicationWizard extends CustomListenerElement(AKElement) {
-    static get styles(): CSSResult[] {
-        return [PFBase, PFButton, PFRadio];
+export class ApplicationWizard extends CustomListenerElement(
+    AkWizard<ApplicationWizardStateUpdate, ApplicationStep>,
+) {
+    constructor() {
+        super(msg("Create"), msg("New application"), msg("Create a new application"));
+        this.steps = newSteps();
     }
 
-    @state()
-    wizardState: WizardState = freshWizardState();
-
+    
     /**
-     * Providing a context at the root element
+     * We're going to be managing the content of the forms by percolating all of the data up to this
+     * class, which will ultimately transmit all of it to the server as a transaction. The
+     * WizardFramework doesn't know anything about the nature of the data itself; it just forwards
+     * valid updates to us. So here we maintain a state object *and* update it so all child
+     * components can access the wizard state.
+     *
      */
+    @state()
+    wizardState: ApplicationWizardState = freshWizardState();
+
     wizardStateProvider = new ContextProvider(this, {
         context: applicationWizardContext,
         initialValue: this.wizardState,
     });
 
-    @state()
-    steps = newSteps();
-
-    @property()
-    prompt = msg("Create");
-
+    /**
+     * One of our steps has multiple display variants, one for each type of service provider. We
+     * want to *preserve* a customer's decisions about different providers; never make someone "go
+     * back and type it all back in," even if it's probably rare that someone will chose one
+     * provider, realize it's the wrong one, and go back to chose a different one, *and then go
+     * back*. Nonetheless, strive to *never* lose customer input.
+     *
+     */
     providerCache: Map<string, OneOfProvider> = new Map();
-
-    wizardRef: Ref<AkWizardMain> = createRef();
-
-    constructor() {
-        super();
-        this.handleUpdate = this.handleUpdate.bind(this);
-        this.handleClosed = this.handleClosed.bind(this);
-    }
-
-    get step() {
-        return this.wizardRef.value?.currentStep ?? -1;
-    }
-
-    connectedCallback() {
-        super.connectedCallback();
-        new ContextRoot().attach(this.parentElement!);
-        this.addCustomListener("ak-application-wizard-update", this.handleUpdate);
-        this.addCustomListener("ak-wizard-closed", this.handleClosed);
-    }
-
-    disconnectedCallback() {
-        this.removeCustomListener("ak-application-wizard-update", this.handleUpdate);
-        this.removeCustomListener("ak-wizard-closed", this.handleClosed);
-        super.disconnectedCallback();
-    }
 
     maybeProviderSwap(providerModel: string | undefined): boolean {
         if (
@@ -98,51 +80,46 @@ export class ApplicationWizard extends CustomListenerElement(AKElement) {
     }
 
     // And this is where all the special cases go...
-    handleUpdate(event: CustomEvent<WizardStateUpdate>) {
-        if (event.detail.status === "submitted") {
-            const submitStep = this.steps.find(({ id }) => id === "submit");
-            if (!submitStep) {
-                throw new Error("Could not find submit step?");
-            }
-            submitStep.buttons = [CloseWizard];
-            this.steps = [...this.steps];
+    handleUpdate(detail: ApplicationWizardStateUpdate) {
+        if (detail.status === "submitted") {
+            this.step.valid = true;
+            this.requestUpdate();
             return;
         }
 
-        const update = event.detail.update;
+        this.step.valid = this.step.valid || detail.status === "valid";
+
+        const update = detail.update;
         if (!update) {
             return;
         }
 
         if (this.maybeProviderSwap(update.providerModel)) {
-            this.steps = [...this.steps];
+            this.requestUpdate();
         }
 
-        if (event.detail.status === "valid" && this.steps[this.step + 1]) {
-            this.steps[this.step + 1].disabled = false;
-            this.steps = [...this.steps];
-        }
-
-        this.wizardState = merge(this.wizardState, update) as WizardState;
+        this.wizardState = merge(this.wizardState, update) as ApplicationWizardState;
         this.wizardStateProvider.setValue(this.wizardState);
+        this.requestUpdate();
     }
 
-    handleClosed() {
+    close() {
         this.steps = newSteps();
+        this.currentStep = 0;
         this.wizardState = freshWizardState();
+        this.providerCache = new Map();
         this.wizardStateProvider.setValue(this.wizardState);
+        this.frame.value!.open = false;
     }
 
-    render() {
-        return html`
-            <ak-wizard-main
-                ${ref(this.wizardRef)}
-                .steps=${this.steps}
-                header=${msg("New application")}
-                description=${msg("Create a new application.")}
-                prompt=${this.prompt}
-            >
-            </ak-wizard-main>
-        `;
+    handleNav(stepId: number | undefined) {
+        if (stepId === undefined || this.steps[stepId] === undefined) {
+            throw new Error(`Attempt to navigate to undefined step: ${stepId}`);
+        }
+        if (stepId > this.currentStep && !this.step.valid) {
+            return;
+        }
+        this.currentStep = stepId;
+        this.requestUpdate();
     }
 }

@@ -1,8 +1,9 @@
 import { createContext } from "@lit-labs/context";
 
-import { WizardState } from "./types";
+import { ApplicationWizardState } from "./types";
 
-export const applicationWizardContext = createContext<WizardState>(
+export const applicationWizardContext = createContext<ApplicationWizardState>(
     Symbol("ak-application-wizard-state-context"),
 );
+
 export default applicationWizardContext;
