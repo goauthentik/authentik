@@ -71,7 +71,7 @@ export class RoleListPage extends TablePage<Role> {
 
     row(item: Role): TemplateResult[] {
         return [
-            html`${item.name}`,
+            html`<a href="#/identity/roles/${item.pk}">${item.name}</a>`,
             html`<ak-forms-modal>
                 <span slot="submit"> ${msg("Update")} </span>
                 <span slot="header"> ${msg("Update Role")} </span>
