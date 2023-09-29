@@ -9,6 +9,8 @@ lifecycle/                      @goauthentik/backend
 schemas/                        @goauthentik/backend
 scripts/                        @goauthentik/backend
 tests/                          @goauthentik/backend
+pyproject.toml                  @goauthentik/backend
+poetry.lock                     @goauthentik/backend
 # Infrastructure
 .github/                        @goauthentik/infrastructure
 Dockerfile                      @goauthentik/infrastructure

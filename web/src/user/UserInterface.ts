@@ -283,7 +283,7 @@ export class UserInterface extends Interface {
                             ${this.me.user.isSuperuser
                                 ? html`<a
                                       class="pf-c-button pf-m-secondary pf-m-small pf-u-display-none pf-u-display-block-on-md"
-                                      href="/if/admin"
+                                      href="/if/admin/"
                                   >
                                       ${msg("Admin interface")}
                                   </a>`

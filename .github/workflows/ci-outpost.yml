@@ -39,6 +39,8 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - name: Generate API
         run: make gen-client-go
       - name: Go unittests

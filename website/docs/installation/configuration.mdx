@@ -363,6 +363,16 @@ Configure how many gunicorn threads a worker processes should have (see https://
 
 Defaults to 4.
 
+### `AUTHENTIK_WORKER__CONCURRENCY`
+
+:::info
+Requires authentik 2023.9.0
+:::
+
+Configure Celery worker concurrency for authentik worker (see https://docs.celeryq.dev/en/latest/userguide/configuration.html#worker-concurrency). This essentially defines the number of worker processes spawned for a single worker.
+
+Defaults to 2.
+
 ## Custom python settings
 
 To modify additional settings further than the options above allow, you can create a custom python file and mount it to `/data/user_settings.py`. This file will be loaded on startup by both the server and the worker. All default settings are [here](https://github.com/goauthentik/authentik/blob/main/authentik/root/settings.py)

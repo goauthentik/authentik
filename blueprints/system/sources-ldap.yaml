@@ -5,6 +5,27 @@ metadata:
   name: System - LDAP Source - Mappings
 entries:
   - identifiers:
+      managed: goauthentik.io/sources/ldap/default-dn-path
+    model: authentik_sources_ldap.ldappropertymapping
+    attrs:
+      name: "authentik default LDAP Mapping: DN to User Path"
+      object_field: "path"
+      expression: |
+        dn = ldap.get("distinguishedName")
+        path_elements = []
+        for pair in dn.split(","):
+            attr, _, value = pair.partition("=")
+            # Ignore elements from the Root DSE and the canonical name of the object
+            if attr.lower() in ["cn", "dc"]:
+                continue
+            path_elements.append(value)
+        path_elements.reverse()
+
+        path = source.get_user_path()
+        if len(path_elements) > 0:
+            path = f"{path}/{'/'.join(path_elements)}"
+        return path
+  - identifiers:
       managed: goauthentik.io/sources/ldap/default-name
     model: authentik_sources_ldap.ldappropertymapping
     attrs:

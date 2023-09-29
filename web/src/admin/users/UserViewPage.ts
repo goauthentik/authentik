@@ -3,6 +3,7 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
+import { me } from "@goauthentik/app/common/users";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
@@ -24,7 +25,7 @@ import "@goauthentik/elements/user/UserConsentList";
 
 import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
@@ -37,7 +38,7 @@ import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { CapabilitiesEnum, CoreApi, User } from "@goauthentik/api";
+import { CapabilitiesEnum, CoreApi, SessionUser, User } from "@goauthentik/api";
 
 import "./UserDevicesList";
 
@@ -45,17 +46,23 @@ import "./UserDevicesList";
 export class UserViewPage extends AKElement {
     @property({ type: Number })
     set userId(id: number) {
-        new CoreApi(DEFAULT_CONFIG)
-            .coreUsersRetrieve({
-                id: id,
-            })
-            .then((user) => {
-                this.user = user;
-            });
+        me().then((me) => {
+            this.me = me;
+            new CoreApi(DEFAULT_CONFIG)
+                .coreUsersRetrieve({
+                    id: id,
+                })
+                .then((user) => {
+                    this.user = user;
+                });
+        });
     }
 
     @property({ attribute: false })
     user?: User;
+
+    @state()
+    me?: SessionUser;
 
     static get styles(): CSSResult[] {
         return [
@@ -103,6 +110,9 @@ export class UserViewPage extends AKElement {
         if (!this.user) {
             return html``;
         }
+        const canImpersonate =
+            rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
+            this.user.pk !== this.me?.user.pk;
         return html`
             <div class="pf-c-card__title">${msg("User Info")}</div>
             <div class="pf-c-card__body">
@@ -213,9 +223,7 @@ export class UserViewPage extends AKElement {
                                         </pf-tooltip>
                                     </button>
                                 </ak-user-active-form>
-                                ${rootInterface()?.config?.capabilities.includes(
-                                    CapabilitiesEnum.CanImpersonate,
-                                )
+                                ${canImpersonate
                                     ? html`
                                           <ak-action-button
                                               class="pf-m-secondary pf-m-block"

@@ -1,5 +1,6 @@
 import {
     Assertion,
+    checkWebAuthnSupport,
     transformCredentialCreateOptions,
     transformNewAssertionForServer,
 } from "@goauthentik/common/helpers/webauthn";
@@ -47,6 +48,7 @@ export class WebAuthnAuthenticatorRegisterStage extends BaseStage<
         if (!this.challenge) {
             return;
         }
+        checkWebAuthnSupport();
         // request the authenticator(s) to create a new credential keypair.
         let credential;
         try {

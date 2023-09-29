@@ -3,6 +3,7 @@ const fs = require("fs").promises;
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = async function () {
     const remarkGithub = (await import("remark-github")).default;
+    const defaultBuildUrl = (await import("remark-github")).defaultBuildUrl;
     const footerEmail = await fs.readFile("src/footer.html", {
         encoding: "utf-8",
     });
@@ -137,10 +138,7 @@ module.exports = async function () {
                                 {
                                     repository: "goauthentik/authentik",
                                     // Only replace issues and PR links
-                                    buildUrl: function (
-                                        values,
-                                        defaultBuildUrl,
-                                    ) {
+                                    buildUrl: function (values) {
                                         return values.type === "issue"
                                             ? defaultBuildUrl(values)
                                             : false;

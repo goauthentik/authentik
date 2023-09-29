@@ -37,6 +37,7 @@ CSRF_HEADER_NAME = "HTTP_X_AUTHENTIK_CSRF"
 LANGUAGE_COOKIE_NAME = "authentik_language"
 SESSION_COOKIE_NAME = "authentik_session"
 SESSION_COOKIE_DOMAIN = CONFIG.get("cookie_domain", None)
+APPEND_SLASH = False
 
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
@@ -332,7 +333,7 @@ LOCALE_PATHS = ["./locale"]
 CELERY = {
     "task_soft_time_limit": 600,
     "worker_max_tasks_per_child": 50,
-    "worker_concurrency": 2,
+    "worker_concurrency": CONFIG.get_int("worker.concurrency"),
     "beat_schedule": {
         "clean_expired_models": {
             "task": "authentik.core.tasks.clean_expired_models",
