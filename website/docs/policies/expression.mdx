@@ -16,6 +16,39 @@ return False
 
 to fail it.
 
+## Variables
+
+You can create variables that will be made available to the policy under an `ak_variables` dictionary.
+
+Creating a variable named `my_var` with a value `this is the value` and associating this variable to the expression will result in the following `ak_variables` dictionary being available to use in the expression:
+
+```python
+ak_variables["my_var"] # This is equal to `this_is_the_value`
+```
+
+### External variables
+
+To use externally managed variables (for instance, to pass a secret as a file to authentik), you can use the discovery feature.
+
+The docker-compose installation maps `data/variables` directory to `/data/variables`, you can simply use this directory to store your variables.
+
+For Kubernetes, you can map custom configmaps/secrets/volumes under /data/variables.
+
+You can also bind mount single files into the folder.
+
+The name of the variable will be the full path from the `/data/variables/` directory. For instance:
+
+```
+data/variables/
+├── baz
+│   └── bar.baz  # The variable will be named `baz/bar.baz`
+└── foo.bar  # The variable will be named `foo.bar`
+```
+
+Note that file contents are not stripped, and may contain an extra `\n` at the end.
+
+External variables are reloaded from disk on every policy execution. If the reload fails, the previous value is used.
+
 ## Available Functions
 
 ### `ak_message(message: str)`
@@ -64,6 +97,8 @@ import Objects from "../expressions/_objects.md";
     ```
 
     See also [Python documentation](https://docs.python.org/3/library/ipaddress.html#ipaddress.ip_address)
+
+-   `ak_variables`: dictionary of name, value obtained from the variables bound to the expression policy.
 
 Additionally, when the policy is executed from a flow, every variable from the flow's current context is accessible under the `context` object.
 

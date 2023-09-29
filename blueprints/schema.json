@@ -567,6 +567,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_policies_expression.expressionvariable"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_policies_expression.expressionvariable"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_policies_expression.expressionvariable"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_policies_expression.expressionpolicy"
                             },
                             "id": {
@@ -3426,6 +3463,7 @@
                         "authentik_policies_dummy.dummypolicy",
                         "authentik_policies_event_matcher.eventmatcherpolicy",
                         "authentik_policies_expiry.passwordexpirypolicy",
+                        "authentik_policies_expression.expressionvariable",
                         "authentik_policies_expression.expressionpolicy",
                         "authentik_policies_password.passwordpolicy",
                         "authentik_policies_reputation.reputationpolicy",
@@ -3517,6 +3555,22 @@
             },
             "required": []
         },
+        "model_authentik_policies_expression.expressionvariable": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "value": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Value"
+                }
+            },
+            "required": []
+        },
         "model_authentik_policies_expression.expressionpolicy": {
             "type": "object",
             "properties": {
@@ -3534,6 +3588,13 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                },
+                "variables": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Variables"
                 }
             },
             "required": []

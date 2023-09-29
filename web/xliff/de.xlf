@@ -5926,6 +5926,36 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se9e9e1d6799b86a5">
   <source>WebAuthn not supported by browser.</source>
 </trans-unit>
+<trans-unit id="sb39940945f8f7122">
+  <source>Variables</source>
+</trans-unit>
+<trans-unit id="se1d0e029ea650f11">
+  <source>Select variables that will be made available to this expression.</source>
+</trans-unit>
+<trans-unit id="s97e9ea093d519435">
+  <source>Successfully updated variable.</source>
+</trans-unit>
+<trans-unit id="s9d8d42526c7f0f0e">
+  <source>Successfully created variable.</source>
+</trans-unit>
+<trans-unit id="sd483758478e36417">
+  <source>Variable that can be passed to an expression policy</source>
+</trans-unit>
+<trans-unit id="s41f7dca46d3f1b4a">
+  <source>Value</source>
+</trans-unit>
+<trans-unit id="se5363f539effce3b">
+  <source>Variables that can be passed on to expressions.</source>
+</trans-unit>
+<trans-unit id="s4bc8b951c8067ed4">
+  <source>Update Variable</source>
+</trans-unit>
+<trans-unit id="s5ab1f5073aa96219">
+  <source>Variable / Variables</source>
+</trans-unit>
+<trans-unit id="s52a2427b2afc939b">
+  <source>Create Variable</source>
+</trans-unit>
     </body>
   </file>
 </xliff>

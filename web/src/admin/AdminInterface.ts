@@ -201,6 +201,7 @@ export class AdminInterface extends Interface {
                 ["/events/transports", msg("Notification Transports")]]],
             [null, msg("Customisation"), null, [
                 ["/policy/policies", msg("Policies")],
+                ["/policy/expression/variables", msg("Variables")],
                 ["/core/property-mappings", msg("Property Mappings")],
                 ["/blueprints/instances", msg("Blueprints")],
                 ["/policy/reputation", msg("Reputation scores")]]],

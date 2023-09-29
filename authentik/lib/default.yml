@@ -106,6 +106,7 @@ default_token_length: 60
 impersonation: true
 
 blueprints_dir: /blueprints
+variables_discovery_dir: /data/variables
 
 web:
   # No default here as it's set dynamically

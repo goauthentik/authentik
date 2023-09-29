@@ -17,6 +17,7 @@ with open("local.env.yml", "w", encoding="utf-8") as _config:
             },
             "blueprints_dir": "./blueprints",
             "cert_discovery_dir": "./certs",
+            "variables_discovery_dir": "./variables",
             "geoip": "tests/GeoLite2-City-Test.mmdb",
         },
         _config,

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 09:51+0000\n"
+"POT-Creation-Date: 2023-09-29 00:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -70,6 +70,7 @@ msgid "authentik Export - %(date)s"
 msgstr ""
 
 #: authentik/blueprints/v1/tasks.py:150 authentik/crypto/tasks.py:93
+#: authentik/policies/expression/tasks.py:59
 #, python-format
 msgid "Successfully imported %(count)d files."
 msgstr ""
@@ -724,11 +725,19 @@ msgstr ""
 msgid "Password Expiry Policies"
 msgstr ""
 
-#: authentik/policies/expression/models.py:40
+#: authentik/policies/expression/models.py:53
+msgid "Expression Variable"
+msgstr ""
+
+#: authentik/policies/expression/models.py:54
+msgid "Expression Variables"
+msgstr ""
+
+#: authentik/policies/expression/models.py:89
 msgid "Expression Policy"
 msgstr ""
 
-#: authentik/policies/expression/models.py:41
+#: authentik/policies/expression/models.py:90
 msgid "Expression Policies"
 msgstr ""
 

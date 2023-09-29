@@ -60,6 +60,10 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/policies/PolicyListPage");
         return html`<ak-policy-list></ak-policy-list>`;
     }),
+    new Route(new RegExp("^/policy/expression/variables"), async () => {
+        await import("@goauthentik/admin/policies/expression/ExpressionVariableListPage");
+        return html`<ak-expression-variable-list></ak-expression-variable-list>`;
+    }),
     new Route(new RegExp("^/policy/reputation$"), async () => {
         await import("@goauthentik/admin/policies/reputation/ReputationListPage");
         return html`<ak-policy-reputation-list></ak-policy-reputation-list>`;

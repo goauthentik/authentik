@@ -11748,6 +11748,14 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: variables
+        schema:
+          type: array
+          items:
+            type: integer
+        explode: true
+        style: form
       tags:
       - policies
       security:
@@ -11958,6 +11966,288 @@ paths:
           type: string
           format: uuid
         description: A UUID string identifying this Expression Policy.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /policies/expression/variables/:
+    get:
+      operationId: policies_expression_variables_list
+      description: Expression Variable Viewset
+      parameters:
+      - in: query
+        name: created
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: last_updated
+        schema:
+          type: string
+          format: date-time
+      - in: query
+        name: managed
+        schema:
+          type: string
+      - in: query
+        name: name
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: value
+        schema:
+          type: string
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedExpressionVariableList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: policies_expression_variables_create
+      description: Expression Variable Viewset
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpressionVariableRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionVariable'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /policies/expression/variables/{id}/:
+    get:
+      operationId: policies_expression_variables_retrieve
+      description: Expression Variable Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Expression Variable.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionVariable'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: policies_expression_variables_update
+      description: Expression Variable Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Expression Variable.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExpressionVariableRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionVariable'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: policies_expression_variables_partial_update
+      description: Expression Variable Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Expression Variable.
+        required: true
+      tags:
+      - policies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedExpressionVariableRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpressionVariable'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: policies_expression_variables_destroy
+      description: Expression Variable Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Expression Variable.
+        required: true
+      tags:
+      - policies
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /policies/expression/variables/{id}/used_by/:
+    get:
+      operationId: policies_expression_variables_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this Expression Variable.
         required: true
       tags:
       - policies
@@ -29556,6 +29846,7 @@ components:
             * `authentik_policies_dummy.dummypolicy` - Dummy Policy
             * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
             * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+            * `authentik_policies_expression.expressionvariable` - Expression Variable
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
@@ -29749,6 +30040,7 @@ components:
             * `authentik_policies_dummy.dummypolicy` - Dummy Policy
             * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
             * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+            * `authentik_policies_expression.expressionvariable` - Expression Variable
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
@@ -29918,6 +30210,10 @@ components:
           readOnly: true
         expression:
           type: string
+        variables:
+          type: array
+          items:
+            type: integer
       required:
       - bound_to
       - component
@@ -29941,9 +30237,61 @@ components:
         expression:
           type: string
           minLength: 1
+        variables:
+          type: array
+          items:
+            type: integer
       required:
       - expression
       - name
+    ExpressionVariable:
+      type: object
+      description: Expression Variable Serializer
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        last_updated:
+          type: string
+          format: date-time
+          readOnly: true
+        managed:
+          type: string
+          readOnly: true
+          nullable: true
+          title: Managed by authentik
+          description: Objects that are managed by authentik. These objects are created
+            and updated automatically. This flag only indicates that an object can
+            be overwritten by migrations. You can still modify the objects via the
+            API, but expect changes to be overwritten in a later update.
+        name:
+          type: string
+        value:
+          type: string
+      required:
+      - created
+      - id
+      - last_updated
+      - managed
+      - name
+      - value
+    ExpressionVariableRequest:
+      type: object
+      description: Expression Variable Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        value:
+          type: string
+          minLength: 1
+      required:
+      - name
+      - value
     FilePathRequest:
       type: object
       description: Serializer to upload file
@@ -31909,6 +32257,7 @@ components:
       - authentik_policies_dummy.dummypolicy
       - authentik_policies_event_matcher.eventmatcherpolicy
       - authentik_policies_expiry.passwordexpirypolicy
+      - authentik_policies_expression.expressionvariable
       - authentik_policies_expression.expressionpolicy
       - authentik_policies_password.passwordpolicy
       - authentik_policies_reputation.reputationpolicy
@@ -31983,6 +32332,7 @@ components:
         * `authentik_policies_dummy.dummypolicy` - Dummy Policy
         * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
         * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+        * `authentik_policies_expression.expressionvariable` - Expression Variable
         * `authentik_policies_expression.expressionpolicy` - Expression Policy
         * `authentik_policies_password.passwordpolicy` - Password Policy
         * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
@@ -33285,6 +33635,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ExpressionPolicy'
+      required:
+      - pagination
+      - results
+    PaginatedExpressionVariableList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExpressionVariable'
       required:
       - pagination
       - results
@@ -34973,6 +35335,7 @@ components:
             * `authentik_policies_dummy.dummypolicy` - Dummy Policy
             * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
             * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
+            * `authentik_policies_expression.expressionvariable` - Expression Variable
             * `authentik_policies_expression.expressionpolicy` - Expression Policy
             * `authentik_policies_password.passwordpolicy` - Password Policy
             * `authentik_policies_reputation.reputationpolicy` - Reputation Policy
@@ -35068,6 +35431,20 @@ components:
           description: When this option is enabled, all executions of this policy
             will be logged. By default, only execution errors are logged.
         expression:
+          type: string
+          minLength: 1
+        variables:
+          type: array
+          items:
+            type: integer
+    PatchedExpressionVariableRequest:
+      type: object
+      description: Expression Variable Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        value:
           type: string
           minLength: 1
     PatchedFlowRequest:

@@ -13,7 +13,7 @@ from authentik.policies.types import PolicyRequest, PolicyResult
 
 LOGGER = get_logger()
 if TYPE_CHECKING:
-    from authentik.policies.expression.models import ExpressionPolicy
+    from authentik.policies.expression.models import ExpressionPolicy, ExpressionVariable
 
 
 class PolicyEvaluator(BaseEvaluator):
@@ -30,6 +30,7 @@ class PolicyEvaluator(BaseEvaluator):
         # update website/docs/expressions/_functions.md
         self._context["ak_message"] = self.expr_func_message
         self._context["ak_user_has_authenticator"] = self.expr_func_user_has_authenticator
+        self._context["ak_variables"] = {}
 
     def expr_func_message(self, message: str):
         """Wrapper to append to messages list, which is returned with PolicyResult"""
@@ -51,6 +52,12 @@ class PolicyEvaluator(BaseEvaluator):
         # update website/docs/expressions/_functions.md
         self._context["ak_client_ip"] = ip_address(get_client_ip(request))
         self._context["http_request"] = request
+
+    def set_variables(self, variables: list["ExpressionVariable"]):
+        """Update context base on expression policy variables"""
+        for variable in variables:
+            variable.reload()
+            self._context["ak_variables"][variable.name] = variable.value
 
     def handle_error(self, exc: Exception, expression_source: str):
         """Exception Handler"""

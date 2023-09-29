@@ -105,8 +105,10 @@ def worker_ready_hook(*args, **kwargs):
         except ProgrammingError as exc:
             LOGGER.warning("Startup task failed", task=task, exc=exc)
     from authentik.blueprints.v1.tasks import start_blueprint_watcher
+    from authentik.policies.expression.tasks import start_variables_watcher
 
     start_blueprint_watcher()
+    start_variables_watcher()
 
 
 class LivenessProbe(bootsteps.StartStopStep):

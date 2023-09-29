@@ -74,6 +74,7 @@ services:
       - ./media:/media
       - ./certs:/certs
       - ./custom-templates:/templates
+      - ./data:/data
     env_file:
       - .env
     depends_on:

@@ -11,7 +11,7 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { ExpressionPolicy, PoliciesApi } from "@goauthentik/api";
+import { ExpressionPolicy, PaginatedExpressionVariableList, PoliciesApi } from "@goauthentik/api";
 
 @customElement("ak-policy-expression-form")
 export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
@@ -20,6 +20,14 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
             policyUuid: pk,
         });
     }
+
+    async load(): Promise<void> {
+        this.variables = await new PoliciesApi(DEFAULT_CONFIG).policiesExpressionVariablesList({
+            ordering: "name",
+        });
+    }
+
+    variables?: PaginatedExpressionVariableList;
 
     getSuccessMessage(): string {
         if (this.instance) {
@@ -98,6 +106,35 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
                             >
                                 ${msg("See documentation for a list of all variables.")}
                             </a>
+                        </p>
+                    </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Variables")}
+                        ?required=${true}
+                        name="variables"
+                    >
+                        <select class="pf-c-form-control" multiple>
+                            ${this.variables?.results.map((variable) => {
+                                const selected = Array.from(this.instance?.variables || []).some(
+                                    (va) => {
+                                        return va == variable.id;
+                                    },
+                                );
+                                return html`<option
+                                    value=${ifDefined(variable.id)}
+                                    ?selected=${selected}
+                                >
+                                    ${variable.name}
+                                </option>`;
+                            })}
+                        </select>
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "Select variables that will be made available to this expression.",
+                            )}
+                        </p>
+                        <p class="pf-c-form__helper-text">
+                            ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
                 </div>
