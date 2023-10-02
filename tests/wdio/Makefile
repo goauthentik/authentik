@@ -37,5 +37,5 @@ test-bad-login: node_modules admin-user  ## Test that bad usernames and password
 	$(SPEC)/bad-logins.ts
 
 
-test-application-wizard:
+test-application-wizard: node_modules admin-user  ## Test that the application wizard works as expected
 	$(SPEC)/new-application-by-wizard.ts
