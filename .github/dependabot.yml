@@ -41,7 +41,7 @@ updates:
           - "babel-*"
       eslint:
         patterns:
-          - "@typescript-eslint/eslint-*"
+          - "@typescript-eslint/*"
           - "eslint"
           - "eslint-*"
       storybook:
@@ -72,7 +72,7 @@ updates:
           - "babel-*"
       eslint:
         patterns:
-          - "@typescript-eslint/eslint-*"
+          - "@typescript-eslint/*"
           - "eslint"
           - "eslint-*"
       storybook:
@@ -82,6 +82,9 @@ updates:
       esbuild:
         patterns:
           - "@esbuild/*"
+      wdio:
+        patterns:
+          - "@wdio/*"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
