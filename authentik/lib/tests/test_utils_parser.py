@@ -131,14 +131,16 @@ class TestParserUtils(TestCase):
     def test_get_redis_options_timeout_arg_invalid_format(self):
         """Test Redis URL parser with invalid format timeout arg"""
         url = urlparse("redis://myredis/0?timeout=39l")
-        with self.assertRaises(ValueError):
-            _, _, _ = get_redis_options(url)
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["socket_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
 
     def test_get_redis_options_timeout_arg_invalid_char(self):
         """Test Redis URL parser with invalid char timeout arg"""
         url = urlparse("redis://myredis/0?timeout=39,34h")
-        with self.assertRaises(ValueError):
-            _, _, _ = get_redis_options(url)
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["socket_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
 
     def test_get_redis_options_timeout_arg_missing_unit(self):
         """Test Redis URL parser with missing unit timeout arg"""

@@ -146,7 +146,7 @@ class TestConfig(TestCase):
         """Test AttrEncoder if no Attr is passed"""
 
         class Test:
-            pass
+            """Non Attr class"""
 
         with self.assertRaises(TypeError):
             test_obj = Test()

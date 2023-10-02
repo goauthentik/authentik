@@ -89,6 +89,15 @@ func (c *Config) Setup(paths ...string) {
 	c.configureLogger()
 }
 
+func (c *Config) deprecatedRedisConfigSet() bool {
+	rc := c.Redis
+
+	if rc.DB > 0 || rc.Host != "" || rc.Username != "" || rc.Password != "" || rc.Port > 0 || rc.TLS || rc.TLSReqs != "" {
+		return true
+	}
+	return false
+}
+
 func (c *Config) UpdateRedisURL() {
 	var(
 		redisURL = url.URL{Scheme: "redis"}
@@ -98,22 +107,8 @@ func (c *Config) UpdateRedisURL() {
 		redisDB = 0
 	)
 
-	if c.Redis.URL != "" {
-		var redisEnvKeys []string
-		redisVal := reflect.ValueOf(c.Redis)
-		for i := 0; i < redisVal.Type().NumField(); i++ {
-			if envTag, ok := redisVal.Type().Field(i).Tag.Lookup("env"); ok {
-				redisEnvKeys = append(redisEnvKeys, envTag)
-			}
-		}
-		encodedGetEnv := func(key string) string {
-			if slices.Contains(redisEnvKeys, key) {
-				return url.QueryEscape(os.Getenv(key))
-			}
-			return ""
-		}
-		c.Redis.URL = os.Expand(c.Redis.URL, encodedGetEnv)
-	} else {
+	// To make it easier for users to switch over to new Redis config allow old style config for now
+	if c.deprecatedRedisConfigSet() && c.Redis.URL == "redis://localhost:6379/0" {
 		log.Warning(
 			"other Redis environment variables have been deprecated in favor of 'AUTHENTIK_REDIS__URL'. " +
 			"Please update your configuration.",
@@ -158,6 +153,21 @@ func (c *Config) UpdateRedisURL() {
 		redisURL.Host = fmt.Sprintf("%s:%d", redisHost, redisPort)
 		redisURL.Path = fmt.Sprintf("%d", redisDB)
 		c.Redis.URL = redisURL.String()
+	} else {
+		var redisEnvKeys []string
+		redisVal := reflect.ValueOf(c.Redis)
+		for i := 0; i < redisVal.Type().NumField(); i++ {
+			if envTag, ok := redisVal.Type().Field(i).Tag.Lookup("env"); ok {
+				redisEnvKeys = append(redisEnvKeys, envTag)
+			}
+		}
+		encodedGetEnv := func(key string) string {
+			if slices.Contains(redisEnvKeys, key) {
+				return url.QueryEscape(os.Getenv(key))
+			}
+			return ""
+		}
+		c.Redis.URL = os.Expand(c.Redis.URL, encodedGetEnv)
 	}
 }
 

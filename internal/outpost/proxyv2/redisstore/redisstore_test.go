@@ -18,7 +18,7 @@ import (
 func TestNew(t *testing.T) {
 	db, _ := redismock.NewClientMock()
 
-	store, err := NewStoreWithUniversalClient(db,
+	store, err := NewStore(db,
 		WithKeyPairs([]byte("test")),
 	)
 	if err != nil {
@@ -42,14 +42,14 @@ func TestNew(t *testing.T) {
 func TestSaveAndGet(t *testing.T) {
 	db, mock := redismock.NewClientMock()
 
-	store, err := NewStoreWithUniversalClient(db,
+	store, err := NewStore(db,
 		WithKeyPairs([]byte("test")),
 	)
 	if err != nil {
 		t.Fatal("failed to create redis store", err)
 	}
 
-	store.keyGenFunc = nil
+	store.keyGen = nil
 
 	req, err := http.NewRequest("GET", "http://www.example.com", nil)
 	if err != nil {
@@ -102,7 +102,7 @@ func TestSaveAndGet(t *testing.T) {
 func TestDeleteByKey(t *testing.T) {
 	db, mock := redismock.NewClientMock()
 
-	store, err := NewStoreWithUniversalClient(db,
+	store, err := NewStore(db,
 		WithKeyPairs([]byte("test")),
 	)
 	if err != nil {
@@ -150,7 +150,7 @@ func TestDeleteByKey(t *testing.T) {
 func TestDeleteByMaxAge(t *testing.T) {
 	db, mock := redismock.NewClientMock()
 
-	store, err := NewStoreWithUniversalClient(db,
+	store, err := NewStore(db,
 		WithKeyPairs([]byte("test")),
 	)
 	if err != nil {
@@ -204,7 +204,7 @@ func TestOptions(t *testing.T) {
 		MaxAge: 99999,
 	}
 
-	store, err := NewStoreWithUniversalClient(db,
+	store, err := NewStore(db,
 		WithKeyPairs([]byte("test")),
 		WithKeyPrefix("amazing.gao_"),
 		WithSerializer(&serializer.JSONSerializer{}),

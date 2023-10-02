@@ -63,17 +63,16 @@ def _parse_duration_to_sec(duration_str: str) -> float:
 
 def _val_to_sec(values: list[bytes]):
     """Convert a list of string bytes into a duration in seconds"""
-    for i, value in enumerate(values):
+    for value in values:
         try:
             return _parse_duration_to_sec(str(value))
         except ValueError:
             try:
-                # Default for Golang time.Duration is nanoseconds
+                # Default for Golang time. Duration is nanoseconds
                 return int(value) * 1e-9
             except ValueError:
-                if i == len(values) - 1:
-                    return 0
                 continue
+    return 0
 
 
 def parse_hostport(addr_str, default_port=6379):

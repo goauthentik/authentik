@@ -123,6 +123,24 @@ class ConfigLoader:
         self.check_deprecations()
         self.update_redis_url()
 
+    def _deprecated_redis_config_set(self) -> bool:
+        host_set = self.get("redis.host", UNSET) is not UNSET
+        port_set = self.get("redis.port", UNSET) is not UNSET
+        tls_set = self.get_bool("redis.tls", False)
+        tls_reqs_set = self.get("redis.tls_reqs", UNSET) is not UNSET
+        db_set = self.get("redis.db", UNSET) is not UNSET
+        username_set = self.get("redis.username", UNSET) is not UNSET
+        password_set = self.get("redis.password", UNSET) is not UNSET
+        return (
+            host_set
+            or port_set
+            or tls_set
+            or tls_reqs_set
+            or db_set
+            or username_set
+            or password_set
+        )
+
     # pylint: disable=too-many-statements
     def update_redis_url(self):
         """Build Redis URL using default values or replace placeholders with other env vars"""
@@ -133,10 +151,11 @@ class ConfigLoader:
         redis_port = 6379
         redis_db = 0
 
-        if self.get("redis.url", UNSET) is not UNSET:
-            env = {k: quote_plus(v) for k, v in os.environ.items() if k in REDIS_ENV_KEYS}
-            self.set("redis.url", Template(self.get("redis.url", UNSET)).substitute(env))
-        else:
+        # To make it easier for users to switch over to new Redis config allow old style config for now
+        if (
+            self._deprecated_redis_config_set()
+            and self.get("redis.url") == "redis://localhost:6379/0"
+        ):
             self.log(
                 "warning",
                 "Other Redis environment variables have been deprecated "
@@ -181,6 +200,9 @@ class ConfigLoader:
             if redis_url_query != "":
                 redis_url += f"?{redis_url_query}"
             self.set("redis.url", redis_url)
+        else:
+            env = {k: quote_plus(v) for k, v in os.environ.items() if k in REDIS_ENV_KEYS}
+            self.set("redis.url", Template(self.get("redis.url", UNSET)).substitute(env))
 
     def check_deprecations(self):
         """Warn if any deprecated configuration options are used"""

@@ -1,6 +1,7 @@
 package application
 
 import (
+	"context"
 	"math"
 	"net/http"
 	"net/url"
@@ -10,7 +11,6 @@ import (
 
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
-	"github.com/redis/go-redis/v9"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
@@ -36,7 +36,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 			if err != nil {
 				panic(err)
 			}
-			rs, err := redisstore.NewStoreWithUniversalClient(
+			rs, err := redisstore.NewStore(
 				client,
 				redisstore.WithOptions(&sessions.Options{
 					Path: "/",

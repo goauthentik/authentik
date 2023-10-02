@@ -20,12 +20,19 @@ import (
 
 type (
 	RedisStore struct {
+		// client to connect to redis
 		client     redis.UniversalClient
+		// codecs used for cookie storage
 		codecs     []securecookie.Codec
+		// default options to use when a new session is created
 		options    *sessions.Options
+		// maximum length of values to store
 		maxLength  int
+		// key prefix with which the session will be stored
 		keyPrefix  string
-		keyGenFunc KeyGenFunc
+		// key generator
+		keyGen KeyGenFunc
+		// session serializer
 		serializer serializer.SessionSerializer
 	}
 
@@ -40,9 +47,11 @@ type (
 
 	Option func(ops *Options)
 
+	// KeyGenFunc defines a function used by store to generate a key
 	KeyGenFunc func(*http.Request) (string, error)
 )
 
+// default values for options
 const (
 	defaultMaxLen    = 4096
 	defaultKeyPrefix = "session_"
@@ -50,7 +59,8 @@ const (
 	defaultPath      = "/"
 )
 
-func NewStoreWithUniversalClient(client redis.UniversalClient, optFns ...Option) (*RedisStore, error) {
+// NewRedisStore returns a new RedisStore with default configuration
+func NewStore(client redis.UniversalClient, optFns ...Option) (*RedisStore, error) {
 	newOpts := &Options{}
 	for _, optFn := range optFns {
 		optFn(newOpts)
@@ -72,7 +82,7 @@ func NewStoreWithUniversalClient(client redis.UniversalClient, optFns ...Option)
 		newOpts.Serializer = &serializer.GobSerializer{}
 	}
 	if newOpts.KeyGenFunc == nil {
-		newOpts.KeyGenFunc = GenerateRandomKey
+		newOpts.KeyGenFunc = generateRandomKey
 	}
 
 	return &RedisStore{
@@ -81,7 +91,7 @@ func NewStoreWithUniversalClient(client redis.UniversalClient, optFns ...Option)
 		options:    newOpts.Options,
 		maxLength:  newOpts.MaxLength,
 		keyPrefix:  newOpts.KeyPrefix,
-		keyGenFunc: newOpts.KeyGenFunc,
+		keyGen: newOpts.KeyGenFunc,
 		serializer: newOpts.Serializer,
 	}, nil
 }
@@ -134,9 +144,9 @@ func (st *RedisStore) Save(r *http.Request, w http.ResponseWriter, session *sess
 	} else {
 		// Build an alphanumeric key for the redis store.
 		if session.ID == "" {
-			keyGenFunc := st.keyGenFunc
+			keyGenFunc := st.keyGen
 			if keyGenFunc == nil {
-				keyGenFunc = GenerateRandomKey
+				keyGenFunc = generateRandomKey
 			}
 
 			id, err := keyGenFunc(r)
@@ -201,10 +211,17 @@ func (st *RedisStore) Ping() error {
 	return st.client.Ping(context.Background()).Err()
 }
 
+// Close Redis store
+func (st *RedisStore) Close() error {
+	return st.client.Close()
+}
+
+// Configure RedisStore options
 func (st *RedisStore) SetOptions(opts *sessions.Options) {
 	st.options = opts
 }
 
+// Save a session to RedisStore
 func (st *RedisStore) save(session *sessions.Session) error {
 	b, err := st.Serialize(session)
 	if err != nil {
@@ -227,14 +244,16 @@ func (st *RedisStore) load(session *sessions.Session) (bool, error) {
 	return true, st.Deserialize(b, session)
 }
 
+// Delete session in Redis
 func (st *RedisStore) delete(session *sessions.Session) error {
 	return st.client.Del(context.Background(), st.key(session)).Err()
 }
 
+// Generate key for a session
 func (st *RedisStore) key(session *sessions.Session) string {
 	return st.keyPrefix + session.ID
 }
 
-func GenerateRandomKey(r *http.Request) (string, error) {
+func generateRandomKey(r *http.Request) (string, error) {
 	return strings.TrimRight(base32.StdEncoding.EncodeToString(securecookie.GenerateRandomKey(32)), "="), nil
 }

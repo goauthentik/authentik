@@ -26,13 +26,13 @@ type Config struct {
 
 type RedisConfig struct {
 	URL                    string `yaml:"url" env:"AUTHENTIK_REDIS__URL"`
-	Host                   string `yaml:"host" env:"AUTHENTIK_REDIS__HOST"`
-	Port                   int    `yaml:"port" env:"AUTHENTIK_REDIS__PORT"`
-	DB                     int    `yaml:"db" env:"AUTHENTIK_REDIS__DB"`
-	Username               string `yaml:"username" env:"AUTHENTIK_REDIS__USERNAME"`
-	Password               string `yaml:"password" env:"AUTHENTIK_REDIS__PASSWORD"`
-	TLS                    bool   `yaml:"tls" env:"AUTHENTIK_REDIS__TLS"`
-	TLSReqs                string `yaml:"tls_reqs" env:"AUTHENTIK_REDIS__TLS_REQS"`
+	Host                   string `yaml:"host" env:"AUTHENTIK_REDIS__HOST"` // Deprecated: Use URL instead
+	Port                   int    `yaml:"port" env:"AUTHENTIK_REDIS__PORT"` // Deprecated: Use URL instead
+	DB                     int    `yaml:"db" env:"AUTHENTIK_REDIS__DB"` // Deprecated: Use URL instead
+	Username               string `yaml:"username" env:"AUTHENTIK_REDIS__USERNAME"` // Deprecated: Use URL instead
+	Password               string `yaml:"password" env:"AUTHENTIK_REDIS__PASSWORD"` // Deprecated: Use URL instead
+	TLS                    bool   `yaml:"tls" env:"AUTHENTIK_REDIS__TLS"` // Deprecated: Use URL instead
+	TLSReqs                string `yaml:"tls_reqs" env:"AUTHENTIK_REDIS__TLS_REQS"` // Deprecated: Use URL instead
 }
 
 type ListenConfig struct {
