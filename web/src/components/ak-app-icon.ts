@@ -13,7 +13,7 @@ import { Application } from "@goauthentik/api";
 
 @customElement("ak-app-icon")
 export class AppIcon extends AKElement {
-    @property({ attribute: false })
+    @property({ type: Object, attribute: false })
     app?: Application;
 
     @property()

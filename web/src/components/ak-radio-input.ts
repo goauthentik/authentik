@@ -1,5 +1,6 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { RadioOption } from "@goauthentik/elements/forms/Radio";
+import "@goauthentik/elements/forms/Radio";
 
 import { html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
@@ -35,13 +36,21 @@ export class AkRadioInput<T> extends AKElement {
     @property({ type: Array })
     options: RadioOption<T>[] = [];
 
+    handleInput(ev: CustomEvent) {
+        this.value = ev.detail.value;
+    }
+
     render() {
         return html`<ak-form-element-horizontal
             label=${this.label}
             ?required=${this.required}
             name=${this.name}
         >
-            <ak-radio .options=${this.options} .value=${this.value}></ak-radio>
+            <ak-radio
+                .options=${this.options}
+                .value=${this.value}
+                @input=${this.handleInput}
+            ></ak-radio>
             ${this.help.trim()
                 ? html`<p class="pf-c-form__helper-radio">${this.help}</p>`
                 : nothing}

@@ -167,3 +167,5 @@ export class AkSlugInput extends AKElement {
         </ak-form-element-horizontal> `;
     }
 }
+
+export default AkSlugInput;

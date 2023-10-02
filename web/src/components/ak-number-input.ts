@@ -48,3 +48,5 @@ export class AkNumberInput extends AKElement {
         </ak-form-element-horizontal> `;
     }
 }
+
+export default AkNumberInput;
