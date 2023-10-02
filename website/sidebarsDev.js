@@ -55,6 +55,11 @@ module.exports = {
         {
             type: "category",
             label: "Community Events",
+            link: {
+                type: "generated-index",
+                title: "Events",
+                slug: "events",
+            },
             items: ["hackathon/index"],
         },
     ],
