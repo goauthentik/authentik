@@ -10,6 +10,9 @@
     --white: #e3e3e3;
     --ifm-navbar-link-color: var(--white);
     --ifm-navbar-link-hover-color: var(--ifm-color-gray-1000);
+    --ifm-menu-color: var(--white);
+    --ifm-menu-color-background-active: var(--white);
+    --ifm-navbar-background-color: var(--ifm-color-primary);
 }
 
 .button.button--outline {
@@ -96,7 +99,6 @@
 }
 
 /* Custom navbar dropdown */
-
 .dropdown--custom div.dropdown__menu {
     display: flex;
     font-size: calc(var(--ifm-font-size-base) * 1.2);
@@ -132,5 +134,15 @@
     .dropdown--custom div.category.enterprise {
         margin-top: 8px;
         padding-top: 0px;
+    }
+}
+
+@media screen and (max-width: 996px) {
+    .dropdown {
+        width: 100%;
+        line-height: 1.25;
+    }
+    .navbar__link {
+        padding: var(--ifm-menu-link-padding-vertical) var(--ifm-menu-link-padding-horizontal);
     }
 }

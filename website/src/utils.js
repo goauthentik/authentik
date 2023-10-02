@@ -1,5 +1,5 @@
 function generateNavbarDropdown(label, categories, extra) {
-    return `<a aria-haspopup="true" aria-expanded="false" role="button" class="menu__link">${label}</a>
+    return `<a aria-haspopup="true" aria-expanded="false" role="button" class="navbar__link">${label}</a>
     <div class="dropdown__menu">
         ${categories
             .map(({ label, items }) => {
