@@ -4069,19 +4069,19 @@ files = [
 
 [[package]]
 name = "webauthn"
-version = "1.10.1"
+version = "1.11.0"
 description = "Pythonic WebAuthn"
 optional = false
 python-versions = "*"
 files = [
-    {file = "webauthn-1.10.1-py3-none-any.whl", hash = "sha256:1d6b2c0753344df4c067a478f0e7f0e6cbb561f3d40342472f421657cdd16d41"},
-    {file = "webauthn-1.10.1.tar.gz", hash = "sha256:94fc8265cccce88e1e43dc2008f3d8bb1f05fdd547246efa1be8ef684a6c3a7b"},
+    {file = "webauthn-1.11.0-py3-none-any.whl", hash = "sha256:9c8a81f7e310aee022a038ae2c76711bcf0a94521a471225e05c36871f83eeda"},
+    {file = "webauthn-1.11.0.tar.gz", hash = "sha256:1e808de1e3625a4b361e249e1bbb254d2a3a5c6b206e6f7260c4febe51f45276"},
 ]
 
 [package.dependencies]
 asn1crypto = ">=1.4.0"
-cbor2 = ">=5.4.2.post1"
-cryptography = ">=41.0.1"
+cbor2 = ">=5.4.6"
+cryptography = ">=41.0.4"
 pydantic = ">=1.10.11"
 pyOpenSSL = ">=23.2.0"
 
