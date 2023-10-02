@@ -8,8 +8,8 @@ describe("Log into authentik", () => {
         await LoginPage.username(BAD_USERNAME);
         const failure = await LoginPage.authFailure;
         expect(failure).toHaveText("Failed to authenticate.");
-     });
- 
+    });
+
     it("should fail on a bad password", async () => {
         await LoginPage.open();
         await LoginPage.username(GOOD_USERNAME);
@@ -17,5 +17,5 @@ describe("Log into authentik", () => {
         await LoginPage.password(BAD_PASSWORD);
         const failure = await LoginPage.authFailure;
         expect(failure).toHaveText("Failed to authenticate.");
-     });
+    });
 });

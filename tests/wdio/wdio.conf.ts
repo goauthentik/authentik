@@ -157,6 +157,7 @@ export const config: Options.Testrunner = {
         ui: "bdd",
         timeout: 60000,
     },
+<<<<<<< HEAD
     //
     // =====
     // Hooks
@@ -303,4 +304,6 @@ export const config: Options.Testrunner = {
      */
     // onReload: function(oldSessionId, newSessionId) {
     // }
+=======
+>>>>>>> main
 };
