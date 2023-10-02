@@ -12,7 +12,28 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 /**
+ *
+ * Horizontal Form Element Container.
+ *
+ * This element provides the interface between elements of our forms and the
+ * form itself.
  * @custom-element ak-form-element-horizontal
+ */
+
+/* TODO
+
+ * 1. Replace the "probe upward for a parent object to event" with an event handler on the parent
+ *    group.
+ * 2. Updated() has a lot of that slug code again. Really, all you want is for the slug input object
+ *    to update itself if its content seems to have been tracking some other key element.
+ * 3. Updated() pushes the `name` field down to the children, as if that were necessary; why isn't
+ *    it being written on-demand when the child is written? Because it's slotted... despite there
+ *    being very few unique uses.
+ * 4. There is some very specific use-case around the `writeOnly` boolean; this seems to be a case
+ *    where the field isn't available for the user to view unless they explicitly request to be able
+ *    to see the content; otherwise, a dead password field is shown. There are 10 uses of this
+ *    feature.
+ * 
  */
 
 @customElement("ak-form-element-horizontal")
@@ -56,6 +77,9 @@ export class HorizontalFormElement extends AKElement {
 
     _invalid = false;
 
+    /* If this property changes, we want to make sure the parent control is "opened" so
+     * that users can see the change.[1]
+     */
     @property({ type: Boolean })
     set invalid(v: boolean) {
         this._invalid = v;

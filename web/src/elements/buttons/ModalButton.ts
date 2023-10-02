@@ -1,7 +1,7 @@
 import { AKElement } from "@goauthentik/elements/Base";
 import { PFSize } from "@goauthentik/elements/Spinner";
 
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFBackdrop from "@patternfly/patternfly/components/Backdrop/backdrop.css";
@@ -100,7 +100,7 @@ export class ModalButton extends AKElement {
         });
     }
 
-    renderModalInner(): TemplateResult {
+    renderModalInner(): TemplateResult | typeof nothing {
         return html`<slot name="modal"></slot>`;
     }
 
@@ -136,6 +136,6 @@ export class ModalButton extends AKElement {
 
     render(): TemplateResult {
         return html` <slot name="trigger" @click=${() => this.onClick()}></slot>
-            ${this.open ? this.renderModal() : ""}`;
+            ${this.open ? this.renderModal() : nothing}`;
     }
 }

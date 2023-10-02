@@ -16,11 +16,21 @@
         "sourceType": "module"
     },
     "plugins": ["@typescript-eslint", "lit", "custom-elements"],
+    "ignorePatterns": ["authentik-live-tests/**"],
     "rules": {
         "indent": "off",
         "linebreak-style": ["error", "unix"],
         "quotes": ["error", "double", { "avoidEscape": true }],
         "semi": ["error", "always"],
-        "@typescript-eslint/ban-ts-comment": "off"
+        "@typescript-eslint/ban-ts-comment": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": [
+            "error",
+            {
+                "argsIgnorePattern": "^_",
+                "varsIgnorePattern": "^_",
+                "caughtErrorsIgnorePattern": "^_"
+            }
+        ]
     }
 }

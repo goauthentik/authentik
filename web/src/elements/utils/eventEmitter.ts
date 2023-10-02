@@ -9,16 +9,21 @@ export const isCustomEvent = (v: any): v is CustomEvent =>
 
 export function CustomEmitterElement<T extends Constructor<LitElement>>(superclass: T) {
     return class EmmiterElementHandler extends superclass {
-        dispatchCustomEvent(eventName: string, detail = {}, options = {}) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        dispatchCustomEvent(eventName: string, detail: any = {}, options = {}) {
+            const fullDetail =
+                typeof detail === "object" && !Array.isArray(detail)
+                    ? {
+                          target: this,
+                          ...detail,
+                      }
+                    : detail;
             this.dispatchEvent(
                 new CustomEvent(eventName, {
                     composed: true,
                     bubbles: true,
                     ...options,
-                    detail: {
-                        target: this,
-                        ...detail,
-                    },
+                    detail: fullDetail,
                 }),
             );
         }
