@@ -9,7 +9,7 @@
         "@wdio/cli": "^8.16.11",
         "@wdio/local-runner": "^8.16.18",
         "@wdio/mocha-framework": "^8.16.11",
-        "@wdio/spec-reporter": "^8.16.9",
+        "@wdio/spec-reporter": "^8.16.17",
         "eslint": "^8.49.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-sonarjs": "^0.21.0",
