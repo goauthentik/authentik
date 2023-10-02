@@ -82,6 +82,9 @@ updates:
       esbuild:
         patterns:
           - "@esbuild/*"
+      wdio:
+        patterns:
+          - "@wdio/*"
   - package-ecosystem: npm
     directory: "/website"
     schedule:
