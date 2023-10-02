@@ -81,7 +81,7 @@ class OAuthSourceSerializer(SourceSerializer):
                     {"oidc_well_known_url": f"Invalid well-known configuration: {exc}"}
                 )
 
-        # Prefer user-entered URL inferred URL to default URL
+        # Prefer user-entered URL to inferred URL to default URL
         jwks_url = attrs.get("oidc_jwks_url") or inferred_oidc_jwks_url or source_type.oidc_jwks_url
         if jwks_url and jwks_url != "":
             attrs["oidc_jwks_url"] = jwks_url
@@ -90,7 +90,7 @@ class OAuthSourceSerializer(SourceSerializer):
                 jwks_config.raise_for_status()
             except RequestException as exc:
                 text = exc.response.text if exc.response else str(exc)
-                raise ValidationError({"jwks_url": text})
+                raise ValidationError({"oidc_jwks_url": text})
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 
