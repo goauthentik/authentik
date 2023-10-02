@@ -1,9 +1,13 @@
 """root tests"""
 from base64 import b64encode
 
+from celery.app.amqp import Connection as AmqpConnection
 from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
+
+from authentik.root.redis_middleware_celery import CustomCelery
+from authentik.root.redis_middleware_kombu import CustomConnection
 
 
 class TestRoot(TestCase):
@@ -28,3 +32,19 @@ class TestRoot(TestCase):
     def test_monitoring_ready(self):
         """Test ReadyView"""
         self.assertEqual(self.client.get(reverse("health-ready")).status_code, 204)
+
+
+class TestRedisMiddlewareCelery(TestCase):
+    """Test Redis Middleware for Celery"""
+
+    def test_backend_injection(self):
+        """Test correct injection of custom Redis backend"""
+        celery_app = CustomCelery("authentik")
+        connection = celery_app.connection_for_read("redis+cluster://localhost:6379/0")
+        self.assertIsInstance(connection, CustomConnection)
+
+    def test_default_backend(self):
+        """Test other non-custom backends"""
+        celery_app = CustomCelery("authentik")
+        connection = celery_app.connection_for_read("amqp://localhost:5672/myvhost")
+        self.assertIsInstance(connection, AmqpConnection)
