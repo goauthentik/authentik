@@ -72,16 +72,16 @@ export class LibraryPageApplicationList extends AKElement {
     render() {
         const [groupClass, groupGrid] = this.currentLayout;
 
-        return html`<div class="pf-l-grid pf-m-gutter">
+        return html`<div class="pf-v5-l-grid pf-m-gutter">
             ${this.apps.map(([group, apps]: AppGroupEntry) => {
-                return html`<div class="pf-l-grid__item ${groupClass}">
-                    <div class="pf-c-content app-group-header">
+                return html`<div class="pf-v5-l-grid__item ${groupClass}">
+                    <div class="pf-v5-c-content app-group-header">
                         <h2>${group}</h2>
                     </div>
-                    <div class="pf-l-grid pf-m-gutter ${groupGrid}">
+                    <div class="pf-v5-l-grid pf-m-gutter ${groupGrid}">
                         ${apps.map((app: Application) => {
                             return html`<ak-library-app
-                                class="pf-l-grid__item"
+                                class="pf-v5-l-grid__item"
                                 .application=${app}
                                 background=${ifDefined(this.background)}
                                 ?selected=${app.slug === this.selected}

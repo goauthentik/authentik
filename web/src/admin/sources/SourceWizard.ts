@@ -43,11 +43,11 @@ export class InitialSourceWizardPage extends WizardPage {
     };
 
     render(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             ${this.sourceTypes.map((type) => {
-                return html`<div class="pf-c-radio">
+                return html`<div class="pf-v5-c-radio">
                     <input
-                        class="pf-c-radio__input"
+                        class="pf-v5-c-radio__input"
                         type="radio"
                         name="type"
                         id=${`${type.component}-${type.modelName}`}
@@ -59,10 +59,10 @@ export class InitialSourceWizardPage extends WizardPage {
                             this.host.isValid = true;
                         }}
                     />
-                    <label class="pf-c-radio__label" for=${`${type.component}-${type.modelName}`}
+                    <label class="pf-v5-c-radio__label" for=${`${type.component}-${type.modelName}`}
                         >${type.name}</label
                     >
-                    <span class="pf-c-radio__description">${type.description}</span>
+                    <span class="pf-v5-c-radio__description">${type.description}</span>
                 </div>`;
             })}
         </form>`;
@@ -108,7 +108,7 @@ export class SourceWizard extends AKElement {
                         </ak-wizard-page-form>
                     `;
                 })}
-                <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
+                <button slot="trigger" class="pf-v5-c-button pf-m-primary">${msg("Create")}</button>
             </ak-wizard>
         `;
     }

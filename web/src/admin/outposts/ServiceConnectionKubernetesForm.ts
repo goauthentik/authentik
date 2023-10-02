@@ -45,30 +45,30 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="local">
-                <label class="pf-c-switch">
+                <label class="pf-v5-c-switch">
                     <input
-                        class="pf-c-switch__input"
+                        class="pf-v5-c-switch__input"
                         type="checkbox"
                         ?checked=${first(this.instance?.local, false)}
                     />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${msg("Local")}</span>
+                    <span class="pf-v5-c-switch__label">${msg("Local")}</span>
                 </label>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "If enabled, use the local connection. Required Docker socket/Kubernetes Integration.",
                     )}
@@ -80,23 +80,23 @@ export class ServiceConnectionKubernetesForm extends ModelForm<
                     value="${YAML.stringify(first(this.instance?.kubeconfig, {}))}"
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="verifySsl">
-                <label class="pf-c-switch">
+                <label class="pf-v5-c-switch">
                     <input
-                        class="pf-c-switch__input"
+                        class="pf-v5-c-switch__input"
                         type="checkbox"
                         ?checked=${first(this.instance?.verifySsl, true)}
                     />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label"
+                    <span class="pf-v5-c-switch__label"
                         >${msg("Verify Kubernetes API SSL Certificate")}</span
                     >
                 </label>

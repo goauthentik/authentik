@@ -34,20 +34,20 @@ export class Loading extends Interface {
 
     render(): TemplateResult {
         return html` <section
-            class="ak-static-page pf-c-page__main-section pf-m-no-padding-mobile pf-m-xl"
+            class="ak-static-page pf-v5-c-page__main-section pf-m-no-padding-mobile pf-m-xl"
         >
-            <div class="pf-c-empty-state" style="height: 100vh;">
-                <div class="pf-c-empty-state__content">
+            <div class="pf-v5-c-empty-state" style="height: 100vh;">
+                <div class="pf-v5-c-empty-state__content">
                     <span
-                        class="pf-c-spinner pf-m-xl"
+                        class="pf-v5-c-spinner pf-m-xl"
                         role="progressbar"
                         aria-valuetext="${msg("Loading...")}"
                     >
-                        <span class="pf-c-spinner__clipper"></span>
-                        <span class="pf-c-spinner__lead-ball"></span>
-                        <span class="pf-c-spinner__tail-ball"></span>
+                        <span class="pf-v5-c-spinner__clipper"></span>
+                        <span class="pf-v5-c-spinner__lead-ball"></span>
+                        <span class="pf-v5-c-spinner__tail-ball"></span>
                     </span>
-                    <h1 class="pf-c-title pf-m-lg">${msg("Loading...")}</h1>
+                    <h1 class="pf-v5-c-title pf-m-lg">${msg("Loading...")}</h1>
                 </div>
             </div>
         </section>`;

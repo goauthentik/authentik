@@ -25,16 +25,16 @@ export class APIDrawer extends AKElement {
             PFContent,
             PFDropdown,
             css`
-                .pf-c-notification-drawer__header {
+                .pf-v5-c-notification-drawer__header {
                     height: 114px;
                     align-items: center;
                 }
-                .pf-c-notification-drawer__header-action,
-                .pf-c-notification-drawer__header-action-close,
-                .pf-c-notification-drawer__header-action-close > .pf-c-button.pf-m-plain {
+                .pf-v5-c-notification-drawer__header-action,
+                .pf-v5-c-notification-drawer__header-action-close,
+                .pf-v5-c-notification-drawer__header-action-close > .pf-v5-c-button.pf-m-plain {
                     height: 100%;
                 }
-                .pf-c-notification-drawer__list-item-description {
+                .pf-v5-c-notification-drawer__list-item-description {
                     white-space: pre-wrap;
                     font-family: monospace;
                 }
@@ -57,14 +57,14 @@ export class APIDrawer extends AKElement {
     }
 
     renderItem(item: RequestInfo): TemplateResult {
-        return html`<li class="pf-c-notification-drawer__list-item pf-m-read">
-            <div class="pf-c-notification-drawer__list-item-header">
-                <h2 class="pf-c-notification-drawer__list-item-header-title">
+        return html`<li class="pf-v5-c-notification-drawer__list-item pf-m-read">
+            <div class="pf-v5-c-notification-drawer__list-item-header">
+                <h2 class="pf-v5-c-notification-drawer__list-item-header-title">
                     ${item.method}: ${item.status}
                 </h2>
             </div>
             <a
-                class="pf-c-notification-drawer__list-item-description"
+                class="pf-v5-c-notification-drawer__list-item-description"
                 target="_blank"
                 href=${item.path}
                 >${item.path}</a
@@ -73,17 +73,17 @@ export class APIDrawer extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-drawer__body pf-m-no-padding">
-            <div class="pf-c-notification-drawer">
-                <div class="pf-c-notification-drawer__header">
+        return html`<div class="pf-v5-c-drawer__body pf-m-no-padding">
+            <div class="pf-v5-c-notification-drawer">
+                <div class="pf-v5-c-notification-drawer__header">
                     <div class="text">
-                        <h1 class="pf-c-notification-drawer__header-title">
+                        <h1 class="pf-v5-c-notification-drawer__header-title">
                             ${msg("API Requests")}
                         </h1>
                         <a href="/api/v3/" target="_blank">${msg("Open API Browser")}</a>
                     </div>
-                    <div class="pf-c-notification-drawer__header-action">
-                        <div class="pf-c-notification-drawer__header-action-close">
+                    <div class="pf-v5-c-notification-drawer__header-action">
+                        <div class="pf-v5-c-notification-drawer__header-action-close">
                             <button
                                 @click=${() => {
                                     this.dispatchEvent(
@@ -93,7 +93,7 @@ export class APIDrawer extends AKElement {
                                         }),
                                     );
                                 }}
-                                class="pf-c-button pf-m-plain"
+                                class="pf-v5-c-button pf-m-plain"
                                 type="button"
                                 aria-label="Close"
                             >
@@ -102,8 +102,8 @@ export class APIDrawer extends AKElement {
                         </div>
                     </div>
                 </div>
-                <div class="pf-c-notification-drawer__body">
-                    <ul class="pf-c-notification-drawer__list">
+                <div class="pf-v5-c-notification-drawer__body">
+                    <ul class="pf-v5-c-notification-drawer__list">
                         ${this.requests.map((n) => this.renderItem(n))}
                     </ul>
                 </div>

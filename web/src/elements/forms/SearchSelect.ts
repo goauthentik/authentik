@@ -83,7 +83,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
             this.open = false;
             this.shadowRoot
                 ?.querySelectorAll<HTMLInputElement>(
-                    ".pf-c-form-control.pf-c-select__toggle-typeahead",
+                    ".pf-v5-c-form-control.pf-v5-c-select__toggle-typeahead",
                 )
                 .forEach((input) => {
                     input.blur();
@@ -165,7 +165,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
      * Also to move it to the correct position we're getting this elements's position and use that
      * to position the menu
      * The other downside this has is that, since we're rendering outside of a shadow root,
-     * the pf-c-dropdown CSS needs to be loaded on the body.
+     * the pf-v5-c-dropdown CSS needs to be loaded on the body.
      */
     renderMenu(): void {
         if (!this.objects) {
@@ -192,7 +192,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                 return html`
                     <li>
                         <button
-                            class="pf-c-dropdown__menu-item ${desc === undefined
+                            class="pf-v5-c-dropdown__menu-item ${desc === undefined
                                 ? ""
                                 : "pf-m-description"}"
                             role="option"
@@ -205,10 +205,10 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                             ${desc === undefined
                                 ? this.renderElement(obj)
                                 : html`
-                                      <div class="pf-c-dropdown__menu-item-main">
+                                      <div class="pf-v5-c-dropdown__menu-item-main">
                                           ${this.renderElement(obj)}
                                       </div>
-                                      <div class="pf-c-dropdown__menu-item-description">
+                                      <div class="pf-v5-c-dropdown__menu-item-description">
                                           ${desc}
                                       </div>
                                   `}
@@ -219,14 +219,14 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
         };
         render(
             html`<div
-                class="pf-c-dropdown pf-m-expanded"
+                class="pf-v5-c-dropdown pf-m-expanded"
                 style="position: fixed; inset: 0px auto auto 0px; z-index: 9999; transform: translate(${pos.x}px, ${pos.y +
                 this.offsetHeight}px); width: ${pos.width}px; ${this.open
                     ? ""
                     : "visibility: hidden;"}"
             >
                 <ul
-                    class="pf-c-dropdown__menu pf-m-static"
+                    class="pf-v5-c-dropdown__menu pf-m-static"
                     role="listbox"
                     style="max-height:50vh;overflow-y:auto;"
                     id=${this.dropdownUID}
@@ -236,7 +236,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                         ? html`
                               <li>
                                   <button
-                                      class="pf-c-dropdown__menu-item"
+                                      class="pf-v5-c-dropdown__menu-item"
                                       role="option"
                                       @click=${() => {
                                           this.selectedObject = undefined;
@@ -252,8 +252,8 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                     ${shouldRenderGroups
                         ? html`${groupedItems.map(([group, items], idx) => {
                               return html`
-                                  <section class="pf-c-dropdown__group">
-                                      <h1 class="pf-c-dropdown__group-title">${group}</h1>
+                                  <section class="pf-v5-c-dropdown__group">
+                                      <h1 class="pf-v5-c-dropdown__group-title">${group}</h1>
                                       <ul>
                                           ${renderGroup(items, idx)}
                                       </ul>
@@ -278,11 +278,11 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
         } else if (this.blankable) {
             value = this.emptyOption;
         }
-        return html`<div class="pf-c-select">
-            <div class="pf-c-select__toggle pf-m-typeahead">
-                <div class="pf-c-select__toggle-wrapper">
+        return html`<div class="pf-v5-c-select">
+            <div class="pf-v5-c-select__toggle pf-m-typeahead">
+                <div class="pf-v5-c-select__toggle-wrapper">
                     <input
-                        class="pf-c-form-control pf-c-select__toggle-typeahead"
+                        class="pf-v5-c-form-control pf-v5-c-select__toggle-typeahead"
                         type="text"
                         placeholder=${this.placeholder}
                         spellcheck="false"
@@ -306,7 +306,7 @@ export class SearchSelect<T> extends CustomEmitterElement(AKElement) {
                             // Check if we're losing focus to one of our dropdown items, and if such don't blur
                             if (ev.relatedTarget instanceof HTMLButtonElement) {
                                 const parentMenu = ev.relatedTarget.closest(
-                                    "ul.pf-c-dropdown__menu.pf-m-static",
+                                    "ul.pf-v5-c-dropdown__menu.pf-m-static",
                                 );
                                 if (parentMenu && parentMenu.id === this.dropdownUID) {
                                     return;

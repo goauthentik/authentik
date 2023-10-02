@@ -89,10 +89,10 @@ export class LDAPProviderViewPage extends AKElement {
             <section
                 slot="page-changelog"
                 data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
+                <div class="pf-v5-c-card">
+                    <div class="pf-v5-c-card__body">
                         <ak-object-changelog
                             targetModelPk=${this.provider?.pk || ""}
                             targetModelName=${this.provider?.metaModelName || ""}
@@ -111,109 +111,109 @@ export class LDAPProviderViewPage extends AKElement {
         return html`
             ${
                 this.provider?.outpostSet.length < 1
-                    ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                    ? html`<div slot="header" class="pf-v5-c-banner pf-m-warning">
                           ${msg("Warning: Provider is not used by any Outpost.")}
                       </div>`
                     : html``
             }
-            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list pf-m-3-col-on-lg">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
+            <div class="pf-v5-c-page__main-section pf-m-no-padding-mobile pf-v5-l-grid pf-m-gutter">
+                <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                    <div class="pf-v5-c-card__body">
+                        <dl class="pf-v5-c-description-list pf-m-3-col-on-lg">
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text">${msg("Name")}</span>
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.name}
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Assigned to application")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         <ak-provider-related-application
                                             .provider=${this.provider}
                                         ></ak-provider-related-application>
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Base DN")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.baseDn}
                                     </div>
                                 </dd>
                             </div>
                         </dl>
                     </div>
-                    <div class="pf-c-card__footer">
+                    <div class="pf-v5-c-card__footer">
                         <ak-forms-modal>
                             <span slot="submit"> ${msg("Update")} </span>
                             <span slot="header"> ${msg("Update LDAP Provider")} </span>
                             <ak-provider-ldap-form slot="form" .instancePk=${this.provider.pk}>
                             </ak-provider-ldap-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
+                            <button slot="trigger" class="pf-v5-c-button pf-m-primary">
                                 ${msg("Edit")}
                             </button>
                         </ak-forms-modal>
                     </div>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__title">
+                <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                    <div class="pf-v5-c-card__title">
                         ${msg("How to connect")}
                     </div>
-                    <div class="pf-c-card__body">
+                    <div class="pf-v5-c-card__body">
                         <p>
                             ${msg("Connect to the LDAP Server on port 389:")}
                         </p>
-                        <ul class="pf-c-list">
+                        <ul class="pf-v5-c-list">
                             <li>${msg("Check the IP of the Kubernetes service, or")}</li>
                             <li>${msg("The Host IP of the docker host")}</li>
                         </ul>
-                        <form class="pf-c-form">
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${msg("Bind DN")}</span>
+                        <form class="pf-v5-c-form">
+                            <div class="pf-v5-c-form__group">
+                                <label class="pf-v5-c-form__label">
+                                    <span class="pf-v5-c-form__label-text">${msg("Bind DN")}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-v5-c-form-control"
                                     readonly
                                     type="text"
                                     value=${`cn=${this.me?.user
                                         .username},ou=users,${this.provider?.baseDn?.toLowerCase()}`}
                                 />
                             </div>
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${msg(
+                            <div class="pf-v5-c-form__group">
+                                <label class="pf-v5-c-form__label">
+                                    <span class="pf-v5-c-form__label-text">${msg(
                                         "Bind Password",
                                     )}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-v5-c-form-control"
                                     readonly
                                     type="text"
                                     value="Your authentik password"
                                 />
                             </div>
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${msg("Search base")}</span>
+                            <div class="pf-v5-c-form__group">
+                                <label class="pf-v5-c-form__label">
+                                    <span class="pf-v5-c-form__label-text">${msg("Search base")}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-v5-c-form-control"
                                     readonly
                                     type="text"
                                     value=${ifDefined(this.provider?.baseDn?.toLowerCase())}

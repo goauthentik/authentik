@@ -46,15 +46,15 @@ export class LibraryPageApplicationEmptyList extends AKElement {
             createForm: true,
         });
         return html`
-            <div class="pf-u-pt-lg">
+            <div class="pf-v5-u-pt-lg">
                 <a
                     aria-disabled="false"
-                    class="cta pf-c-button pf-m-secondary"
+                    class="cta pf-v5-c-button pf-m-secondary"
                     href="/if/admin/${href}"
                     >${msg("Create a new application")}</a
                 >
             </div>
-            <div class="pf-c-empty-state__body">
+            <div class="pf-v5-c-empty-state__body">
                 <a href="${docLink("/docs/applications")}" target="_blank"
                     >${msg("Refer to documentation")}</a
                 >
@@ -63,11 +63,11 @@ export class LibraryPageApplicationEmptyList extends AKElement {
     }
 
     render() {
-        return html` <div class="pf-c-empty-state pf-m-full-height">
-            <div class="pf-c-empty-state__content">
-                <i class="fas fa-cubes pf-c-empty-state__icon" aria-hidden="true"></i>
-                <h1 class="pf-c-title pf-m-lg">${msg("No Applications available.")}</h1>
-                <div class="pf-c-empty-state__body">
+        return html` <div class="pf-v5-c-empty-state pf-m-full-height">
+            <div class="pf-v5-c-empty-state__content">
+                <i class="fas fa-cubes pf-v5-c-empty-state__icon" aria-hidden="true"></i>
+                <h1 class="pf-v5-c-title pf-m-lg">${msg("No Applications available.")}</h1>
+                <div class="pf-v5-c-empty-state__body">
                     ${msg("Either no applications are defined, or you don’t have access to any.")}
                 </div>
                 ${this.isAdmin ? this.renderNewAppButton() : html``}

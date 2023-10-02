@@ -239,18 +239,18 @@ export class PromptForm extends ModelForm<Prompt, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<div class="pf-l-grid pf-m-gutter">
-            <div class="pf-l-grid__item pf-m-6-col">${this.renderEditForm()}</div>
-            <div class="pf-l-grid__item pf-m-6-col">${this.renderPreview()}</div>
+        return html`<div class="pf-v5-l-grid pf-m-gutter">
+            <div class="pf-v5-l-grid__item pf-m-6-col">${this.renderEditForm()}</div>
+            <div class="pf-v5-l-grid__item pf-m-6-col">${this.renderPreview()}</div>
         </div> `;
     }
 
     renderPreview(): TemplateResult {
         return html`
-            <h3 class="pf-c-title pf-m-lg">${msg("Preview")}</h3>
-            <div class="pf-l-grid pf-m-gutter">
-                <div class="pf-c-card pf-m-selectable pf-m-selected pf-l-grid__item pf-m-12-col">
-                    <div class="pf-c-card__body">
+            <h3 class="pf-v5-c-title pf-m-lg">${msg("Preview")}</h3>
+            <div class="pf-v5-l-grid pf-m-gutter">
+                <div class="pf-v5-c-card pf-m-selectable pf-m-selected pf-v5-l-grid__item pf-m-12-col">
+                    <div class="pf-v5-c-card__body">
                         <ak-stage-prompt
                             .host=${new PreviewStageHost(this)}
                             .challenge=${this.preview}
@@ -260,9 +260,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </div>
                 ${this.previewError
                     ? html`
-                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__body">${msg("Preview errors")}</div>
-                              <div class="pf-c-card__body">
+                          <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                              <div class="pf-v5-c-card__body">${msg("Preview errors")}</div>
+                              <div class="pf-v5-c-card__body">
                                   ${this.previewError.map((err) => html`<pre>${err}</pre>`)}
                               </div>
                           </div>
@@ -270,9 +270,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     : html``}
                 ${this.previewResult
                     ? html`
-                          <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                              <div class="pf-c-card__body">${msg("Data preview")}</div>
-                              <div class="pf-c-card__body">
+                          <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                              <div class="pf-v5-c-card__body">${msg("Data preview")}</div>
+                              <div class="pf-v5-c-card__body">
                                   <pre>${JSON.stringify(this.previewResult, undefined, 4)}</pre>
                               </div>
                           </div>
@@ -283,18 +283,18 @@ export class PromptForm extends ModelForm<Prompt, string> {
     }
 
     renderEditForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                     @input=${() => {
                         this._shouldRefresh = true;
                     }}
                 />
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Unique name of this field, used for selecting fields in prompt stages.")}
                 </p>
             </ak-form-element-horizontal>
@@ -302,16 +302,16 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.fieldKey)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                     @input=${() => {
                         this._shouldRefresh = true;
                     }}
                 />
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Name of the form field, also used to store the value.")}
                 </p>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "When used in conjunction with a User Write stage, use attributes.foo to write attributes.",
                     )}
@@ -321,19 +321,19 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.label)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                     @input=${() => {
                         this._shouldRefresh = true;
                     }}
                 />
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Label shown next to/above the prompt.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Type")} ?required=${true} name="type">
                 <select
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     @change=${() => {
                         this._shouldRefresh = true;
                     }}
@@ -342,43 +342,43 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="required">
-                <label class="pf-c-switch">
+                <label class="pf-v5-c-switch">
                     <input
-                        class="pf-c-switch__input"
+                        class="pf-v5-c-switch__input"
                         type="checkbox"
                         ?checked=${first(this.instance?.required, false)}
                         @change=${() => {
                             this._shouldRefresh = true;
                         }}
                     />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${msg("Required")}</span>
+                    <span class="pf-v5-c-switch__label">${msg("Required")}</span>
                 </label>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="placeholderExpression">
-                <label class="pf-c-switch">
+                <label class="pf-v5-c-switch">
                     <input
-                        class="pf-c-switch__input"
+                        class="pf-v5-c-switch__input"
                         type="checkbox"
                         ?checked=${first(this.instance?.placeholderExpression, false)}
                         @change=${() => {
                             this._shouldRefresh = true;
                         }}
                     />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label"
+                    <span class="pf-v5-c-switch__label"
                         >${msg("Interpret placeholder as expression")}</span
                     >
                 </label>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         `When checked, the placeholder will be evaluated in the same way a property mapping is.
             If the evaluation fails, the placeholder itself is returned.`,
@@ -394,7 +394,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     }}
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         `Optionally provide a short hint that describes the expected input value.
             When creating a fixed choice field, enable interpreting as expression and return a
@@ -403,22 +403,22 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="initialValueExpression">
-                <label class="pf-c-switch">
+                <label class="pf-v5-c-switch">
                     <input
-                        class="pf-c-switch__input"
+                        class="pf-v5-c-switch__input"
                         type="checkbox"
                         ?checked=${first(this.instance?.initialValueExpression, false)}
                     />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label"
+                    <span class="pf-v5-c-switch__label"
                         >${msg("Interpret initial value as expression")}</span
                     >
                 </label>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         `When checked, the initial value will be evaluated in the same way a property mapping is.
             If the evaluation fails, the initial value itself is returned.`,
@@ -428,7 +428,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             <ak-form-element-horizontal label=${msg("Initial value")} name="initialValue">
                 <ak-codemirror mode="python" value="${ifDefined(this.instance?.initialValue)}">
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         `Optionally pre-fill the input with an initial value.
             When creating a fixed choice field, enable interpreting as expression and
@@ -445,13 +445,13 @@ export class PromptForm extends ModelForm<Prompt, string> {
                     }}
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">${msg("Any HTML can be used.")}</p>
+                <p class="pf-v5-c-form__helper-text">${msg("Any HTML can be used.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Order")} ?required=${true} name="order">
                 <input
                     type="number"
                     value="${first(this.instance?.order, 0)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>

@@ -92,7 +92,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             ${this.renderTarget()}
             <ak-form-element-horizontal label=${msg("Stage")} ?required=${true} name="stage">
                 <ak-search-select
@@ -125,43 +125,43 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                 <input
                     type="number"
                     value="${first(this.instance?.order, this.defaultOrder)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="evaluateOnPlan">
-                <label class="pf-c-switch">
+                <label class="pf-v5-c-switch">
                     <input
-                        class="pf-c-switch__input"
+                        class="pf-v5-c-switch__input"
                         type="checkbox"
                         ?checked=${first(this.instance?.evaluateOnPlan, false)}
                     />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${msg("Evaluate when flow is planned")}</span>
+                    <span class="pf-v5-c-switch__label">${msg("Evaluate when flow is planned")}</span>
                 </label>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Evaluate policies during the Flow planning process.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="reEvaluatePolicies">
-                <label class="pf-c-switch">
+                <label class="pf-v5-c-switch">
                     <input
-                        class="pf-c-switch__input"
+                        class="pf-v5-c-switch__input"
                         type="checkbox"
                         ?checked=${first(this.instance?.reEvaluatePolicies, true)}
                     />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${msg("Evaluate when stage is run")}</span>
+                    <span class="pf-v5-c-switch__label">${msg("Evaluate when stage is run")}</span>
                 </label>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Evaluate policies before the Stage is present to the user.")}
                 </p>
             </ak-form-element-horizontal>
@@ -196,7 +196,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     .value=${this.instance?.invalidResponseAction}
                 >
                 </ak-radio>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "Configure how the flow executor should handle an invalid response to a challenge given by this bound stage.",
                     )}

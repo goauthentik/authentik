@@ -26,11 +26,11 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
                 name="commonName"
                 ?required=${true}
             >
-                <input type="text" class="pf-c-form-control" required />
+                <input type="text" class="pf-v5-c-form-control" required />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Subject-alt name")} name="subjectAltName">
-                <input class="pf-c-form-control" type="text" />
-                <p class="pf-c-form__helper-text">
+                <input class="pf-v5-c-form-control" type="text" />
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Optional, comma-separated SubjectAlt Names.")}
                 </p>
             </ak-form-element-horizontal>
@@ -39,7 +39,7 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
                 name="validityDays"
                 ?required=${true}
             >
-                <input class="pf-c-form-control" type="number" value="365" />
+                <input class="pf-v5-c-form-control" type="number" value="365" />
             </ak-form-element-horizontal>`;
     }
 }

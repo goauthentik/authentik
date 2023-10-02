@@ -116,10 +116,10 @@ export class OAuth2ProviderViewPage extends AKElement {
             <section
                 slot="page-changelog"
                 data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
+                <div class="pf-v5-c-card">
+                    <div class="pf-v5-c-card__body">
                         <ak-object-changelog
                             targetModelPk=${this.provider?.pk || ""}
                             targetModelName=${this.provider?.metaModelName || ""}
@@ -137,77 +137,77 @@ export class OAuth2ProviderViewPage extends AKElement {
         }
         return html` ${this.provider?.assignedApplicationName
                 ? html``
-                : html`<div slot="header" class="pf-c-banner pf-m-warning">
+                : html`<div slot="header" class="pf-v5-c-banner pf-m-warning">
                       ${msg("Warning: Provider is not used by an Application.")}
                   </div>`}
-            <div class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter">
+            <div class="pf-v5-c-page__main-section pf-m-no-padding-mobile pf-v5-l-grid pf-m-gutter">
                 <div
-                    class="pf-c-card pf-l-grid__item pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                    class="pf-v5-c-card pf-v5-l-grid__item pf-v5-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
                 >
-                    <div class="pf-c-card__body">
-                        <dl class="pf-c-description-list">
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text">${msg("Name")}</span>
+                    <div class="pf-v5-c-card__body">
+                        <dl class="pf-v5-c-description-list">
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text">${msg("Name")}</span>
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.name}
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Assigned to application")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         <ak-provider-related-application .provider=${this.provider}>
                                         </ak-provider-related-application>
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Client type")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${convertToTitle(this.provider.clientType || "")}
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Client ID")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.clientId}
                                     </div>
                                 </dd>
                             </div>
-                            <div class="pf-c-description-list__group">
-                                <dt class="pf-c-description-list__term">
-                                    <span class="pf-c-description-list__text"
+                            <div class="pf-v5-c-description-list__group">
+                                <dt class="pf-v5-c-description-list__term">
+                                    <span class="pf-v5-c-description-list__text"
                                         >${msg("Redirect URIs")}</span
                                     >
                                 </dt>
-                                <dd class="pf-c-description-list__description">
-                                    <div class="pf-c-description-list__text">
+                                <dd class="pf-v5-c-description-list__description">
+                                    <div class="pf-v5-c-description-list__text">
                                         ${this.provider.redirectUris}
                                     </div>
                                 </dd>
                             </div>
                         </dl>
                     </div>
-                    <div class="pf-c-card__footer">
+                    <div class="pf-v5-c-card__footer">
                         <ak-forms-modal>
                             <span slot="submit"> ${msg("Update")} </span>
                             <span slot="header"> ${msg("Update OAuth2 Provider")} </span>
@@ -216,96 +216,96 @@ export class OAuth2ProviderViewPage extends AKElement {
                                 .instancePk=${this.provider.pk || 0}
                             >
                             </ak-provider-oauth2-form>
-                            <button slot="trigger" class="pf-c-button pf-m-primary">
+                            <button slot="trigger" class="pf-v5-c-button pf-m-primary">
                                 ${msg("Edit")}
                             </button>
                         </ak-forms-modal>
                     </div>
                 </div>
-                <div class="pf-c-card pf-l-grid__item pf-m-7-col">
-                    <div class="pf-c-card__body">
-                        <form class="pf-c-form">
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text"
+                <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-7-col">
+                    <div class="pf-v5-c-card__body">
+                        <form class="pf-v5-c-form">
+                            <div class="pf-v5-c-form__group">
+                                <label class="pf-v5-c-form__label">
+                                    <span class="pf-v5-c-form__label-text"
                                         >${msg("OpenID Configuration URL")}</span
                                     >
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-v5-c-form-control"
                                     readonly
                                     type="text"
                                     value="${this.providerUrls?.providerInfo || msg("-")}"
                                 />
                             </div>
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text"
+                            <div class="pf-v5-c-form__group">
+                                <label class="pf-v5-c-form__label">
+                                    <span class="pf-v5-c-form__label-text"
                                         >${msg("OpenID Configuration Issuer")}</span
                                     >
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-v5-c-form-control"
                                     readonly
                                     type="text"
                                     value="${this.providerUrls?.issuer || msg("-")}"
                                 />
                             </div>
                             <hr />
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text"
+                            <div class="pf-v5-c-form__group">
+                                <label class="pf-v5-c-form__label">
+                                    <span class="pf-v5-c-form__label-text"
                                         >${msg("Authorize URL")}</span
                                     >
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-v5-c-form-control"
                                     readonly
                                     type="text"
                                     value="${this.providerUrls?.authorize || msg("-")}"
                                 />
                             </div>
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${msg("Token URL")}</span>
+                            <div class="pf-v5-c-form__group">
+                                <label class="pf-v5-c-form__label">
+                                    <span class="pf-v5-c-form__label-text">${msg("Token URL")}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-v5-c-form-control"
                                     readonly
                                     type="text"
                                     value="${this.providerUrls?.token || msg("-")}"
                                 />
                             </div>
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text"
+                            <div class="pf-v5-c-form__group">
+                                <label class="pf-v5-c-form__label">
+                                    <span class="pf-v5-c-form__label-text"
                                         >${msg("Userinfo URL")}</span
                                     >
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-v5-c-form-control"
                                     readonly
                                     type="text"
                                     value="${this.providerUrls?.userInfo || msg("-")}"
                                 />
                             </div>
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${msg("Logout URL")}</span>
+                            <div class="pf-v5-c-form__group">
+                                <label class="pf-v5-c-form__label">
+                                    <span class="pf-v5-c-form__label-text">${msg("Logout URL")}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-v5-c-form-control"
                                     readonly
                                     type="text"
                                     value="${this.providerUrls?.logout || msg("-")}"
                                 />
                             </div>
-                            <div class="pf-c-form__group">
-                                <label class="pf-c-form__label">
-                                    <span class="pf-c-form__label-text">${msg("JWKS URL")}</span>
+                            <div class="pf-v5-c-form__group">
+                                <label class="pf-v5-c-form__label">
+                                    <span class="pf-v5-c-form__label-text">${msg("JWKS URL")}</span>
                                 </label>
                                 <input
-                                    class="pf-c-form-control"
+                                    class="pf-v5-c-form-control"
                                     readonly
                                     type="text"
                                     value="${this.providerUrls?.jwks || msg("-")}"
@@ -315,9 +315,9 @@ export class OAuth2ProviderViewPage extends AKElement {
                     </div>
                 </div>
                 <div
-                    class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
+                    class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-12-col-on-2xl"
                 >
-                    <div class="pf-c-card__body">
+                    <div class="pf-v5-c-card__body">
                         <ak-markdown
                             .replacers=${[
                                 (input: string) => {
@@ -342,13 +342,13 @@ export class OAuth2ProviderViewPage extends AKElement {
             return html``;
         }
         return html` <div
-            class="pf-c-page__main-section pf-m-no-padding-mobile pf-l-grid pf-m-gutter"
+            class="pf-v5-c-page__main-section pf-m-no-padding-mobile pf-v5-l-grid pf-m-gutter"
         >
-            <div class="pf-c-card">
-                <div class="pf-c-card__title">
+            <div class="pf-v5-c-card">
+                <div class="pf-v5-c-card__title">
                     ${msg("Example JWT payload (for currently authenticated user)")}
                 </div>
-                <div class="pf-c-card__body">
+                <div class="pf-v5-c-card__body">
                     ${this.preview
                         ? html`<pre>${JSON.stringify(this.preview?.preview, null, 4)}</pre>`
                         : html` <ak-empty-state ?loading=${true}></ak-empty-state> `}

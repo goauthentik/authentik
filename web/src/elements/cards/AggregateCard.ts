@@ -28,28 +28,28 @@ export class AggregateCard extends AKElement {
     static get styles(): CSSResult[] {
         return [PFBase, PFCard, PFFlex].concat([
             css`
-                .pf-c-card.pf-c-card-aggregate {
+                .pf-v5-c-card.pf-v5-c-card-aggregate {
                     height: 100%;
                 }
-                .pf-c-card__header {
+                .pf-v5-c-card__header {
                     flex-wrap: nowrap;
                 }
                 .center-value {
-                    font-size: var(--pf-global--icon--FontSize--lg);
+                    font-size: var(--pf-v5-global--icon--FontSize--lg);
                     text-align: center;
                 }
                 .subtext {
-                    font-size: var(--pf-global--FontSize--sm);
+                    font-size: var(--pf-v5-global--FontSize--sm);
                 }
-                .pf-c-card__body {
+                .pf-v5-c-card__body {
                     overflow-x: scroll;
-                    padding-left: calc(var(--pf-c-card--child--PaddingLeft) / 2);
-                    padding-right: calc(var(--pf-c-card--child--PaddingRight) / 2);
+                    padding-left: calc(var(--pf-v5-c-card--child--PaddingLeft) / 2);
+                    padding-right: calc(var(--pf-v5-c-card--child--PaddingRight) / 2);
                 }
-                .pf-c-card__header,
-                .pf-c-card__title,
-                .pf-c-card__body,
-                .pf-c-card__footer {
+                .pf-v5-c-card__header,
+                .pf-v5-c-card__title,
+                .pf-v5-c-card__body,
+                .pf-v5-c-card__footer {
                     padding-bottom: 0;
                 }
             `,
@@ -73,14 +73,14 @@ export class AggregateCard extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-card pf-c-card-aggregate">
-            <div class="pf-c-card__header pf-l-flex pf-m-justify-content-space-between">
-                <div class="pf-c-card__title">
+        return html`<div class="pf-v5-c-card pf-v5-c-card-aggregate">
+            <div class="pf-v5-c-card__header pf-v5-l-flex pf-m-justify-content-space-between">
+                <div class="pf-v5-c-card__title">
                     <i class="${ifDefined(this.icon)}"></i>&nbsp;${this.renderHeader()}
                 </div>
                 ${this.renderHeaderLink()}
             </div>
-            <div class="pf-c-card__body ${this.isCenter ? "center-value" : ""}">
+            <div class="pf-v5-c-card__body ${this.isCenter ? "center-value" : ""}">
                 ${this.renderInner()}
                 ${this.subtext ? html`<p class="subtext">${this.subtext}</p>` : html``}
             </div>

@@ -44,7 +44,7 @@ export class TopApplicationsTable extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<table class="pf-c-table pf-m-compact" role="grid">
+        return html`<table class="pf-v5-c-table pf-m-compact" role="grid">
             <thead>
                 <tr role="row">
                     <th role="columnheader" scope="col">${msg("Application")}</th>

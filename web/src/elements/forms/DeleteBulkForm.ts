@@ -78,7 +78,7 @@ export class DeleteObjectsTable<T> extends Table<T> {
             return this.renderUsedBy(this.usedByData.get(item) || []);
         };
         return html`<td role="cell" colspan="2">
-            <div class="pf-c-table__expandable-row-content">
+            <div class="pf-v5-c-table__expandable-row-content">
                 ${this.usedBy
                     ? until(handler(), html`<ak-spinner size=${PFSize.Large}></ak-spinner>`)
                     : html``}
@@ -90,7 +90,7 @@ export class DeleteObjectsTable<T> extends Table<T> {
         if (usedBy.length < 1) {
             return html`<span>${msg("Not used by any other object.")}</span>`;
         }
-        return html`<ul class="pf-c-list">
+        return html`<ul class="pf-v5-c-list">
             ${usedBy.map((ub) => {
                 let consequence = "";
                 switch (ub.action) {
@@ -182,18 +182,18 @@ export class DeleteBulkForm<T> extends ModalButton {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">
+        return html`<section class="pf-v5-c-modal-box__header pf-v5-c-page__main-section pf-m-light">
+                <div class="pf-v5-c-content">
+                    <h1 class="pf-v5-c-title pf-m-2xl">
                         ${this.actionLabel
                             ? this.actionLabel
                             : msg(str`Delete ${this.objectLabel}`)}
                     </h1>
                 </div>
             </section>
-            <section class="pf-c-modal-box__body pf-m-light">
-                <form class="pf-c-form pf-m-horizontal">
-                    <p class="pf-c-title">
+            <section class="pf-v5-c-modal-box__body pf-m-light">
+                <form class="pf-v5-c-form pf-m-horizontal">
+                    <p class="pf-v5-c-title">
                         ${this.actionSubtext
                             ? this.actionSubtext
                             : msg(
@@ -203,7 +203,7 @@ export class DeleteBulkForm<T> extends ModalButton {
                     <slot name="notice"></slot>
                 </form>
             </section>
-            <section class="pf-c-modal-box__body pf-m-light">
+            <section class="pf-v5-c-modal-box__body pf-m-light">
                 <ak-delete-objects-table
                     .objects=${this.objects}
                     .usedBy=${this.usedBy}
@@ -211,7 +211,7 @@ export class DeleteBulkForm<T> extends ModalButton {
                 >
                 </ak-delete-objects-table>
             </section>
-            <footer class="pf-c-modal-box__footer">
+            <footer class="pf-v5-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm();

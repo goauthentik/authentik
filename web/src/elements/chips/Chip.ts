@@ -22,14 +22,14 @@ export class Chip extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<li class="pf-c-chip-group__list-item">
-            <div class="pf-c-chip">
-                <span class="pf-c-chip__text">
+        return html`<li class="pf-v5-c-chip-group__list-item">
+            <div class="pf-v5-c-chip">
+                <span class="pf-v5-c-chip__text">
                     <slot></slot>
                 </span>
                 ${this.removable
                     ? html`<button
-                          class="pf-c-button pf-m-plain"
+                          class="pf-v5-c-button pf-m-plain"
                           type="button"
                           @click=${() => {
                               this.dispatchEvent(

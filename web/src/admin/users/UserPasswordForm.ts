@@ -31,7 +31,7 @@ export class UserPasswordForm extends Form<UserPasswordSetRequest> {
             ?required=${true}
             name="password"
         >
-            <input type="password" value="" class="pf-c-form-control" required />
+            <input type="password" value="" class="pf-v5-c-form-control" required />
         </ak-form-element-horizontal>`;
     }
 }

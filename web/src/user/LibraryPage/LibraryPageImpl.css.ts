@@ -28,10 +28,10 @@ export const styles = [PFBase, PFDisplay, PFEmptyState, PFPage, PFContent].conca
     .header input:focus {
         outline: 0;
     }
-    .pf-c-page__main {
+    .pf-v5-c-page__main {
         overflow: hidden;
     }
-    .pf-c-page__main-section {
+    .pf-v5-c-page__main-section {
         background-color: transparent;
     }
 `);

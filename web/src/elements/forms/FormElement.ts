@@ -31,16 +31,16 @@ export class FormElement extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-form__group">
-            <label class="pf-c-form__label">
-                <span class="pf-c-form__label-text">${this.label}</span>
+        return html`<div class="pf-v5-c-form__group">
+            <label class="pf-v5-c-form__label">
+                <span class="pf-v5-c-form__label-text">${this.label}</span>
                 ${this.required
-                    ? html`<span class="pf-c-form__label-required" aria-hidden="true">*</span>`
+                    ? html`<span class="pf-v5-c-form__label-required" aria-hidden="true">*</span>`
                     : html``}
             </label>
             <slot></slot>
             ${(this.errors || []).map((error) => {
-                return html`<p class="pf-c-form__helper-text pf-m-error">${error.string}</p>`;
+                return html`<p class="pf-v5-c-form__helper-text pf-m-error">${error.string}</p>`;
             })}
         </div>`;
     }

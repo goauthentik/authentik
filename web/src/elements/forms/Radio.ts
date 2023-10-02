@@ -31,9 +31,9 @@ export class Radio<T> extends AKElement {
             PFRadio,
             PFForm,
             css`
-                .pf-c-form__group-control {
+                .pf-v5-c-form__group-control {
                     padding-top: calc(
-                        var(--pf-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
+                        var(--pf-v5-c-form--m-horizontal__group-label--md--PaddingTop) * 1.3
                     );
                 }
             `,
@@ -47,12 +47,12 @@ export class Radio<T> extends AKElement {
                 this.value = def[0].value;
             }
         }
-        return html`<div class="pf-c-form__group-control pf-m-stack">
+        return html`<div class="pf-v5-c-form__group-control pf-m-stack">
             ${this.options.map((opt) => {
                 const elId = `${this.name}-${opt.value}`;
-                return html`<div class="pf-c-radio">
+                return html`<div class="pf-v5-c-radio">
                     <input
-                        class="pf-c-radio__input"
+                        class="pf-v5-c-radio__input"
                         type="radio"
                         name="${this.name}"
                         id=${elId}
@@ -68,9 +68,9 @@ export class Radio<T> extends AKElement {
                         }}
                         .checked=${opt.value === this.value}
                     />
-                    <label class="pf-c-radio__label" for=${elId}>${opt.label}</label>
+                    <label class="pf-v5-c-radio__label" for=${elId}>${opt.label}</label>
                     ${opt.description
-                        ? html`<span class="pf-c-radio__description">${opt.description}</span>`
+                        ? html`<span class="pf-v5-c-radio__description">${opt.description}</span>`
                         : html``}
                 </div>`;
             })}

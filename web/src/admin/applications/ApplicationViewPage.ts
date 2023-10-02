@@ -102,31 +102,31 @@ export class ApplicationViewPage extends AKElement {
         }
         return html`<ak-tabs>
             ${this.missingOutpost
-                ? html`<div slot="header" class="pf-c-banner pf-m-warning">
+                ? html`<div slot="header" class="pf-v5-c-banner pf-m-warning">
                       ${msg("Warning: Application is not used by any Outpost.")}
                   </div>`
                 : html``}
             <section
                 slot="page-overview"
                 data-tab-title="${msg("Overview")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-l-grid pf-m-gutter">
+                <div class="pf-v5-l-grid pf-m-gutter">
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
+                        class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col pf-m-2-col-on-xl pf-m-2-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${msg("Related")}</div>
-                        <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list">
+                        <div class="pf-v5-c-card__title">${msg("Related")}</div>
+                        <div class="pf-v5-c-card__body">
+                            <dl class="pf-v5-c-description-list">
                                 ${this.application.providerObj
-                                    ? html`<div class="pf-c-description-list__group">
-                                          <dt class="pf-c-description-list__term">
-                                              <span class="pf-c-description-list__text"
+                                    ? html`<div class="pf-v5-c-description-list__group">
+                                          <dt class="pf-v5-c-description-list__term">
+                                              <span class="pf-v5-c-description-list__text"
                                                   >${msg("Provider")}</span
                                               >
                                           </dt>
-                                          <dd class="pf-c-description-list__description">
-                                              <div class="pf-c-description-list__text">
+                                          <dd class="pf-v5-c-description-list__description">
+                                              <div class="pf-v5-c-description-list__text">
                                                   <a
                                                       href="#/core/providers/${this.application
                                                           .providerObj?.pk}"
@@ -139,15 +139,15 @@ export class ApplicationViewPage extends AKElement {
                                       </div>`
                                     : html``}
                                 ${(this.application.backchannelProvidersObj || []).length > 0
-                                    ? html`<div class="pf-c-description-list__group">
-                                          <dt class="pf-c-description-list__term">
-                                              <span class="pf-c-description-list__text"
+                                    ? html`<div class="pf-v5-c-description-list__group">
+                                          <dt class="pf-v5-c-description-list__term">
+                                              <span class="pf-v5-c-description-list__text"
                                                   >${msg("Backchannel Providers")}</span
                                               >
                                           </dt>
-                                          <dd class="pf-c-description-list__description">
-                                              <div class="pf-c-description-list__text">
-                                                  <ul class="pf-c-list">
+                                          <dd class="pf-v5-c-description-list__description">
+                                              <div class="pf-v5-c-description-list__text">
+                                                  <ul class="pf-v5-c-list">
                                                       ${this.application.backchannelProvidersObj.map(
                                                           (provider) => {
                                                               return html`
@@ -167,26 +167,26 @@ export class ApplicationViewPage extends AKElement {
                                           </dd>
                                       </div>`
                                     : html``}
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Policy engine mode")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             ${this.application.policyEngineMode?.toUpperCase()}
                                         </div>
                                     </dd>
                                 </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Edit")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             <ak-forms-modal>
                                                 <span slot="submit"> ${msg("Update")} </span>
                                                 <span slot="header">
@@ -199,7 +199,7 @@ export class ApplicationViewPage extends AKElement {
                                                 </ak-application-form>
                                                 <button
                                                     slot="trigger"
-                                                    class="pf-c-button pf-m-secondary"
+                                                    class="pf-v5-c-button pf-m-secondary"
                                                 >
                                                     ${msg("Edit")}
                                                 </button>
@@ -207,14 +207,14 @@ export class ApplicationViewPage extends AKElement {
                                         </div>
                                     </dd>
                                 </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Check access")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
                                                 <span slot="submit"> ${msg("Check")} </span>
                                                 <span slot="header">
@@ -227,7 +227,7 @@ export class ApplicationViewPage extends AKElement {
                                                 </ak-application-check-access-form>
                                                 <button
                                                     slot="trigger"
-                                                    class="pf-c-button pf-m-secondary"
+                                                    class="pf-v5-c-button pf-m-secondary"
                                                 >
                                                     ${msg("Test")}
                                                 </button>
@@ -236,19 +236,19 @@ export class ApplicationViewPage extends AKElement {
                                     </dd>
                                 </div>
                                 ${this.application.launchUrl
-                                    ? html`<div class="pf-c-description-list__group">
-                                          <dt class="pf-c-description-list__term">
-                                              <span class="pf-c-description-list__text"
+                                    ? html`<div class="pf-v5-c-description-list__group">
+                                          <dt class="pf-v5-c-description-list__term">
+                                              <span class="pf-v5-c-description-list__text"
                                                   >${msg("Launch")}</span
                                               >
                                           </dt>
-                                          <dd class="pf-c-description-list__description">
-                                              <div class="pf-c-description-list__text">
+                                          <dd class="pf-v5-c-description-list__description">
+                                              <div class="pf-v5-c-description-list__text">
                                                   <a
                                                       target="_blank"
                                                       href=${this.application.launchUrl}
                                                       slot="trigger"
-                                                      class="pf-c-button pf-m-secondary"
+                                                      class="pf-v5-c-button pf-m-secondary"
                                                   >
                                                       ${msg("Launch")}
                                                   </a>
@@ -260,12 +260,12 @@ export class ApplicationViewPage extends AKElement {
                         </div>
                     </div>
                     <div
-                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
+                        class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col pf-m-10-col-on-xl pf-m-10-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">
+                        <div class="pf-v5-c-card__title">
                             ${msg("Logins over the last week (per 8 hours)")}
                         </div>
-                        <div class="pf-c-card__body">
+                        <div class="pf-v5-c-card__body">
                             ${this.application &&
                             html` <ak-charts-application-authorize
                                 applicationSlug=${this.application.slug}
@@ -273,9 +273,9 @@ export class ApplicationViewPage extends AKElement {
                             </ak-charts-application-authorize>`}
                         </div>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">${msg("Changelog")}</div>
-                        <div class="pf-c-card__body">
+                    <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                        <div class="pf-v5-c-card__title">${msg("Changelog")}</div>
+                        <div class="pf-v5-c-card__body">
                             <ak-object-changelog
                                 targetModelPk=${this.application.pk || ""}
                                 targetModelApp="authentik_core"
@@ -289,10 +289,10 @@ export class ApplicationViewPage extends AKElement {
             <section
                 slot="page-policy-bindings"
                 data-tab-title="${msg("Policy / Group / User Bindings")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__title">
+                <div class="pf-v5-c-card">
+                    <div class="pf-v5-c-card__title">
                         ${msg("These policies control which users can access this application.")}
                     </div>
                     <ak-bound-policies-list .target=${this.application.pk}>

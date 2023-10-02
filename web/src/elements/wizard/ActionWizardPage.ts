@@ -90,13 +90,13 @@ export class ActionWizardPage extends WizardPage {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-l-bullseye">
-            <div class="pf-c-empty-state pf-m-lg">
-                <div class="pf-c-empty-state__content">
-                    <i class="fas fa- fa-cogs pf-c-empty-state__icon" aria-hidden="true"></i>
-                    <h1 class="pf-c-title pf-m-lg">${this.currentStep?.action.displayName}</h1>
-                    <div class="pf-c-empty-state__body">
-                        <ol class="pf-c-progress-stepper pf-m-vertical">
+        return html`<div class="pf-v5-l-bullseye">
+            <div class="pf-v5-c-empty-state pf-m-lg">
+                <div class="pf-v5-c-empty-state__content">
+                    <i class="fas fa- fa-cogs pf-v5-c-empty-state__icon" aria-hidden="true"></i>
+                    <h1 class="pf-v5-c-title pf-m-lg">${this.currentStep?.action.displayName}</h1>
+                    <div class="pf-v5-c-empty-state__body">
+                        <ol class="pf-v5-c-progress-stepper pf-m-vertical">
                             ${this.states.map((state) => {
                                 let cls = "";
                                 switch (state.state) {
@@ -116,19 +116,19 @@ export class ActionWizardPage extends WizardPage {
                                 if (state.idx === this.currentStep?.idx) {
                                     cls += " pf-m-current";
                                 }
-                                return html` <li class="pf-c-progress-stepper__step ${cls}">
-                                    <div class="pf-c-progress-stepper__step-connector">
-                                        <span class="pf-c-progress-stepper__step-icon">
+                                return html` <li class="pf-v5-c-progress-stepper__step ${cls}">
+                                    <div class="pf-v5-c-progress-stepper__step-connector">
+                                        <span class="pf-v5-c-progress-stepper__step-icon">
                                             <i class="fas fa-check-circle" aria-hidden="true"></i>
                                         </span>
                                     </div>
-                                    <div class="pf-c-progress-stepper__step-main">
-                                        <div class="pf-c-progress-stepper__step-title">
+                                    <div class="pf-v5-c-progress-stepper__step-main">
+                                        <div class="pf-v5-c-progress-stepper__step-title">
                                             ${state.action.displayName}
                                         </div>
                                         ${state.action.subText
                                             ? html`<div
-                                                  class="pf-c-progress-stepper__step-description"
+                                                  class="pf-v5-c-progress-stepper__step-description"
                                               >
                                                   ${state.action.subText}
                                               </div>`

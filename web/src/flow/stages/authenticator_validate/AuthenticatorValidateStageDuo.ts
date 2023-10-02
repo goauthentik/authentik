@@ -49,15 +49,15 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
             </ak-empty-state>`;
         }
         const errors = this.challenge.responseErrors?.duo || [];
-        return html`<div class="pf-c-login__main-body">
+        return html`<div class="pf-v5-c-login__main-body">
                 <form
-                    class="pf-c-form"
+                    class="pf-v5-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e);
                     }}
                 >
                     <ak-form-static
-                        class="pf-c-form__group"
+                        class="pf-v5-c-form__group"
                         userAvatar="${this.challenge.pendingUserAvatar}"
                         user=${this.challenge.pendingUser}
                     >
@@ -81,12 +81,12 @@ export class AuthenticatorValidateStageWebDuo extends BaseStage<
                         : html`${msg("Sending Duo push notification")}`}
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links">
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links">
                     ${this.showBackButton
-                        ? html`<li class="pf-c-login__main-footer-links-item">
+                        ? html`<li class="pf-v5-c-login__main-footer-links-item">
                               <button
-                                  class="pf-c-button pf-m-secondary pf-m-block"
+                                  class="pf-v5-c-button pf-m-secondary pf-m-block"
                                   @click=${() => {
                                       if (!this.host) return;
                                       (

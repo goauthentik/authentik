@@ -19,9 +19,9 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 export const MODAL_BUTTON_STYLES = css`
     :host {
         text-align: left;
-        font-size: var(--pf-global--FontSize--md);
+        font-size: var(--pf-v5-global--FontSize--md);
     }
-    .pf-c-modal-box > .pf-c-button + * {
+    .pf-v5-c-modal-box > .pf-v5-c-button + * {
         margin-right: 0;
     }
     /* fix multiple selects height */
@@ -106,14 +106,14 @@ export class ModalButton extends AKElement {
 
     renderModal(): TemplateResult {
         return html`<div
-            class="pf-c-backdrop"
+            class="pf-v5-c-backdrop"
             @click=${(e: PointerEvent) => {
                 e.stopPropagation();
             }}
         >
-            <div class="pf-l-bullseye">
+            <div class="pf-v5-l-bullseye">
                 <div
-                    class="pf-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
+                    class="pf-v5-c-modal-box ${this.size} ${this.locked ? "locked" : ""}"
                     role="dialog"
                     aria-modal="true"
                 >
@@ -122,7 +122,7 @@ export class ModalButton extends AKElement {
                             this.resetForms();
                             this.open = false;
                         }}
-                        class="pf-c-button pf-m-plain"
+                        class="pf-v5-c-button pf-m-plain"
                         type="button"
                         aria-label="Close dialog"
                     >

@@ -72,22 +72,22 @@ export class AdminOverviewPage extends AKElement {
         return html`<ak-page-header icon="" header="" description=${msg("General system status")}>
                 <span slot="header"> ${msg(str`Welcome, ${name}.`)} </span>
             </ak-page-header>
-            <section class="pf-c-page__main-section">
-                <div class="pf-l-grid pf-m-gutter">
+            <section class="pf-v5-c-page__main-section">
+                <div class="pf-v5-l-grid pf-m-gutter">
                     <!-- row 1 -->
-                    <div class="pf-l-grid__item pf-m-6-col pf-l-grid pf-m-gutter">
+                    <div class="pf-v5-l-grid__item pf-m-6-col pf-v5-l-grid pf-m-gutter">
                         <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl graph-container"
+                            class="pf-v5-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl graph-container"
                         >
                             <ak-aggregate-card
                                 icon="fa fa-share"
                                 header=${msg("Quick actions")}
                                 .isCenter=${false}
                             >
-                                <ul class="pf-c-list">
+                                <ul class="pf-v5-c-list">
                                     <li>
                                         <a
-                                            class="pf-u-mb-xl"
+                                            class="pf-v5-u-mb-xl"
                                             href=${paramURL("/core/applications", {
                                                 createForm: true,
                                             })}
@@ -95,26 +95,26 @@ export class AdminOverviewPage extends AKElement {
                                         >
                                     </li>
                                     <li>
-                                        <a class="pf-u-mb-xl" href=${paramURL("/events/log")}
+                                        <a class="pf-v5-u-mb-xl" href=${paramURL("/events/log")}
                                             >${msg("Check the logs")}</a
                                         >
                                     </li>
                                     <li>
                                         <a
-                                            class="pf-u-mb-xl"
+                                            class="pf-v5-u-mb-xl"
                                             target="_blank"
                                             href="https://goauthentik.io/integrations/"
                                             >${msg("Explore integrations")}</a
                                         >
                                     </li>
                                     <li>
-                                        <a class="pf-u-mb-xl" href=${paramURL("/identity/users")}
+                                        <a class="pf-v5-u-mb-xl" href=${paramURL("/identity/users")}
                                             >${msg("Manage users")}</a
                                         >
                                     </li>
                                     <li>
                                         <a
-                                            class="pf-u-mb-xl"
+                                            class="pf-v5-u-mb-xl"
                                             target="_blank"
                                             href="https://goauthentik.io/docs/releases/${versionFamily()}#fixed-in-${VERSION.replaceAll(
                                                 ".",
@@ -127,7 +127,7 @@ export class AdminOverviewPage extends AKElement {
                             </ak-aggregate-card>
                         </div>
                         <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl graph-container"
+                            class="pf-v5-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl graph-container"
                         >
                             <ak-aggregate-card
                                 icon="pf-icon pf-icon-zone"
@@ -138,40 +138,40 @@ export class AdminOverviewPage extends AKElement {
                             </ak-aggregate-card>
                         </div>
                         <div
-                            class="pf-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl graph-container"
+                            class="pf-v5-l-grid__item pf-m-12-col pf-m-12-col-on-xl pf-m-4-col-on-2xl graph-container"
                         >
                             <ak-aggregate-card icon="fa fa-sync-alt" header=${msg("Sync status")}>
                                 <ak-admin-status-chart-sync></ak-admin-status-chart-sync>
                             </ak-aggregate-card>
                         </div>
-                        <div class="pf-l-grid__item pf-m-12-col row-divider">
+                        <div class="pf-v5-l-grid__item pf-m-12-col row-divider">
                             <hr />
                         </div>
                         <div
-                            class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
+                            class="pf-v5-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                         >
                             <ak-admin-status-system> </ak-admin-status-system>
                         </div>
                         <div
-                            class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
+                            class="pf-v5-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                         >
                             <ak-admin-status-version> </ak-admin-status-version>
                         </div>
                         <div
-                            class="pf-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
+                            class="pf-v5-l-grid__item pf-m-6-col pf-m-4-col-on-md pf-m-4-col-on-xl card-container"
                         >
                             <ak-admin-status-card-workers> </ak-admin-status-card-workers>
                         </div>
                     </div>
-                    <div class="pf-l-grid__item pf-m-6-col">
+                    <div class="pf-v5-l-grid__item pf-m-6-col">
                         <ak-recent-events pageSize="6"></ak-recent-events>
                     </div>
-                    <div class="pf-l-grid__item pf-m-12-col row-divider">
+                    <div class="pf-v5-l-grid__item pf-m-12-col row-divider">
                         <hr />
                     </div>
                     <!-- row 3 -->
                     <div
-                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-8-col-on-2xl big-graph-container"
+                        class="pf-v5-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-8-col-on-2xl big-graph-container"
                     >
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-server"
@@ -183,7 +183,7 @@ export class AdminOverviewPage extends AKElement {
                         </ak-aggregate-card>
                     </div>
                     <div
-                        class="pf-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl big-graph-container"
+                        class="pf-v5-l-grid__item pf-m-12-col pf-m-6-col-on-xl pf-m-4-col-on-2xl big-graph-container"
                     >
                         <ak-aggregate-card
                             icon="pf-icon pf-icon-server"

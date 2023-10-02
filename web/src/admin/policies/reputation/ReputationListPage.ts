@@ -71,7 +71,7 @@ export class ReputationListPage extends TablePage<Reputation> {
                 });
             }}
         >
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+            <button ?disabled=${disabled} slot="trigger" class="pf-v5-c-button pf-m-danger">
                 ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;

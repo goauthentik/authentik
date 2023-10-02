@@ -99,18 +99,18 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Type")} ?required=${true} name="type">
                 <select
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     @change=${(ev: Event) => {
                         const target = ev.target as HTMLSelectElement;
                         this.type = target.selectedOptions[0].value as OutpostTypeEnum;
@@ -170,12 +170,12 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                     ?blankable=${true}
                 >
                 </ak-search-select>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "Selecting an integration enables the management of the outpost by authentik.",
                     )}
                 </p>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     See
                     <a target="_blank" href="${docLink("/docs/outposts?utm_source=authentik")}"
                         >documentation</a
@@ -187,7 +187,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                 ?required=${!this.embedded}
                 name="providers"
             >
-                <select class="pf-c-form-control" multiple>
+                <select class="pf-v5-c-form-control" multiple>
                     ${this.providers?.results.map((provider) => {
                         const selected = Array.from(this.instance?.providers || []).some((sp) => {
                             return sp == provider.pk;
@@ -201,10 +201,10 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         </option>`;
                     })}
                 </select>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("You can only select providers that match the type of the outpost.")}
                 </p>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Hold control/command to select multiple items.")}
                 </p>
             </ak-form-element-horizontal>
@@ -215,10 +215,10 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         this.instance ? this.instance.config : this.defaultConfig?.config,
                     )}"
                 ></ak-codemirror>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("See more here:")}&nbsp;
                     <a
                         target="_blank"

@@ -67,22 +67,22 @@ export class GroupSelectModal extends TableModal<Group> {
 
     renderModalInner(): TemplateResult {
         const willSuperuser = this.selectedElements.filter((g) => g.isSuperuser).length > 0;
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">${msg("Select groups to add user to")}</h1>
+        return html`<section class="pf-v5-c-modal-box__header pf-v5-c-page__main-section pf-m-light">
+                <div class="pf-v5-c-content">
+                    <h1 class="pf-v5-c-title pf-m-2xl">${msg("Select groups to add user to")}</h1>
                 </div>
             </section>
             ${willSuperuser
                 ? html`
-                      <div class="pf-c-banner pf-m-warning">
+                      <div class="pf-v5-c-banner pf-m-warning">
                           ${msg(
                               "Warning: Adding the user to the selected group(s) will give them superuser permissions.",
                           )}
                       </div>
                   `
                 : html``}
-            <section class="pf-c-modal-box__body pf-m-light">${this.renderTable()}</section>
-            <footer class="pf-c-modal-box__footer">
+            <section class="pf-v5-c-modal-box__body pf-m-light">${this.renderTable()}</section>
+            <footer class="pf-v5-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm(this.selectedElements).then(() => {

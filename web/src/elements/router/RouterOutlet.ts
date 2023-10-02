@@ -103,7 +103,7 @@ export class RouterOutlet extends AKElement {
         if (!matchedRoute) {
             console.debug(`authentik/router: route "${activeUrl}" not defined`);
             const route = new Route(RegExp(""), async () => {
-                return html`<div class="pf-c-page__main">
+                return html`<div class="pf-v5-c-page__main">
                     <ak-router-404 url=${activeUrl}></ak-router-404>
                 </div>`;
             });

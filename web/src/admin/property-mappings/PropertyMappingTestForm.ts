@@ -55,9 +55,9 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                       value="${ifDefined(this.result?.result)}"
                   >
                   </ak-codemirror>`
-                : html` <div class="pf-c-form__group-label">
+                : html` <div class="pf-v5-c-form__group-label">
                       <div class="c-form__horizontal-group">
-                          <span class="pf-c-form__label-text">${this.result?.result}</span>
+                          <span class="pf-v5-c-form__label-text">${this.result?.result}</span>
                       </div>
                   </div>`}
         </ak-form-element-horizontal>`;
@@ -76,7 +76,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
     renderExampleLDAP(): TemplateResult {
         return html`
             <button
-                class="pf-c-button pf-m-secondary"
+                class="pf-v5-c-button pf-m-secondary"
                 role="button"
                 @click=${() => {
                     this.request = {
@@ -97,7 +97,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                 ${msg("Active Directory User")}
             </button>
             <button
-                class="pf-c-button pf-m-secondary"
+                class="pf-v5-c-button pf-m-secondary"
                 role="button"
                 @click=${() => {
                     this.request = {
@@ -152,7 +152,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
                     value=${YAML.stringify(first(this.request?.context, {}))}
                 >
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">${this.renderExampleButtons()}</p>
+                <p class="pf-v5-c-form__helper-text">${this.renderExampleButtons()}</p>
             </ak-form-element-horizontal>
             ${this.result ? this.renderResult() : html``}`;
     }

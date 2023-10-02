@@ -54,19 +54,19 @@ export class ConfirmationForm extends ModalButton {
     }
 
     renderModalInner(): TemplateResult {
-        return html`<section class="pf-c-modal-box__header pf-c-page__main-section pf-m-light">
-                <div class="pf-c-content">
-                    <h1 class="pf-c-title pf-m-2xl">
+        return html`<section class="pf-v5-c-modal-box__header pf-v5-c-page__main-section pf-m-light">
+                <div class="pf-v5-c-content">
+                    <h1 class="pf-v5-c-title pf-m-2xl">
                         <slot name="header"></slot>
                     </h1>
                 </div>
             </section>
-            <section class="pf-c-modal-box__body pf-m-light">
-                <form class="pf-c-form pf-m-horizontal">
-                    <slot class="pf-c-content" name="body"></slot>
+            <section class="pf-v5-c-modal-box__body pf-m-light">
+                <form class="pf-v5-c-form pf-m-horizontal">
+                    <slot class="pf-v5-c-content" name="body"></slot>
                 </form>
             </section>
-            <footer class="pf-c-modal-box__footer">
+            <footer class="pf-v5-c-modal-box__footer">
                 <ak-spinner-button
                     .callAction=${() => {
                         return this.confirm();

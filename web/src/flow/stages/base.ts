@@ -56,13 +56,13 @@ export class BaseStage<Tin, Tout> extends AKElement {
         if (!errors) {
             return html``;
         }
-        return html`<div class="pf-c-form__alert">
+        return html`<div class="pf-v5-c-form__alert">
             ${errors.map((err) => {
-                return html`<div class="pf-c-alert pf-m-inline pf-m-danger">
-                    <div class="pf-c-alert__icon">
+                return html`<div class="pf-v5-c-alert pf-m-inline pf-m-danger">
+                    <div class="pf-v5-c-alert__icon">
                         <i class="fas fa-exclamation-circle"></i>
                     </div>
-                    <h4 class="pf-c-alert__title">${err.string}</h4>
+                    <h4 class="pf-v5-c-alert__title">${err.string}</h4>
                 </div>`;
             })}
         </div>`;

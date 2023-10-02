@@ -56,11 +56,11 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
     sidebarLabel = () => msg("Application type");
 
     render(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             ${this.applicationTypes.map((type) => {
-                return html`<div class="pf-c-radio">
+                return html`<div class="pf-v5-c-radio">
                     <input
-                        class="pf-c-radio__input"
+                        class="pf-v5-c-radio__input"
                         type="radio"
                         name="type"
                         id=${type.component}
@@ -75,8 +75,8 @@ export class TypeOAuthApplicationWizardPage extends WizardPage {
                             this.host.isValid = true;
                         }}
                     />
-                    <label class="pf-c-radio__label" for=${type.component}>${type.name}</label>
-                    <span class="pf-c-radio__description">${type.description}</span>
+                    <label class="pf-v5-c-radio__label" for=${type.component}>${type.name}</label>
+                    <span class="pf-v5-c-radio__description">${type.description}</span>
                 </div>`;
             })}
         </form> `;

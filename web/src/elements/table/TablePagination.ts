@@ -26,12 +26,12 @@ export class TablePagination extends AKElement {
             PFButton,
             PFPagination,
             css`
-                :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button {
-                    color: var(--pf-c-button--m-plain--disabled--Color);
-                    --pf-c-button--disabled--Color: var(--pf-c-button--m-plain--Color);
+                :host([theme="dark"]) .pf-v5-c-pagination__nav-control .pf-v5-c-button {
+                    color: var(--pf-v5-c-button--m-plain--disabled--Color);
+                    --pf-v5-c-button--disabled--Color: var(--pf-v5-c-button--m-plain--Color);
                 }
-                :host([theme="dark"]) .pf-c-pagination__nav-control .pf-c-button:disabled {
-                    color: var(--pf-c-button--disabled--Color);
+                :host([theme="dark"]) .pf-v5-c-pagination__nav-control .pf-v5-c-button:disabled {
+                    color: var(--pf-v5-c-button--disabled--Color);
                 }
             `,
         ];
@@ -41,21 +41,21 @@ export class TablePagination extends AKElement {
         if (!this.pages) {
             return html``;
         }
-        return html` <div class="pf-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md">
-            <div class="pf-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">
-                <div class="pf-c-options-menu">
-                    <div class="pf-c-options-menu__toggle pf-m-text pf-m-plain">
-                        <span class="pf-c-options-menu__toggle-text">
+        return html` <div class="pf-v5-c-pagination pf-m-compact pf-m-hidden pf-m-visible-on-md">
+            <div class="pf-v5-c-pagination pf-m-compact pf-m-compact pf-m-hidden pf-m-visible-on-md">
+                <div class="pf-v5-c-options-menu">
+                    <div class="pf-v5-c-options-menu__toggle pf-m-text pf-m-plain">
+                        <span class="pf-v5-c-options-menu__toggle-text">
                             ${msg(
                                 str`${this.pages?.startIndex} - ${this.pages?.endIndex} of ${this.pages?.count}`,
                             )}
                         </span>
                     </div>
                 </div>
-                <nav class="pf-c-pagination__nav" aria-label="Pagination">
-                    <div class="pf-c-pagination__nav-control pf-m-prev">
+                <nav class="pf-v5-c-pagination__nav" aria-label="Pagination">
+                    <div class="pf-v5-c-pagination__nav-control pf-m-prev">
                         <button
-                            class="pf-c-button pf-m-plain"
+                            class="pf-v5-c-button pf-m-plain"
                             @click=${() => {
                                 this.pageChangeHandler(this.pages?.previous || 0);
                             }}
@@ -65,9 +65,9 @@ export class TablePagination extends AKElement {
                             <i class="fas fa-angle-left" aria-hidden="true"></i>
                         </button>
                     </div>
-                    <div class="pf-c-pagination__nav-control pf-m-next">
+                    <div class="pf-v5-c-pagination__nav-control pf-m-next">
                         <button
-                            class="pf-c-button pf-m-plain"
+                            class="pf-v5-c-button pf-m-plain"
                             @click=${() => {
                                 this.pageChangeHandler(this.pages?.next || 0);
                             }}

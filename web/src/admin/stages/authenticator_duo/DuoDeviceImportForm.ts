@@ -42,7 +42,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
     }
 
     renderForm(): TemplateResult {
-        return html` <form class="pf-c-form pf-m-horizontal">
+        return html` <form class="pf-v5-c-form pf-m-horizontal">
             ${this.instance?.adminIntegrationKey !== "" ? this.renderFormAutomatic() : html``}
             ${this.renderFormManual()}
         </form>`;
@@ -77,7 +77,7 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                 >
                 </ak-search-select>
 
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("The user in authentik this device will be assigned to.")}
                 </p>
             </ak-form-element-horizontal>
@@ -86,8 +86,8 @@ export class DuoDeviceImportForm extends ModelForm<AuthenticatorDuoStage, string
                 ?required=${true}
                 name="duoUserId"
             >
-                <input type="text" class="pf-c-form-control" required />
-                <p class="pf-c-form__helper-text">
+                <input type="text" class="pf-v5-c-form-control" required />
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("The user ID in Duo, can be found in the URL after clicking on a user.")}
                 </p>
             </ak-form-element-horizontal>`;

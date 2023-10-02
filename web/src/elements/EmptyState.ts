@@ -27,22 +27,22 @@ export class EmptyState extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-empty-state ${this.fullHeight && "pf-m-full-height"}">
-            <div class="pf-c-empty-state__content">
+        return html`<div class="pf-v5-c-empty-state ${this.fullHeight && "pf-m-full-height"}">
+            <div class="pf-v5-c-empty-state__content">
                 ${this.loading
-                    ? html`<div class="pf-c-empty-state__icon">
+                    ? html`<div class="pf-v5-c-empty-state__icon">
                           <ak-spinner size=${PFSize.XLarge}></ak-spinner>
                       </div>`
                     : html`<i
                           class="pf-icon fa ${this.icon ||
-                          "fa-question-circle"} pf-c-empty-state__icon"
+                          "fa-question-circle"} pf-v5-c-empty-state__icon"
                           aria-hidden="true"
                       ></i>`}
-                <h1 class="pf-c-title pf-m-lg">${this.header}</h1>
-                <div class="pf-c-empty-state__body">
+                <h1 class="pf-v5-c-title pf-m-lg">${this.header}</h1>
+                <div class="pf-v5-c-empty-state__body">
                     <slot name="body"></slot>
                 </div>
-                <div class="pf-c-empty-state__primary">
+                <div class="pf-v5-c-empty-state__primary">
                     <slot name="primary"></slot>
                 </div>
             </div>

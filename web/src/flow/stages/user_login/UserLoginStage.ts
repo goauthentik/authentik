@@ -32,13 +32,13 @@ export class PasswordStage extends BaseStage<
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
+            <div class="pf-v5-c-login__main-body">
+                <form class="pf-v5-c-form">
                     <ak-form-static
-                        class="pf-c-form__group"
+                        class="pf-v5-c-form__group"
                         userAvatar="${this.challenge.pendingUserAvatar}"
                         user=${this.challenge.pendingUser}
                     >
@@ -48,25 +48,25 @@ export class PasswordStage extends BaseStage<
                             >
                         </div>
                     </ak-form-static>
-                    <div class="pf-c-form__group">
-                        <h3 id="header-text" class="pf-c-title pf-m-xl pf-u-mb-xl">
+                    <div class="pf-v5-c-form__group">
+                        <h3 id="header-text" class="pf-v5-c-title pf-m-xl pf-v5-u-mb-xl">
                             ${msg("Stay signed in?")}
                         </h3>
-                        <p class="pf-u-mb-sm">
+                        <p class="pf-v5-u-mb-sm">
                             ${msg(
                                 "Select Yes to reduce the number of times you're asked to sign in.",
                             )}
                         </p>
                     </div>
 
-                    <div class="pf-c-form__group pf-m-action">
+                    <div class="pf-v5-c-form__group pf-m-action">
                         <button
                             @click=${(e: Event) => {
                                 this.submitForm(e, {
                                     rememberMe: true,
                                 });
                             }}
-                            class="pf-c-button pf-m-primary"
+                            class="pf-v5-c-button pf-m-primary"
                         >
                             ${msg("Yes")}
                         </button>
@@ -76,15 +76,15 @@ export class PasswordStage extends BaseStage<
                                     rememberMe: false,
                                 });
                             }}
-                            class="pf-c-button pf-m-secondary"
+                            class="pf-v5-c-button pf-m-secondary"
                         >
                             ${msg("No")}
                         </button>
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

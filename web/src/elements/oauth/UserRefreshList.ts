@@ -47,9 +47,9 @@ export class UserOAuthRefreshList extends Table<TokenModel> {
 
     renderExpanded(item: TokenModel): TemplateResult {
         return html` <td role="cell" colspan="4">
-                <div class="pf-c-table__expandable-row-content">
-                    <div class="pf-l-flex">
-                        <div class="pf-l-flex__item">
+                <div class="pf-v5-c-table__expandable-row-content">
+                    <div class="pf-v5-l-flex">
+                        <div class="pf-v5-l-flex__item">
                             <h3>${msg("ID Token")}</h3>
                             <pre>${item.idToken}</pre>
                         </div>
@@ -76,7 +76,7 @@ export class UserOAuthRefreshList extends Table<TokenModel> {
                 });
             }}
         >
-            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+            <button ?disabled=${disabled} slot="trigger" class="pf-v5-c-button pf-m-danger">
                 ${msg("Delete")}
             </button>
         </ak-forms-delete-bulk>`;

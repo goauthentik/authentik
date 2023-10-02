@@ -21,7 +21,7 @@ export class Divider extends AKElement {
                 .separator::after {
                     content: "";
                     flex: 1;
-                    border-bottom: 1px solid var(--pf-global--Color--100);
+                    border-bottom: 1px solid var(--pf-v5-global--Color--100);
                 }
 
                 .separator:not(:empty)::before {

@@ -78,12 +78,12 @@ export class FlowForm extends ModelForm<Flow, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
@@ -91,26 +91,26 @@ export class FlowForm extends ModelForm<Flow, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.title)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
-                <p class="pf-c-form__helper-text">${msg("Shown as the Title in Flow pages.")}</p>
+                <p class="pf-v5-c-form__helper-text">${msg("Shown as the Title in Flow pages.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Slug")} ?required=${true} name="slug">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.slug)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
-                <p class="pf-c-form__helper-text">${msg("Visible in the URL.")}</p>
+                <p class="pf-v5-c-form__helper-text">${msg("Visible in the URL.")}</p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Designation")}
                 ?required=${true}
                 name="designation"
             >
-                <select class="pf-c-form-control">
+                <select class="pf-v5-c-form-control">
                     <option value="" ?selected=${this.instance?.designation === undefined}>
                         ---------
                     </option>
@@ -160,7 +160,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                         ${DesignationToLabel(FlowDesignationEnum.Unenrollment)}
                     </option>
                 </select>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "Decides what this Flow is used for. For example, the Authentication flow is redirect to when an un-authenticated user visits authentik.",
                     )}
@@ -171,7 +171,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                 ?required=${true}
                 name="authentication"
             >
-                <select class="pf-c-form-control">
+                <select class="pf-v5-c-form-control">
                     <option
                         value=${AuthenticationEnum.None}
                         ?selected=${this.instance?.authentication === AuthenticationEnum.None}
@@ -200,28 +200,28 @@ export class FlowForm extends ModelForm<Flow, string> {
                         ${msg("Require superuser.")}
                     </option>
                 </select>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Required authentication level for this flow.")}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-group>
                 <span slot="header"> ${msg("Behavior settings")} </span>
-                <div slot="body" class="pf-c-form">
+                <div slot="body" class="pf-v5-c-form">
                     <ak-form-element-horizontal name="compatibilityMode">
-                        <label class="pf-c-switch">
+                        <label class="pf-v5-c-switch">
                             <input
-                                class="pf-c-switch__input"
+                                class="pf-v5-c-switch__input"
                                 type="checkbox"
                                 ?checked=${first(this.instance?.compatibilityMode, false)}
                             />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
+                            <span class="pf-v5-c-switch__toggle">
+                                <span class="pf-v5-c-switch__toggle-icon">
                                     <i class="fas fa-check" aria-hidden="true"></i>
                                 </span>
                             </span>
-                            <span class="pf-c-switch__label">${msg("Compatibility mode")}</span>
+                            <span class="pf-v5-c-switch__label">${msg("Compatibility mode")}</span>
                         </label>
-                        <p class="pf-c-form__helper-text">
+                        <p class="pf-v5-c-form__helper-text">
                             ${msg(
                                 "Increases compatibility with password managers and mobile devices.",
                             )}
@@ -260,7 +260,7 @@ export class FlowForm extends ModelForm<Flow, string> {
                             .value=${this.instance?.deniedAction}
                         >
                         </ak-radio>
-                        <p class="pf-c-form__helper-text">
+                        <p class="pf-v5-c-form__helper-text">
                             ${msg(
                                 "Decides the response when a policy denies access to this flow for a user.",
                             )}
@@ -297,13 +297,13 @@ export class FlowForm extends ModelForm<Flow, string> {
             </ak-form-group>
             <ak-form-group>
                 <span slot="header"> ${msg("Appearance settings")} </span>
-                <div slot="body" class="pf-c-form">
+                <div slot="body" class="pf-v5-c-form">
                     <ak-form-element-horizontal
                         label=${msg("Layout")}
                         ?required=${true}
                         name="layout"
                     >
-                        <select class="pf-c-form-control">
+                        <select class="pf-v5-c-form-control">
                             <option
                                 value=${LayoutEnum.Stacked}
                                 ?selected=${this.instance?.layout === LayoutEnum.Stacked}
@@ -341,26 +341,26 @@ export class FlowForm extends ModelForm<Flow, string> {
                                   label=${msg("Background")}
                                   name="background"
                               >
-                                  <input type="file" value="" class="pf-c-form-control" />
+                                  <input type="file" value="" class="pf-v5-c-form-control" />
                                   ${this.instance?.background
                                       ? html`
-                                            <p class="pf-c-form__helper-text">
+                                            <p class="pf-v5-c-form__helper-text">
                                                 ${msg("Currently set to:")}
                                                 ${this.instance?.background}
                                             </p>
                                         `
                                       : html``}
 
-                                  <p class="pf-c-form__helper-text">
+                                  <p class="pf-v5-c-form__helper-text">
                                       ${msg("Background shown during execution.")}
                                   </p>
                               </ak-form-element-horizontal>
                               ${this.instance?.background
                                   ? html`
                                         <ak-form-element-horizontal>
-                                            <label class="pf-c-switch">
+                                            <label class="pf-v5-c-switch">
                                                 <input
-                                                    class="pf-c-switch__input"
+                                                    class="pf-v5-c-switch__input"
                                                     type="checkbox"
                                                     @change=${(ev: Event) => {
                                                         const target =
@@ -368,19 +368,19 @@ export class FlowForm extends ModelForm<Flow, string> {
                                                         this.clearBackground = target.checked;
                                                     }}
                                                 />
-                                                <span class="pf-c-switch__toggle">
-                                                    <span class="pf-c-switch__toggle-icon">
+                                                <span class="pf-v5-c-switch__toggle">
+                                                    <span class="pf-v5-c-switch__toggle-icon">
                                                         <i
                                                             class="fas fa-check"
                                                             aria-hidden="true"
                                                         ></i>
                                                     </span>
                                                 </span>
-                                                <span class="pf-c-switch__label">
+                                                <span class="pf-v5-c-switch__label">
                                                     ${msg("Clear background")}
                                                 </span>
                                             </label>
-                                            <p class="pf-c-form__helper-text">
+                                            <p class="pf-v5-c-form__helper-text">
                                                 ${msg("Delete currently set background image.")}
                                             </p>
                                         </ak-form-element-horizontal>
@@ -393,9 +393,9 @@ export class FlowForm extends ModelForm<Flow, string> {
                               <input
                                   type="text"
                                   value="${first(this.instance?.background, "")}"
-                                  class="pf-c-form-control"
+                                  class="pf-v5-c-form-control"
                               />
-                              <p class="pf-c-form__helper-text">
+                              <p class="pf-v5-c-form__helper-text">
                                   ${msg("Background shown during execution.")}
                               </p>
                           </ak-form-element-horizontal>`}

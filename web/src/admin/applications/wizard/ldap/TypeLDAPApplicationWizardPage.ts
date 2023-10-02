@@ -64,9 +64,9 @@ export class TypeLDAPApplicationWizardPage extends WizardFormPage {
     renderForm(): TemplateResult {
         const domainParts = window.location.hostname.split(".");
         const defaultBaseDN = domainParts.map((part) => `dc=${part}`).join(",");
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Base DN")} name="baseDN" ?required=${true}>
-                <input type="text" value="${defaultBaseDN}" class="pf-c-form-control" required />
+                <input type="text" value="${defaultBaseDN}" class="pf-v5-c-form-control" required />
             </ak-form-element-horizontal>
         </form> `;
     }

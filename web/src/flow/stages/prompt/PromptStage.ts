@@ -57,7 +57,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -66,7 +66,7 @@ export class PromptStage extends BaseStage<PromptChallenge, PromptChallengeRespo
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="off"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?required=${prompt.required}
                 >
 ${prompt.initialValue}</textarea
@@ -76,7 +76,7 @@ ${prompt.initialValue}</textarea
                     type="text"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?readonly=${true}
                     value="${prompt.initialValue}"
                 />`;
@@ -84,7 +84,7 @@ ${prompt.initialValue}</textarea
                 return html`<textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     readonly
                 >
 ${prompt.initialValue}</textarea
@@ -95,7 +95,7 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="username"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -104,7 +104,7 @@ ${prompt.initialValue}</textarea
                     type="email"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -114,7 +114,7 @@ ${prompt.initialValue}</textarea
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
                     autocomplete="new-password"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?required=${prompt.required}
                 />`;
             case PromptTypeEnum.Number:
@@ -122,7 +122,7 @@ ${prompt.initialValue}</textarea
                     type="number"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -131,7 +131,7 @@ ${prompt.initialValue}</textarea
                     type="date"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -140,7 +140,7 @@ ${prompt.initialValue}</textarea
                     type="datetime"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -149,7 +149,7 @@ ${prompt.initialValue}</textarea
                     type="file"
                     name="${prompt.fieldKey}"
                     placeholder="${prompt.placeholder}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?required=${prompt.required}
                     value="${prompt.initialValue}"
                 />`;
@@ -160,13 +160,13 @@ ${prompt.initialValue}</textarea
                     type="hidden"
                     name="${prompt.fieldKey}"
                     value="${prompt.initialValue}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     ?required=${prompt.required}
                 />`;
             case PromptTypeEnum.Static:
                 return html`<p>${unsafeHTML(prompt.initialValue)}</p>`;
             case PromptTypeEnum.Dropdown:
-                return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
+                return html`<select class="pf-v5-c-form-control" name="${prompt.fieldKey}">
                     ${prompt.choices?.map((choice) => {
                         return html`<option
                             value="${choice}"
@@ -179,17 +179,17 @@ ${prompt.initialValue}</textarea
             case PromptTypeEnum.RadioButtonGroup:
                 return html`${(prompt.choices || []).map((choice) => {
                     const id = `${prompt.fieldKey}-${choice}`;
-                    return html`<div class="pf-c-check">
+                    return html`<div class="pf-v5-c-check">
                         <input
                             type="radio"
-                            class="pf-c-check__input"
+                            class="pf-v5-c-check__input"
                             name="${prompt.fieldKey}"
                             id="${id}"
                             ?checked="${prompt.initialValue === choice}"
                             ?required="${prompt.required}"
                             value="${choice}"
                         />
-                        <label class="pf-c-check__label" for=${id}>${choice}</label>
+                        <label class="pf-v5-c-check__label" for=${id}>${choice}</label>
                     </div> `;
                 })}`;
             case PromptTypeEnum.AkLocale: {
@@ -209,7 +209,7 @@ ${prompt.initialValue}</textarea
                         </option> `,
                 );
 
-                return html`<select class="pf-c-form-control" name="${prompt.fieldKey}">
+                return html`<select class="pf-v5-c-form-control" name="${prompt.fieldKey}">
                     <option value="" ?selected=${prompt.initialValue === ""}>
                         ${msg("Auto-detect (based on your browser)")}
                     </option>
@@ -225,7 +225,7 @@ ${prompt.initialValue}</textarea
         if (prompt.subText === "") {
             return html``;
         }
-        return html`<p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
+        return html`<p class="pf-v5-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>`;
     }
 
     shouldRenderInWrapper(prompt: StagePrompt): boolean {
@@ -243,27 +243,27 @@ ${prompt.initialValue}</textarea
     renderField(prompt: StagePrompt): TemplateResult {
         // Checkbox is rendered differently
         if (prompt.type === PromptTypeEnum.Checkbox) {
-            return html`<div class="pf-c-check">
+            return html`<div class="pf-v5-c-check">
                 <input
                     type="checkbox"
-                    class="pf-c-check__input"
+                    class="pf-v5-c-check__input"
                     id="${prompt.fieldKey}"
                     name="${prompt.fieldKey}"
                     ?checked=${prompt.initialValue !== ""}
                     ?required=${prompt.required}
                 />
-                <label class="pf-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
+                <label class="pf-v5-c-check__label" for="${prompt.fieldKey}">${prompt.label}</label>
                 ${prompt.required
-                    ? html`<p class="pf-c-form__helper-text">${msg("Required.")}</p>`
+                    ? html`<p class="pf-v5-c-form__helper-text">${msg("Required.")}</p>`
                     : html``}
-                <p class="pf-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
+                <p class="pf-v5-c-form__helper-text">${unsafeHTML(prompt.subText)}</p>
             </div>`;
         }
         if (this.shouldRenderInWrapper(prompt)) {
             return html`<ak-form-element
                 label="${prompt.label}"
                 ?required="${prompt.required}"
-                class="pf-c-form__group"
+                class="pf-v5-c-form__group"
                 .errors=${(this.challenge?.responseErrors || {})[prompt.fieldKey]}
             >
                 ${this.renderPromptInner(prompt)} ${this.renderPromptHelpText(prompt)}
@@ -273,8 +273,8 @@ ${prompt.initialValue}</textarea
     }
 
     renderContinue(): TemplateResult {
-        return html` <div class="pf-c-form__group pf-m-action">
-            <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+        return html` <div class="pf-v5-c-form__group pf-m-action">
+            <button type="submit" class="pf-v5-c-button pf-m-primary pf-m-block">
                 ${msg("Continue")}
             </button>
         </div>`;
@@ -285,12 +285,12 @@ ${prompt.initialValue}</textarea
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
-            <div class="pf-c-login__main-body">
+            <div class="pf-v5-c-login__main-body">
                 <form
-                    class="pf-c-form"
+                    class="pf-v5-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e);
                     }}
@@ -306,8 +306,8 @@ ${prompt.initialValue}</textarea
                     ${this.renderContinue()}
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

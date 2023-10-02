@@ -21,23 +21,23 @@ export class SidebarItem extends AKElement {
                     z-index: 100;
                     box-shadow: none !important;
                 }
-                :host([highlight]) .pf-c-nav__item {
+                :host([highlight]) .pf-v5-c-nav__item {
                     background-color: var(--ak-accent);
                     margin: 16px;
                 }
-                :host([highlight]) .pf-c-nav__item .pf-c-nav__link {
+                :host([highlight]) .pf-v5-c-nav__item .pf-v5-c-nav__link {
                     padding-left: 0.5rem;
                 }
-                .pf-c-nav__link.pf-m-current::after,
-                .pf-c-nav__link.pf-m-current:hover::after,
-                .pf-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-c-nav__link::after {
-                    --pf-c-nav__link--m-current--after--BorderColor: #fd4b2d;
+                .pf-v5-c-nav__link.pf-m-current::after,
+                .pf-v5-c-nav__link.pf-m-current:hover::after,
+                .pf-v5-c-nav__item.pf-m-current:not(.pf-m-expanded) .pf-v5-c-nav__link::after {
+                    --pf-v5-c-nav__link--m-current--after--BorderColor: #fd4b2d;
                 }
 
-                .pf-c-nav__section + .pf-c-nav__section {
-                    --pf-c-nav__section--section--MarginTop: var(--pf-global--spacer--sm);
+                .pf-v5-c-nav__section + .pf-v5-c-nav__section {
+                    --pf-v5-c-nav__section--section--MarginTop: var(--pf-v5-global--spacer--sm);
                 }
-                .pf-c-nav__list .sidebar-brand {
+                .pf-v5-c-nav__list .sidebar-brand {
                     max-height: 82px;
                     margin-bottom: -0.5rem;
                 }
@@ -48,21 +48,21 @@ export class SidebarItem extends AKElement {
                     height: 100%;
                     overflow-y: hidden;
                 }
-                .pf-c-nav__list {
+                .pf-v5-c-nav__list {
                     flex-grow: 1;
                     overflow-y: auto;
                 }
 
-                .pf-c-nav__link {
-                    --pf-c-nav__link--PaddingTop: 0.5rem;
-                    --pf-c-nav__link--PaddingRight: 0.5rem;
-                    --pf-c-nav__link--PaddingBottom: 0.5rem;
+                .pf-v5-c-nav__link {
+                    --pf-v5-c-nav__link--PaddingTop: 0.5rem;
+                    --pf-v5-c-nav__link--PaddingRight: 0.5rem;
+                    --pf-v5-c-nav__link--PaddingBottom: 0.5rem;
                 }
-                .pf-c-nav__section-title {
+                .pf-v5-c-nav__section-title {
                     font-size: 12px;
                 }
-                .pf-c-nav__item {
-                    --pf-c-nav__item--MarginTop: 0px;
+                .pf-v5-c-nav__item {
+                    --pf-v5-c-nav__item--MarginTop: 0px;
                 }
             `,
         ];
@@ -147,41 +147,41 @@ export class SidebarItem extends AKElement {
     renderInner(): TemplateResult {
         if (this.childItems.length > 0) {
             return html`<li
-                class="pf-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
+                class="pf-v5-c-nav__item ${this.expanded ? "pf-m-expandable pf-m-expanded" : ""}"
             >
                 <button
-                    class="pf-c-nav__link"
+                    class="pf-v5-c-nav__link"
                     aria-expanded="true"
                     @click=${() => {
                         this.expanded = !this.expanded;
                     }}
                 >
                     <slot name="label"></slot>
-                    <span class="pf-c-nav__toggle">
-                        <span class="pf-c-nav__toggle-icon">
+                    <span class="pf-v5-c-nav__toggle">
+                        <span class="pf-v5-c-nav__toggle-icon">
                             <i class="fas fa-angle-right" aria-hidden="true"></i>
                         </span>
                     </span>
                 </button>
-                <section class="pf-c-nav__subnav" ?hidden=${!this.expanded}>
-                    <ul class="pf-c-nav__list">
+                <section class="pf-v5-c-nav__subnav" ?hidden=${!this.expanded}>
+                    <ul class="pf-v5-c-nav__list">
                         <slot></slot>
                     </ul>
                 </section>
             </li>`;
         }
-        return html`<li class="pf-c-nav__item">
+        return html`<li class="pf-v5-c-nav__item">
             ${this.path
                 ? html`
                       <a
                           href="${this.isAbsoluteLink ? "" : "#"}${this.path}"
-                          class="pf-c-nav__link ${this.isActive ? "pf-m-current" : ""}"
+                          class="pf-v5-c-nav__link ${this.isActive ? "pf-m-current" : ""}"
                       >
                           <slot name="label"></slot>
                       </a>
                   `
                 : html`
-                      <span class="pf-c-nav__link">
+                      <span class="pf-v5-c-nav__link">
                           <slot name="label"></slot>
                       </span>
                   `}

@@ -25,29 +25,29 @@ export class EmailStage extends BaseStage<EmailChallenge, EmailChallengeResponse
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
-            <div class="pf-c-login__main-body">
+            <div class="pf-v5-c-login__main-body">
                 <form
-                    class="pf-c-form"
+                    class="pf-v5-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e);
                     }}
                 >
-                    <div class="pf-c-form__group">
+                    <div class="pf-v5-c-form__group">
                         <p>${msg("Check your Inbox for a verification email.")}</p>
                     </div>
 
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    <div class="pf-v5-c-form__group pf-m-action">
+                        <button type="submit" class="pf-v5-c-button pf-m-primary pf-m-block">
                             ${msg("Send Email again.")}
                         </button>
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

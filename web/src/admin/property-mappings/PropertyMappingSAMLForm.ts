@@ -41,12 +41,12 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
@@ -58,10 +58,10 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.samlName)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "Attribute name used for SAML Assertions. Can be a URN OID, a schema reference, or a any other string. If this property mapping is used for NameID Property, this field is discarded.",
                     )}
@@ -71,9 +71,9 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.friendlyName || "")}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                 />
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Optionally set the 'FriendlyName' value of the Assertion attribute.")}
                 </p>
             </ak-form-element-horizontal>
@@ -84,7 +84,7 @@ export class PropertyMappingSAMLForm extends ModelForm<SAMLPropertyMapping, stri
             >
                 <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Expression using Python.")}
                     <a
                         target="_blank"

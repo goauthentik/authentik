@@ -41,12 +41,12 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
@@ -58,10 +58,10 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.scopeName)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Scope which the client can specify to access these properties.")}
                 </p>
             </ak-form-element-horizontal>
@@ -69,9 +69,9 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.description)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                 />
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "Description shown to the user when consenting. If left empty, the user won't be informed.",
                     )}
@@ -84,7 +84,7 @@ export class PropertyMappingScopeForm extends ModelForm<ScopeMapping, string> {
             >
                 <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
                 </ak-codemirror>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg("Expression using Python.")}
                     <a
                         target="_blank"

@@ -86,7 +86,7 @@ export class EventListPage extends TablePage<Event> {
 
     renderExpanded(item: Event): TemplateResult {
         return html` <td role="cell" colspan="3">
-                <div class="pf-c-table__expandable-row-content">
+                <div class="pf-v5-c-table__expandable-row-content">
                     <ak-event-info .event=${item as EventWithContext}></ak-event-info>
                 </div>
             </td>

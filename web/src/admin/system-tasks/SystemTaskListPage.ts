@@ -82,24 +82,24 @@ export class SystemTaskListPage extends TablePage<Task> {
 
     renderExpanded(item: Task): TemplateResult {
         return html` <td role="cell" colspan="3">
-                <div class="pf-c-table__expandable-row-content">
-                    <dl class="pf-c-description-list pf-m-horizontal">
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Duration")}</span>
+                <div class="pf-v5-c-table__expandable-row-content">
+                    <dl class="pf-v5-c-description-list pf-m-horizontal">
+                        <div class="pf-v5-c-description-list__group">
+                            <dt class="pf-v5-c-description-list__term">
+                                <span class="pf-v5-c-description-list__text">${msg("Duration")}</span>
                             </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
+                            <dd class="pf-v5-c-description-list__description">
+                                <div class="pf-v5-c-description-list__text">
                                     ${msg(str`${item.taskDuration.toFixed(2)} seconds`)}
                                 </div>
                             </dd>
                         </div>
-                        <div class="pf-c-description-list__group">
-                            <dt class="pf-c-description-list__term">
-                                <span class="pf-c-description-list__text">${msg("Messages")}</span>
+                        <div class="pf-v5-c-description-list__group">
+                            <dt class="pf-v5-c-description-list__term">
+                                <span class="pf-v5-c-description-list__text">${msg("Messages")}</span>
                             </dt>
-                            <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
+                            <dd class="pf-v5-c-description-list__description">
+                                <div class="pf-v5-c-description-list__text">
                                     ${item.messages.map((m) => {
                                         return html`<li>${m}</li>`;
                                     })}

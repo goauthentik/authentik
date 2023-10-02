@@ -40,12 +40,12 @@ export class RecentEventsCard extends Table<Event> {
         return super.styles.concat(
             PFCard,
             css`
-                .pf-c-card__title {
-                    --pf-c-card__title--FontFamily: var(
-                        --pf-global--FontFamily--heading--sans-serif
+                .pf-v5-c-card__title {
+                    --pf-v5-c-card__title--FontFamily: var(
+                        --pf-v5-global--FontFamily--heading--sans-serif
                     );
-                    --pf-c-card__title--FontSize: var(--pf-global--FontSize--md);
-                    --pf-c-card__title--FontWeight: var(--pf-global--FontWeight--bold);
+                    --pf-v5-c-card__title--FontSize: var(--pf-v5-global--FontSize--md);
+                    --pf-v5-c-card__title--FontWeight: var(--pf-v5-global--FontWeight--bold);
                 }
             `,
         );
@@ -62,7 +62,7 @@ export class RecentEventsCard extends Table<Event> {
     }
 
     renderToolbar(): TemplateResult {
-        return html`<div class="pf-c-card__title">
+        return html`<div class="pf-v5-c-card__title">
             <i class="pf-icon pf-icon-catalog"></i>&nbsp;${msg("Recent events")}
         </div>`;
     }

@@ -45,11 +45,11 @@ export class AccessDeniedIcon extends AKElement {
     }
 
     render(): TemplateResult {
-        return html` <div class="pf-c-form__group">
+        return html` <div class="pf-v5-c-form__group">
             <p class="big-icon">
                 <i class="pf-icon pf-icon-error-circle-o"></i>
             </p>
-            <h3 class="pf-c-title pf-m-3xl reason">${msg("Request has been denied.")}</h3>
+            <h3 class="pf-v5-c-title pf-m-3xl reason">${msg("Request has been denied.")}</h3>
             ${this.errorMessage
                 ? html`<hr />
                       <p>${this.errorMessage}</p>`
@@ -72,13 +72,13 @@ export class AccessDeniedStage extends BaseStage<
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
-            <div class="pf-c-login__main-body">
-                <form class="pf-c-form">
+            <div class="pf-v5-c-login__main-body">
+                <form class="pf-v5-c-form">
                     <ak-form-static
-                        class="pf-c-form__group"
+                        class="pf-v5-c-form__group"
                         userAvatar="${this.challenge.pendingUserAvatar}"
                         user=${this.challenge.pendingUser}
                     >
@@ -94,8 +94,8 @@ export class AccessDeniedStage extends BaseStage<
                     </ak-stage-access-denied-icon>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

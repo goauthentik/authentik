@@ -63,7 +63,7 @@ export class LDAPSourceViewPage extends AKElement {
             <section
                 slot="page-overview"
                 data-tab-title="${msg("Overview")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
                 @activate=${() => {
                     new SourcesApi(DEFAULT_CONFIG)
                         .sourcesLdapSyncStatusList({
@@ -74,42 +74,42 @@ export class LDAPSourceViewPage extends AKElement {
                         });
                 }}
             >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list pf-m-2-col-on-lg">
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                <div class="pf-v5-l-grid pf-m-gutter">
+                    <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                        <div class="pf-v5-c-card__body">
+                            <dl class="pf-v5-c-description-list pf-m-2-col-on-lg">
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Name")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             ${this.source.name}
                                         </div>
                                     </dd>
                                 </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Server URI")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             ${this.source.serverUri}
                                         </div>
                                     </dd>
                                 </div>
-                                <div class="pf-c-description-list__group">
-                                    <dt class="pf-c-description-list__term">
-                                        <span class="pf-c-description-list__text"
+                                <div class="pf-v5-c-description-list__group">
+                                    <dt class="pf-v5-c-description-list__term">
+                                        <span class="pf-v5-c-description-list__text"
                                             >${msg("Base DN")}</span
                                         >
                                     </dt>
-                                    <dd class="pf-c-description-list__description">
-                                        <div class="pf-c-description-list__text">
+                                    <dd class="pf-v5-c-description-list__description">
+                                        <div class="pf-v5-c-description-list__text">
                                             <ul>
                                                 <li>${this.source.baseDn}</li>
                                             </ul>
@@ -118,27 +118,27 @@ export class LDAPSourceViewPage extends AKElement {
                                 </div>
                             </dl>
                         </div>
-                        <div class="pf-c-card__footer">
+                        <div class="pf-v5-c-card__footer">
                             <ak-forms-modal>
                                 <span slot="submit"> ${msg("Update")} </span>
                                 <span slot="header"> ${msg("Update LDAP Source")} </span>
                                 <ak-source-ldap-form slot="form" .instancePk=${this.source.slug}>
                                 </ak-source-ldap-form>
-                                <button slot="trigger" class="pf-c-button pf-m-primary">
+                                <button slot="trigger" class="pf-v5-c-button pf-m-primary">
                                     ${msg("Edit")}
                                 </button>
                             </ak-forms-modal>
                         </div>
                     </div>
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__title">
+                    <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                        <div class="pf-v5-c-card__title">
                             <p>${msg("Sync status")}</p>
                         </div>
-                        <div class="pf-c-card__body">
+                        <div class="pf-v5-c-card__body">
                             ${this.syncState.length < 1
                                 ? html`<p>${msg("Not synced yet.")}</p>`
                                 : html`
-                                      <ul class="pf-c-list">
+                                      <ul class="pf-v5-c-list">
                                           ${this.syncState.map((task) => {
                                               let header = "";
                                               if (task.status === TaskStatusEnum.Warning) {
@@ -152,7 +152,7 @@ export class LDAPSourceViewPage extends AKElement {
                                               }
                                               return html`<li>
                                                   <p>${task.taskName}</p>
-                                                  <ul class="pf-c-list">
+                                                  <ul class="pf-v5-c-list">
                                                       <li>${header}</li>
                                                       ${task.messages.map((m) => {
                                                           return html`<li>${m}</li>`;
@@ -163,7 +163,7 @@ export class LDAPSourceViewPage extends AKElement {
                                       </ul>
                                   `}
                         </div>
-                        <div class="pf-c-card__footer">
+                        <div class="pf-v5-c-card__footer">
                             <ak-action-button
                                 class="pf-m-secondary"
                                 .apiRequest=${() => {
@@ -191,11 +191,11 @@ export class LDAPSourceViewPage extends AKElement {
             <section
                 slot="page-changelog"
                 data-tab-title="${msg("Changelog")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
+                class="pf-v5-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-l-grid pf-m-gutter">
-                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
-                        <div class="pf-c-card__body">
+                <div class="pf-v5-l-grid pf-m-gutter">
+                    <div class="pf-v5-c-card pf-v5-l-grid__item pf-m-12-col">
+                        <div class="pf-v5-c-card__body">
                             <ak-object-changelog
                                 targetModelPk=${this.source.pk || ""}
                                 targetModelApp="authentik_sources_ldap"

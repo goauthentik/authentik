@@ -5,8 +5,8 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
+import PFChipGroup from "@patternfly/patternfly/components/Chip/chip-group.css";
 import PFChip from "@patternfly/patternfly/components/Chip/chip.css";
-import PFChipGroup from "@patternfly/patternfly/components/ChipGroup/chip-group.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-chip-group")
@@ -21,7 +21,7 @@ export class ChipGroup extends AKElement {
                 ::slotted(*) {
                     margin: 0 2px;
                 }
-                .pf-c-chip-group {
+                .pf-v5-c-chip-group {
                     margin-bottom: 8px;
                 }
             `,
@@ -44,9 +44,9 @@ export class ChipGroup extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<div class="pf-c-chip-group">
-            <div class="pf-c-chip-group__main">
-                <ul class="pf-c-chip-group__list" role="list">
+        return html`<div class="pf-v5-c-chip-group">
+            <div class="pf-v5-c-chip-group__main">
+                <ul class="pf-v5-c-chip-group__list" role="list">
                     <slot></slot>
                 </ul>
             </div>

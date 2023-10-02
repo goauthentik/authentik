@@ -50,22 +50,22 @@ export class InitialApplicationWizardPage extends WizardFormPage {
 
     renderForm(): TemplateResult {
         return html`
-            <form class="pf-c-form pf-m-horizontal">
+            <form class="pf-v5-c-form pf-m-horizontal">
                 <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                    <input type="text" value="" class="pf-c-form-control" required />
-                    <p class="pf-c-form__helper-text">${msg("Application's display Name.")}</p>
+                    <input type="text" value="" class="pf-v5-c-form-control" required />
+                    <p class="pf-v5-c-form__helper-text">${msg("Application's display Name.")}</p>
                 </ak-form-element-horizontal>
                 <ak-form-group ?expanded=${true}>
                     <span slot="header"> ${msg("Additional UI settings")} </span>
-                    <div slot="body" class="pf-c-form">
+                    <div slot="body" class="pf-v5-c-form">
                         <ak-form-element-horizontal
                             label=${msg("Description")}
                             name="metaDescription"
                         >
-                            <textarea class="pf-c-form-control"></textarea>
+                            <textarea class="pf-v5-c-form-control"></textarea>
                         </ak-form-element-horizontal>
                         <ak-form-element-horizontal label=${msg("Publisher")} name="metaPublisher">
-                            <input type="text" value="" class="pf-c-form-control" />
+                            <input type="text" value="" class="pf-v5-c-form-control" />
                         </ak-form-element-horizontal>
                     </div>
                 </ak-form-group>

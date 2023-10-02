@@ -68,21 +68,21 @@ export class AdminInterface extends Interface {
             PFButton,
             PFDrawer,
             css`
-                .pf-c-page__main,
-                .pf-c-drawer__content,
-                .pf-c-page__drawer {
+                .pf-v5-c-page__main,
+                .pf-v5-c-drawer__content,
+                .pf-v5-c-page__drawer {
                     z-index: auto !important;
                     background-color: transparent;
                 }
                 .display-none {
                     display: none;
                 }
-                .pf-c-page {
-                    background-color: var(--pf-c-page--BackgroundColor) !important;
+                .pf-v5-c-page {
+                    background-color: var(--pf-v5-c-page--BackgroundColor) !important;
                 }
                 /* Global page background colour */
-                :host([theme="dark"]) .pf-c-page {
-                    --pf-c-page--BackgroundColor: var(--ak-dark-background);
+                :host([theme="dark"]) .pf-v5-c-page {
+                    --pf-v5-c-page--BackgroundColor: var(--ak-dark-background);
                 }
             `,
         ];
@@ -123,9 +123,9 @@ export class AdminInterface extends Interface {
 
     render(): TemplateResult {
         return html` <ak-locale-context>
-            <div class="pf-c-page">
+            <div class="pf-v5-c-page">
                 <ak-sidebar
-                    class="pf-c-page__sidebar ${this.sidebarOpen
+                    class="pf-v5-c-page__sidebar ${this.sidebarOpen
                         ? "pf-m-expanded"
                         : "pf-m-collapsed"} ${this.activeTheme === UiThemeEnum.Light
                         ? "pf-m-light"
@@ -133,19 +133,19 @@ export class AdminInterface extends Interface {
                 >
                     ${this.renderSidebarItems()}
                 </ak-sidebar>
-                <div class="pf-c-page__drawer">
+                <div class="pf-v5-c-page__drawer">
                     <div
-                        class="pf-c-drawer ${this.notificationDrawerOpen || this.apiDrawerOpen
+                        class="pf-v5-c-drawer ${this.notificationDrawerOpen || this.apiDrawerOpen
                             ? "pf-m-expanded"
                             : "pf-m-collapsed"}"
                     >
-                        <div class="pf-c-drawer__main">
-                            <div class="pf-c-drawer__content">
-                                <div class="pf-c-drawer__body">
-                                    <main class="pf-c-page__main">
+                        <div class="pf-v5-c-drawer__main">
+                            <div class="pf-v5-c-drawer__content">
+                                <div class="pf-v5-c-drawer__body">
+                                    <main class="pf-v5-c-page__main">
                                         <ak-router-outlet
                                             role="main"
-                                            class="pf-c-page__main"
+                                            class="pf-v5-c-page__main"
                                             tabindex="-1"
                                             id="main-content"
                                             defaultUrl="/administration/overview"
@@ -156,14 +156,14 @@ export class AdminInterface extends Interface {
                                 </div>
                             </div>
                             <ak-notification-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this
+                                class="pf-v5-c-drawer__panel pf-m-width-33 ${this
                                     .notificationDrawerOpen
                                     ? ""
                                     : "display-none"}"
                                 ?hidden=${!this.notificationDrawerOpen}
                             ></ak-notification-drawer>
                             <ak-api-drawer
-                                class="pf-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
+                                class="pf-v5-c-drawer__panel pf-m-width-33 ${this.apiDrawerOpen
                                     ? ""
                                     : "display-none"}"
                                 ?hidden=${!this.apiDrawerOpen}

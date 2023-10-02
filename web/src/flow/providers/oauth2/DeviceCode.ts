@@ -33,12 +33,12 @@ export class OAuth2DeviceCode extends BaseStage<
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
-            <div class="pf-c-login__main-body">
+            <div class="pf-v5-c-login__main-body">
                 <form
-                    class="pf-c-form"
+                    class="pf-v5-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e);
                     }}
@@ -47,7 +47,7 @@ export class OAuth2DeviceCode extends BaseStage<
                     <ak-form-element
                         label="${msg("Code")}"
                         ?required="${true}"
-                        class="pf-c-form__group"
+                        class="pf-v5-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["code"]}
                     >
                         <input
@@ -58,21 +58,21 @@ export class OAuth2DeviceCode extends BaseStage<
                             placeholder="${msg("Please enter your Code")}"
                             autofocus=""
                             autocomplete="off"
-                            class="pf-c-form-control"
+                            class="pf-v5-c-form-control"
                             value=""
                             required
                         />
                     </ak-form-element>
 
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    <div class="pf-v5-c-form__group pf-m-action">
+                        <button type="submit" class="pf-v5-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}
                         </button>
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

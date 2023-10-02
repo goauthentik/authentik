@@ -35,7 +35,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
         this.input.placeholder = msg("Please enter your password");
         this.input.autofocus = true;
         this.input.autocomplete = "current-password";
-        this.input.classList.add("pf-c-form-control");
+        this.input.classList.add("pf-v5-c-form-control");
         this.input.required = true;
         this.input.value = PasswordManagerPrefill.password || "";
         // This is somewhat of a crude way to get autofocus, but in most cases the `autofocus` attribute
@@ -76,18 +76,18 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
             return html`<ak-empty-state ?loading="${true}" header=${msg("Loading")}>
             </ak-empty-state>`;
         }
-        return html`<header class="pf-c-login__main-header">
-                <h1 class="pf-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
+        return html`<header class="pf-v5-c-login__main-header">
+                <h1 class="pf-v5-c-title pf-m-3xl">${this.challenge.flowInfo?.title}</h1>
             </header>
-            <div class="pf-c-login__main-body">
+            <div class="pf-v5-c-login__main-body">
                 <form
-                    class="pf-c-form"
+                    class="pf-v5-c-form"
                     @submit=${(e: Event) => {
                         this.submitForm(e);
                     }}
                 >
                     <ak-form-static
-                        class="pf-c-form__group"
+                        class="pf-v5-c-form__group"
                         userAvatar="${this.challenge.pendingUserAvatar}"
                         user=${this.challenge.pendingUser}
                     >
@@ -106,7 +106,7 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                     <ak-form-element
                         label="${msg("Password")}"
                         ?required="${true}"
-                        class="pf-c-form__group"
+                        class="pf-v5-c-form__group"
                         .errors=${(this.challenge?.responseErrors || {})["password"]}
                     >
                         ${this.renderInput()}
@@ -118,15 +118,15 @@ export class PasswordStage extends BaseStage<PasswordChallenge, PasswordChalleng
                           >`
                         : ""}
 
-                    <div class="pf-c-form__group pf-m-action">
-                        <button type="submit" class="pf-c-button pf-m-primary pf-m-block">
+                    <div class="pf-v5-c-form__group pf-m-action">
+                        <button type="submit" class="pf-v5-c-button pf-m-primary pf-m-block">
                             ${msg("Continue")}
                         </button>
                     </div>
                 </form>
             </div>
-            <footer class="pf-c-login__main-footer">
-                <ul class="pf-c-login__main-footer-links"></ul>
+            <footer class="pf-v5-c-login__main-footer">
+                <ul class="pf-v5-c-login__main-footer-links"></ul>
             </footer>`;
     }
 }

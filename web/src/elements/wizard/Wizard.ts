@@ -127,11 +127,11 @@ export class Wizard extends ModalButton {
             this.steps = this.steps.concat("ak-wizard-page-action");
             lastPage = currentIndex === this.steps.length - 1;
         }
-        return html`<div class="pf-c-wizard">
-            <div class="pf-c-wizard__header">
+        return html`<div class="pf-v5-c-wizard">
+            <div class="pf-v5-c-wizard__header">
                 ${this.canCancel
                     ? html`<button
-                          class="pf-c-button pf-m-plain pf-c-wizard__close"
+                          class="pf-v5-c-button pf-m-plain pf-v5-c-wizard__close"
                           type="button"
                           aria-label="${msg("Close")}"
                           @click=${() => {
@@ -141,21 +141,21 @@ export class Wizard extends ModalButton {
                           <i class="fas fa-times" aria-hidden="true"></i>
                       </button>`
                     : html``}
-                <h1 class="pf-c-title pf-m-3xl pf-c-wizard__title">${this.header}</h1>
-                <p class="pf-c-wizard__description">${this.description}</p>
+                <h1 class="pf-v5-c-title pf-m-3xl pf-v5-c-wizard__title">${this.header}</h1>
+                <p class="pf-v5-c-wizard__description">${this.description}</p>
             </div>
-            <div class="pf-c-wizard__outer-wrap">
-                <div class="pf-c-wizard__inner-wrap">
-                    <nav class="pf-c-wizard__nav">
-                        <ol class="pf-c-wizard__nav-list">
+            <div class="pf-v5-c-wizard__outer-wrap">
+                <div class="pf-v5-c-wizard__inner-wrap">
+                    <nav class="pf-v5-c-wizard__nav">
+                        <ol class="pf-v5-c-wizard__nav-list">
                             ${this.steps.map((step, idx) => {
                                 const currentIdx = this.currentStep
                                     ? this.steps.indexOf(this.currentStep.slot)
                                     : 0;
                                 return html`
-                                    <li class="pf-c-wizard__nav-item">
+                                    <li class="pf-v5-c-wizard__nav-item">
                                         <button
-                                            class="pf-c-wizard__nav-link ${idx === currentIdx
+                                            class="pf-v5-c-wizard__nav-link ${idx === currentIdx
                                                 ? "pf-m-current"
                                                 : ""}"
                                             ?disabled=${currentIdx < idx}
@@ -177,15 +177,15 @@ export class Wizard extends ModalButton {
                             })}
                         </ol>
                     </nav>
-                    <main class="pf-c-wizard__main">
-                        <div class="pf-c-wizard__main-body">
+                    <main class="pf-v5-c-wizard__main">
+                        <div class="pf-v5-c-wizard__main-body">
                             <slot name=${this.currentStep?.slot || this.steps[0]}></slot>
                         </div>
                     </main>
                 </div>
-                <footer class="pf-c-wizard__footer">
+                <footer class="pf-v5-c-wizard__footer">
                     <button
-                        class="pf-c-button pf-m-primary"
+                        class="pf-v5-c-button pf-m-primary"
                         type="submit"
                         ?disabled=${!this.isValid}
                         @click=${async () => {
@@ -212,7 +212,7 @@ export class Wizard extends ModalButton {
                     this.canBack
                         ? html`
                               <button
-                                  class="pf-c-button pf-m-secondary"
+                                  class="pf-v5-c-button pf-m-secondary"
                                   type="button"
                                   @click=${() => {
                                       const prevPage = this.querySelector<WizardPage>(
@@ -228,9 +228,9 @@ export class Wizard extends ModalButton {
                           `
                         : html``}
                     ${this.canCancel
-                        ? html`<div class="pf-c-wizard__footer-cancel">
+                        ? html`<div class="pf-v5-c-wizard__footer-cancel">
                               <button
-                                  class="pf-c-button pf-m-link"
+                                  class="pf-v5-c-button pf-m-link"
                                   type="button"
                                   @click=${() => {
                                       this.reset();

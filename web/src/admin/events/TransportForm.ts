@@ -68,12 +68,12 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
+        return html`<form class="pf-v5-c-form pf-m-horizontal">
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                     required
                 />
             </ak-form-element-horizontal>
@@ -114,7 +114,7 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.webhookUrl)}"
-                    class="pf-c-form-control"
+                    class="pf-v5-c-form-control"
                 />
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
@@ -151,20 +151,20 @@ export class TransportForm extends ModelForm<NotificationTransport, string> {
                 </ak-search-select>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal name="sendOnce">
-                <label class="pf-c-switch">
+                <label class="pf-v5-c-switch">
                     <input
-                        class="pf-c-switch__input"
+                        class="pf-v5-c-switch__input"
                         type="checkbox"
                         ?checked=${first(this.instance?.sendOnce, false)}
                     />
-                    <span class="pf-c-switch__toggle">
-                        <span class="pf-c-switch__toggle-icon">
+                    <span class="pf-v5-c-switch__toggle">
+                        <span class="pf-v5-c-switch__toggle-icon">
                             <i class="fas fa-check" aria-hidden="true"></i>
                         </span>
                     </span>
-                    <span class="pf-c-switch__label">${msg("Send once")}</span>
+                    <span class="pf-v5-c-switch__label">${msg("Send once")}</span>
                 </label>
-                <p class="pf-c-form__helper-text">
+                <p class="pf-v5-c-form__helper-text">
                     ${msg(
                         "Only send notification once, for example when sending a webhook into a chat channel.",
                     )}

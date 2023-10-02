@@ -21,7 +21,7 @@ export class FormStatic extends AKElement {
             css`
                 /* Form with user */
                 .form-control-static {
-                    margin-top: var(--pf-global--spacer--sm);
+                    margin-top: var(--pf-v5-global--spacer--sm);
                     display: flex;
                     align-items: center;
                     justify-content: space-between;
@@ -31,12 +31,12 @@ export class FormStatic extends AKElement {
                     align-items: center;
                 }
                 .form-control-static img {
-                    margin-right: var(--pf-global--spacer--xs);
+                    margin-right: var(--pf-v5-global--spacer--xs);
                 }
                 .form-control-static a {
-                    padding-top: var(--pf-global--spacer--xs);
-                    padding-bottom: var(--pf-global--spacer--xs);
-                    line-height: var(--pf-global--spacer--xl);
+                    padding-top: var(--pf-v5-global--spacer--xs);
+                    padding-bottom: var(--pf-v5-global--spacer--xs);
+                    line-height: var(--pf-v5-global--spacer--xl);
                 }
             `,
         ];
@@ -50,7 +50,7 @@ export class FormStatic extends AKElement {
             <div class="form-control-static">
                 <div class="avatar">
                     <img
-                        class="pf-c-avatar"
+                        class="pf-v5-c-avatar"
                         src="${ifDefined(this.userAvatar)}"
                         alt="${msg("User's avatar")}"
                     />
