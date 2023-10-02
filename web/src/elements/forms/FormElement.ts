@@ -10,9 +10,9 @@ import PFFormControl from "@patternfly/patternfly/components/FormControl/form-co
 import { ErrorDetail } from "@goauthentik/api";
 
 /**
- * This is only used in two places, and in both cases is used primarily to display
- * content, not take input.  It displays the TOPT QR code, and the static recovery
- * tokens.
+ * This is used in two places outside of Flow, and in both cases is used primarily to
+ * display content, not take input.  It displays the TOPT QR code, and the static
+ * recovery tokens.  But it's used a lot in Flow.
  */
 
 @customElement("ak-form-element")

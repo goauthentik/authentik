@@ -54,9 +54,7 @@ export interface KeyUnknown {
  *    - The base class
  *    - The "use `renderInlineForm` class
  *    - The slotted class.
- * 2. Ask why the form class won't render anything if it's not in the viewport.
- * 3. Ask why there's so much slug management code.
- * 4. There is already specialization-by-type throughout all of our code.
+ * 2. There is already specialization-by-type throughout all of our code.
  *    Consider refactoring serializeForm() so that the conversions are on
  *    the input types, rather than here. (i.e. "Polymorphism is better than
  *    switch.")
@@ -96,7 +94,7 @@ export abstract class Form<T> extends AKElement {
 
     /**
      * Called by the render function. Blocks rendering the form if the form is not within the
-     * viewport [2]
+     * viewport.
      */
     get isInViewport(): boolean {
         const rect = this.getBoundingClientRect();
@@ -109,8 +107,8 @@ export abstract class Form<T> extends AKElement {
 
     /**
      * After rendering the form, if there is both a `name` and `slug` element within the form,
-     * events the `name` element so that the slug will always have a slugified version of the `name.`.  This duplicates
-     * functionality within ak-form-element-horizontal. [3]
+     * events the `name` element so that the slug will always have a slugified version of the
+     * `name.`. This duplicates functionality within ak-form-element-horizontal.
      */
     updated(): void {
         this.shadowRoot
@@ -199,17 +197,21 @@ export abstract class Form<T> extends AKElement {
                 "multiple" in inputElement.attributes
             ) {
                 const selectElement = inputElement as unknown as HTMLSelectElement;
-                json[element.name] = Array.from(selectElement.selectedOptions).map((v) => v.value);
+                this.assignValue(
+                    inputElement,
+                    Array.from(selectElement.selectedOptions).map((v) => v.value),
+                    json,
+                );
             } else if (
                 inputElement.tagName.toLowerCase() === "input" &&
                 inputElement.type === "date"
             ) {
-                json[element.name] = inputElement.valueAsDate;
+                this.assignValue(inputElement, inputElement.valueAsDate, json);
             } else if (
                 inputElement.tagName.toLowerCase() === "input" &&
                 inputElement.type === "datetime-local"
             ) {
-                json[element.name] = new Date(inputElement.valueAsNumber);
+                this.assignValue(inputElement, new Date(inputElement.valueAsNumber), json);
             } else if (
                 inputElement.tagName.toLowerCase() === "input" &&
                 "type" in inputElement.dataset &&
@@ -217,19 +219,19 @@ export abstract class Form<T> extends AKElement {
             ) {
                 // Workaround for Firefox <93, since 92 and older don't support
                 // datetime-local fields
-                json[element.name] = new Date(inputElement.value);
+                this.assignValue(inputElement, new Date(inputElement.value), json);
             } else if (
                 inputElement.tagName.toLowerCase() === "input" &&
                 inputElement.type === "checkbox"
             ) {
-                json[element.name] = inputElement.checked;
+                this.assignValue(inputElement, inputElement.checked, json);
             } else if ("selectedFlow" in inputElement) {
-                json[element.name] = inputElement.value;
+                this.assignValue(inputElement, inputElement.value, json);
             } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
                 const select = inputElement as unknown as SearchSelect<unknown>;
                 try {
                     const value = select.toForm();
-                    json[element.name] = value;
+                    this.assignValue(inputElement, value, json);
                 } catch (exc) {
                     if (exc instanceof PreventFormSubmit) {
                         throw new PreventFormSubmit(exc.message, element);
@@ -237,16 +239,16 @@ export abstract class Form<T> extends AKElement {
                     throw exc;
                 }
             } else {
-                this.serializeFieldRecursive(inputElement, inputElement.value, json);
+                this.assignValue(inputElement, inputElement.value, json);
             }
         });
         return json as unknown as T;
     }
 
     /**
-     * As far as anyone can remember, this isn't being used.
+     * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
      */
-    private serializeFieldRecursive(
+    private assignValue(
         element: HTMLInputElement,
         value: unknown,
         json: { [key: string]: unknown },

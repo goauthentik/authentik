@@ -12,7 +12,7 @@ export function CustomEmitterElement<T extends Constructor<LitElement>>(supercla
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         dispatchCustomEvent(eventName: string, detail: any = {}, options = {}) {
             const fullDetail =
-                typeof detail === "object"
+                typeof detail === "object" && !Array.isArray(detail)
                     ? {
                           target: this,
                           ...detail,
