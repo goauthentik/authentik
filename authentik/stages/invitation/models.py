@@ -75,7 +75,7 @@ class Invitation(SerializerModel, ExpiringModel):
     def serializer(self) -> Serializer:
         from authentik.stages.invitation.api import InvitationSerializer
 
-        return InvitationSerializer()
+        return InvitationSerializer
 
     def __str__(self):
         return f"Invitation {str(self.invite_uuid)} created by {self.created_by}"
