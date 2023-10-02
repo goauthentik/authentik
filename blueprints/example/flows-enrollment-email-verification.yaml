@@ -132,5 +132,5 @@ entries:
   - identifiers:
       target: !KeyOf flow
       stage: !KeyOf default-enrollment-user-login
-      order: 40
+      order: 100
     model: authentik_flows.flowstagebinding
