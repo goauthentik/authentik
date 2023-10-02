@@ -41,7 +41,7 @@ updates:
           - "babel-*"
       eslint:
         patterns:
-          - "@typescript-eslint/eslint-*"
+          - "@typescript-eslint/*"
           - "eslint"
           - "eslint-*"
       storybook:
@@ -72,7 +72,7 @@ updates:
           - "babel-*"
       eslint:
         patterns:
-          - "@typescript-eslint/eslint-*"
+          - "@typescript-eslint/*"
           - "eslint"
           - "eslint-*"
       storybook:
