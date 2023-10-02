@@ -145,7 +145,7 @@ export class BoundPoliciesList extends Table<PolicyBinding> {
 
     row(item: PolicyBinding): TemplateResult[] {
         return [
-            html`${item.order}`,
+            html`<pre>${item.order}</pre>`,
             html`${this.getPolicyUserGroupRow(item)}`,
             html` <ak-label color=${item.enabled ? PFColor.Green : PFColor.Orange}>
                 ${item.enabled ? msg("Yes") : msg("No")}
