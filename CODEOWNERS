@@ -19,6 +19,7 @@ Dockerfile                      @goauthentik/infrastructure
 docker-compose.yml              @goauthentik/infrastructure
 # Web
 web/                            @goauthentik/frontend
+tests/wdio/                     @goauthentik/frontend
 # Docs & Website
 website/                        @goauthentik/docs
 # Security

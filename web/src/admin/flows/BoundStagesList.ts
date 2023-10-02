@@ -73,7 +73,7 @@ export class BoundStagesList extends Table<FlowStageBinding> {
 
     row(item: FlowStageBinding): TemplateResult[] {
         return [
-            html`${item.order}`,
+            html`<pre>${item.order}</pre>`,
             html`${item.stageObj?.name}`,
             html`${item.stageObj?.verboseName}`,
             html` <ak-forms-modal>

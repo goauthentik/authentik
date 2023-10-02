@@ -13,19 +13,25 @@ on:
 jobs:
   lint-eslint:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - web
+          - tests/wdio
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - working-directory: web/
+          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+      - working-directory: ${{ matrix.project }}/
         run: npm ci
       - name: Generate API
         run: make gen-client-ts
       - name: Eslint
-        working-directory: web/
+        working-directory: ${{ matrix.project }}/
         run: npm run lint
   lint-build:
     runs-on: ubuntu-latest
@@ -45,19 +51,25 @@ jobs:
         run: npm run tsc
   lint-prettier:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - web
+          - tests/wdio
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v3
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: web/package-lock.json
-      - working-directory: web/
+          cache-dependency-path: ${{ matrix.project }}/package-lock.json
+      - working-directory: ${{ matrix.project }}/
         run: npm ci
       - name: Generate API
         run: make gen-client-ts
       - name: prettier
-        working-directory: web/
+        working-directory: ${{ matrix.project }}/
         run: npm run prettier-check
   lint-lit-analyse:
     runs-on: ubuntu-latest

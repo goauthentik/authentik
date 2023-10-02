@@ -31,6 +31,37 @@ export interface KeyUnknown {
     [key: string]: unknown;
 }
 
+/**
+ * Form
+ *
+ * The base form element for interacting with user inputs.
+ *
+ * All forms either[1] inherit from this class and implement the `renderInlineForm()` method to
+ * produce the actual form, or include the form in-line as a slotted element. Bizarrely, this form
+ * will not render at all if it's not actually in the viewport?[2]
+ *
+ * @element ak-form
+ *
+ * @slot - Where the form goes if `renderInlineForm()` returns undefined.
+ * @fires eventname - description
+ *
+ * @csspart partname - description
+ */
+
+/* TODO:
+ *
+ * 1. Specialization: Separate this component into three different classes:
+ *    - The base class
+ *    - The "use `renderInlineForm` class
+ *    - The slotted class.
+ * 2. There is already specialization-by-type throughout all of our code.
+ *    Consider refactoring serializeForm() so that the conversions are on
+ *    the input types, rather than here. (i.e. "Polymorphism is better than
+ *    switch.")
+ *
+ *
+ */
+
 @customElement("ak-form")
 export abstract class Form<T> extends AKElement {
     abstract send(data: T): Promise<unknown>;
@@ -61,6 +92,10 @@ export abstract class Form<T> extends AKElement {
         ];
     }
 
+    /**
+     * Called by the render function. Blocks rendering the form if the form is not within the
+     * viewport.
+     */
     get isInViewport(): boolean {
         const rect = this.getBoundingClientRect();
         return !(rect.x + rect.y + rect.width + rect.height === 0);
@@ -70,6 +105,11 @@ export abstract class Form<T> extends AKElement {
         return this.successMessage;
     }
 
+    /**
+     * After rendering the form, if there is both a `name` and `slug` element within the form,
+     * events the `name` element so that the slug will always have a slugified version of the
+     * `name.`. This duplicates functionality within ak-form-element-horizontal.
+     */
     updated(): void {
         this.shadowRoot
             ?.querySelectorAll("ak-form-element-horizontal[name=name]")
@@ -103,6 +143,12 @@ export abstract class Form<T> extends AKElement {
         form?.reset();
     }
 
+    /**
+     * Return the form elements that may contain filenames. Not sure why this is quite so
+     * convoluted. There is exactly one case where this is used:
+     * `./flow/stages/prompt/PromptStage: 147: case PromptTypeEnum.File.`
+     * Consider moving this functionality to there.
+     */
     getFormFiles(): { [key: string]: File } {
         const files: { [key: string]: File } = {};
         const elements =
@@ -126,6 +172,10 @@ export abstract class Form<T> extends AKElement {
         return files;
     }
 
+    /**
+     * Convert the elements of the form to JSON.[4]
+     *
+     */
     serializeForm(): T | undefined {
         const elements =
             this.shadowRoot?.querySelectorAll<HorizontalFormElement>(
@@ -147,17 +197,21 @@ export abstract class Form<T> extends AKElement {
                 "multiple" in inputElement.attributes
             ) {
                 const selectElement = inputElement as unknown as HTMLSelectElement;
-                json[element.name] = Array.from(selectElement.selectedOptions).map((v) => v.value);
+                this.assignValue(
+                    inputElement,
+                    Array.from(selectElement.selectedOptions).map((v) => v.value),
+                    json,
+                );
             } else if (
                 inputElement.tagName.toLowerCase() === "input" &&
                 inputElement.type === "date"
             ) {
-                json[element.name] = inputElement.valueAsDate;
+                this.assignValue(inputElement, inputElement.valueAsDate, json);
             } else if (
                 inputElement.tagName.toLowerCase() === "input" &&
                 inputElement.type === "datetime-local"
             ) {
-                json[element.name] = new Date(inputElement.valueAsNumber);
+                this.assignValue(inputElement, new Date(inputElement.valueAsNumber), json);
             } else if (
                 inputElement.tagName.toLowerCase() === "input" &&
                 "type" in inputElement.dataset &&
@@ -165,19 +219,19 @@ export abstract class Form<T> extends AKElement {
             ) {
                 // Workaround for Firefox <93, since 92 and older don't support
                 // datetime-local fields
-                json[element.name] = new Date(inputElement.value);
+                this.assignValue(inputElement, new Date(inputElement.value), json);
             } else if (
                 inputElement.tagName.toLowerCase() === "input" &&
                 inputElement.type === "checkbox"
             ) {
-                json[element.name] = inputElement.checked;
+                this.assignValue(inputElement, inputElement.checked, json);
             } else if ("selectedFlow" in inputElement) {
-                json[element.name] = inputElement.value;
+                this.assignValue(inputElement, inputElement.value, json);
             } else if (inputElement.tagName.toLowerCase() === "ak-search-select") {
                 const select = inputElement as unknown as SearchSelect<unknown>;
                 try {
                     const value = select.toForm();
-                    json[element.name] = value;
+                    this.assignValue(inputElement, value, json);
                 } catch (exc) {
                     if (exc instanceof PreventFormSubmit) {
                         throw new PreventFormSubmit(exc.message, element);
@@ -185,13 +239,16 @@ export abstract class Form<T> extends AKElement {
                     throw exc;
                 }
             } else {
-                this.serializeFieldRecursive(inputElement, inputElement.value, json);
+                this.assignValue(inputElement, inputElement.value, json);
             }
         });
         return json as unknown as T;
     }
 
-    private serializeFieldRecursive(
+    /**
+     * Recursively assign `value` into `json` while interpreting the dot-path of `element.name`
+     */
+    private assignValue(
         element: HTMLInputElement,
         value: unknown,
         json: { [key: string]: unknown },
@@ -211,6 +268,12 @@ export abstract class Form<T> extends AKElement {
         parent[nameElements[nameElements.length - 1]] = value;
     }
 
+    /**
+     * Serialize and send the form to the destination. The `send()` method must be overridden for
+     * this to work. If processing the data results in an error, we catch the error, distribute
+     * field-levels errors to the fields, and send the rest of them to the Notifications.
+     *
+     */
     async submit(ev: Event): Promise<unknown | undefined> {
         ev.preventDefault();
         try {
