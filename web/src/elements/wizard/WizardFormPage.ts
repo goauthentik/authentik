@@ -19,6 +19,9 @@ export abstract class WizardForm extends Form<KeyUnknown> {
     @property({ attribute: false })
     nextDataCallback!: (data: KeyUnknown) => Promise<boolean>;
 
+    /* Override the traditional behavior of the form and instead simply serialize the form and push
+     * it's contents to the next page.
+     */
     async submit(): Promise<boolean | undefined> {
         const data = this.serializeForm();
         if (!data) {
