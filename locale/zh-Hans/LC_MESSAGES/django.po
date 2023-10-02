@@ -14,7 +14,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 09:51+0000\n"
+"POT-Creation-Date: 2023-10-02 12:46+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: deluxghost, 2023\n"
 "Language-Team: Chinese Simplified (https://app.transifex.com/authentik/teams/119923/zh-Hans/)\n"
@@ -391,63 +391,63 @@ msgstr "为用户分派"
 msgid "Event user"
 msgstr "事件用户"
 
-#: authentik/events/models.py:484
+#: authentik/events/models.py:491
 msgid "Notification Transport"
 msgstr "通知传输"
 
-#: authentik/events/models.py:485
+#: authentik/events/models.py:492
 msgid "Notification Transports"
 msgstr "通知传输"
 
-#: authentik/events/models.py:491
+#: authentik/events/models.py:498
 msgid "Notice"
 msgstr "通知"
 
-#: authentik/events/models.py:492
+#: authentik/events/models.py:499
 msgid "Warning"
 msgstr "警告"
 
-#: authentik/events/models.py:493
+#: authentik/events/models.py:500
 msgid "Alert"
 msgstr "注意"
 
-#: authentik/events/models.py:518
+#: authentik/events/models.py:525
 msgid "Notification"
 msgstr "通知"
 
-#: authentik/events/models.py:519
+#: authentik/events/models.py:526
 msgid "Notifications"
 msgstr "通知"
 
-#: authentik/events/models.py:529
+#: authentik/events/models.py:536
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr "选择应使用哪些传输方式来通知用户。如果未选择任何内容，则通知将仅显示在 authentik UI 中。"
 
-#: authentik/events/models.py:537
+#: authentik/events/models.py:544
 msgid "Controls which severity level the created notifications will have."
 msgstr "控制被创建的通知的严重性级别。"
 
-#: authentik/events/models.py:542
+#: authentik/events/models.py:549
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr "定义此通知应该发送到哪些用户组。如果留空，则不会发送通知。"
 
-#: authentik/events/models.py:560
+#: authentik/events/models.py:567
 msgid "Notification Rule"
 msgstr "通知规则"
 
-#: authentik/events/models.py:561
+#: authentik/events/models.py:568
 msgid "Notification Rules"
 msgstr "通知规则"
 
-#: authentik/events/models.py:581
+#: authentik/events/models.py:588
 msgid "Webhook Mapping"
 msgstr "Webhook 映射"
 
-#: authentik/events/models.py:582
+#: authentik/events/models.py:589
 msgid "Webhook Mappings"
 msgstr "Webhook 映射"
 
@@ -2135,21 +2135,21 @@ msgstr "没有待处理的用户。"
 msgid "Email sent."
 msgstr "电子邮件已发出。"
 
-#: authentik/stages/email/templates/email/account_confirmation.html:9
+#: authentik/stages/email/templates/email/account_confirmation.html:10
 msgid "Welcome!"
 msgstr "欢迎！"
 
-#: authentik/stages/email/templates/email/account_confirmation.html:12
+#: authentik/stages/email/templates/email/account_confirmation.html:19
 msgid ""
 "We're excited to have you get started. First, you need to confirm your "
 "account. Just press the button below."
 msgstr "我们很高兴您能开始使用。首先，您需要确认您的账户。只需点击下面的按钮。"
 
-#: authentik/stages/email/templates/email/account_confirmation.html:21
+#: authentik/stages/email/templates/email/account_confirmation.html:24
 msgid "Confirm Account"
 msgstr "确认账户"
 
-#: authentik/stages/email/templates/email/account_confirmation.html:30
+#: authentik/stages/email/templates/email/account_confirmation.html:36
 #, python-format
 msgid ""
 "\n"
@@ -2160,51 +2160,52 @@ msgstr ""
 "    如果按钮无效，请复制并在浏览器中粘贴以下链接：%(url)s\n"
 "    "
 
-#: authentik/stages/email/templates/email/account_confirmation.html:35
-msgid ""
-"If you have any questions, just reply to this email—we're always happy to "
-"help out."
-msgstr "如果您有任何疑问，请回复此电子邮件——我们很乐意为您提供帮助。"
-
-#: authentik/stages/email/templates/email/generic.html:24
-msgid "Additional Information"
-msgstr "其他信息"
-
-#: authentik/stages/email/templates/email/password_reset.html:9
+#: authentik/stages/email/templates/email/event_notification.html:46
 #, python-format
 msgid ""
 "\n"
-"        Hi %(username)s,\n"
-"        "
+"    This email was sent from the notification transport <code>%(name)s</code>.\n"
+"    "
 msgstr ""
 "\n"
-"        %(username)s 您好，\n"
-"        "
+"    此邮件由通知递送 <code>%(name)s</code> 发送。\n"
+"    "
 
-#: authentik/stages/email/templates/email/password_reset.html:19
+#: authentik/stages/email/templates/email/password_reset.html:10
+#, python-format
 msgid ""
 "\n"
-"                    You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
-"                    "
+"      Hi %(username)s,\n"
+"      "
 msgstr ""
 "\n"
-"                    您最近请求更改您的 authentik 账户密码。使用下面的按钮设置新密码。\n"
-"                    "
+"      %(username)s 您好，\n"
+"      "
 
-#: authentik/stages/email/templates/email/password_reset.html:33
+#: authentik/stages/email/templates/email/password_reset.html:21
+msgid ""
+"\n"
+"          You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
+"          "
+msgstr ""
+"\n"
+"          您最近请求更改您的 authentik 账户密码。使用下面的按钮设置新密码。\n"
+"          "
+
+#: authentik/stages/email/templates/email/password_reset.html:28
 msgid "Reset Password"
 msgstr "重置密码"
 
-#: authentik/stages/email/templates/email/password_reset.html:45
+#: authentik/stages/email/templates/email/password_reset.html:39
 #, python-format
 msgid ""
 "\n"
-"                    If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
-"                    "
+"    If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
+"    "
 msgstr ""
 "\n"
-"                    如果您没有请求更改密码，请忽略此电子邮件。上面的链接在 %(expires)s 内有效。\n"
-"                    "
+"    如果您没有请求更改密码，请忽略此电子邮件。上面的链接在 %(expires)s 内有效。\n"
+"    "
 
 #: authentik/stages/email/templates/email/setup.html:9
 msgid "authentik Test-Email"
