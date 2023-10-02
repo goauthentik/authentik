@@ -10,8 +10,7 @@ import "@goauthentik/elements/forms/SearchSelect";
 import "@goauthentik/elements/utils/TimeDeltaHelp";
 
 import { msg } from "@lit/localize";
-import { CSSResult } from "lit";
-import { TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
@@ -92,36 +91,25 @@ export class ProxyProviderFormPage extends ModelForm<ProxyProvider, number> {
     }
 
     renderHttpBasic(): TemplateResult {
-        return html`<ak-form-element-horizontal
-                label=${msg("HTTP-Basic Username Key")}
+        return html`<ak-text-input
                 name="basicAuthUserAttribute"
+                label=${msg("HTTP-Basic Username Key")}
+                value="${ifDefined(this.instance?.basicAuthUserAttribute)}"
+                help=${msg(
+                    "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
+                )}
             >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.basicAuthUserAttribute)}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "User/Group Attribute used for the user part of the HTTP-Basic Header. If not set, the user's Email address is used.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>
-            <ak-form-element-horizontal
-                label=${msg("HTTP-Basic Password Key")}
+            </ak-text-input>
+
+            <ak-text-input
                 name="basicAuthPasswordAttribute"
+                label=${msg("HTTP-Basic Password Key")}
+                value="${ifDefined(this.instance?.basicAuthPasswordAttribute)}"
+                help=${msg(
+                    "User/Group Attribute used for the password part of the HTTP-Basic Header.",
+                )}
             >
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.basicAuthPasswordAttribute)}"
-                    class="pf-c-form-control"
-                />
-                <p class="pf-c-form__helper-text">
-                    ${msg(
-                        "User/Group Attribute used for the password part of the HTTP-Basic Header.",
-                    )}
-                </p>
-            </ak-form-element-horizontal>`;
+            </ak-text-input>`;
     }
 
     renderModeSelector(): TemplateResult {

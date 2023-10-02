@@ -5,4 +5,5 @@ import authentikTheme from "./authentikTheme";
 
 addons.setConfig({
     theme: authentikTheme,
+    enableShortcuts: false,
 });
