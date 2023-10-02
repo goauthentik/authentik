@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 09:51+0000\n"
+"POT-Creation-Date: 2023-10-02 12:46+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -375,63 +375,63 @@ msgstr ""
 msgid "Event user"
 msgstr ""
 
-#: authentik/events/models.py:484
+#: authentik/events/models.py:491
 msgid "Notification Transport"
 msgstr ""
 
-#: authentik/events/models.py:485
+#: authentik/events/models.py:492
 msgid "Notification Transports"
 msgstr ""
 
-#: authentik/events/models.py:491
+#: authentik/events/models.py:498
 msgid "Notice"
 msgstr ""
 
-#: authentik/events/models.py:492
+#: authentik/events/models.py:499
 msgid "Warning"
 msgstr ""
 
-#: authentik/events/models.py:493
+#: authentik/events/models.py:500
 msgid "Alert"
 msgstr ""
 
-#: authentik/events/models.py:518
+#: authentik/events/models.py:525
 msgid "Notification"
 msgstr ""
 
-#: authentik/events/models.py:519
+#: authentik/events/models.py:526
 msgid "Notifications"
 msgstr ""
 
-#: authentik/events/models.py:529
+#: authentik/events/models.py:536
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
 msgstr ""
 
-#: authentik/events/models.py:537
+#: authentik/events/models.py:544
 msgid "Controls which severity level the created notifications will have."
 msgstr ""
 
-#: authentik/events/models.py:542
+#: authentik/events/models.py:549
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
 msgstr ""
 
-#: authentik/events/models.py:560
+#: authentik/events/models.py:567
 msgid "Notification Rule"
 msgstr ""
 
-#: authentik/events/models.py:561
+#: authentik/events/models.py:568
 msgid "Notification Rules"
 msgstr ""
 
-#: authentik/events/models.py:581
+#: authentik/events/models.py:588
 msgid "Webhook Mapping"
 msgstr ""
 
-#: authentik/events/models.py:582
+#: authentik/events/models.py:589
 msgid "Webhook Mappings"
 msgstr ""
 
@@ -2099,21 +2099,21 @@ msgstr ""
 msgid "Email sent."
 msgstr ""
 
-#: authentik/stages/email/templates/email/account_confirmation.html:9
+#: authentik/stages/email/templates/email/account_confirmation.html:10
 msgid "Welcome!"
 msgstr ""
 
-#: authentik/stages/email/templates/email/account_confirmation.html:12
+#: authentik/stages/email/templates/email/account_confirmation.html:19
 msgid ""
 "We're excited to have you get started. First, you need to confirm your "
 "account. Just press the button below."
 msgstr ""
 
-#: authentik/stages/email/templates/email/account_confirmation.html:21
+#: authentik/stages/email/templates/email/account_confirmation.html:24
 msgid "Confirm Account"
 msgstr ""
 
-#: authentik/stages/email/templates/email/account_confirmation.html:30
+#: authentik/stages/email/templates/email/account_confirmation.html:36
 #, python-format
 msgid ""
 "\n"
@@ -2122,43 +2122,42 @@ msgid ""
 "    "
 msgstr ""
 
-#: authentik/stages/email/templates/email/account_confirmation.html:35
-msgid ""
-"If you have any questions, just reply to this email—we're always happy to "
-"help out."
-msgstr ""
-
-#: authentik/stages/email/templates/email/generic.html:24
-msgid "Additional Information"
-msgstr ""
-
-#: authentik/stages/email/templates/email/password_reset.html:9
+#: authentik/stages/email/templates/email/event_notification.html:46
 #, python-format
 msgid ""
 "\n"
-"        Hi %(username)s,\n"
-"        "
+"    This email was sent from the notification transport <code>%(name)s</"
+"code>.\n"
+"    "
 msgstr ""
 
-#: authentik/stages/email/templates/email/password_reset.html:19
+#: authentik/stages/email/templates/email/password_reset.html:10
+#, python-format
 msgid ""
 "\n"
-"                    You recently requested to change your password for your "
-"authentik account. Use the button below to set a new password.\n"
-"                    "
+"      Hi %(username)s,\n"
+"      "
 msgstr ""
 
-#: authentik/stages/email/templates/email/password_reset.html:33
+#: authentik/stages/email/templates/email/password_reset.html:21
+msgid ""
+"\n"
+"          You recently requested to change your password for your authentik "
+"account. Use the button below to set a new password.\n"
+"          "
+msgstr ""
+
+#: authentik/stages/email/templates/email/password_reset.html:28
 msgid "Reset Password"
 msgstr ""
 
-#: authentik/stages/email/templates/email/password_reset.html:45
+#: authentik/stages/email/templates/email/password_reset.html:39
 #, python-format
 msgid ""
 "\n"
-"                    If you did not request a password change, please ignore "
-"this Email. The link above is valid for %(expires)s.\n"
-"                    "
+"    If you did not request a password change, please ignore this Email. The "
+"link above is valid for %(expires)s.\n"
+"    "
 msgstr ""
 
 #: authentik/stages/email/templates/email/setup.html:9

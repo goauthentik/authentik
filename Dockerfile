@@ -1,5 +1,5 @@
 # Stage 1: Build website
-FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as website-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:20 as website-builder
 
 ENV NODE_ENV=production
 
@@ -17,7 +17,7 @@ COPY ./SECURITY.md /work/
 RUN npm run build-docs-only
 
 # Stage 2: Build webui
-FROM --platform=${BUILDPLATFORM} docker.io/node:20.5 as web-builder
+FROM --platform=${BUILDPLATFORM} docker.io/node:20 as web-builder
 
 ENV NODE_ENV=production
 
@@ -146,10 +146,10 @@ USER 1000
 ENV TMPDIR=/dev/shm/ \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    PATH="/ak-root/venv/bin:$PATH" \
+    PATH="/ak-root/venv/bin:/lifecycle:$PATH" \
     VENV_PATH="/ak-root/venv" \
     POETRY_VIRTUALENVS_CREATE=false
 
-HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "/lifecycle/ak", "healthcheck" ]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=60s --retries=3 CMD [ "ak", "healthcheck" ]
 
-ENTRYPOINT [ "dumb-init", "--", "/lifecycle/ak" ]
+ENTRYPOINT [ "dumb-init", "--", "ak" ]

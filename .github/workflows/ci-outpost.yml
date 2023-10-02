@@ -39,6 +39,8 @@ jobs:
       - uses: actions/setup-go@v4
         with:
           go-version-file: "go.mod"
+      - name: Setup authentik env
+        uses: ./.github/actions/setup
       - name: Generate API
         run: make gen-client-go
       - name: Go unittests
@@ -124,7 +126,7 @@ jobs:
           go-version-file: "go.mod"
       - uses: actions/setup-node@v3
         with:
-          node-version: "20.5"
+          node-version: "20"
           cache: "npm"
           cache-dependency-path: web/package-lock.json
       - name: Generate API

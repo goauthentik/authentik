@@ -123,6 +123,7 @@ class LDAPSyncTests(TestCase):
             user = User.objects.filter(username="user0_sn").first()
             self.assertEqual(user.attributes["foo"], "bar")
             self.assertFalse(user.is_active)
+            self.assertEqual(user.path, "goauthentik.io/sources/ldap/users/foo")
             self.assertFalse(User.objects.filter(username="user1_sn").exists())
 
     def test_sync_users_openldap(self):

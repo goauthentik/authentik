@@ -10,6 +10,7 @@ import (
 
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
+	"github.com/redis/go-redis/v9"
 	"goauthentik.io/api/v3"
 	"goauthentik.io/internal/config"
 	"goauthentik.io/internal/outpost/proxyv2/codecs"
@@ -28,7 +29,6 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 		// Add one to the validity to ensure we don't have a session with indefinite length
 		maxAge = int(*t) + 1
 	}
-
 	if a.isEmbedded {
 		redisURL, err := url.Parse(config.Get().Redis.URL)
 		if err != nil {
@@ -91,7 +91,7 @@ func (a *Application) getAllCodecs() []securecookie.Codec {
 	return cs
 }
 
-func (a *Application) Logout(sub string) error {
+func (a *Application) Logout(ctx context.Context, sub string) error {
 	if _, ok := a.sessions.(*sessions.FilesystemStore); ok {
 		files, err := os.ReadDir(os.TempDir())
 		if err != nil {

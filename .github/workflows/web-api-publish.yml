@@ -19,7 +19,7 @@ jobs:
           token: ${{ steps.generate_token.outputs.token }}
       - uses: actions/setup-node@v3
         with:
-          node-version: "20.5"
+          node-version: "20"
           registry-url: "https://registry.npmjs.org"
       - name: Generate API Client
         run: make gen-client-ts

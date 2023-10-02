@@ -1,4 +1,3 @@
-env
 htmlcov
 *.env.yml
 **/node_modules
@@ -6,7 +5,6 @@ dist/**
 build/**
 build_docs/**
 *Dockerfile
-authentik/enterprise
 blueprints/local
 .git
 !gen-ts-api/node_modules

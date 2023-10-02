@@ -117,7 +117,12 @@ func (st *RedisStore) New(r *http.Request, name string) (*sessions.Session, erro
 	return session, err
 }
 
-// Save should persist session to the underlying store implementation.
+// Save adds a single session to the response.
+//
+// If the Options.MaxAge of the session is <= 0 then the session file will be
+// deleted from the store. With this process it enforces the properly
+// session cookie handling so no need to trust in the cookie management in the
+// web browser.
 func (st *RedisStore) Save(r *http.Request, w http.ResponseWriter, session *sessions.Session) error {
 	// Marked for deletion.
 	if session.Options.MaxAge <= 0 {

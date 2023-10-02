@@ -2,6 +2,7 @@
 import re
 from copy import copy
 from dataclasses import asdict, is_dataclass
+from datetime import date, datetime, time, timedelta
 from enum import Enum
 from pathlib import Path
 from types import GeneratorType
@@ -13,6 +14,7 @@ from django.core.handlers.wsgi import WSGIRequest
 from django.db import models
 from django.db.models.base import Model
 from django.http.request import HttpRequest
+from django.utils import timezone
 from django.views.debug import SafeExceptionReporterFilter
 from geoip2.models import City
 from guardian.utils import get_anonymous_user
@@ -84,7 +86,7 @@ def get_user(user: User, original_user: Optional[User] = None) -> dict[str, Any]
     return user_data
 
 
-# pylint: disable=too-many-return-statements
+# pylint: disable=too-many-return-statements,too-many-branches
 def sanitize_item(value: Any) -> Any:
     """Sanitize a single item, ensure it is JSON parsable"""
     if is_dataclass(value):
@@ -134,6 +136,23 @@ def sanitize_item(value: Any) -> Any:
             "type": value.__name__,
             "module": value.__module__,
         }
+    # See
+    # https://github.com/encode/django-rest-framework/blob/master/rest_framework/utils/encoders.py
+    # For Date Time string spec, see ECMA 262
+    # https://ecma-international.org/ecma-262/5.1/#sec-15.9.1.15
+    if isinstance(value, datetime):
+        representation = value.isoformat()
+        if representation.endswith("+00:00"):
+            representation = representation[:-6] + "Z"
+        return representation
+    if isinstance(value, date):
+        return value.isoformat()
+    if isinstance(value, time):
+        if timezone and timezone.is_aware(value):
+            raise ValueError("JSON can't represent timezone-aware times.")
+        return value.isoformat()
+    if isinstance(value, timedelta):
+        return str(value.total_seconds())
     return value
 
 
