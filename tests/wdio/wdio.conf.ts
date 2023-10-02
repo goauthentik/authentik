@@ -1,5 +1,4 @@
 import type { Options } from "@wdio/types";
-import { browser } from "@wdio/globals";
 
 export const config: Options.Testrunner = {
     //
@@ -74,7 +73,7 @@ export const config: Options.Testrunner = {
                                   "--disable-dev-shm-usage",
                               ]
                             : [];
-                    })()
+                    })(),
                 ),
             },
         },

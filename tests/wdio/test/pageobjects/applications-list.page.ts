@@ -16,7 +16,6 @@ class ApplicationsListPage extends AdminPage {
     async open() {
         return await super.open("if/admin/#/core/applications");
     }
-    
 }
 
 export default new ApplicationsListPage();

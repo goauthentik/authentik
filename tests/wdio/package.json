@@ -1,5 +1,6 @@
 {
-    "name": "my-new-project",
+    "name": "@goauthentik/web-tests",
+    "private": true,
     "type": "module",
     "devDependencies": {
         "@trivago/prettier-plugin-sort-imports": "^4.2.0",
@@ -21,6 +22,7 @@
     "scripts": {
         "wdio": "wdio run ./wdio.conf.ts",
         "lint:precommit": "eslint --max-warnings 0 --config ./.eslintrc.precommit.json $(git status --porcelain . | grep '^[AM?][M?]' | cut -d'/' -f3- | grep -E '\\.(ts|js|tsx|jsx)$')",
+        "lint": "eslint . --max-warnings 0 --fix",
         "lint:spelling": "codespell -D - -D $(git rev-parse --show-toplevel 2> /dev/null)/.github/codespell-dictionary.txt -I $(git rev-parse --show-toplevel 2> /dev/null)/.github/codespell-words.txt ./test -s",
         "precommit": "run-s lint:precommit lint:spelling prettier",
         "prettier-check": "prettier --check .",

@@ -30,7 +30,6 @@ export class ApplicationWizard extends CustomListenerElement(
         this.steps = newSteps();
     }
 
-    
     /**
      * We're going to be managing the content of the forms by percolating all of the data up to this
      * class, which will ultimately transmit all of it to the server as a transaction. The
