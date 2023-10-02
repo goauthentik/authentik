@@ -24,6 +24,10 @@ This ingress handles authentication requests, and the sign-in flow.
 
 Add these annotations to the ingress you want to protect
 
+:::warning
+This configuration requires that you enable [`allow-snippet-annotations`](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/#allow-snippet-annotations), for example by setting `controller.allowSnippetAnnotations` to `true` in your helm values for the ingress-nginx installation.
+:::
+
 ```yaml
 metadata:
     annotations:

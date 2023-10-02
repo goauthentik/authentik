@@ -62,7 +62,7 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
                                 type="checkbox"
                                 ?checked=${first(
                                     this.instance?.continueFlowWithoutInvitation,
-                                    true,
+                                    false,
                                 )}
                             />
                             <span class="pf-c-switch__toggle">

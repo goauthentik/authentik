@@ -45,9 +45,11 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 
 		rs.KeyPrefix(RedisKeyPrefix)
 		rs.Options(sessions.Options{
-			HttpOnly: strings.ToLower(externalHost.Scheme) == "https",
+			HttpOnly: true,
+			Secure:   strings.ToLower(externalHost.Scheme) == "https",
 			Domain:   *p.CookieDomain,
 			SameSite: http.SameSiteLaxMode,
+			MaxAge:   maxAge,
 		})
 
 		a.log.Trace("using redis session backend")

@@ -73,12 +73,12 @@ class Invitation(SerializerModel, ExpiringModel):
 
     @property
     def serializer(self) -> Serializer:
-        from authentik.stages.consent.api import UserConsentSerializer
+        from authentik.stages.invitation.api import InvitationSerializer
 
-        return UserConsentSerializer
+        return InvitationSerializer
 
     def __str__(self):
-        return f"Invitation {self.invite_uuid.hex} created by {self.created_by}"
+        return f"Invitation {str(self.invite_uuid)} created by {self.created_by}"
 
     class Meta:
         verbose_name = _("Invitation")

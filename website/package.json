@@ -22,14 +22,14 @@
         "@mdx-js/react": "^1.6.22",
         "clsx": "^2.0.0",
         "disqus-react": "^1.1.5",
-        "postcss": "^8.4.30",
+        "postcss": "^8.4.31",
         "rapidoc": "^9.3.4",
         "react": "^17.0.2",
         "react-before-after-slider-component": "^1.1.8",
         "react-dom": "^17.0.2",
         "react-feather": "^2.0.10",
         "react-toggle": "^4.1.3",
-        "react-tooltip": "^5.21.4",
+        "react-tooltip": "^5.21.5",
         "remark-github": "^12.0.0"
     },
     "browserslist": {
