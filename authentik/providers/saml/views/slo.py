@@ -30,6 +30,7 @@ class SAMLSLOView(PolicyAccessView):
     Calls get/post handler."""
 
     def resolve_provider_application(self):
+        """Set the 'application' attribute to an Application object and the 'provider' attribute to a SAMLProvider object."""
         self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
         self.provider: SAMLProvider = get_object_or_404(
             SAMLProvider, pk=self.application.provider_id
@@ -61,6 +62,12 @@ class SAMLSLOBindingRedirectView(SAMLSLOView):
     """SAML Handler for SLO/Redirect bindings, which are sent via GET"""
 
     def check_saml_request(self) -> Optional[HttpRequest]:
+        """
+        Check if a SAML request is present in the GET parameters and parse it if so.
+
+        Returns:
+            Optional[HttpRequest]: The HTTP request if a SAML request is present, None otherwise.
+        """
         if REQUEST_KEY_SAML_REQUEST not in self.request.GET:
             LOGGER.info("check_saml_request: SAML payload missing")
             return bad_request_message(self.request, "The SAML request payload is missing.")
@@ -88,6 +95,14 @@ class SAMLSLOBindingPOSTView(SAMLSLOView):
     """SAML Handler for SLO/POST bindings"""
 
     def check_saml_request(self) -> Optional[HttpRequest]:
+        """
+        Check if a SAML request exists in the payload and parse it.
+
+        This method checks if the SAML request exists in the payload and parses it if it does. If the SAML request is missing, it returns a bad request message.
+
+        Returns:
+            Optional[HttpRequest]: The parsed SAML request if it exists, None otherwise.
+        """
         payload = self.request.POST
         if REQUEST_KEY_SAML_REQUEST not in payload:
             LOGGER.info("check_saml_request: SAML payload missing")

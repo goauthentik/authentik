@@ -49,11 +49,13 @@ class RedirectUriError(OAuth2Error):
     allowed_uris: list[str]
 
     def __init__(self, provided_uri: str, allowed_uris: list[str]) -> None:
+        """Initialize the RedirectUriError instance."""
         super().__init__()
         self.provided_uri = provided_uri
         self.allowed_uris = allowed_uris
 
     def to_event(self, **kwargs) -> Event:
+        """Generate an Event object with an error message."""
         return super().to_event(
             (
                 f"Invalid redirect URI was used. Client used '{self.provided_uri}'. "
@@ -72,10 +74,12 @@ class ClientIdError(OAuth2Error):
     client_id: str
 
     def __init__(self, client_id: str) -> None:
+        """Initialize the ClientIdError instance."""
         super().__init__()
         self.client_id = client_id
 
     def to_event(self, **kwargs) -> Event:
+        """Generate an Event object with an error message."""
         return super().to_event(f"Invalid client identifier: {self.client_id}.", **kwargs)
 
 
@@ -150,6 +154,17 @@ class AuthorizeError(OAuth2Error):
         state: str,
         description: Optional[str] = None,
     ):
+        """Initialize a new instance of the class.
+
+        This method initializes the class attributes based on the input arguments.
+
+        Parameters:
+            redirect_uri (str): The redirect URI.
+            error (str): The error.
+            grant_type (str): The grant type.
+            state (str): The state.
+            description (Optional[str], optional): The description. Defaults to None.
+        """
         super().__init__()
         self.error = error
         if description:
@@ -219,6 +234,12 @@ class TokenError(OAuth2Error):
     }
 
     def __init__(self, error):
+        """
+        Initialize a new instance of TokenError with an error parameter.
+
+        Parameters:
+            error (str): The error code representing the token endpoint error.
+        """
         super().__init__()
         self.error = error
         self.description = self.errors[error]
@@ -292,6 +313,12 @@ class BearerTokenError(OAuth2Error):
     }
 
     def __init__(self, code):
+        """
+        Initialize a BearerTokenError object with a specific error code.
+
+        Parameters:
+            code (str): The error code representing the OAuth2 error.
+        """
         super().__init__()
         self.code = code
         error_tuple = self.errors.get(code, ("", ""))

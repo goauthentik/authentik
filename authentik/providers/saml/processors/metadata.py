@@ -33,13 +33,14 @@ class MetadataProcessor:
     force_binding: Optional[str]
 
     def __init__(self, provider: SAMLProvider, request: HttpRequest):
+        """Initialize the MetadataProcessor class."""
         self.provider = provider
         self.http_request = request
         self.force_binding = None
         self.xml_id = "_" + sha256(f"{provider.name}-{provider.pk}".encode("ascii")).hexdigest()
 
     def get_signing_key_descriptor(self) -> Optional[Element]:
-        """Get Signing KeyDescriptor, if enabled for the provider"""
+        """Get the signing KeyDescriptor, if enabled for the provider."""
         if not self.provider.signing_kp:
             return None
         key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
@@ -53,7 +54,16 @@ class MetadataProcessor:
         return key_descriptor
 
     def get_name_id_formats(self) -> Iterator[Element]:
-        """Get compatible NameID Formats"""
+        """
+        Get compatible NameID Formats
+
+        This function retrieves a list of compatible NameID formats and creates
+        an 'Element' object for each format. The 'Element' objects are then
+        yielded one by one.
+
+        Returns:
+            Iterator[Element]: An iterator of 'Element' objects.
+        """
         formats = [
             SAML_NAME_ID_FORMAT_EMAIL,
             SAML_NAME_ID_FORMAT_PERSISTENT,
@@ -116,6 +126,16 @@ class MetadataProcessor:
             yield element
 
     def _prepare_signature(self, entity_descriptor: Element):
+        """
+        Prepare the signature for the given entity descriptor.
+
+        This function takes in an entity_descriptor element and prepares the signature for it.
+        It retrieves the sign_algorithm_transform based on the provider's signature_algorithm.
+        It then creates a signature template using xmlsec.template.create method and appends it to the entity_descriptor.
+
+        Parameters:
+            entity_descriptor (Element): The entity descriptor element.
+        """
         sign_algorithm_transform = SIGN_ALGORITHM_TRANSFORM_MAP.get(
             self.provider.signature_algorithm, xmlsec.constants.TransformRsaSha1
         )
@@ -128,6 +148,14 @@ class MetadataProcessor:
         entity_descriptor.append(signature)
 
     def _sign(self, entity_descriptor: Element):
+        """
+        Create a digital signature for an XML document.
+
+        This private method is responsible for creating a digital signature for an XML document using the xmlsec library.
+
+        Parameters:
+            entity_descriptor (Element): An XML element representing the entity descriptor.
+        """
         digest_algorithm_transform = DIGEST_ALGORITHM_TRANSLATION_MAP.get(
             self.provider.digest_algorithm, xmlsec.constants.TransformSha1
         )
@@ -159,7 +187,13 @@ class MetadataProcessor:
         ctx.sign(signature_node)
 
     def build_entity_descriptor(self) -> str:
-        """Build full EntityDescriptor"""
+        """Build full EntityDescriptor
+
+        This function builds a full EntityDescriptor XML object representing the metadata of an entity.
+
+        Returns:
+            str: The XML representation of the entity_descriptor.
+        """
         entity_descriptor = Element(f"{{{NS_SAML_METADATA}}}EntityDescriptor", nsmap=NS_MAP)
         entity_descriptor.attrib["ID"] = self.xml_id
         entity_descriptor.attrib["entityID"] = self.provider.issuer

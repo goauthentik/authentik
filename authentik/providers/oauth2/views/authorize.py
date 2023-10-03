@@ -33,6 +33,7 @@ from authentik.lib.utils.time import timedelta_from_string
 from authentik.lib.utils.urls import redirect_with_qs
 from authentik.lib.views import bad_request_message
 from authentik.policies.types import PolicyRequest
+
 from authentik.policies.views import PolicyAccessView, RequestValidationError
 from authentik.providers.oauth2.constants import (
     PKCE_METHOD_PLAIN,
@@ -164,6 +165,13 @@ class OAuthAuthorizationParams:
         )
 
     def __post_init__(self):
+        """
+        Perform post-initialization checks and validations.
+
+        This function is called after the initialization of an object. It performs
+        various checks and validations on the object's attributes and raises
+        appropriate exceptions if any check fails.
+        """
         self.provider: OAuth2Provider = OAuth2Provider.objects.filter(
             client_id=self.client_id
         ).first()
@@ -325,11 +333,30 @@ class AuthorizationFlowInitView(PolicyAccessView):
             raise RequestValidationError(error.get_response(self.request))
 
     def resolve_provider_application(self):
+        """
+        Retrieve the OAuth2 provider application for the given client_id.
+
+        This method retrieves the 'client_id' from the request GET parameters, then uses it to
+        get the corresponding 'OAuth2Provider' object. The 'application' attribute of the provider
+        is also assigned to the 'application' attribute of the class.
+        """
         client_id = self.request.GET.get("client_id")
         self.provider = get_object_or_404(OAuth2Provider, client_id=client_id)
         self.application = self.provider.application
 
     def modify_policy_request(self, request: PolicyRequest) -> PolicyRequest:
+        """
+        Modify the 'context' attribute of the provided 'PolicyRequest' object.
+
+        This method takes a 'PolicyRequest' object as input and modifies its 'context' attribute by adding several
+        key-value pairs based on the 'self.params' attributes of the class.
+
+        Parameters:
+            request (PolicyRequest): The 'PolicyRequest' object to be modified.
+
+        Returns:
+            PolicyRequest: The modified 'PolicyRequest' object.
+        """
         request.context["oauth_scopes"] = self.params.scope
         request.context["oauth_grant_type"] = self.params.grant_type
         request.context["oauth_code_challenge"] = self.params.code_challenge
@@ -419,7 +446,9 @@ class AuthorizationFlowInitView(PolicyAccessView):
 
 
 class OAuthFulfillmentStage(StageView):
-    """Final stage, restores params from Flow."""
+    """
+    Final stage, restores params from Flow.
+    """
 
     params: OAuthAuthorizationParams
     provider: OAuth2Provider
@@ -461,7 +490,18 @@ class OAuthFulfillmentStage(StageView):
         return HttpResponseRedirectScheme(uri, allowed_schemes=[parsed.scheme])
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        """Wrapper when this stage gets hit with a post request"""
+        """Wrapper when this stage gets hit with a post request
+
+        This method acts as a wrapper for the 'get' method in a Django view. It takes a 'request' object, along with any additional arguments and keyword arguments, and returns the result of calling the 'get' method with the same arguments. The purpose of this wrapper method is to handle POST requests in the same way as GET requests.
+
+        Parameters:
+            request (HttpRequest): The HTTP request object.
+            *args: Additional positional arguments.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            HttpResponse: The response returned by the 'get' method.
+        """
         return self.get(request, *args, **kwargs)
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:

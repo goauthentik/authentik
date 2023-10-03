@@ -33,7 +33,13 @@ ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 
 @dataclass(slots=True)
 class AuthNRequest:
-    """AuthNRequest Dataclass"""
+    """AuthNRequest Dataclass
+
+    Attributes:
+        id (Optional[str]): The identifier of the authentication request.
+        relay_state (Optional[str]): The relay state of the request.
+        name_id_policy (str): The format of the name identifier to be used in the authentication request.
+    """
 
     id: Optional[str] = None
 
@@ -48,10 +54,29 @@ class AuthNRequestParser:
     provider: SAMLProvider
 
     def __init__(self, provider: SAMLProvider):
+        """
+        Initialize a new AuthNRequestParser with the specified SAMLProvider.
+
+        Parameters:
+            provider (SAMLProvider): The SAML provider to use for parsing authentication requests.
+        """
         self.provider = provider
         self.logger = get_logger().bind(provider=self.provider)
 
     def _parse_xml(self, decoded_xml: str | bytes, relay_state: Optional[str]) -> AuthNRequest:
+        """
+        Parse the decoded XML and return an instance of AuthNRequest.
+
+        This method takes in a decoded XML string or bytes and an optional relay state as parameters.
+        It parses the XML using the ElementTree.fromstring method.
+
+        Parameters:
+            decoded_xml (str | bytes): The decoded XML string or bytes.
+            relay_state (Optional[str]): An optional relay state.
+
+        Returns:
+            AuthNRequest: An instance of AuthNRequest.
+        """
         root = ElementTree.fromstring(decoded_xml)
 
         # http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf

@@ -79,6 +79,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
             "requests based on its value."
         ),
     )
+
     basic_auth_enabled = models.BooleanField(
         default=False,
         verbose_name=_("Set HTTP-Basic Authentication"),
@@ -142,15 +143,18 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         self.redirect_uris = _get_callback_url(self.external_host)
 
     def __str__(self):
+        """Return a string representation of the class instance."""
         return f"Proxy Provider {self.name}"
 
     def get_required_objects(self) -> Iterable[models.Model | str]:
+        """Return a list of required objects for the class instance."""
         required_models = [self]
         if self.certificate is not None:
             required_models.append(self.certificate)
         return required_models
 
     class Meta:
+        """Metadata for the main class."""
         verbose_name = _("Proxy Provider")
         verbose_name_plural = _("Proxy Providers")
         authentik_used_by_shadows = ["authentik_providers_oauth2.oauth2provider"]

@@ -24,6 +24,7 @@ class TokenIntrospectionParams:
     id_token: IDToken = field(init=False)
 
     def __post_init__(self):
+        """Check the validity of the token and raise an exception if it is expired."""
         if self.token.is_expired:
             LOGGER.debug("Token is not valid")
             raise TokenIntrospectionError()

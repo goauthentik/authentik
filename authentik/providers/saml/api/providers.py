@@ -27,6 +27,7 @@ from authentik.core.models import Provider
 from authentik.flows.models import Flow, FlowDesignation
 from authentik.providers.saml.models import SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
+
 from authentik.providers.saml.processors.authn_request_parser import AuthNRequest
 from authentik.providers.saml.processors.metadata import MetadataProcessor
 from authentik.providers.saml.processors.metadata_parser import ServiceProviderMetadataParser
@@ -101,7 +102,17 @@ class SAMLProviderSerializer(ProviderSerializer):
             return "-"
 
     def get_url_slo_post(self, instance: SAMLProvider) -> str:
-        """Get SLO POST URL"""
+        """
+        Get SLO POST URL
+
+        This function retrieves the Single Logout (SLO) POST URL for a given SAMLProvider instance. It constructs the URL using the `reverse` function with the 'authentik_providers_saml:slo-post' view name and the 'application_slug' argument.
+
+        Parameters:
+            instance (SAMLProvider): The SAMLProvider instance.
+
+        Returns:
+            str: The SLO POST URL.
+        """
         if "request" not in self._context:
             return ""
         request: HttpRequest = self._context["request"]._request
@@ -116,7 +127,17 @@ class SAMLProviderSerializer(ProviderSerializer):
             return "-"
 
     def get_url_slo_redirect(self, instance: SAMLProvider) -> str:
-        """Get SLO redirect URL"""
+        """
+        Get SLO redirect URL
+
+        This function retrieves the Single Logout (SLO) redirect URL for a given SAMLProvider instance. It constructs the URL using the `reverse` function with the 'authentik_providers_saml:slo-redirect' view name and the 'application_slug' argument.
+
+        Parameters:
+            instance (SAMLProvider): The SAMLProvider instance.
+
+        Returns:
+            str: The SLO redirect URL.
+        """
         if "request" not in self._context:
             return ""
         request: HttpRequest = self._context["request"]._request
@@ -131,6 +152,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             return "-"
 
     class Meta:
+        """A class representing metadata for a SAML provider."""
         model = SAMLProvider
         fields = ProviderSerializer.Meta.fields + [
             "acs_url",

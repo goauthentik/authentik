@@ -74,7 +74,15 @@ class GitHubUserTeamsView(View):
     """Emulate GitHub's /user/teams API Endpoint"""
 
     def get(self, request: HttpRequest, token: RefreshToken) -> HttpResponse:
-        """Emulate GitHub's /user/teams API Endpoint"""
+        """Emulate GitHub's /user/teams API Endpoint
+
+        Parameters:
+            request (HttpRequest): The HTTP request.
+            token (RefreshToken): The refresh token.
+
+        Returns:
+            HttpResponse: The JSON response containing the list of organization dictionaries.
+        """
         user = token.user
 
         orgs_response = []

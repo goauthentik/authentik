@@ -47,6 +47,7 @@ class SAMLFlowFinalView(ChallengeStageView):
     response_class = AutoSubmitChallengeResponse
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Get the response for the given request."""
         application: Application = self.executor.plan.context[PLAN_CONTEXT_APPLICATION]
         provider: SAMLProvider = get_object_or_404(SAMLProvider, pk=application.provider_id)
         if SESSION_KEY_AUTH_N_REQUEST not in self.request.session:
@@ -101,11 +102,38 @@ class SAMLFlowFinalView(ChallengeStageView):
         return bad_request_message(request, "Invalid sp_binding specified")
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        """
+        Get the challenge for the given arguments.
+
+        This method takes in variable arguments and keyword arguments and returns
+        an instance of the Challenge class with the provided data.
+
+        Returns:
+            Challenge: An instance of the AutosubmitChallenge class with the provided data.
+        """
         return AutosubmitChallenge(data=kwargs)
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        """
+        Check if the challenge is valid.
+
+        This method takes in a ChallengeResponse object and returns an
+        HttpResponseBadRequest object. It will never get executed since the challenge
+        will always redirect to the SP.
+
+        Parameters:
+            response (ChallengeResponse): The challenge response object.
+
+        Returns:
+            HttpResponse: An instance of HttpResponseBadRequest.
+        """
         # We'll never get here since the challenge redirects to the SP
         return HttpResponseBadRequest()
 
     def cleanup(self):
+        """
+        Clean up the session.
+
+        This method removes the SESSION_KEY_AUTH_N_REQUEST key from the session.
+        """
         self.request.session.pop(SESSION_KEY_AUTH_N_REQUEST, None)

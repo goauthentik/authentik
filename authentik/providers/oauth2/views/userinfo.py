@@ -67,7 +67,15 @@ class UserInfoView(View):
 
     def get_claims(self, provider: OAuth2Provider, token: BaseGrantModel) -> dict[str, Any]:
         """Get a dictionary of claims from scopes that the token
-        requires and are assigned to the provider."""
+        requires and are assigned to the provider.
+
+        Parameters:
+            provider (OAuth2Provider): The OAuth2 provider.
+            token (BaseGrantModel): The token object.
+
+        Returns:
+            dict[str, Any]: A dictionary of claims.
+        """
 
         scopes_from_client = token.scope
         final_claims = {}

@@ -220,7 +220,12 @@ class OAuth2Provider(Provider):
 
     @cached_property
     def jwt_key(self) -> tuple[str | PrivateKeyTypes, str]:
-        """Get either the configured certificate or the client secret"""
+        """
+        Get either the configured certificate or the client secret
+
+        Returns:
+            tuple[str | PrivateKeyTypes, str]: The configured certificate or the client secret and the JWT algorithm
+        """
         if not self.signing_key:
             # No Certificate at all, assume HS256
             return self.client_secret, JWTAlgorithms.HS256

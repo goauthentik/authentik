@@ -124,6 +124,7 @@ def protected_resource_view(scopes: list[str]):
     This decorator also injects the token into `kwargs`"""
 
     def wrapper(view):
+
         def view_wrapper(request: HttpRequest, *args, **kwargs):
             if request.method == "OPTIONS":
                 return view(request, *args, **kwargs)

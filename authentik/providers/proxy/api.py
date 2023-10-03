@@ -65,6 +65,7 @@ class ProxyProviderSerializer(ProviderSerializer):
         return attrs
 
     def create(self, validated_data: dict):
+        """Create a new ProxyProvider instance"""
         instance: ProxyProvider = super().create(validated_data)
         instance.set_oauth_defaults()
         instance.save()
@@ -155,6 +156,9 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         return list(scope_names)
 
     class Meta:
+        """
+        This is a class representing the metadata for a proxy provider.
+        """
         model = ProxyProvider
         fields = [
             "pk",

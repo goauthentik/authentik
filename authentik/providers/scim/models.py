@@ -49,14 +49,29 @@ class SCIMProvider(BackchannelProvider):
 
     @property
     def serializer(self) -> type[Serializer]:
+        """
+        Get the serializer class for SCIM Provider.
+
+        Returns:
+            type[Serializer]: The serializer class for SCIM Provider.
+        """
         from authentik.providers.scim.api.providers import SCIMProviderSerializer
 
         return SCIMProviderSerializer
 
     def __str__(self):
+        """
+        Return a string representation of the SCIM Provider object.
+
+        Returns:
+            str: String representation of the SCIM Provider object.
+        """
         return f"SCIM Provider {self.name}"
 
     class Meta:
+        """
+        Meta class for SCIM Provider.
+        """
         verbose_name = _("SCIM Provider")
         verbose_name_plural = _("SCIM Providers")
 

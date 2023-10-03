@@ -24,7 +24,14 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
     """SCIM client for groups"""
 
     def write(self, obj: Group):
-        """Write a group"""
+        """Write a group
+
+        Parameters:
+            obj (Group): The group to be written.
+
+        Returns:
+            The response from the create or update operation.
+        """
         scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
         if not scim_group:
             return self._create(obj)
@@ -35,7 +42,14 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
             return self._create(obj)
 
     def delete(self, obj: Group):
-        """Delete group"""
+        """Delete group
+
+        Parameters:
+            obj (Group): The group to be deleted.
+
+        Returns:
+            The response from the delete operation.
+        """
         scim_group = SCIMGroup.objects.filter(provider=self.provider, group=obj).first()
         if not scim_group:
             self.logger.debug("Group does not exist in SCIM, skipping")
@@ -107,7 +121,20 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         SCIMGroup.objects.create(provider=self.provider, group=group, id=response["id"])
 
     def _update(self, group: Group, connection: SCIMGroup):
-        """Update existing group"""
+        """Update existing group
+
+        This method updates an existing group by making a PUT request to the server.
+
+        Parameters:
+            group (Group): The group object to be updated.
+            connection (SCIMGroup): The SCIMGroup object representing the connection to the server.
+
+        Raises:
+            ResourceMissing: If the resource is missing.
+
+        Returns:
+            Response: The response from the server.
+        """
         scim_group = self.to_scim(group)
         scim_group.id = connection.id
         try:
@@ -161,6 +188,7 @@ class SCIMGroupClient(SCIMClient[Group, SCIMGroupSchema]):
         group_id: str,
         *ops: PatchOperation,
     ):
+        """Perform a PATCH request to update the group with the specified operations"""
         req = PatchRequest(Operations=ops)
         self._request(
             "PATCH",

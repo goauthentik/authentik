@@ -71,7 +71,15 @@ def scim_sync(self: MonitoredTask, provider_pk: int) -> None:
 
 @CELERY_APP.task()
 def scim_sync_users(page: int, provider_pk: int):
-    """Sync single or multiple users to SCIM"""
+    """Sync single or multiple users to SCIM
+
+    Parameters:
+        page (int): The page number.
+        provider_pk (int): The primary key of the SCIMProvider object.
+
+    Returns:
+        List[str]: A list of error messages.
+    """
     messages = []
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
     if not provider:
@@ -112,7 +120,17 @@ def scim_sync_users(page: int, provider_pk: int):
 
 @CELERY_APP.task()
 def scim_sync_group(page: int, provider_pk: int):
-    """Sync single or multiple groups to SCIM"""
+    """Sync single or multiple groups to SCIM
+
+    This function synchronizes single or multiple groups to the System for Cross-domain Identity Management (SCIM) based on the specified 'page' and 'provider_pk'.
+
+    Parameters:
+        page (int): The page number of groups to sync.
+        provider_pk (int): The primary key of the SCIMProvider object.
+
+    Returns:
+        list: A list of error messages generated during the sync process.
+    """
     messages = []
     provider: SCIMProvider = SCIMProvider.objects.filter(pk=provider_pk).first()
     if not provider:
@@ -153,7 +171,14 @@ def scim_sync_group(page: int, provider_pk: int):
 
 @CELERY_APP.task()
 def scim_signal_direct(model: str, pk: Any, raw_op: str):
-    """Handler for post_save and pre_delete signal"""
+    """
+    Handler for post_save and pre_delete signal
+
+    Parameters:
+        model (str): The name of the model.
+        pk (Any): The primary key of the model instance.
+        raw_op (str): The raw operation.
+    """
     model_class: type[Model] = path_to_class(model)
     instance = model_class.objects.filter(pk=pk).first()
     if not instance:

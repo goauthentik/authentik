@@ -99,6 +99,12 @@ class RefreshTokenViewSet(
     ]
 
     def get_queryset(self):
+        """
+        Get the queryset for the RefreshToken ViewSet.
+
+        Returns:
+            QuerySet: The queryset for the RefreshToken ViewSet.
+        """
         user = self.request.user if self.request else get_anonymous_user()
         if user.is_superuser:
             return super().get_queryset()
@@ -125,6 +131,12 @@ class AccessTokenViewSet(
     ]
 
     def get_queryset(self):
+        """
+        Get the queryset for the AccessToken ViewSet.
+
+        Returns:
+            QuerySet: The queryset for the AccessToken ViewSet.
+        """
         user = self.request.user if self.request else get_anonymous_user()
         if user.is_superuser:
             return super().get_queryset()

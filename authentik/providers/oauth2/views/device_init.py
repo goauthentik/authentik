@@ -136,6 +136,7 @@ class OAuthDeviceCodeStage(ChallengeStageView):
     response_class = OAuthDeviceCodeChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        """Returns the challenge instance"""
         return OAuthDeviceCodeChallenge(
             data={
                 "type": ChallengeTypes.NATIVE.value,
@@ -144,6 +145,7 @@ class OAuthDeviceCodeStage(ChallengeStageView):
         )
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        """Validates the code and returns an HTTP response"""
         code = response.validated_data["code"]
         validation = validate_code(code, self.request)
         if not validation:

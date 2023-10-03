@@ -86,7 +86,18 @@ class IDToken:
     def new(
         provider: "OAuth2Provider", token: "BaseGrantModel", request: HttpRequest, **kwargs
     ) -> "IDToken":
-        """Create ID Token"""
+        """Create ID Token"
+        Create ID Token
+
+        Parameters:
+            provider (OAuth2Provider): The OAuth2 provider.
+            token (BaseGrantModel): The token used to create the ID Token.
+            request (HttpRequest): The HTTP request.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            IDToken: The created ID Token.
+        """
         id_token = IDToken(provider, token, **kwargs)
         id_token.exp = int(token.expires.timestamp())
         id_token.iss = provider.get_issuer(request)

@@ -45,6 +45,7 @@ class DeviceView(View):
         return None
 
     def dispatch(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Handle the request and response flow for the view"""
         throttle = AnonRateThrottle()
         throttle.rate = CONFIG.get("throttle.providers.oauth2.device", "20/hour")
         throttle.num_requests, throttle.duration = throttle.parse_rate(throttle.rate)

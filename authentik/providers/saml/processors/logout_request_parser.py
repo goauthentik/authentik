@@ -29,11 +29,30 @@ class LogoutRequestParser:
     provider: SAMLProvider
 
     def __init__(self, provider: SAMLProvider):
+        """
+        Initialize a LogoutRequestParser with a SAMLProvider.
+
+        Parameters:
+            provider (SAMLProvider): The SAML provider object.
+        """
         self.provider = provider
 
     def _parse_xml(
         self, decoded_xml: str | bytes, relay_state: Optional[str] = None
     ) -> LogoutRequest:
+        """
+        Parse an XML string and return a LogoutRequest object.
+
+        This method parses an XML string and constructs a LogoutRequest object
+        using the parsed data.
+
+        Parameters:
+            decoded_xml (str | bytes): The XML string to parse.
+            relay_state (Optional[str], optional): The relay state. Defaults to None.
+
+        Returns:
+            LogoutRequest: The parsed LogoutRequest object.
+        """
         root = ElementTree.fromstring(decoded_xml)
         request = LogoutRequest(
             id=root.attrib["ID"],
@@ -45,7 +64,19 @@ class LogoutRequestParser:
         return request
 
     def parse(self, saml_request: str, relay_state: Optional[str] = None) -> LogoutRequest:
-        """Validate and parse raw request with enveloped signautre."""
+        """
+        Validate and parse a raw request with an enveloped signature.
+
+        This method decodes a SAML logout request, validates it, and calls
+        the _parse_xml method to parse the request.
+
+        Parameters:
+            saml_request (str): The SAML logout request.
+            relay_state (Optional[str], optional): The relay state. Defaults to None.
+
+        Returns:
+            LogoutRequest: The parsed LogoutRequest object.
+        """
         try:
             decoded_xml = b64decode(saml_request.encode())
         except UnicodeDecodeError:
@@ -57,7 +88,19 @@ class LogoutRequestParser:
         saml_request: str,
         relay_state: Optional[str] = None,
     ) -> LogoutRequest:
-        """Validate and parse raw request with detached signature"""
+        """
+        Validate and parse a raw request with a detached signature.
+
+        This method decodes a SAML logout request with a detached signature,
+        validates it, and calls the _parse_xml method to parse the request.
+
+        Parameters:
+            saml_request (str): The SAML logout request.
+            relay_state (Optional[str], optional): The relay state. Defaults to None.
+
+        Returns:
+            LogoutRequest: The parsed LogoutRequest object.
+        """
         try:
             decoded_xml = decode_base64_and_inflate(saml_request)
         except UnicodeDecodeError:

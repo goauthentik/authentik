@@ -78,8 +78,7 @@ class ProviderFilter(FilterSet):
         return queryset.filter(is_backchannel=value)
 
 
-class ProviderViewSet(
-    mixins.RetrieveModelMixin,
+class ProviderViewSet(mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
     mixins.ListModelMixin,
@@ -96,6 +95,12 @@ class ProviderViewSet(
     ]
 
     def get_queryset(self):  # pragma: no cover
+        """
+        Return a queryset of Provider objects.
+
+        Returns:
+            queryset: A queryset of Provider objects.
+        """
         return Provider.objects.select_subclasses()
 
     @extend_schema(responses={200: TypeCreateSerializer(many=True)})

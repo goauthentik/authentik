@@ -11,6 +11,7 @@ class Traefik2MiddlewareReconciler(Traefik3MiddlewareReconciler):
     """Kubernetes Traefik Middleware Reconciler"""
 
     def __init__(self, controller: "KubernetesController") -> None:
+        """Initialize the Traefik2MiddlewareReconciler with a KubernetesController object"""
         super().__init__(controller)
         self.crd_name = "middlewares.traefik.containo.us"
         self.crd_group = "traefik.containo.us"

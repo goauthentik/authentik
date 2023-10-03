@@ -42,6 +42,7 @@ from authentik.providers.oauth2.constants import (
     PKCE_METHOD_S256,
     TOKEN_TYPE,
 )
+
 from authentik.providers.oauth2.errors import DeviceCodeError, TokenError, UserAuthError
 from authentik.providers.oauth2.id_token import IDToken
 from authentik.providers.oauth2.models import (
@@ -91,7 +92,7 @@ class TokenParams:
         client_id: str,
         client_secret: str,
     ) -> "TokenParams":
-        """Parse params for request"""
+        """Parse the token parameters from the HTTP request."""
         return TokenParams(
             # Init vars
             raw_code=request.POST.get("code", ""),
@@ -110,6 +111,14 @@ class TokenParams:
         )
 
     def __check_policy_access(self, app: Application, request: HttpRequest, **kwargs):
+        """
+        Private method to check the policy access for a given application and request.
+
+        Parameters:
+            app (Application): The application to check the policy access for.
+            request (HttpRequest): The request to check the policy access for.
+            **kwargs: Additional keyword arguments.
+        """
         with Hub.current.start_span(
             op="authentik.providers.oauth2.token.policy",
         ):
@@ -131,6 +140,22 @@ class TokenParams:
                 raise TokenError("invalid_grant")
 
     def __post_init__(self, raw_code: str, raw_token: str, request: HttpRequest):
+        """
+        Initialize an instance of a class.
+
+        This method is used to initialize an instance of a class. It takes
+        four parameters: 'self', 'raw_code', 'raw_token', and 'request'.
+        The method checks the 'grant_type' attribute of the instance and performs
+        different actions based on its value. If the 'grant_type' is 'authorization_code',
+        it calls the '__post_init_code' method and passes the 'raw_code' and 'request'
+        parameters. If the 'grant_type' is 'refresh_token', it calls the '__post_init_refresh'
+        method and passes the 'raw_token' and 'request' parameters. If the 'grant_type' is
+        'client_credentials' or 'password', it calls the '__post_init_client_credentials'
+        method and passes the 'request' parameter. If the 'grant_type' is 'device_code',
+        it calls the '__post_init_device_code' method and passes the 'request' parameter.
+        If the 'grant_type' is none of the above, it raises a 'TokenError' exception
+        with the message 'unsupported_grant_type'.
+        """
         if self.grant_type in [GRANT_TYPE_AUTHORIZATION_CODE, GRANT_TYPE_REFRESH_TOKEN]:
             if (
                 self.provider.client_type == ClientTypes.CONFIDENTIAL
@@ -167,6 +192,21 @@ class TokenParams:
             raise TokenError("unsupported_grant_type")
 
     def __post_init_code(self, raw_code: str, request: HttpRequest):
+        """
+        Perform various validation checks related to an authorization code.
+
+        This method checks if the provided 'raw_code' is empty and raises a 'TokenError' exception with 'invalid_grant' if it is.
+        Then it compares the 'self.redirect_uri' with a list of allowed redirect URLs using regular expressions and raises a 'TokenError' exception with 'invalid_client' if there is no match.
+        After that, it tries to find the 'AuthorizationCode' object with the provided 'raw_code' and raises a 'TokenError' exception with 'invalid_grant' if it doesn't exist or if it is expired.
+        Finally, it validates PKCE parameters by comparing the 'code_verifier' with the 'code_challenge' of the 'AuthorizationCode' object and raises a 'TokenError' exception with 'invalid_grant' if they don't match.
+
+        Parameters:
+            raw_code (str): The raw authorization code.
+            request (HttpRequest): The HTTP request object.
+
+        Raises:
+            TokenError: If the 'raw_code' is empty, the redirect URI is invalid, the 'AuthorizationCode' object doesn't exist or is expired, or the PKCE parameters don't match.
+        """
         if not raw_code:
             LOGGER.warning("Missing authorization code")
             raise TokenError("invalid_grant")
@@ -236,6 +276,17 @@ class TokenParams:
                 raise TokenError("invalid_grant")
 
     def __post_init_refresh(self, raw_token: str, request: HttpRequest):
+        """
+        Refreshes the token with the given raw token and request.
+
+        This method is responsible for refreshing a token. It takes in two parameters:
+        - raw_token (str): The raw token to be refreshed.
+        - request (HttpRequest): The HTTP request object.
+
+        Raises:
+            TokenError: If the raw token is empty or invalid.
+
+        """
         if not raw_token:
             LOGGER.warning("Missing refresh token")
             raise TokenError("invalid_grant")
@@ -270,6 +321,14 @@ class TokenParams:
             raise TokenError("invalid_grant")
 
     def __post_init_client_credentials(self, request: HttpRequest):
+        """
+        Perform post-initialization tasks related to client credentials.
+
+        This method is responsible for performing various tasks related to client credentials. It first checks if the client assertion type is present in the request and if so, calls the __post_init_client_credentials_jwt method. Then, it authenticates the user based on the provided username and password. If the user is not found, it raises a TokenError. It then retrieves a token associated with the provided password and checks if it is still valid and belongs to the authenticated user. If not, it raises a TokenError. Next, it sets the user attribute of the current object to the authenticated user. After that, it retrieves an application object based on the provider attribute of the current object and checks if it exists and has a provider. If not, it raises a TokenError. Finally, it calls the __check_policy_access method to authorize user access and logs a login event. The method does not return any value.
+
+        Parameters:
+            request (HttpRequest): The request object containing the client credentials.
+        """
         if request.POST.get(CLIENT_ASSERTION_TYPE, "") != "":
             return self.__post_init_client_credentials_jwt(request)
         # Authenticate user based on credentials
@@ -304,6 +363,7 @@ class TokenParams:
 
     # pylint: disable=too-many-locals
     def __post_init_client_credentials_jwt(self, request: HttpRequest):
+        """Handles the POST request for client credentials JWT."""
         assertion_type = request.POST.get(CLIENT_ASSERTION_TYPE, "")
         if assertion_type != CLIENT_ASSERTION_TYPE_JWT:
             LOGGER.warning("Invalid assertion type", assertion_type=assertion_type)
@@ -394,6 +454,7 @@ class TokenParams:
         ).from_http(request, user=self.user)
 
     def __post_init_device_code(self, request: HttpRequest):
+        """Initialize the 'device_code' attribute from the request."""
         device_code = request.POST.get("device_code", "")
         code = DeviceToken.objects.filter(device_code=device_code, provider=self.provider).first()
         if not code:
@@ -401,7 +462,7 @@ class TokenParams:
         self.device_code = code
 
     def __create_user_from_jwt(self, token: dict[str, Any], app: Application, source: OAuthSource):
-        """Create user from JWT"""
+        """Create a user from JWT token."""
         exp = token.get("exp")
         self.user, created = User.objects.update_or_create(
             username=f"{self.provider.name}-{token.get('sub')}",
@@ -427,6 +488,20 @@ class TokenView(View):
     params: Optional[TokenParams] = None
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        """
+        Dispatches the HTTP request to the appropriate handler.
+
+        This method calls the super().dispatch method to perform the default handling of the request.
+        It also adds CORS headers to the response based on the provider's redirect_uris.
+
+        Parameters:
+            request (HttpRequest): The HTTP request.
+            *args: Additional positional arguments for the handler.
+            **kwargs: Additional keyword arguments for the handler.
+
+        Returns:
+            HttpResponse: The HTTP response.
+        """
         response = super().dispatch(request, *args, **kwargs)
         allowed_origins = []
         if self.provider:
@@ -435,6 +510,17 @@ class TokenView(View):
         return response
 
     def options(self, request: HttpRequest) -> HttpResponse:
+        """
+        Handles the OPTIONS HTTP request.
+
+        This method returns an empty response.
+
+        Parameters:
+            request (HttpRequest): The HTTP request.
+
+        Returns:
+            HttpResponse: The HTTP response.
+        """
         return TokenResponse({})
 
     def post(self, request: HttpRequest) -> HttpResponse:
@@ -472,7 +558,14 @@ class TokenView(View):
             return TokenResponse(error.create_dict(), status=403)
 
     def create_code_response(self) -> dict[str, Any]:
-        """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1"""
+        """
+        See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1
+
+        Generate a response dictionary containing access token, refresh token, token type, expires in, and ID token.
+
+        Returns:
+            dict[str, Any]: The response dictionary.
+        """
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         access_token = AccessToken(
@@ -575,7 +668,17 @@ class TokenView(View):
         }
 
     def create_client_credentials_response(self) -> dict[str, Any]:
-        """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"""
+        """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"
+        Create a client credentials response.
+
+        This function creates a dictionary containing the client credentials response information. It
+        creates an access token based on the current time and the validity duration specified by the
+        'provider'. The function also generates an ID token and saves the access token and ID token in
+        the database.
+
+        Returns:
+            dict[str, Any]: A dictionary containing the client credentials response information.
+        """
         now = timezone.now()
         access_token_expiry = now + timedelta_from_string(self.provider.access_token_validity)
         access_token = AccessToken(

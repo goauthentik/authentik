@@ -151,6 +151,20 @@ class ProviderInfoView(View):
     def dispatch(
         self, request: HttpRequest, application_slug: str, *args: Any, **kwargs: Any
     ) -> HttpResponse:
+        """
+        Dispatches the request to the corresponding view method and sets the CORS headers.
+
+        This method retrieves the 'Application' object based on the provided 'application_slug' and the corresponding 'OAuth2Provider' object based on the retrieved application's 'provider_id'. It then calls the 'dispatch' method of the superclass with the 'request', positional arguments, and keyword arguments, and stores the returned response in the 'response' variable. After that, it calls the 'cors_allow' function to set the CORS headers for the 'request' and 'response' objects using the 'redirect_uris' of the 'provider' object as the allowed origins. Finally, it returns the 'response' object.
+
+        Parameters:
+            request (HttpRequest): The incoming request object.
+            application_slug (str): The slug of the application.
+            args (Any): Arbitrary positional arguments.
+            kwargs (Any): Arbitrary keyword arguments.
+
+        Returns:
+            HttpResponse: The response object.
+        """
         # Since this view only supports get, we can statically set the CORS headers
         application = get_object_or_404(Application, slug=application_slug)
         self.provider: OAuth2Provider = get_object_or_404(

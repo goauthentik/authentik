@@ -37,7 +37,18 @@ min_length_map = {
 
 # https://github.com/jpadilla/pyjwt/issues/709
 def bytes_from_int(val: int, min_length: int = 0) -> bytes:
-    """Custom bytes_from_int that accepts a minimum length"""
+    """Custom bytes_from_int that accepts a minimum length
+
+    This function takes an integer value and a minimum length as input
+    and returns the byte representation of the integer value.
+
+    Parameters:
+        val (int): The integer value to be converted to bytes.
+        min_length (int): The minimum length of the byte representation.
+
+    Returns:
+        bytes: The byte representation of the integer value.
+    """
     remaining = val
     byte_length = 0
 
@@ -49,7 +60,21 @@ def bytes_from_int(val: int, min_length: int = 0) -> bytes:
 
 
 def to_base64url_uint(val: int, min_length: int = 0) -> bytes:
-    """Custom to_base64url_uint that accepts a minimum length"""
+    """Custom to_base64url_uint that accepts a minimum length
+
+    This function takes a positive integer value and a minimum length as input
+    and returns the base64url encoding of the byte representation of the integer value.
+
+    Parameters:
+        val (int): The positive integer value to be encoded.
+        min_length (int): The minimum length of the byte representation.
+
+    Returns:
+        bytes: The base64url encoding of the byte representation of the integer value.
+
+    Raises:
+        ValueError: If the input value is not a positive integer.
+    """
     if val < 0:
         raise ValueError("Must be a positive integer")
 
@@ -110,7 +135,15 @@ class JWKSView(View):
         return key_data
 
     def get(self, request: HttpRequest, application_slug: str) -> HttpResponse:
-        """Show JWK Key data for Provider"""
+        """Show JWK Key data for Provider
+
+        Parameters:
+            request (HttpRequest): The HTTP request object.
+            application_slug (str): The slug of the application.
+
+        Returns:
+            HttpResponse: The JSON response containing the JWK Key data for the Provider.
+        """
         application = get_object_or_404(Application, slug=application_slug)
         provider: OAuth2Provider = get_object_or_404(OAuth2Provider, pk=application.provider_id)
         signing_key: CertificateKeyPair = provider.signing_key

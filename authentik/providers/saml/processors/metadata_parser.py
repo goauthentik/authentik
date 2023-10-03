@@ -24,7 +24,14 @@ LOGGER = get_logger()
 
 
 def format_pem_certificate(unformatted_cert: str) -> str:
-    """Format single, inline certificate into PEM Format"""
+    """Format single, inline certificate into PEM Format
+
+    Parameters:
+        unformatted_cert (str): The unformatted certificate to be formatted.
+
+    Returns:
+        str: The formatted certificate in PEM format.
+    """
     # Ensure that all linebreaks are gone
     unformatted_cert = unformatted_cert.replace("\n", "")
     chunks, chunk_size = len(unformatted_cert), 64

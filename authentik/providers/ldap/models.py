@@ -96,14 +96,23 @@ class LDAPProvider(OutpostModel, BackchannelProvider):
         return LDAPProviderSerializer
 
     def __str__(self):
+        """
+        Return a string representation of the 'LDAP Provider' object.
+        """
         return f"LDAP Provider {self.name}"
 
     def get_required_objects(self) -> Iterable[models.Model | str]:
+        """
+        Return a list of required models for the 'LDAP Provider' object.
+        """
         required_models = [self, "authentik_core.view_user", "authentik_core.view_group"]
         if self.certificate is not None:
             required_models.append(self.certificate)
         return required_models
 
     class Meta:
+        """
+        Meta class for the 'LDAP Provider' object.
+        """
         verbose_name = _("LDAP Provider")
         verbose_name_plural = _("LDAP Providers")

@@ -26,6 +26,14 @@ class SCIMClient(Generic[T, SchemaType]):
     _config: ServiceProviderConfiguration
 
     def __init__(self, provider: SCIMProvider):
+        """
+        Initializes the SCIM client with the specified provider.
+
+        This method initializes the SCIMClient object with the provided SCIMProvider. It sets the base_url, token, provider, and logger attributes based on the provider. It also removes any trailing slashes from the base URL.
+
+        Parameters:
+            provider (SCIMProvider): The SCIMProvider object for the client.
+        """
         self._session = get_http_session()
         self.provider = provider
         # Remove trailing slashes as we assume the URL doesn't have any
@@ -38,7 +46,22 @@ class SCIMClient(Generic[T, SchemaType]):
         self._config = self.get_service_provider_config()
 
     def _request(self, method: str, path: str, **kwargs) -> dict:
-        """Wrapper to send a request to the full URL"""
+        """Wrapper to send a request to the full URL
+
+        This method is a private helper method that sends an HTTP request to a specified URL. It takes in the HTTP method, path, and optional keyword arguments. The request is sent using the requests library and includes the necessary headers for SCIM (System for Cross-domain Identity Management) requests. The method handles exceptions and raises appropriate exceptions for error status codes.
+
+        Parameters:
+            method (str): The HTTP method for the request.
+            path (str): The path for the request.
+            **kwargs: Optional keyword arguments for the request.
+
+        Returns:
+            dict: The response body as a JSON object if the request is successful, or an empty dictionary if the response status code is 204 (No Content).
+
+        Raises:
+            SCIMRequestException: If the request fails or the response status code indicates an error (>= 400).
+            ResourceMissing: If the response status code is 404 (Not Found).
+        """
         try:
             response = self._session.request(
                 method,

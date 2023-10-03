@@ -10,6 +10,7 @@ class ProxyKubernetesController(KubernetesController):
     """Proxy Provider Kubernetes Controller"""
 
     def __init__(self, outpost: Outpost, connection: KubernetesServiceConnection):
+        """Initialize the ProxyKubernetesController with an outpost and a connection."""
         super().__init__(outpost, connection)
         self.deployment_ports = [
             DeploymentPort(9000, "http", "tcp"),

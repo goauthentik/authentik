@@ -11,6 +11,13 @@ class ProxyDockerController(DockerController):
     """Proxy Provider Docker Controller"""
 
     def __init__(self, outpost: Outpost, connection: DockerServiceConnection):
+        """
+        Initialize a new ProxyDockerController instance.
+
+        Parameters:
+            outpost (Outpost): The outpost instance.
+            connection (DockerServiceConnection): The Docker service connection.
+        """
         super().__init__(outpost, connection)
         self.deployment_ports = [
             DeploymentPort(9000, "http", "tcp"),
@@ -18,6 +25,16 @@ class ProxyDockerController(DockerController):
         ]
 
     def _get_labels(self) -> dict[str, str]:
+        """
+        Retrieves a dictionary of labels.
+
+        This private method is called to retrieve a dictionary of labels that will be used
+        to configure Traefik for the current outpost. The labels are constructed based on
+        the `outpost`, `traefik_name`, `hosts`, and other hardcoded values.
+
+        Returns:
+            dict[str, str]: A dictionary of labels.
+        """
         hosts = []
         for proxy_provider in ProxyProvider.objects.filter(outpost__in=[self.outpost]):
             proxy_provider: ProxyProvider

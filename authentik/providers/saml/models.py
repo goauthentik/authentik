@@ -161,9 +161,18 @@ class SAMLProvider(Provider):
         return "ak-provider-saml-form"
 
     def __str__(self):
+        """
+        Return a string representation of the SAML Provider object.
+
+        Returns:
+            str: A string representation of the SAML Provider object.
+        """
         return f"SAML Provider {self.name}"
 
     class Meta:
+        """
+        This class contains attributes used for verbose naming.
+        """
         verbose_name = _("SAML Provider")
         verbose_name_plural = _("SAML Providers")
 

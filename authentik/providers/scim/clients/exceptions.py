@@ -12,12 +12,13 @@ class StopSync(SentryIgnoredException):
     """Exception raised when a configuration error should stop the sync process"""
 
     def __init__(self, exc: Exception, obj: object, mapping: Optional[object] = None) -> None:
+        """Initialize the StopSync exception with the raised exception, the object causing the error, and an optional mapping object."""
         self.exc = exc
         self.obj = obj
         self.mapping = mapping
 
     def detail(self) -> str:
-        """Get human readable details of this error"""
+        """Get human readable details of this error."""
         msg = f"Error {str(self.exc)}, caused by {self.obj}"
 
         if self.mapping:
@@ -32,11 +33,12 @@ class SCIMRequestException(SentryIgnoredException):
     _message: Optional[str]
 
     def __init__(self, response: Optional[Response] = None, message: Optional[str] = None) -> None:
+        """Initialize the SCIMRequestException with an optional response and message."""
         self._response = response
         self._message = message
 
     def detail(self) -> str:
-        """Get human readable details of this error"""
+        """Get human readable details of this error."""
         if not self._response:
             return self._message
         try:

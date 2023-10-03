@@ -29,6 +29,7 @@ class OAuthDeviceCodeFinishStage(ChallengeStageView):
     response_class = OAuthDeviceCodeFinishChallengeResponse
 
     def get_challenge(self, *args, **kwargs) -> Challenge:
+        """Get the challenge for the stage"""
         plan: FlowPlan = self.request.session[SESSION_KEY_PLAN]
         token: DeviceToken = plan.context[PLAN_CONTEXT_DEVICE]
         # As we're required to be authenticated by now, we can rely on
@@ -43,4 +44,5 @@ class OAuthDeviceCodeFinishStage(ChallengeStageView):
         )
 
     def challenge_valid(self, response: ChallengeResponse) -> HttpResponse:
+        """Validate the challenge response"""
         self.executor.stage_ok()

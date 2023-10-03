@@ -50,7 +50,16 @@ class TokenRevokeView(View):
     provider: OAuth2Provider
 
     def post(self, request: HttpRequest) -> HttpResponse:
-        """Revocation handler"""
+        """Revocation handler
+
+        Handle the revocation request by deleting the token and returning the appropriate response.
+
+        Parameters:
+            request (HttpRequest): The HTTP request object.
+
+        Returns:
+            HttpResponse: The HTTP response object.
+        """
         try:
             self.params = TokenRevocationParams.from_request(request)
 

@@ -28,15 +28,32 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
     """Kubernetes Ingress Reconciler"""
 
     def __init__(self, controller: "KubernetesController") -> None:
+        """Initialize the IngressReconciler.
+
+        Args:
+            controller (KubernetesController): The Kubernetes controller.
+        """
         super().__init__(controller)
         self.api = NetworkingV1Api(controller.client)
 
     @staticmethod
     def reconciler_name() -> str:
+        """Return the reconciler name.
+
+        Returns:
+            str: The reconciler name.
+        """
         return "ingress"
 
     def _check_annotations(self, reference: V1Ingress):
-        """Check that all annotations *we* set are correct"""
+        """Check that all annotations *we* set are correct.
+
+        Args:
+            reference (V1Ingress): The reference ingress object.
+
+        Raises:
+            NeedsUpdate: If annotations are incorrect.
+        """
         for key, value in self.get_ingress_annotations().items():
             if key not in reference.metadata.annotations:
                 raise NeedsUpdate()
@@ -44,6 +61,16 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
                 raise NeedsUpdate()
 
     def reconcile(self, current: V1Ingress, reference: V1Ingress):
+        """
+        Reconcile the current and reference V1Ingress objects.
+
+        This method compares the current and reference V1Ingress objects and raises NeedsUpdate
+        or NeedsRecreate exceptions if certain conditions are met.
+
+        Parameters:
+            current (V1Ingress): The current V1Ingress object.
+            reference (V1Ingress): The reference V1Ingress object.
+        """
         super().reconcile(current, reference)
         self._check_annotations(reference)
         # Create a list of all expected host and tls hosts
@@ -175,6 +202,20 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
         )
 
     def create(self, reference: V1Ingress):
+        """
+        Create a new ingress resource based on the provided reference object.
+
+        This method interacts with the Kubernetes API to create a new ingress resource
+        using the provided reference object. If no hosts are defined in the reference,
+        the method logs a debug message and returns None.
+
+        Parameters:
+            reference (V1Ingress): The reference object for creating the ingress resource.
+
+        Returns:
+            None: If no hosts are defined in the reference.
+            V1Ingress: The created ingress resource.
+        """
         if len(reference.spec.rules) < 1:
             self.logger.debug("No hosts defined, not creating ingress.")
             return None
@@ -183,12 +224,46 @@ class IngressReconciler(KubernetesObjectReconciler[V1Ingress]):
         )
 
     def delete(self, reference: V1Ingress):
+        """
+        Delete an existing ingress resource.
+
+        This method interacts with the Kubernetes API to delete an existing ingress resource
+        based on the provided reference object.
+
+        Parameters:
+            reference (V1Ingress): The reference object for deleting the ingress resource.
+
+        Returns:
+            None
+        """
         return self.api.delete_namespaced_ingress(reference.metadata.name, self.namespace)
 
     def retrieve(self) -> V1Ingress:
+        """
+        Retrieve an existing ingress resource based on its name.
+
+        This method interacts with the Kubernetes API to retrieve an existing ingress resource
+        based on its name.
+
+        Returns:
+            V1Ingress: The retrieved ingress resource.
+        """
         return self.api.read_namespaced_ingress(self.name, self.namespace)
 
     def update(self, current: V1Ingress, reference: V1Ingress):
+        """
+        Update an existing ingress resource with the provided reference object.
+
+        This method interacts with the Kubernetes API to update an existing ingress resource
+        with the provided reference object.
+
+        Parameters:
+            current (V1Ingress): The current ingress resource to be updated.
+            reference (V1Ingress): The reference object for updating the ingress resource.
+
+        Returns:
+            None
+        """
         return self.api.patch_namespaced_ingress(
             current.metadata.name,
             self.namespace,
