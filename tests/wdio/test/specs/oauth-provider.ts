@@ -9,15 +9,13 @@ async function reachTheProvider() {
     await login();
     await ProvidersListPage.open();
     await expect(await ProvidersListPage.pageHeader).toHaveText("Providers");
-    
+
     await ProvidersListPage.startWizardButton.click();
     await ProviderWizardView.wizardTitle.waitForDisplayed();
     await expect(await ProviderWizardView.wizardTitle).toHaveText("New provider");
 }
 
-
 describe("Configure Oauth2 Providers", () => {
-
     it("Should configure a simple LDAP Application", async () => {
         const newProviderName = `New OAuth2 Provider - ${randomId()}`;
 
@@ -31,7 +29,7 @@ describe("Configure Oauth2 Providers", () => {
 
         await ProviderWizardView.oauth.providerName.setValue(newProviderName);
         await ProviderWizardView.oauth.setAuthorizationFlow(
-            "default-provider-authorization-explicit-consent"
+            "default-provider-authorization-explicit-consent",
         );
         await ProviderWizardView.nextButton.click();
         await ProviderWizardView.pause();
@@ -44,8 +42,5 @@ describe("Configure Oauth2 Providers", () => {
         await newProvider.waitForDisplayed();
         expect(newProvider).toExist();
         expect(await newProvider.getText()).toHaveText(newProviderName);
-
-        
     });
-})
-    
+});

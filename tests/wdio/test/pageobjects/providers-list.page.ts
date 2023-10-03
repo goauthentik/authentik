@@ -24,16 +24,19 @@ class ApplicationsListPage extends AdminPage {
 
     // Sufficiently esoteric to justify having its own method
     async clickSearchButton() {
-        await browser.execute(function (searchButton: any) {
-            searchButton.focus();
-        }, await $('>>>ak-table-search button[type="submit"]'));
+        await browser.execute(
+            function (searchButton: any) {
+                searchButton.focus();
+            },
+            await $('>>>ak-table-search button[type="submit"]'),
+        );
 
         return await browser.action("key").down(Key.Enter).up(Key.Enter).perform();
     }
 
     // Only use after a very precise search.  :-)
     async findProviderRow() {
-        return await $('>>>ak-provider-list td a');
+        return await $(">>>ak-provider-list td a");
     }
 
     async open() {

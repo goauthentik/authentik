@@ -4,7 +4,6 @@ import { browser } from "@wdio/globals";
 const CLICK_TIME_DELAY = 250;
 
 export default class AdminPage extends Page {
-
     public get pageHeader() {
         return $('>>>ak-page-header slot[name="header"]');
     }

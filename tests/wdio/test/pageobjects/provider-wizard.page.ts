@@ -30,7 +30,7 @@ class ProviderWizardView extends AdminPage {
     }
 
     get successMessage() {
-        return $('>>>[data-commit-state="success"]')
+        return $('>>>[data-commit-state="success"]');
     }
 }
 
@@ -38,9 +38,7 @@ type Pair = [string, string];
 
 // Define a getter for each provider type in the radio button collection.
 
-const providerValues: Pair[] = [
-    ["oauth2", "oauth2Provider"],
-];
+const providerValues: Pair[] = [["oauth2", "oauth2Provider"]];
 
 providerValues.forEach(([value, name]: Pair) => {
     Object.defineProperties(ProviderWizardView.prototype, {

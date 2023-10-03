@@ -40,7 +40,7 @@ export default class Page {
     }
 
     public async logout() {
-        await browser.url('http://localhost:9000/flows/-/default/invalidation/');
-        return await this.pause()
+        await browser.url("http://localhost:9000/flows/-/default/invalidation/");
+        return await this.pause();
     }
 }
