@@ -151,7 +151,8 @@ class ConfigLoader:
         redis_port = 6379
         redis_db = 0
 
-        # To make it easier for users to switch over to new Redis config allow old style config for now
+        # To make it easier for users to switch over to new Redis URL based config
+        # allow old style config for now
         if (
             self._deprecated_redis_config_set()
             and self.get("redis.url") == "redis://localhost:6379/0"
