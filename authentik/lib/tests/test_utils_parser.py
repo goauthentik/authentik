@@ -30,14 +30,20 @@ class TestParserUtils(TestCase):
         self.assertEqual(config["sentinels"][0]["port"], 22345)
         self.assertEqual(config["sentinels"][0]["db"], 92)
 
-    def test_process_config_cluster(self):
-        """Test Redis URL parser for cluster connection"""
-        url = urlparse("redis+cluster://mycluster:8652/393")
-        config = process_config(url, *get_redis_options(url))
-        self.assertEqual(config["type"], "cluster")
-        self.assertEqual(config["addrs"][0][0], "mycluster")
-        self.assertEqual(config["addrs"][0][1], 8652)
-        self.assertTrue("db" not in config["redis_kwargs"])
+    def test_redis_cluster_support_disabled(self):
+        """Test to check for error if Redis cluster is configured"""
+        url = urlparse("redis+cluster://mycluster:5278/29")
+        with self.assertRaises(ValueError):
+            process_config(url, *get_redis_options(url))
+
+    # def test_process_config_cluster(self):
+    #     """Test Redis URL parser for cluster connection"""
+    #     url = urlparse("redis+cluster://mycluster:8652/393")
+    #     config = process_config(url, *get_redis_options(url))
+    #     self.assertEqual(config["type"], "cluster")
+    #     self.assertEqual(config["addrs"][0][0], "mycluster")
+    #     self.assertEqual(config["addrs"][0][1], 8652)
+    #     self.assertTrue("db" not in config["redis_kwargs"])
 
     def test_get_redis_options_addr_arg(self):
         """Test Redis URL parser with addr arg"""
