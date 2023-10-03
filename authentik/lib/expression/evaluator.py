@@ -141,7 +141,7 @@ class BaseEvaluator:
         """Create event with supplied data and try to extract as much relevant data
         from the context"""
         context = self._context.copy()
-        # If the result was a complex variable, we don't want to re-use it
+        # If the result was a complex variable, we don't want to reuse it
         context.pop("result", None)
         context.pop("handler", None)
         event_kwargs = context

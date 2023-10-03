@@ -19,7 +19,7 @@ The following placeholders will be used:
 -   `organizr.company` is the FQDN of the Service install.
 -   `authentik.company` is the FQDN of the authentik install.
 
-Create a new user account _(or re-use an existing)_ for organizr to use for LDAP bind under _Directory_ -> _Users_ -> _Create_, in this example called `ldapservice`.
+Create a new user account _(or reuse an existing)_ for organizr to use for LDAP bind under _Directory_ -> _Users_ -> _Create_, in this example called `ldapservice`.
 
      Note the DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`
 
