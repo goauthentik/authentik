@@ -12,15 +12,13 @@ from redis.backoff import DEFAULT_BASE, DEFAULT_CAP, ConstantBackoff, Exponentia
 from redis.exceptions import ConnectionError as RedisConnectionError
 from redis.exceptions import TimeoutError as RedisTimeoutError
 
-FALSE_STRINGS = ("0", "F", "FALSE", "N", "NO")
-
 
 def _to_bool(value):
     """Convert string to bool"""
-    match value:
-        case "1" | "t" | "T" | "true" | "TRUE" | "True":
+    match value.lower():
+        case "1" | "t" | "true":
             return True
-        case "0" | "f" | "F" | "false" | "FALSE" | "False":
+        case "0" | "f" | "false":
             return False
     print("Invalid boolean value found in Redis URL query, skipping")
     return False
