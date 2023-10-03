@@ -35,7 +35,7 @@
         "@codemirror/theme-one-dark": "^6.1.2",
         "@formatjs/intl-listformat": "^7.4.2",
         "@fortawesome/fontawesome-free": "^6.4.2",
-        "@goauthentik/api": "^2023.8.3-1694987749",
+        "@goauthentik/api": "^2023.8.3-1696335052",
         "@lit-labs/context": "^0.4.1",
         "@lit-labs/task": "^3.0.2",
         "@lit/localize": "^0.11.4",
