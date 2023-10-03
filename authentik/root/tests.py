@@ -40,7 +40,9 @@ class TestRedisMiddlewareCelery(TestCase):
     def test_backend_injection(self):
         """Test correct injection of custom Redis backend"""
         celery_app = CustomCelery("authentik")
-        connection = celery_app.connection_for_read("redis+cluster://localhost:6379/0")
+        connection = celery_app.connection_for_read(
+            "redis+sentinel://localhost:6379/?mastername=mymaster"
+        )
         self.assertIsInstance(connection, CustomConnection)
 
     def test_default_backend(self):
