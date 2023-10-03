@@ -11,6 +11,8 @@ import { WebsocketClient } from "@goauthentik/common/ws";
 import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
 import "@goauthentik/elements/ak-locale-context";
+import "@goauthentik/flow/sources/apple/AppleLoginInit";
+import "@goauthentik/flow/sources/plex/PlexLoginInit";
 import "@goauthentik/flow/stages/FlowErrorStage";
 import "@goauthentik/flow/stages/RedirectStage";
 import { StageHost } from "@goauthentik/flow/stages/base";
@@ -353,13 +355,11 @@ export class FlowExecutor extends Interface implements StageHost {
                 ></ak-stage-user-login>`;
             // Sources
             case "ak-source-plex":
-                await import("@goauthentik/flow/sources/plex/PlexLoginInit");
                 return html`<ak-flow-source-plex
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
                 ></ak-flow-source-plex>`;
             case "ak-source-oauth-apple":
-                await import("@goauthentik/flow/sources/apple/AppleLoginInit");
                 return html`<ak-flow-source-oauth-apple
                     .host=${this as StageHost}
                     .challenge=${this.challenge}
