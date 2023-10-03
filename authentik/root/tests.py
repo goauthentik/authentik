@@ -3,10 +3,13 @@ from base64 import b64encode
 
 from celery.app.amqp import Connection as AmqpConnection
 from django.conf import settings
+from django.core.cache import BaseCache
 from django.test import TestCase
 from django.urls import reverse
 
 from authentik.root.redis_middleware_celery import CustomCelery
+from authentik.root.redis_middleware_channels import CustomChannelLayer
+from authentik.root.redis_middleware_django import CustomClient
 from authentik.root.redis_middleware_kombu import CustomConnection
 
 
@@ -50,3 +53,49 @@ class TestRedisMiddlewareCelery(TestCase):
         celery_app = CustomCelery("authentik")
         connection = celery_app.connection_for_read("amqp://localhost:5672/myvhost")
         self.assertIsInstance(connection, AmqpConnection)
+
+
+class TestRedisMiddlewareDjango(TestCase):
+    """Test Redis Middleware for Django"""
+
+    def test_custom_client_sentinel(self):
+        """Test config adjustments for Redis sentinel"""
+        params = {}
+        base_cache = BaseCache(params)
+        django_client = CustomClient(
+            "redis+sentinel://myredis:1293/?mastername=mymaster", params, base_cache
+        )
+        server_config = django_client._server
+        self.assertEqual(len(server_config), 2)
+        self.assertEqual(server_config[0]["type"], "sentinel")
+        self.assertEqual(server_config[0]["service_name"], "mymaster")
+        self.assertEqual(len(server_config[0]["sentinels"]), 1)
+        self.assertEqual(server_config[0]["sentinels"][0]["host"], "myredis")
+        self.assertEqual(server_config[0]["sentinels"][0]["port"], 1293)
+        self.assertEqual(server_config[1]["type"], "sentinel")
+        self.assertEqual(server_config[1]["service_name"], "mymaster")
+        self.assertEqual(len(server_config[1]["sentinels"]), 1)
+        self.assertEqual(server_config[1]["sentinels"][0]["host"], "myredis")
+        self.assertEqual(server_config[1]["sentinels"][0]["port"], 1293)
+        self.assertTrue(server_config[1]["is_slave"])
+
+
+class TestRedisMiddlewareChannels(TestCase):
+    """Test Redis Middleware for Channels-Redis (Django)"""
+
+    def test_custom_client_sentinel(self):
+        """Test config adjustments for Redis sentinel"""
+        channel_layer = CustomChannelLayer("redis+sentinel://myredis:1293/?mastername=mymaster")
+        channel_config = channel_layer.config
+        self.assertEqual(len(channel_config), 2)
+        self.assertEqual(channel_config[0]["type"], "sentinel")
+        self.assertEqual(channel_config[0]["service_name"], "mymaster")
+        self.assertEqual(len(channel_config[0]["sentinels"]), 1)
+        self.assertEqual(channel_config[0]["sentinels"][0]["host"], "myredis")
+        self.assertEqual(channel_config[0]["sentinels"][0]["port"], 1293)
+        self.assertEqual(channel_config[1]["type"], "sentinel")
+        self.assertEqual(channel_config[1]["service_name"], "mymaster")
+        self.assertEqual(len(channel_config[1]["sentinels"]), 1)
+        self.assertEqual(channel_config[1]["sentinels"][0]["host"], "myredis")
+        self.assertEqual(channel_config[1]["sentinels"][0]["port"], 1293)
+        self.assertTrue(channel_config[1]["is_slave"])
