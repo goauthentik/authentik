@@ -344,7 +344,7 @@ func TestRedisClusterSupportDisabled(t *testing.T) {
 	uri, _ := url.Parse("redis+cluster://mycluster:5278/29")
 	_, err := GetRedisClient(uri)
 
-	if err == nil || err.Error() != "redis cluster is not currently supported!" {
+	if err == nil || err.Error() != "redis cluster is not currently supported" {
 		t.Fail()
 	}
 }
