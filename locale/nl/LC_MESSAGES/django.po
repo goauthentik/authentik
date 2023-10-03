@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Dany Sluijk, 2022
 # Alex Kruidenberg <alexkruidenberg@hotmail.com>, 2022
 # Melvin Snijders <mail@melvinsnijders.nl>, 2023
 # Michel Heusschen, 2023
 # ServusNL, 2023
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -2057,7 +2057,7 @@ msgstr "Duo-apparaten"
 msgid ""
 "When enabled, the Phone number is only used during enrollment to verify the "
 "users authenticity. Only a hash of the phone number is saved to ensure it is"
-" not re-used in the future."
+" not reused in the future."
 msgstr ""
 "Indien ingeschakeld, wordt het telefoonnummer alleen gebruikt tijdens "
 "inschrijving om de authenticiteit van de gebruiker te verifiëren. Alleen een"

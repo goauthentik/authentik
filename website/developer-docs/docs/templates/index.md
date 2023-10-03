@@ -2,7 +2,7 @@
 title: "Templates"
 ---
 
-In technical docuemntation, there are document "types" (similar to how there are data types).
+In technical documentation, there are document "types" (similar to how there are data types).
 
 The most common types are:
 

@@ -56,7 +56,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
         help_text=_(
             "When enabled, the Phone number is only used during enrollment to verify the "
             "users authenticity. Only a hash of the phone number is saved to ensure it is "
-            "not re-used in the future."
+            "not reused in the future."
         ),
     )
 

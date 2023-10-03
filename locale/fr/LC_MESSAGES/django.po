@@ -2,7 +2,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# 
+#
 # Translators:
 # Bastien Germond, 2022
 # Phorcys, 2022
@@ -12,7 +12,7 @@
 # Kyllian Delaye-Maillot, 2023
 # Manuel Viens, 2023
 # Marc Schmitt, 2023
-# 
+#
 #, fuzzy
 msgid ""
 msgstr ""
@@ -2074,7 +2074,7 @@ msgstr "Appareils Duo"
 msgid ""
 "When enabled, the Phone number is only used during enrollment to verify the "
 "users authenticity. Only a hash of the phone number is saved to ensure it is"
-" not re-used in the future."
+" not reused in the future."
 msgstr ""
 "Si activé, le numéro de téléphone n'est utilisé que durant l'inscription "
 "pour vérifier l'authenticité de l'utilisateur. Seul un hachage du numéro de "

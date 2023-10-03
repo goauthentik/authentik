@@ -37,7 +37,7 @@ entries:
       # delete the object
       state: present
       # An optional list of boolean-like conditions. If all conditions match (or
-      # no condiitons are provided) the entry will be evaluated and acted upon
+      # no conditions are provided) the entry will be evaluated and acted upon
       # as normal. Otherwise, the entry is skipped as if not defined at all.
       # Each condition will be evaluated in Python to its boolean representation
       # bool(<condition>). Furthermore, complex conditions can be built using

@@ -65,7 +65,7 @@ def worker_exit(server: "Arbiter", worker: DjangoUvicornWorker):
 
 
 def on_starting(server: "Arbiter"):
-    """Attach a set of IDs that can be temporarily re-used.
+    """Attach a set of IDs that can be temporarily reused.
     Used on reloads when each worker exists twice."""
     server._worker_id_overload = set()
 
@@ -79,7 +79,7 @@ def nworkers_changed(server: "Arbiter", new_value, old_value):
 
 
 def _next_worker_id(server: "Arbiter"):
-    """If there are IDs open for re-use, take one.  Else look for a free one."""
+    """If there are IDs open for reuse, take one.  Else look for a free one."""
     if server._worker_id_overload:
         return server._worker_id_overload.pop()
 
@@ -90,7 +90,7 @@ def _next_worker_id(server: "Arbiter"):
 
 
 def on_reload(server: "Arbiter"):
-    """Add a full set of ids into overload so it can be re-used once."""
+    """Add a full set of ids into overload so it can be reused once."""
     server._worker_id_overload = set(range(1, server.cfg.workers + 1))
 
 
