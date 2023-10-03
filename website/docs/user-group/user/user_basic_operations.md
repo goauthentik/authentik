@@ -6,7 +6,7 @@ In authentik you can create and manage users with fine-tuned access control, ses
 
 ### Create a user
 
-> If you want to automate user creation, you can do that either by invitations, [user write stage](../../flow/stages/user_write), or [using the API](/developer-docs/api/browser).
+> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [user write stage](../../flow/stages/user_write), or [using the API](/developer-docs/api/browser).
 
 In the Admin interface of your authentik instance, select **Directory > Users** in the left side menu.
 

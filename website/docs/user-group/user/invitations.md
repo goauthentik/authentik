@@ -9,6 +9,7 @@ With invitations, you can either send a URL to one or more specific recipients, 
 
 --- info
 You can also create a policy to see if the invitation was ever used.
+
 ---
 
 ## Create an invitation
