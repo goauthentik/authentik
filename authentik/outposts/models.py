@@ -380,7 +380,7 @@ class Outpost(SerializerModel, ManagedModel):
                 managed=managed,
             )
         except IntegrityError:
-            # Integrity error happens mostly when managed is re-used
+            # Integrity error happens mostly when managed is reused
             Token.objects.filter(managed=managed).delete()
             Token.objects.filter(identifier=self.token_identifier).delete()
             return self.token

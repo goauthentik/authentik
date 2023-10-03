@@ -96,7 +96,7 @@ func attemptProxyStart(ws *web.WebServer, u *url.URL) {
 			continue
 		}
 		// Init tenant_tls here too since it requires an API Client,
-		// so we just re-use the same one as the outpost uses
+		// so we just reuse the same one as the outpost uses
 		tw := tenant_tls.NewWatcher(ac.Client)
 		go tw.Start()
 		ws.TenantTLS = tw

@@ -22,7 +22,7 @@ The following placeholders will be used:
 
 ### Step 1 - Service account
 
-Create a new user account _(or re-use an existing one)_ for ProFTPD to use for LDAP bind under _Directory_ -> _Users_ -> _Create_ and give the account a name, such as `ldapservice`.
+Create a new user account _(or reuse an existing one)_ for ProFTPD to use for LDAP bind under _Directory_ -> _Users_ -> _Create_ and give the account a name, such as `ldapservice`.
 
 :::note
 On default provider settings, the DN of this user will be `cn=ldapservice,ou=users,dc=ldap,dc=goauthentik,dc=io`

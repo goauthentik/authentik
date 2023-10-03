@@ -48,6 +48,6 @@ On this page:
 
 ![Screenshot showing populated GitHub enterprise SAML settings](ghec_saml_settings.png)
 
-Once these fields are populated, you can use the `Test SAML configuation` button to test the authentication flow. If the flow completes successfully, you will see a green tick next to the Test button.
+Once these fields are populated, you can use the `Test SAML configuration` button to test the authentication flow. If the flow completes successfully, you will see a green tick next to the Test button.
 
 Scroll down to hit the `Save` button below.

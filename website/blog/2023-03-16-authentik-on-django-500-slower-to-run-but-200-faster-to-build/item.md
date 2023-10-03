@@ -155,7 +155,7 @@ According to the Microsoft team [contributing to Python](https://devblogs.micros
 
 I know migration isn’t fun but when you’re making tradeoffs, it’s worth keeping it in mind as a future option. If the choice is to build now and migrate later instead of never building at all, I’m going to choose migration every time.
 
-If we start running into truly significant performance issues – and I emphasize _if_ – we can always migrate critical parts of the application to a different language. This will of course be fully transparent to anyone running authentik, and I’d like to think of it as a last-resort, if we’ve already done all the opitmization possible.
+If we start running into truly significant performance issues – and I emphasize _if_ – we can always migrate critical parts of the application to a different language. This will of course be fully transparent to anyone running authentik, and I’d like to think of it as a last-resort, if we’ve already done all the optimization possible.
 
 ### Architect your application well
 
