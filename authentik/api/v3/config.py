@@ -93,10 +93,10 @@ class ConfigView(APIView):
                     "traces_sample_rate": float(CONFIG.get("error_reporting.sample_rate", 0.4)),
                 },
                 "capabilities": self.get_capabilities(),
-                "cache_timeout": int(CONFIG.get("cache.timeout")),
-                "cache_timeout_flows": int(CONFIG.get("cache.timeout_flows")),
-                "cache_timeout_policies": int(CONFIG.get("cache.timeout_policies")),
-                "cache_timeout_reputation": int(CONFIG.get("cache.timeout_reputation")),
+                "cache_timeout": CONFIG.get_int("cache.timeout"),
+                "cache_timeout_flows": CONFIG.get_int("cache.timeout_flows"),
+                "cache_timeout_policies": CONFIG.get_int("cache.timeout_policies"),
+                "cache_timeout_reputation": CONFIG.get_int("cache.timeout_reputation"),
             }
         )
 
