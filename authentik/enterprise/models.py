@@ -169,6 +169,8 @@ class License(models.Model):
 
     class Meta:
         indexes = (HashIndex(fields=("key",)),)
+        verbose_name = _("License")
+        verbose_name_plural = _("Licenses")
 
 
 def usage_expiry():

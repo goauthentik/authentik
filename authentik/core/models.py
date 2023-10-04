@@ -125,6 +125,8 @@ class Group(SerializerModel):
                 "parent",
             ),
         )
+        verbose_name = _("Group")
+        verbose_name_plural = _("Groups")
 
 
 class Role(models.Model):

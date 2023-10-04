@@ -35,12 +35,14 @@ from authentik.core.models import (
     Source,
     UserSourceConnection,
 )
+from authentik.enterprise.models import LicenseUsage
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
+from authentik.providers.scim.models import SCIMGroup, SCIMUser
 
 # Context set when the serializer is created in a blueprint context
 # Update website/developer-docs/blueprints/v1/models.md when used
@@ -68,6 +70,9 @@ def excluded_models() -> list[type[Model]]:
         AuthenticatedSession,
         # Classes which are only internally managed
         FlowToken,
+        LicenseUsage,
+        SCIMGroup,
+        SCIMUser,
     )
 
 

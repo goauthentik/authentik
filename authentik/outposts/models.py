@@ -405,6 +405,10 @@ class Outpost(SerializerModel, ManagedModel):
     def __str__(self) -> str:
         return f"Outpost {self.name}"
 
+    class Meta:
+        verbose_name = _("Outpost")
+        verbose_name_plural = _("Outposts")
+
 
 @dataclass
 class OutpostState:
