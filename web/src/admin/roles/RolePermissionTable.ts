@@ -20,10 +20,13 @@ export class RolePermissionTable extends Table<Permission> {
         return true;
     }
 
+    order = "content_type__app_label,content_type__model";
+
     apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
         return new CoreApi(DEFAULT_CONFIG).coreRbacPermissionsList({
             role: this.roleUuid,
             page: page,
+            ordering: this.order,
             search: this.search,
         });
     }
@@ -35,7 +38,7 @@ export class RolePermissionTable extends Table<Permission> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn("Permission", ""), new TableColumn("")];
+        return [new TableColumn("Model", "model"),new TableColumn("Permission", ""), new TableColumn("")];
     }
 
     renderObjectCreate(): TemplateResult {
@@ -53,6 +56,6 @@ export class RolePermissionTable extends Table<Permission> {
     }
 
     row(item: Permission): TemplateResult[] {
-        return [html`${item.name}`, html`✓`];
+        return [html`${item.modelVerbose}`,html`${item.name}`,  html`✓`];
     }
 }

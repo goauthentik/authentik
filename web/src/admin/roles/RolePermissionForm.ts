@@ -10,25 +10,25 @@ import "@goauthentik/elements/rbac/PermissionSelectModal";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
-import { customElement, state } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
-import { CoreApi, ModelEnum, Permission } from "@goauthentik/api";
+import { CoreApi, Permission } from "@goauthentik/api";
 
-interface RoleAssignData {
-    role: string;
-    permissions: {
-        [key: string]: boolean;
-    };
+interface RolePermissionAssign {
+    permissions: string[];
 }
 
 @customElement("ak-role-permission-form")
-export class RolePermissionForm extends ModelForm<RoleAssignData, number> {
+export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> {
     @state()
     permissionsToAdd: Permission[] = [];
 
+    @property()
+    roleUuid?: string;
+
     async load(): Promise<void> {}
 
-    loadInstance(): Promise<RoleAssignData> {
+    loadInstance(): Promise<RolePermissionAssign> {
         throw new Error("Method not implemented.");
     }
 
@@ -36,15 +36,11 @@ export class RolePermissionForm extends ModelForm<RoleAssignData, number> {
         return msg("Successfully assigned permission.");
     }
 
-    send(data: RoleAssignData): Promise<unknown> {
+    send(data: RolePermissionAssign): Promise<unknown> {
         return new CoreApi(DEFAULT_CONFIG).coreRbacRoleAssignCreate({
-            uuid: data.role,
+            uuid: this.roleUuid || "",
             permissionAssignRequest: {
-                permissions: Object.keys(data.permissions).filter((key) => data.permissions[key]),
-                model: ModelEnum.BlueprintsBlueprintinstance,
-                objectPk: "",
-                // model: this.model!,
-                // objectPk: this.objectPk,
+                permissions: data.permissions,
             },
         });
     }
@@ -71,7 +67,7 @@ export class RolePermissionForm extends ModelForm<RoleAssignData, number> {
                             ${this.permissionsToAdd.map((permission) => {
                                 return html`<ak-chip
                                     .removable=${true}
-                                    value=${permission.id}
+                                    value=${`${permission.appLabel}.${permission.codename}`}
                                     @remove=${() => {
                                         const idx = this.permissionsToAdd.indexOf(permission);
                                         this.permissionsToAdd.splice(idx, 1);

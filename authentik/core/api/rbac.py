@@ -5,6 +5,7 @@ from django.db.models import Q, QuerySet
 from django_filters.filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
 from guardian.models import GroupObjectPermission, UserObjectPermission
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,
     ChoiceField,
@@ -134,3 +135,18 @@ class PermissionAssignSerializer(PassiveSerializer):
     object_pk = CharField(required=False)
 
     validators = [RequiredTogetherValidator(fields=["model", "object_pk"])]
+
+    def validate(self, attrs: dict) -> dict:
+        if attrs.get("model"):
+            return attrs
+        permissions = attrs.get("permissions")
+        if not all("." in perm for perm in permissions):
+            raise ValidationError(
+                {
+                    "permissions": (
+                        "When assigning global permissions, codename must be given as "
+                        "app_label.codename"
+                    )
+                }
+            )
+        return attrs
