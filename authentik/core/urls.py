@@ -14,8 +14,8 @@ from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
 from authentik.core.api.rbac import RBACPermissionViewSet
-from authentik.core.api.rbac_role import RoleAssignedPermissionViewSet
-from authentik.core.api.rbac_user import UserAssignedPermissionViewSet
+from authentik.core.api.rbac_roles import RoleAssignedPermissionViewSet
+from authentik.core.api.rbac_users import UserAssignedPermissionViewSet
 from authentik.core.api.roles import RoleViewSet
 from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSet
 from authentik.core.api.tokens import TokenViewSet

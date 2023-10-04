@@ -19,12 +19,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { CoreApi, Role } from "@goauthentik/api";
 
 @customElement("ak-role-view")
-export class UserViewPage extends AKElement {
+export class RoleViewPage extends AKElement {
     @property({ type: String })
     set roleId(id: string) {
         new CoreApi(DEFAULT_CONFIG)
@@ -43,12 +43,12 @@ export class UserViewPage extends AKElement {
         return [
             PFBase,
             PFPage,
-            PFFlex,
             PFButton,
             PFDisplay,
             PFGrid,
             PFContent,
             PFCard,
+            PFDescriptionList,
             css`
                 .pf-c-description-list__description ak-action-button {
                     margin-right: 6px;
@@ -87,15 +87,37 @@ export class UserViewPage extends AKElement {
                 slot="page-overview"
                 data-tab-title="${msg("Overview")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
-            ></section>
-            <section
-                slot="page-events"
-                data-tab-title="${msg("User events")}"
-                class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-events-user targetUser=${this._role.name}> </ak-events-user>
+                <div class="pf-l-grid pf-m-gutter">
+                    <div
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-3-col-on-xl pf-m-3-col-on-2xl"
+                    >
+                        <div class="pf-c-card__title">${msg("Role Info")}</div>
+                        <div class="pf-c-card__body">
+                            <dl class="pf-c-description-list">
+                                <div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Name")}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            ${this._role.name}
+                                        </div>
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+                    </div>
+                    <div
+                        class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
+                    >
+                        <div class="pf-c-card__title">
+                            ${msg("Permissions")}
+                        </div>
+                        <div class="pf-c-card__body">
+                        </div>
                     </div>
                 </div>
             </section>

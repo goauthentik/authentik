@@ -35,7 +35,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { CapabilitiesEnum, CoreApi, SessionUser, User } from "@goauthentik/api";
@@ -68,7 +67,6 @@ export class UserViewPage extends AKElement {
         return [
             PFBase,
             PFPage,
-            PFFlex,
             PFButton,
             PFDisplay,
             PFGrid,

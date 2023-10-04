@@ -40,7 +40,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             contentTypeAppLabel: appLabel,
             ordering: "codename",
         });
-        modelPermissions.results = modelPermissions.results.filter(value => {
+        modelPermissions.results = modelPermissions.results.filter((value) => {
             return !value.codename.startsWith("add_");
         });
         this.modelPermissions = modelPermissions;

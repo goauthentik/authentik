@@ -21,7 +21,6 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
 import { ProvidersApi, RadiusProvider } from "@goauthentik/api";
@@ -50,7 +49,6 @@ export class RadiusProviderViewPage extends AKElement {
             PFBase,
             PFButton,
             PFPage,
-            PFFlex,
             PFDisplay,
             PFGallery,
             PFContent,
