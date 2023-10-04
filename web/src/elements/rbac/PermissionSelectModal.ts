@@ -1,3 +1,4 @@
+import { groupBy } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -5,21 +6,13 @@ import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TableModal } from "@goauthentik/elements/table/TableModal";
 
-
-
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-
-
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-
-
 import { CoreApi, Permission } from "@goauthentik/api";
-import { groupBy } from "@goauthentik/app/common/utils";
-
 
 @customElement("ak-rbac-permission-select-table")
 export class PermissionSelectModal extends TableModal<Permission> {
@@ -33,7 +26,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
     @property()
     confirm!: (selectedItems: Permission[]) => Promise<unknown>;
 
-    order = "content_type__app_label,codename";
+    order = "content_type__app_label,content_type__model";
 
     static get styles(): CSSResult[] {
         return super.styles.concat(PFBanner);
@@ -49,17 +42,13 @@ export class PermissionSelectModal extends TableModal<Permission> {
     }
 
     groupBy(items: Permission[]): [string, Permission[]][] {
-        return groupBy(items, (perm => {
-            return perm.appLabel;
-        }));
+        return groupBy(items, (perm) => {
+            return perm.appLabelVerbose;
+        });
     }
 
     columns(): TableColumn[] {
-        return [
-            new TableColumn(msg("Name"), "username"),
-            new TableColumn(msg("Superuser"), "is_superuser"),
-            new TableColumn(msg("Members"), ""),
-        ];
+        return [new TableColumn(msg("Name"), "codename"), new TableColumn(msg("Model"), "")];
     }
 
     row(item: Permission): TemplateResult[] {
@@ -67,7 +56,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
             html`<div>
                 <div>${item.name}</div>
             </div>`,
-            html``,
+            html`${item.modelVerbose}`,
         ];
     }
 

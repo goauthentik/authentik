@@ -47,13 +47,12 @@ from authentik.policies.models import Policy, PolicyBindingModel
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 
 
-def is_model_allowed(model: type[Model]) -> bool:
-    """Check if model is allowed"""
+def excluded_models() -> list[type[Model]]:
     # pylint: disable=imported-auth-user
     from django.contrib.auth.models import Group as DjangoGroup
     from django.contrib.auth.models import User as DjangoUser
 
-    excluded_models = (
+    return (
         DjangoUser,
         DjangoGroup,
         # Base classes
@@ -70,7 +69,11 @@ def is_model_allowed(model: type[Model]) -> bool:
         # Classes which are only internally managed
         FlowToken,
     )
-    return model not in excluded_models and issubclass(model, (SerializerModel, BaseMetaModel))
+
+
+def is_model_allowed(model: type[Model]) -> bool:
+    """Check if model is allowed"""
+    return model not in excluded_models() and issubclass(model, (SerializerModel, BaseMetaModel))
 
 
 class DoRollback(SentryIgnoredException):

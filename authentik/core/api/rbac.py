@@ -1,7 +1,7 @@
 """common RBAC serializers"""
 from django.apps import apps
 from django.contrib.auth.models import Permission
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 from django_filters.filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
 from guardian.models import GroupObjectPermission, UserObjectPermission
@@ -15,6 +15,7 @@ from rest_framework.fields import (
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
+from authentik.blueprints.v1.importer import excluded_models
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Role
 from authentik.lib.validators import RequiredTogetherValidator
@@ -27,13 +28,27 @@ class PermissionSerializer(ModelSerializer):
     app_label = ReadOnlyField(source="content_type.app_label")
     app_label_verbose = SerializerMethodField()
     model = ReadOnlyField(source="content_type.model")
+    model_verbose = SerializerMethodField()
 
     def get_app_label_verbose(self, instance: Permission) -> str:
         return apps.get_app_config(instance.content_type.app_label).verbose_name
 
+    def get_model_verbose(self, instance: Permission) -> str:
+        return apps.get_model(
+            instance.content_type.app_label, instance.content_type.model
+        )._meta.verbose_name
+
     class Meta:
         model = Permission
-        fields = ["id", "name", "codename", "model", "app_label", "app_label_verbose"]
+        fields = [
+            "id",
+            "name",
+            "codename",
+            "model",
+            "app_label",
+            "app_label_verbose",
+            "model_verbose",
+        ]
 
 
 class UserObjectPermissionSerializer(ModelSerializer):
@@ -82,13 +97,7 @@ class PermissionFilter(FilterSet):
 class RBACPermissionViewSet(ReadOnlyModelViewSet):
     """Read-only list of all permissions, filterable by model and app"""
 
-    queryset = (
-        Permission.objects.all()
-        .select_related("content_type")
-        .filter(
-            content_type__app_label__startswith="authentik",
-        )
-    )
+    queryset = Permission.objects.none()
     serializer_class = PermissionSerializer
     ordering = ["name"]
     filterset_class = PermissionFilter
@@ -97,6 +106,22 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
         "content_type__model",
         "content_type__app_label",
     ]
+
+    def get_queryset(self) -> QuerySet:
+        exclude = Q()
+        for model in excluded_models():
+            exclude |= Q(
+                content_type__app_label=model._meta.app_label,
+                content_type__model=model._meta.model_name,
+            )
+        return (
+            Permission.objects.all()
+            .select_related("content_type")
+            .filter(
+                content_type__app_label__startswith="authentik",
+            )
+            .exclude(exclude)
+        )
 
 
 class PermissionAssignSerializer(PassiveSerializer):

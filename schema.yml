@@ -37720,12 +37720,16 @@ components:
         app_label_verbose:
           type: string
           readOnly: true
+        model_verbose:
+          type: string
+          readOnly: true
       required:
       - app_label
       - app_label_verbose
       - codename
       - id
       - model
+      - model_verbose
       - name
     PermissionAssignRequest:
       type: object
