@@ -79,7 +79,7 @@ html > form > input {
 .pf-c-login__footer {
     flex-grow: 2;
     display: flex;
-    justify-content: start;
+    justify-content: end;
     flex-direction: column;
 }
 .pf-c-login__footer ul.pf-c-list.pf-m-inline {

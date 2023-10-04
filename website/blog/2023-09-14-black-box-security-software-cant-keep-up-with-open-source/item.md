@@ -1,5 +1,6 @@
 ---
 title: Black box security software can’t keep up with open source
+description: "There will always be bugs and vulnerabilities in software. Accepting that, which distribution model gives you more confidence and flexibility?"
 slug: 2023-09-14-black-box-security-software-cant-keep-up-with-open-source
 authors:
     - name: Jens Langhammer

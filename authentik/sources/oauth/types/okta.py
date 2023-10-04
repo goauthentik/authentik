@@ -21,7 +21,7 @@ class OktaOAuth2Callback(OAuthCallback):
     """Okta OAuth2 Callback"""
 
     # Okta has the same quirk as azure and throws an error if the access token
-    # is set via query parameter, so we re-use the azure client
+    # is set via query parameter, so we reuse the azure client
     # see https://github.com/goauthentik/authentik/issues/1910
     client_class = UserprofileHeaderAuthClient
 
