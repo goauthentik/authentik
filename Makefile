@@ -81,7 +81,7 @@ dev-drop-db:
 	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
 	# Also remove the test-db if it exists
 	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
-	echo redis-cli -n 0 flushall
+	redis-cli -n 0 flushall
 
 dev-create-db:
 	createdb -U ${pg_user} -h ${pg_host} ${pg_name}

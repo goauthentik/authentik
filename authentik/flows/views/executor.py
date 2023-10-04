@@ -24,6 +24,7 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.models import Application
 from authentik.events.models import Event, EventAction, cleanse_dict
+from authentik.flows.apps import HIST_FLOW_EXECUTION_STAGE_TIME
 from authentik.flows.challenge import (
     Challenge,
     ChallengeResponse,
@@ -266,17 +267,21 @@ class FlowExecutorView(APIView):
     )
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Get the next pending challenge from the currently active flow."""
+        class_path = class_to_path(self.current_stage_view.__class__)
         self._logger.debug(
             "f(exec): Passing GET",
-            view_class=class_to_path(self.current_stage_view.__class__),
+            view_class=class_path,
             stage=self.current_stage,
         )
         try:
             with Hub.current.start_span(
                 op="authentik.flow.executor.stage",
-                description=class_to_path(self.current_stage_view.__class__),
-            ) as span:
-                span.set_data("Method", "GET")
+                description=class_path,
+            ) as span, HIST_FLOW_EXECUTION_STAGE_TIME.labels(
+                method=request.method.upper(),
+                stage_type=class_path,
+            ).time():
+                span.set_data("Method", request.method.upper())
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.dispatch(request)
@@ -310,17 +315,21 @@ class FlowExecutorView(APIView):
     )
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Solve the previously retrieved challenge and advanced to the next stage."""
+        class_path = class_to_path(self.current_stage_view.__class__)
         self._logger.debug(
             "f(exec): Passing POST",
-            view_class=class_to_path(self.current_stage_view.__class__),
+            view_class=class_path,
             stage=self.current_stage,
         )
         try:
             with Hub.current.start_span(
                 op="authentik.flow.executor.stage",
-                description=class_to_path(self.current_stage_view.__class__),
-            ) as span:
-                span.set_data("Method", "POST")
+                description=class_path,
+            ) as span, HIST_FLOW_EXECUTION_STAGE_TIME.labels(
+                method=request.method.upper(),
+                stage_type=class_path,
+            ).time():
+                span.set_data("Method", request.method.upper())
                 span.set_data("authentik Stage", self.current_stage_view)
                 span.set_data("authentik Flow", self.flow.slug)
                 stage_response = self.current_stage_view.dispatch(request)

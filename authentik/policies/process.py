@@ -11,6 +11,7 @@ from structlog.stdlib import get_logger
 from authentik.events.models import Event, EventAction
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.errors import exception_to_string
+from authentik.lib.utils.reflection import class_to_path
 from authentik.policies.apps import HIST_POLICIES_EXECUTION_TIME
 from authentik.policies.exceptions import PolicyException
 from authentik.policies.models import PolicyBinding
@@ -128,9 +129,8 @@ class PolicyProcess(PROCESS_CLASS):
                 binding_target_type=self.binding.target_type,
                 binding_target_name=self.binding.target_name,
                 object_pk=str(self.request.obj.pk),
-                object_type=(
-                    f"{self.request.obj._meta.app_label}.{self.request.obj._meta.model_name}"
-                ),
+                object_type=class_to_path(self.request.obj.__class__),
+                mode="execute_process",
             ).time(),
         ):
             span: Span
