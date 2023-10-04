@@ -115,7 +115,7 @@ func TestRedisAddrNoArgNoHostOpt(t *testing.T) {
 }
 
 func TestRedisAddrNoArgNoHostFailoverOpt(t *testing.T) {
-	uri, _ := url.Parse("redis+sentinel:///0")
+	uri, _ := url.Parse("redis+sentinel:///0?mastername=mymaster")
 	opts := uriMustGetRedisOptions(uri).Failover()
 
 	if !reflect.DeepEqual(opts.SentinelAddrs, []string{"127.0.0.1:26379"}) {
