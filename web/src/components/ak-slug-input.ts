@@ -101,6 +101,7 @@ export class AkSlugInput extends AKElement {
         // iteration are *similar enough*, set the input value. "Similar enough" here is defined as
         // "any event which adds or removes a character but leaves the rest of the slug looking like
         // the previous iteration, set it to the current iteration."
+
         const newSlug = convertToSlug(ev.target.value);
         const oldSlug = this.input.value;
         const [shorter, longer] =

@@ -5,7 +5,7 @@ export class RadiusForm extends Page {
         await this.searchSelect(
             '>>>ak-tenanted-flow-search[name="authorizationFlow"] input[type="text"]',
             "authorizationFlow",
-            `button*=${selector}`
+            `button*=${selector}`,
         );
     }
 }

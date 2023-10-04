@@ -1,12 +1,12 @@
 import AdminPage from "./admin.page.js";
 import ApplicationForm from "./forms/application.form.js";
+import ForwardProxyForm from "./forms/forward-proxy.form.js";
 import LdapForm from "./forms/ldap.form.js";
 import OauthForm from "./forms/oauth.form.js";
-import TransparentProxyForm from "./forms/transparent-proxy.form.js";
-import ForwardProxyForm from "./forms/forward-proxy.form.js";
+import RadiusForm from "./forms/radius.form.js";
 import SamlForm from "./forms/saml.form.js";
 import ScimForm from "./forms/scim.form.js";
-import RadiusForm from "./forms/radius.form.js";
+import TransparentProxyForm from "./forms/transparent-proxy.form.js";
 import { $ } from "@wdio/globals";
 
 /**
@@ -44,7 +44,7 @@ class ApplicationWizardView extends AdminPage {
     }
 
     get successMessage() {
-        return $('>>>[data-commit-state="success"]')
+        return $('>>>[data-commit-state="success"]');
     }
 }
 
