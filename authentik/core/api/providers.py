@@ -52,18 +52,14 @@ class ProviderSerializer(ModelSerializer, MetaNameSerializer):
             "verbose_name_plural",
             "meta_model_name",
         ]
-        extra_kwargs = {
-            "authorization_flow": {"required": True, "allow_null": False},
-        }
+        extra_kwargs = {"authorization_flow": {"required": True, "allow_null": False}}
 
 
 class ProviderFilter(FilterSet):
     """Filter for providers"""
 
     application__isnull = BooleanFilter(method="filter_application__isnull")
-    backchannel_only = BooleanFilter(
-        method="filter_backchannel_only",
-    )
+    backchannel_only = BooleanFilter(method="filter_backchannel_only")
 
     def filter_application__isnull(self, queryset: QuerySet, name, value):
         """Only return providers that are neither assigned to application,
@@ -78,7 +74,8 @@ class ProviderFilter(FilterSet):
         return queryset.filter(is_backchannel=value)
 
 
-class ProviderViewSet(mixins.RetrieveModelMixin,
+class ProviderViewSet(
+    mixins.RetrieveModelMixin,
     mixins.DestroyModelMixin,
     UsedByMixin,
     mixins.ListModelMixin,
@@ -89,10 +86,7 @@ class ProviderViewSet(mixins.RetrieveModelMixin,
     queryset = Provider.objects.none()
     serializer_class = ProviderSerializer
     filterset_class = ProviderFilter
-    search_fields = [
-        "name",
-        "application__name",
-    ]
+    search_fields = ["name", "application__name"]
 
     def get_queryset(self):  # pragma: no cover
         """

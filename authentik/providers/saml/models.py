@@ -173,6 +173,7 @@ class SAMLProvider(Provider):
         """
         This class contains attributes used for verbose naming.
         """
+
         verbose_name = _("SAML Provider")
         verbose_name_plural = _("SAML Providers")
 

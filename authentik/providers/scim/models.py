@@ -72,6 +72,7 @@ class SCIMProvider(BackchannelProvider):
         """
         Meta class for SCIM Provider.
         """
+
         verbose_name = _("SCIM Provider")
         verbose_name_plural = _("SCIM Providers")
 

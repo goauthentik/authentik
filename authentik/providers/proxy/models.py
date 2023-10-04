@@ -45,8 +45,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     Protocols by using a Reverse-Proxy."""
 
     internal_host = models.TextField(
-        validators=[DomainlessURLValidator(schemes=("http", "https"))],
-        blank=True,
+        validators=[DomainlessURLValidator(schemes=("http", "https"))], blank=True
     )
     external_host = models.TextField(validators=[DomainlessURLValidator(schemes=("http", "https"))])
     internal_host_ssl_validation = models.BooleanField(
@@ -102,10 +101,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
     )
 
     certificate = models.ForeignKey(
-        CertificateKeyPair,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        CertificateKeyPair, on_delete=models.SET_NULL, null=True, blank=True
     )
 
     cookie_secret = models.TextField(default=get_cookie_secret)
@@ -155,6 +151,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
 
     class Meta:
         """Metadata for the main class."""
+
         verbose_name = _("Proxy Provider")
         verbose_name_plural = _("Proxy Providers")
         authentik_used_by_shadows = ["authentik_providers_oauth2.oauth2provider"]

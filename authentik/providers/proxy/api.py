@@ -159,6 +159,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         """
         This is a class representing the metadata for a proxy provider.
         """
+
         model = ProxyProvider
         fields = [
             "pk",

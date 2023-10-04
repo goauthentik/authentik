@@ -36,15 +36,9 @@ class LDAPProvider(OutpostModel, BackchannelProvider):
         ),
     )
 
-    tls_server_name = models.TextField(
-        default="",
-        blank=True,
-    )
+    tls_server_name = models.TextField(default="", blank=True)
     certificate = models.ForeignKey(
-        CertificateKeyPair,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
+        CertificateKeyPair, on_delete=models.SET_NULL, null=True, blank=True
     )
 
     uid_start_number = models.IntegerField(
@@ -114,5 +108,6 @@ class LDAPProvider(OutpostModel, BackchannelProvider):
         """
         Meta class for the 'LDAP Provider' object.
         """
+
         verbose_name = _("LDAP Provider")
         verbose_name_plural = _("LDAP Providers")

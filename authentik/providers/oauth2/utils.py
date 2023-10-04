@@ -124,7 +124,6 @@ def protected_resource_view(scopes: list[str]):
     This decorator also injects the token into `kwargs`"""
 
     def wrapper(view):
-
         def view_wrapper(request: HttpRequest, *args, **kwargs):
             if request.method == "OPTIONS":
                 return view(request, *args, **kwargs)
@@ -155,9 +154,7 @@ def protected_resource_view(scopes: list[str]):
 
                 if not set(scopes).issubset(set(token.scope)):
                     LOGGER.warning(
-                        "Scope mismatch.",
-                        required=set(scopes),
-                        token_has=set(token.scope),
+                        "Scope mismatch.", required=set(scopes), token_has=set(token.scope)
                     )
                     raise BearerTokenError("insufficient_scope")
             except BearerTokenError as error:

@@ -157,6 +157,7 @@ class SAMLProviderSerializer(ProviderSerializer):
 
     class Meta:
         """A class representing metadata for a SAML provider."""
+
         model = SAMLProvider
         fields = ProviderSerializer.Meta.fields + [
             "acs_url",
@@ -194,7 +195,7 @@ class SAMLProviderImportSerializer(PassiveSerializer):
 
     name = CharField(required=True)
     authorization_flow = PrimaryKeyRelatedField(
-        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION),
+        queryset=Flow.objects.filter(designation=FlowDesignation.AUTHORIZATION)
     )
     file = FileField()
 
@@ -215,18 +216,13 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         },
         parameters=[
             OpenApiParameter(
-                name="download",
-                location=OpenApiParameter.QUERY,
-                type=OpenApiTypes.BOOL,
+                name="download", location=OpenApiParameter.QUERY, type=OpenApiTypes.BOOL
             ),
             OpenApiParameter(
                 name="force_binding",
                 location=OpenApiParameter.QUERY,
                 type=OpenApiTypes.STR,
-                enum=[
-                    SAML_BINDING_REDIRECT,
-                    SAML_BINDING_POST,
-                ],
+                enum=[SAML_BINDING_REDIRECT, SAML_BINDING_POST],
                 description="Optionally force the metadata to only include one binding.",
             ),
         ],
@@ -255,15 +251,10 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
 
     @permission_required(
         None,
-        [
-            "authentik_providers_saml.add_samlprovider",
-            "authentik_crypto.add_certificatekeypair",
-        ],
+        ["authentik_providers_saml.add_samlprovider", "authentik_crypto.add_certificatekeypair"],
     )
     @extend_schema(
-        request={
-            "multipart/form-data": SAMLProviderImportSerializer,
-        },
+        request={"multipart/form-data": SAMLProviderImportSerializer},
         responses={
             204: OpenApiResponse(description="Successfully imported provider"),
             400: OpenApiResponse(description="Bad request"),
@@ -290,18 +281,16 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))
             raise ValidationError(
-                _("Failed to import Metadata: %(message)s" % {"message": str(exc)}),
+                _("Failed to import Metadata: %(message)s" % {"message": str(exc)})
             )
         return Response(status=204)
 
-    @permission_required(
-        "authentik_providers_saml.view_samlprovider",
-    )
+    @permission_required("authentik_providers_saml.view_samlprovider")
     @extend_schema(
         responses={
             200: PropertyMappingPreviewSerializer(),
             400: OpenApiResponse(description="Bad request"),
-        },
+        }
     )
     @action(detail=True, methods=["GET"])
     def preview_user(self, request: Request, pk: int) -> Response:
