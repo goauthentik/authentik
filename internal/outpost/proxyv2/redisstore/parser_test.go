@@ -152,18 +152,20 @@ func TestRedisMaxRetriesArgOpt(t *testing.T) {
 
 func TestRedisMaxRetriesNegativeArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?maxretries=-432")
-	opts := uriMustGetRedisOptions(uri)
+	universalClient, err := GetRedisClient(uri)
+	client, ok := universalClient.(*redis.Client)
 
-	if opts.MaxRetries != 0 {
+	if err != nil || !ok || !reflect.DeepEqual(client.Options().MaxRetries, 0) {
 		t.Fail()
 	}
 }
 
 func TestRedisMaxRetriesDefaultArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0")
-	opts := uriMustGetRedisOptions(uri)
+	universalClient, err := GetRedisClient(uri)
+	client, ok := universalClient.(*redis.Client)
 
-	if opts.MaxRetries != 3 {
+	if err != nil || !ok || !reflect.DeepEqual(client.Options().MaxRetries, 3) {
 		t.Fail()
 	}
 }

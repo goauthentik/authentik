@@ -97,7 +97,7 @@ func getRedisOptions(uri *url.URL) (*redis.UniversalOptions, error) {
 			// Negative values for maxretries are handled differently in Golang and Python
 			// Golang: Negative retries lead to no attempt -> failure
 			// Python: Negative retries lead to infinite attempts
-			// Therefore we do not allow them at all -> set to 0 later on
+			// Therefore we do not allow them at all -> is set to 0 in go-redis options.go
 			if maxRetries < 0 {
 				opts.MaxRetries = -1
 			} else {
@@ -154,14 +154,6 @@ func getRedisOptions(uri *url.URL) (*redis.UniversalOptions, error) {
 
 	if uri.Host != "" {
 		opts.Addrs = append(opts.Addrs, strings.Split(uri.Host, ",")...)
-	}
-
-	// Similar to Python implementation use default of 3 retries if not specifically set to 0
-	switch opts.MaxRetries {
-	case -1:
-		opts.MaxRetries = 0
-	case 0:
-		opts.MaxRetries = 3
 	}
 
 	// A redis connection string uses the path section of the URI in two different ways. In a TCP-based connection, the

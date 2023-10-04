@@ -163,7 +163,7 @@ class TestParserUtils(TestCase):
         connection_pool, _ = get_connection_pool(config)
         retry_config = connection_pool.connection_kwargs["retry"]
         self.assertIsInstance(retry_config, Retry)
-        self.assertIsInstance(retry_config._backoff, NoBackoff)
+        self.assertIsInstance(retry_config._backoff, ExponentialBackoff)
         self.assertEqual(retry_config._retries, 3)
 
     def test_get_connection_pool_min_and_max_backoff(self):
