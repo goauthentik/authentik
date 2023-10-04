@@ -35,11 +35,15 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
             objectPk: this.objectPk?.toString(),
         });
         const [appLabel, modelName] = (this.model || "").split(".");
-        this.modelPermissions = await new CoreApi(DEFAULT_CONFIG).coreRbacPermissionsList({
+        const modelPermissions = await new CoreApi(DEFAULT_CONFIG).coreRbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",
         });
+        modelPermissions.results = modelPermissions.results.filter(value => {
+            return !value.codename.startsWith("add_");
+        });
+        this.modelPermissions = modelPermissions;
         return perms;
     }
 
