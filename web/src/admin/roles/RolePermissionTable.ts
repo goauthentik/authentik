@@ -20,6 +20,8 @@ export class RolePermissionTable extends Table<Permission> {
         return true;
     }
 
+    checkbox = true;
+
     order = "content_type__app_label,content_type__model";
 
     apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
@@ -38,7 +40,11 @@ export class RolePermissionTable extends Table<Permission> {
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn("Model", "model"),new TableColumn("Permission", ""), new TableColumn("")];
+        return [
+            new TableColumn("Model", "model"),
+            new TableColumn("Permission", ""),
+            new TableColumn(""),
+        ];
     }
 
     renderObjectCreate(): TemplateResult {
@@ -55,7 +61,27 @@ export class RolePermissionTable extends Table<Permission> {
         `;
     }
 
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${msg("Permission(s)")}
+            .objects=${this.selectedElements}
+            .delete=${(item: Permission) => {
+                return new CoreApi(DEFAULT_CONFIG).coreRbacRoleUnassignPartialUpdate({
+                    uuid: this.roleUuid || "",
+                    patchedPermissionAssignRequest: {
+                        permissions: [`${item.appLabel}.${item.codename}`],
+                    },
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
+    }
+
     row(item: Permission): TemplateResult[] {
-        return [html`${item.modelVerbose}`,html`${item.name}`,  html`✓`];
+        return [html`${item.modelVerbose}`, html`${item.name}`, html`✓`];
     }
 }

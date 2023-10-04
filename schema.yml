@@ -885,7 +885,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Static device.
+        description: A unique integer value identifying this Static Device.
         required: true
       tags:
       - authenticators
@@ -918,7 +918,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Static device.
+        description: A unique integer value identifying this Static Device.
         required: true
       tags:
       - authenticators
@@ -957,7 +957,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Static device.
+        description: A unique integer value identifying this Static Device.
         required: true
       tags:
       - authenticators
@@ -995,7 +995,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Static device.
+        description: A unique integer value identifying this Static Device.
         required: true
       tags:
       - authenticators
@@ -1113,7 +1113,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this TOTP device.
+        description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
       - authenticators
@@ -1146,7 +1146,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this TOTP device.
+        description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
       - authenticators
@@ -1185,7 +1185,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this TOTP device.
+        description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
       - authenticators
@@ -1223,7 +1223,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this TOTP device.
+        description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
       - authenticators
@@ -2030,7 +2030,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Static device.
+        description: A unique integer value identifying this Static Device.
         required: true
       tags:
       - authenticators
@@ -2063,7 +2063,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Static device.
+        description: A unique integer value identifying this Static Device.
         required: true
       tags:
       - authenticators
@@ -2102,7 +2102,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Static device.
+        description: A unique integer value identifying this Static Device.
         required: true
       tags:
       - authenticators
@@ -2140,7 +2140,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Static device.
+        description: A unique integer value identifying this Static Device.
         required: true
       tags:
       - authenticators
@@ -2170,7 +2170,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this Static device.
+        description: A unique integer value identifying this Static Device.
         required: true
       tags:
       - authenticators
@@ -2262,7 +2262,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this TOTP device.
+        description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
       - authenticators
@@ -2295,7 +2295,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this TOTP device.
+        description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
       - authenticators
@@ -2334,7 +2334,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this TOTP device.
+        description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
       - authenticators
@@ -2372,7 +2372,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this TOTP device.
+        description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
       - authenticators
@@ -2402,7 +2402,7 @@ paths:
         name: id
         schema:
           type: integer
-        description: A unique integer value identifying this TOTP device.
+        description: A unique integer value identifying this TOTP Device.
         required: true
       tags:
       - authenticators
@@ -3379,7 +3379,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this group.
+        description: A UUID string identifying this Group.
         required: true
       tags:
       - core
@@ -3413,7 +3413,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this group.
+        description: A UUID string identifying this Group.
         required: true
       tags:
       - core
@@ -3453,7 +3453,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this group.
+        description: A UUID string identifying this Group.
         required: true
       tags:
       - core
@@ -3492,7 +3492,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this group.
+        description: A UUID string identifying this Group.
         required: true
       tags:
       - core
@@ -3523,7 +3523,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this group.
+        description: A UUID string identifying this Group.
         required: true
       tags:
       - core
@@ -3562,7 +3562,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this group.
+        description: A UUID string identifying this Group.
         required: true
       tags:
       - core
@@ -3601,7 +3601,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this group.
+        description: A UUID string identifying this Group.
         required: true
       tags:
       - core
@@ -3823,7 +3823,7 @@ paths:
           * `authentik_flows.flowstagebinding` - Flow Stage Binding
           * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
           * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-          * `authentik_outposts.outpost` - outpost
+          * `authentik_outposts.outpost` - Outpost
           * `authentik_policies_dummy.dummypolicy` - Dummy Policy
           * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
           * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
@@ -3857,9 +3857,9 @@ paths:
           * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
           * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
           * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
-          * `authentik_stages_authenticator_static.staticdevice` - Static device
+          * `authentik_stages_authenticator_static.staticdevice` - Static Device
           * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-          * `authentik_stages_authenticator_totp.totpdevice` - TOTP device
+          * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
           * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
           * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
           * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
@@ -3881,7 +3881,7 @@ paths:
           * `authentik_stages_user_write.userwritestage` - User Write Stage
           * `authentik_tenants.tenant` - Tenant
           * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-          * `authentik_core.group` - group
+          * `authentik_core.group` - Group
           * `authentik_core.user` - User
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
@@ -3964,6 +3964,44 @@ paths:
       responses:
         '204':
           description: Successfully assigned
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /core/rbac/role/{uuid}/unassign/:
+    patch:
+      operationId: core_rbac_role_unassign_partial_update
+      description: |-
+        Unassign permission(s) to role. When `object_pk` is set, the permissions
+        are only assigned to the specific object, otherwise they are assigned globally.
+      parameters:
+      - in: path
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        description: A UUID string identifying this Role.
+        required: true
+      tags:
+      - core
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPermissionAssignRequest'
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully unassigned
         '400':
           content:
             application/json:
@@ -4069,7 +4107,7 @@ paths:
           * `authentik_flows.flowstagebinding` - Flow Stage Binding
           * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
           * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-          * `authentik_outposts.outpost` - outpost
+          * `authentik_outposts.outpost` - Outpost
           * `authentik_policies_dummy.dummypolicy` - Dummy Policy
           * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
           * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
@@ -4103,9 +4141,9 @@ paths:
           * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
           * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
           * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
-          * `authentik_stages_authenticator_static.staticdevice` - Static device
+          * `authentik_stages_authenticator_static.staticdevice` - Static Device
           * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-          * `authentik_stages_authenticator_totp.totpdevice` - TOTP device
+          * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
           * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
           * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
           * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
@@ -4127,7 +4165,7 @@ paths:
           * `authentik_stages_user_write.userwritestage` - User Write Stage
           * `authentik_tenants.tenant` - Tenant
           * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-          * `authentik_core.group` - group
+          * `authentik_core.group` - Group
           * `authentik_core.user` - User
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
@@ -6541,7 +6579,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this license.
+        description: A UUID string identifying this License.
         required: true
       tags:
       - enterprise
@@ -6575,7 +6613,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this license.
+        description: A UUID string identifying this License.
         required: true
       tags:
       - enterprise
@@ -6615,7 +6653,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this license.
+        description: A UUID string identifying this License.
         required: true
       tags:
       - enterprise
@@ -6654,7 +6692,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this license.
+        description: A UUID string identifying this License.
         required: true
       tags:
       - enterprise
@@ -6685,7 +6723,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this license.
+        description: A UUID string identifying this License.
         required: true
       tags:
       - enterprise
@@ -10008,7 +10046,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this outpost.
+        description: A UUID string identifying this Outpost.
         required: true
       tags:
       - outposts
@@ -10042,7 +10080,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this outpost.
+        description: A UUID string identifying this Outpost.
         required: true
       tags:
       - outposts
@@ -10082,7 +10120,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this outpost.
+        description: A UUID string identifying this Outpost.
         required: true
       tags:
       - outposts
@@ -10121,7 +10159,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this outpost.
+        description: A UUID string identifying this Outpost.
         required: true
       tags:
       - outposts
@@ -10200,7 +10238,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this outpost.
+        description: A UUID string identifying this Outpost.
         required: true
       tags:
       - outposts
@@ -10237,7 +10275,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this outpost.
+        description: A UUID string identifying this Outpost.
         required: true
       tags:
       - outposts
@@ -30455,7 +30493,7 @@ components:
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
             * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-            * `authentik_outposts.outpost` - outpost
+            * `authentik_outposts.outpost` - Outpost
             * `authentik_policies_dummy.dummypolicy` - Dummy Policy
             * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
             * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
@@ -30489,9 +30527,9 @@ components:
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
             * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
-            * `authentik_stages_authenticator_static.staticdevice` - Static device
+            * `authentik_stages_authenticator_static.staticdevice` - Static Device
             * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-            * `authentik_stages_authenticator_totp.totpdevice` - TOTP device
+            * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
             * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
             * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
             * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
@@ -30513,7 +30551,7 @@ components:
             * `authentik_stages_user_write.userwritestage` - User Write Stage
             * `authentik_tenants.tenant` - Tenant
             * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-            * `authentik_core.group` - group
+            * `authentik_core.group` - Group
             * `authentik_core.user` - User
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
@@ -30648,7 +30686,7 @@ components:
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
             * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-            * `authentik_outposts.outpost` - outpost
+            * `authentik_outposts.outpost` - Outpost
             * `authentik_policies_dummy.dummypolicy` - Dummy Policy
             * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
             * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
@@ -30682,9 +30720,9 @@ components:
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
             * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
-            * `authentik_stages_authenticator_static.staticdevice` - Static device
+            * `authentik_stages_authenticator_static.staticdevice` - Static Device
             * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-            * `authentik_stages_authenticator_totp.totpdevice` - TOTP device
+            * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
             * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
             * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
             * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
@@ -30706,7 +30744,7 @@ components:
             * `authentik_stages_user_write.userwritestage` - User Write Stage
             * `authentik_tenants.tenant` - Tenant
             * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-            * `authentik_core.group` - group
+            * `authentik_core.group` - Group
             * `authentik_core.user` - User
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
@@ -32882,7 +32920,7 @@ components:
         * `authentik_flows.flowstagebinding` - Flow Stage Binding
         * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
         * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-        * `authentik_outposts.outpost` - outpost
+        * `authentik_outposts.outpost` - Outpost
         * `authentik_policies_dummy.dummypolicy` - Dummy Policy
         * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
         * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
@@ -32916,9 +32954,9 @@ components:
         * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
         * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
         * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
-        * `authentik_stages_authenticator_static.staticdevice` - Static device
+        * `authentik_stages_authenticator_static.staticdevice` - Static Device
         * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-        * `authentik_stages_authenticator_totp.totpdevice` - TOTP device
+        * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
         * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
         * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
         * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
@@ -32940,7 +32978,7 @@ components:
         * `authentik_stages_user_write.userwritestage` - User Write Stage
         * `authentik_tenants.tenant` - Tenant
         * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-        * `authentik_core.group` - group
+        * `authentik_core.group` - Group
         * `authentik_core.user` - User
         * `authentik_core.application` - Application
         * `authentik_core.token` - Token
@@ -35920,7 +35958,7 @@ components:
             * `authentik_flows.flowstagebinding` - Flow Stage Binding
             * `authentik_outposts.dockerserviceconnection` - Docker Service-Connection
             * `authentik_outposts.kubernetesserviceconnection` - Kubernetes Service-Connection
-            * `authentik_outposts.outpost` - outpost
+            * `authentik_outposts.outpost` - Outpost
             * `authentik_policies_dummy.dummypolicy` - Dummy Policy
             * `authentik_policies_event_matcher.eventmatcherpolicy` - Event Matcher Policy
             * `authentik_policies_expiry.passwordexpirypolicy` - Password Expiry Policy
@@ -35954,9 +35992,9 @@ components:
             * `authentik_stages_authenticator_sms.authenticatorsmsstage` - SMS Authenticator Setup Stage
             * `authentik_stages_authenticator_sms.smsdevice` - SMS Device
             * `authentik_stages_authenticator_static.authenticatorstaticstage` - Static Authenticator Stage
-            * `authentik_stages_authenticator_static.staticdevice` - Static device
+            * `authentik_stages_authenticator_static.staticdevice` - Static Device
             * `authentik_stages_authenticator_totp.authenticatortotpstage` - TOTP Authenticator Setup Stage
-            * `authentik_stages_authenticator_totp.totpdevice` - TOTP device
+            * `authentik_stages_authenticator_totp.totpdevice` - TOTP Device
             * `authentik_stages_authenticator_validate.authenticatorvalidatestage` - Authenticator Validation Stage
             * `authentik_stages_authenticator_webauthn.authenticatewebauthnstage` - WebAuthn Authenticator Setup Stage
             * `authentik_stages_authenticator_webauthn.webauthndevice` - WebAuthn Device
@@ -35978,7 +36016,7 @@ components:
             * `authentik_stages_user_write.userwritestage` - User Write Stage
             * `authentik_tenants.tenant` - Tenant
             * `authentik_blueprints.blueprintinstance` - Blueprint Instance
-            * `authentik_core.group` - group
+            * `authentik_core.group` - Group
             * `authentik_core.user` - User
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
@@ -36838,6 +36876,20 @@ components:
           minimum: -2147483648
           description: How many attempts a user has before the flow is canceled. To
             lock the user out, use a reputation policy and a user_write stage.
+    PatchedPermissionAssignRequest:
+      type: object
+      description: Request to assign a new permission
+      properties:
+        permissions:
+          type: array
+          items:
+            type: string
+            minLength: 1
+        model:
+          $ref: '#/components/schemas/ModelEnum'
+        object_pk:
+          type: string
+          minLength: 1
     PatchedPlexSourceConnectionRequest:
       type: object
       description: Plex Source connection Serializer
@@ -37719,9 +37771,11 @@ components:
           readOnly: true
         app_label_verbose:
           type: string
+          description: Human-readable app label
           readOnly: true
         model_verbose:
           type: string
+          description: Human-readable model name
           readOnly: true
       required:
       - app_label

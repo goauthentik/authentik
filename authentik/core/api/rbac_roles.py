@@ -84,3 +84,37 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
             for perm in data.validated_data["permissions"]:
                 assign_perm(perm, role.group, model_instance)
         return Response(status=204)
+
+    @extend_schema(
+        request=PermissionAssignSerializer(),
+        responses={
+            204: OpenApiResponse(description="Successfully unassigned"),
+        },
+    )
+    @action(methods=["PATCH"], detail=True, pagination_class=None, filter_backends=[])
+    def unassign(self, request: Request, *args, **kwargs) -> Response:
+        """Unassign permission(s) to role. When `object_pk` is set, the permissions
+        are only assigned to the specific object, otherwise they are assigned globally."""
+        role: Role = self.get_object()
+        data = PermissionAssignSerializer(data=request.data)
+        data.is_valid(raise_exception=True)
+        model_instance = None
+        # Check if we're setting an object-level perm or global
+        model = data.validated_data.get("model")
+        object_pk = data.validated_data.get("object_pk")
+        if model and object_pk:
+            model = apps.get_model(data.validated_data["model"])
+            model_instance = model.objects.filter(pk=data.validated_data["object_pk"])
+        with atomic():
+            if not model_instance:
+                to_remove = Q()
+                for perm in data.validated_data["permissions"]:
+                    app_label, _, codename = perm.partition(".")
+                    to_remove &= Q(
+                        content_type__app_label=app_label,
+                        codename=codename,
+                    )
+                role.group.permissions.set(role.group.permissions.all().exclude(to_remove))
+            else:
+                raise NotImplementedError()
+        return Response(status=204)
