@@ -105,7 +105,9 @@ class SAMLProviderSerializer(ProviderSerializer):
         """
         Get SLO POST URL
 
-        This function retrieves the Single Logout (SLO) POST URL for a given SAMLProvider instance. It constructs the URL using the `reverse` function with the 'authentik_providers_saml:slo-post' view name and the 'application_slug' argument.
+        This function retrieves the Single Logout (SLO) POST URL for a given SAMLProvider instance.
+        It constructs the URL using the `reverse` function with the
+        'authentik_providers_saml:slo-post' view name and the 'application_slug' argument.
 
         Parameters:
             instance (SAMLProvider): The SAMLProvider instance.
@@ -130,7 +132,9 @@ class SAMLProviderSerializer(ProviderSerializer):
         """
         Get SLO redirect URL
 
-        This function retrieves the Single Logout (SLO) redirect URL for a given SAMLProvider instance. It constructs the URL using the `reverse` function with the 'authentik_providers_saml:slo-redirect' view name and the 'application_slug' argument.
+        This function retrieves the Single Logout (SLO) redirect URL for a given SAMLProvider
+        instance. It constructs the URL using the `reverse` function with the
+        'authentik_providers_saml:slo-redirect' view name and the 'application_slug' argument.
 
         Parameters:
             instance (SAMLProvider): The SAMLProvider instance.

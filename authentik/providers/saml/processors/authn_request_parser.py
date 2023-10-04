@@ -38,7 +38,8 @@ class AuthNRequest:
     Attributes:
         id (Optional[str]): The identifier of the authentication request.
         relay_state (Optional[str]): The relay state of the request.
-        name_id_policy (str): The format of the name identifier to be used in the authentication request.
+        name_id_policy (str): The format of the name identifier to be used in the authentication
+            request.
     """
 
     id: Optional[str] = None
@@ -67,8 +68,8 @@ class AuthNRequestParser:
         """
         Parse the decoded XML and return an instance of AuthNRequest.
 
-        This method takes in a decoded XML string or bytes and an optional relay state as parameters.
-        It parses the XML using the ElementTree.fromstring method.
+        This method takes in a decoded XML string or bytes and an optional relay state as
+        parameters. It parses the XML using the ElementTree.fromstring method.
 
         Parameters:
             decoded_xml (str | bytes): The decoded XML string or bytes.

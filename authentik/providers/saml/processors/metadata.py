@@ -131,7 +131,8 @@ class MetadataProcessor:
 
         This function takes in an entity_descriptor element and prepares the signature for it.
         It retrieves the sign_algorithm_transform based on the provider's signature_algorithm.
-        It then creates a signature template using xmlsec.template.create method and appends it to the entity_descriptor.
+        It then creates a signature template using xmlsec.template.create method and appends it to
+        the entity_descriptor.
 
         Parameters:
             entity_descriptor (Element): The entity descriptor element.
@@ -151,7 +152,8 @@ class MetadataProcessor:
         """
         Create a digital signature for an XML document.
 
-        This private method is responsible for creating a digital signature for an XML document using the xmlsec library.
+        This private method is responsible for creating a digital signature for an XML document
+        using the xmlsec library.
 
         Parameters:
             entity_descriptor (Element): An XML element representing the entity descriptor.
@@ -189,7 +191,8 @@ class MetadataProcessor:
     def build_entity_descriptor(self) -> str:
         """Build full EntityDescriptor
 
-        This function builds a full EntityDescriptor XML object representing the metadata of an entity.
+        This function builds a full EntityDescriptor XML object representing the metadata of an
+        entity.
 
         Returns:
             str: The XML representation of the entity_descriptor.

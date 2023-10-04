@@ -179,7 +179,11 @@ class AssertionProcessor:
         """
         Get NameID Element
 
-        This function retrieves the NameID Element representing the NameID to be included in the SAML assertion. It sets the 'Format' attribute of the NameID Element based on the 'name_id_policy' attribute of the 'auth_n_request' object. The 'text' attribute of the NameID Element is then set based on different conditions to support various formats of the NameID.
+        This function retrieves the NameID Element representing the NameID to be included in the
+        SAML assertion. It sets the 'Format' attribute of the NameID Element based on the
+        'name_id_policy' attribute of the 'auth_n_request' object. The 'text' attribute of the
+        NameID Element is then set based on different conditions to support various formats of
+        the NameID.
 
         Returns:
             Element: The NameID Element.
@@ -244,7 +248,13 @@ class AssertionProcessor:
         """
         Generate Subject Element with NameID and SubjectConfirmation Objects
 
-        This function generates a Subject Element with NameID and SubjectConfirmation Objects for a SAML assertion. It creates an Element object representing the 'Subject' element, appends a NameID object to it, and then creates a SubjectConfirmation object and appends it to the Subject element. Finally, it creates a SubjectConfirmationData object and adds it as a child of the SubjectConfirmation object. The function sets various attributes of the SubjectConfirmationData object based on the values of certain variables and returns the Subject element as a result.
+        This function generates a Subject Element with NameID and SubjectConfirmation Objects for a
+        SAML assertion. It creates an Element object representing the 'Subject' element, appends a
+        NameID object to it, and then creates a SubjectConfirmation object and appends it to the
+        Subject element. Finally, it creates a SubjectConfirmationData object and adds it as a
+        child of the SubjectConfirmation object. The function sets various attributes of the
+        SubjectConfirmationData object based on the values of certain variables and returns the
+        Subject element as a result.
         """
         subject = Element(f"{{{NS_SAML_ASSERTION}}}Subject")
         subject.append(self.get_name_id())

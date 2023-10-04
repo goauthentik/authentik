@@ -224,7 +224,8 @@ class OAuth2Provider(Provider):
         Get either the configured certificate or the client secret
 
         Returns:
-            tuple[str | PrivateKeyTypes, str]: The configured certificate or the client secret and the JWT algorithm
+            tuple[str | PrivateKeyTypes, str]: The configured certificate or the client secret and
+                the JWT algorithm
         """
         if not self.signing_key:
             # No Certificate at all, assume HS256

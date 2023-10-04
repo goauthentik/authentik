@@ -195,7 +195,9 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         """
         Create a new custom object.
 
-        This method creates a new custom object in the Kubernetes cluster using the Kubernetes Python client library. The custom object is created by making an API call to the cluster with the specified parameters.
+        This method creates a new custom object in the Kubernetes cluster using the Kubernetes
+        Python client library. The custom object is created by making an API call to the cluster
+        with the specified parameters.
 
         Parameters:
             reference (TraefikMiddleware): The reference object used to create the custom object.
@@ -216,7 +218,9 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         """
         Delete an existing custom object.
 
-        This method deletes an existing custom object from the Kubernetes cluster using the Kubernetes Python client library. The custom object is deleted by making an API call to the cluster with the specified parameters.
+        This method deletes an existing custom object from the Kubernetes cluster using the
+        Kubernetes Python client library. The custom object is deleted by making an API call to
+        the cluster with the specified parameters.
 
         Parameters:
             reference (TraefikMiddleware): The reference object used to delete the custom object.
@@ -236,7 +240,9 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         """
         Retrieve an existing custom object.
 
-        This method retrieves an existing custom object from the Kubernetes cluster using the Kubernetes Python client library. The custom object is retrieved by making an API call to the cluster with the specified parameters.
+        This method retrieves an existing custom object from the Kubernetes cluster using the
+        Kubernetes Python client library. The custom object is retrieved by making an API call to
+        the cluster with the specified parameters.
 
         Returns:
             The retrieved custom object.
@@ -256,7 +262,9 @@ class Traefik3MiddlewareReconciler(KubernetesObjectReconciler[TraefikMiddleware]
         """
         Update an existing custom object.
 
-        This method updates an existing custom object in the Kubernetes cluster using the Kubernetes Python client library. The custom object is updated by making an API call to the cluster with the specified parameters.
+        This method updates an existing custom object in the Kubernetes cluster using the
+        Kubernetes Python client library. The custom object is updated by making an API call to
+        the cluster with the specified parameters.
 
         Parameters:
             current (TraefikMiddleware): The current object representing the existing custom object.

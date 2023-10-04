@@ -195,17 +195,24 @@ class TokenParams:
         """
         Perform various validation checks related to an authorization code.
 
-        This method checks if the provided 'raw_code' is empty and raises a 'TokenError' exception with 'invalid_grant' if it is.
-        Then it compares the 'self.redirect_uri' with a list of allowed redirect URLs using regular expressions and raises a 'TokenError' exception with 'invalid_client' if there is no match.
-        After that, it tries to find the 'AuthorizationCode' object with the provided 'raw_code' and raises a 'TokenError' exception with 'invalid_grant' if it doesn't exist or if it is expired.
-        Finally, it validates PKCE parameters by comparing the 'code_verifier' with the 'code_challenge' of the 'AuthorizationCode' object and raises a 'TokenError' exception with 'invalid_grant' if they don't match.
+        This method checks if the provided 'raw_code' is empty and raises a 'TokenError' exception
+        with 'invalid_grant' if it is. Then it compares the 'self.redirect_uri' with a list of
+        allowed redirect URLs using regular expressions and raises a 'TokenError' exception with
+        'invalid_client' if there is no match. After that, it tries to find the 'AuthorizationCode'
+        object with the provided 'raw_code' and raises a 'TokenError' exception with
+        'invalid_grant' if it doesn't exist or if it is expired. Finally, it validates PKCE
+        parameters by comparing the 'code_verifier' with the 'code_challenge' of the
+        'AuthorizationCode' object and raises a 'TokenError' exception with 'invalid_grant' if
+        they don't match.
 
         Parameters:
             raw_code (str): The raw authorization code.
             request (HttpRequest): The HTTP request object.
 
         Raises:
-            TokenError: If the 'raw_code' is empty, the redirect URI is invalid, the 'AuthorizationCode' object doesn't exist or is expired, or the PKCE parameters don't match.
+            TokenError: If the 'raw_code' is empty, the redirect URI is invalid, the
+                'AuthorizationCode' object doesn't exist or is expired, or the PKCE parameters
+                don't match.
         """
         if not raw_code:
             LOGGER.warning("Missing authorization code")
@@ -324,7 +331,17 @@ class TokenParams:
         """
         Perform post-initialization tasks related to client credentials.
 
-        This method is responsible for performing various tasks related to client credentials. It first checks if the client assertion type is present in the request and if so, calls the __post_init_client_credentials_jwt method. Then, it authenticates the user based on the provided username and password. If the user is not found, it raises a TokenError. It then retrieves a token associated with the provided password and checks if it is still valid and belongs to the authenticated user. If not, it raises a TokenError. Next, it sets the user attribute of the current object to the authenticated user. After that, it retrieves an application object based on the provider attribute of the current object and checks if it exists and has a provider. If not, it raises a TokenError. Finally, it calls the __check_policy_access method to authorize user access and logs a login event. The method does not return any value.
+        This method is responsible for performing various tasks related to client credentials. It
+        first checks if the client assertion type is present in the request and if so, calls the
+        __post_init_client_credentials_jwt method. Then, it authenticates the user based on the
+        provided username and password. If the user is not found, it raises a TokenError. It then
+        retrieves a token associated with the provided password and checks if it is still valid and
+        belongs to the authenticated user. If not, it raises a TokenError. Next, it sets the user
+        attribute of the current object to the authenticated user. After that, it retrieves an
+        application object based on the provider attribute of the current object and checks if it
+        exists and has a provider. If not, it raises a TokenError. Finally, it calls the
+        __check_policy_access method to authorize user access and logs a login
+        event. The method does not return any value.
 
         Parameters:
             request (HttpRequest): The request object containing the client credentials.
@@ -491,7 +508,8 @@ class TokenView(View):
         """
         Dispatches the HTTP request to the appropriate handler.
 
-        This method calls the super().dispatch method to perform the default handling of the request.
+        This method calls the super().dispatch method to perform the default
+        handling of the request.
         It also adds CORS headers to the response based on the provider's redirect_uris.
 
         Parameters:
@@ -561,7 +579,8 @@ class TokenView(View):
         """
         See https://datatracker.ietf.org/doc/html/rfc6749#section-4.1
 
-        Generate a response dictionary containing access token, refresh token, token type, expires in, and ID token.
+        Generate a response dictionary containing access token, refresh token,
+        token type, expires in, and ID token.
 
         Returns:
             dict[str, Any]: The response dictionary.
@@ -671,10 +690,10 @@ class TokenView(View):
         """See https://datatracker.ietf.org/doc/html/rfc6749#section-4.4"
         Create a client credentials response.
 
-        This function creates a dictionary containing the client credentials response information. It
-        creates an access token based on the current time and the validity duration specified by the
-        'provider'. The function also generates an ID token and saves the access token and ID token in
-        the database.
+        This function creates a dictionary containing the client credentials response information.
+        It creates an access token based on the current time and the validity duration specified by
+        the 'provider'. The function also generates an ID token and saves the access token and ID
+        token in the database.
 
         Returns:
             dict[str, Any]: A dictionary containing the client credentials response information.

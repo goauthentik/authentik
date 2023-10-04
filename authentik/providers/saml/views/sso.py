@@ -43,7 +43,10 @@ class SAMLSSOView(PolicyAccessView):
     Calls get/post handler."""
 
     def resolve_provider_application(self):
-        """Retrieves the Application and SAMLProvider objects based on the given slug and provider_id."""
+        """
+        Retrieves the Application and SAMLProvider objects based on the given slug and
+        provider_id.
+        """
         self.application = get_object_or_404(Application, slug=self.kwargs["application_slug"])
         self.provider: SAMLProvider = get_object_or_404(
             SAMLProvider, pk=self.application.provider_id

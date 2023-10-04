@@ -12,7 +12,10 @@ class StopSync(SentryIgnoredException):
     """Exception raised when a configuration error should stop the sync process"""
 
     def __init__(self, exc: Exception, obj: object, mapping: Optional[object] = None) -> None:
-        """Initialize the StopSync exception with the raised exception, the object causing the error, and an optional mapping object."""
+        """
+        Initialize the StopSync exception with the raised exception, the object causing the
+        error, and an optional mapping object.
+        """
         self.exc = exc
         self.obj = obj
         self.mapping = mapping

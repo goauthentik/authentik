@@ -11,7 +11,10 @@ class MetadataDownload(View):
     """Redirect to metadata download"""
 
     def dispatch(self, request: HttpRequest, application_slug: str) -> HttpResponse:
-        """Handle the HTTP request and return the appropriate HTTP response for redirecting the user to the metadata download URL of the specified application."""
+        """
+        Handle the HTTP request and return the appropriate HTTP response for redirecting the
+        user to the metadata download URL of the specified application.
+        """
         app: Application = get_object_or_404(Application, slug=application_slug)
         provider = app.get_provider()
         if not provider:

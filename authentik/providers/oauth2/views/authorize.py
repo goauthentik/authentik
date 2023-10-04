@@ -348,8 +348,8 @@ class AuthorizationFlowInitView(PolicyAccessView):
         """
         Modify the 'context' attribute of the provided 'PolicyRequest' object.
 
-        This method takes a 'PolicyRequest' object as input and modifies its 'context' attribute by adding several
-        key-value pairs based on the 'self.params' attributes of the class.
+        This method takes a 'PolicyRequest' object as input and modifies its 'context' attribute by
+        adding several key-value pairs based on the 'self.params' attributes of the class.
 
         Parameters:
             request (PolicyRequest): The 'PolicyRequest' object to be modified.
@@ -492,7 +492,10 @@ class OAuthFulfillmentStage(StageView):
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         """Wrapper when this stage gets hit with a post request
 
-        This method acts as a wrapper for the 'get' method in a Django view. It takes a 'request' object, along with any additional arguments and keyword arguments, and returns the result of calling the 'get' method with the same arguments. The purpose of this wrapper method is to handle POST requests in the same way as GET requests.
+        This method acts as a wrapper for the 'get' method in a Django view. It takes a 'request'
+        object, along with any additional arguments and keyword arguments, and returns the result
+        of calling the 'get' method with the same arguments. The purpose of this wrapper method is
+        to handle POST requests in the same way as GET requests.
 
         Parameters:
             request (HttpRequest): The HTTP request object.

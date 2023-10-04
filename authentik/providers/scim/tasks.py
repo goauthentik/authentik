@@ -122,7 +122,8 @@ def scim_sync_users(page: int, provider_pk: int):
 def scim_sync_group(page: int, provider_pk: int):
     """Sync single or multiple groups to SCIM
 
-    This function synchronizes single or multiple groups to the System for Cross-domain Identity Management (SCIM) based on the specified 'page' and 'provider_pk'.
+    This function synchronizes single or multiple groups to the System for Cross-domain Identity
+    Management (SCIM) based on the specified 'page' and 'provider_pk'.
 
     Parameters:
         page (int): The page number of groups to sync.
