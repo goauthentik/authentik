@@ -3947,7 +3947,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this role.
+        description: A UUID string identifying this Role.
         required: true
       tags:
       - core
@@ -4343,7 +4343,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this role.
+        description: A UUID string identifying this Role.
         required: true
       tags:
       - core
@@ -4377,7 +4377,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this role.
+        description: A UUID string identifying this Role.
         required: true
       tags:
       - core
@@ -4417,7 +4417,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this role.
+        description: A UUID string identifying this Role.
         required: true
       tags:
       - core
@@ -4456,7 +4456,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this role.
+        description: A UUID string identifying this Role.
         required: true
       tags:
       - core
@@ -4487,7 +4487,7 @@ paths:
         schema:
           type: string
           format: uuid
-        description: A UUID string identifying this role.
+        description: A UUID string identifying this Role.
         required: true
       tags:
       - core
@@ -31536,27 +31536,6 @@ components:
       required:
       - name
       - username
-    GroupObjectPermission:
-      type: object
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        codename:
-          type: string
-          readOnly: true
-        model:
-          type: string
-          title: Python model class name
-          readOnly: true
-        app_label:
-          type: string
-          readOnly: true
-      required:
-      - app_label
-      - codename
-      - id
-      - model
     GroupRequest:
       type: object
       description: Group Serializer
@@ -37718,6 +37697,7 @@ components:
           maxLength: 200
     Permission:
       type: object
+      description: Global permission
       properties:
         id:
           type: integer
@@ -37735,15 +37715,19 @@ components:
         app_label:
           type: string
           readOnly: true
+        app_label_verbose:
+          type: string
+          readOnly: true
       required:
       - app_label
+      - app_label_verbose
       - codename
       - id
       - model
       - name
     PermissionAssignRequest:
       type: object
-      description: Base serializer class which doesn't implement create/update methods
+      description: Request to assign a new permission
       properties:
         permissions:
           type: array
@@ -37761,6 +37745,7 @@ components:
       - permissions
     PermissionRequest:
       type: object
+      description: Global permission
       properties:
         name:
           type: string
@@ -39331,10 +39316,32 @@ components:
         permissions:
           type: array
           items:
-            $ref: '#/components/schemas/GroupObjectPermission'
+            $ref: '#/components/schemas/RoleObjectPermission'
       required:
       - name
       - permissions
+    RoleObjectPermission:
+      type: object
+      description: Role-bound object level permission
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        codename:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+      required:
+      - app_label
+      - codename
+      - id
+      - model
     RoleRequest:
       type: object
       description: Role serializer
@@ -41719,6 +41726,7 @@ components:
       - user
     UserObjectPermission:
       type: object
+      description: User-bound object level permission
       properties:
         id:
           type: integer

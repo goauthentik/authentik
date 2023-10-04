@@ -1,10 +1,17 @@
 """common RBAC serializers"""
+from django.apps import apps
 from django.contrib.auth.models import Permission
 from django.db.models import QuerySet
 from django_filters.filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
 from guardian.models import GroupObjectPermission, UserObjectPermission
-from rest_framework.fields import CharField, ChoiceField, ListField, ReadOnlyField
+from rest_framework.fields import (
+    CharField,
+    ChoiceField,
+    ListField,
+    ReadOnlyField,
+    SerializerMethodField,
+)
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
@@ -14,15 +21,23 @@ from authentik.policies.event_matcher.models import model_choices
 
 
 class PermissionSerializer(ModelSerializer):
+    """Global permission"""
+
     app_label = ReadOnlyField(source="content_type.app_label")
+    app_label_verbose = SerializerMethodField()
     model = ReadOnlyField(source="content_type.model")
+
+    def get_app_label_verbose(self, instance: Permission) -> str:
+        return apps.get_app_config(instance.content_type.app_label).verbose_name
 
     class Meta:
         model = Permission
-        fields = ["id", "name", "codename", "model", "app_label"]
+        fields = ["id", "name", "codename", "model", "app_label", "app_label_verbose"]
 
 
 class UserObjectPermissionSerializer(ModelSerializer):
+    """User-bound object level permission"""
+
     app_label = ReadOnlyField(source="content_type.app_label")
     model = ReadOnlyField(source="content_type.model")
     codename = ReadOnlyField(source="permission.codename")
@@ -32,7 +47,9 @@ class UserObjectPermissionSerializer(ModelSerializer):
         fields = ["id", "codename", "model", "app_label"]
 
 
-class GroupObjectPermissionSerializer(ModelSerializer):
+class RoleObjectPermissionSerializer(ModelSerializer):
+    """Role-bound object level permission"""
+
     app_label = ReadOnlyField(source="content_type.app_label")
     model = ReadOnlyField(source="content_type.model")
     codename = ReadOnlyField(source="permission.codename")
@@ -68,9 +85,16 @@ class RBACPermissionViewSet(ReadOnlyModelViewSet):
     serializer_class = PermissionSerializer
     ordering = ["name"]
     filterset_class = PermissionFilter
+    search_fields = [
+        "codename",
+        "content_type__model",
+        "content_type__app_label",
+    ]
 
 
 class PermissionAssignSerializer(PassiveSerializer):
+    """Request to assign a new permission"""
+
     permissions = ListField(child=CharField())
     model = ChoiceField(choices=model_choices())
     object_pk = CharField()

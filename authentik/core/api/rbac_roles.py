@@ -13,7 +13,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.core.api.rbac import GroupObjectPermissionSerializer, PermissionAssignSerializer
+from authentik.core.api.rbac import PermissionAssignSerializer, RoleObjectPermissionSerializer
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Role
 from authentik.policies.event_matcher.models import model_choices
@@ -21,7 +21,7 @@ from authentik.policies.event_matcher.models import model_choices
 
 class RoleAssignedObjectPermissionSerializer(PassiveSerializer):
     name = CharField(source="group.name", read_only=True)
-    permissions = GroupObjectPermissionSerializer(
+    permissions = RoleObjectPermissionSerializer(
         many=True, source="group.groupobjectpermission_set"
     )
 

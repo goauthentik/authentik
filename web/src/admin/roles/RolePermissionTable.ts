@@ -7,29 +7,34 @@ import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, Permission } from "@goauthentik/api";
 
-@customElement("ak-role-permissions")
+@customElement("ak-role-permissions-table")
 export class RolePermissionTable extends Table<Permission> {
     @property()
     roleUuid?: string;
+
+    searchEnabled(): boolean {
+        return true;
+    }
 
     apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
         return new CoreApi(DEFAULT_CONFIG).coreRbacPermissionsList({
             role: this.roleUuid,
             page: page,
+            search: this.search,
         });
     }
 
-    public groupBy(items: Permission[]): [string, Permission[]][] {
+    groupBy(items: Permission[]): [string, Permission[]][] {
         return groupBy(items, (obj) => {
-            return obj.appLabel;
+            return obj.appLabelVerbose;
         });
     }
 
     columns(): TableColumn[] {
-        return [new TableColumn("Permission", "")];
+        return [new TableColumn("Permission", ""), new TableColumn("")];
     }
 
     row(item: Permission): TemplateResult[] {
-        return [html`${item.codename}`];
+        return [html`${item.name}`, html`✓`];
     }
 }
