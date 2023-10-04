@@ -1,12 +1,12 @@
 """common RBAC serializers"""
 from django.contrib.auth.models import Permission
+from django.db.models import QuerySet
+from django_filters.filters import ModelChoiceFilter
+from django_filters.filterset import FilterSet
 from guardian.models import GroupObjectPermission, UserObjectPermission
 from rest_framework.fields import CharField, ChoiceField, ListField, ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from django_filters.filters import ModelChoiceFilter
-from django_filters.filterset import FilterSet
-from django.db.models import QuerySet
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Role
@@ -54,7 +54,9 @@ class PermissionFilter(FilterSet):
     class Meta:
         model = Permission
         fields = [
-            "codename", "content_type__model", "content_type__app_label",
+            "codename",
+            "content_type__model",
+            "content_type__app_label",
             "role",
         ]
 

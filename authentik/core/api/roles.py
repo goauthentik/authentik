@@ -4,8 +4,8 @@ from rest_framework.fields import CharField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
-from authentik.core.api.rbac import PermissionSerializer
 
+from authentik.core.api.rbac import PermissionSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import Role
 
