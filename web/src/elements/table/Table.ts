@@ -281,7 +281,7 @@ export abstract class Table<T> extends AKElement {
             return [this.renderEmpty()];
         }
         const groupedResults = this.groupBy(this.data.results);
-        if (groupedResults.length === 1) {
+        if (groupedResults.length === 1 && groupedResults[0][0] === "") {
             return this.renderRowGroup(groupedResults[0][1]);
         }
         return groupedResults.map(([group, items]) => {
