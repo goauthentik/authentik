@@ -68,12 +68,18 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     )
     @action(methods=["POST"], detail=True, pagination_class=None, filter_backends=[])
     def assign(self, request: Request, *args, **kwargs) -> Response:
-        """Assign permission(s) to role"""
+        """Assign permission(s) to role. When `object_pk` is set, the permissions
+        are only assigned to the specific object, otherwise they are assigned globally."""
         role: Role = self.get_object()
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        model = apps.get_model(data.validated_data["model"])
-        model_instance = model.objects.filter(pk=data.validated_data["object_pk"])
+        model_instance = None
+        # Check if we're setting an object-level perm or global
+        model = data.validated_data.get("model")
+        object_pk = data.validated_data.get("object_pk")
+        if model and object_pk:
+            model = apps.get_model(data.validated_data["model"])
+            model_instance = model.objects.filter(pk=data.validated_data["object_pk"])
         with atomic():
             for perm in data.validated_data["permissions"]:
                 assign_perm(perm, role.group, model_instance)

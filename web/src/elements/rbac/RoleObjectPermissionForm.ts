@@ -58,7 +58,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
             permissionAssignRequest: {
                 permissions: Object.keys(data.permissions).filter((key) => data.permissions[key]),
                 model: this.model!,
-                objectPk: this.objectPk!,
+                objectPk: this.objectPk,
             },
         });
     }

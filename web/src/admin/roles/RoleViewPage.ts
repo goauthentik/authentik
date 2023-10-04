@@ -116,7 +116,9 @@ export class RoleViewPage extends AKElement {
                     >
                         <div class="pf-c-card__title">${msg("Permissions")}</div>
                         <div class="pf-c-card__body">
-                            <ak-role-permissions-table roleUuid=${this._role.pk}></ak-role-permissions-table>
+                            <ak-role-permissions-table
+                                roleUuid=${this._role.pk}
+                            ></ak-role-permissions-table>
                         </div>
                     </div>
                 </div>
