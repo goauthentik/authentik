@@ -78,7 +78,7 @@ install: web-install website-install  ## Install all requires dependencies for `
 	poetry install
 
 dev-drop-db:
-	echo dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
+	dropdb -U ${pg_user} -h ${pg_host} ${pg_name}
 	# Also remove the test-db if it exists
 	dropdb -U ${pg_user} -h ${pg_host} test_${pg_name} || true
 	echo redis-cli -n 0 flushall

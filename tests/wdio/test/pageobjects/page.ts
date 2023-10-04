@@ -38,4 +38,9 @@ export default class Page {
         const target = searchBlock.$(buttonSelector);
         return await target.click();
     }
+
+    public async logout() {
+        await browser.url("http://localhost:9000/flows/-/default/invalidation/");
+        return await this.pause();
+    }
 }

@@ -2,6 +2,9 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { ascii_letters, digits, first, randomString } from "@goauthentik/common/utils";
+import "@goauthentik/components/ak-radio-input";
+import "@goauthentik/components/ak-text-input";
+import "@goauthentik/components/ak-textarea-input";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -26,6 +29,91 @@ import {
     SourcesApi,
     SubModeEnum,
 } from "@goauthentik/api";
+
+export const clientTypeOptions = [
+    {
+        label: msg("Confidential"),
+        value: ClientTypeEnum.Confidential,
+        default: true,
+        description: html`${msg(
+            "Confidential clients are capable of maintaining the confidentiality of their credentials such as client secrets",
+        )}`,
+    },
+    {
+        label: msg("Public"),
+        value: ClientTypeEnum.Public,
+        description: html`${msg(
+            "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE. ",
+        )}`,
+    },
+];
+
+export const subjectModeOptions = [
+    {
+        label: msg("Based on the User's hashed ID"),
+        value: SubModeEnum.HashedUserId,
+        default: true,
+    },
+    {
+        label: msg("Based on the User's ID"),
+        value: SubModeEnum.UserId,
+    },
+    {
+        label: msg("Based on the User's UUID"),
+        value: SubModeEnum.UserUuid,
+    },
+    {
+        label: msg("Based on the User's username"),
+        value: SubModeEnum.UserUsername,
+    },
+    {
+        label: msg("Based on the User's Email"),
+        value: SubModeEnum.UserEmail,
+        description: html`${msg("This is recommended over the UPN mode.")}`,
+    },
+    {
+        label: msg("Based on the User's UPN"),
+        value: SubModeEnum.UserUpn,
+        description: html`${msg(
+            "Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.",
+        )}`,
+    },
+];
+
+export const issuerModeOptions = [
+    {
+        label: msg("Each provider has a different issuer, based on the application slug"),
+        value: IssuerModeEnum.PerProvider,
+        default: true,
+    },
+    {
+        label: msg("Same identifier is used for all providers"),
+        value: IssuerModeEnum.Global,
+    },
+];
+
+const redirectUriHelpMessages = [
+    msg(
+        "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.",
+    ),
+    msg(
+        "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.",
+    ),
+    msg(
+        'To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.',
+    ),
+];
+
+export const redirectUriHelp = html`${redirectUriHelpMessages.map(
+    (m) => html`<p class="pf-c-form__helper-text">${m}</p>`,
+)}`;
+
+/**
+ * Form page for OAuth2 Authentication Method
+ *
+ * @element ak-provider-oauth2-form
+ *
+ */
 
 @customElement("ak-provider-oauth2-form")
 export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
@@ -77,22 +165,23 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
     }
 
     renderForm(): TemplateResult {
+        const provider = this.instance;
+
         return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
-                <input
-                    type="text"
-                    value="${ifDefined(this.instance?.name)}"
-                    class="pf-c-form-control"
-                    required
-                />
-            </ak-form-element-horizontal>
+            <ak-text-input
+                name="name"
+                label=${msg("Name")}
+                value=${ifDefined(provider?.name)}
+                required
+            ></ak-text-input>
+
             <ak-form-element-horizontal
-                label=${msg("Authentication flow")}
                 name="authenticationFlow"
+                label=${msg("Authentication flow")}
             >
                 <ak-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authentication}
-                    .currentFlow=${this.instance?.authenticationFlow}
+                    .currentFlow=${provider?.authenticationFlow}
                     required
                 ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
@@ -100,13 +189,13 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
+                name="authorizationFlow"
                 label=${msg("Authorization flow")}
                 ?required=${true}
-                name="authorizationFlow"
             >
                 <ak-flow-search
                     flowType=${FlowsInstancesListDesignationEnum.Authorization}
-                    .currentFlow=${this.instance?.authorizationFlow}
+                    .currentFlow=${provider?.authorizationFlow}
                     required
                 ></ak-flow-search>
                 <p class="pf-c-form__helper-text">
@@ -117,96 +206,50 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
             <ak-form-group .expanded=${true}>
                 <span slot="header"> ${msg("Protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Client type")}
-                        ?required=${true}
+                    <ak-radio-input
                         name="clientType"
+                        label=${msg("Client type")}
+                        .value=${provider?.clientType}
+                        required
+                        @change=${(ev: CustomEvent<ClientTypeEnum>) => {
+                            this.showClientSecret = ev.detail !== ClientTypeEnum.Public;
+                        }}
+                        .options=${clientTypeOptions}
                     >
-                        <ak-radio
-                            @change=${(ev: CustomEvent<ClientTypeEnum>) => {
-                                if (ev.detail === ClientTypeEnum.Public) {
-                                    this.showClientSecret = false;
-                                } else {
-                                    this.showClientSecret = true;
-                                }
-                            }}
-                            .options=${[
-                                {
-                                    label: msg("Confidential"),
-                                    value: ClientTypeEnum.Confidential,
-                                    default: true,
-                                    description: html`${msg(
-                                        "Confidential clients are capable of maintaining the confidentiality of their credentials such as client secrets",
-                                    )}`,
-                                },
-                                {
-                                    label: msg("Public"),
-                                    value: ClientTypeEnum.Public,
-                                    description: html`${msg(
-                                        "Public clients are incapable of maintaining the confidentiality and should use methods like PKCE. ",
-                                    )}`,
-                                },
-                            ]}
-                            .value=${this.instance?.clientType}
-                        >
-                        </ak-radio>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Client ID")}
-                        ?required=${true}
+                    </ak-radio-input>
+                    <ak-text-input
                         name="clientId"
+                        label=${msg("Client ID")}
+                        value="${first(
+                            provider?.clientId,
+                            randomString(40, ascii_letters + digits),
+                        )}"
+                        required
                     >
-                        <input
-                            type="text"
-                            value="${first(
-                                this.instance?.clientId,
-                                randomString(40, ascii_letters + digits),
-                            )}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        ?hidden=${!this.showClientSecret}
-                        label=${msg("Client Secret")}
+                    </ak-text-input>
+                    <ak-text-input
                         name="clientSecret"
+                        label=${msg("Client Secret")}
+                        value="${first(
+                            provider?.clientSecret,
+                            randomString(128, ascii_letters + digits),
+                        )}"
+                        ?hidden=${!this.showClientSecret}
                     >
-                        <input
-                            type="text"
-                            value="${first(
-                                this.instance?.clientSecret,
-                                randomString(128, ascii_letters + digits),
-                            )}"
-                            class="pf-c-form-control"
-                        />
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Redirect URIs/Origins (RegEx)")}
+                    </ak-text-input>
+                    <ak-textarea-input
                         name="redirectUris"
+                        label=${msg("Redirect URIs/Origins (RegEx)")}
+                        .value=${provider?.redirectUris}
+                        .bighelp=${redirectUriHelp}
                     >
-                        <textarea class="pf-c-form-control">
-${this.instance?.redirectUris}</textarea
-                        >
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Valid redirect URLs after a successful authorization flow. Also specify any origins here for Implicit flows.",
-                            )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "If no explicit redirect URIs are specified, the first successfully used redirect URI will be saved.",
-                            )}
-                        </p>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                'To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.',
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    </ak-textarea-input>
+
                     <ak-form-element-horizontal label=${msg("Signing Key")} name="signingKey">
+                        <!-- NOTE: 'null' cast to 'undefined' on signingKey to satisfy Lit requirements -->
                         <ak-crypto-certificate-search
-                            certificate=${ifDefined(this.instance?.signingKey || "")}
-                            ?singleton=${!this.instance}
+                            certificate=${ifDefined(this.instance?.signingKey ?? undefined)}
+                            singleton
                         ></ak-crypto-certificate-search>
                         <p class="pf-c-form__helper-text">${msg("Key used to sign the tokens.")}</p>
                     </ak-form-element-horizontal>
@@ -216,69 +259,53 @@ ${this.instance?.redirectUris}</textarea
             <ak-form-group>
                 <span slot="header"> ${msg("Advanced protocol settings")} </span>
                 <div slot="body" class="pf-c-form">
-                    <ak-form-element-horizontal
-                        label=${msg("Access code validity")}
-                        ?required=${true}
+                    <ak-text-input
                         name="accessCodeValidity"
+                        label=${msg("Access code validity")}
+                        required
+                        value="${first(provider?.accessCodeValidity, "minutes=1")}"
+                        .bighelp=${html`<p class="pf-c-form__helper-text">
+                                ${msg("Configure how long access codes are valid for.")}
+                            </p>
+                            <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.accessCodeValidity, "minutes=1")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Configure how long access codes are valid for.")}
-                        </p>
-                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Access Token validity")}
-                        ?required=${true}
+                    </ak-text-input>
+                    <ak-text-input
                         name="accessTokenValidity"
+                        label=${msg("Access Token validity")}
+                        value="${first(provider?.accessTokenValidity, "minutes=5")}"
+                        required
+                        .bighelp=${html` <p class="pf-c-form__helper-text">
+                                ${msg("Configure how long access tokens are valid for.")}
+                            </p>
+                            <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.accessTokenValidity, "minutes=5")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Configure how long access tokens are valid for.")}
-                        </p>
-                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Refresh Token validity")}
-                        ?required=${true}
+                    </ak-text-input>
+
+                    <ak-text-input
                         name="refreshTokenValidity"
+                        label=${msg("Refresh Token validity")}
+                        value="${first(provider?.refreshTokenValidity, "days=30")}"
+                        ?required=${true}
+                        .bighelp=${html` <p class="pf-c-form__helper-text">
+                                ${msg("Configure how long refresh tokens are valid for.")}
+                            </p>
+                            <ak-utils-time-delta-help></ak-utils-time-delta-help>`}
                     >
-                        <input
-                            type="text"
-                            value="${first(this.instance?.refreshTokenValidity, "days=30")}"
-                            class="pf-c-form-control"
-                            required
-                        />
-                        <p class="pf-c-form__helper-text">
-                            ${msg("Configure how long refresh tokens are valid for.")}
-                        </p>
-                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
-                    </ak-form-element-horizontal>
+                    </ak-text-input>
                     <ak-form-element-horizontal label=${msg("Scopes")} name="propertyMappings">
                         <select class="pf-c-form-control" multiple>
                             ${this.propertyMappings?.results.map((scope) => {
                                 let selected = false;
-                                if (!this.instance?.propertyMappings) {
+                                if (!provider?.propertyMappings) {
                                     selected =
                                         scope.managed?.startsWith(
                                             "goauthentik.io/providers/oauth2/scope-",
                                         ) || false;
                                 } else {
-                                    selected = Array.from(this.instance?.propertyMappings).some(
-                                        (su) => {
-                                            return su == scope.pk;
-                                        },
-                                    );
+                                    selected = Array.from(provider?.propertyMappings).some((su) => {
+                                        return su == scope.pk;
+                                    });
                                 }
                                 return html`<option
                                     value=${ifDefined(scope.pk)}
@@ -297,104 +324,35 @@ ${this.instance?.redirectUris}</textarea
                             ${msg("Hold control/command to select multiple items.")}
                         </p>
                     </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Subject mode")}
-                        ?required=${true}
+                    <ak-radio-input
                         name="subMode"
+                        label=${msg("Subject mode")}
+                        required
+                        .options=${subjectModeOptions}
+                        .value=${provider?.subMode}
+                        help=${msg(
+                            "Configure what data should be used as unique User Identifier. For most cases, the default should be fine.",
+                        )}
                     >
-                        <ak-radio
-                            .options=${[
-                                {
-                                    label: msg("Based on the User's hashed ID"),
-                                    value: SubModeEnum.HashedUserId,
-                                    default: true,
-                                },
-                                {
-                                    label: msg("Based on the User's ID"),
-                                    value: SubModeEnum.UserId,
-                                },
-                                {
-                                    label: msg("Based on the User's UUID"),
-                                    value: SubModeEnum.UserUuid,
-                                },
-                                {
-                                    label: msg("Based on the User's username"),
-                                    value: SubModeEnum.UserUsername,
-                                },
-                                {
-                                    label: msg("Based on the User's Email"),
-                                    value: SubModeEnum.UserEmail,
-                                    description: html`${msg(
-                                        "This is recommended over the UPN mode.",
-                                    )}`,
-                                },
-                                {
-                                    label: msg("Based on the User's UPN"),
-                                    value: SubModeEnum.UserUpn,
-                                    description: html`${msg(
-                                        "Requires the user to have a 'upn' attribute set, and falls back to hashed user ID. Use this mode only if you have different UPN and Mail domains.",
-                                    )}`,
-                                },
-                            ]}
-                            .value=${this.instance?.subMode}
-                        >
-                        </ak-radio>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Configure what data should be used as unique User Identifier. For most cases, the default should be fine.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal name="includeClaimsInIdToken">
-                        <label class="pf-c-switch">
-                            <input
-                                class="pf-c-switch__input"
-                                type="checkbox"
-                                ?checked=${first(this.instance?.includeClaimsInIdToken, true)}
-                            />
-                            <span class="pf-c-switch__toggle">
-                                <span class="pf-c-switch__toggle-icon">
-                                    <i class="fas fa-check" aria-hidden="true"></i>
-                                </span>
-                            </span>
-                            <span class="pf-c-switch__label"
-                                >${msg("Include claims in id_token")}</span
-                            >
-                        </label>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
-                    <ak-form-element-horizontal
-                        label=${msg("Issuer mode")}
-                        ?required=${true}
+                    </ak-radio-input>
+                    <ak-switch-input name="includeClaimsInIdToken">
+                        label=${msg("Include claims in id_token")}
+                        ?checked=${first(provider?.includeClaimsInIdToken, true)}
+                        help=${msg(
+                            "Include User claims from scopes in the id_token, for applications that don't access the userinfo endpoint.",
+                        )}></ak-switch-input
+                    >
+                    <ak-radio-input
                         name="issuerMode"
+                        label=${msg("Issuer mode")}
+                        required
+                        .options=${issuerModeOptions}
+                        .value=${provider?.issuerMode}
+                        help=${msg(
+                            "Configure how the issuer field of the ID Token should be filled.",
+                        )}
                     >
-                        <ak-radio
-                            .options=${[
-                                {
-                                    label: msg(
-                                        "Each provider has a different issuer, based on the application slug",
-                                    ),
-                                    value: IssuerModeEnum.PerProvider,
-                                    default: true,
-                                },
-                                {
-                                    label: msg("Same identifier is used for all providers"),
-                                    value: IssuerModeEnum.Global,
-                                },
-                            ]}
-                            .value=${this.instance?.issuerMode}
-                        >
-                        </ak-radio>
-                        <p class="pf-c-form__helper-text">
-                            ${msg(
-                                "Configure how the issuer field of the ID Token should be filled.",
-                            )}
-                        </p>
-                    </ak-form-element-horizontal>
+                    </ak-radio-input>
                 </div>
             </ak-form-group>
 
@@ -407,7 +365,7 @@ ${this.instance?.redirectUris}</textarea
                     >
                         <select class="pf-c-form-control" multiple>
                             ${this.oauthSources?.results.map((source) => {
-                                const selected = (this.instance?.jwksSources || []).some((su) => {
+                                const selected = (provider?.jwksSources || []).some((su) => {
                                     return su == source.pk;
                                 });
                                 return html`<option value=${source.pk} ?selected=${selected}>
