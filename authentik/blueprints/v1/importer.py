@@ -50,6 +50,8 @@ SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 
 
 def excluded_models() -> list[type[Model]]:
+    """Return a list of all excluded models that shouldn't be exposed via API
+    or other means (internal only, base classes, non-used objects, etc)"""
     # pylint: disable=imported-auth-user
     from django.contrib.auth.models import Group as DjangoGroup
     from django.contrib.auth.models import User as DjangoUser

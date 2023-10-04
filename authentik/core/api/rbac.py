@@ -31,9 +31,11 @@ class PermissionSerializer(ModelSerializer):
     model_verbose = SerializerMethodField()
 
     def get_app_label_verbose(self, instance: Permission) -> str:
+        """Human-readable app label"""
         return apps.get_app_config(instance.content_type.app_label).verbose_name
 
     def get_model_verbose(self, instance: Permission) -> str:
+        """Human-readable model name"""
         return apps.get_model(
             instance.content_type.app_label, instance.content_type.model
         )._meta.verbose_name

@@ -8,6 +8,9 @@ from rest_framework.utils.representation import smart_repr
 
 
 class RequiredTogetherValidator:
+    """Serializer-level validator that ensures all fields in `fields` are only
+    used together"""
+
     fields: list[str]
     requires_context = True
     message = _("The fields {field_names} must be used together.")
