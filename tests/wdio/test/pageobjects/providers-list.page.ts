@@ -25,8 +25,8 @@ class ApplicationsListPage extends AdminPage {
     // Sufficiently esoteric to justify having its own method
     async clickSearchButton() {
         await browser.execute(
-            function (searchButton: any) {
-                searchButton.focus();
+            function (searchButton: unknown) {
+                (searchButton as HTMLButtonElement).focus();
             },
             await $('>>>ak-table-search button[type="submit"]'),
         );
