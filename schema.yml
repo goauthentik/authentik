@@ -3663,6 +3663,10 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
+      - in: query
+        name: role
+        schema:
+          type: string
       - name: search
         required: false
         in: query
@@ -37755,6 +37759,20 @@ components:
       - model
       - object_pk
       - permissions
+    PermissionRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        codename:
+          type: string
+          minLength: 1
+          maxLength: 100
+      required:
+      - codename
+      - name
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
@@ -39294,8 +39312,14 @@ components:
         name:
           type: string
           maxLength: 150
+        permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Permission'
+          readOnly: true
       required:
       - name
+      - permissions
       - pk
     RoleAssignedObjectPermission:
       type: object

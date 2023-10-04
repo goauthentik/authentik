@@ -4,8 +4,12 @@ from guardian.models import GroupObjectPermission, UserObjectPermission
 from rest_framework.fields import CharField, ChoiceField, ListField, ReadOnlyField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ReadOnlyModelViewSet
+from django_filters.filters import ModelChoiceFilter
+from django_filters.filterset import FilterSet
+from django.db.models import QuerySet
 
 from authentik.core.api.utils import PassiveSerializer
+from authentik.core.models import Role
 from authentik.policies.event_matcher.models import model_choices
 
 
@@ -38,13 +42,30 @@ class GroupObjectPermissionSerializer(ModelSerializer):
         fields = ["id", "codename", "model", "app_label"]
 
 
+class PermissionFilter(FilterSet):
+    """Filter permissions"""
+
+    role = ModelChoiceFilter(queryset=Role.objects.all(), method="filter_role")
+
+    def filter_role(self, queryset: QuerySet, name, value: Role) -> QuerySet:
+        """Filter permissions based on role"""
+        return queryset.filter(group__role=value)
+
+    class Meta:
+        model = Permission
+        fields = [
+            "codename", "content_type__model", "content_type__app_label",
+            "role",
+        ]
+
+
 class RBACPermissionViewSet(ReadOnlyModelViewSet):
     """Read-only list of all permissions, filterable by model and app"""
 
     queryset = Permission.objects.all()
     serializer_class = PermissionSerializer
     ordering = ["name"]
-    filterset_fields = ["codename", "content_type__model", "content_type__app_label"]
+    filterset_class = PermissionFilter
 
 
 class PermissionAssignSerializer(PassiveSerializer):

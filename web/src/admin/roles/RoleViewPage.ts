@@ -1,4 +1,5 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
+import "@goauthentik/admin/roles/RolePermissionTable";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -15,11 +16,11 @@ import { customElement, property, state } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
+import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
 import { CoreApi, Role } from "@goauthentik/api";
 
@@ -113,10 +114,9 @@ export class RoleViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">
-                            ${msg("Permissions")}
-                        </div>
+                        <div class="pf-c-card__title">${msg("Permissions")}</div>
                         <div class="pf-c-card__body">
+                            <ak-role-permissions roleUuid=${this._role.pk}></ak-role-permissions>
                         </div>
                     </div>
                 </div>

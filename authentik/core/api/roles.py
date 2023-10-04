@@ -4,6 +4,7 @@ from rest_framework.fields import CharField
 from rest_framework.serializers import ModelSerializer
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
+from authentik.core.api.rbac import PermissionSerializer
 
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.models import Role
@@ -17,6 +18,7 @@ class RoleSerializer(ModelSerializer):
         max_length=150,
         validators=[UniqueValidator(queryset=Group.objects.all())],
     )
+    permissions = PermissionSerializer(many=True, source="group.permissions", read_only=True)
 
     def create(self, validated_data: dict):
         name = validated_data["group"]["name"]
@@ -25,7 +27,7 @@ class RoleSerializer(ModelSerializer):
 
     class Meta:
         model = Role
-        fields = ["pk", "name"]
+        fields = ["pk", "name", "permissions"]
 
 
 class RoleViewSet(UsedByMixin, ModelViewSet):
