@@ -250,7 +250,12 @@ def get_redis_options(
                         retries_and_backoff["retry"] = retry
                         redis_kwargs["cluster_error_retry_attempts"] = retry
                     else:
-                        redis_kwargs["retry"] = None
+                        # Negative values for maxretries are handled differently
+                        # in Golang and Python.
+                        # Golang: Negative retries lead to no attempt -> failure
+                        # Python: Negative retries lead to infinite attempts
+                        # Therefore we do not allow them at all -> set to 0
+                        retries_and_backoff["retry"] = 0
                 case "minretrybackoff":
                     min_backoff = _val_to_sec(value)
                     if min_backoff is not None and min_backoff > 0:

@@ -4,8 +4,10 @@ from urllib.parse import urlparse
 
 from _socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from django.test import TestCase
+from redis.backoff import ExponentialBackoff, NoBackoff
+from redis.retry import Retry
 
-from authentik.lib.utils.parser import get_redis_options, process_config
+from authentik.lib.utils.parser import get_connection_pool, get_redis_options, process_config
 
 
 # pylint: disable=too-many-public-methods
@@ -126,6 +128,12 @@ class TestParserUtils(TestCase):
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["cluster_error_retry_attempts"], 123)
 
+    def test_get_redis_options_max_retries_arg_negative_number(self):
+        """Test Redis URL parser with negative maxretries arg"""
+        url = urlparse("redis://myredis:6379/0?maxretries=-432")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["retry"]["retry"], 0)
+
     def test_get_redis_options_min_retry_backoff_arg(self):
         """Test Redis URL parser with minretrybackoff arg"""
         url = urlparse("redis://myredis/0?minretrybackoff=100s")
@@ -137,6 +145,36 @@ class TestParserUtils(TestCase):
         url = urlparse("redis://myredis/0?maxretrybackoff=100s")
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["retry"]["max_backoff"], 100)
+
+    def test_get_connection_pool_max_retries(self):
+        """Test ConnectionPool generator with maxretries"""
+        url = urlparse("redis://myredis:6379/0?maxretries=123")
+        config = process_config(url, *get_redis_options(url))
+        connection_pool, _ = get_connection_pool(config)
+        retry_config = connection_pool.connection_kwargs["retry"]
+        self.assertIsInstance(retry_config, Retry)
+        self.assertIsInstance(retry_config._backoff, NoBackoff)
+        self.assertEqual(retry_config._retries, 123)
+
+    def test_get_connection_pool_max_retries_default(self):
+        """Test ConnectionPool generator without maxretries"""
+        url = urlparse("redis://myredis:6379/0")
+        config = process_config(url, *get_redis_options(url))
+        connection_pool, _ = get_connection_pool(config)
+        retry_config = connection_pool.connection_kwargs["retry"]
+        self.assertIsInstance(retry_config, Retry)
+        self.assertIsInstance(retry_config._backoff, NoBackoff)
+        self.assertEqual(retry_config._retries, 3)
+
+    def test_get_connection_pool_min_and_max_backoff(self):
+        """Test ConnectionPool generator with minretrybackoff and maxretrybackoff"""
+        url = urlparse("redis://myredis:6379/0?maxretries=32&minretrybackoff=4s&maxretrybackoff=8s")
+        config = process_config(url, *get_redis_options(url))
+        connection_pool, _ = get_connection_pool(config)
+        retry_config = connection_pool.connection_kwargs["retry"]
+        self.assertIsInstance(retry_config, Retry)
+        self.assertIsInstance(retry_config._backoff, ExponentialBackoff)
+        self.assertEqual(retry_config._retries, 32)
 
     def test_get_redis_options_timeout_arg(self):
         """Test Redis URL parser with timeout arg"""
@@ -259,6 +297,12 @@ class TestParserUtils(TestCase):
         pool_kwargs, _, _ = get_redis_options(url)
         self.assertEqual(pool_kwargs["timeout"], 100)
 
+    def test_get_redis_options_pool_timeout_arg_negative_numberg(self):
+        """Test Redis URL parser with negative pooltimeout arg"""
+        url = urlparse("redis://myredis/0?pooltimeout=-100s")
+        pool_kwargs, _, _ = get_redis_options(url)
+        self.assertEqual(pool_kwargs["timeout"], None)
+
     def test_get_redis_options_idle_timeout_arg(self):
         """Test Redis URL parser with idletimeout arg"""
         url = urlparse("redis://myredis/0?idletimeout=100s")
@@ -370,7 +414,13 @@ class TestParserUtils(TestCase):
 
     def test_ipv6_host_address(self):
         """Test correct parsing of IPv6 addresses"""
-        url = urlparse("redis://[2001:1:2:3:4::5]:6379/0")
+        url = urlparse("redis://[2001:1:2:3:4::5]:2932/0")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["addrs"], [("[2001:1:2:3:4::5]", 2932)])  #
+
+    def test_ipv6_host_address_no_port(self):
+        """Test correct parsing of IPv6 addresses without port"""
+        url = urlparse("redis://[2001:1:2:3:4::5]/0")
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["addrs"], [("[2001:1:2:3:4::5]", 6379)])
 
@@ -383,5 +433,11 @@ class TestParserUtils(TestCase):
     def test_unsupported_scheme(self):
         """Test failure if trying to use unknown scheme"""
         url = urlparse("invalid://myredis/0")
+        with self.assertRaises(ValueError):
+            process_config(url, *get_redis_options(url))
+
+    def test_unsupported_scheme_part(self):
+        """Test failure if trying to use unknown scheme part"""
+        url = urlparse("redis+invalid://myredis/0")
         with self.assertRaises(ValueError):
             process_config(url, *get_redis_options(url))

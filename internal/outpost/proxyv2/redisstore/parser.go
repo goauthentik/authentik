@@ -93,7 +93,16 @@ func getRedisOptions(uri *url.URL) (*redis.UniversalOptions, error) {
 		case "db":
 			opts.DB, _ = strconv.Atoi(v[0])
 		case "maxretries":
-			opts.MaxRetries, _ = strconv.Atoi(v[0])
+			maxRetries, _ := strconv.Atoi(v[0])
+			// Negative values for maxretries are handled differently in Golang and Python
+			// Golang: Negative retries lead to no attempt -> failure
+			// Python: Negative retries lead to infinite attempts
+			// Therefore we do not allow them at all -> set to 0 later on
+			if maxRetries < 0 {
+				opts.MaxRetries = -1
+			} else {
+				opts.MaxRetries = maxRetries
+			}
 		case "minretrybackoff":
 			opts.MinRetryBackoff = valToTimeDuration(v)
 		case "maxretrybackoff":
@@ -145,6 +154,14 @@ func getRedisOptions(uri *url.URL) (*redis.UniversalOptions, error) {
 
 	if uri.Host != "" {
 		opts.Addrs = append(opts.Addrs, strings.Split(uri.Host, ",")...)
+	}
+
+	// Similar to Python implementation use default of 3 retries if not specifically set to 0
+	switch opts.MaxRetries {
+	case -1:
+		opts.MaxRetries = 0
+	case 0:
+		opts.MaxRetries = 3
 	}
 
 	// A redis connection string uses the path section of the URI in two different ways. In a TCP-based connection, the
