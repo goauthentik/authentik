@@ -17,6 +17,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from authentik.core.api.utils import PassiveSerializer
 from authentik.core.models import Role
+from authentik.lib.validators import RequiredTogetherValidator
 from authentik.policies.event_matcher.models import model_choices
 
 
@@ -96,5 +97,7 @@ class PermissionAssignSerializer(PassiveSerializer):
     """Request to assign a new permission"""
 
     permissions = ListField(child=CharField())
-    model = ChoiceField(choices=model_choices())
-    object_pk = CharField()
+    model = ChoiceField(choices=model_choices(), required=False)
+    object_pk = CharField(required=False)
+
+    validators = [RequiredTogetherValidator(fields=["model", "object_pk"])]

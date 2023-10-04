@@ -3940,7 +3940,9 @@ paths:
   /core/rbac/role/{uuid}/assign/:
     post:
       operationId: core_rbac_role_assign_create
-      description: Assign permission(s) to role
+      description: |-
+        Assign permission(s) to role. When `object_pk` is set, the permissions
+        are only assigned to the specific object, otherwise they are assigned globally.
       parameters:
       - in: path
         name: uuid
@@ -37740,8 +37742,6 @@ components:
           type: string
           minLength: 1
       required:
-      - model
-      - object_pk
       - permissions
     PermissionRequest:
       type: object
