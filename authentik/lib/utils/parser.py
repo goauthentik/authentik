@@ -15,10 +15,10 @@ from redis.exceptions import TimeoutError as RedisTimeoutError
 
 def _to_bool(value):
     """Convert string to bool"""
-    match value.lower():
-        case "1" | "t" | "true":
+    match value:
+        case "1" | "t" | "T" | "true" | "TRUE" | "True":
             return True
-        case "0" | "f" | "false":
+        case "0" | "f" | "F" | "false" | "FALSE" | "False":
             return False
     print("Invalid boolean value found in Redis URL query, skipping")
     return False
