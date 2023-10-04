@@ -82,7 +82,13 @@ class PermissionFilter(FilterSet):
 class RBACPermissionViewSet(ReadOnlyModelViewSet):
     """Read-only list of all permissions, filterable by model and app"""
 
-    queryset = Permission.objects.all()
+    queryset = (
+        Permission.objects.all()
+        .select_related("content_type")
+        .filter(
+            content_type__app_label__startswith="authentik",
+        )
+    )
     serializer_class = PermissionSerializer
     ordering = ["name"]
     filterset_class = PermissionFilter
