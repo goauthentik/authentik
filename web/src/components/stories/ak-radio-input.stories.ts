@@ -30,7 +30,9 @@ const container = (testItem: TemplateResult) =>
                 margin-top: 1em;
             }
         </style>
+
         ${testItem}
+
         <ul id="radio-message-pad" style="margin-top: 1em"></ul>
     </div>`;
 
@@ -40,7 +42,7 @@ const testOptions = [
     { label: "Option Three", description: html`This is option three.`, value: { weird: 3 } },
 ];
 
-export const ButtonWithSuccess = () => {
+export const RadioInput = () => {
     const result = "";
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

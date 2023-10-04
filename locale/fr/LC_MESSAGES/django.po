@@ -11,6 +11,7 @@
 # Titouan Petit, 2023
 # Kyllian Delaye-Maillot, 2023
 # Manuel Viens, 2023
+# Mordecai, 2023
 # Marc Schmitt, 2023
 # 
 #, fuzzy
@@ -18,7 +19,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-09-15 09:51+0000\n"
+"POT-Creation-Date: 2023-10-02 12:46+0000\n"
 "PO-Revision-Date: 2022-09-26 16:47+0000\n"
 "Last-Translator: Marc Schmitt, 2023\n"
 "Language-Team: French (https://app.transifex.com/authentik/teams/119923/fr/)\n"
@@ -422,35 +423,35 @@ msgstr "Distribué pour l'utilisateur"
 msgid "Event user"
 msgstr "Évènement utilisateur"
 
-#: authentik/events/models.py:484
+#: authentik/events/models.py:491
 msgid "Notification Transport"
 msgstr "Transport de Notification"
 
-#: authentik/events/models.py:485
+#: authentik/events/models.py:492
 msgid "Notification Transports"
 msgstr "Transports de notification"
 
-#: authentik/events/models.py:491
+#: authentik/events/models.py:498
 msgid "Notice"
 msgstr "Note"
 
-#: authentik/events/models.py:492
+#: authentik/events/models.py:499
 msgid "Warning"
 msgstr "Avertissement"
 
-#: authentik/events/models.py:493
+#: authentik/events/models.py:500
 msgid "Alert"
 msgstr "Alerte"
 
-#: authentik/events/models.py:518
+#: authentik/events/models.py:525
 msgid "Notification"
 msgstr "Notification"
 
-#: authentik/events/models.py:519
+#: authentik/events/models.py:526
 msgid "Notifications"
 msgstr "Notifications"
 
-#: authentik/events/models.py:529
+#: authentik/events/models.py:536
 msgid ""
 "Select which transports should be used to notify the user. If none are "
 "selected, the notification will only be shown in the authentik UI."
@@ -459,11 +460,11 @@ msgstr ""
 "défaut, la notification sera simplement affichée dans l'interface "
 "utilisateur authentik."
 
-#: authentik/events/models.py:537
+#: authentik/events/models.py:544
 msgid "Controls which severity level the created notifications will have."
 msgstr "Contrôle quel niveau de sévérité les notifications créées auront."
 
-#: authentik/events/models.py:542
+#: authentik/events/models.py:549
 msgid ""
 "Define which group of users this notification should be sent and shown to. "
 "If left empty, Notification won't ben sent."
@@ -471,19 +472,19 @@ msgstr ""
 "Définir à quel groupe d'utilisateur cette notification doit être envoyée et "
 "affichée. Si laissé vide, les notifications ne seront pas envoyées."
 
-#: authentik/events/models.py:560
+#: authentik/events/models.py:567
 msgid "Notification Rule"
 msgstr "Règle de Notification"
 
-#: authentik/events/models.py:561
+#: authentik/events/models.py:568
 msgid "Notification Rules"
 msgstr "Règles de notification"
 
-#: authentik/events/models.py:581
+#: authentik/events/models.py:588
 msgid "Webhook Mapping"
 msgstr "Mappage de Webhook"
 
-#: authentik/events/models.py:582
+#: authentik/events/models.py:589
 msgid "Webhook Mappings"
 msgstr "Mappages de Webhook"
 
@@ -2074,7 +2075,7 @@ msgstr "Appareils Duo"
 msgid ""
 "When enabled, the Phone number is only used during enrollment to verify the "
 "users authenticity. Only a hash of the phone number is saved to ensure it is"
-" not re-used in the future."
+" not reused in the future."
 msgstr ""
 "Si activé, le numéro de téléphone n'est utilisé que durant l'inscription "
 "pour vérifier l'authenticité de l'utilisateur. Seul un hachage du numéro de "
@@ -2331,11 +2332,11 @@ msgstr "Pas d'utilisateurs en attente."
 msgid "Email sent."
 msgstr "Email envoyé."
 
-#: authentik/stages/email/templates/email/account_confirmation.html:9
+#: authentik/stages/email/templates/email/account_confirmation.html:10
 msgid "Welcome!"
 msgstr "Bienvenue !"
 
-#: authentik/stages/email/templates/email/account_confirmation.html:12
+#: authentik/stages/email/templates/email/account_confirmation.html:19
 msgid ""
 "We're excited to have you get started. First, you need to confirm your "
 "account. Just press the button below."
@@ -2343,11 +2344,11 @@ msgstr ""
 "Nous sommes ravis que vous puissiez commencer. Tout d'abord, vous devez "
 "confirmer votre compte. Il vous suffit d'appuyer sur le bouton ci-dessous."
 
-#: authentik/stages/email/templates/email/account_confirmation.html:21
+#: authentik/stages/email/templates/email/account_confirmation.html:24
 msgid "Confirm Account"
 msgstr "Confirmer le Compte"
 
-#: authentik/stages/email/templates/email/account_confirmation.html:30
+#: authentik/stages/email/templates/email/account_confirmation.html:36
 #, python-format
 msgid ""
 "\n"
@@ -2358,52 +2359,52 @@ msgstr ""
 "    Si cela ne fonctionne pas, copier et coller ce lien dans votre navigateur : %(url)s\n"
 "    "
 
-#: authentik/stages/email/templates/email/account_confirmation.html:35
-msgid ""
-"If you have any questions, just reply to this email—we're always happy to "
-"help out."
-msgstr ""
-"Si vous avez des questions, répondez simplement à cet e-email - nous sommes "
-"toujours heureux de vous aider."
-
-#: authentik/stages/email/templates/email/generic.html:24
-msgid "Additional Information"
-msgstr "Informations Additionnelles"
-
-#: authentik/stages/email/templates/email/password_reset.html:9
+#: authentik/stages/email/templates/email/event_notification.html:46
 #, python-format
 msgid ""
 "\n"
-"        Hi %(username)s,\n"
-"        "
+"    This email was sent from the notification transport <code>%(name)s</code>.\n"
+"    "
 msgstr ""
 "\n"
-"Bonjour %(username)s,"
+"    Cet email a été envoyé depuis le transport de notification <code>%(name)s</code>.\n"
+"    "
 
-#: authentik/stages/email/templates/email/password_reset.html:19
+#: authentik/stages/email/templates/email/password_reset.html:10
+#, python-format
 msgid ""
 "\n"
-"                    You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
-"                    "
+"      Hi %(username)s,\n"
+"      "
 msgstr ""
 "\n"
-"                    Vous avez récemment demandé à changer le mot de passe de votre compte authentik. Utilisez le bouton ci-dessous pour définir un nouveau mot de passe.\n"
-"                    "
+"      Salut %(username)s,\n"
+"     "
 
-#: authentik/stages/email/templates/email/password_reset.html:33
+#: authentik/stages/email/templates/email/password_reset.html:21
+msgid ""
+"\n"
+"          You recently requested to change your password for your authentik account. Use the button below to set a new password.\n"
+"          "
+msgstr ""
+"\n"
+"          Vous avez récemment demandé à changer le mot de passe de votre compte authentik. Utilisez le bouton ci-dessous pour définir un nouveau mot de passe.\n"
+"          "
+
+#: authentik/stages/email/templates/email/password_reset.html:28
 msgid "Reset Password"
 msgstr "Réinitialiser le mot de passe"
 
-#: authentik/stages/email/templates/email/password_reset.html:45
+#: authentik/stages/email/templates/email/password_reset.html:39
 #, python-format
 msgid ""
 "\n"
-"                    If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
-"                    "
+"    If you did not request a password change, please ignore this Email. The link above is valid for %(expires)s.\n"
+"    "
 msgstr ""
 "\n"
-"                    Si vous n'avez pas requis de changement de mot de passe, veuillez ignorer cet e-mail. Le lien ci-dessus est valide pendant %(expires)s.\n"
-"                    "
+"    Si vous n'avez pas requis de changement de mot de passe, veuillez ignorer cet e-mail. Le lien ci-dessus est valide pendant %(expires)s.\n"
+"    "
 
 #: authentik/stages/email/templates/email/setup.html:9
 msgid "authentik Test-Email"

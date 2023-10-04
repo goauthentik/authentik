@@ -62,3 +62,5 @@ export class AkTextInput extends AKElement {
         </ak-form-element-horizontal> `;
     }
 }
+
+export default AkTextInput;

@@ -9,6 +9,8 @@ import PFForm from "@patternfly/patternfly/components/Form/form.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+import { randomId } from "../utils/randomId";
+
 export interface RadioOption<T> {
     label: string;
     description?: TemplateResult;
@@ -26,6 +28,8 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
 
     @property({ attribute: false })
     value?: T;
+
+    internalId: string;
 
     static get styles(): CSSResult[] {
         return [
@@ -50,6 +54,7 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
         super();
         this.renderRadio = this.renderRadio.bind(this);
         this.buildChangeHandler = this.buildChangeHandler.bind(this);
+        this.internalId = this.name || `radio-${randomId(8)}`;
     }
 
     // Set the value if it's not set already. Property changes inside the `willUpdate()` method do
@@ -72,15 +77,14 @@ export class Radio<T> extends CustomEmitterElement(AKElement) {
             // This is a controlled input. Stop the native event from escaping or affecting the
             // value.  We'll do that ourselves.
             ev.stopPropagation();
-            ev.preventDefault();
             this.value = option.value;
-            this.dispatchCustomEvent("change", option.value);
-            this.dispatchCustomEvent("input", option.value);
+            this.dispatchCustomEvent("change", { value: option.value });
+            this.dispatchCustomEvent("input", { value: option.value });
         };
     }
 
-    renderRadio(option: RadioOption<T>) {
-        const elId = `${this.name}-${option.value}`;
+    renderRadio(option: RadioOption<T>, index: number) {
+        const elId = `${this.internalId}-${index}`;
         const handler = this.buildChangeHandler(option);
         return html`<div class="pf-c-radio" @click=${handler}>
             <input

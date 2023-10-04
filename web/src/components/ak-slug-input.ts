@@ -83,40 +83,46 @@ export class AkSlugInput extends AKElement {
     }
 
     slugify(ev: Event) {
+        if (!(ev && ev.target && ev.target instanceof HTMLInputElement)) {
+            return;
+        }
+
+        // Reset 'touched' status if the slug & target have been reset
+        if (ev.target.value === "" && this.input.value === "") {
+            this.touched = false;
+        }
+
+        // Don't proceed if the user has hand-modified the slug
+        if (this.touched) {
+            return;
+        }
+
         // A very primitive heuristic: if the previous iteration of the slug and the current
         // iteration are *similar enough*, set the input value. "Similar enough" here is defined as
         // "any event which adds or removes a character but leaves the rest of the slug looking like
         // the previous iteration, set it to the current iteration."
-        if (ev && ev.target && ev.target instanceof HTMLInputElement) {
-            if (this.touched) {
-                if (ev.target.value === "" && this.input.value === "") {
-                    this.touched = false;
-                } else {
-                    return;
-                }
-            }
+        const newSlug = convertToSlug(ev.target.value);
+        const oldSlug = this.input.value;
+        const [shorter, longer] =
+            newSlug.length < oldSlug.length ? [newSlug, oldSlug] : [oldSlug, newSlug];
 
-            const newSlug = convertToSlug(ev.target.value);
-            const oldSlug = this.input.value;
-            const [shorter, longer] =
-                newSlug.length < oldSlug.length ? [newSlug, oldSlug] : [oldSlug, newSlug];
-            if (longer.substring(0, shorter.length) === shorter) {
-                this.input.value = newSlug;
-
-                // The browser, as a security measure, sets the originating HTML object to be the
-                // target; developers cannot change it. In order to provide a meaningful value
-                // to listeners, both the name and value of the host must match those of the target
-                // input. The name is already handled since it's both required and automatically
-                // forwarded to our templated input, but the value must also be set.
-                this.value = this.input.value;
-                this.dispatchEvent(
-                    new Event("input", {
-                        bubbles: true,
-                        cancelable: true,
-                    }),
-                );
-            }
+        if (longer.substring(0, shorter.length) !== shorter) {
+            return;
         }
+
+        // The browser, as a security measure, sets the originating HTML object to be the
+        // target; developers cannot change it. In order to provide a meaningful value
+        // to listeners, both the name and value of the host must match those of the target
+        // input. The name is already handled since it's both required and automatically
+        // forwarded to our templated input, but the value must also be set.
+
+        this.value = this.input.value = newSlug;
+        this.dispatchEvent(
+            new Event("input", {
+                bubbles: true,
+                cancelable: true,
+            }),
+        );
     }
 
     connectedCallback() {
@@ -160,3 +166,5 @@ export class AkSlugInput extends AKElement {
         </ak-form-element-horizontal> `;
     }
 }
+
+export default AkSlugInput;

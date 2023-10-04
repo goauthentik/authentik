@@ -92,7 +92,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                 data.group = null;
                 break;
         }
-        console.log(data);
+
         if (this.instance?.pk) {
             return new PoliciesApi(DEFAULT_CONFIG).policiesBindingsUpdate({
                 policyBindingUuid: this.instance.pk,

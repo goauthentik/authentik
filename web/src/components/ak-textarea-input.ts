@@ -54,3 +54,5 @@ ${this.value !== undefined ? this.value : ""}</textarea
         </ak-form-element-horizontal> `;
     }
 }
+
+export default AkTextareaInput;

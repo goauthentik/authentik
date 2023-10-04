@@ -1,4 +1,5 @@
 import Page from "../page.js";
+import { $ } from "@wdio/globals";
 
 export class OauthForm extends Page {
     async setAuthorizationFlow(selector: string) {
@@ -7,6 +8,10 @@ export class OauthForm extends Page {
             "authorizationFlow",
             `button*=${selector}`,
         );
+    }
+
+    get providerName() {
+        return $('>>>ak-form-element-horizontal[name="name"] input');
     }
 }
 

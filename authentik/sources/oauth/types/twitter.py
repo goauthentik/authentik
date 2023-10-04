@@ -16,7 +16,7 @@ class TwitterClient(UserprofileHeaderAuthClient):
     the access token endpoint for some reason."""
 
     # Twitter has the same quirk as azure and throws an error if the access token
-    # is set via query parameter, so we re-use the azure client
+    # is set via query parameter, so we reuse the azure client
     # see https://github.com/goauthentik/authentik/issues/1910
 
     def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
