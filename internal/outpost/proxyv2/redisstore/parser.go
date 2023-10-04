@@ -159,6 +159,12 @@ func getRedisOptions(uri *url.URL) (*redis.UniversalOptions, error) {
 		}
 	}
 
+	if uri.Scheme == "redis+sentinel" || uri.Scheme == "rediss+sentinel" {
+		if opts.MasterName == "" {
+			return nil, fmt.Errorf("no mastername provided for sentinel configuration")
+		}
+	}
+
 	return opts, nil
 }
 

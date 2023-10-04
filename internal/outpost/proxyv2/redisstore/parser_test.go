@@ -95,6 +95,43 @@ func TestRedisAddrArgOpt(t *testing.T) {
 	}
 }
 
+func TestRedisAddrArgNoHostOpt(t *testing.T) {
+	uri, _ := url.Parse("redis:///0?addr=newmyredis")
+	opts := uriMustGetRedisOptions(uri)
+
+	if !reflect.DeepEqual(opts.Addrs, []string{"newmyredis"}) {
+		t.Fail()
+	}
+}
+
+func TestRedisAddrNoArgNoHostOpt(t *testing.T) {
+	uri, _ := url.Parse("redis:///0")
+	universalClient, err := GetRedisClient(uri)
+	client, ok := universalClient.(*redis.Client)
+
+	if err != nil || !ok || !reflect.DeepEqual(client.Options().Addr, "127.0.0.1:6379") {
+		t.Fail()
+	}
+}
+
+func TestRedisAddrNoArgNoHostFailoverOpt(t *testing.T) {
+	uri, _ := url.Parse("redis+sentinel:///0")
+	opts := uriMustGetRedisOptions(uri).Failover()
+
+	if !reflect.DeepEqual(opts.SentinelAddrs, []string{"127.0.0.1:26379"}) {
+		t.Fail()
+	}
+}
+
+// func TestRedisAddrNoArgNoHostClusterOpt(t *testing.T) {
+// 	uri, _ := url.Parse("redis+cluster:///0")
+// 	opts := uriMustGetRedisOptions(uri).Cluster()
+
+// 	if !reflect.DeepEqual(opts.Addrs, []string{"127.0.0.1:6379"}) {
+// 		t.Fail()
+// 	}
+// }
+
 func TestRedisAddrsArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?addrs=newmyredis:1234,otherredis")
 	opts := uriMustGetRedisOptions(uri)
@@ -311,13 +348,22 @@ func TestTimeoutArgOptFallback(t *testing.T) {
 }
 
 func TestRedisSentinelCredentialsOpt(t *testing.T) {
-	uri, _ := url.Parse("redis+sentinel://redis:password@myredis/0?sentinelusername=suser&sentinelpassword=spass")
+	uri, _ := url.Parse("redis+sentinel://redis:password@myredis/0?mastername=mymaster&sentinelusername=suser&sentinelpassword=spass")
 	opts := uriMustGetRedisOptions(uri).Failover()
 
 	if opts.SentinelUsername != "suser" {
 		t.Fail()
 	}
 	if opts.SentinelPassword != "spass" {
+		t.Fail()
+	}
+}
+
+func TestRedisSentinelNoMasternameOpt(t *testing.T) {
+	uri, _ := url.Parse("redis+sentinel://myredis/0")
+	_, err := getRedisOptions(uri)
+
+	if err == nil || err.Error() != "no mastername provided for sentinel configuration" {
 		t.Fail()
 	}
 }
@@ -345,6 +391,42 @@ func TestRedisClusterSupportDisabled(t *testing.T) {
 	_, err := GetRedisClient(uri)
 
 	if err == nil || err.Error() != "redis cluster is not currently supported" {
+		t.Fail()
+	}
+}
+
+func TestIPv6HostAddress(t *testing.T) {
+	uri, _ := url.Parse("redis://[2001:1:2:3:4::5]:6379/0")
+	opts := uriMustGetRedisOptions(uri)
+	
+	if len(opts.Addrs) != 1 || opts.Addrs[0] != "[2001:1:2:3:4::5]:6379" {
+		t.Fail()
+	}
+}
+
+func TestConvertStringToBoolValid(t *testing.T) {
+	uri, _ := url.Parse("redis://myredis/0?readonly=False")
+	opts := uriMustGetRedisOptions(uri)
+
+	if opts.ReadOnly {
+		t.Fail()
+	}
+}
+
+func TestConvertStringToBoolInvalid(t *testing.T) {
+	uri, _ := url.Parse("redis://myredis/0?readonly=TrUe")
+	opts := uriMustGetRedisOptions(uri)
+
+	if opts.ReadOnly {
+		t.Fail()
+	}
+}
+
+func TestRedisUnsupportedScheme(t *testing.T) {
+	uri, _ := url.Parse("rediss+socket://test.sock")
+	_, err := GetRedisClient(uri)
+
+	if err == nil || err.Error() != "unknown scheme found in redis connection URL: rediss+socket" {
 		t.Fail()
 	}
 }

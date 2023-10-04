@@ -51,6 +51,24 @@ class TestParserUtils(TestCase):
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["addrs"], [("newmyredis", 6379), ("myredis", 6379)])
 
+    def test_get_redis_options_addr_arg_no_host(self):
+        """Test Redis URL parser with addr arg but no host"""
+        url = urlparse("redis:///0?addr=newmyredis")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["addrs"], [("newmyredis", 6379)])
+
+    def test_get_redis_options_no_addr_arg_no_host(self):
+        """Test Redis URL parser without addr arg and no host"""
+        url = urlparse("redis:///0")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["addrs"], [("127.0.0.1", 6379)])
+
+    def test_get_redis_options_no_addr_arg_no_host_sentinel(self):
+        """Test Redis URL parser without addr arg and no host"""
+        url = urlparse("redis+sentinel:///0")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["addrs"], [("127.0.0.1", 26379)])
+
     def test_get_redis_options_addrs_arg(self):
         """Test Redis URL parser with addrs arg"""
         url = urlparse("redis://myredis:6379/0?addrs=newmyredis:1234,otherredis")
@@ -162,6 +180,13 @@ class TestParserUtils(TestCase):
         self.assertEqual(redis_kwargs["socket_timeout"], None)
         self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
 
+    def test_get_redis_options_timeout_arg_negative_number(self):
+        """Test Redis URL parser with negative timeout arg"""
+        url = urlparse("redis://myredis/0?timeout=-8s")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["socket_timeout"], None)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
+
     def test_get_redis_options_timeout_arg_milliseconds(self):
         """Test Redis URL parser with millisecond timeout arg"""
         url = urlparse("redis://myredis/0?timeout=10000ms")
@@ -175,17 +200,35 @@ class TestParserUtils(TestCase):
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["socket_connect_timeout"], 100)
 
+    def test_get_redis_options_dial_timeout_arg_negative_number(self):
+        """Test Redis URL parser with negative dialtimeout arg"""
+        url = urlparse("redis://myredis/0?dialtimeout=-32s")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["socket_connect_timeout"], None)
+
     def test_get_redis_options_read_timeout_arg(self):
         """Test Redis URL parser with readtimeout arg"""
         url = urlparse("redis://myredis/0?readtimeout=100s")
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["socket_timeout"], 100)
 
+    def test_get_redis_options_read_timeout_arg_negative_number(self):
+        """Test Redis URL parser with negative readtimeout arg"""
+        url = urlparse("redis://myredis/0?readtimeout=-36s")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["socket_timeout"], None)
+
     def test_get_redis_options_write_timeout_arg(self):
         """Test Redis URL parser with writetimeout arg"""
         url = urlparse("redis://myredis/0?writetimeout=100s")
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["socket_timeout"], 100)
+
+    def test_get_redis_options_write_timeout_arg_negative_number(self):
+        """Test Redis URL parser with negative writetimeout arg"""
+        url = urlparse("redis://myredis/0?writetimeout=-91s")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["socket_timeout"], None)
 
     def test_get_redis_options_pool_fifo_arg(self):
         """Test Redis URL parser with poolfifo arg"""
@@ -264,11 +307,17 @@ class TestParserUtils(TestCase):
         """Test Redis URL parser with sentinelusername and sentinelpassword arg"""
         url = urlparse(
             "redis+sentinel://redis:password@myredis/0"
-            + "?sentinelusername=suser&sentinelpassword=spass"
+            + "?mastername=mymaster&sentinelusername=suser&sentinelpassword=spass"
         )
-        _, redis_kwargs, _ = get_redis_options(url)
-        self.assertEqual(redis_kwargs["sentinel_username"], "suser")
-        self.assertEqual(redis_kwargs["sentinel_password"], "spass")
+        config = process_config(url, *get_redis_options(url))
+        self.assertEqual(config["sentinels"][0]["username"], "suser")
+        self.assertEqual(config["sentinels"][0]["password"], "spass")
+
+    def test_get_redis_options_sentinel_no_mastername(self):
+        """Test Redis URL parser with missing mastername for sentinel"""
+        url = urlparse("redis+sentinel://myredis/0")
+        with self.assertRaises(ValueError):
+            process_config(url, *get_redis_options(url))
 
     def test_get_redis_options_readonly_arg(self):
         """Test Redis URL parser with readonly arg"""
@@ -300,3 +349,39 @@ class TestParserUtils(TestCase):
         url = urlparse("redis://myredis/0?notanarg=4")
         with self.assertRaises(ValueError):
             get_redis_options(url)
+
+    def test_get_redis_options_invalid_port(self):
+        """Test Redis URL parser with an unknown arg"""
+        url = urlparse("redis://myredis:invalid/0")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["addrs"], [("127.0.0.1", 6379)])
+
+    def test_convert_string_to_bool_valid(self):
+        """Test correct conversion of string to bool"""
+        url = urlparse("redis://myredis/0?readonly=False")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertFalse(redis_kwargs["readonly"])
+
+    def test_convert_string_to_bool_invalid(self):
+        """Test failing conversion of string to bool"""
+        url = urlparse("redis://myredis/0?readonly=TrUe")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertFalse(redis_kwargs["readonly"])
+
+    def test_ipv6_host_address(self):
+        """Test correct parsing of IPv6 addresses"""
+        url = urlparse("redis://[2001:1:2:3:4::5]:6379/0")
+        _, redis_kwargs, _ = get_redis_options(url)
+        self.assertEqual(redis_kwargs["addrs"], [("[2001:1:2:3:4::5]", 6379)])
+
+    def test_unix_tls_unsupported(self):
+        """Test failure if trying to use TLS for socket connection"""
+        url = urlparse("rediss+socket://test.sock")
+        with self.assertRaises(ValueError):
+            process_config(url, *get_redis_options(url))
+
+    def test_unsupported_scheme(self):
+        """Test failure if trying to use unknown scheme"""
+        url = urlparse("invalid://myredis/0")
+        with self.assertRaises(ValueError):
+            process_config(url, *get_redis_options(url))
