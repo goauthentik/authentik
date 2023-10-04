@@ -167,7 +167,7 @@ def _set_config_defaults(pool_kwargs, redis_kwargs, tls_kwargs, url):
             print("Skipping due to invalid format for a hostname and port: " + addr)
 
     if len(new_addrs) == 0:
-        new_addrs.append(("127.0.0.1", "6379"))
+        new_addrs.append(("127.0.0.1", default_port))
 
     pool_kwargs_defaults = {
         "max_connections": max_connections,
