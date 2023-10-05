@@ -8405,6 +8405,13 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Attributes"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Roles"
                 }
             },
             "required": []

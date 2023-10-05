@@ -31485,19 +31485,30 @@ components:
           type: array
           items:
             type: integer
-        attributes:
-          type: object
-          additionalProperties: {}
         users_obj:
           type: array
           items:
             $ref: '#/components/schemas/GroupMember'
+          readOnly: true
+        attributes:
+          type: object
+          additionalProperties: {}
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
+        roles_obj:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
           readOnly: true
       required:
       - name
       - num_pk
       - parent_name
       - pk
+      - roles_obj
       - users_obj
     GroupMember:
       type: object
@@ -31598,6 +31609,11 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
       required:
       - name
     IdentificationChallenge:
@@ -36169,6 +36185,11 @@ components:
         attributes:
           type: object
           additionalProperties: {}
+        roles:
+          type: array
+          items:
+            type: string
+            format: uuid
     PatchedIdentificationStageRequest:
       type: object
       description: IdentificationStage Serializer
@@ -37801,21 +37822,6 @@ components:
           minLength: 1
       required:
       - permissions
-    PermissionRequest:
-      type: object
-      description: Global permission
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 255
-        codename:
-          type: string
-          minLength: 1
-          maxLength: 100
-      required:
-      - codename
-      - name
     PlexAuthenticationChallenge:
       type: object
       description: Challenge shown to the user in identification stage
@@ -39355,14 +39361,8 @@ components:
         name:
           type: string
           maxLength: 150
-        permissions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Permission'
-          readOnly: true
       required:
       - name
-      - permissions
       - pk
     RoleAssignedObjectPermission:
       type: object

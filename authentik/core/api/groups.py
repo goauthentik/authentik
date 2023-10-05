@@ -17,6 +17,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
 from authentik.api.decorators import permission_required
+from authentik.core.api.roles import RoleSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, is_dict
 from authentik.core.models import Group, User
@@ -49,6 +50,12 @@ class GroupSerializer(ModelSerializer):
     users_obj = ListSerializer(
         child=GroupMemberSerializer(), read_only=True, source="users", required=False
     )
+    roles_obj = ListSerializer(
+        child=RoleSerializer(),
+        read_only=True,
+        source="roles",
+        required=False,
+    )
     parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
 
     num_pk = IntegerField(read_only=True)
@@ -71,8 +78,10 @@ class GroupSerializer(ModelSerializer):
             "parent",
             "parent_name",
             "users",
-            "attributes",
             "users_obj",
+            "attributes",
+            "roles",
+            "roles_obj",
         ]
         extra_kwargs = {
             "users": {

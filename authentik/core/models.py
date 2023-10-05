@@ -88,6 +88,8 @@ class Group(SerializerModel):
         default=False, help_text=_("Users added to this group will be superusers.")
     )
 
+    roles = models.ManyToManyField("Role", related_name="ak_groups", blank=True)
+
     parent = models.ForeignKey(
         "Group",
         blank=True,
