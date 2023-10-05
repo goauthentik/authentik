@@ -35,3 +35,4 @@ class RoleViewSet(UsedByMixin, ModelViewSet):
     queryset = Role.objects.all()
     search_fields = ["group__name"]
     ordering = ["group__name"]
+    filterset_fields = ["group__name"]
