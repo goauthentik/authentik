@@ -94,8 +94,8 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
                     f"path instead."
                 )
 
-        import pytest
-
         os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
+
+        import pytest
 
         return pytest.main(self.args)
