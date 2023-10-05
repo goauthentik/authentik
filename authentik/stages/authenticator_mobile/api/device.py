@@ -126,7 +126,7 @@ class MobileDeviceViewSet(
         device: MobileDevice = self.get_object()
         data = MobileDeviceEnrollmentSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        device.name = data.validated_data["info"].validated_data["hostname"]
+        device.name = data.validated_data["info"]["hostname"]
         device.confirmed = True
         device.device_id = data.validated_data["device_uid"]
         device.save()
