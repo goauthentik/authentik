@@ -7,7 +7,11 @@ GAUGE_POLICIES_CACHED = Gauge(
     "authentik_policies_cached",
     "Cached Policies",
 )
-
+HIST_POLICIES_ENGINE_TOTAL_TIME = Histogram(
+    "authentik_policies_engine_time_total_seconds",
+    "(Total) Duration the policy engine took to evaluate a result.",
+    ["obj_type", "obj_pk"],
+)
 HIST_POLICIES_EXECUTION_TIME = Histogram(
     "authentik_policies_execution_time",
     "Execution times for single policies",
@@ -17,6 +21,7 @@ HIST_POLICIES_EXECUTION_TIME = Histogram(
         "binding_target_name",
         "object_pk",
         "object_type",
+        "mode",
     ],
 )
 

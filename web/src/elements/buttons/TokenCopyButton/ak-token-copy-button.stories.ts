@@ -44,7 +44,6 @@ const container = (testItem: TemplateResult) =>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const displayMessage = (result: any) => {
-    console.log(result);
     const doc = new DOMParser().parseFromString(
         `<li><p><i>Event</i>: ${
             "result" in result.detail ? result.detail.result.key : result.detail.error

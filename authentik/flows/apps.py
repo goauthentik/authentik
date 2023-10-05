@@ -8,6 +8,11 @@ GAUGE_FLOWS_CACHED = Gauge(
     "authentik_flows_cached",
     "Cached flows",
 )
+HIST_FLOW_EXECUTION_STAGE_TIME = Histogram(
+    "authentik_flows_execution_stage_time",
+    "Duration each stage took to execute.",
+    ["stage_type", "method"],
+)
 HIST_FLOWS_PLAN_TIME = Histogram(
     "authentik_flows_plan_time",
     "Duration to build a plan for a flow",
