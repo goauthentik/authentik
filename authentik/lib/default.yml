@@ -28,14 +28,30 @@ listen:
 redis:
   host: localhost
   port: 6379
+  db: 0
+  username: ""
   password: ""
   tls: false
-  tls_reqs: "none"
-  db: 0
-  cache_timeout: 300
-  cache_timeout_flows: 300
-  cache_timeout_policies: 300
-  cache_timeout_reputation: 300
+  tls_reqs: "required"
+
+# broker:
+  # url: ""
+  # transport_options: ""
+
+cache:
+  # backend: ""
+  # url: ""
+  timeout: 300
+  timeout_flows: 300
+  timeout_policies: 300
+  timeout_reputation: 300
+
+# channel:
+  # backend: ""
+  # url: ""
+
+# result_backend:
+  # url: ""
 
 paths:
   media: ./media

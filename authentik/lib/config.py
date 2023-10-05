@@ -8,10 +8,11 @@ from glob import glob
 from json import JSONEncoder, dumps, loads
 from json.decoder import JSONDecodeError
 from pathlib import Path
+from string import Template
 from sys import argv, stderr
 from time import time
 from typing import Any, Optional
-from urllib.parse import urlparse
+from urllib.parse import quote_plus, urlencode, urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
@@ -21,6 +22,24 @@ SEARCH_PATHS = ["authentik/lib/default.yml", "/etc/authentik/config.yml", ""] + 
 )
 ENV_PREFIX = "AUTHENTIK"
 ENVIRONMENT = os.getenv(f"{ENV_PREFIX}_ENV", "local")
+
+REDIS_ENV_KEYS = [
+    f"{ENV_PREFIX}_REDIS__HOST",
+    f"{ENV_PREFIX}_REDIS__PORT" f"{ENV_PREFIX}_REDIS__DB",
+    f"{ENV_PREFIX}_REDIS__USERNAME",
+    f"{ENV_PREFIX}_REDIS__PASSWORD",
+    f"{ENV_PREFIX}_REDIS__TLS",
+    f"{ENV_PREFIX}_REDIS__TLS_REQS",
+]
+
+DEPRECATIONS = {
+    "redis.broker_url": "broker.url",
+    "redis.broker_transport_options": "broker.transport_options",
+    "redis.cache_timeout": "cache.timeout",
+    "redis.cache_timeout_flows": "cache.timeout_flows",
+    "redis.cache_timeout_policies": "cache.timeout_policies",
+    "redis.cache_timeout_reputation": "cache.timeout_reputation",
+}
 
 
 def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
@@ -65,6 +84,10 @@ class AttrEncoder(JSONEncoder):
         return super().default(o)
 
 
+class UNSET:
+    """Used to test whether configuration key has not been set."""
+
+
 class ConfigLoader:
     """Search through SEARCH_PATHS and load configuration. Environment variables starting with
     `ENV_PREFIX` are also applied.
@@ -97,6 +120,31 @@ class ConfigLoader:
                         self.update_from_file(env_file)
         self.update_from_env()
         self.update(self.__config, kwargs)
+        self.check_deprecations()
+
+    def check_deprecations(self):
+        """Warn if any deprecated configuration options are used"""
+
+        def _pop_deprecated_key(current_obj, dot_parts, index):
+            """Recursive function to remove deprecated keys in configuration"""
+            dot_part = dot_parts[index]
+            if index == len(dot_parts) - 1:
+                return current_obj.pop(dot_part)
+            value = _pop_deprecated_key(current_obj[dot_part], dot_parts, index + 1)
+            if not current_obj[dot_part]:
+                current_obj.pop(dot_part)
+            return value
+
+        for deprecation, replacement in DEPRECATIONS.items():
+            if self.get(deprecation, default=UNSET) is not UNSET:
+                self.log(
+                    "warning",
+                    f"'{deprecation}' has been deprecated in favor of '{replacement}'! "
+                    "Please update your configuration.",
+                )
+
+                deprecated_attr = _pop_deprecated_key(self.__config, deprecation.split("."), 0)
+                self.set(replacement, deprecated_attr.value)
 
     def log(self, level: str, message: str, **kwargs):
         """Custom Log method, we want to ensure ConfigLoader always logs JSON even when
@@ -164,6 +212,21 @@ class ConfigLoader:
                 error=str(exc),
             )
 
+    def update_from_dict(self, update: dict):
+        """Update config from dict"""
+        self.__config.update(update)
+
+    @staticmethod
+    def _set_value_for_key_path(outer, path, value, sep="."):
+        # Recursively convert path from a.b.c into outer[a][b][c]
+        current_obj = outer
+        dot_parts = path.split(sep)
+        for dot_part in dot_parts[:-1]:
+            current_obj.setdefault(dot_part, {})
+            current_obj = current_obj[dot_part]
+        current_obj[dot_parts[-1]] = Attr(value, Attr.Source.ENV, path)
+        return outer
+
     def update_from_env(self):
         """Check environment variables"""
         outer = {}
@@ -172,19 +235,12 @@ class ConfigLoader:
             if not key.startswith(ENV_PREFIX):
                 continue
             relative_key = key.replace(f"{ENV_PREFIX}_", "", 1).replace("__", ".").lower()
-            # Recursively convert path from a.b.c into outer[a][b][c]
-            current_obj = outer
-            dot_parts = relative_key.split(".")
-            for dot_part in dot_parts[:-1]:
-                if dot_part not in current_obj:
-                    current_obj[dot_part] = {}
-                current_obj = current_obj[dot_part]
             # Check if the value is json, and try to load it
             try:
                 value = loads(value)
             except JSONDecodeError:
                 pass
-            current_obj[dot_parts[-1]] = Attr(value, Attr.Source.ENV, key)
+            outer = self._set_value_for_key_path(outer, relative_key, value)
             idx += 1
         if idx > 0:
             self.log("debug", "Loaded environment variables", count=idx)
@@ -228,14 +284,7 @@ class ConfigLoader:
     def set(self, path: str, value: Any, sep="."):
         """Set value using same syntax as get()"""
         # Walk sub_dicts before parsing path
-        root = self.raw
-        # Walk each component of the path
-        path_parts = path.split(sep)
-        for comp in path_parts[:-1]:
-            if comp not in root:
-                root[comp] = {}
-            root = root.get(comp, {})
-        root[path_parts[-1]] = Attr(value)
+        self._set_value_for_key_path(self.raw, path, value, sep)
 
 
 CONFIG = ConfigLoader()
