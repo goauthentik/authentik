@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from unittest import TestCase
 
 from django.conf import settings
+from django.test.runner import DiscoverRunner
 
 from authentik.lib.config import CONFIG
 from authentik.lib.sentry import sentry_init
@@ -13,13 +14,11 @@ from tests.e2e.utils import get_docker_tag
 TestCase.maxDiff = None
 
 
-class PytestTestRunner:  # pragma: no cover
+class PytestTestRunner(DiscoverRunner):  # pragma: no cover
     """Runs pytest to discover and run tests."""
 
     def __init__(self, verbosity=1, failfast=False, keepdb=False, **kwargs):
-        self.verbosity = verbosity
-        self.failfast = failfast
-        self.keepdb = keepdb
+        super().__init__(verbosity, failfast, keepdb, **kwargs)
 
         self.args = []
         if self.failfast:
