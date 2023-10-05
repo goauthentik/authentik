@@ -7,23 +7,34 @@ Invitations are another way to create a user, by inviting someone to join your a
 
 With invitations, you can either send a URL to one or more specific recipients, or you can send a URL to a group of users who can then log in and define their credentials.
 
---- info
+---
+info
 You can also create a policy to see if the invitation was ever used.
 
 ---
 
 ## Create an invitation
 
-To use an invitation, you will need to connect a Flow, a Stage, and an invitation object... plus some prompts...?
+Invitations are yet another way to connect Flows, Stages, and Prompts in order to create a speficic user task or worflow.
 
-The fastest way to create an invitation is to use our `default-enrollment-flow`... go to Example Flows and select the Enrollment (2 stage) choice... download that file... then go to Flows and click **Import** and navigate to the downloaded file... then...?
+The fastest way to create an invitation is to use our pre-defined `default-enrollment-flow` that has the necessary stages and prompts already included.
 
-OLD TEXT below
+**Step 1. Download the `default-enrollment-flow` file**
 
-Step 1. Create a new Flow (or re-use an existing Flow that was alreadty created for this purpose).... in the Designation filed, you MUST elect Enrollment!!!
+Right-click this link for the [`default-enrollment-flow`](/blueprints/example/flows-enrollment-2-stage.yaml) and save the file. For more details, refer to the [documentation](https://goauthentik.io/docs/flow/examples/flows#enrollment-2-stage.
 
-Step 2. Create a new Stage, or use an existing one....
+**Step 2. Import the `default-enrollment-flow` file**
 
-Step 3. Create the invitation object... on the Flow field, select the Flow that you created in Step 1.
+In authentik, navigate to the Admin UI, then to Flows and click **Import**. Select the `flows-enrollment-2-stage.yaml` file that you just downloaded.
 
-Youc an enter user attributes here, if you want to pre-define their username, or email address, or user... or leave it blank and the new user can fill it in when they enroll.
+**Step 3. Create the invitation object**
+
+In the Admin UI, navigate to **Directory --> Invitations**, and then click **Create** to open the **Create Invitation** modal. Define the following fields:
+-   **Name**: provide a name for your invitation object.
+-   **Expires**: select a date for when you want the invitation to expire.
+-   **Flow**: in the drop-down menu, select the **default-enrollment-flow** Flow.
+-   **Attributes**: (_optional_) enter [user attributes](./user_attributes.md) here, if you want to pre-define any information about the user that you will invite to enroll.
+
+![Create an invitation modal box](./create_invite.png)
+
+-   **Single use**: specify whether or not you want the invitation to expire after a single use.

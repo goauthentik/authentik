@@ -1,5 +1,5 @@
 ---
-title: User
+title: User attributes
 ---
 
 ## Object properties
@@ -72,7 +72,7 @@ Only applies when the token creation is triggered by the user with this attribut
 
 ### `goauthentik.io/user/debug`:
 
-See [Troubleshooting access problems](../../troubleshooting/access.mdtroubleshooting/access.md), when set, the user gets a more detailed explanation of access decisions.
+See [Troubleshooting access problems](../../troubleshooting/access), when set, the user gets a more detailed explanation of access decisions.
 
 ### `additionalHeaders`:
 
