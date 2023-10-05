@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 
 from _socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from django.test import TestCase
-from redis import SentinelConnectionPool, RedisCluster, BlockingConnectionPool
+from redis import BlockingConnectionPool, SentinelConnectionPool
 from redis.backoff import ExponentialBackoff, NoBackoff
 from redis.retry import Retry
 
