@@ -36,13 +36,15 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
         return msg("Successfully assigned permission.");
     }
 
-    send(data: RolePermissionAssign): Promise<unknown> {
-        return new CoreApi(DEFAULT_CONFIG).coreRbacRoleAssignCreate({
+    async send(data: RolePermissionAssign): Promise<unknown> {
+        await new CoreApi(DEFAULT_CONFIG).coreRbacRoleAssignCreate({
             uuid: this.roleUuid || "",
             permissionAssignRequest: {
                 permissions: data.permissions,
             },
         });
+        this.permissionsToAdd = [];
+        return;
     }
 
     renderForm(): TemplateResult {
@@ -57,7 +59,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
                         }}
                     >
                         <button slot="trigger" class="pf-c-button pf-m-control" type="button">
-                            <pf-tooltip position="top" content=${msg("Add group")}>
+                            <pf-tooltip position="top" content=${msg("Select permissions")}>
                                 <i class="fas fa-plus" aria-hidden="true"></i>
                             </pf-tooltip>
                         </button>
