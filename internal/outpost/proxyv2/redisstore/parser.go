@@ -79,7 +79,7 @@ func getRedisOptions(uri *url.URL) (*redis.UniversalOptions, error) {
 
 	// Now handle the uri query sets
 	for k, v := range uri.Query() {
-		switch replacer.Replace(strings.ToLower(k)) {
+		switch param := replacer.Replace(strings.ToLower(k)); param {
 		case "addr":
 			opts.Addrs = append(opts.Addrs, v...)
 		case "addrs":
@@ -149,6 +149,8 @@ func getRedisOptions(uri *url.URL) (*redis.UniversalOptions, error) {
 			opts.SentinelUsername = v[0]
 		case "sentinelpassword":
 			opts.SentinelPassword = v[0]
+		default:
+			return nil, fmt.Errorf("detected unknown configuration option '%s'", param)
 		}
 	}
 
@@ -164,7 +166,7 @@ func getRedisOptions(uri *url.URL) (*redis.UniversalOptions, error) {
 		if db, err := strconv.Atoi(uri.Path[1:]); err == nil {
 			opts.DB = db
 		} else {
-			return nil, fmt.Errorf("provided database identifier '%s' is not a valid integer", uri.Path)
+			return nil, fmt.Errorf("provided database identifier '%s' is not a valid integer", uri.Path[1:])
 		}
 	}
 

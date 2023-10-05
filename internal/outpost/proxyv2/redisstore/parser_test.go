@@ -6,6 +6,7 @@ package redisstore
 import (
 	"net/url"
 	"reflect"
+	"strings"
 	"testing"
 	"time"
 
@@ -388,6 +389,15 @@ func TestRedisSentinelNoMasternameOpt(t *testing.T) {
 	}
 }
 
+func TestRedisUnknownOpt(t *testing.T) {
+	uri, _ := url.Parse("redis://myredis/0?notanarg=4")
+	_, err := getRedisOptions(uri)
+
+	if err == nil || err.Error() != "detected unknown configuration option 'notanarg'" {
+		t.Fail()
+	}
+}
+
 func TestRedisDatabaseIndexTcp(t *testing.T) {
 	uri, _ := url.Parse("redis://redis:password@myredis/12")
 	opts := uriMustGetRedisOptions(uri)
@@ -397,7 +407,16 @@ func TestRedisDatabaseIndexTcp(t *testing.T) {
 	}
 }
 
-func TestRedisDatabaseIndexUnix(t *testing.T) {
+func TestRedisDatabaseIndexInvalid(t *testing.T) {
+	uri, _ := url.Parse("redis://redis:password@myredis/invalid")
+	_, err := getRedisOptions(uri)
+
+	if err == nil || err.Error() != "provided database identifier 'invalid' is not a valid integer" {
+		t.Fail()
+	}
+}
+
+func TestRedisDatabaseIndexSocket(t *testing.T) {
 	uri, _ := url.Parse("redis+socket:///var/run/redis.sock?database=12")
 	opts := uriMustGetRedisOptions(uri)
 
@@ -411,6 +430,15 @@ func TestRedisClusterSupportDisabled(t *testing.T) {
 	_, err := GetRedisClient(uri)
 
 	if err == nil || err.Error() != "redis cluster is not currently supported" {
+		t.Fail()
+	}
+}
+
+func TestGetRedisClientErrorPassthrough(t *testing.T) {
+	uri, _ := url.Parse("redis://redis:password@myredis/invalid")
+	_, err := GetRedisClient(uri)
+
+	if err == nil || !strings.HasPrefix(err.Error(), "unable to read configuration from redis connection URL") {
 		t.Fail()
 	}
 }

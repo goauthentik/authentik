@@ -4,6 +4,7 @@ from urllib.parse import urlparse
 
 from _socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from django.test import TestCase
+from redis import SentinelConnectionPool, RedisCluster, BlockingConnectionPool
 from redis.backoff import ExponentialBackoff, NoBackoff
 from redis.retry import Retry
 
@@ -25,7 +26,9 @@ class TestParserUtils(TestCase):
 
     def test_process_config_sentinel(self):
         """Test Redis URL parser for Sentinel connection"""
-        url = urlparse("redis+sentinel://mysentinel:22345/92?mastername=themaster")
+        url = urlparse(
+            "redis+sentinel://username:password@mysentinel:22345/92?mastername=themaster"
+        )
         config = process_config(url, *get_redis_options(url))
         self.assertEqual(config["type"], "sentinel")
         self.assertEqual(config["sentinels"][0]["host"], "mysentinel")
@@ -175,6 +178,27 @@ class TestParserUtils(TestCase):
         self.assertIsInstance(retry_config, Retry)
         self.assertIsInstance(retry_config._backoff, ExponentialBackoff)
         self.assertEqual(retry_config._retries, 32)
+
+    def test_get_connection_pool_sentinel(self):
+        """Test ConnectionPool generator for sentinel"""
+        url = urlparse("redis+sentinel://myredis:26379/0?mastername=mymaster")
+        config = process_config(url, *get_redis_options(url))
+        connection_pool, _ = get_connection_pool(config)
+        self.assertIsInstance(connection_pool, SentinelConnectionPool)
+
+    # def test_get_connection_pool_cluster(self):
+    #     """Test ConnectionPool generator for cluster"""
+    #     url = urlparse("redis+cluster://myredis:6379")
+    #     config = process_config(url, *get_redis_options(url))
+    #     _, client_config = get_connection_pool(config)
+    #     self.assertEqual(client_config["client_class"], RedisCluster)
+
+    def test_get_connection_pool_socket(self):
+        """Test ConnectionPool generator for socket"""
+        url = urlparse("redis+socket://mysocket.sock/0")
+        config = process_config(url, *get_redis_options(url))
+        connection_pool, _ = get_connection_pool(config)
+        self.assertIsInstance(connection_pool, BlockingConnectionPool)
 
     def test_get_redis_options_timeout_arg(self):
         """Test Redis URL parser with timeout arg"""
@@ -424,7 +448,7 @@ class TestParserUtils(TestCase):
         _, redis_kwargs, _ = get_redis_options(url)
         self.assertEqual(redis_kwargs["addrs"], [("[2001:1:2:3:4::5]", 6379)])
 
-    def test_unix_tls_unsupported(self):
+    def test_socket_tls_unsupported(self):
         """Test failure if trying to use TLS for socket connection"""
         url = urlparse("rediss+socket://test.sock")
         with self.assertRaises(ValueError):

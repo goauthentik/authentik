@@ -357,10 +357,8 @@ def _config_sentinel(config, service_name, credentials, kwargs, addrs):
     elif "password" in sentinel_kwargs:
         sentinel_kwargs.pop("password")
     # Remove any unneeded host / port configuration
-    if "host" in redis_kwargs:
-        redis_kwargs.pop("host")
-    if "port" in redis_kwargs:
-        redis_kwargs.pop("port")
+    redis_kwargs.pop("host", None)
+    redis_kwargs.pop("port", None)
     config["type"] = "sentinel"
     config["pool_kwargs"] = deepcopy(pool_kwargs)
     config["redis_kwargs"] = deepcopy(redis_kwargs)
@@ -380,13 +378,9 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
 
     addrs = redis_kwargs.pop("addrs")
     cluster_error_retry_attempts = redis_kwargs.pop("cluster_error_retry_attempts")
-    service_name = redis_kwargs.pop("service_name") if "service_name" in redis_kwargs else None
-    sentinel_username = (
-        redis_kwargs.pop("sentinel_username") if "sentinel_username" in redis_kwargs else None
-    )
-    sentinel_password = (
-        redis_kwargs.pop("sentinel_password") if "sentinel_password" in redis_kwargs else None
-    )
+    service_name = redis_kwargs.pop("service_name", None)
+    sentinel_username = redis_kwargs.pop("sentinel_username", None)
+    sentinel_password = redis_kwargs.pop("sentinel_password", None)
     scheme_parts = url.scheme.split("+")
 
     if scheme_parts[0] == "rediss":
@@ -403,7 +397,7 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
             case "cluster" | "clusters":
                 redis_kwargs = _configure_tcp_keepalive(redis_kwargs)
                 config["type"] = "cluster"
-                database = redis_kwargs.pop("db")
+                database = redis_kwargs.pop("db", None)
                 if database:
                     print("Redis cluster does not support the db option, skipping")
                 config["pool_kwargs"] = deepcopy(pool_kwargs)
