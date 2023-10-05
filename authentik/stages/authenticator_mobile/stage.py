@@ -49,6 +49,7 @@ class AuthenticatorMobileStageView(ChallengeStageView):
             return
         device = MobileDevice.objects.create(
             name=generate_id(),
+            device_id=generate_id(),
             user=self.get_pending_user(),
             stage=self.executor.current_stage,
             confirmed=False,
