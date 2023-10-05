@@ -18,7 +18,7 @@ class MobileDeviceTokenAuthentication(BaseAuthentication):
         """Token-based authentication using HTTP Bearer authentication"""
         auth = get_authorization_header(request)
         raw_token = validate_auth(auth)
-        device_token: MobileDeviceToken = MobileDeviceToken.objects.filter(token=raw_token).first()
+        device_token: MobileDeviceToken = MobileDeviceToken.filter_not_expired(token=raw_token).first()
         if not device_token:
             return None
         CTX_AUTH_VIA.set("mobile_token")
