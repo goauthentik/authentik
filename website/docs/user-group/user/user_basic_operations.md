@@ -71,7 +71,7 @@ If a user has lost their credentials, you can email them a recovery link.
 
 This option will only work if you have properly [configured a SMTP server during the installation](../../installation/docker-compose#email-configuration-optional-but-recommended) and set an email address for the user.
 
-After clicking **Email recovery link**, the user receives the mail. If that's not the case, check if the mail server parameters [are properly configured](../../troubleshooting/emails).
+If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails).
 
 ## Deactivate or Delete user
 
