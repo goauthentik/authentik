@@ -8,6 +8,7 @@ Invitations are another way to create a user, by inviting someone to join your a
 With invitations, you can either send a URL to one or more specific recipients, or you can send a URL to a group of users who can then log in and define their credentials.
 
 ---
+
 info
 You can also create a policy to see if the invitation was ever used.
 
@@ -30,6 +31,7 @@ In authentik, navigate to the Admin UI, then to Flows and click **Import**. Sele
 **Step 3. Create the invitation object**
 
 In the Admin UI, navigate to **Directory --> Invitations**, and then click **Create** to open the **Create Invitation** modal. Define the following fields:
+
 -   **Name**: provide a name for your invitation object.
 -   **Expires**: select a date for when you want the invitation to expire.
 -   **Flow**: in the drop-down menu, select the **default-enrollment-flow** Flow.
