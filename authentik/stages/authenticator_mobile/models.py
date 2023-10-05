@@ -127,7 +127,7 @@ class MobileTransaction(ExpiringModel):
 
     def send_message(self, request: Optional[HttpRequest], **context):
         """Send mobile message"""
-        initialize_app(credentials.Certificate(self.device.stage.firebase_config))
+        app = initialize_app(credentials.Certificate(self.device.stage.firebase_config), name=str(self.tx_id))
         branding = DEFAULT_TENANT.branding_title
         domain = ""
         if request:
@@ -160,12 +160,13 @@ class MobileTransaction(ExpiringModel):
                     ),
                     interruption_level="time-sensitive",
                     tx_id=str(self.tx_id),
+                    options=["foo", "bar", "baz"],
                 ),
             ),
             token=self.device.firebase_token,
         )
         try:
-            response = send(message)
+            response = send(message, app=app)
             LOGGER.debug("Sent notification", id=response)
         except (ValueError, FirebaseError) as exc:
             LOGGER.warning("failed to push", exc=exc)
