@@ -31,7 +31,7 @@ As a young security company, we’ve been working on our implementation of SCIM 
 
 # Improvements on LDAP
 
-From a security standpoint, it’s wise not to expose LDAP (Lightweight Directory Access Protocol) to the internet if you’re using Active Directory as your source of truth for authentication. SCIM fills a need for directory synchronization in a cloud-native world in which many companies aren’t hosting the software they use on their own servers.
+From a security standpoint, it’s wise not to expose LDAP (Lightweight Directory Access Protocol) to the internet if you’re using Active Directory, OpenLDAP, FreeIPA or anything similar as your source of truth for authentication. SCIM fills a need for directory synchronization in a cloud-native world in which many companies aren’t hosting the software they use on their own servers.
 
 SCIM, being an HTTP API specification, is much simpler and (in theory) gives you less to worry about than LDAP (being its own specific protocol). SCIM also offers time- and cost-saving advantages over Just in Time provisioning, especially for scaling companies. SCIM can save hours of company time for IT admins who no longer have to manually create individual accounts across multiple applications for new team members. Offboarding is also streamlined as departing team members can be deprovisioned automatically, preventing unauthorized access.
 
@@ -39,7 +39,7 @@ Most modern SaaS applications support SCIM, making it essential for security ven
 
 # Growing pains
 
-authentik currently supports SCIM going outwards: what this means is that authentik is your source of truth/central directory, and you can use authentik together with a tool like Sentry that supports SCIM. In this case all your users or employees in authentik automatically get created in Sentry, with their correct group assignment, and they can just log in.
+authentik currently supports SCIM going outwards; which means is that authentik is your source of truth/central directory, and you can use authentik together with a tool like [Sentry](https://sentry.io) that supports SCIM. In this case all your users or employees in authentik automatically get created in Sentry, with their correct group assignment, and they can just log in.
 
 Most of the information and commentary I see about SCIM focuses on the advantages described above, but I don’t see a lot of talk about the pitfalls of SCIM. I’m sharing our experiences here and am curious if others have found the same or can tell me how they’re avoiding these (I would love to hear that we’re doing this wrong actually!).
 
@@ -55,7 +55,7 @@ You can see other examples of confusing/unexpected behavior from SCIM [here](htt
 
 Some protocols make a big effort to uphold the adherence to the standard. OpenID Connect is another standard that’s well defined by multiple RFCs, but also has a lot of room for vendor-specific quirks. However, with OpenID we have the reassurance that the [OpenID Foundation](https://openid.net/foundation/) is behind it.
 
-The OpenID Foundation is a non-profit standards body of which Authentik Security is a member, but anyone can join to contribute to working groups that support implementation. OpenID Connect offers an [entire test suite](https://openid.net/certification/about-conformance-suite/) made up of hundreds of tests that you can run against your implementation, testing for edge cases and all the behaviors that they define. If you pass all the required tests you can send them the test results and get a [certification](https://openid.net/certification/) that your software adheres to the standards.
+The OpenID Foundation is a non-profit standards body of which Authentik Security is a member, but anyone can join to contribute to working groups that support implementation. OpenID Connect offers an [entire test suite](https://openid.net/certification/about-conformance-suite/) made up of hundreds of tests that you can run against your implementation, testing for edge cases and all the behaviors that they define. If you pass all the required tests you can send them the test results and get a [certification](https://openid.net/certification/) (which we are also working on) that your software adheres to the standards.
 
 Instead of working in the dark and trying to make sure you’ve interpreted the specs correctly (while testing with vendors who might have their own interpretations), you have some reassurance that you’re doing the right things when developing with OpenID Connect.
 
