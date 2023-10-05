@@ -1,5 +1,5 @@
 ---
-title: We need to talk about SCIM: More deviation than standard
+title: "We need to talk about SCIM: More deviation than standard"
 description: "SCIM’s many deviations, undocumented edge cases, and lack of official test coverage make it an especially complex protocol to implement."
 slug: 2023-10-05-SCIMs-many-deviations
 authors:
@@ -47,7 +47,7 @@ Most of the information and commentary I see about SCIM focuses on the advantage
 
 Implementing a protocol based on reading the RFCs and then writing the code is in itself not fun (to be fair, this is true for implementing any protocol based on a standard). Having implemented SCIM in line with the specification though, once we actually started testing with different solutions that can receive SCIM, we discovered a lot of quirks along the lines of x solution doesn’t do y (which the documentation says they should) or they do it slightly differently, and so on.
 
-This leads to a lot of workarounds which shouldn’t be necessary or things that simply don’t work without a clear cause. For example, when we started testing SCIM with Sentry, we ran into a lot of deviations (to their credit these were mostly listed in their [documentation](https://docs.sentry.io/product/accounts/sso/#scim-provisioning)). One of the issues I ran into when testing locally was when we created a user with SCIM, it just returned an error saying, “Please enter a valid email address” even though we *had* sent it a valid email address. At least Sentry has the advantage of being open source, so we can just go and look at the code and see what’s happening, but this is still no small effort and you don’t have that option with closed source solutions.
+This leads to a lot of workarounds which shouldn’t be necessary or things that simply don’t work without a clear cause. For example, when we started testing SCIM with Sentry, we ran into a lot of deviations (to their credit these were mostly listed in their [documentation](https://docs.sentry.io/product/accounts/sso/#scim-provisioning)). One of the issues I ran into when testing locally was when we created a user with SCIM, it just returned an error saying, “Please enter a valid email address” even though we _had_ sent it a valid email address. At least Sentry has the advantage of being open source, so we can just go and look at the code and see what’s happening, but this is still no small effort and you don’t have that option with closed source solutions.
 
 You can see other examples of confusing/unexpected behavior from SCIM [here](https://github.com/goauthentik/authentik/issues/5396) and [here](https://github.com/goauthentik/authentik/issues/6695).
 
@@ -65,8 +65,8 @@ To my knowledge there isn’t an official equivalent for SCIM—there are some s
 
 As mentioned above, authentik currently supports SCIM in one direction, but we are [working on making it so that another application can send SCIM to authentik](https://github.com/goauthentik/authentik/pull/3051), to create users in it. In this process we’ve discovered that updating a user is surprisingly annoying to implement. With SCIM [you have two options to update a user](https://datatracker.ietf.org/doc/html/rfc7644#autoid-22):
 
-- You can either send a request to replace the user (for which you have to send *all* the user’s data), or
-- You can send a patch request
+-   You can either send a request to replace the user (for which you have to send _all_ the user’s data), or
+-   You can send a patch request
 
 A lot of vendors use the patch request option to update group membership: they send a patch request for a user and just say, for example, “Add that group,” or “Remove that group.” This approach makes more sense in the case of an advanced user with tons of groups, as you’re not replacing everything, just making adjustments to their membership. However, this patch request is done with a custom filtering expression language which is extremely and needlessly complex.
 
@@ -78,4 +78,4 @@ LDAP, being the more mature protocol (introduced in the ‘90s), has the advanta
 
 SCIM, despite being around since 2015, is still subject to a lot of different interpretations of the standard, which leads to varying implementations and quirks with how vendors do SCIM. There’s a maturity challenge at work here in both senses—from the vendors but also from ourselves. Since we’ve added SCIM to our product a lot later than LDAP, there’s still a lot of room for us to catch up and make our implementation better.
 
-*Have you worked on SCIM implementation? Got advice for us? We’d love to hear from you in the comments.*
+_Have you worked on SCIM implementation? Got advice for us? We’d love to hear from you in the comments._
