@@ -1,7 +1,10 @@
 # flake8: noqa
+from os import system
+
 from lifecycle.migrate import BaseMigration
 
 SQL_STATEMENT = """
+BEGIN TRANSACTION;
 DELETE FROM django_migrations WHERE app = 'passbook_stages_prompt';
 DROP TABLE passbook_stages_prompt_prompt cascade;
 DROP TABLE passbook_stages_prompt_promptstage cascade;
@@ -22,7 +25,7 @@ DELETE FROM django_migrations WHERE app = 'passbook_flows' AND name = '0008_defa
 DELETE FROM django_migrations WHERE app = 'passbook_flows' AND name = '0009_source_flows';
 DELETE FROM django_migrations WHERE app = 'passbook_flows' AND name = '0010_provider_flows';
 DELETE FROM django_migrations WHERE app = 'passbook_stages_password' AND name = '0002_passwordstage_change_flow';
-"""
+COMMIT;"""
 
 
 class Migration(BaseMigration):
@@ -32,14 +35,17 @@ class Migration(BaseMigration):
         )
         return bool(self.cur.rowcount)
 
+    def system_crit(self, command):
+        retval = system(command)  # nosec
+        if retval != 0:
+            raise Exception("Migration error")
+
     def run(self):
-        with self.con.transaction():
-            self.cur.execute(SQL_STATEMENT)
-            self.system_crit("./manage.py migrate passbook_stages_prompt")
-            self.fake_migration(
-                ("passbook_flows", "0008_default_flows"),
-                ("passbook_flows", "0009_source_flows"),
-                ("passbook_flows", "0010_provider_flows"),
-            )
-            self.system_crit("./manage.py migrate passbook_flows")
-            self.fake_migration(("passbook_stages_password", ""))
+        self.cur.execute(SQL_STATEMENT)
+        self.con.commit()
+        self.system_crit("./manage.py migrate passbook_stages_prompt")
+        self.system_crit("./manage.py migrate passbook_flows 0008_default_flows --fake")
+        self.system_crit("./manage.py migrate passbook_flows 0009_source_flows --fake")
+        self.system_crit("./manage.py migrate passbook_flows 0010_provider_flows --fake")
+        self.system_crit("./manage.py migrate passbook_flows")
+        self.system_crit("./manage.py migrate passbook_stages_password --fake")

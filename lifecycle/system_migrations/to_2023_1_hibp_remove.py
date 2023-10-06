@@ -1,8 +1,10 @@
 # flake8: noqa
 from lifecycle.migrate import BaseMigration
 
-SQL_STATEMENT = """DROP TABLE "authentik_policies_hibp_haveibeenpwendpolicy";
-DELETE FROM django_migrations WHERE app = 'authentik_policies_hibp';"""
+SQL_STATEMENT = """BEGIN TRANSACTION;
+DROP TABLE "authentik_policies_hibp_haveibeenpwendpolicy";
+DELETE FROM django_migrations WHERE app = 'authentik_policies_hibp';
+END TRANSACTION;"""
 
 
 class Migration(BaseMigration):
@@ -14,5 +16,5 @@ class Migration(BaseMigration):
         return bool(self.cur.rowcount)
 
     def run(self):
-        with self.con.transaction():
-            self.cur.execute(SQL_STATEMENT)
+        self.cur.execute(SQL_STATEMENT)
+        self.con.commit()
