@@ -64,7 +64,7 @@ class FlowDiagram:
         ):
             element = DiagramElement(
                 f"flow_policy_{p_index}",
-                _("Policy ({type})".format(type=policy_binding.policy._meta.verbose_name))
+                _(f"Policy ({policy_binding.policy._meta.verbose_name})")
                 + "\n"
                 + policy_binding.policy.name,
                 _("Binding %(order)d" % {"order": policy_binding.order}),
@@ -90,7 +90,7 @@ class FlowDiagram:
         ):
             element = DiagramElement(
                 f"stage_{stage_index}_policy_{p_index}",
-                _("Policy ({type})".format(type=policy_binding.policy._meta.verbose_name))
+                _(f"Policy ({policy_binding.policy._meta.verbose_name})")
                 + "\n"
                 + policy_binding.policy.name,
                 "",
@@ -118,7 +118,7 @@ class FlowDiagram:
 
             element = DiagramElement(
                 f"stage_{s_index}",
-                _("Stage ({type})".format(type=stage_binding.stage._meta.verbose_name))
+                _(f"Stage ({stage_binding.stage._meta.verbose_name})")
                 + "\n"
                 + stage_binding.stage.name,
                 action,

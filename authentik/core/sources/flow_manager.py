@@ -268,9 +268,7 @@ class SourceFlowManager:
             stages=[
                 in_memory_stage(
                     MessageStage,
-                    message=_(
-                        "Successfully authenticated with {source}!".format(source=self.source.name)
-                    ),
+                    message=_(f"Successfully authenticated with {self.source.name}!"),
                 )
             ],
             **flow_kwargs,
@@ -293,7 +291,7 @@ class SourceFlowManager:
         ).from_http(self.request)
         messages.success(
             self.request,
-            _("Successfully linked {source}!".format(source=self.source.name)),
+            _(f"Successfully linked {self.source.name}!"),
         )
         return redirect(
             reverse(
@@ -320,9 +318,7 @@ class SourceFlowManager:
             stages=[
                 in_memory_stage(
                     MessageStage,
-                    message=_(
-                        "Successfully authenticated with {source}!".format(source=self.source.name)
-                    ),
+                    message=_(f"Successfully authenticated with {self.source.name}!"),
                 )
             ],
             **{

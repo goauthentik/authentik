@@ -124,7 +124,7 @@ class TaskViewSet(ViewSet):
             task_func.delay(*task.task_call_args, **task.task_call_kwargs)
             messages.success(
                 self.request,
-                _("Successfully re-scheduled Task {name}!".format(name=task.task_name)),
+                _(f"Successfully re-scheduled Task {task.task_name}!"),
             )
             return Response(status=204)
         except (ImportError, AttributeError):  # pragma: no cover

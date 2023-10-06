@@ -59,7 +59,7 @@ class Exporter:
         blueprint = Blueprint()
         self._pre_export(blueprint)
         blueprint.metadata = BlueprintMetadata(
-            name=_("authentik Export - {date}".format(date=str(now()))),
+            name=_(f"authentik Export - {str(now())}"),
             labels={
                 LABEL_AUTHENTIK_GENERATED: "true",
             },

@@ -1,7 +1,6 @@
 """email stage models"""
 from os import R_OK, access
 from pathlib import Path
-from typing import Type
 
 from django.conf import settings
 from django.core.mail.backends.base import BaseEmailBackend
@@ -15,6 +14,7 @@ from structlog.stdlib import get_logger
 from authentik.flows.models import Stage
 from authentik.lib.config import CONFIG
 
+BASE_EMAIL_BACKEND_TYPE = type[BaseEmailBackend]
 LOGGER = get_logger()
 
 
@@ -97,7 +97,7 @@ class EmailStage(Stage):
         return "ak-stage-email-form"
 
     @property
-    def backend_class(self) -> Type[BaseEmailBackend]:
+    def backend_class(self) -> BASE_EMAIL_BACKEND_TYPE:
         """Get the email backend class to use"""
         return EmailBackend
 
