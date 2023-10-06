@@ -73,7 +73,7 @@
         "@jackfranklin/rollup-plugin-markdown": "^0.4.0",
         "@jeysal/storybook-addon-css-user-preferences": "^0.2.0",
         "@lit/localize-tools": "^0.6.10",
-        "@rollup/plugin-babel": "^6.0.3",
+        "@rollup/plugin-babel": "^6.0.4",
         "@rollup/plugin-commonjs": "^25.0.4",
         "@rollup/plugin-node-resolve": "^15.2.1",
         "@rollup/plugin-replace": "^5.0.2",
