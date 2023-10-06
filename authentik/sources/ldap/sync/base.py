@@ -9,7 +9,7 @@ from structlog.stdlib import BoundLogger, get_logger
 
 from authentik.core.exceptions import PropertyMappingExpressionException
 from authentik.events.models import Event, EventAction
-from authentik.lib.config import CONFIG
+from authentik.lib.config import CONFIG, set_path_in_dict
 from authentik.lib.merge import MERGE_LIST_UNIQUE
 from authentik.sources.ldap.auth import LDAP_DISTINGUISHED_NAME
 from authentik.sources.ldap.models import LDAPPropertyMapping, LDAPSource
@@ -164,7 +164,7 @@ class BaseLDAPSynchronizer:
                 if object_field.startswith("attributes."):
                     # Because returning a list might desired, we can't
                     # rely on self._flatten here. Instead, just save the result as-is
-                    properties["attributes"][object_field.replace("attributes.", "")] = value
+                    set_path_in_dict(properties, object_field, value)
                 else:
                     properties[object_field] = self._flatten(value)
             except PropertyMappingExpressionException as exc:
