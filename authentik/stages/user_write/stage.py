@@ -14,6 +14,7 @@ from authentik.core.sources.stage import PLAN_CONTEXT_SOURCES_CONNECTION
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import StageView
 from authentik.flows.views.executor import FlowExecutorView
+from authentik.lib.config import set_path_in_dict
 from authentik.stages.password import BACKEND_INBUILT
 from authentik.stages.password.stage import PLAN_CONTEXT_AUTHENTICATION_BACKEND
 from authentik.stages.prompt.stage import PLAN_CONTEXT_PROMPT
@@ -44,12 +45,7 @@ class UserWriteStageView(StageView):
         # this is just a sanity check to ensure that is removed
         if parts[0] == "attributes":
             parts = parts[1:]
-        attrs = user.attributes
-        for comp in parts[:-1]:
-            if comp not in attrs:
-                attrs[comp] = {}
-            attrs = attrs.get(comp)
-        attrs[parts[-1]] = value
+        set_path_in_dict(user.attributes, ".".join(parts), value)
 
     def ensure_user(self) -> tuple[Optional[User], bool]:
         """Ensure a user exists"""
