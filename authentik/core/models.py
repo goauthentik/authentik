@@ -35,6 +35,7 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
+SERIALIZER_TYPE = type[Serializer]
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 USER_ATTRIBUTE_GENERATED = "goauthentik.io/user/generated"
 USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
@@ -335,7 +336,7 @@ class Provider(SerializerModel):
         raise NotImplementedError
 
     @property
-    def serializer(self) -> type[Serializer]:
+    def serializer(self) -> SERIALIZER_TYPE:
         """Get serializer for this model"""
         raise NotImplementedError
 

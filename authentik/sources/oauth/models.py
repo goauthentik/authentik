@@ -10,6 +10,7 @@ from rest_framework.serializers import Serializer
 from authentik.core.models import Source, UserSourceConnection
 from authentik.core.types import UILoginButton, UserSettingSerializer
 
+SERIALIZER_TYPE = type[Serializer]
 if TYPE_CHECKING:
     from authentik.sources.oauth.types.registry import SourceType
 
@@ -66,7 +67,7 @@ class OAuthSource(Source):
         return "ak-source-oauth-form"
 
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> SERIALIZER_TYPE:
         from authentik.sources.oauth.api.source import OAuthSourceSerializer
 
         return OAuthSourceSerializer

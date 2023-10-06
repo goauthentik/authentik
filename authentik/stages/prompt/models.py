@@ -1,5 +1,5 @@
 """prompt models"""
-from typing import Any, Type
+from typing import Any
 from urllib.parse import urlparse, urlunparse
 from uuid import uuid4
 
@@ -28,6 +28,8 @@ from authentik.core.models import User
 from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import Policy
+
+BASE_SERIALIZER_TYPE = type[BaseSerializer]
 
 CHOICES_CONTEXT_SUFFIX = "__choices"
 
@@ -142,7 +144,7 @@ class Prompt(SerializerModel):
     initial_value_expression = models.BooleanField(default=False)
 
     @property
-    def serializer(self) -> Type[BaseSerializer]:
+    def serializer(self) -> BASE_SERIALIZER_TYPE:
         from authentik.stages.prompt.api import PromptSerializer
 
         return PromptSerializer

@@ -19,6 +19,8 @@ from authentik.sources.saml.processors.constants import (
     SAML_NAME_ID_FORMAT_X509,
 )
 
+ElementOrNone = Optional[Element]
+
 
 class MetadataProcessor:
     """SAML Service Provider Metadata Processor"""
@@ -30,7 +32,7 @@ class MetadataProcessor:
         self.source = source
         self.http_request = request
 
-    def get_signing_key_descriptor(self) -> Optional[Element]:
+    def get_signing_key_descriptor(self) -> ElementOrNone:
         """Get Signing KeyDescriptor, if enabled for the source"""
         if self.source.signing_kp:
             key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")
