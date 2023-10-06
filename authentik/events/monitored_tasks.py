@@ -37,7 +37,7 @@ class TaskResult:
     messages: list[str] = field(default_factory=list)
 
     # Optional UID used in cache for tasks that run in different instances
-    uid: Optional[str] = field(default=None)
+    uid: str | None = field(default=None)
 
     def with_error(self, exc: Exception) -> "TaskResult":
         """Since errors might not always be pickle-able, set the traceback"""
@@ -62,7 +62,7 @@ class TaskInfo:
     task_call_args: list[Any] = field(default_factory=list)
     task_call_kwargs: dict[str, Any] = field(default_factory=dict)
 
-    task_description: Optional[str] = field(default=None)
+    task_description: str | None = field(default=None)
 
     @staticmethod
     def all() -> dict[str, "TaskInfo"]:
@@ -70,7 +70,7 @@ class TaskInfo:
         return cache.get_many(cache.keys(CACHE_KEY_PREFIX + "*"))
 
     @staticmethod
-    def by_name(name: str) -> Optional["TaskInfo"] | Optional[list["TaskInfo"]]:
+    def by_name(name: str) -> Optional["TaskInfo"] | list["TaskInfo"] | None:
         """Get TaskInfo Object by name"""
         if "*" in name:
             return cache.get_many(cache.keys(CACHE_KEY_PREFIX + name)).values()
@@ -118,10 +118,10 @@ class MonitoredTask(Task):
     # For tasks that should only be listed if they failed, set this to False
     save_on_success: bool
 
-    _result: Optional[TaskResult]
+    _result: TaskResult | None
 
-    _uid: Optional[str]
-    start: Optional[float] = None
+    _uid: str | None
+    start: float | None = None
 
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)

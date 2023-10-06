@@ -47,7 +47,7 @@ class AuthenticatorTOTPStage(ConfigurableStage, FriendlyNamedStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-totp-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         return UserSettingSerializer(
             data={
                 "title": self.friendly_name or str(self._meta.verbose_name),
@@ -219,7 +219,7 @@ class TOTPDevice(SerializerModel, ThrottlingMixin, Device):
         issuer = self._read_str_from_settings("OTP_TOTP_ISSUER")
         if issuer:
             issuer = issuer.replace(":", "")
-            label = "{}:{}".format(issuer, label)
+            label = f"{issuer}:{label}"
             urlencoded_params += "&issuer={}".format(
                 quote(issuer)
             )  # encode issuer as per RFC 3986, not quote_plus
@@ -228,7 +228,7 @@ class TOTPDevice(SerializerModel, ThrottlingMixin, Device):
         if image:
             urlencoded_params += "&image={}".format(quote(image, safe=":/"))
 
-        url = "otpauth://totp/{}?{}".format(quote(label), urlencoded_params)
+        url = f"otpauth://totp/{quote(label)}?{urlencoded_params}"
 
         return url
 

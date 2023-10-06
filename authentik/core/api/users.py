@@ -140,7 +140,7 @@ class UserSerializer(ModelSerializer):
         self._set_password(instance, password)
         return instance
 
-    def _set_password(self, instance: User, password: Optional[str]):
+    def _set_password(self, instance: User, password: str | None):
         """Set password of user if we're in a blueprint context, and if it's an empty
         string then use an unusable password"""
         if SERIALIZER_CONTEXT_BLUEPRINT in self.context and password:
@@ -382,7 +382,7 @@ class UserViewSet(UsedByMixin, ModelViewSet):
     def get_queryset(self):  # pragma: no cover
         return User.objects.all().exclude(pk=get_anonymous_user().pk)
 
-    def _create_recovery_link(self) -> tuple[Optional[str], Optional[Token]]:
+    def _create_recovery_link(self) -> tuple[str | None, Token | None]:
         """Create a recovery link (when the current tenant has a recovery flow set),
         that can either be shown to an admin or sent to the user directly"""
         tenant: Tenant = self.request._request.tenant

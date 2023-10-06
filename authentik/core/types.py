@@ -19,7 +19,7 @@ class UILoginButton:
     challenge: Challenge
 
     # Icon URL, used as-is
-    icon_url: Optional[str] = None
+    icon_url: str | None = None
 
 
 class UserSettingSerializer(PassiveSerializer):

@@ -10,7 +10,7 @@ from authentik.policies.types import PolicyResult
 class FlowNonApplicableException(SentryIgnoredException):
     """Flow does not apply to current user (denied by policy, or otherwise)."""
 
-    policy_result: Optional[PolicyResult] = None
+    policy_result: PolicyResult | None = None
 
     @property
     def messages(self) -> str:

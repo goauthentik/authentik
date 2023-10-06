@@ -47,7 +47,7 @@ class ServiceProviderMetadata:
     auth_n_request_signed: bool
     assertion_signed: bool
 
-    signing_keypair: Optional[CertificateKeyPair] = None
+    signing_keypair: CertificateKeyPair | None = None
 
     def to_provider(self, name: str, authorization_flow: Flow) -> SAMLProvider:
         """Create a SAMLProvider instance from the details. `name` is required,
@@ -75,7 +75,7 @@ class ServiceProviderMetadata:
 class ServiceProviderMetadataParser:
     """Service-Provider Metadata Parser"""
 
-    def get_signing_cert(self, root: etree.Element) -> Optional[CertificateKeyPair]:
+    def get_signing_cert(self, root: etree.Element) -> CertificateKeyPair | None:
         """Extract X509Certificate from metadata, when given."""
         signing_certs = root.xpath(
             '//md:SPSSODescriptor/md:KeyDescriptor[@use="signing"]//ds:X509Certificate/text()',

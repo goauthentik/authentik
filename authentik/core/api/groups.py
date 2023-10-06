@@ -58,7 +58,7 @@ class GroupSerializer(ModelSerializer):
 
     num_pk = IntegerField(read_only=True)
 
-    def validate_parent(self, parent: Optional[Group]):
+    def validate_parent(self, parent: Group | None):
         """Validate group parent (if set), ensuring the parent isn't itself"""
         if not self.instance or not parent:
             return parent

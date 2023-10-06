@@ -22,9 +22,9 @@ LOGGER = get_logger()
 class RequestValidationError(SentryIgnoredException):
     """Error raised in pre_permission_check, when a request is invalid."""
 
-    response: Optional[HttpResponse]
+    response: HttpResponse | None
 
-    def __init__(self, response: Optional[HttpResponse] = None):
+    def __init__(self, response: HttpResponse | None = None):
         super().__init__()
         if response:
             self.response = response
@@ -94,7 +94,7 @@ class PolicyAccessView(AccessMixin, View):
         )
 
     def handle_no_permission_authenticated(
-        self, result: Optional[PolicyResult] = None
+        self, result: PolicyResult | None = None
     ) -> HttpResponse:
         """Function called when user has no permissions but is authenticated"""
         response = AccessDeniedResponse(self.request)
@@ -106,7 +106,7 @@ class PolicyAccessView(AccessMixin, View):
         """optionally modify the policy request"""
         return request
 
-    def user_has_access(self, user: Optional[User] = None) -> PolicyResult:
+    def user_has_access(self, user: User | None = None) -> PolicyResult:
         """Check if user has access to application."""
         user = user or self.request.user
         policy_engine = PolicyEngine(self.application, user or self.request.user, self.request)

@@ -18,8 +18,8 @@ class FlowTestCase(APITestCase):
     def assertStageResponse(
         self,
         response: HttpResponse,
-        flow: Optional[Flow] = None,
-        user: Optional[User] = None,
+        flow: Flow | None = None,
+        user: User | None = None,
         **kwargs,
     ) -> dict[str, Any]:
         """Assert various attributes of a stage response"""

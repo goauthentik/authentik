@@ -83,7 +83,7 @@ class OAuthSource(Source):
             icon_url=icon,
         )
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         provider_type = self.source_type
         icon = self.get_icon
         if not icon:

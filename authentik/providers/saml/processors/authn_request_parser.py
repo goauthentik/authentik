@@ -35,9 +35,9 @@ ERROR_FAILED_TO_VERIFY = "Failed to verify signature"
 class AuthNRequest:
     """AuthNRequest Dataclass"""
 
-    id: Optional[str] = None
+    id: str | None = None
 
-    relay_state: Optional[str] = None
+    relay_state: str | None = None
 
     name_id_policy: str = SAML_NAME_ID_FORMAT_UNSPECIFIED
 
@@ -51,7 +51,7 @@ class AuthNRequestParser:
         self.provider = provider
         self.logger = get_logger().bind(provider=self.provider)
 
-    def _parse_xml(self, decoded_xml: str | bytes, relay_state: Optional[str]) -> AuthNRequest:
+    def _parse_xml(self, decoded_xml: str | bytes, relay_state: str | None) -> AuthNRequest:
         root = ElementTree.fromstring(decoded_xml)
 
         # http://docs.oasis-open.org/security/saml/v2.0/saml-core-2.0-os.pdf
@@ -82,7 +82,7 @@ class AuthNRequestParser:
 
         return auth_n_request
 
-    def parse(self, saml_request: str, relay_state: Optional[str] = None) -> AuthNRequest:
+    def parse(self, saml_request: str, relay_state: str | None = None) -> AuthNRequest:
         """Validate and parse raw request with enveloped signautre."""
         try:
             decoded_xml = b64decode(saml_request.encode())
@@ -120,9 +120,9 @@ class AuthNRequestParser:
     def parse_detached(
         self,
         saml_request: str,
-        relay_state: Optional[str],
-        signature: Optional[str] = None,
-        sig_alg: Optional[str] = None,
+        relay_state: str | None,
+        signature: str | None = None,
+        sig_alg: str | None = None,
     ) -> AuthNRequest:
         """Validate and parse raw request with detached signature"""
         try:

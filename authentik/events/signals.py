@@ -38,7 +38,7 @@ def on_user_logged_in(sender, request: HttpRequest, user: User, **_):
     request.session[SESSION_LOGIN_EVENT] = event
 
 
-def get_login_event(request: HttpRequest) -> Optional[Event]:
+def get_login_event(request: HttpRequest) -> Event | None:
     """Wrapper to get login event that can be mocked in tests"""
     return request.session.get(SESSION_LOGIN_EVENT, None)
 
@@ -62,7 +62,7 @@ def on_login_failed(
     sender,
     credentials: dict[str, str],
     request: HttpRequest,
-    stage: Optional[Stage] = None,
+    stage: Stage | None = None,
     **kwargs,
 ):
     """Failed Login, authentik custom event"""

@@ -135,7 +135,7 @@ class KubernetesObjectReconciler(Generic[T]):
         else:
             self.logger.debug("Object is up-to-date.")
 
-    def _recreate(self, reference: T, current: Optional[T] = None):
+    def _recreate(self, reference: T, current: T | None = None):
         """Recreate object"""
         self.logger.debug("Recreate requested")
         if current:

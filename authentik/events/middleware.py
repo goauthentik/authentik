@@ -1,7 +1,8 @@
 """Events middleware"""
 from functools import partial
 from threading import Thread
-from typing import Any, Callable, Optional
+from typing import Any, Optional
+from collections.abc import Callable
 
 from django.conf import settings
 from django.contrib.sessions.models import Session
@@ -75,9 +76,9 @@ class EventNewThread(Thread):
     action: str
     request: HttpRequest
     kwargs: dict[str, Any]
-    user: Optional[User] = None
+    user: User | None = None
 
-    def __init__(self, action: str, request: HttpRequest, user: Optional[User] = None, **kwargs):
+    def __init__(self, action: str, request: HttpRequest, user: User | None = None, **kwargs):
         super().__init__()
         self.action = action
         self.request = request

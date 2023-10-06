@@ -22,7 +22,7 @@ class OAuthCallback(OAuthClientMixin, View):
     "Base OAuth callback view."
 
     source: OAuthSource
-    token: Optional[dict] = None
+    token: dict | None = None
 
     # pylint: disable=too-many-return-statements
     def dispatch(self, request: HttpRequest, *_, **kwargs) -> HttpResponse:
@@ -85,7 +85,7 @@ class OAuthCallback(OAuthClientMixin, View):
         """Create a dict of User data"""
         raise NotImplementedError()
 
-    def get_user_id(self, info: dict[str, Any]) -> Optional[str]:
+    def get_user_id(self, info: dict[str, Any]) -> str | None:
         """Return unique identifier from the profile info."""
         if "id" in info:
             return info["id"]
@@ -114,7 +114,7 @@ class OAuthSourceFlowManager(SourceFlowManager):
     def update_connection(
         self,
         connection: UserOAuthSourceConnection,
-        access_token: Optional[str] = None,
+        access_token: str | None = None,
     ) -> UserOAuthSourceConnection:
         """Set the access_token on the connection"""
         connection.access_token = access_token

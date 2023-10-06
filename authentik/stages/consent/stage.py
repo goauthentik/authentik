@@ -98,7 +98,7 @@ class ConsentStageView(ChallengeStageView):
         if PLAN_CONTEXT_PENDING_USER in self.executor.plan.context:
             user = self.executor.plan.context[PLAN_CONTEXT_PENDING_USER]
 
-        consent: Optional[UserConsent] = UserConsent.filter_not_expired(
+        consent: UserConsent | None = UserConsent.filter_not_expired(
             user=user, application=application
         ).first()
         self.executor.plan.context[PLAN_CONTEXT_CONSENT] = consent
@@ -106,7 +106,7 @@ class ConsentStageView(ChallengeStageView):
         if consent:
             perms = self.executor.plan.context.get(PLAN_CONTEXT_CONSENT_PERMISSIONS, [])
             allowed_perms = set(consent.permissions.split(" ") if consent.permissions != "" else [])
-            requested_perms = set(x["id"] for x in perms)
+            requested_perms = {x["id"] for x in perms}
 
             if allowed_perms != requested_perms:
                 self.executor.plan.context[PLAN_CONTEXT_CONSENT_PERMISSIONS] = [

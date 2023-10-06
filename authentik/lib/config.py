@@ -65,7 +65,7 @@ class Attr:
 
     # depending on source_type, might contain the environment variable or the path
     # to the config file containing this change or the file containing this value
-    source: Optional[str] = field(default=None)
+    source: str | None = field(default=None)
 
     def __post_init__(self):
         if isinstance(self.value, Attr):
@@ -156,7 +156,7 @@ class ConfigLoader:
             parsed_value = os.getenv(url.netloc, url.query)
         if url.scheme == "file":
             try:
-                with open(url.path, "r", encoding="utf8") as _file:
+                with open(url.path, encoding="utf8") as _file:
                     parsed_value = _file.read().strip()
             except OSError as exc:
                 self.log("error", f"Failed to read config value from {url.path}: {exc}")

@@ -186,7 +186,7 @@ class Event(SerializerModel, ExpiringModel):
     @staticmethod
     def new(
         action: str | EventAction,
-        app: Optional[str] = None,
+        app: str | None = None,
         **kwargs,
     ) -> "Event":
         """Create new Event instance from arguments. Instance is NOT saved."""
@@ -206,7 +206,7 @@ class Event(SerializerModel, ExpiringModel):
         self.user = get_user(user)
         return self
 
-    def from_http(self, request: HttpRequest, user: Optional[User] = None) -> "Event":
+    def from_http(self, request: HttpRequest, user: User | None = None) -> "Event":
         """Add data from a Django-HttpRequest, allowing the creation of
         Events independently from requests.
         `user` arguments optionally overrides user from requests."""

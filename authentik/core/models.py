@@ -198,7 +198,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         there are at most 3 queries done"""
         return Group.children_recursive(self.ak_groups.all())
 
-    def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
+    def group_attributes(self, request: HttpRequest | None = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
         including the users attributes"""
         final_attributes = {}
@@ -254,7 +254,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Generate a globally unique UID, based on the user ID and the hashed secret key"""
         return sha256(f"{self.id}-{get_install_id()}".encode("ascii")).hexdigest()
 
-    def locale(self, request: Optional[HttpRequest] = None) -> str:
+    def locale(self, request: HttpRequest | None = None) -> str:
         """Get the locale the user has configured"""
         try:
             return self.attributes.get("settings", {}).get("locale", "")
@@ -324,7 +324,7 @@ class Provider(SerializerModel):
     objects = InheritanceManager()
 
     @property
-    def launch_url(self) -> Optional[str]:
+    def launch_url(self) -> str | None:
         """URL to this provider and initiate authorization for the user.
         Can return None for providers that are not URL-based"""
         return None
@@ -401,7 +401,7 @@ class Application(SerializerModel, PolicyBindingModel):
         return ApplicationSerializer
 
     @property
-    def get_meta_icon(self) -> Optional[str]:
+    def get_meta_icon(self) -> str | None:
         """Get the URL to the App Icon image. If the name is /static or starts with http
         it is returned as-is"""
         if not self.meta_icon:
@@ -410,7 +410,7 @@ class Application(SerializerModel, PolicyBindingModel):
             return self.meta_icon.name
         return self.meta_icon.url
 
-    def get_launch_url(self, user: Optional["User"] = None) -> Optional[str]:
+    def get_launch_url(self, user: Optional["User"] = None) -> str | None:
         """Get launch URL if set, otherwise attempt to get launch URL based on provider."""
         url = None
         if self.meta_launch_url:
@@ -429,7 +429,7 @@ class Application(SerializerModel, PolicyBindingModel):
                 return url
         return url
 
-    def get_provider(self) -> Optional[Provider]:
+    def get_provider(self) -> Provider | None:
         """Get casted provider instance"""
         if not self.provider:
             return None
@@ -517,7 +517,7 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
     objects = InheritanceManager()
 
     @property
-    def get_icon(self) -> Optional[str]:
+    def get_icon(self) -> str | None:
         """Get the URL to the Icon. If the name is /static or
         starts with http it is returned as-is"""
         if not self.icon:
@@ -542,12 +542,12 @@ class Source(ManagedModel, SerializerModel, PolicyBindingModel):
         """Return component used to edit this object"""
         raise NotImplementedError
 
-    def ui_login_button(self, request: HttpRequest) -> Optional[UILoginButton]:
+    def ui_login_button(self, request: HttpRequest) -> UILoginButton | None:
         """If source uses a http-based flow, return UI Information about the login
         button. If source doesn't use http-based flow, return None."""
         return None
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         """Entrypoint to integrate with User settings. Can either return None if no
         user settings are available, or UserSettingSerializer."""
         return None
@@ -709,7 +709,7 @@ class PropertyMapping(SerializerModel, ManagedModel):
         """Get serializer for this model"""
         raise NotImplementedError
 
-    def evaluate(self, user: Optional[User], request: Optional[HttpRequest], **kwargs) -> Any:
+    def evaluate(self, user: User | None, request: HttpRequest | None, **kwargs) -> Any:
         """Evaluate `self.expression` using `**kwargs` as Context."""
         from authentik.core.expression.evaluator import PropertyMappingEvaluator
 

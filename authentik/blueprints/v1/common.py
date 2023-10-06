@@ -6,7 +6,8 @@ from enum import Enum
 from functools import reduce
 from operator import ixor
 from os import getenv
-from typing import Any, Iterable, Literal, Mapping, Optional, Union
+from typing import Any, Literal, Optional, Union
+from collections.abc import Iterable, Mapping
 from uuid import UUID
 
 from deepmerge import always_merger
@@ -44,7 +45,7 @@ def get_attrs(obj: SerializerModel) -> dict[str, Any]:
 class BlueprintEntryState:
     """State of a single instance"""
 
-    instance: Optional[Model] = None
+    instance: Model | None = None
 
 
 class BlueprintEntryDesiredState(Enum):
@@ -66,9 +67,9 @@ class BlueprintEntry:
     )
     conditions: list[Any] = field(default_factory=list)
     identifiers: dict[str, Any] = field(default_factory=dict)
-    attrs: Optional[dict[str, Any]] = field(default_factory=dict)
+    attrs: dict[str, Any] | None = field(default_factory=dict)
 
-    id: Optional[str] = None
+    id: str | None = None
 
     _state: BlueprintEntryState = field(default_factory=BlueprintEntryState)
 
@@ -94,7 +95,7 @@ class BlueprintEntry:
     def _get_tag_context(
         self,
         depth: int = 0,
-        context_tag_type: Optional[type["YAMLTagContext"] | tuple["YAMLTagContext", ...]] = None,
+        context_tag_type: type["YAMLTagContext"] | tuple["YAMLTagContext", ...] | None = None,
     ) -> "YAMLTagContext":
         """Get a YAMLTagContext object located at a certain depth in the tag tree"""
         if depth < 0:
@@ -169,7 +170,7 @@ class Blueprint:
     entries: list[BlueprintEntry] = field(default_factory=list)
     context: dict = field(default_factory=dict)
 
-    metadata: Optional[BlueprintMetadata] = field(default=None)
+    metadata: BlueprintMetadata | None = field(default=None)
 
 
 class YAMLTag:
@@ -217,7 +218,7 @@ class Env(YAMLTag):
     """Lookup environment variable with optional default"""
 
     key: str
-    default: Optional[Any]
+    default: Any | None
 
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
         super().__init__()
@@ -236,7 +237,7 @@ class Context(YAMLTag):
     """Lookup key from instance context"""
 
     key: str
-    default: Optional[Any]
+    default: Any | None
 
     def __init__(self, loader: "BlueprintLoader", node: ScalarNode | SequenceNode) -> None:
         super().__init__()
@@ -581,13 +582,13 @@ class BlueprintLoader(SafeLoader):
 class EntryInvalidError(SentryIgnoredException):
     """Error raised when an entry is invalid"""
 
-    entry_model: Optional[str]
-    entry_id: Optional[str]
-    validation_error: Optional[ValidationError]
+    entry_model: str | None
+    entry_id: str | None
+    validation_error: ValidationError | None
     serializer: Optional[Serializer] = None
 
     def __init__(
-        self, *args: object, validation_error: Optional[ValidationError] = None, **kwargs
+        self, *args: object, validation_error: ValidationError | None = None, **kwargs
     ) -> None:
         super().__init__(*args)
         self.entry_model = None

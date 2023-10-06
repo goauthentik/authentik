@@ -2,7 +2,8 @@
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
 from timeit import default_timer
-from typing import Iterator, Optional
+from typing import Optional
+from collections.abc import Iterator
 
 from django.core.cache import cache
 from django.http import HttpRequest
@@ -26,7 +27,7 @@ class PolicyProcessInfo:
 
     process: PolicyProcess
     connection: Connection
-    result: Optional[PolicyResult]
+    result: PolicyResult | None
     binding: PolicyBinding
 
     def __init__(self, process: PolicyProcess, connection: Connection, binding: PolicyBinding):

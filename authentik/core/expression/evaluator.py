@@ -26,9 +26,9 @@ class PropertyMappingEvaluator(BaseEvaluator):
     def __init__(
         self,
         model: Model,
-        user: Optional[User] = None,
-        request: Optional[HttpRequest] = None,
-        dry_run: Optional[bool] = False,
+        user: User | None = None,
+        request: HttpRequest | None = None,
+        dry_run: bool | None = False,
         **kwargs,
     ):
         if hasattr(model, "name"):

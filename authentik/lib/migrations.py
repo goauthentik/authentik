@@ -1,5 +1,5 @@
 """Migration helpers"""
-from typing import Iterable
+from collections.abc import Iterable
 
 from django.apps.registry import Apps
 from django.db.backends.base.schema import BaseDatabaseSchemaEditor

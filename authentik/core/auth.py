@@ -16,15 +16,15 @@ class InbuiltBackend(ModelBackend):
     """Inbuilt backend"""
 
     def authenticate(
-        self, request: HttpRequest, username: Optional[str], password: Optional[str], **kwargs: Any
-    ) -> Optional[User]:
+        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+    ) -> User | None:
         user = super().authenticate(request, username=username, password=password, **kwargs)
         if not user:
             return None
         self.set_method("password", request)
         return user
 
-    def set_method(self, method: str, request: Optional[HttpRequest], **kwargs):
+    def set_method(self, method: str, request: HttpRequest | None, **kwargs):
         """Set method data on current flow, if possbiel"""
         if not request:
             return
@@ -40,8 +40,8 @@ class TokenBackend(InbuiltBackend):
     """Authenticate with token"""
 
     def authenticate(
-        self, request: HttpRequest, username: Optional[str], password: Optional[str], **kwargs: Any
-    ) -> Optional[User]:
+        self, request: HttpRequest, username: str | None, password: str | None, **kwargs: Any
+    ) -> User | None:
         try:
             user = User._default_manager.get_by_natural_key(username)
         except User.DoesNotExist:

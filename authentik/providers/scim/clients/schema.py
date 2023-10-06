@@ -15,19 +15,19 @@ from pydanticscim.user import User as BaseUser
 class User(BaseUser):
     """Modified User schema with added externalId field"""
 
-    externalId: Optional[str] = None
+    externalId: str | None = None
 
 
 class Group(BaseGroup):
     """Modified Group schema with added externalId field"""
 
-    externalId: Optional[str] = None
+    externalId: str | None = None
 
 
 class ServiceProviderConfiguration(BaseServiceProviderConfiguration):
     """ServiceProviderConfig with fallback"""
 
-    _is_fallback: Optional[bool] = False
+    _is_fallback: bool | None = False
 
     @property
     def is_fallback(self) -> bool:
@@ -58,4 +58,4 @@ class PatchRequest(BasePatchRequest):
 class SCIMError(BaseSCIMError):
     """SCIM error with optional status code"""
 
-    status: Optional[int]
+    status: int | None

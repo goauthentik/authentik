@@ -62,7 +62,7 @@ class AuthenticatorValidationChallenge(WithUserInfoChallenge):
 class AuthenticatorValidationChallengeResponse(ChallengeResponse):
     """Challenge used for Code-based and WebAuthn authenticators"""
 
-    device: Optional[Device]
+    device: Device | None
 
     selected_challenge = DeviceChallenge(required=False)
     selected_stage = CharField(required=False)

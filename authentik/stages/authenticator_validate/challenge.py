@@ -75,7 +75,7 @@ def get_webauthn_challenge_without_user(
 
 
 def get_webauthn_challenge(
-    request: HttpRequest, stage: AuthenticatorValidateStage, device: Optional[WebAuthnDevice] = None
+    request: HttpRequest, stage: AuthenticatorValidateStage, device: WebAuthnDevice | None = None
 ) -> dict:
     """Send the client a challenge that we'll check later"""
     request.session.pop(SESSION_KEY_WEBAUTHN_CHALLENGE, None)

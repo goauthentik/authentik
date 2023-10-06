@@ -84,21 +84,21 @@ class OAuthAuthorizationParams:
     client_id: str
     redirect_uri: str
     response_type: str
-    response_mode: Optional[str]
+    response_mode: str | None
     scope: list[str]
     state: str
-    nonce: Optional[str]
+    nonce: str | None
     prompt: set[str]
     grant_type: str
 
     provider: OAuth2Provider = field(default_factory=OAuth2Provider)
 
-    request: Optional[str] = None
+    request: str | None = None
 
-    max_age: Optional[int] = None
+    max_age: int | None = None
 
-    code_challenge: Optional[str] = None
-    code_challenge_method: Optional[str] = None
+    code_challenge: str | None = None
+    code_challenge_method: str | None = None
 
     @staticmethod
     def from_request(request: HttpRequest) -> "OAuthAuthorizationParams":
@@ -435,9 +435,9 @@ class OAuthFulfillmentStage(StageView):
 
             # this picks the first item in the list if the value is a list,
             # otherwise just the value as-is
-            query_params = dict(
-                (k, v[0] if isinstance(v, list) else v) for k, v in parse_qs(parsed.query).items()
-            )
+            query_params = {
+                k: v[0] if isinstance(v, list) else v for k, v in parse_qs(parsed.query).items()
+            }
 
             challenge = AutosubmitChallenge(
                 data={
@@ -445,7 +445,7 @@ class OAuthFulfillmentStage(StageView):
                     "component": "ak-stage-autosubmit",
                     "title": self.executor.plan.context.get(
                         PLAN_CONTEXT_TITLE,
-                        _("Redirecting to %(app)s..." % {"app": self.application.name}),
+                        _("Redirecting to {app}...".format(app=self.application.name)),
                     ),
                     "url": self.params.redirect_uri,
                     "attrs": query_params,
@@ -556,7 +556,7 @@ class OAuthFulfillmentStage(StageView):
                 self.params.state,
             )
 
-    def create_implicit_response(self, code: Optional[AuthorizationCode]) -> dict:
+    def create_implicit_response(self, code: AuthorizationCode | None) -> dict:
         """Create implicit response's URL Fragment dictionary"""
         query_fragment = {}
         auth_event = get_login_event(self.request)

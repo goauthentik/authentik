@@ -28,7 +28,7 @@ class DeploymentPort:
     port: int
     name: str
     protocol: str
-    inner_port: Optional[int] = None
+    inner_port: int | None = None
 
 
 class BaseClient:

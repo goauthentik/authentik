@@ -63,7 +63,7 @@ class AppleOAuthClient(OAuth2Client):
         LOGGER.debug("signing payload as secret key", payload=payload, jwt=jwt)
         return jwt
 
-    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+    def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
         id_token = token.get("id_token")
         return decode(id_token, options={"verify_signature": False})
 
@@ -85,7 +85,7 @@ class AppleOAuth2Callback(OAuthCallback):
 
     client_class = AppleOAuthClient
 
-    def get_user_id(self, info: dict[str, Any]) -> Optional[str]:
+    def get_user_id(self, info: dict[str, Any]) -> str | None:
         return info["sub"]
 
     def get_user_enroll_context(

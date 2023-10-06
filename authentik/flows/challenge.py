@@ -103,7 +103,7 @@ class FlowErrorChallenge(Challenge):
     error = CharField(required=False)
     traceback = CharField(required=False)
 
-    def __init__(self, request: Optional[Request] = None, error: Optional[Exception] = None):
+    def __init__(self, request: Request | None = None, error: Exception | None = None):
         super().__init__(data={})
         if not request or not error:
             return

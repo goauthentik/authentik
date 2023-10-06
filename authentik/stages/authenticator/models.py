@@ -95,14 +95,14 @@ class Device(models.Model):
         except ObjectDoesNotExist:
             user = None
 
-        return "{0} ({1})".format(self.name, user)
+        return f"{self.name} ({user})"
 
     @property
     def persistent_id(self):
         """
         A stable device identifier for forms and APIs.
         """
-        return "{0}/{1}".format(self.model_label(), self.id)
+        return f"{self.model_label()}/{self.id}"
 
     @classmethod
     def model_label(cls):
@@ -112,7 +112,7 @@ class Device(models.Model):
         This is just the standard "<app_label>.<model_name>" form.
 
         """
-        return "{0}.{1}".format(cls._meta.app_label, cls._meta.model_name)
+        return f"{cls._meta.app_label}.{cls._meta.model_name}"
 
     @classmethod
     def from_persistent_id(cls, persistent_id, for_verify=False):

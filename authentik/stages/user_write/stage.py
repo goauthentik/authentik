@@ -48,7 +48,7 @@ class UserWriteStageView(StageView):
             parts = parts[1:]
         set_path_in_dict(user.attributes, ".".join(parts), value)
 
-    def ensure_user(self) -> tuple[Optional[User], bool]:
+    def ensure_user(self) -> tuple[User | None, bool]:
         """Ensure a user exists"""
         user_created = False
         path = self.executor.plan.context.get(

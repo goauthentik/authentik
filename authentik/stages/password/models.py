@@ -61,7 +61,7 @@ class PasswordStage(ConfigurableStage, Stage):
     def component(self) -> str:
         return "ak-stage-password-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         if not self.configure_flow:
             return None
         return UserSettingSerializer(

@@ -21,7 +21,7 @@ INVITATION = "invitation"
 class InvitationStageView(StageView):
     """Finalise Authentication flow by logging the user in"""
 
-    def get_token(self) -> Optional[str]:
+    def get_token(self) -> str | None:
         """Get token from saved get-arguments or prompt_data"""
         # Check for ?token= and ?itoken=
         if INVITATION_TOKEN_KEY in self.request.session.get(SESSION_KEY_GET, {}):
@@ -33,7 +33,7 @@ class InvitationStageView(StageView):
             return self.executor.plan.context[PLAN_CONTEXT_PROMPT][INVITATION_TOKEN_KEY_CONTEXT]
         return None
 
-    def get_invite(self) -> Optional[Invitation]:
+    def get_invite(self) -> Invitation | None:
         """Check the token, find the invite and check it's flow"""
         token = self.get_token()
         if not token:

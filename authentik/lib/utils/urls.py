@@ -17,7 +17,7 @@ def is_url_absolute(url):
 
 
 def redirect_with_qs(
-    view: str, get_query_set: Optional[QueryDict] = None, **kwargs
+    view: str, get_query_set: QueryDict | None = None, **kwargs
 ) -> HttpResponse:
     """Wrapper to redirect whilst keeping GET Parameters"""
     try:
@@ -32,7 +32,7 @@ def redirect_with_qs(
     return redirect(target)
 
 
-def reverse_with_qs(view: str, query: Optional[QueryDict] = None, **kwargs) -> str:
+def reverse_with_qs(view: str, query: QueryDict | None = None, **kwargs) -> str:
     """Reverse a view to it's url but include get params"""
     url = reverse(view, **kwargs)
     if query:

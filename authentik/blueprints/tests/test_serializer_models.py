@@ -1,5 +1,6 @@
 """authentik managed models tests"""
-from typing import Callable, Type
+from typing import Type
+from collections.abc import Callable
 
 from django.apps import apps
 from django.test import TestCase
@@ -13,7 +14,7 @@ class TestModels(TestCase):
     """Test Models"""
 
 
-def serializer_tester_factory(test_model: Type[SerializerModel]) -> Callable:
+def serializer_tester_factory(test_model: type[SerializerModel]) -> Callable:
     """Test serializer"""
 
     def tester(self: TestModels):

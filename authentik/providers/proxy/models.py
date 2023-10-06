@@ -1,7 +1,8 @@
 """authentik proxy models"""
 import string
 from random import SystemRandom
-from typing import Iterable, Optional
+from typing import Optional
+from collections.abc import Iterable
 from urllib.parse import urljoin
 
 from django.db import models
@@ -121,7 +122,7 @@ class ProxyProvider(OutpostModel, OAuth2Provider):
         return ProxyProviderSerializer
 
     @property
-    def launch_url(self) -> Optional[str]:
+    def launch_url(self) -> str | None:
         """Use external_host as launch URL"""
         return self.external_host
 

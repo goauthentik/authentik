@@ -64,7 +64,7 @@ def to_base64url_uint(val: int, min_length: int = 0) -> bytes:
 class JWKSView(View):
     """Show RSA Key data for Provider"""
 
-    def get_jwk_for_key(self, key: CertificateKeyPair) -> Optional[dict]:
+    def get_jwk_for_key(self, key: CertificateKeyPair) -> dict | None:
         """Convert a certificate-key pair into JWK"""
         private_key = key.private_key
         key_data = None

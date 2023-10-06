@@ -1,6 +1,7 @@
 """API Decorators"""
 from functools import wraps
-from typing import Callable, Optional
+from typing import Optional
+from collections.abc import Callable
 
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -10,7 +11,7 @@ from structlog.stdlib import get_logger
 LOGGER = get_logger()
 
 
-def permission_required(obj_perm: Optional[str] = None, global_perms: Optional[list[str]] = None):
+def permission_required(obj_perm: str | None = None, global_perms: list[str] | None = None):
     """Check permissions for a single custom action"""
 
     def wrapper_outter(func: Callable):

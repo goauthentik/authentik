@@ -11,8 +11,8 @@ class PolicyEngineException(SentryIgnoredException):
 class PolicyException(SentryIgnoredException):
     """Exception that should be raised during Policy Evaluation, and can be recovered from."""
 
-    src_exc: Optional[Exception] = None
+    src_exc: Exception | None = None
 
-    def __init__(self, src_exc: Optional[Exception] = None) -> None:
+    def __init__(self, src_exc: Exception | None = None) -> None:
         super().__init__()
         self.src_exc = src_exc

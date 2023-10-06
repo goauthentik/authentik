@@ -37,7 +37,7 @@ CACHE_TIMEOUT = CONFIG.get_int("redis.cache_timeout_flows")
 CACHE_PREFIX = "goauthentik.io/flows/planner/"
 
 
-def cache_key(flow: Flow, user: Optional[User] = None) -> str:
+def cache_key(flow: Flow, user: User | None = None) -> str:
     """Generate Cache key for flow"""
     prefix = CACHE_PREFIX + str(flow.pk)
     if user:
@@ -56,16 +56,16 @@ class FlowPlan:
     context: dict[str, Any] = field(default_factory=dict)
     markers: list[StageMarker] = field(default_factory=list)
 
-    def append_stage(self, stage: Stage, marker: Optional[StageMarker] = None):
+    def append_stage(self, stage: Stage, marker: StageMarker | None = None):
         """Append `stage` to all stages, optionally with stage marker"""
         return self.append(FlowStageBinding(stage=stage), marker)
 
-    def append(self, binding: FlowStageBinding, marker: Optional[StageMarker] = None):
+    def append(self, binding: FlowStageBinding, marker: StageMarker | None = None):
         """Append `stage` to all stages, optionally with stage marker"""
         self.bindings.append(binding)
         self.markers.append(marker or StageMarker())
 
-    def insert_stage(self, stage: Stage, marker: Optional[StageMarker] = None):
+    def insert_stage(self, stage: Stage, marker: StageMarker | None = None):
         """Insert stage into plan, as immediate next stage"""
         self.bindings.insert(1, FlowStageBinding(stage=stage, order=0))
         self.markers.insert(1, marker or StageMarker())
@@ -76,7 +76,7 @@ class FlowPlan:
 
         self.insert_stage(in_memory_stage(RedirectStage, destination=destination))
 
-    def next(self, http_request: Optional[HttpRequest]) -> Optional[FlowStageBinding]:
+    def next(self, http_request: HttpRequest | None) -> FlowStageBinding | None:
         """Return next pending stage from the bottom of the list"""
         if not self.has_stages:
             return None
@@ -143,7 +143,7 @@ class FlowPlanner:
             raise FlowNonApplicableException()
 
     def plan(
-        self, request: HttpRequest, default_context: Optional[dict[str, Any]] = None
+        self, request: HttpRequest, default_context: dict[str, Any] | None = None
     ) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
@@ -208,7 +208,7 @@ class FlowPlanner:
         self,
         user: User,
         request: HttpRequest,
-        default_context: Optional[dict[str, Any]],
+        default_context: dict[str, Any] | None,
     ) -> FlowPlan:
         """Build flow plan by checking each stage in their respective
         order and checking the applied policies"""

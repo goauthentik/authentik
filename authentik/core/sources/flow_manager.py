@@ -90,7 +90,7 @@ class SourceFlowManager:
         self.policy_context = {}
 
     # pylint: disable=too-many-return-statements
-    def get_action(self, **kwargs) -> tuple[Action, Optional[UserSourceConnection]]:
+    def get_action(self, **kwargs) -> tuple[Action, UserSourceConnection | None]:
         """decide which action should be taken"""
         new_connection = self.connection_type(source=self.source, identifier=self.identifier)
         # When request is authenticated, always link
@@ -216,7 +216,7 @@ class SourceFlowManager:
         self,
         flow: Flow,
         connection: UserSourceConnection,
-        stages: Optional[list[StageView]] = None,
+        stages: list[StageView] | None = None,
         **kwargs,
     ) -> HttpResponse:
         """Prepare Authentication Plan, redirect user FlowExecutor"""
@@ -269,7 +269,7 @@ class SourceFlowManager:
                 in_memory_stage(
                     MessageStage,
                     message=_(
-                        "Successfully authenticated with %(source)s!" % {"source": self.source.name}
+                        "Successfully authenticated with {source}!".format(source=self.source.name)
                     ),
                 )
             ],
@@ -293,7 +293,7 @@ class SourceFlowManager:
         ).from_http(self.request)
         messages.success(
             self.request,
-            _("Successfully linked %(source)s!" % {"source": self.source.name}),
+            _("Successfully linked {source}!".format(source=self.source.name)),
         )
         return redirect(
             reverse(
@@ -321,7 +321,7 @@ class SourceFlowManager:
                 in_memory_stage(
                     MessageStage,
                     message=_(
-                        "Successfully authenticated with %(source)s!" % {"source": self.source.name}
+                        "Successfully authenticated with {source}!".format(source=self.source.name)
                     ),
                 )
             ],

@@ -1,5 +1,5 @@
 """authentik API Modelviewset tests"""
-from typing import Callable
+from collections.abc import Callable
 
 from django.test import TestCase
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet

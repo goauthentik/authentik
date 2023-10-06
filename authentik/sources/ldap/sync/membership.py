@@ -1,5 +1,6 @@
 """Sync LDAP Users and groups into authentik"""
-from typing import Any, Generator, Optional
+from typing import Any, Optional
+from collections.abc import Generator
 
 from django.db.models import Q
 from ldap3 import SUBTREE
@@ -75,7 +76,7 @@ class MembershipLDAPSynchronizer(BaseLDAPSynchronizer):
         self._logger.debug("Successfully updated group membership")
         return membership_count
 
-    def get_group(self, group_dict: dict[str, Any]) -> Optional[Group]:
+    def get_group(self, group_dict: dict[str, Any]) -> Group | None:
         """Check if we fetched the group already, and if not cache it for later"""
         group_dn = group_dict.get("attributes", {}).get(LDAP_DISTINGUISHED_NAME, [])
         group_uniq = group_dict.get("attributes", {}).get(self._source.object_uniqueness_field, [])

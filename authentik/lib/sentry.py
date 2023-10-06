@@ -95,7 +95,7 @@ def traces_sampler(sampling_context: dict) -> float:
     return float(CONFIG.get("error_reporting.sample_rate", 0.1))
 
 
-def before_send(event: dict, hint: dict) -> Optional[dict]:
+def before_send(event: dict, hint: dict) -> dict | None:
     """Check if error is database error, and ignore if so"""
     # pylint: disable=no-name-in-module
     from psycopg.errors import Error

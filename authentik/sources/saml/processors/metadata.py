@@ -1,5 +1,6 @@
 """SAML Service Provider Metadata Processor"""
-from typing import Iterator, Optional
+from typing import Optional
+from collections.abc import Iterator
 
 from django.http import HttpRequest
 from lxml.etree import Element, SubElement, tostring  # nosec
@@ -29,7 +30,7 @@ class MetadataProcessor:
         self.source = source
         self.http_request = request
 
-    def get_signing_key_descriptor(self) -> Optional[Element]:
+    def get_signing_key_descriptor(self) -> Element | None:
         """Get Signing KeyDescriptor, if enabled for the source"""
         if self.source.signing_kp:
             key_descriptor = Element(f"{{{NS_SAML_METADATA}}}KeyDescriptor")

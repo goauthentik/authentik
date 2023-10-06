@@ -53,31 +53,31 @@ class IDToken:
     https://openid.net/specs/openid-connect-core-1_0.html#IDToken"""
 
     # Issuer, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.1
-    iss: Optional[str] = None
+    iss: str | None = None
     # Subject, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.2
-    sub: Optional[str] = None
+    sub: str | None = None
     # Audience, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.3
-    aud: Optional[Union[str, list[str]]] = None
+    aud: str | list[str] | None = None
     # Expiration time, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.4
-    exp: Optional[int] = None
+    exp: int | None = None
     # Issued at, https://www.rfc-editor.org/rfc/rfc7519.html#section-4.1.6
-    iat: Optional[int] = None
+    iat: int | None = None
     # Time when the authentication occurred,
     # https://openid.net/specs/openid-connect-core-1_0.html#IDToken
-    auth_time: Optional[int] = None
+    auth_time: int | None = None
     # Authentication Context Class Reference,
     # https://openid.net/specs/openid-connect-core-1_0.html#IDToken
-    acr: Optional[str] = ACR_AUTHENTIK_DEFAULT
+    acr: str | None = ACR_AUTHENTIK_DEFAULT
     # Authentication Methods References,
     # https://openid.net/specs/openid-connect-core-1_0.html#IDToken
-    amr: Optional[list[str]] = None
+    amr: list[str] | None = None
     # Code hash value, http://openid.net/specs/openid-connect-core-1_0.html
-    c_hash: Optional[str] = None
+    c_hash: str | None = None
     # Value used to associate a Client session with an ID Token,
     # http://openid.net/specs/openid-connect-core-1_0.html
-    nonce: Optional[str] = None
+    nonce: str | None = None
     # Access Token hash value, http://openid.net/specs/openid-connect-core-1_0.html
-    at_hash: Optional[str] = None
+    at_hash: str | None = None
 
     claims: dict[str, Any] = field(default_factory=dict)
 

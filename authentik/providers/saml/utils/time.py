@@ -3,7 +3,7 @@ import datetime
 from typing import Optional
 
 
-def get_time_string(delta: Optional[datetime.timedelta] = None) -> str:
+def get_time_string(delta: datetime.timedelta | None = None) -> str:
     """Get Data formatted in SAML format"""
     if delta is None:
         delta = datetime.timedelta()

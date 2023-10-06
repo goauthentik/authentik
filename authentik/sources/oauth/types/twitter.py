@@ -19,7 +19,7 @@ class TwitterClient(UserprofileHeaderAuthClient):
     # is set via query parameter, so we reuse the azure client
     # see https://github.com/goauthentik/authentik/issues/1910
 
-    def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
+    def get_access_token(self, **request_kwargs) -> dict[str, Any] | None:
         return super().get_access_token(
             auth=(
                 self.source.consumer_key,

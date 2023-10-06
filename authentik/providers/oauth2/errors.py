@@ -26,7 +26,7 @@ class OAuth2Error(SentryIgnoredException):
     def __repr__(self) -> str:
         return self.error
 
-    def to_event(self, message: Optional[str] = None, **kwargs) -> Event:
+    def to_event(self, message: str | None = None, **kwargs) -> Event:
         """Create configuration_error Event."""
         return Event.new(
             EventAction.CONFIGURATION_ERROR,
@@ -148,7 +148,7 @@ class AuthorizeError(OAuth2Error):
         error: str,
         grant_type: str,
         state: str,
-        description: Optional[str] = None,
+        description: str | None = None,
     ):
         super().__init__()
         self.error = error

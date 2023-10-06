@@ -232,7 +232,7 @@ class OAuth2Provider(Provider):
             return private_key, JWTAlgorithms.ES256
         raise ValueError(f"Invalid private key type: {type(private_key)}")
 
-    def get_issuer(self, request: HttpRequest) -> Optional[str]:
+    def get_issuer(self, request: HttpRequest) -> str | None:
         """Get issuer, based on request"""
         if self.issuer_mode == IssuerMode.GLOBAL:
             return request.build_absolute_uri(reverse("authentik_core:root-redirect"))
@@ -250,7 +250,7 @@ class OAuth2Provider(Provider):
             return None
 
     @property
-    def launch_url(self) -> Optional[str]:
+    def launch_url(self) -> str | None:
         """Guess launch_url based on first redirect_uri"""
         if self.redirect_uris == "":
             return None

@@ -154,7 +154,7 @@ class LDAPSource(Source):
         return ServerPool(servers, RANDOM, active=5, exhaust=True)
 
     def connection(
-        self, server_kwargs: Optional[dict] = None, connection_kwargs: Optional[dict] = None
+        self, server_kwargs: dict | None = None, connection_kwargs: dict | None = None
     ) -> Connection:
         """Get a fully connected and bound LDAP Connection"""
         server_kwargs = server_kwargs or {}

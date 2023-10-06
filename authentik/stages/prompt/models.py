@@ -142,7 +142,7 @@ class Prompt(SerializerModel):
     initial_value_expression = models.BooleanField(default=False)
 
     @property
-    def serializer(self) -> Type[BaseSerializer]:
+    def serializer(self) -> type[BaseSerializer]:
         from authentik.stages.prompt.api import PromptSerializer
 
         return PromptSerializer
@@ -152,8 +152,8 @@ class Prompt(SerializerModel):
         prompt_context: dict,
         user: User,
         request: HttpRequest,
-        dry_run: Optional[bool] = False,
-    ) -> Optional[tuple[dict[str, Any]]]:
+        dry_run: bool | None = False,
+    ) -> tuple[dict[str, Any]] | None:
         """Get fully interpolated list of choices"""
         if self.type not in CHOICE_FIELDS:
             return None
@@ -192,7 +192,7 @@ class Prompt(SerializerModel):
         prompt_context: dict,
         user: User,
         request: HttpRequest,
-        dry_run: Optional[bool] = False,
+        dry_run: bool | None = False,
     ) -> str:
         """Get fully interpolated placeholder"""
         if self.type in CHOICE_FIELDS:
@@ -221,7 +221,7 @@ class Prompt(SerializerModel):
         prompt_context: dict,
         user: User,
         request: HttpRequest,
-        dry_run: Optional[bool] = False,
+        dry_run: bool | None = False,
     ) -> str:
         """Get fully interpolated initial value"""
 
@@ -257,7 +257,7 @@ class Prompt(SerializerModel):
 
         return value
 
-    def field(self, default: Optional[Any], choices: Optional[list[Any]] = None) -> CharField:
+    def field(self, default: Any | None, choices: list[Any] | None = None) -> CharField:
         """Get field type for Challenge and response. Choices are only valid for CHOICE_FIELDS."""
         field_class = CharField
         kwargs = {

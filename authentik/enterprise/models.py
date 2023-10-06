@@ -26,7 +26,7 @@ from authentik.lib.models import SerializerModel
 from authentik.root.install_id import get_install_id
 
 
-@lru_cache()
+@lru_cache
 def get_licensing_key() -> Certificate:
     """Get Root CA PEM"""
     with open("authentik/enterprise/public.pem", "rb") as _key:

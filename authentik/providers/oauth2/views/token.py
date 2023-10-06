@@ -74,16 +74,16 @@ class TokenParams:
 
     provider: OAuth2Provider
 
-    authorization_code: Optional[AuthorizationCode] = None
-    refresh_token: Optional[RefreshToken] = None
-    device_code: Optional[DeviceToken] = None
-    user: Optional[User] = None
+    authorization_code: AuthorizationCode | None = None
+    refresh_token: RefreshToken | None = None
+    device_code: DeviceToken | None = None
+    user: User | None = None
 
-    code_verifier: Optional[str] = None
+    code_verifier: str | None = None
 
     raw_code: InitVar[str] = ""
     raw_token: InitVar[str] = ""
-    request: InitVar[Optional[HttpRequest]] = None
+    request: InitVar[HttpRequest | None] = None
 
     @staticmethod
     def parse(
@@ -318,8 +318,8 @@ class TokenParams:
 
         token = None
 
-        source: Optional[OAuthSource] = None
-        parsed_key: Optional[PyJWK] = None
+        source: OAuthSource | None = None
+        parsed_key: PyJWK | None = None
 
         # Fully decode the JWT without verifying the signature, so we can get access to
         # the header.
@@ -424,8 +424,8 @@ class TokenParams:
 class TokenView(View):
     """Generate tokens for clients"""
 
-    provider: Optional[OAuth2Provider] = None
-    params: Optional[TokenParams] = None
+    provider: OAuth2Provider | None = None
+    params: TokenParams | None = None
 
     def dispatch(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         response = super().dispatch(request, *args, **kwargs)

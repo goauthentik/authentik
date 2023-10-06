@@ -27,7 +27,7 @@ class DeviceView(View):
     provider: OAuth2Provider
     scopes: list[str] = []
 
-    def parse_request(self) -> Optional[HttpResponse]:
+    def parse_request(self) -> HttpResponse | None:
         """Parse incoming request"""
         client_id = self.request.POST.get("client_id", None)
         if not client_id:

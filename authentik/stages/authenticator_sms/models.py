@@ -78,7 +78,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
 
     def get_message(self, token: str) -> str:
         """Get SMS message"""
-        return _("Use this code to authenticate in authentik: %(token)s" % {"token": token})
+        return _("Use this code to authenticate in authentik: {token}".format(token=token))
 
     def send_twilio(self, token: str, device: "SMSDevice"):
         """send sms via twilio provider"""
@@ -165,7 +165,7 @@ class AuthenticatorSMSStage(ConfigurableStage, FriendlyNamedStage, Stage):
     def component(self) -> str:
         return "ak-stage-authenticator-sms-form"
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         return UserSettingSerializer(
             data={
                 "title": self.friendly_name or str(self._meta.verbose_name),

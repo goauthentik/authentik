@@ -11,7 +11,7 @@ from authentik.sources.oauth.views.redirect import OAuthRedirect
 class TwitchClient(UserprofileHeaderAuthClient):
     """Twitch needs the token_type to be capitalized for the request header."""
 
-    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+    def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
         token["token_type"] = token["token_type"].capitalize()
         return super().get_profile_info(token)
 

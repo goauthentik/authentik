@@ -21,20 +21,20 @@ class BaseOAuthClient:
     source: OAuthSource
     request: HttpRequest
 
-    callback: Optional[str]
+    callback: str | None
 
-    def __init__(self, source: OAuthSource, request: HttpRequest, callback: Optional[str] = None):
+    def __init__(self, source: OAuthSource, request: HttpRequest, callback: str | None = None):
         self.source = source
         self.session = get_http_session()
         self.request = request
         self.callback = callback
         self.logger = get_logger().bind(source=source.slug)
 
-    def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
+    def get_access_token(self, **request_kwargs) -> dict[str, Any] | None:
         """Fetch access token from callback request."""
         raise NotImplementedError("Defined in a sub-class")  # pragma: no cover
 
-    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+    def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
         """Fetch user profile information."""
         profile_url = self.source.source_type.profile_url or ""
         if self.source.source_type.urls_customizable and self.source.profile_url:

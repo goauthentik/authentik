@@ -31,7 +31,7 @@ def _get_client_ip_from_meta(meta: dict[str, Any]) -> str:
     return DEFAULT_IP
 
 
-def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
+def _get_outpost_override_ip(request: HttpRequest) -> str | None:
     """Get the actual remote IP when set by an outpost. Only
     allowed when the request is authenticated, by an outpost internal service account"""
     from authentik.core.models import Token, TokenIntents, UserTypes
@@ -66,7 +66,7 @@ def _get_outpost_override_ip(request: HttpRequest) -> Optional[str]:
     return fake_ip
 
 
-def get_client_ip(request: Optional[HttpRequest]) -> str:
+def get_client_ip(request: HttpRequest | None) -> str:
     """Attempt to get the client's IP by checking common HTTP Headers.
     Returns none if no IP Could be found"""
     if not request:

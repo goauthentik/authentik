@@ -78,7 +78,7 @@ class PlexSource(Source):
             name=self.name,
         )
 
-    def ui_user_settings(self) -> Optional[UserSettingSerializer]:
+    def ui_user_settings(self) -> UserSettingSerializer | None:
         icon = self.get_icon
         if not icon:
             icon = static("authentik/sources/plex.svg")

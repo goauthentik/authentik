@@ -55,25 +55,25 @@ class CertificateKeyPairSerializer(ModelSerializer):
             return True
         return str(request.query_params.get("include_details", "true")).lower() == "true"
 
-    def get_fingerprint_sha256(self, instance: CertificateKeyPair) -> Optional[str]:
+    def get_fingerprint_sha256(self, instance: CertificateKeyPair) -> str | None:
         "Get certificate Hash (SHA256)"
         if not self._should_include_details:
             return None
         return instance.fingerprint_sha256
 
-    def get_fingerprint_sha1(self, instance: CertificateKeyPair) -> Optional[str]:
+    def get_fingerprint_sha1(self, instance: CertificateKeyPair) -> str | None:
         "Get certificate Hash (SHA1)"
         if not self._should_include_details:
             return None
         return instance.fingerprint_sha1
 
-    def get_cert_expiry(self, instance: CertificateKeyPair) -> Optional[datetime]:
+    def get_cert_expiry(self, instance: CertificateKeyPair) -> datetime | None:
         "Get certificate expiry"
         if not self._should_include_details:
             return None
         return DateTimeField().to_representation(instance.certificate.not_valid_after)
 
-    def get_cert_subject(self, instance: CertificateKeyPair) -> Optional[str]:
+    def get_cert_subject(self, instance: CertificateKeyPair) -> str | None:
         """Get certificate subject as full rfc4514"""
         if not self._should_include_details:
             return None
@@ -83,7 +83,7 @@ class CertificateKeyPairSerializer(ModelSerializer):
         """Show if this keypair has a private key configured or not"""
         return instance.key_data != "" and instance.key_data is not None
 
-    def get_private_key_type(self, instance: CertificateKeyPair) -> Optional[str]:
+    def get_private_key_type(self, instance: CertificateKeyPair) -> str | None:
         """Get the private key's type, if set"""
         if not self._should_include_details:
             return None

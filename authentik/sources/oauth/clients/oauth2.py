@@ -22,7 +22,7 @@ class OAuth2Client(BaseOAuthClient):
         "Accept": "application/json",
     }
 
-    def get_request_arg(self, key: str, default: Optional[Any] = None) -> Any:
+    def get_request_arg(self, key: str, default: Any | None = None) -> Any:
         """Depending on request type, get data from post or get"""
         if self.request.method == "POST":
             return self.request.POST.get(key, default)
@@ -54,7 +54,7 @@ class OAuth2Client(BaseOAuthClient):
         """Get client secret"""
         return self.source.consumer_secret
 
-    def get_access_token(self, **request_kwargs) -> Optional[dict[str, Any]]:
+    def get_access_token(self, **request_kwargs) -> dict[str, Any] | None:
         """Fetch access token from callback request."""
         callback = self.request.build_absolute_uri(self.callback or self.request.path)
         if not self.check_application_state():
@@ -138,7 +138,7 @@ class OAuth2Client(BaseOAuthClient):
 class UserprofileHeaderAuthClient(OAuth2Client):
     """OAuth client which only sends authentication via header, not querystring"""
 
-    def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
+    def get_profile_info(self, token: dict[str, str]) -> dict[str, Any] | None:
         "Fetch user profile information."
         profile_url = self.source.source_type.profile_url or ""
         if self.source.source_type.urls_customizable and self.source.profile_url:

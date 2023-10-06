@@ -1,5 +1,5 @@
 """Sync LDAP Users into authentik"""
-from typing import Generator
+from collections.abc import Generator
 
 from django.core.exceptions import FieldError
 from django.db.utils import IntegrityError

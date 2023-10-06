@@ -24,8 +24,8 @@ class PolicyRequest:
     """Data-class to hold policy request data"""
 
     user: User
-    http_request: Optional[HttpRequest]
-    obj: Optional[Model]
+    http_request: HttpRequest | None
+    obj: Model | None
     context: dict[str, Any]
     debug: bool
 
@@ -75,10 +75,10 @@ class PolicyResult:
     messages: tuple[str, ...]
     raw_result: Any
 
-    source_binding: Optional["PolicyBinding"]
-    source_results: Optional[list["PolicyResult"]]
+    source_binding: PolicyBinding | None
+    source_results: list[PolicyResult] | None
 
-    log_messages: Optional[list[dict]]
+    log_messages: list[dict] | None
 
     def __init__(self, passing: bool, *messages: str):
         self.passing = passing

@@ -35,8 +35,8 @@ SESSION_KEY_INVALID_TRIES = "authentik/stages/password/user_invalid_tries"
 
 
 def authenticate(
-    request: HttpRequest, backends: list[str], stage: Optional[Stage] = None, **credentials: Any
-) -> Optional[User]:
+    request: HttpRequest, backends: list[str], stage: Stage | None = None, **credentials: Any
+) -> User | None:
     """If the given credentials are valid, return a User object.
 
     Customized version of django's authenticate, which accepts a list of backends"""

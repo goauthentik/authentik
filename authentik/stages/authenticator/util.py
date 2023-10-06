@@ -42,10 +42,10 @@ def hex_validator(length=0):
 
             unhexlify(value)
         except Exception:
-            raise ValidationError("{0} is not valid hex-encoded data.".format(value))
+            raise ValidationError(f"{value} is not valid hex-encoded data.")
 
         if (length > 0) and (len(value) != length * 2):
-            raise ValidationError("{0} does not represent exactly {1} bytes.".format(value, length))
+            raise ValidationError(f"{value} does not represent exactly {length} bytes.")
 
     return _validator
 

@@ -11,7 +11,7 @@ from authentik.providers.scim.clients.schema import SCIMError
 class StopSync(SentryIgnoredException):
     """Exception raised when a configuration error should stop the sync process"""
 
-    def __init__(self, exc: Exception, obj: object, mapping: Optional[object] = None) -> None:
+    def __init__(self, exc: Exception, obj: object, mapping: object | None = None) -> None:
         self.exc = exc
         self.obj = obj
         self.mapping = mapping
@@ -28,10 +28,10 @@ class StopSync(SentryIgnoredException):
 class SCIMRequestException(SentryIgnoredException):
     """Exception raised when an SCIM request fails"""
 
-    _response: Optional[Response]
-    _message: Optional[str]
+    _response: Response | None
+    _message: str | None
 
-    def __init__(self, response: Optional[Response] = None, message: Optional[str] = None) -> None:
+    def __init__(self, response: Response | None = None, message: str | None = None) -> None:
         self._response = response
         self._message = message
 

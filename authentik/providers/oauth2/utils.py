@@ -72,7 +72,7 @@ def cors_allow(request: HttpRequest, response: HttpResponse, *allowed_origins: s
     return response
 
 
-def extract_access_token(request: HttpRequest) -> Optional[str]:
+def extract_access_token(request: HttpRequest) -> str | None:
     """
     Get the access token using Authorization Request Header Field method.
     Or try getting via GET.
@@ -177,12 +177,12 @@ def protected_resource_view(scopes: list[str]):
     return wrapper
 
 
-def authenticate_provider(request: HttpRequest) -> Optional[OAuth2Provider]:
+def authenticate_provider(request: HttpRequest) -> OAuth2Provider | None:
     """Attempt to authenticate via Basic auth of client_id:client_secret"""
     client_id, client_secret = extract_client_auth(request)
     if client_id == client_secret == "":
         return None
-    provider: Optional[OAuth2Provider] = OAuth2Provider.objects.filter(client_id=client_id).first()
+    provider: OAuth2Provider | None = OAuth2Provider.objects.filter(client_id=client_id).first()
     if not provider:
         return None
     if client_id != provider.client_id or client_secret != provider.client_secret:
@@ -199,7 +199,7 @@ class HttpResponseRedirectScheme(HttpResponseRedirect):
         self,
         redirect_to: str,
         *args: Any,
-        allowed_schemes: Optional[list[str]] = None,
+        allowed_schemes: list[str] | None = None,
         **kwargs: Any,
     ) -> None:
         self.allowed_schemes = allowed_schemes or ["http", "https", "ftp"]

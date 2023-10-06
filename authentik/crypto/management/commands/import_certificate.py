@@ -22,13 +22,13 @@ class Command(BaseCommand):
         if not keypair:
             keypair = CertificateKeyPair(name=options["name"])
             dirty = True
-        with open(options["certificate"], mode="r", encoding="utf-8") as _cert:
+        with open(options["certificate"], encoding="utf-8") as _cert:
             cert_data = _cert.read()
             if keypair.certificate_data != cert_data:
                 dirty = True
             keypair.certificate_data = cert_data
         if options["private_key"]:
-            with open(options["private_key"], mode="r", encoding="utf-8") as _key:
+            with open(options["private_key"], encoding="utf-8") as _key:
                 key_data = _key.read()
                 if keypair.key_data != key_data:
                     dirty = True

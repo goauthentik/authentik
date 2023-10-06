@@ -88,7 +88,7 @@ class BlueprintInstance(SerializerModel, ManagedModel, CreatedUpdatedModel):
                 raise BlueprintRetrievalFailed("Invalid blueprint path")
             with full_path.open("r", encoding="utf-8") as _file:
                 return _file.read()
-        except (IOError, OSError) as exc:
+        except OSError as exc:
             raise BlueprintRetrievalFailed(exc) from exc
 
     def retrieve(self) -> str:

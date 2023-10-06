@@ -142,7 +142,7 @@ class ProxyOutpostConfigSerializer(ModelSerializer):
         """Embed OpenID Connect provider information"""
         return ProviderInfoView(request=self.context["request"]._request).get_info(obj)
 
-    def get_access_token_validity(self, obj: ProxyProvider) -> Optional[float]:
+    def get_access_token_validity(self, obj: ProxyProvider) -> float | None:
         """Get token validity as second count"""
         return timedelta_from_string(obj.access_token_validity).total_seconds()
 

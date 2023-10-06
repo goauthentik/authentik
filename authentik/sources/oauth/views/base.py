@@ -18,7 +18,7 @@ class OAuthClientMixin:
 
     request: HttpRequest  # Set by View class
 
-    client_class: Optional[type[BaseOAuthClient]] = None
+    client_class: type[BaseOAuthClient] | None = None
 
     def get_client(self, source: OAuthSource, **kwargs) -> BaseOAuthClient:
         "Get instance of the OAuth client for this source."

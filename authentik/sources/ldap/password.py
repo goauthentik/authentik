@@ -130,7 +130,7 @@ class LDAPPasswordChanger:
                     return False
         return True
 
-    def ad_password_complexity(self, password: str, user: Optional[User] = None) -> bool:
+    def ad_password_complexity(self, password: str, user: User | None = None) -> bool:
         """Check if password matches Active directory password policies
 
         https://docs.microsoft.com/en-us/windows/security/threat-protection/

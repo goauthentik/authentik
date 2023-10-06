@@ -51,7 +51,7 @@ class BlueprintFile:
     version: int
     hash: str
     last_m: int
-    meta: Optional[BlueprintMetadata] = field(default=None)
+    meta: BlueprintMetadata | None = field(default=None)
 
 
 def start_blueprint_watcher():
@@ -107,7 +107,7 @@ def blueprints_find():
         if any(part for part in path.parts if part.startswith(".")):
             continue
         LOGGER.debug("found blueprint", path=str(path))
-        with open(path, "r", encoding="utf-8") as blueprint_file:
+        with open(path, encoding="utf-8") as blueprint_file:
             try:
                 raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
             except YAMLError as exc:
@@ -182,7 +182,7 @@ def check_blueprint_v1_file(blueprint: BlueprintFile):
 def apply_blueprint(self: MonitoredTask, instance_pk: str):
     """Apply single blueprint"""
     self.save_on_success = False
-    instance: Optional[BlueprintInstance] = None
+    instance: BlueprintInstance | None = None
     try:
         instance: BlueprintInstance = BlueprintInstance.objects.filter(pk=instance_pk).first()
         if not instance or not instance.enabled:
@@ -209,14 +209,7 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance.last_applied_hash = file_hash
         instance.last_applied = now()
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
-    except (
-        DatabaseError,
-        ProgrammingError,
-        InternalError,
-        IOError,
-        BlueprintRetrievalFailed,
-        EntryInvalidError,
-    ) as exc:
+    except (DatabaseError, ProgrammingError, InternalError, OSError, BlueprintRetrievalFailed, EntryInvalidError) as exc:
         if instance:
             instance.status = BlueprintInstanceStatus.ERROR
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))

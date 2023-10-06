@@ -1,5 +1,5 @@
 """Inject tenant into current request"""
-from typing import Callable
+from collections.abc import Callable
 
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse

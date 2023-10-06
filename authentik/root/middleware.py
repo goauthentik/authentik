@@ -2,7 +2,7 @@
 from hashlib import sha512
 from time import time
 from timeit import default_timer
-from typing import Callable
+from collections.abc import Callable
 
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError

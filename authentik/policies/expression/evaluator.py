@@ -23,7 +23,7 @@ class PolicyEvaluator(BaseEvaluator):
 
     policy: Optional["ExpressionPolicy"] = None
 
-    def __init__(self, policy_name: Optional[str] = None):
+    def __init__(self, policy_name: str | None = None):
         super().__init__(policy_name or "PolicyEvaluator")
         self._messages = []
         # update website/docs/expressions/_objects.md

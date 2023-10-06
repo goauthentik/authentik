@@ -1,6 +1,7 @@
 """SAML Identity Provider Metadata Processor"""
 from hashlib import sha256
-from typing import Iterator, Optional
+from typing import Optional
+from collections.abc import Iterator
 
 import xmlsec  # nosec
 from django.http import HttpRequest
@@ -30,7 +31,7 @@ class MetadataProcessor:
 
     provider: SAMLProvider
     http_request: HttpRequest
-    force_binding: Optional[str]
+    force_binding: str | None
 
     def __init__(self, provider: SAMLProvider, request: HttpRequest):
         self.provider = provider
@@ -38,7 +39,7 @@ class MetadataProcessor:
         self.force_binding = None
         self.xml_id = "_" + sha256(f"{provider.name}-{provider.pk}".encode("ascii")).hexdigest()
 
-    def get_signing_key_descriptor(self) -> Optional[Element]:
+    def get_signing_key_descriptor(self) -> Element | None:
         """Get Signing KeyDescriptor, if enabled for the provider"""
         if not self.provider.signing_kp:
             return None

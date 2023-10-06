@@ -18,7 +18,7 @@ class EnterprisePolicyAccessView(PolicyAccessView):
             return False
         return True
 
-    def user_has_access(self, user: Optional[User] = None) -> PolicyResult:
+    def user_has_access(self, user: User | None = None) -> PolicyResult:
         user = user or self.request.user
         request = PolicyRequest(user)
         request.http_request = self.request

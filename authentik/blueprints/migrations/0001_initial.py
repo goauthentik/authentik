@@ -20,7 +20,7 @@ def check_blueprint_v1_file(BlueprintInstance: type, path: Path):
     from authentik.blueprints.v1.common import BlueprintLoader, BlueprintMetadata
     from authentik.blueprints.v1.labels import LABEL_AUTHENTIK_INSTANTIATE
 
-    with open(path, "r", encoding="utf-8") as blueprint_file:
+    with open(path, encoding="utf-8") as blueprint_file:
         raw_blueprint = load(blueprint_file.read(), BlueprintLoader)
         if not raw_blueprint:
             return

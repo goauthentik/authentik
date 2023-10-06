@@ -45,7 +45,7 @@ class PolicyProcess(PROCESS_CLASS):
         self,
         binding: PolicyBinding,
         request: PolicyRequest,
-        connection: Optional[Connection],
+        connection: Connection | None,
     ):
         super().__init__()
         self.binding = binding

@@ -32,7 +32,7 @@ LOGGER = get_logger()
 QS_KEY_CODE = "code"  # nosec
 
 
-def get_application(provider: OAuth2Provider) -> Optional[Application]:
+def get_application(provider: OAuth2Provider) -> Application | None:
     """Get application from provider"""
     try:
         app = provider.application
@@ -43,7 +43,7 @@ def get_application(provider: OAuth2Provider) -> Optional[Application]:
         return None
 
 
-def validate_code(code: int, request: HttpRequest) -> Optional[HttpResponse]:
+def validate_code(code: int, request: HttpRequest) -> HttpResponse | None:
     """Validate user token"""
     token = DeviceToken.objects.filter(
         user_code=code,

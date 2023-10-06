@@ -265,7 +265,7 @@ class SAMLProviderViewSet(UsedByMixin, ModelViewSet):
         except ValueError as exc:  # pragma: no cover
             LOGGER.warning(str(exc))
             raise ValidationError(
-                _("Failed to import Metadata: %(message)s" % {"message": str(exc)}),
+                _("Failed to import Metadata: {message}".format(message=str(exc))),
             )
         return Response(status=204)
 

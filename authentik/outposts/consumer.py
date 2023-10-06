@@ -45,10 +45,10 @@ class WebsocketMessage:
 class OutpostConsumer(AuthJsonConsumer):
     """Handler for Outposts that connect over websockets for health checks and live updates"""
 
-    outpost: Optional[Outpost] = None
+    outpost: Outpost | None = None
     logger: BoundLogger
 
-    last_uid: Optional[str] = None
+    last_uid: str | None = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

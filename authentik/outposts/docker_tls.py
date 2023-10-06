@@ -12,15 +12,15 @@ from authentik.crypto.models import CertificateKeyPair
 class DockerInlineTLS:
     """Create Docker TLSConfig from CertificateKeyPair"""
 
-    verification_kp: Optional[CertificateKeyPair]
-    authentication_kp: Optional[CertificateKeyPair]
+    verification_kp: CertificateKeyPair | None
+    authentication_kp: CertificateKeyPair | None
 
     _paths: list[str]
 
     def __init__(
         self,
-        verification_kp: Optional[CertificateKeyPair],
-        authentication_kp: Optional[CertificateKeyPair],
+        verification_kp: CertificateKeyPair | None,
+        authentication_kp: CertificateKeyPair | None,
     ) -> None:
         self.verification_kp = verification_kp
         self.authentication_kp = authentication_kp

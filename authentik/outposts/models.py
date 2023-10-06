@@ -1,7 +1,8 @@
 """Outpost models"""
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Any, Iterable, Optional
+from typing import Any, Optional
+from collections.abc import Iterable
 from uuid import uuid4
 
 from dacite.core import from_dict
@@ -61,21 +62,21 @@ class OutpostConfig:
     log_level: str = CONFIG.get("log_level")
     object_naming_template: str = field(default="ak-outpost-%(name)s")
 
-    container_image: Optional[str] = field(default=None)
+    container_image: str | None = field(default=None)
 
-    docker_network: Optional[str] = field(default=None)
+    docker_network: str | None = field(default=None)
     docker_map_ports: bool = field(default=True)
-    docker_labels: Optional[dict[str, str]] = field(default=None)
+    docker_labels: dict[str, str] | None = field(default=None)
 
     kubernetes_replicas: int = field(default=1)
     kubernetes_namespace: str = field(default_factory=get_namespace)
     kubernetes_ingress_annotations: dict[str, str] = field(default_factory=dict)
     kubernetes_ingress_secret_name: str = field(default="authentik-outpost-tls")
-    kubernetes_ingress_class_name: Optional[str] = field(default=None)
+    kubernetes_ingress_class_name: str | None = field(default=None)
     kubernetes_service_type: str = field(default="ClusterIP")
     kubernetes_disabled_components: list[str] = field(default_factory=list)
     kubernetes_image_pull_secrets: list[str] = field(default_factory=list)
-    kubernetes_json_patches: Optional[dict[str, list[dict[str, Any]]]] = field(default=None)
+    kubernetes_json_patches: dict[str, list[dict[str, Any]]] | None = field(default=None)
 
 
 class OutpostModel(Model):
@@ -97,7 +98,7 @@ class OutpostType(models.TextChoices):
     RADIUS = "radius"
 
 
-def default_outpost_config(host: Optional[str] = None):
+def default_outpost_config(host: str | None = None):
     """Get default outpost config"""
     return asdict(OutpostConfig(authentik_host=host or ""))
 
@@ -415,14 +416,14 @@ class OutpostState:
     """Outpost instance state, last_seen and version"""
 
     uid: str
-    last_seen: Optional[datetime] = field(default=None)
-    version: Optional[str] = field(default=None)
+    last_seen: datetime | None = field(default=None)
+    version: str | None = field(default=None)
     version_should: Version = field(default=OUR_VERSION)
     build_hash: str = field(default="")
     hostname: str = field(default="")
     args: dict = field(default_factory=dict)
 
-    _outpost: Optional[Outpost] = field(default=None)
+    _outpost: Outpost | None = field(default=None)
 
     @property
     def version_outdated(self) -> bool:

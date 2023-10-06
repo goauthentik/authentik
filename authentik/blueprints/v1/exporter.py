@@ -1,5 +1,5 @@
 """Blueprint exporter"""
-from typing import Iterable
+from collections.abc import Iterable
 from uuid import UUID
 
 from django.apps import apps
@@ -59,7 +59,7 @@ class Exporter:
         blueprint = Blueprint()
         self._pre_export(blueprint)
         blueprint.metadata = BlueprintMetadata(
-            name=_("authentik Export - %(date)s" % {"date": str(now())}),
+            name=_("authentik Export - {date}".format(date=str(now()))),
             labels={
                 LABEL_AUTHENTIK_GENERATED: "true",
             },

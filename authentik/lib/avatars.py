@@ -34,18 +34,18 @@ SVG_FONTS = [
 ]
 
 
-def avatar_mode_none(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_none(user: "User", mode: str) -> str | None:
     """No avatar"""
     return DEFAULT_AVATAR
 
 
-def avatar_mode_attribute(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_attribute(user: "User", mode: str) -> str | None:
     """Avatars based on a user attribute"""
     avatar = get_path_from_dict(user.attributes, mode[11:], default=None)
     return avatar
 
 
-def avatar_mode_gravatar(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_gravatar(user: "User", mode: str) -> str | None:
     """Gravatar avatars"""
     # gravatar uses md5 for their URLs, so md5 can't be avoided
     mail_hash = md5(user.email.lower().encode("utf-8")).hexdigest()  # nosec
@@ -152,13 +152,13 @@ def generate_avatar_from_name(
     return etree.tostring(root_element).decode()
 
 
-def avatar_mode_generated(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_generated(user: "User", mode: str) -> str | None:
     """Wrapper that converts generated avatar to base64 svg"""
     svg = generate_avatar_from_name(user.name if user.name.strip() != "" else "a k")
     return f"data:image/svg+xml;base64,{b64encode(svg.encode('utf-8')).decode('utf-8')}"
 
 
-def avatar_mode_url(user: "User", mode: str) -> Optional[str]:
+def avatar_mode_url(user: "User", mode: str) -> str | None:
     """Format url"""
     mail_hash = md5(user.email.lower().encode("utf-8")).hexdigest()  # nosec
     return mode % {

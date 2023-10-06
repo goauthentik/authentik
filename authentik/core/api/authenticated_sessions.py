@@ -69,7 +69,7 @@ class AuthenticatedSessionSerializer(ModelSerializer):
         """Get parsed user agent"""
         return user_agent_parser.Parse(instance.last_user_agent)
 
-    def get_geo_ip(self, instance: AuthenticatedSession) -> Optional[GeoIPDict]:  # pragma: no cover
+    def get_geo_ip(self, instance: AuthenticatedSession) -> GeoIPDict | None:  # pragma: no cover
         """Get parsed user agent"""
         return GEOIP_READER.city_dict(instance.last_ip)
 
