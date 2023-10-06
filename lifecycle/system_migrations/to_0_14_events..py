@@ -1,12 +1,9 @@
 # flake8: noqa
 from lifecycle.migrate import BaseMigration
 
-SQL_STATEMENT = """BEGIN TRANSACTION;
-ALTER TABLE authentik_audit_event RENAME TO authentik_events_event;
+SQL_STATEMENT = """ALTER TABLE authentik_audit_event RENAME TO authentik_events_event;
 UPDATE django_migrations SET app = replace(app, 'authentik_audit', 'authentik_events');
-UPDATE django_content_type SET app_label = replace(app_label, 'authentik_audit', 'authentik_events');
-
-END TRANSACTION;"""
+UPDATE django_content_type SET app_label = replace(app_label, 'authentik_audit', 'authentik_events');"""
 
 
 class Migration(BaseMigration):
@@ -17,5 +14,5 @@ class Migration(BaseMigration):
         return bool(self.cur.rowcount)
 
     def run(self):
-        self.cur.execute(SQL_STATEMENT)
-        self.con.commit()
+        with self.con.transaction():
+            self.cur.execute(SQL_STATEMENT)

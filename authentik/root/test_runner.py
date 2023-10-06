@@ -73,19 +73,27 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
         for label in test_labels:
             valid_label_found = False
             label_as_path = os.path.abspath(label)
+            # File path has been specified
             if os.path.exists(label_as_path):
                 self.args.append(label_as_path)
                 valid_label_found = True
             else:
-                path_pieces = label.split(".")
-                for i in range(-1, -3, -1):
-                    path = os.path.join(*path_pieces[:i]) + ".py"
-                    label_as_path = os.path.abspath(path)
-                    if os.path.exists(label_as_path):
-                        path_method = label_as_path + "::" + "::".join(path_pieces[i:])
-                        self.args.append(path_method)
-                        valid_label_found = True
-                        break
+                # Already correctly formatted test found (file_path::class::method)
+                if "::" in label:
+                    self.args.append(label)
+                    valid_label_found = True
+                # Convert dotted module path to file_path::class::method
+                else:
+                    path_pieces = label.split(".")
+                    # Check whether only class or class and method are specified
+                    for i in range(-1, -3, -1):
+                        path = os.path.join(*path_pieces[:i]) + ".py"
+                        label_as_path = os.path.abspath(path)
+                        if os.path.exists(label_as_path):
+                            path_method = label_as_path + "::" + "::".join(path_pieces[i:])
+                            self.args.append(path_method)
+                            valid_label_found = True
+                            break
 
             if not valid_label_found:
                 raise RuntimeError(

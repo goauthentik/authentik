@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 """System Migration handler"""
-import os
 from importlib.util import module_from_spec, spec_from_file_location
 from inspect import getmembers, isclass
+from os import environ, system
 from pathlib import Path
 from typing import Any
 
-from psycopg import connect
+from psycopg import Connection, Cursor, connect
 from structlog.stdlib import get_logger
 
 from authentik.lib.config import CONFIG
@@ -19,12 +19,23 @@ LOCKED = False
 class BaseMigration:
     """Base System Migration"""
 
-    cur: Any
-    con: Any
+    cur: Cursor
+    con: Connection
 
     def __init__(self, cur: Any, con: Any):
         self.cur = cur
         self.con = con
+
+    def system_crit(self, command: str):
+        """Run system command"""
+        LOGGER.debug("Running system_crit command", command=command)
+        retval = system(command)  # nosec
+        if retval != 0:
+            raise Exception("Migration error")
+
+    def fake_migration(self, *app_migration: tuple[str, str]):
+        for app, migration in app_migration:
+            self.system_crit(f"./manage.py migrate {app} {migration} --fake")
 
     def needs_migration(self) -> bool:
         """Return true if Migration needs to be run"""
@@ -82,7 +93,7 @@ if __name__ == "__main__":
                     LOGGER.info("Migration finished applying", migration=sub)
                     release_lock()
         LOGGER.info("applying django migrations")
-        os.environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
+        environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
         wait_for_lock()
         try:
             from django.core.management import execute_from_command_line

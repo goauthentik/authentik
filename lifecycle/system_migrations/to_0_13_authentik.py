@@ -1,9 +1,17 @@
 # flake8: noqa
+from urllib.parse import urlparse
+
 from authentik.lib.config import CONFIG
-from authentik.lib.utils.parser import parse_url
+from authentik.lib.utils.parser import (
+    parse_url,
+    process_config,
+    get_redis_options,
+    get_connection_pool,
+    get_client,
+)
 from lifecycle.migrate import BaseMigration
 
-SQL_STATEMENT = """BEGIN TRANSACTION;
+SQL_STATEMENT = """
 ALTER TABLE passbook_audit_event RENAME TO authentik_audit_event;
 ALTER TABLE passbook_core_application RENAME TO authentik_core_application;
 ALTER TABLE passbook_core_group RENAME TO authentik_core_group;
@@ -91,8 +99,7 @@ ALTER SEQUENCE passbook_stages_prompt_promptstage_validation_policies_id_seq REN
 
 UPDATE django_migrations SET app = replace(app, 'passbook', 'authentik');
 UPDATE django_content_type SET app_label = replace(app_label, 'passbook', 'authentik');
-
-END TRANSACTION;"""
+"""
 
 
 class Migration(BaseMigration):
@@ -106,5 +113,15 @@ class Migration(BaseMigration):
         self.cur.execute(SQL_STATEMENT)
         self.con.commit()
         # We also need to clean the cache to make sure no pickeled objects still exist
-        _, redis = parse_url(CONFIG.get("redis.url"))
-        redis.flushall()
+        url = urlparse(CONFIG.get("redis.url"))
+        pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
+        for db in [
+            CONFIG.get_int("redis.message_queue_db"),
+            CONFIG.get_int("redis.cache_db"),
+            CONFIG.get_int("redis.ws_db"),
+        ]:
+            redis_kwargs["db"] = db
+            config = process_config(url, pool_kwargs, redis_kwargs, tls_kwargs)
+            pool, client_config = get_connection_pool(config)
+            _, redis = get_client(client_config, pool)
+            redis.flushall()
