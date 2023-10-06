@@ -1,10 +1,7 @@
 # flake8: noqa
-from os import system
-
 from lifecycle.migrate import BaseMigration
 
 SQL_STATEMENT = """
-BEGIN TRANSACTION;
 DELETE FROM django_migrations WHERE app = 'otp_static';
 DELETE FROM django_migrations WHERE app = 'otp_totp';
 -- Rename tables (static)
@@ -15,7 +12,7 @@ ALTER SEQUENCE otp_static_staticdevice_id_seq RENAME TO authentik_stages_authent
 -- Rename tables (totp)
 ALTER TABLE otp_totp_totpdevice RENAME TO authentik_stages_authenticator_totp_totpdevice;
 ALTER SEQUENCE otp_totp_totpdevice_id_seq RENAME TO authentik_stages_authenticator_totp_totpdevice_id_seq;
-COMMIT;"""
+"""
 
 
 class Migration(BaseMigration):
@@ -25,23 +22,24 @@ class Migration(BaseMigration):
         )
         return bool(self.cur.rowcount)
 
-    def system_crit(self, command):
-        retval = system(command)  # nosec
-        if retval != 0:
-            raise Exception("Migration error")
-
     def run(self):
-        self.cur.execute(SQL_STATEMENT)
-        self.con.commit()
-        self.system_crit(
-            "./manage.py migrate authentik_stages_authenticator_static 0008_initial --fake"
-        )
-        self.system_crit(
-            "./manage.py migrate authentik_stages_authenticator_static 0009_throttling --fake"
-        )
-        self.system_crit(
-            "./manage.py migrate authentik_stages_authenticator_totp 0008_initial --fake"
-        )
-        self.system_crit(
-            "./manage.py migrate authentik_stages_authenticator_totp 0009_auto_20190420_0723 --fake"
-        )
+        with self.con.transaction():
+            self.cur.execute(SQL_STATEMENT)
+            self.fake_migration(
+                (
+                    "authentik_stages_authenticator_static",
+                    "0008_initial",
+                ),
+                (
+                    "authentik_stages_authenticator_static",
+                    "0009_throttling",
+                ),
+                (
+                    "authentik_stages_authenticator_totp",
+                    "0008_initial",
+                ),
+                (
+                    "authentik_stages_authenticator_totp",
+                    "0009_auto_20190420_0723",
+                ),
+            )

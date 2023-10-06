@@ -4,7 +4,7 @@ from redis import Redis
 from authentik.lib.config import CONFIG
 from lifecycle.migrate import BaseMigration
 
-SQL_STATEMENT = """BEGIN TRANSACTION;
+SQL_STATEMENT = """
 ALTER TABLE passbook_audit_event RENAME TO authentik_audit_event;
 ALTER TABLE passbook_core_application RENAME TO authentik_core_application;
 ALTER TABLE passbook_core_group RENAME TO authentik_core_group;
@@ -92,8 +92,7 @@ ALTER SEQUENCE passbook_stages_prompt_promptstage_validation_policies_id_seq REN
 
 UPDATE django_migrations SET app = replace(app, 'passbook', 'authentik');
 UPDATE django_content_type SET app_label = replace(app_label, 'passbook', 'authentik');
-
-END TRANSACTION;"""
+"""
 
 
 class Migration(BaseMigration):
@@ -104,18 +103,18 @@ class Migration(BaseMigration):
         return bool(self.cur.rowcount)
 
     def run(self):
-        self.cur.execute(SQL_STATEMENT)
-        self.con.commit()
-        # We also need to clean the cache to make sure no pickeled objects still exist
-        for db in [
-            CONFIG.get("redis.message_queue_db"),
-            CONFIG.get("redis.cache_db"),
-            CONFIG.get("redis.ws_db"),
-        ]:
-            redis = Redis(
-                host=CONFIG.get("redis.host"),
-                port=6379,
-                db=db,
-                password=CONFIG.get("redis.password"),
-            )
-            redis.flushall()
+        with self.con.transaction():
+            self.cur.execute(SQL_STATEMENT)
+            # We also need to clean the cache to make sure no pickeled objects still exist
+            for db in [
+                CONFIG.get("redis.message_queue_db"),
+                CONFIG.get("redis.cache_db"),
+                CONFIG.get("redis.ws_db"),
+            ]:
+                redis = Redis(
+                    host=CONFIG.get("redis.host"),
+                    port=6379,
+                    db=db,
+                    password=CONFIG.get("redis.password"),
+                )
+                redis.flushall()
