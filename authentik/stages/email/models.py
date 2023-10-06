@@ -14,8 +14,9 @@ from structlog.stdlib import get_logger
 from authentik.flows.models import Stage
 from authentik.lib.config import CONFIG
 
-BASE_EMAIL_BACKEND_TYPE = type[BaseEmailBackend]
 LOGGER = get_logger()
+
+BaseEmailBackendType = type[BaseEmailBackend]
 
 
 class EmailTemplates(models.TextChoices):
@@ -97,7 +98,7 @@ class EmailStage(Stage):
         return "ak-stage-email-form"
 
     @property
-    def backend_class(self) -> BASE_EMAIL_BACKEND_TYPE:
+    def backend_class(self) -> BaseEmailBackendType:
         """Get the email backend class to use"""
         return EmailBackend
 

@@ -35,7 +35,6 @@ from authentik.policies.models import PolicyBindingModel
 from authentik.root.install_id import get_install_id
 
 LOGGER = get_logger()
-SERIALIZER_TYPE = type[Serializer]
 USER_ATTRIBUTE_DEBUG = "goauthentik.io/user/debug"
 USER_ATTRIBUTE_GENERATED = "goauthentik.io/user/generated"
 USER_ATTRIBUTE_EXPIRES = "goauthentik.io/user/expires"
@@ -50,6 +49,8 @@ USER_PATH_SERVICE_ACCOUNT = USER_PATH_SYSTEM_PREFIX + "/service-accounts"
 
 
 options.DEFAULT_NAMES = options.DEFAULT_NAMES + ("authentik_used_by_shadows",)
+
+SerializerType = type[Serializer]
 
 
 def default_token_duration():
@@ -336,7 +337,7 @@ class Provider(SerializerModel):
         raise NotImplementedError
 
     @property
-    def serializer(self) -> SERIALIZER_TYPE:
+    def serializer(self) -> SerializerType:
         """Get serializer for this model"""
         raise NotImplementedError
 

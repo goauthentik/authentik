@@ -29,11 +29,11 @@ from authentik.flows.models import Stage
 from authentik.lib.models import SerializerModel
 from authentik.policies.models import Policy
 
-BASE_SERIALIZER_TYPE = type[BaseSerializer]
-
 CHOICES_CONTEXT_SUFFIX = "__choices"
 
 LOGGER = get_logger()
+
+BaseSerializerType = type[BaseSerializer]
 
 
 class FieldTypes(models.TextChoices):
@@ -144,7 +144,7 @@ class Prompt(SerializerModel):
     initial_value_expression = models.BooleanField(default=False)
 
     @property
-    def serializer(self) -> BASE_SERIALIZER_TYPE:
+    def serializer(self) -> BaseSerializerType:
         from authentik.stages.prompt.api import PromptSerializer
 
         return PromptSerializer
