@@ -78,7 +78,7 @@
         "@rollup/plugin-node-resolve": "^15.2.1",
         "@rollup/plugin-replace": "^5.0.2",
         "@rollup/plugin-terser": "^0.4.4",
-        "@rollup/plugin-typescript": "^11.1.4",
+        "@rollup/plugin-typescript": "^11.1.5",
         "@storybook/addon-essentials": "^7.4.6",
         "@storybook/addon-links": "^7.4.6",
         "@storybook/blocks": "^7.1.1",
