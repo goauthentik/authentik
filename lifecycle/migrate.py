@@ -16,6 +16,10 @@ ADV_LOCK_UID = 1000
 LOCKED = False
 
 
+class CommandError(Exception):
+    """Error raised when a system_crit command fails"""
+
+
 class BaseMigration:
     """Base System Migration"""
 
@@ -31,11 +35,13 @@ class BaseMigration:
         LOGGER.debug("Running system_crit command", command=command)
         retval = system(command)  # nosec
         if retval != 0:
-            raise Exception("Migration error")
+            raise CommandError("Migration error")
 
     def fake_migration(self, *app_migration: tuple[str, str]):
-        for app, migration in app_migration:
-            self.system_crit(f"./manage.py migrate {app} {migration} --fake")
+        """Fake apply a list of migrations, arguments are
+        expected to be tuples of (app_label, migration_name)"""
+        for app, _migration in app_migration:
+            self.system_crit(f"./manage.py migrate {app} {_migration} --fake")
 
     def needs_migration(self) -> bool:
         """Return true if Migration needs to be run"""
