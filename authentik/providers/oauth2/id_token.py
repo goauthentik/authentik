@@ -1,6 +1,6 @@
 """id_token utils"""
 from dataclasses import asdict, dataclass, field
-from typing import TYPE_CHECKING, Any, Optional, Union
+from typing import TYPE_CHECKING, Any
 
 from django.db import models
 from django.http import HttpRequest

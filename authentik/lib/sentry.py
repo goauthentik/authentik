@@ -1,6 +1,6 @@
 """authentik sentry integration"""
 from asyncio.exceptions import CancelledError
-from typing import Any, Optional
+from typing import Any
 
 from billiard.exceptions import SoftTimeLimitExceeded, WorkerLostError
 from celery.exceptions import CeleryError

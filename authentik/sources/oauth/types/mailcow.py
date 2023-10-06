@@ -1,5 +1,5 @@
 """Mailcow OAuth Views"""
-from typing import Any, Optional
+from typing import Any
 
 from requests.exceptions import RequestException
 from structlog.stdlib import get_logger

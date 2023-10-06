@@ -1,7 +1,7 @@
 """email stage tasks"""
 from email.utils import make_msgid
 from smtplib import SMTPException
-from typing import Any, Optional
+from typing import Any
 
 from celery import group
 from django.core.mail import EmailMultiAlternatives

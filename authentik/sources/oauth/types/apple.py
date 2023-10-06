@@ -1,6 +1,6 @@
 """Apple OAuth Views"""
 from time import time
-from typing import Any, Optional
+from typing import Any
 
 from django.http.request import HttpRequest
 from django.urls.base import reverse

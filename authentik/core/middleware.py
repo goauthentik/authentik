@@ -1,7 +1,7 @@
 """authentik admin Middleware to impersonate users"""
+from collections.abc import Callable
 from contextvars import ContextVar
 from typing import Optional
-from collections.abc import Callable
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse

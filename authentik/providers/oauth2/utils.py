@@ -2,7 +2,7 @@
 import re
 from base64 import b64decode
 from binascii import Error
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 from django.http import HttpRequest, HttpResponse, JsonResponse

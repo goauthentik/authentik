@@ -1,7 +1,7 @@
 """Blueprint importer"""
 from contextlib import contextmanager
 from copy import deepcopy
-from typing import Any, Optional
+from typing import Any
 
 from dacite.config import Config
 from dacite.core import from_dict

@@ -1,6 +1,6 @@
 """events GeoIP Reader"""
 from os import stat
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 from geoip2.database import Reader
 from geoip2.errors import GeoIP2Error

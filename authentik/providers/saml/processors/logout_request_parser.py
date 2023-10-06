@@ -1,7 +1,6 @@
 """LogoutRequest parser"""
 from base64 import b64decode
 from dataclasses import dataclass
-from typing import Optional
 
 from defusedxml import ElementTree
 
@@ -31,9 +30,7 @@ class LogoutRequestParser:
     def __init__(self, provider: SAMLProvider):
         self.provider = provider
 
-    def _parse_xml(
-        self, decoded_xml: str | bytes, relay_state: str | None = None
-    ) -> LogoutRequest:
+    def _parse_xml(self, decoded_xml: str | bytes, relay_state: str | None = None) -> LogoutRequest:
         root = ElementTree.fromstring(decoded_xml)
         request = LogoutRequest(
             id=root.attrib["ID"],

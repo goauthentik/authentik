@@ -1,5 +1,4 @@
 """OAuth errors"""
-from typing import Optional
 from urllib.parse import quote, urlparse
 
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect

@@ -1,6 +1,6 @@
 """API Authentication"""
 from hmac import compare_digest
-from typing import Any, Optional
+from typing import Any
 
 from django.conf import settings
 from rest_framework.authentication import BaseAuthentication, get_authorization_header

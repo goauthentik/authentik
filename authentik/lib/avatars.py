@@ -2,7 +2,7 @@
 from base64 import b64encode
 from functools import cache as funccache
 from hashlib import md5
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from urllib.parse import urlencode
 
 from django.core.cache import cache

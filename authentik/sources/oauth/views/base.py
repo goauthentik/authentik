@@ -1,5 +1,4 @@
 """OAuth Base views"""
-from typing import Optional
 
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger

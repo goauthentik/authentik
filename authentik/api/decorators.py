@@ -1,7 +1,6 @@
 """API Decorators"""
-from functools import wraps
-from typing import Optional
 from collections.abc import Callable
+from functools import wraps
 
 from rest_framework.request import Request
 from rest_framework.response import Response

@@ -1,7 +1,7 @@
 """User API Views"""
 from datetime import timedelta
 from json import loads
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.sessions.backends.cache import KEY_PREFIX

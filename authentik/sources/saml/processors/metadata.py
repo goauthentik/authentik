@@ -1,5 +1,4 @@
 """SAML Service Provider Metadata Processor"""
-from typing import Optional
 from collections.abc import Iterator
 
 from django.http import HttpRequest

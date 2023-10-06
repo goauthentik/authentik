@@ -1,10 +1,10 @@
 """authentik core celery"""
 import os
+from collections.abc import Callable
 from contextvars import ContextVar
 from logging.config import dictConfig
 from pathlib import Path
 from tempfile import gettempdir
-from collections.abc import Callable
 
 from celery import Celery, bootsteps
 from celery.apps.worker import Worker

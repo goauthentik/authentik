@@ -1,7 +1,7 @@
 """Flow models"""
 from base64 import b64decode, b64encode
 from pickle import dumps, loads  # nosec
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from uuid import uuid4
 
 from django.db import models

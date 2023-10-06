@@ -1,8 +1,7 @@
 """authentik proxy models"""
 import string
-from random import SystemRandom
-from typing import Optional
 from collections.abc import Iterable
+from random import SystemRandom
 from urllib.parse import urljoin
 
 from django.db import models

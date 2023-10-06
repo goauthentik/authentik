@@ -4,7 +4,6 @@ from datetime import timedelta
 from json import dumps
 from re import error as RegexError
 from re import fullmatch
-from typing import Optional
 from urllib.parse import parse_qs, urlencode, urlparse, urlsplit, urlunsplit
 from uuid import uuid4
 

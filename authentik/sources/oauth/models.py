@@ -1,5 +1,5 @@
 """OAuth Client models"""
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.db import models
 from django.http.request import HttpRequest

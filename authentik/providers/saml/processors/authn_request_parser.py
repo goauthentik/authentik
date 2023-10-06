@@ -1,7 +1,6 @@
 """SAML AuthNRequest Parser and dataclass"""
 from base64 import b64decode
 from dataclasses import dataclass
-from typing import Optional
 from urllib.parse import quote_plus
 from xml.etree.ElementTree import ParseError  # nosec
 

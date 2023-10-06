@@ -2,7 +2,6 @@
 import time
 from base64 import b32encode
 from binascii import unhexlify
-from typing import Optional
 from urllib.parse import quote, urlencode
 
 from django.conf import settings

@@ -1,5 +1,5 @@
 """AuthenticatedSessions API Viewset"""
-from typing import Optional, TypedDict
+from typing import TypedDict
 
 from django_filters.rest_framework import DjangoFilterBackend
 from guardian.utils import get_anonymous_user

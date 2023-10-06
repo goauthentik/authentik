@@ -1,7 +1,6 @@
 """SAML Identity Provider Metadata Processor"""
-from hashlib import sha256
-from typing import Optional
 from collections.abc import Iterator
+from hashlib import sha256
 
 import xmlsec  # nosec
 from django.http import HttpRequest

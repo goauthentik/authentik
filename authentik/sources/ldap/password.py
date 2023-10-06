@@ -1,7 +1,6 @@
 """Help validate and update passwords in LDAP"""
 from enum import IntFlag
 from re import split
-from typing import Optional
 
 from ldap3 import BASE
 from ldap3.core.exceptions import LDAPAttributeError, LDAPUnwillingToPerformResult

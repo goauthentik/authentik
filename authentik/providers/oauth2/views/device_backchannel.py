@@ -1,5 +1,4 @@
 """Device flow views"""
-from typing import Optional
 from urllib.parse import urlencode
 
 from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, JsonResponse

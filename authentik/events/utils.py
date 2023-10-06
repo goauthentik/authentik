@@ -6,7 +6,7 @@ from datetime import date, datetime, time, timedelta
 from enum import Enum
 from pathlib import Path
 from types import GeneratorType
-from typing import Any, Optional
+from typing import Any
 from uuid import UUID
 
 from django.contrib.auth.models import AnonymousUser

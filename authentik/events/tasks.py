@@ -1,5 +1,4 @@
 """Event notification tasks"""
-from typing import Optional
 
 from django.db.models.query_utils import Q
 from guardian.shortcuts import get_anonymous_user

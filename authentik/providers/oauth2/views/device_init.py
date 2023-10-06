@@ -1,5 +1,4 @@
 """Device flow views"""
-from typing import Optional
 
 from django.http import HttpRequest, HttpResponse
 from django.utils.translation import gettext as _

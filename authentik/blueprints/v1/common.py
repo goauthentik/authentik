@@ -1,13 +1,13 @@
 """transfer common classes"""
 from collections import OrderedDict
+from collections.abc import Iterable, Mapping
 from copy import copy
 from dataclasses import asdict, dataclass, field, is_dataclass
 from enum import Enum
 from functools import reduce
 from operator import ixor
 from os import getenv
-from typing import Any, Literal, Optional, Union
-from collections.abc import Iterable, Mapping
+from typing import Any, Literal, Union
 from uuid import UUID
 
 from deepmerge import always_merger

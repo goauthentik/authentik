@@ -1,5 +1,5 @@
 """http helpers"""
-from typing import Any, Optional
+from typing import Any
 
 from django.http import HttpRequest
 from requests.sessions import Session

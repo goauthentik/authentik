@@ -1,6 +1,5 @@
 """Groups API Viewset"""
 from json import loads
-from typing import Optional
 
 from django.http import Http404
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter

@@ -1,8 +1,8 @@
 """Events middleware"""
+from collections.abc import Callable
 from functools import partial
 from threading import Thread
-from typing import Any, Optional
-from collections.abc import Callable
+from typing import Any
 
 from django.conf import settings
 from django.contrib.sessions.models import Session

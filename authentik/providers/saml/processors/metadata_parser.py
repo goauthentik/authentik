@@ -1,6 +1,5 @@
 """SAML ServiceProvider Metadata Parser and dataclass"""
 from dataclasses import dataclass
-from typing import Optional
 
 import xmlsec
 from cryptography.hazmat.backends import default_backend

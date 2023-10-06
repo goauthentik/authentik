@@ -1,10 +1,10 @@
 """authentik expression policy evaluator"""
 import re
 import socket
+from collections.abc import Iterable
 from ipaddress import ip_address, ip_network
 from textwrap import indent
-from typing import Any, Optional
-from collections.abc import Iterable
+from typing import Any
 
 from cachetools import TLRUCache, cached
 from django.core.exceptions import FieldError

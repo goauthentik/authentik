@@ -10,7 +10,7 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from sys import argv, stderr
 from time import time
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 import yaml

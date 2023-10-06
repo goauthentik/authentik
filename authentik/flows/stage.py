@@ -1,5 +1,5 @@
 """authentik stage Base view"""
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpRequest

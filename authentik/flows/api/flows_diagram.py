@@ -1,6 +1,5 @@
 """Flows Diagram API"""
 from dataclasses import dataclass, field
-from typing import Optional
 
 from django.utils.translation import gettext as _
 from guardian.shortcuts import get_objects_for_user

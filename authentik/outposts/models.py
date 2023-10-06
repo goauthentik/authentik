@@ -1,8 +1,8 @@
 """Outpost models"""
+from collections.abc import Iterable
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
-from typing import Any, Optional
-from collections.abc import Iterable
+from typing import Any
 from uuid import uuid4
 
 from dacite.core import from_dict

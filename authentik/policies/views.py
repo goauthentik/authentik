@@ -1,5 +1,5 @@
 """authentik access helper classes"""
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib import messages
 from django.contrib.auth.mixins import AccessMixin

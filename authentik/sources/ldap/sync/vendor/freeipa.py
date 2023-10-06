@@ -1,7 +1,7 @@
 """FreeIPA specific"""
+from collections.abc import Generator
 from datetime import datetime
 from typing import Any
-from collections.abc import Generator
 
 from pytz import UTC
 

@@ -1,8 +1,8 @@
 """Prompt Stage Logic"""
+from collections.abc import Callable, Iterator
 from email.policy import Policy
 from types import MethodType
 from typing import Any
-from collections.abc import Callable, Iterator
 
 from django.db.models.query import QuerySet
 from django.http import HttpRequest, HttpResponse

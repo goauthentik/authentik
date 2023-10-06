@@ -1,5 +1,5 @@
 """Facebook OAuth Views"""
-from typing import Any, Optional
+from typing import Any
 
 from facebook import GraphAPI
 

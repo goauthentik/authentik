@@ -1,5 +1,5 @@
 """Twitter OAuth Views"""
-from typing import Any, Optional
+from typing import Any
 
 from authentik.lib.generators import generate_id
 from authentik.sources.oauth.clients.oauth2 import (

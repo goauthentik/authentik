@@ -5,7 +5,7 @@ import json
 from dataclasses import asdict
 from functools import cached_property
 from hashlib import sha256
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urlparse, urlunparse
 
 from cryptography.hazmat.primitives.asymmetric.ec import EllipticCurvePrivateKey

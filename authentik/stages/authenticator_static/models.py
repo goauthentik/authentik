@@ -1,7 +1,6 @@
 """Static Authenticator models"""
 from base64 import b32encode
 from os import urandom
-from typing import Optional
 
 from django.conf import settings
 from django.db import models

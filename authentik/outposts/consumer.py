@@ -2,7 +2,7 @@
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import IntEnum
-from typing import Any, Optional
+from typing import Any
 
 from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection

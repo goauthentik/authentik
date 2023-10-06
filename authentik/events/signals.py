@@ -1,5 +1,5 @@
 """authentik events signal listener"""
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.db.models.signals import post_save, pre_delete

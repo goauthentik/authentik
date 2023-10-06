@@ -1,6 +1,5 @@
 """authentik core dataclasses"""
 from dataclasses import dataclass
-from typing import Optional
 
 from rest_framework.fields import CharField
 

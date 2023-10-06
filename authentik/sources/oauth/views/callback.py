@@ -1,6 +1,6 @@
 """OAuth Callback Views"""
 from json import JSONDecodeError
-from typing import Any, Optional
+from typing import Any
 
 from django.conf import settings
 from django.contrib import messages

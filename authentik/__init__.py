@@ -1,6 +1,5 @@
 """authentik root module"""
 from os import environ
-from typing import Optional
 
 __version__ = "2023.10.2"
 ENV_GIT_HASH_KEY = "GIT_BUILD_HASH"

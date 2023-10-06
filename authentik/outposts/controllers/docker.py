@@ -1,6 +1,5 @@
 """Docker controller"""
 from time import sleep
-from typing import Optional
 from urllib.parse import urlparse
 
 from django.conf import settings

@@ -1,9 +1,8 @@
 """authentik policy engine"""
+from collections.abc import Iterator
 from multiprocessing import Pipe, current_process
 from multiprocessing.connection import Connection
 from timeit import default_timer
-from typing import Optional
-from collections.abc import Iterator
 
 from django.core.cache import cache
 from django.http import HttpRequest

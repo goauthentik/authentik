@@ -1,6 +1,6 @@
 """Source decision helper"""
 from enum import Enum
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib import messages
 from django.db import IntegrityError

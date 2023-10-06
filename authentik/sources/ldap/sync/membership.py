@@ -1,6 +1,6 @@
 """Sync LDAP Users and groups into authentik"""
-from typing import Any, Optional
 from collections.abc import Generator
+from typing import Any
 
 from django.db.models import Q
 from ldap3 import SUBTREE

@@ -1,5 +1,4 @@
 """Enterprise license policies"""
-from typing import Optional
 
 from authentik.core.models import User, UserTypes
 from authentik.enterprise.models import LicenseKey

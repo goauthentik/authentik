@@ -1,5 +1,4 @@
 """authentik LDAP Authentication Backend"""
-from typing import Optional
 
 from django.http import HttpRequest
 from ldap3.core.exceptions import LDAPException, LDAPInvalidCredentialsResult

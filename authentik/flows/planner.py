@@ -1,6 +1,6 @@
 """Flows Planner"""
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any
 
 from django.core.cache import cache
 from django.http import HttpRequest
@@ -142,9 +142,7 @@ class FlowPlanner:
         ):
             raise FlowNonApplicableException()
 
-    def plan(
-        self, request: HttpRequest, default_context: dict[str, Any] | None = None
-    ) -> FlowPlan:
+    def plan(self, request: HttpRequest, default_context: dict[str, Any] | None = None) -> FlowPlan:
         """Check each of the flows' policies, check policies for each stage with PolicyBinding
         and return ordered list"""
         with Hub.current.start_span(

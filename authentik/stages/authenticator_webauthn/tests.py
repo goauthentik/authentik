@@ -46,8 +46,8 @@ class TestAuthenticatorWebAuthnStage(FlowTestCase):
         session = self.client.session
         session[SESSION_KEY_PLAN] = plan
         session[SESSION_KEY_WEBAUTHN_CHALLENGE] = b64decode(
-                b"o90Yh1osqW3mjGift+6WclWOya5lcdff/G0mqueN3hChacMUz"
-                b"V4mxiDafuQ0x0e1d/fcPai0fx/jMBZ8/nG2qQ=="
+            b"o90Yh1osqW3mjGift+6WclWOya5lcdff/G0mqueN3hChacMUz"
+            b"V4mxiDafuQ0x0e1d/fcPai0fx/jMBZ8/nG2qQ=="
         )
         session.save()
 

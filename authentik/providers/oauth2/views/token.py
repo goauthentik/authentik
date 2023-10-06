@@ -5,7 +5,7 @@ from datetime import datetime
 from hashlib import sha256
 from re import error as RegexError
 from re import fullmatch
-from typing import Any, Optional
+from typing import Any
 
 from django.http import HttpRequest, HttpResponse
 from django.utils import timezone

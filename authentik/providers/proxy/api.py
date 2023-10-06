@@ -1,5 +1,5 @@
 """ProxyProvider API Views"""
-from typing import Any, Optional
+from typing import Any
 
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field

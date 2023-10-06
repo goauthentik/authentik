@@ -2,7 +2,6 @@
 from os import chmod
 from ssl import CERT_REQUIRED
 from tempfile import NamedTemporaryFile, mkdtemp
-from typing import Optional
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _

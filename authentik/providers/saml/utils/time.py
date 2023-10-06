@@ -1,6 +1,5 @@
 """Time utilities"""
 import datetime
-from typing import Optional
 
 
 def get_time_string(delta: datetime.timedelta | None = None) -> str:

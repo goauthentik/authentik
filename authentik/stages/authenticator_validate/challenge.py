@@ -1,5 +1,4 @@
 """Validation stage challenge checking"""
-from typing import Optional
 from urllib.parse import urlencode
 
 from django.http import HttpRequest

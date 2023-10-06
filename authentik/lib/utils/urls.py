@@ -1,5 +1,4 @@
 """URL-related utils"""
-from typing import Optional
 from urllib.parse import urlparse
 
 from django.http import HttpResponse, QueryDict
@@ -16,9 +15,7 @@ def is_url_absolute(url):
     return bool(urlparse(url).netloc)
 
 
-def redirect_with_qs(
-    view: str, get_query_set: QueryDict | None = None, **kwargs
-) -> HttpResponse:
+def redirect_with_qs(view: str, get_query_set: QueryDict | None = None, **kwargs) -> HttpResponse:
     """Wrapper to redirect whilst keeping GET Parameters"""
     try:
         target = reverse(view, kwargs=kwargs)

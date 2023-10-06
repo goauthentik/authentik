@@ -1,7 +1,7 @@
 """Base Kubernetes Reconciler"""
 from dataclasses import asdict
 from json import dumps
-from typing import TYPE_CHECKING, Generic, Optional, TypeVar
+from typing import TYPE_CHECKING, Generic, TypeVar
 
 from dacite.core import from_dict
 from django.utils.text import slugify

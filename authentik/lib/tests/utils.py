@@ -19,9 +19,7 @@ def load_fixture(path: str, **kwargs) -> str:
     current = currentframe()
     parent = current.f_back
     calling_file_path = parent.f_globals["__file__"]
-    with open(
-        Path(calling_file_path).resolve().parent / Path(path), encoding="utf-8"
-    ) as _fixture:
+    with open(Path(calling_file_path).resolve().parent / Path(path), encoding="utf-8") as _fixture:
         fixture = _fixture.read()
         try:
             return fixture % kwargs

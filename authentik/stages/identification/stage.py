@@ -2,7 +2,7 @@
 from dataclasses import asdict
 from random import SystemRandom
 from time import sleep
-from typing import Any, Optional
+from typing import Any
 
 from django.core.exceptions import PermissionDenied
 from django.db.models import Q

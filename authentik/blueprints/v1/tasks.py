@@ -2,7 +2,6 @@
 from dataclasses import asdict, dataclass, field
 from hashlib import sha512
 from pathlib import Path
-from typing import Optional
 
 from dacite.core import from_dict
 from django.db import DatabaseError, InternalError, ProgrammingError
@@ -209,7 +208,14 @@ def apply_blueprint(self: MonitoredTask, instance_pk: str):
         instance.last_applied_hash = file_hash
         instance.last_applied = now()
         self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL))
-    except (DatabaseError, ProgrammingError, InternalError, OSError, BlueprintRetrievalFailed, EntryInvalidError) as exc:
+    except (
+        DatabaseError,
+        ProgrammingError,
+        InternalError,
+        OSError,
+        BlueprintRetrievalFailed,
+        EntryInvalidError,
+    ) as exc:
         if instance:
             instance.status = BlueprintInstanceStatus.ERROR
         self.set_status(TaskResult(TaskResultStatus.ERROR).with_error(exc))

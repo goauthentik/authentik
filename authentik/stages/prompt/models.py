@@ -1,5 +1,5 @@
 """prompt models"""
-from typing import Any, Optional, Type
+from typing import Any
 from urllib.parse import urlparse, urlunparse
 from uuid import uuid4
 

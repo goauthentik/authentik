@@ -1,7 +1,6 @@
 """Source type manager"""
-from enum import Enum
-from typing import Optional, Type
 from collections.abc import Callable
+from enum import Enum
 
 from django.http.request import HttpRequest
 from django.templatetags.static import static

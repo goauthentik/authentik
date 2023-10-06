@@ -2,7 +2,7 @@
 from os import R_OK, access
 from pathlib import Path
 from socket import gethostname
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import urlparse
 
 from asgiref.sync import async_to_sync

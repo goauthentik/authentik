@@ -2,7 +2,6 @@
 from os import unlink
 from pathlib import Path
 from tempfile import gettempdir
-from typing import Optional
 
 from docker.tls import TLSConfig
 

@@ -1,5 +1,4 @@
 """LDAP Provider"""
-from typing import Optional
 from collections.abc import Iterable
 
 from django.db import models

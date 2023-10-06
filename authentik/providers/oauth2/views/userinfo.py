@@ -1,5 +1,5 @@
 """authentik OAuth2 OpenID Userinfo views"""
-from typing import Any, Optional
+from typing import Any
 
 from deepmerge import always_merger
 from django.http import HttpRequest, HttpResponse

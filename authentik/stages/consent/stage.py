@@ -1,5 +1,4 @@
 """authentik consent stage"""
-from typing import Optional
 from uuid import uuid4
 
 from django.http import HttpRequest, HttpResponse

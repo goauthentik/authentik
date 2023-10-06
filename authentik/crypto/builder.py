@@ -1,7 +1,6 @@
 """Create self-signed certificates"""
 import datetime
 import uuid
-from typing import Optional
 
 from cryptography import x509
 from cryptography.hazmat.backends import default_backend

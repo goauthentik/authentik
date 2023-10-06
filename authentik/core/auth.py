@@ -1,6 +1,6 @@
 """Authenticate with tokens"""
 
-from typing import Any, Optional
+from typing import Any
 
 from django.contrib.auth.backends import ModelBackend
 from django.http.request import HttpRequest

@@ -1,6 +1,5 @@
 """Application API Views"""
 from datetime import timedelta
-from typing import Optional
 
 from django.core.cache import cache
 from django.db.models import QuerySet

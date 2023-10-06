@@ -1,6 +1,6 @@
 """Test helpers"""
 from json import loads
-from typing import Any, Optional
+from typing import Any
 
 from django.http.response import HttpResponse
 from django.urls.base import reverse

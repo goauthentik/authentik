@@ -1,8 +1,8 @@
 """Dynamically set SameSite depending if the upstream connection is TLS or not"""
+from collections.abc import Callable
 from hashlib import sha512
 from time import time
 from timeit import default_timer
-from collections.abc import Callable
 
 from django.conf import settings
 from django.contrib.sessions.backends.base import UpdateError

@@ -1,5 +1,4 @@
 """authentik SAML IDP Views"""
-from typing import Optional
 
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404

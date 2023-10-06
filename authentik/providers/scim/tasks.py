@@ -1,5 +1,5 @@
 """SCIM Provider tasks"""
-from typing import Any, Optional
+from typing import Any
 
 from celery.result import allow_join_result
 from django.core.paginator import Paginator

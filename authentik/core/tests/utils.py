@@ -1,5 +1,4 @@
 """Test Utils"""
-from typing import Optional
 
 from django.utils.text import slugify
 

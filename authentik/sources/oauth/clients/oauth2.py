@@ -1,6 +1,6 @@
 """OAuth 2 Clients"""
 from json import loads
-from typing import Any, Optional
+from typing import Any
 from urllib.parse import parse_qsl
 
 from django.utils.crypto import constant_time_compare, get_random_string

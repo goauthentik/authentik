@@ -1,6 +1,5 @@
 """authentik OAuth2 JWKS Views"""
 from base64 import b64encode, urlsafe_b64encode
-from typing import Optional
 
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric.ec import (

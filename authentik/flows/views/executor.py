@@ -1,6 +1,5 @@
 """authentik multi-stage authentication engine"""
 from copy import deepcopy
-from typing import Optional
 
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -496,9 +495,7 @@ class ToDefaultFlow(View):
         if self.designation == FlowDesignation.AUTHENTICATION:
             flow = tenant.flow_authentication
             # Check if we have a default flow from application
-            application: Application | None = self.request.session.get(
-                SESSION_KEY_APPLICATION_PRE
-            )
+            application: Application | None = self.request.session.get(SESSION_KEY_APPLICATION_PRE)
             if application and application.provider and application.provider.authentication_flow:
                 flow = application.provider.authentication_flow
         elif self.designation == FlowDesignation.INVALIDATION:

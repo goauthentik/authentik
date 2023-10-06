@@ -1,6 +1,6 @@
 """Twitch OAuth Views"""
 from json import dumps
-from typing import Any, Optional
+from typing import Any
 
 from authentik.sources.oauth.clients.oauth2 import UserprofileHeaderAuthClient
 from authentik.sources.oauth.types.registry import SourceType, registry

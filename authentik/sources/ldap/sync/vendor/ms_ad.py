@@ -1,8 +1,8 @@
 """Active Directory specific"""
+from collections.abc import Generator
 from datetime import datetime
 from enum import IntFlag
 from typing import Any
-from collections.abc import Generator
 
 from pytz import UTC
 

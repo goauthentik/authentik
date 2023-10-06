@@ -1,6 +1,6 @@
 """Stage Markers"""
 from dataclasses import dataclass
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 
 from django.http.request import HttpRequest
 from structlog.stdlib import get_logger

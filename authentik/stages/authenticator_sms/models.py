@@ -1,6 +1,5 @@
 """SMS Authenticator models"""
 from hashlib import sha256
-from typing import Optional
 
 from django.contrib.auth import get_user_model
 from django.db import models
