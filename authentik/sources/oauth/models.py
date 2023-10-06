@@ -1,5 +1,5 @@
 """OAuth Client models"""
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Type
 
 from django.db import models
 from django.http.request import HttpRequest
@@ -66,7 +66,7 @@ class OAuthSource(Source):
         return "ak-source-oauth-form"
 
     @property
-    def serializer(self) -> type[Serializer]:
+    def serializer(self) -> Type[Serializer]:
         from authentik.sources.oauth.api.source import OAuthSourceSerializer
 
         return OAuthSourceSerializer
