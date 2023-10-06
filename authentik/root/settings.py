@@ -4,6 +4,7 @@ import importlib
 import os
 from hashlib import sha512
 from pathlib import Path
+from urllib.parse import quote_plus
 
 from celery.schedules import crontab
 from sentry_sdk import set_tag
@@ -193,8 +194,9 @@ _redis_url = (
 CACHES = {
     "default": {
         "BACKEND": CONFIG.get("cache.backend", "django_redis.cache.RedisCache"),
-        "LOCATION": f"{_redis_url}/{CONFIG.get('redis.db')}",
+        "LOCATION": CONFIG.get("cache.url") or f"{_redis_url}/{CONFIG.get('redis.db')}",
         "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
+        "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
         "KEY_PREFIX": "authentik_cache",
     }
 }
@@ -253,7 +255,7 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": CONFIG.get("channel.backend", "channels_redis.core.RedisChannelLayer"),
         "CONFIG": {
-            "hosts": [f"{_redis_url}/{CONFIG.get('redis.db')}"],
+            "hosts": [CONFIG.get("channel.url", f"{_redis_url}/{CONFIG.get('redis.db')}")],
             "prefix": "authentik_channels",
         },
     },
@@ -346,8 +348,8 @@ CELERY = {
     },
     "task_create_missing_queues": True,
     "task_default_queue": "authentik",
-    "broker_url": CONFIG.get("broker.url") or CONFIG.get("redis.url"),
-    "result_backend": CONFIG.get("result_backend.url") or CONFIG.get("redis.url"),
+    "broker_url": CONFIG.get("broker.url") or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
+    "result_backend": CONFIG.get("result_backend.url") or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
 }
 
 # Sentry integration
