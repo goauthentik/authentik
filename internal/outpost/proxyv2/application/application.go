@@ -280,7 +280,9 @@ func (a *Application) handleSignOut(rw http.ResponseWriter, r *http.Request) {
 		"id_token_hint": []string{cc.RawToken},
 	}
 	redirect += "?" + uv.Encode()
-	err = a.Logout(r.Context(), cc.Sub)
+	err = a.Logout(r.Context(), func(c Claims) bool {
+		return c.Sub == cc.Sub
+	})
 	if err != nil {
 		a.log.WithError(err).Warning("failed to logout of other sessions")
 	}
