@@ -3,11 +3,11 @@ from urllib.parse import urlparse
 
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.parser import (
+    get_client,
+    get_connection_pool,
+    get_redis_options,
     parse_url,
     process_config,
-    get_redis_options,
-    get_connection_pool,
-    get_client,
 )
 from lifecycle.migrate import BaseMigration
 
