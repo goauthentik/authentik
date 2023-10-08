@@ -110,18 +110,18 @@ class Migration(BaseMigration):
         return bool(self.cur.rowcount)
 
     def run(self):
-		with self.con.transaction():
+        with self.con.transaction():
             self.cur.execute(SQL_STATEMENT)
-        	# We also need to clean the cache to make sure no pickeled objects still exist
-        	url = urlparse(CONFIG.get("redis.url"))
-        	pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
-        	for db in [
-            	CONFIG.get_int("redis.message_queue_db"),
-            	CONFIG.get_int("redis.cache_db"),
-            	CONFIG.get_int("redis.ws_db"),
-        	]:
-            	redis_kwargs["db"] = db
-            	config = process_config(url, pool_kwargs, redis_kwargs, tls_kwargs)
-            	pool, client_config = get_connection_pool(config)
-            	_, redis = get_client(client_config, pool)
-           		redis.flushall()
+            # We also need to clean the cache to make sure no pickeled objects still exist
+            url = urlparse(CONFIG.get("redis.url"))
+            pool_kwargs, redis_kwargs, tls_kwargs = get_redis_options(url)
+            for db in [
+                CONFIG.get_int("redis.message_queue_db"),
+                CONFIG.get_int("redis.cache_db"),
+                CONFIG.get_int("redis.ws_db"),
+            ]:
+                redis_kwargs["db"] = db
+                config = process_config(url, pool_kwargs, redis_kwargs, tls_kwargs)
+                pool, client_config = get_connection_pool(config)
+                _, redis = get_client(client_config, pool)
+                redis.flushall()
