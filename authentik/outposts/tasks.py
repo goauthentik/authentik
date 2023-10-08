@@ -5,7 +5,6 @@ from socket import gethostname
 from typing import Any, Optional
 from urllib.parse import urlparse
 
-import yaml
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from django.core.cache import cache
@@ -16,6 +15,7 @@ from docker.constants import DEFAULT_UNIX_SOCKET
 from kubernetes.config.incluster_config import SERVICE_TOKEN_FILENAME
 from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
+from yaml import safe_load
 
 from authentik.events.monitored_tasks import (
     MonitoredTask,
@@ -279,7 +279,7 @@ def outpost_connection_discovery(self: MonitoredTask):
             with kubeconfig_path.open("r", encoding="utf8") as _kubeconfig:
                 KubernetesServiceConnection.objects.create(
                     name=kubeconfig_local_name,
-                    kubeconfig=yaml.safe_load(_kubeconfig),
+                    kubeconfig=safe_load(_kubeconfig),
                 )
     unix_socket_path = urlparse(DEFAULT_UNIX_SOCKET).path
     socket = Path(unix_socket_path)
