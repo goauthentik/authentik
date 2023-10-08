@@ -1296,11 +1296,6 @@
         <target>验证上游服务器的 SSL 证书。</target>
         
       </trans-unit>
-      <trans-unit id="s9c73dced379c37a2">
-        <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you).</source>
-        <target>与 nginx 的 auth_request 或 traefik 的 ForwardAuth 一起使用此提供程序。每个应用程序/域名都需要自己的提供程序。此外，在每个域名上，/outpost.goauthentik.io 必须路由到前哨（在使用托管的 Outpost 时，这已经为您处理好了）。</target>
-        
-      </trans-unit>
       <trans-unit id="s44c90273f08fb718">
         <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.</source>
         <target>与 nginx 的 auth_request 或 traefik 的 ForwardAuth 一起使用此提供程序。每个根域名只需要一个提供程序。您无法管理每个应用程序的授权，但不必为每个应用程序分别创建提供程序。</target>
@@ -7818,6 +7813,15 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="se9e9e1d6799b86a5">
   <source>WebAuthn not supported by browser.</source>
   <target>浏览器不支持 WebAuthn。</target>
+</trans-unit>
+<trans-unit id="sff0ac1ace2d90709">
+  <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</source>
+</trans-unit>
+<trans-unit id="scb58b8a60cad8762">
+  <source>Default relay state</source>
+</trans-unit>
+<trans-unit id="s6827a456c9dfc6ee">
+  <source>When using IDP-initiated logins, the relay state will be set to this value.</source>
 </trans-unit>
     </body>
   </file>

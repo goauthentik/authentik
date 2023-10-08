@@ -8,6 +8,7 @@ from authentik.blueprints.tests import apply_blueprint
 from authentik.core.tests.utils import create_test_admin_user, create_test_cert, create_test_flow
 from authentik.crypto.models import CertificateKeyPair
 from authentik.events.models import Event, EventAction
+from authentik.lib.generators import generate_id
 from authentik.lib.tests.utils import get_request
 from authentik.providers.saml.models import SAMLPropertyMapping, SAMLProvider
 from authentik.providers.saml.processors.assertion import AssertionProcessor
@@ -264,3 +265,10 @@ class TestAuthNRequest(TestCase):
             events.first().context["message"],
             "Failed to evaluate property-mapping: 'test'",
         )
+
+    def test_idp_initiated(self):
+        """Test IDP-initiated login"""
+        self.provider.default_relay_state = generate_id()
+        request = AuthNRequestParser(self.provider).idp_initiated()
+        self.assertEqual(request.id, None)
+        self.assertEqual(request.relay_state, self.provider.default_relay_state)
