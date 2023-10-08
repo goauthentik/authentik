@@ -43,7 +43,7 @@ DEPRECATIONS = {
 
 
 def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
-    """Recursively walk through `root`, checking each part of `path` split by `sep`.
+    """Recursively walk through `root`, checking each part of `path` separated by `sep`.
     If at any point a dict does not exist, return default"""
     for comp in path.split(sep):
         if root and comp in root:
@@ -53,7 +53,19 @@ def get_path_from_dict(root: dict, path: str, sep=".", default=None) -> Any:
     return root
 
 
-@dataclass
+def set_path_in_dict(root: dict, path: str, value: Any, sep="."):
+    """Recursively walk through `root`, checking each part of `path` separated by `sep`
+    and setting the last value to `value`"""
+    # Walk each component of the path
+    path_parts = path.split(sep)
+    for comp in path_parts[:-1]:
+        if comp not in root:
+            root[comp] = {}
+        root = root.get(comp, {})
+    root[path_parts[-1]] = value
+
+
+@dataclass(slots=True)
 class Attr:
     """Single configuration attribute"""
 
@@ -73,6 +85,10 @@ class Attr:
     # depending on source_type, might contain the environment variable or the path
     # to the config file containing this change or the file containing this value
     source: Optional[str] = field(default=None)
+
+    def __post_init__(self):
+        if isinstance(self.value, Attr):
+            raise RuntimeError(f"config Attr with nested Attr for source {self.source}")
 
 
 class AttrEncoder(JSONEncoder):

@@ -105,7 +105,7 @@
         "pyright": "^1.1.330",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
-        "rollup": "^4.0.0",
+        "rollup": "^4.0.2",
         "rollup-plugin-copy": "^3.5.0",
         "rollup-plugin-cssimport": "^1.0.3",
         "rollup-plugin-postcss-lit": "^2.1.0",
