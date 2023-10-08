@@ -32,7 +32,7 @@ redis:
   username: ""
   password: ""
   tls: false
-  tls_reqs: "required"
+  tls_reqs: "none"
 
 # broker:
   # url: ""
