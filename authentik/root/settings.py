@@ -343,7 +343,7 @@ if CONFIG.get("broker.transport_options"):
         )
         _broker_transport_options_str = "{" + _broker_transport_options_str + "}"
         _broker_transport_options.update(ast.literal_eval(_broker_transport_options_str))
-    except Exception as e:
+    except (IndentationError, ValueError) as e:
         CONFIG.log(
             "warning", f"Ignored invalid broker transport options due to exception: {str(e)}"
         )

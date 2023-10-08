@@ -8,11 +8,10 @@ from glob import glob
 from json import JSONEncoder, dumps, loads
 from json.decoder import JSONDecodeError
 from pathlib import Path
-from string import Template
 from sys import argv, stderr
 from time import time
 from typing import Any, Optional
-from urllib.parse import quote_plus, urlencode, urlparse
+from urllib.parse import urlparse
 
 import yaml
 from django.conf import ImproperlyConfigured
