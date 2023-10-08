@@ -104,7 +104,7 @@ To check if your config has been applied correctly, you can run the following co
 ## Broker Settings
 
 -   `AUTHENTIK_BROKER__URL`: Broker configuration URL, defaults to Redis using [the respective settings](#redis-settings)
--   `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64 encoded broker transport options, is by default determined using the environment variable `AUTHENTIK_REDIS__URL`
+-   `AUTHENTIK_BROKER__TRANSPORT_OPTIONS`: Base64 encoded broker transport options
 
     :::info
     `AUTHENTIK_REDIS__CACHE_TIMEOUT_REPUTATION` only applies to the cache expiry, see [`AUTHENTIK_REPUTATION__EXPIRY`](#authentik_reputation__expiry) to control how long reputation is persisted for.
