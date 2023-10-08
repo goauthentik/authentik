@@ -16293,6 +16293,10 @@ paths:
           type: string
           format: uuid
       - in: query
+        name: default_relay_state
+        schema:
+          type: string
+      - in: query
         name: digest_algorithm
         schema:
           type: string
@@ -36303,6 +36307,9 @@ components:
 
             * `redirect` - Redirect
             * `post` - Post
+        default_relay_state:
+          type: string
+          description: Default relay_state value for IDP-initiated logins
     PatchedSAMLSourceRequest:
       type: object
       description: SAMLSource Serializer
@@ -38480,6 +38487,9 @@ components:
 
             * `redirect` - Redirect
             * `post` - Post
+        default_relay_state:
+          type: string
+          description: Default relay_state value for IDP-initiated logins
         url_download_metadata:
           type: string
           description: Get metadata download URL
@@ -38624,6 +38634,9 @@ components:
 
             * `redirect` - Redirect
             * `post` - Post
+        default_relay_state:
+          type: string
+          description: Default relay_state value for IDP-initiated logins
       required:
       - acs_url
       - authorization_flow
