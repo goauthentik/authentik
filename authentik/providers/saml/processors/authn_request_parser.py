@@ -175,4 +175,7 @@ class AuthNRequestParser:
 
     def idp_initiated(self) -> AuthNRequest:
         """Create IdP Initiated AuthNRequest"""
-        return AuthNRequest()
+        relay_state = None
+        if self.provider.default_relay_state != "":
+            relay_state = self.provider.default_relay_state
+        return AuthNRequest(relay_state=relay_state)

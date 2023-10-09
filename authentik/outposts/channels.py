@@ -27,6 +27,9 @@ class WebsocketMessageInstruction(IntEnum):
     # Message sent by us to trigger an Update
     TRIGGER_UPDATE = 2
 
+    # Provider specific message
+    PROVIDER_SPECIFIC = 3
+
 
 @dataclass(slots=True)
 class WebsocketMessage:
@@ -130,4 +133,15 @@ class OutpostConsumer(AuthJsonConsumer):
         """Event handler which is called by post_save signals, Send update instruction"""
         self.send_json(
             asdict(WebsocketMessage(instruction=WebsocketMessageInstruction.TRIGGER_UPDATE))
+        )
+
+    def event_provider_specific(self, event):
+        """Event handler which can be called by provider-specific
+        implementations to send specific messages to the outpost"""
+        self.send_json(
+            asdict(
+                WebsocketMessage(
+                    instruction=WebsocketMessageInstruction.PROVIDER_SPECIFIC, args=event
+                )
+            )
         )
