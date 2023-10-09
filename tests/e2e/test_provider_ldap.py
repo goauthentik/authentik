@@ -231,6 +231,7 @@ class TestProviderLDAP(SeleniumTestCase):
         for obj in response:
             del obj["raw_attributes"]
             del obj["raw_dn"]
+            obj["attributes"] = dict(obj["attributes"])
         o_user = outpost.user
         expected = [
             {
@@ -244,11 +245,13 @@ class TestProviderLDAP(SeleniumTestCase):
                     "sn": o_user.name,
                     "mail": "",
                     "objectClass": [
-                        "user",
+                        "top",
+                        "person",
                         "organizationalPerson",
                         "inetOrgPerson",
-                        "goauthentik.io/ldap/user",
+                        "user",
                         "posixAccount",
+                        "goauthentik.io/ldap/user",
                     ],
                     "uidNumber": 2000 + o_user.pk,
                     "gidNumber": 2000 + o_user.pk,
@@ -270,11 +273,13 @@ class TestProviderLDAP(SeleniumTestCase):
                     "sn": embedded_account.name,
                     "mail": "",
                     "objectClass": [
-                        "user",
+                        "top",
+                        "person",
                         "organizationalPerson",
                         "inetOrgPerson",
-                        "goauthentik.io/ldap/user",
+                        "user",
                         "posixAccount",
+                        "goauthentik.io/ldap/user",
                     ],
                     "uidNumber": 2000 + embedded_account.pk,
                     "gidNumber": 2000 + embedded_account.pk,
@@ -296,11 +301,13 @@ class TestProviderLDAP(SeleniumTestCase):
                     "sn": self.user.name,
                     "mail": self.user.email,
                     "objectClass": [
-                        "user",
+                        "top",
+                        "person",
                         "organizationalPerson",
                         "inetOrgPerson",
-                        "goauthentik.io/ldap/user",
+                        "user",
                         "posixAccount",
+                        "goauthentik.io/ldap/user",
                     ],
                     "uidNumber": 2000 + self.user.pk,
                     "gidNumber": 2000 + self.user.pk,
