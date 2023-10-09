@@ -57,3 +57,14 @@ def backchannel_provider_pre_save(sender: type[Model], instance: Model, **_):
     if not isinstance(instance, BackchannelProvider):
         return
     instance.is_backchannel = True
+
+
+@receiver(pre_save, sender=Role)
+def rbac_role_pre_save(sender: type[Role], instance: Role, **_):
+    """Ensure role has a group object created for it"""
+    if hasattr(instance, "group"):
+        return
+    group, _ = DjangoGroup.objects.get_or_create(name=instance.name)
+    instance.group = group
+
+

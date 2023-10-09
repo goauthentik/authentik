@@ -179,8 +179,11 @@ class Role(models.Model):
     # on top of django
     group = models.OneToOneField("auth.Group", on_delete=models.CASCADE)
 
+    # name field has the same constraints as the group model
+    name = models.TextField(max_length=150, unique=True)
+
     def __str__(self) -> str:
-        return f"Role {self.group.name}"
+        return f"Role {self.name}"
 
     class Meta:
         verbose_name = _("Role")
