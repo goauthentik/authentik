@@ -1,6 +1,4 @@
 """root settings for authentik"""
-import ast
-import base64
 import importlib
 import os
 from hashlib import sha512
@@ -331,23 +329,6 @@ USE_TZ = True
 
 LOCALE_PATHS = ["./locale"]
 
-_broker_transport_options = {}
-# Update broker transport options using Base64 encoded string
-if CONFIG.get("broker.transport_options"):
-    try:
-        _broker_transport_options_str = base64.b64decode(
-            CONFIG.get("broker.transport_options")
-        ).decode("utf-8")
-        _broker_transport_options_str = (
-            _broker_transport_options_str.strip().lstrip("{").rstrip("}")
-        )
-        _broker_transport_options_str = "{" + _broker_transport_options_str + "}"
-        _broker_transport_options.update(ast.literal_eval(_broker_transport_options_str))
-    except (IndentationError, ValueError) as e:
-        CONFIG.log(
-            "warning", f"Ignored invalid broker transport options due to exception: {str(e)}"
-        )
-
 CELERY = {
     "task_soft_time_limit": 600,
     "worker_max_tasks_per_child": 50,
@@ -368,7 +349,7 @@ CELERY = {
     "task_default_queue": "authentik",
     "broker_url": CONFIG.get("broker.url")
     or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
-    "broker_transport_options": _broker_transport_options,
+    "broker_transport_options": CONFIG.get_dict_from_b64_json("broker.transport_options"),
     "result_backend": CONFIG.get("result_backend.url")
     or f"{_redis_url}/{CONFIG.get('redis.db')}{_redis_celery_tls_requirements}",
 }

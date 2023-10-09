@@ -1,4 +1,6 @@
 """authentik core config loader"""
+import ast
+import base64
 import os
 from collections.abc import Mapping
 from contextlib import contextmanager
@@ -295,6 +297,23 @@ class ConfigLoader:
     def get_bool(self, path: str, default=False) -> bool:
         """Wrapper for get that converts value into boolean"""
         return str(self.get(path, default)).lower() == "true"
+
+    def get_dict_from_b64_json(self, path: str, default=None) -> dict:
+        """Wrapper for get that converts value from Base64 encoded string into dictionary"""
+        config_value = self.get(path)
+        if config_value is None:
+            return {}
+        try:
+            b64decoded_str = base64.b64decode(config_value).decode("utf-8")
+            b64decoded_str = b64decoded_str.strip().lstrip("{").rstrip("}")
+            b64decoded_str = "{" + b64decoded_str + "}"
+            return ast.literal_eval(b64decoded_str)
+        except (IndentationError, TypeError, ValueError) as exc:
+            self.log(
+                "warning",
+                f"Ignored invalid configuration for '{path}' due to exception: {str(exc)}",
+            )
+            return default if isinstance(default, dict) else {}
 
     def set(self, path: str, value: Any, sep="."):
         """Set value using same syntax as get()"""
