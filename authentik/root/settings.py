@@ -192,7 +192,7 @@ _redis_url = (
 
 CACHES = {
     "default": {
-        "BACKEND": CONFIG.get("cache.backend", "django_redis.cache.RedisCache"),
+        "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": CONFIG.get("cache.url") or f"{_redis_url}/{CONFIG.get('redis.db')}",
         "TIMEOUT": CONFIG.get_int("cache.timeout", 300),
         "OPTIONS": {"CLIENT_CLASS": "django_redis.client.DefaultClient"},
@@ -252,7 +252,7 @@ ASGI_APPLICATION = "authentik.root.asgi.application"
 
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": CONFIG.get("channel.backend", "channels_redis.core.RedisChannelLayer"),
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [CONFIG.get("channel.url", f"{_redis_url}/{CONFIG.get('redis.db')}")],
             "prefix": "authentik_channels",
