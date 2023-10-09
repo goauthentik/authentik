@@ -24,7 +24,7 @@ import {
     TransactionApplicationRequest,
     TransactionApplicationResponse,
 } from "@goauthentik/api";
-import type { ModelRequest } from "@goauthentik/api";
+import type { ModelRequest, ResponseError } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
 import providerModelsList from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
@@ -68,8 +68,8 @@ const successState: State = {
     icon: ["fa-check-circle", "pf-m-success"],
 };
 
-function extract(o: Record<string, any>): string[] {
-    function inner(o: Record<string, any>): string[] {
+function extract(o: Record<string, unknown>): string[] {
+    function inner(o: Record<string, unknown>): string[] {
         if (typeof o !== "object") {
             return [];
         }
@@ -77,7 +77,7 @@ function extract(o: Record<string, any>): string[] {
             return o;
         }
         return Object.keys(o)
-            .map((k) => inner(o[k]))
+            .map((k) => inner(o[k] as Record<string, unknown>))
             .flat();
     }
     return inner(o);
@@ -168,8 +168,8 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                 this.dispatchWizardUpdate({ status: "submitted" });
                 this.commitState = successState;
             })
-            .catch((resolution: any) => {
-                resolution.response.json().then((body: Record<string, any>) => {
+            .catch((resolution: ResponseError) => {
+                resolution.response.json().then((body: Record<string, unknown>) => {
                     this.errors = extract(body);
                     this.commitState = errorState;
                 });
