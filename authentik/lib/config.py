@@ -1,6 +1,6 @@
 """authentik core config loader"""
-import ast
 import base64
+import json
 import os
 from collections.abc import Mapping
 from contextlib import contextmanager
@@ -307,8 +307,8 @@ class ConfigLoader:
             b64decoded_str = base64.b64decode(config_value).decode("utf-8")
             b64decoded_str = b64decoded_str.strip().lstrip("{").rstrip("}")
             b64decoded_str = "{" + b64decoded_str + "}"
-            return ast.literal_eval(b64decoded_str)
-        except (IndentationError, TypeError, ValueError) as exc:
+            return json.loads(b64decoded_str)
+        except (JSONDecodeError, TypeError, ValueError) as exc:
             self.log(
                 "warning",
                 f"Ignored invalid configuration for '{path}' due to exception: {str(exc)}",
