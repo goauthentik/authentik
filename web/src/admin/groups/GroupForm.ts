@@ -14,7 +14,13 @@ import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, CoreGroupsListRequest, Group, PaginatedRoleList } from "@goauthentik/api";
+import {
+    CoreApi,
+    CoreGroupsListRequest,
+    Group,
+    PaginatedRoleList,
+    RbacApi,
+} from "@goauthentik/api";
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
@@ -47,7 +53,7 @@ export class GroupForm extends ModelForm<Group, string> {
     }
 
     async load(): Promise<void> {
-        this.roles = await new CoreApi(DEFAULT_CONFIG).coreRolesList({
+        this.roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList({
             ordering: "name",
         });
     }

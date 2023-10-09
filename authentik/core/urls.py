@@ -13,10 +13,6 @@ from authentik.core.api.devices import AdminDeviceViewSet, DeviceViewSet
 from authentik.core.api.groups import GroupViewSet
 from authentik.core.api.propertymappings import PropertyMappingViewSet
 from authentik.core.api.providers import ProviderViewSet
-from authentik.core.api.rbac import RBACPermissionViewSet
-from authentik.core.api.rbac_roles import RoleAssignedPermissionViewSet
-from authentik.core.api.rbac_users import UserAssignedPermissionViewSet
-from authentik.core.api.roles import RoleViewSet
 from authentik.core.api.sources import SourceViewSet, UserSourceConnectionViewSet
 from authentik.core.api.tokens import TokenViewSet
 from authentik.core.api.transactional_applications import TransactionalApplicationView
@@ -81,12 +77,8 @@ api_urlpatterns = [
         name="core-transactional-application",
     ),
     ("core/groups", GroupViewSet),
-    ("core/roles", RoleViewSet),
     ("core/users", UserViewSet),
     ("core/tokens", TokenViewSet),
-    ("core/rbac/permissions", RBACPermissionViewSet),
-    ("core/rbac/user", UserAssignedPermissionViewSet, "rbac-user"),
-    ("core/rbac/role", RoleAssignedPermissionViewSet, "rbac-role"),
     ("sources/all", SourceViewSet),
     ("sources/user_connections/all", UserSourceConnectionViewSet),
     ("providers/all", ProviderViewSet),

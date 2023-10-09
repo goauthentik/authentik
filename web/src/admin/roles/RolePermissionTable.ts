@@ -9,7 +9,7 @@ import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, Permission } from "@goauthentik/api";
+import { Permission, RbacApi } from "@goauthentik/api";
 
 @customElement("ak-role-permissions-table")
 export class RolePermissionTable extends Table<Permission> {
@@ -25,7 +25,7 @@ export class RolePermissionTable extends Table<Permission> {
     order = "content_type__app_label,content_type__model";
 
     apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
-        return new CoreApi(DEFAULT_CONFIG).coreRbacPermissionsList({
+        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             role: this.roleUuid,
             page: page,
             ordering: this.order,
@@ -67,7 +67,7 @@ export class RolePermissionTable extends Table<Permission> {
             objectLabel=${msg("Permission(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Permission) => {
-                return new CoreApi(DEFAULT_CONFIG).coreRbacRoleUnassignPartialUpdate({
+                return new RbacApi(DEFAULT_CONFIG).rbacAssignedRolesUnassignPartialUpdate({
                     uuid: this.roleUuid || "",
                     patchedPermissionAssignRequest: {
                         permissions: [`${item.appLabel}.${item.codename}`],

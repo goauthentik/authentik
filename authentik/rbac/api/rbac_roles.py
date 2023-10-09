@@ -13,10 +13,10 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from authentik.core.api.rbac import PermissionAssignSerializer, RoleObjectPermissionSerializer
 from authentik.core.api.utils import PassiveSerializer
-from authentik.core.models import Role
 from authentik.policies.event_matcher.models import model_choices
+from authentik.rbac.api.rbac import PermissionAssignSerializer, RoleObjectPermissionSerializer
+from authentik.rbac.models import Role
 
 
 class RoleAssignedObjectPermissionSerializer(PassiveSerializer):

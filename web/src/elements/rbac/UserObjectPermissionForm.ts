@@ -14,6 +14,7 @@ import {
     CoreUsersListRequest,
     ModelEnum,
     PaginatedPermissionList,
+    RbacApi,
     User,
 } from "@goauthentik/api";
 
@@ -37,7 +38,7 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
 
     async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
-        this.modelPermissions = await new CoreApi(DEFAULT_CONFIG).coreRbacPermissionsList({
+        this.modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",
@@ -53,7 +54,7 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
     }
 
     send(data: UserAssignData): Promise<unknown> {
-        return new CoreApi(DEFAULT_CONFIG).coreRbacUserAssignCreate({
+        return new RbacApi(DEFAULT_CONFIG).rbacAssignedUsersAssignCreate({
             id: data.user,
             permissionAssignRequest: {
                 permissions: Object.keys(data.permissions).filter((key) => data.permissions[key]),

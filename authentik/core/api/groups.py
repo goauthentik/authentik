@@ -17,10 +17,10 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
 from authentik.api.decorators import permission_required
-from authentik.core.api.roles import RoleSerializer
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, is_dict
 from authentik.core.models import Group, User
+from authentik.rbac.api.roles import RoleSerializer
 
 
 class GroupMemberSerializer(ModelSerializer):

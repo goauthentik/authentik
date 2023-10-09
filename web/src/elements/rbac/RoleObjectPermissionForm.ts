@@ -10,10 +10,10 @@ import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import {
-    CoreApi,
-    CoreRolesListRequest,
     ModelEnum,
     PaginatedPermissionList,
+    RbacApi,
+    RbacRolesListRequest,
     Role,
 } from "@goauthentik/api";
 
@@ -37,7 +37,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
 
     async load(): Promise<void> {
         const [appLabel, modelName] = (this.model || "").split(".");
-        this.modelPermissions = await new CoreApi(DEFAULT_CONFIG).coreRbacPermissionsList({
+        this.modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",
@@ -53,7 +53,7 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
     }
 
     send(data: RoleAssignData): Promise<unknown> {
-        return new CoreApi(DEFAULT_CONFIG).coreRbacRoleAssignCreate({
+        return new RbacApi(DEFAULT_CONFIG).rbacAssignedRolesAssignCreate({
             uuid: data.role,
             permissionAssignRequest: {
                 permissions: Object.keys(data.permissions).filter((key) => data.permissions[key]),
@@ -71,13 +71,13 @@ export class RoleObjectPermissionForm extends ModelForm<RoleAssignData, number> 
             <ak-form-element-horizontal label=${msg("Role")} name="role">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Role[]> => {
-                        const args: CoreRolesListRequest = {
+                        const args: RbacRolesListRequest = {
                             ordering: "name",
                         };
                         if (query !== undefined) {
                             args.search = query;
                         }
-                        const roles = await new CoreApi(DEFAULT_CONFIG).coreRolesList(args);
+                        const roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList(args);
                         return roles.results;
                     }}
                     .renderElement=${(role: Role): string => {

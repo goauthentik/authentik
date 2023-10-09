@@ -13,7 +13,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { CoreApi, Role } from "@goauthentik/api";
+import { RbacApi, Role } from "@goauthentik/api";
 
 @customElement("ak-role-list")
 export class RoleListPage extends TablePage<Role> {
@@ -35,7 +35,7 @@ export class RoleListPage extends TablePage<Role> {
     order = "name";
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Role>> {
-        return new CoreApi(DEFAULT_CONFIG).coreRolesList({
+        return new RbacApi(DEFAULT_CONFIG).rbacRolesList({
             ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
@@ -53,12 +53,12 @@ export class RoleListPage extends TablePage<Role> {
             objectLabel=${msg("Role(s)")}
             .objects=${this.selectedElements}
             .usedBy=${(item: Role) => {
-                return new CoreApi(DEFAULT_CONFIG).coreRolesUsedByList({
+                return new RbacApi(DEFAULT_CONFIG).rbacRolesUsedByList({
                     uuid: item.pk,
                 });
             }}
             .delete=${(item: Role) => {
-                return new CoreApi(DEFAULT_CONFIG).coreRolesDestroy({
+                return new RbacApi(DEFAULT_CONFIG).rbacRolesDestroy({
                     uuid: item.pk,
                 });
             }}

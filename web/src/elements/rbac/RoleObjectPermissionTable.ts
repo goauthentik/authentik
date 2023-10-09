@@ -10,16 +10,16 @@ import { customElement, property, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
 import {
-    CoreApi,
-    CoreRbacUserListModelEnum,
     PaginatedPermissionList,
+    RbacApi,
+    RbacAssignedRolesListModelEnum,
     RoleAssignedObjectPermission,
 } from "@goauthentik/api";
 
 @customElement("ak-rbac-role-object-permission-table")
 export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
     @property()
-    model?: CoreRbacUserListModelEnum;
+    model?: RbacAssignedRolesListModelEnum;
 
     @property()
     objectPk?: string | number;
@@ -28,14 +28,14 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     modelPermissions?: PaginatedPermissionList;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
-        const perms = await new CoreApi(DEFAULT_CONFIG).coreRbacRoleList({
+        const perms = await new RbacApi(DEFAULT_CONFIG).rbacAssignedRolesList({
             page: page,
             // TODO: better default
-            model: this.model || CoreRbacUserListModelEnum.CoreUser,
+            model: this.model || RbacAssignedRolesListModelEnum.CoreUser,
             objectPk: this.objectPk?.toString(),
         });
         const [appLabel, modelName] = (this.model || "").split(".");
-        const modelPermissions = await new CoreApi(DEFAULT_CONFIG).coreRbacPermissionsList({
+        const modelPermissions = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             contentTypeModel: modelName,
             contentTypeAppLabel: appLabel,
             ordering: "codename",

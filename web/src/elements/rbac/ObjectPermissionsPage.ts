@@ -12,12 +12,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CoreRbacUserListModelEnum } from "@goauthentik/api";
+import { RbacAssignedUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-rbac-object-permission-page")
 export class ObjectPermissionPage extends AKElement {
     @property()
-    model?: CoreRbacUserListModelEnum;
+    model?: RbacAssignedUsersListModelEnum;
 
     @property()
     objectPk?: string | number;

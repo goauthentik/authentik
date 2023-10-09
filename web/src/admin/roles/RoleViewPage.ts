@@ -22,14 +22,14 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
-import { CoreApi, Role } from "@goauthentik/api";
+import { RbacApi, Role } from "@goauthentik/api";
 
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {
     @property({ type: String })
     set roleId(id: string) {
-        new CoreApi(DEFAULT_CONFIG)
-            .coreRolesRetrieve({
+        new RbacApi(DEFAULT_CONFIG)
+            .rbacRolesRetrieve({
                 uuid: id,
             })
             .then((role) => {

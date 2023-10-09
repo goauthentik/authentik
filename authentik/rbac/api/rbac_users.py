@@ -14,9 +14,9 @@ from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.core.api.groups import GroupMemberSerializer
-from authentik.core.api.rbac import PermissionAssignSerializer, UserObjectPermissionSerializer
 from authentik.core.models import User
 from authentik.policies.event_matcher.models import model_choices
+from authentik.rbac.api.rbac import PermissionAssignSerializer, UserObjectPermissionSerializer
 
 
 class UserAssignedObjectPermissionSerializer(GroupMemberSerializer):

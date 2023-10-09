@@ -10,12 +10,12 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, Role } from "@goauthentik/api";
+import { RbacApi, Role } from "@goauthentik/api";
 
 @customElement("ak-role-form")
 export class RoleForm extends ModelForm<Role, string> {
     loadInstance(pk: string): Promise<Role> {
-        return new CoreApi(DEFAULT_CONFIG).coreRolesRetrieve({
+        return new RbacApi(DEFAULT_CONFIG).rbacRolesRetrieve({
             uuid: pk,
         });
     }
@@ -30,12 +30,12 @@ export class RoleForm extends ModelForm<Role, string> {
 
     async send(data: Role): Promise<Role> {
         if (this.instance?.pk) {
-            return new CoreApi(DEFAULT_CONFIG).coreRolesPartialUpdate({
+            return new RbacApi(DEFAULT_CONFIG).rbacRolesPartialUpdate({
                 uuid: this.instance.pk,
                 patchedRoleRequest: data,
             });
         } else {
-            return new CoreApi(DEFAULT_CONFIG).coreRolesCreate({
+            return new RbacApi(DEFAULT_CONFIG).rbacRolesCreate({
                 roleRequest: data,
             });
         }

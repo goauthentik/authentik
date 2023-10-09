@@ -12,7 +12,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
-import { CoreApi, Permission } from "@goauthentik/api";
+import { Permission, RbacApi } from "@goauthentik/api";
 
 interface RolePermissionAssign {
     permissions: string[];
@@ -37,7 +37,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     }
 
     async send(data: RolePermissionAssign): Promise<unknown> {
-        await new CoreApi(DEFAULT_CONFIG).coreRbacRoleAssignCreate({
+        await new RbacApi(DEFAULT_CONFIG).rbacAssignedRolesAssignCreate({
             uuid: this.roleUuid || "",
             permissionAssignRequest: {
                 permissions: data.permissions,

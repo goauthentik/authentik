@@ -88,7 +88,7 @@ class Group(SerializerModel):
         default=False, help_text=_("Users added to this group will be superusers.")
     )
 
-    roles = models.ManyToManyField("Role", related_name="ak_groups", blank=True)
+    roles = models.ManyToManyField("authentik_rbac.Role", related_name="ak_groups", blank=True)
 
     parent = models.ForeignKey(
         "Group",
@@ -161,33 +161,6 @@ class Group(SerializerModel):
         )
         verbose_name = _("Group")
         verbose_name_plural = _("Groups")
-
-
-class Role(models.Model):
-    """RBAC role, which can have different permissions (both global and per-object) attached
-    to it."""
-
-    uuid = models.UUIDField(default=uuid4, editable=False, unique=True, primary_key=True)
-    # Due to the way django and django-guardian work, this is somewhat of a hack.
-    # Django and django-guardian allow for setting permissions on users and groups, but they
-    # only allow for a custom user object, not a custom group object, which is why
-    # we have both authentik and django groups. With this model, we use the inbuilt group system
-    # for RBAC. This means that every Role needs a single django group that its assigned to
-    # which will hold all of the actual permissions
-    # The main advantage of that is that all the permission checking just works out of the box,
-    # as these permissions are checked by default by django and most other libraries that build
-    # on top of django
-    group = models.OneToOneField("auth.Group", on_delete=models.CASCADE)
-
-    # name field has the same constraints as the group model
-    name = models.TextField(max_length=150, unique=True)
-
-    def __str__(self) -> str:
-        return f"Role {self.name}"
-
-    class Meta:
-        verbose_name = _("Role")
-        verbose_name_plural = _("Roles")
 
 
 class UserManager(DjangoUserManager):

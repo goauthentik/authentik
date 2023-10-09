@@ -77,6 +77,7 @@ INSTALLED_APPS = [
     "authentik.providers.radius",
     "authentik.providers.saml",
     "authentik.providers.scim",
+    "authentik.rbac",
     "authentik.recovery",
     "authentik.sources.ldap",
     "authentik.sources.oauth",

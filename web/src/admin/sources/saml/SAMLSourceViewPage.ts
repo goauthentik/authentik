@@ -23,7 +23,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { CoreRbacUserListModelEnum, SAMLMetadata, SAMLSource, SourcesApi } from "@goauthentik/api";
+import {
+    RbacAssignedUsersListModelEnum,
+    SAMLMetadata,
+    SAMLSource,
+    SourcesApi,
+} from "@goauthentik/api";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
@@ -210,7 +215,7 @@ export class SAMLSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${CoreRbacUserListModelEnum.SourcesSamlSamlsource}
+                model=${RbacAssignedUsersListModelEnum.SourcesSamlSamlsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

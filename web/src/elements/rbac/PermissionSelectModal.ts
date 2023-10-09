@@ -12,7 +12,7 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 
-import { CoreApi, Permission } from "@goauthentik/api";
+import { Permission, RbacApi } from "@goauthentik/api";
 
 @customElement("ak-rbac-permission-select-table")
 export class PermissionSelectModal extends TableModal<Permission> {
@@ -33,7 +33,7 @@ export class PermissionSelectModal extends TableModal<Permission> {
     }
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
-        return new CoreApi(DEFAULT_CONFIG).coreRbacPermissionsList({
+        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
             ordering: this.order,
             page: page,
             pageSize: (await uiConfig()).pagination.perPage,
