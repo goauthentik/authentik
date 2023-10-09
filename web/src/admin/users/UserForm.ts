@@ -64,8 +64,11 @@ export class UserForm extends ModelForm<User, number> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Username")} ?required=${true} name="username">
+        return html` <ak-form-element-horizontal
+                label=${msg("Username")}
+                ?required=${true}
+                name="username"
+            >
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.username)}"
@@ -165,7 +168,6 @@ export class UserForm extends ModelForm<User, number> {
                 <p class="pf-c-form__helper-text">
                     ${msg("Set custom attributes using YAML or JSON.")}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

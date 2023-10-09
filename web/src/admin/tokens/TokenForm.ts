@@ -58,8 +58,7 @@ export class TokenForm extends ModelForm<Token, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal
+        return html` <ak-form-element-horizontal
                 label=${msg("Identifier")}
                 name="identifier"
                 ?required=${true}
@@ -151,7 +150,6 @@ export class TokenForm extends ModelForm<Token, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            ${this.showExpiry ? this.renderExpiry() : html``}
-        </form>`;
+            ${this.showExpiry ? this.renderExpiry() : html``}`;
     }
 }

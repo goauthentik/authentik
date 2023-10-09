@@ -49,8 +49,7 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "Prompt for the user's consent. The consent can either be permanent or expire in a defined amount of time.",
                 )}
@@ -120,7 +119,6 @@ export class ConsentStageForm extends ModelForm<ConsentStage, string> {
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

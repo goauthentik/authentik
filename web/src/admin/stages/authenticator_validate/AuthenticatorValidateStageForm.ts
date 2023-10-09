@@ -71,8 +71,7 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "Stage used to validate any authenticator. This stage should be used during authentication or authorization flows.",
                 )}
@@ -254,7 +253,6 @@ export class AuthenticatorValidateStageForm extends ModelForm<AuthenticatorValid
                           `
                         : html``}
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

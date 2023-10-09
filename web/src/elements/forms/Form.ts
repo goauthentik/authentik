@@ -346,9 +346,12 @@ export abstract class Form<T> extends AKElement {
     renderFormWrapper(): TemplateResult {
         const inline = this.renderForm();
         if (inline) {
-            return html`<form class="pf-c-form pf-m-horizontal" @submit=${(ev: Event) => {
-                ev.preventDefault();
-            }}>
+            return html`<form
+                class="pf-c-form pf-m-horizontal"
+                @submit=${(ev: Event) => {
+                    ev.preventDefault();
+                }}
+            >
                 ${inline}
             </form>`;
         }
