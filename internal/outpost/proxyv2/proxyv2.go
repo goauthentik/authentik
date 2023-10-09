@@ -65,6 +65,7 @@ func NewProxyServer(ac *ak.APIController) *ProxyServer {
 	globalMux.PathPrefix("/outpost.goauthentik.io/static").HandlerFunc(s.HandleStatic)
 	globalMux.Path("/outpost.goauthentik.io/ping").HandlerFunc(sentryutils.SentryNoSample(s.HandlePing))
 	rootMux.PathPrefix("/").HandlerFunc(s.Handle)
+	ac.AddWSHandler(s.handleWSMessage)
 	return s
 }
 

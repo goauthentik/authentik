@@ -1296,11 +1296,6 @@ Il y a <x id="0" equiv-text="${ago}"/> jour(s)</target>
         <target>Valider les certificats SSL des serveurs amonts.</target>
         
       </trans-unit>
-      <trans-unit id="s9c73dced379c37a2">
-        <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a manged outpost, this is done for you).</source>
-        <target>Utilisez ce fournisseur avec l'option "auth_request" de Nginx ou "forwardAuth" de Traefik. Chaque application/domaine a besoin de son propre fournisseur. De plus, sur chaque domaine, "/outpost.goauthentik.io" doit être routé vers le poste avancé (lorsque vous utilisez un poste avancé géré, cela est fait pour vous).</target>
-        
-      </trans-unit>
       <trans-unit id="s44c90273f08fb718">
         <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.</source>
         <target>Utilisez ce fournisseur avec auth_request de nginx ou forwardAuth de traefik. Un seul fournisseur est nécessaire par domaine racine. Vous ne pouvez pas faire d'autorisation par application, mais vous n'avez pas besoin de créer un fournisseur pour chaque application.</target>
@@ -7816,6 +7811,15 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="se9e9e1d6799b86a5">
   <source>WebAuthn not supported by browser.</source>
   <target>WebAuthn n'est pas supporté pas ce navigateur.</target>
+</trans-unit>
+<trans-unit id="sff0ac1ace2d90709">
+  <source>Use this provider with nginx's auth_request or traefik's forwardAuth. Each application/domain needs its own provider. Additionally, on each domain, /outpost.goauthentik.io must be routed to the outpost (when using a managed outpost, this is done for you).</source>
+</trans-unit>
+<trans-unit id="scb58b8a60cad8762">
+  <source>Default relay state</source>
+</trans-unit>
+<trans-unit id="s6827a456c9dfc6ee">
+  <source>When using IDP-initiated logins, the relay state will be set to this value.</source>
 </trans-unit>
     </body>
   </file>

@@ -206,3 +206,6 @@ data/
 .netlify
 .ruff_cache
 source_docs/
+
+### Golang ###
+/vendor/

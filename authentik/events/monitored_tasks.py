@@ -206,8 +206,8 @@ def prefill_task(func):
         task_call_module=func.__module__,
         task_call_func=func.__name__,
         # We don't have real values for these attributes but they cannot be null
-        start_timestamp=default_timer(),
-        finish_timestamp=default_timer(),
+        start_timestamp=0,
+        finish_timestamp=0,
         finish_time=datetime.now(),
     ).save(86400)
     LOGGER.debug("prefilled task", task_name=func.__name__)

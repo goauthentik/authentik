@@ -318,6 +318,24 @@ export class SAMLProviderFormPage extends ModelForm<SAMLProvider, number> {
                         </p>
                         <ak-utils-time-delta-help></ak-utils-time-delta-help>
                     </ak-form-element-horizontal>
+                    <ak-form-element-horizontal
+                        label=${msg("Default relay state")}
+                        ?required=${true}
+                        name="defaultRelayState"
+                    >
+                        <input
+                            type="text"
+                            value="${this.instance?.defaultRelayState || ""}"
+                            class="pf-c-form-control"
+                            required
+                        />
+                        <p class="pf-c-form__helper-text">
+                            ${msg(
+                                "When using IDP-initiated logins, the relay state will be set to this value.",
+                            )}
+                        </p>
+                        <ak-utils-time-delta-help></ak-utils-time-delta-help>
+                    </ak-form-element-horizontal>
 
                     <ak-form-element-horizontal
                         label=${msg("Digest algorithm")}
