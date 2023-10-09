@@ -124,14 +124,14 @@ func TestRedisAddrNoArgNoHostFailoverOpt(t *testing.T) {
 	}
 }
 
-// func TestRedisAddrNoArgNoHostClusterOpt(t *testing.T) {
-// 	uri, _ := url.Parse("redis+cluster:///0")
-// 	opts := uriMustGetRedisOptions(uri).Cluster()
+func TestRedisAddrNoArgNoHostClusterOpt(t *testing.T) {
+	uri, _ := url.Parse("redis+cluster:///0")
+	opts := uriMustGetRedisOptions(uri).Cluster()
 
-// 	if !reflect.DeepEqual(opts.Addrs, []string{"127.0.0.1:6379"}) {
-// 		t.Fail()
-// 	}
-// }
+	if !reflect.DeepEqual(opts.Addrs, []string{"127.0.0.1:6379"}) {
+		t.Fail()
+	}
+}
 
 func TestRedisAddrsArgOpt(t *testing.T) {
 	uri, _ := url.Parse("redis://myredis/0?addrs=newmyredis:1234,otherredis")
@@ -425,15 +425,6 @@ func TestRedisDatabaseIndexSocket(t *testing.T) {
 	}
 }
 
-func TestRedisClusterSupportDisabled(t *testing.T) {
-	uri, _ := url.Parse("redis+cluster://mycluster:5278/29")
-	_, err := GetRedisClient(uri)
-
-	if err == nil || err.Error() != "redis cluster is not currently supported" {
-		t.Fail()
-	}
-}
-
 func TestGetRedisClientErrorPassthrough(t *testing.T) {
 	uri, _ := url.Parse("redis://redis:password@myredis/invalid")
 	_, err := GetRedisClient(uri)
@@ -446,7 +437,7 @@ func TestGetRedisClientErrorPassthrough(t *testing.T) {
 func TestIPv6HostAddress(t *testing.T) {
 	uri, _ := url.Parse("redis://[2001:1:2:3:4::5]:6379/0")
 	opts := uriMustGetRedisOptions(uri)
-	
+
 	if len(opts.Addrs) != 1 || opts.Addrs[0] != "[2001:1:2:3:4::5]:6379" {
 		t.Fail()
 	}

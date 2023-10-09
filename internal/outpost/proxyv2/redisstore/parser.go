@@ -41,8 +41,7 @@ func GetRedisClient(url *url.URL) (redis.UniversalClient, error) {
 		opts.TLSConfig = tlsConfig
 		fallthrough
 	case "redis+cluster":
-		// client = redis.NewClusterClient(opts.Cluster())
-		return nil, fmt.Errorf("redis cluster is not currently supported")
+		client = redis.NewClusterClient(opts.Cluster())
 	case "redis+socket":
 		simpleOpts := opts.Simple()
 		simpleOpts.Network = "unix"

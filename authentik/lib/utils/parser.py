@@ -398,15 +398,10 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
                 redis_kwargs = _configure_tcp_keepalive(redis_kwargs)
                 config["type"] = "cluster"
                 database = redis_kwargs.pop("db", None)
-                if database:
-                    print("Redis cluster does not support the db option, skipping")
                 config["pool_kwargs"] = deepcopy(pool_kwargs)
                 config["redis_kwargs"] = deepcopy(redis_kwargs)
                 config["addrs"] = addrs
                 config["cluster_error_retry_attempts"] = cluster_error_retry_attempts
-
-                # Throw ValueError until Redis cluster support has been finalized
-                raise ValueError("Redis cluster is currently not supported!")
             case "socket":
                 if scheme_parts[0] == "rediss":
                     raise ValueError("Redis unix socket connection does not support SSL!")
