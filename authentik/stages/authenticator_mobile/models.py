@@ -127,7 +127,9 @@ class MobileTransaction(ExpiringModel):
 
     def send_message(self, request: Optional[HttpRequest], **context):
         """Send mobile message"""
-        app = initialize_app(credentials.Certificate(self.device.stage.firebase_config), name=str(self.tx_id))
+        app = initialize_app(
+            credentials.Certificate(self.device.stage.firebase_config), name=str(self.tx_id)
+        )
         branding = DEFAULT_TENANT.branding_title
         domain = ""
         if request:
