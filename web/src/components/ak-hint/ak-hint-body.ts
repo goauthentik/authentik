@@ -12,7 +12,7 @@ const style = css`
 
 @customElement("ak-hint-body")
 export class AkHintBody extends AKElement {
-    get styles() {
+    static get styles() {
         return [style];
     }
 

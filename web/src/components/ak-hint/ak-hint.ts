@@ -16,23 +16,24 @@ const styles = css`
         --ak-hint--BoxShadow: var(--pf-global--BoxShadow--sm);
         --ak-hint--Color: var(--pf-global--Color--100);
 
-        // Hint Title
+        /* Hint Title */
         --ak-hint__title--FontSize: var(--pf-global--FontSize--lg);
 
-        // Hint Body
+        /* Hint Body */
         --ak-hint__body--FontSize: var(--pf-global--FontSize--md);
 
-        // Hint Footer
+        /* Hint Footer */
         --ak-hint__footer--child--MarginRight: var(--pf-global--spacer--md);
 
-        // Hint Actions
+        /* Hint Actions */
         --ak-hint__actions--MarginLeft: var(--pf-global--spacer--2xl);
         --ak-hint__actions--c-dropdown--MarginTop: calc(
             var(--pf-global--spacer--form-element) * -1
         );
     }
 
-    div#host {
+    ::slotted(ak-hint-title),
+    ::slotted(ak-hint-body) {
         display: grid;
         grid-template-columns: 1fr auto;
         grid-row-gap: var(--ak-hint--GridRowGap);

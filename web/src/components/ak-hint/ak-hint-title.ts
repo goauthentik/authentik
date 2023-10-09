@@ -4,19 +4,19 @@ import { css, html } from "lit";
 import { customElement } from "lit/decorators.js";
 
 const style = css`
-    ::slotted(*) {
+    #host {
         font-size: var(--ak-hint__title--FontSize);
     }
 `;
 
 @customElement("ak-hint-title")
 export class AkHintTitle extends AKElement {
-    get styles() {
+    static get styles() {
         return [style];
     }
 
     render() {
-        return html`<div part="ak-hint-title"><slot></slot></div>`;
+        return html`<div id="host" part="ak-hint-title"><slot></slot></div>`;
     }
 }
 

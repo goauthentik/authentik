@@ -35,6 +35,9 @@ const container = (testItem: TemplateResult) =>
                 color: black;
                 margin-top: 1em;
             }
+            ak-hint-title::part(ak-hint-title) {
+                color: black;
+            }
         </style>
 
         ${testItem}
@@ -46,6 +49,7 @@ export const Default = () => {
     return container(
         html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <ak-hint>
+                <ak-hint-title><p>New Application Wizard</p></ak-hint-title>
                 <ak-hint-body>
                     <p style="padding-bottom: 1rem;">
                         Authentik has a new Application Wizard that can configure both an
