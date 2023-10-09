@@ -23,7 +23,7 @@ import {
     TransactionApplicationRequest,
     TransactionApplicationResponse,
 } from "@goauthentik/api";
-import type { ModelRequest, ResponseError } from "@goauthentik/api";
+import type { ModelRequest } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
 import providerModelsList from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
@@ -113,7 +113,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             const request: TransactionApplicationRequest = {
                 providerModel: providerModel.modelName as ProviderModelType,
                 app: cleanApplication(this.wizard.app),
-                provider: providerModel.converter(this.wizard.provider)
+                provider: providerModel.converter(this.wizard.provider),
             };
 
             this.send(request);

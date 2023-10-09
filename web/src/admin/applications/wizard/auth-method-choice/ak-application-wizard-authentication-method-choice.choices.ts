@@ -2,8 +2,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 
 import type { ProviderModelEnum as ProviderModelEnumType, TypeCreate } from "@goauthentik/api";
-import { ProviderModelEnum,     ProxyMode,
- } from "@goauthentik/api";
+import { ProviderModelEnum, ProxyMode } from "@goauthentik/api";
 import type {
     LDAPProviderRequest,
     ModelRequest,
@@ -20,7 +19,14 @@ type ProviderRenderer = () => TemplateResult;
 
 type ModelConverter = (provider: OneOfProvider) => ModelRequest;
 
-type ProviderType = [string, string, string, ProviderRenderer, ProviderModelEnumType, ModelConverter];
+type ProviderType = [
+    string,
+    string,
+    string,
+    ProviderRenderer,
+    ProviderModelEnumType,
+    ModelConverter,
+];
 
 export type LocalTypeCreate = TypeCreate & {
     formName: string;
@@ -128,21 +134,28 @@ const _providerModelsTable: ProviderType[] = [
     ],
 ];
 
-function mapProviders([formName, name, description, _, modelName, converter]: ProviderType): LocalTypeCreate {
+function mapProviders([
+    formName,
+    name,
+    description,
+    _,
+    modelName,
+    converter,
+]: ProviderType): LocalTypeCreate {
     return {
         formName,
         name,
         description,
         component: "",
         modelName,
-        converter
+        converter,
     };
 }
 
 export const providerModelsList = _providerModelsTable.map(mapProviders);
 
 export const providerRendererList = new Map<string, ProviderRenderer>(
-    _providerModelsTable.map(([modelName, _0, _1, renderer]) => [modelName, renderer])
+    _providerModelsTable.map(([modelName, _0, _1, renderer]) => [modelName, renderer]),
 );
 
 export default providerModelsList;

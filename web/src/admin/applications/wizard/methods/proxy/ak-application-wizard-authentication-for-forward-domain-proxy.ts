@@ -12,7 +12,7 @@ export class AkForwardDomainProxyApplicationWizardPage extends AkTypeProxyApplic
     renderModeDescription() {
         return html`<p class="pf-u-mb-xl">
                 ${msg(
-                    "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application."
+                    "Use this provider with nginx's auth_request or traefik's forwardAuth. Only a single provider is required per root domain. You can't do per-application authorization, but you don't have to create a provider for each application.",
                 )}
             </p>
             <div class="pf-u-mb-xl">
@@ -22,7 +22,7 @@ export class AkForwardDomainProxyApplicationWizardPage extends AkTypeProxyApplic
                     <li>${msg("app1 running on app1.example.com")}</li>
                 </ul>
                 ${msg(
-                    "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com."
+                    "In this case, you'd set the Authentication URL to auth.example.com and Cookie domain to example.com.",
                 )}
             </div>`;
     }
@@ -32,10 +32,10 @@ export class AkForwardDomainProxyApplicationWizardPage extends AkTypeProxyApplic
             <ak-text-input
                 name="externalHost"
                 label=${msg("External host")}
-value=${ifDefined(this.instance?.externalHost)}
+                value=${ifDefined(this.instance?.externalHost)}
                 required
                 help=${msg(
-                    "The external URL you'll authenticate at. The authentik core server should be reachable under this URL."
+                    "The external URL you'll authenticate at. The authentik core server should be reachable under this URL.",
                 )}
             >
             </ak-text-input>
@@ -45,7 +45,7 @@ value=${ifDefined(this.instance?.externalHost)}
                 value="${ifDefined(this.instance?.cookieDomain)}"
                 required
                 help=${msg(
-                    "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'."
+                    "Set this to the domain you wish the authentication to be valid for. Must be a parent domain of the URL above. If you're running applications as app1.domain.tld, app2.domain.tld, set this to 'domain.tld'.",
                 )}
             ></ak-text-input>
         `;
