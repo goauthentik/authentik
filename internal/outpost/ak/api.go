@@ -22,6 +22,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+type WSHandler func(ctx context.Context, args map[string]interface{})
+
 const ConfigLogLevel = "log_level"
 
 // APIController main controller which connects to the authentik api via http and ws
@@ -42,6 +44,7 @@ type APIController struct {
 	lastWsReconnect     time.Time
 	wsIsReconnecting    bool
 	wsBackoffMultiplier int
+	wsHandlers          []WSHandler
 	refreshHandlers     []func()
 
 	instanceUUID uuid.UUID
@@ -106,6 +109,7 @@ func NewAPIController(akURL url.URL, token string) *APIController {
 		reloadOffset:        time.Duration(rand.Intn(10)) * time.Second,
 		instanceUUID:        uuid.New(),
 		Outpost:             outpost,
+		wsHandlers:          []WSHandler{},
 		wsBackoffMultiplier: 1,
 		refreshHandlers:     make([]func(), 0),
 	}
@@ -154,6 +158,10 @@ func (a *APIController) configureRefreshSignal() {
 
 func (a *APIController) AddRefreshHandler(handler func()) {
 	a.refreshHandlers = append(a.refreshHandlers, handler)
+}
+
+func (a *APIController) AddWSHandler(handler WSHandler) {
+	a.wsHandlers = append(a.wsHandlers, handler)
 }
 
 func (a *APIController) OnRefresh() error {

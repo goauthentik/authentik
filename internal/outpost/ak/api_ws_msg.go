@@ -9,6 +9,8 @@ const (
 	WebsocketInstructionHello websocketInstruction = 1
 	// WebsocketInstructionTriggerUpdate Code received to trigger a config update
 	WebsocketInstructionTriggerUpdate websocketInstruction = 2
+	// WebsocketInstructionProviderSpecific Code received to trigger some provider specific function
+	WebsocketInstructionProviderSpecific websocketInstruction = 3
 )
 
 type websocketMessage struct {

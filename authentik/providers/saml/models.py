@@ -138,6 +138,10 @@ class SAMLProvider(Provider):
         verbose_name=_("Signing Keypair"),
     )
 
+    default_relay_state = models.TextField(
+        default="", blank=True, help_text=_("Default relay_state value for IDP-initiated logins")
+    )
+
     @property
     def launch_url(self) -> Optional[str]:
         """Use IDP-Initiated SAML flow as launch URL"""

@@ -34,6 +34,29 @@ func (ds *DirectSearcher) SearchBase(req *search.Request) (ldap.ServerSearchResu
 						Values: []string{"3"},
 					},
 					{
+						Name:   "supportedCapabilities",
+						Values: []string{
+							"1.2.840.113556.1.4.800", //LDAP_CAP_ACTIVE_DIRECTORY_OID
+							"1.2.840.113556.1.4.1791", //LDAP_CAP_ACTIVE_DIRECTORY_LDAP_INTEG_OID
+							"1.2.840.113556.1.4.1670", //LDAP_CAP_ACTIVE_DIRECTORY_V51_OID
+							"1.2.840.113556.1.4.1880", //LDAP_CAP_ACTIVE_DIRECTORY_ADAM_DIGEST_OID
+							"1.2.840.113556.1.4.1851", //LDAP_CAP_ACTIVE_DIRECTORY_ADAM_OID
+							"1.2.840.113556.1.4.1920", //LDAP_CAP_ACTIVE_DIRECTORY_PARTIAL_SECRETS_OID
+							"1.2.840.113556.1.4.1935", //LDAP_CAP_ACTIVE_DIRECTORY_V60_OID
+							"1.2.840.113556.1.4.2080", //LDAP_CAP_ACTIVE_DIRECTORY_V61_R2_OID
+							"1.2.840.113556.1.4.2237", //LDAP_CAP_ACTIVE_DIRECTORY_W8_OID
+						},
+					},
+					{
+						Name:   "supportedControl",
+						Values: []string{
+							"2.16.840.1.113730.3.4.9", //VLV Request LDAPv3 Control
+							"2.16.840.1.113730.3.4.10", //VLV Response LDAPv3 Control
+							"1.2.840.113556.1.4.474", //Sort result
+							"1.2.840.113556.1.4.319", //Paged Result Control
+						},
+					},
+					{
 						Name:   "subschemaSubentry",
 						Values: []string{"cn=subschema"},
 					},
