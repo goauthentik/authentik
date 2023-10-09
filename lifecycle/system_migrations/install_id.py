@@ -4,9 +4,11 @@ from uuid import uuid4
 from authentik.lib.config import CONFIG
 from lifecycle.migrate import BaseMigration
 
-SQL_STATEMENT = """CREATE TABLE IF NOT EXISTS authentik_install_id (
+SQL_STATEMENT = """BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS authentik_install_id (
     id TEXT NOT NULL
-);"""
+);
+COMMIT;"""
 
 
 class Migration(BaseMigration):
@@ -17,8 +19,8 @@ class Migration(BaseMigration):
         return not bool(self.cur.rowcount)
 
     def upgrade(self, migrate=False):
+        self.cur.execute(SQL_STATEMENT)
         with self.con.transaction():
-            self.cur.execute(SQL_STATEMENT)
             if migrate:
                 # If we already have migrations in the database, assume we're upgrading an existing install
                 # and set the install id to the secret key
