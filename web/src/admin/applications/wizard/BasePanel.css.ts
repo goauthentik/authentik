@@ -21,9 +21,6 @@ export const styles = [
     PFFormControl,
     PFSwitch,
     css`
-        .pf-c-radio__label {
-            color: #212427;
-        }
         select[multiple] {
             height: 15em;
         }

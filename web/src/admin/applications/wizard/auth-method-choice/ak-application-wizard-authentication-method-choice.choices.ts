@@ -64,7 +64,6 @@ const _providerModelsTable: ProviderType[] = [
             ...(provider as ProxyProviderRequest),
             mode: ProxyMode.Proxy,
         }),
-        
     ],
     [
         "proxyprovider-forwardsingle",
@@ -90,7 +89,6 @@ const _providerModelsTable: ProviderType[] = [
             ...(provider as ProxyProviderRequest),
             mode: ProxyMode.ForwardDomain,
         }),
-
     ],
     [
         "samlprovider",
@@ -118,7 +116,7 @@ const _providerModelsTable: ProviderType[] = [
     ],
     [
         "scimprovider",
-        msg("SCIM Manual configuration"),
+        msg("SCIM configuration"),
         msg("Configure SCIM provider manually"),
         () => html`<ak-application-wizard-authentication-by-scim></ak-application-wizard-authentication-by-scim>`,
         ProviderModelEnum.ScimScimprovider,

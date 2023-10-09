@@ -20,11 +20,10 @@ import PFBullseye from "@patternfly/patternfly/layouts/Bullseye/bullseye.css";
 import {
     ApplicationRequest,
     CoreApi,
-    ProxyMode,
     TransactionApplicationRequest,
     TransactionApplicationResponse,
 } from "@goauthentik/api";
-import type { ModelRequest } from "@goauthentik/api";
+import type { ModelRequest, ResponseError } from "@goauthentik/api";
 
 import BasePanel from "../BasePanel";
 import providerModelsList from "../auth-method-choice/ak-application-wizard-authentication-method-choice.choices";
@@ -155,8 +154,8 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             .catch((resolution: any) => {
                 resolution.response.json().then((body: Record<string, any>) => {
                     this.errors = this.decodeErrors(body);
-                    this.commitState = errorState;
                 });
+                this.commitState = errorState;
             });
     }
 
