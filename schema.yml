@@ -5740,6 +5740,7 @@ paths:
       - core
       security:
       - authentik: []
+      - mobile_device_token: []
       responses:
         '200':
           content:

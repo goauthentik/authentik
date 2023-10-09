@@ -31,6 +31,7 @@ from drf_spectacular.utils import (
     inline_serializer,
 )
 from guardian.shortcuts import get_anonymous_user, get_objects_for_user
+from rest_framework.authentication import SessionAuthentication
 from rest_framework.decorators import action
 from rest_framework.fields import CharField, IntegerField, ListField, SerializerMethodField
 from rest_framework.request import Request
@@ -48,6 +49,7 @@ from rest_framework.viewsets import ModelViewSet
 from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import CoordinateSerializer
+from authentik.api.authentication import TokenAuthentication
 from authentik.api.decorators import permission_required
 from authentik.blueprints.v1.importer import SERIALIZER_CONTEXT_BLUEPRINT
 from authentik.core.api.used_by import UsedByMixin
@@ -72,6 +74,7 @@ from authentik.flows.models import FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_PENDING_USER, FlowPlanner
 from authentik.flows.views.executor import QS_KEY_TOKEN
 from authentik.lib.config import CONFIG
+from authentik.stages.authenticator_mobile.api.auth import MobileDeviceTokenAuthentication
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -489,7 +492,18 @@ class UserViewSet(UsedByMixin, ModelViewSet):
                 return Response(data={"non_field_errors": [str(exc)]}, status=400)
 
     @extend_schema(responses={200: SessionUserSerializer(many=False)})
-    @action(url_path="me", url_name="me", detail=False, pagination_class=None, filter_backends=[])
+    @action(
+        url_path="me",
+        url_name="me",
+        detail=False,
+        pagination_class=None,
+        filter_backends=[],
+        authentication_classes=[
+            TokenAuthentication,
+            SessionAuthentication,
+            MobileDeviceTokenAuthentication,
+        ],
+    )
     def user_me(self, request: Request) -> Response:
         """Get information about current user"""
         context = {"request": request}
