@@ -47,7 +47,7 @@ export const Default = () => {
         html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <ak-hint>
                 <ak-hint-body>
-<p style="padding-bottom: 1rem;">
+                    <p style="padding-bottom: 1rem;">
                         Authentik has a new Application Wizard that can configure both an
                         application and its authentication provider at the same time.
                         <a href="(link to docs)">Learn more about the wizard here.</a>
@@ -64,6 +64,6 @@ export const Default = () => {
                     ></ak-hint-body
                 >
             </ak-hint>
-        </section>`
+        </section>`,
     );
 };

@@ -17,7 +17,7 @@ export class AkHintBody extends AKElement {
     }
 
     render() {
-        return html`<div><slot></slot></div>`;
+        return html`<div part="ak-hint-body"><slot></slot></div>`;
     }
 }
 

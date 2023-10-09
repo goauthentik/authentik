@@ -19,7 +19,7 @@ export class AkHintFooter extends AKElement {
     }
 
     render() {
-        return html`<div id="host"><slot></slot></div>`;
+        return html`<div id="host" part="ak-hint-footer"><slot></slot></div>`;
     }
 }
 

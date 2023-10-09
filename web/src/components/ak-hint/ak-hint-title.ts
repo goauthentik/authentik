@@ -16,7 +16,7 @@ export class AkHintTitle extends AKElement {
     }
 
     render() {
-        return html`<div><slot></slot></div>`;
+        return html`<div part="ak-hint-title"><slot></slot></div>`;
     }
 }
 

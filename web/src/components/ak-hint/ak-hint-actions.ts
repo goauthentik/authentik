@@ -11,11 +11,11 @@ const style = css`
         grid-auto-flow: column;
         margin-left: var(--ak-hint__actions--MarginLeft);
         text-align: right;
-}
+    }
 
-::slotted(ak-hint-body) {
-    grid-column: 1;
-}
+    ::slotted(ak-hint-body) {
+        grid-column: 1;
+    }
 `;
 
 @customElement("ak-hint-actions")
@@ -25,7 +25,7 @@ export class AkHintActions extends AKElement {
     }
 
     render() {
-        return html`<div><slot></slot></div>`;
+        return html`<div part="ak-hint-actions"><slot></slot></div>`;
     }
 }
 
