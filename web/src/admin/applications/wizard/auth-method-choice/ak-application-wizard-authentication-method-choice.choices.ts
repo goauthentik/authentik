@@ -48,15 +48,14 @@ const _providerModelsTable: ProviderType[] = [
         msg("Transparent Reverse Proxy"),
         msg("For transparent reverse proxies with required authentication"),
         () => html`<ak-application-wizard-authentication-for-reverse-proxy></ak-application-wizard-authentication-for-reverse-proxy>`,
-        ProviderModelEnum.ProxyProxyprovider  
+        ProviderModelEnum.ProxyProxyprovider
     ],
     [
         "proxyprovider-forwardsingle",
         msg("Forward Single Proxy"),
         msg("For nginx's auth_request or traefix's forwardAuth"),
         () => html`<ak-application-wizard-authentication-for-single-forward-proxy></ak-application-wizard-authentication-for-single-forward-proxy>`,
-        ProviderModelEnum.ProxyProxyprovider  
-
+        ProviderModelEnum.ProxyProxyprovider
     ],
     [
         "samlprovider",
@@ -74,7 +73,7 @@ const _providerModelsTable: ProviderType[] = [
     ],
     [
         "scimprovider",
-        msg("SCIM Manual configuration"),
+        msg("SCIM configuration"),
         msg("Configure SCIM provider manually"),
         () => html`<ak-application-wizard-authentication-by-scim></ak-application-wizard-authentication-by-scim>`,
         ProviderModelEnum.ScimScimprovider
