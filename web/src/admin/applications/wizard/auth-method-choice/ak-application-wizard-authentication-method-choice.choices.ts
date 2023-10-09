@@ -2,7 +2,8 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 
 import type { ProviderModelEnum as ProviderModelEnumType, TypeCreate } from "@goauthentik/api";
-import { ProviderModelEnum } from "@goauthentik/api";
+import { ProviderModelEnum,     ProxyMode,
+ } from "@goauthentik/api";
 import type {
     LDAPProviderRequest,
     ModelRequest,
@@ -17,9 +18,9 @@ import { OneOfProvider } from "../types";
 
 type ProviderRenderer = () => TemplateResult;
 
-type ProviderType = [string, string, string, ProviderRenderer, ProviderModelEnumType];
-
 type ModelConverter = (provider: OneOfProvider) => ModelRequest;
+
+type ProviderType = [string, string, string, ProviderRenderer, ProviderModelEnumType, ModelConverter];
 
 export type LocalTypeCreate = TypeCreate & {
     formName: string;
@@ -35,6 +36,10 @@ const _providerModelsTable: ProviderType[] = [
         msg("Modern applications, APIs and Single-page applications."),
         () => html`<ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>`,
         ProviderModelEnum.Oauth2Oauth2provider,
+        (provider: OneOfProvider) => ({
+            providerModel: ProviderModelEnum.Oauth2Oauth2provider,
+            ...(provider as OAuth2ProviderRequest),
+        }),
     ],
     [
         "ldapprovider",
@@ -42,20 +47,49 @@ const _providerModelsTable: ProviderType[] = [
         msg("Provide an LDAP interface for applications and users to authenticate against."),
         () => html`<ak-application-wizard-authentication-by-ldap></ak-application-wizard-authentication-by-ldap>`,
         ProviderModelEnum.LdapLdapprovider,
+                (provider: OneOfProvider) => ({
+            providerModel: ProviderModelEnum.LdapLdapprovider,
+            ...(provider as LDAPProviderRequest),
+        }),
+
     ],
     [
         "proxyprovider-proxy",
         msg("Transparent Reverse Proxy"),
         msg("For transparent reverse proxies with required authentication"),
         () => html`<ak-application-wizard-authentication-for-reverse-proxy></ak-application-wizard-authentication-for-reverse-proxy>`,
-        ProviderModelEnum.ProxyProxyprovider  
+        ProviderModelEnum.ProxyProxyprovider,
+        (provider: OneOfProvider) => ({
+            providerModel: ProviderModelEnum.ProxyProxyprovider,
+            ...(provider as ProxyProviderRequest),
+            mode: ProxyMode.Proxy,
+        }),
+        
     ],
     [
         "proxyprovider-forwardsingle",
-        msg("Forward Single Proxy"),
+        msg("Forward Auth Single Application"),
         msg("For nginx's auth_request or traefix's forwardAuth"),
         () => html`<ak-application-wizard-authentication-for-single-forward-proxy></ak-application-wizard-authentication-for-single-forward-proxy>`,
-        ProviderModelEnum.ProxyProxyprovider  
+        ProviderModelEnum.ProxyProxyprovider  ,
+        (provider: OneOfProvider) => ({
+            providerModel: ProviderModelEnum.ProxyProxyprovider,
+            ...(provider as ProxyProviderRequest),
+            mode: ProxyMode.ForwardSingle,
+        }),
+
+    ],
+    [
+        "proxyprovider-forwarddomain",
+        msg("Forward Auth Domain Level"),
+        msg("For nginx's auth_request or traefix's forwardAuth per root domain"),
+        () => html`<ak-application-wizard-authentication-for-forward-proxy-domain></ak-application-wizard-authentication-for-forward-proxy-domain>`,
+        ProviderModelEnum.ProxyProxyprovider  ,
+        (provider: OneOfProvider) => ({
+            providerModel: ProviderModelEnum.ProxyProxyprovider,
+            ...(provider as ProxyProviderRequest),
+            mode: ProxyMode.ForwardDomain,
+        }),
 
     ],
     [
@@ -63,93 +97,54 @@ const _providerModelsTable: ProviderType[] = [
         msg("SAML Configuration"),
         msg("Configure SAML provider manually"),
         () => html`<ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>`,
-        ProviderModelEnum.SamlSamlprovider
+        ProviderModelEnum.SamlSamlprovider,
+        (provider: OneOfProvider) => ({
+            providerModel: ProviderModelEnum.SamlSamlprovider,
+            ...(provider as SAMLProviderRequest),
+        }),
+        
     ],
     [
         "radiusprovider",
         msg("RADIUS Configuration"),
         msg("Configure RADIUS provider manually"),
         () => html`<ak-application-wizard-authentication-by-radius></ak-application-wizard-authentication-by-radius>`,
-        ProviderModelEnum.RadiusRadiusprovider
+        ProviderModelEnum.RadiusRadiusprovider,
+                (provider: OneOfProvider) => ({
+            providerModel: ProviderModelEnum.RadiusRadiusprovider,
+            ...(provider as RadiusProviderRequest),
+        }),
+
     ],
     [
         "scimprovider",
         msg("SCIM Manual configuration"),
         msg("Configure SCIM provider manually"),
         () => html`<ak-application-wizard-authentication-by-scim></ak-application-wizard-authentication-by-scim>`,
-        ProviderModelEnum.ScimScimprovider
-    ],
-];
-
-const converters = new Map<ProviderModelEnumType, ModelConverter>([
-    [
-        ProviderModelEnum.Oauth2Oauth2provider,
-        (provider: OneOfProvider) => ({
-            providerModel: ProviderModelEnum.Oauth2Oauth2provider,
-            ...(provider as OAuth2ProviderRequest),
-        }),
-    ],
-    [
-        ProviderModelEnum.LdapLdapprovider,
-        (provider: OneOfProvider) => ({
-            providerModel: ProviderModelEnum.LdapLdapprovider,
-            ...(provider as LDAPProviderRequest),
-        }),
-    ],
-    [
-        ProviderModelEnum.ProxyProxyprovider,
-        (provider: OneOfProvider) => ({
-            providerModel: ProviderModelEnum.ProxyProxyprovider,
-            ...(provider as ProxyProviderRequest),
-        }),
-    ],
-    [
-        ProviderModelEnum.SamlSamlprovider,
-        (provider: OneOfProvider) => ({
-            providerModel: ProviderModelEnum.SamlSamlprovider,
-            ...(provider as SAMLProviderRequest),
-        }),
-    ],
-    [
         ProviderModelEnum.ScimScimprovider,
-        (provider: OneOfProvider) => ({
+                (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.ScimScimprovider,
             ...(provider as SCIMProviderRequest),
         }),
-    ],
-    [
-        ProviderModelEnum.RadiusRadiusprovider,
-        (provider: OneOfProvider) => ({
-            providerModel: ProviderModelEnum.RadiusRadiusprovider,
-            ...(provider as RadiusProviderRequest),
-        }),
-    ],
-]);
 
-// Contract enforcement
-const getConverter = (modelName: ProviderModelEnumType): ModelConverter => {
-    const maybeConverter = converters.get(modelName);
-    if (!maybeConverter) {
-        throw new Error(`ModelName lookup failed in model converter definition: ${"modelName"}`);
-    }
-    return maybeConverter;
-};
+    ],
+];
 
-function mapProviders([formName, name, description, _, modelName]: ProviderType): LocalTypeCreate {
+function mapProviders([formName, name, description, _, modelName, converter]: ProviderType): LocalTypeCreate {
     return {
         formName,
         name,
         description,
         component: "",
         modelName,
-        converter: getConverter(modelName),
+        converter
     };
 }
 
 export const providerModelsList = _providerModelsTable.map(mapProviders);
 
 export const providerRendererList = new Map<string, ProviderRenderer>(
-    _providerModelsTable.map(([modelName, _0, _1, renderer]) => [modelName, renderer]),
+    _providerModelsTable.map(([modelName, _0, _1, renderer]) => [modelName, renderer])
 );
 
 export default providerModelsList;

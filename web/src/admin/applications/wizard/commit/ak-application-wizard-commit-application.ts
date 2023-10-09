@@ -58,7 +58,7 @@ const runningState: State = {
 };
 const errorState: State = {
     state: "error",
-    label: msg("There was an error in saving your application:"),
+    label: msg("Authentik was unable to save this application:"),
     icon: ["fa-times-circle", "pf-m-danger"],
 };
 
@@ -67,21 +67,6 @@ const successState: State = {
     label: msg("Your application has been saved"),
     icon: ["fa-check-circle", "pf-m-success"],
 };
-
-function extract(o: Record<string, any>): string[] {
-    function inner(o: Record<string, any>): string[] {
-        if (typeof o !== "object") {
-            return [];
-        }
-        if (Array.isArray(o)) {
-            return o;
-        }
-        return Object.keys(o)
-            .map((k) => inner(o[k]))
-            .flat();
-    }
-    return inner(o);
-}
 
 @customElement("ak-application-wizard-commit-application")
 export class ApplicationWizardCommitApplication extends BasePanel {
@@ -126,31 +111,30 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                 );
             }
 
-            const provider = (() => {
-                if (this.wizard.providerModel === "proxyprovider-forwardsingle") {
-                    return {
-                        ...providerModel.converter(this.wizard.provider),
-                        mode: ProxyMode.ForwardSingle,
-                    };
-                }
-                if (this.wizard.providerModel === "proxyprovider-proxy") {
-                    return {
-                        ...providerModel.converter(this.wizard.provider),
-                        mode: ProxyMode.Proxy,
-                    };
-                }
-                return providerModel.converter(this.wizard.provider);
-            })();
-
             const request: TransactionApplicationRequest = {
                 providerModel: providerModel.modelName as ProviderModelType,
                 app: cleanApplication(this.wizard.app),
-                provider,
+                provider: providerModel.converter(this.wizard.provider)
             };
 
             this.send(request);
             return;
         }
+    }
+
+    decodeErrors(body: Record<string, any>) {
+        const spaceify = (src: Record<string, string>) =>
+            Object.values(src).map((msg) => `\u00a0\u00a0\u00a0\u00a0${msg}`);
+
+        let errs: string[] = [];
+        if (body["app"] !== undefined) {
+            errs = [...errs, msg("In the Application:"), ...spaceify(body["app"])];
+        }
+        if (body["provider"] !== undefined) {
+            errs = [...errs, msg("In the Provider:"), ...spaceify(body["provider"])];
+        }
+        console.log(body, errs);
+        return errs;
     }
 
     async send(
@@ -170,7 +154,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
             })
             .catch((resolution: any) => {
                 resolution.response.json().then((body: Record<string, any>) => {
-                    this.errors = extract(body);
+                    this.errors = this.decodeErrors(body);
                     this.commitState = errorState;
                 });
             });

@@ -127,7 +127,7 @@ export class AkTypeProxyApplicationWizardPage extends BaseProviderPanel {
                 </p>
             </ak-form-element-horizontal>
 
-            <div class="pf-c-card__footer">${this.renderProxyMode()}</div>
+            ${this.renderProxyMode()}
 
             <ak-text-input
                 name="accessTokenValidity"

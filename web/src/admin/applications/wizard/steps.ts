@@ -30,7 +30,7 @@ class ApplicationStep implements ApplicationStepType {
 
 class ProviderMethodStep implements ApplicationStepType {
     id = "provider-method";
-    label = "Authentication Method";
+    label = "Provider Type";
     disabled = false;
     valid = false;
 
@@ -47,7 +47,7 @@ class ProviderMethodStep implements ApplicationStepType {
 
 class ProviderStepDetails implements ApplicationStepType {
     id = "provider-details";
-    label = "Authentication Details";
+    label = "Provider Configuration";
     disabled = true;
     valid = false;
     get buttons() {
@@ -61,7 +61,7 @@ class ProviderStepDetails implements ApplicationStepType {
 
 class SubmitApplicationStep implements ApplicationStepType {
     id = "submit";
-    label = "Submit New Application";
+    label = "Submit Application";
     disabled = true;
     valid = false;
 
