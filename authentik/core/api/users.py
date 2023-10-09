@@ -190,6 +190,7 @@ class UserSerializer(ModelSerializer):
             "uid",
             "path",
             "type",
+            "uuid",
         ]
         extra_kwargs = {
             "name": {"allow_blank": True},

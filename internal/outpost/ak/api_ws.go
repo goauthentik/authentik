@@ -1,6 +1,7 @@
 package ak
 
 import (
+	"context"
 	"crypto/tls"
 	"fmt"
 	"net/http"
@@ -144,6 +145,10 @@ func (ac *APIController) startWSHandler() {
 					"version":      constants.VERSION,
 					"build":        constants.BUILD("tagged"),
 				}).SetToCurrentTime()
+			}
+		} else if wsMsg.Instruction == WebsocketInstructionProviderSpecific {
+			for _, h := range ac.wsHandlers {
+				h(context.Background(), wsMsg.Args)
 			}
 		}
 	}

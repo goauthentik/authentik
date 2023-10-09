@@ -31,8 +31,8 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		u.Email = api.PtrString("")
 	}
 	attrs = utils.EnsureAttributes(attrs, map[string][]string{
-		"ak-active":      {strconv.FormatBool(*u.IsActive)},
-		"ak-superuser":   {strconv.FormatBool(u.IsSuperuser)},
+		"ak-active":      {strings.ToUpper(strconv.FormatBool(*u.IsActive))},
+		"ak-superuser":   {strings.ToUpper(strconv.FormatBool(u.IsSuperuser))},
 		"memberOf":       pi.GroupsForUser(u),
 		"cn":             {u.Username},
 		"sAMAccountName": {u.Username},
@@ -41,11 +41,13 @@ func (pi *ProviderInstance) UserEntry(u api.User) *ldap.Entry {
 		"displayName":    {u.Name},
 		"mail":           {*u.Email},
 		"objectClass": {
-			constants.OCUser,
+			constants.OCTop,
+			constants.OCPerson,
 			constants.OCOrgPerson,
 			constants.OCInetOrgPerson,
-			constants.OCAKUser,
+			constants.OCUser,
 			constants.OCPosixAccount,
+			constants.OCAKUser,
 		},
 		"uidNumber":     {pi.GetUidNumber(u)},
 		"gidNumber":     {pi.GetUidNumber(u)},

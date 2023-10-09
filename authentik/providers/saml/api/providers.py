@@ -146,6 +146,7 @@ class SAMLProviderSerializer(ProviderSerializer):
             "signing_kp",
             "verification_kp",
             "sp_binding",
+            "default_relay_state",
             "url_download_metadata",
             "url_sso_post",
             "url_sso_redirect",

@@ -88,7 +88,7 @@ func (a *Application) getAllCodecs() []securecookie.Codec {
 	return cs
 }
 
-func (a *Application) Logout(ctx context.Context, sub string) error {
+func (a *Application) Logout(ctx context.Context, filter func(c Claims) bool) error {
 	if _, ok := a.sessions.(*sessions.FilesystemStore); ok {
 		files, err := os.ReadDir(os.TempDir())
 		if err != nil {
@@ -118,7 +118,7 @@ func (a *Application) Logout(ctx context.Context, sub string) error {
 				continue
 			}
 			claims := s.Values[constants.SessionClaims].(Claims)
-			if claims.Sub == sub {
+			if filter(claims) {
 				a.log.WithField("path", fullPath).Trace("deleting session")
 				err := os.Remove(fullPath)
 				if err != nil {
@@ -153,7 +153,7 @@ func (a *Application) Logout(ctx context.Context, sub string) error {
 				continue
 			}
 			claims := c.(Claims)
-			if claims.Sub == sub {
+			if filter(claims) {
 				a.log.WithField("key", key).Trace("deleting session")
 				_, err := client.Del(ctx, key).Result()
 				if err != nil {

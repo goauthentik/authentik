@@ -4826,6 +4826,11 @@
                     ],
                     "title": "Service Provider Binding",
                     "description": "This determines how authentik sends the response back to the Service Provider."
+                },
+                "default_relay_state": {
+                    "type": "string",
+                    "title": "Default relay state",
+                    "description": "Default relay_state value for IDP-initiated logins"
                 }
             },
             "required": []
@@ -7427,146 +7432,32 @@
         "model_authentik_stages_invitation.invitation": {
             "type": "object",
             "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 1,
+                    "pattern": "^[-a-zA-Z0-9_]+$",
+                    "title": "Name"
+                },
                 "expires": {
                     "type": "string",
                     "format": "date-time",
                     "title": "Expires"
                 },
-                "user": {
+                "fixed_data": {
                     "type": "object",
-                    "properties": {
-                        "username": {
-                            "type": "string",
-                            "maxLength": 150,
-                            "minLength": 1,
-                            "title": "Username"
-                        },
-                        "name": {
-                            "type": "string",
-                            "title": "Name",
-                            "description": "User's display name."
-                        },
-                        "is_active": {
-                            "type": "boolean",
-                            "title": "Active",
-                            "description": "Designates whether this user should be treated as active. Unselect this instead of deleting accounts."
-                        },
-                        "last_login": {
-                            "type": [
-                                "string",
-                                "null"
-                            ],
-                            "format": "date-time",
-                            "title": "Last login"
-                        },
-                        "groups": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            },
-                            "title": "Groups"
-                        },
-                        "email": {
-                            "type": "string",
-                            "format": "email",
-                            "maxLength": 254,
-                            "title": "Email address"
-                        },
-                        "attributes": {
-                            "type": "object",
-                            "additionalProperties": true,
-                            "title": "Attributes"
-                        },
-                        "path": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Path"
-                        },
-                        "type": {
-                            "type": "string",
-                            "enum": [
-                                "internal",
-                                "external",
-                                "service_account",
-                                "internal_service_account"
-                            ],
-                            "title": "Type"
-                        }
-                    },
-                    "required": [
-                        "username",
-                        "name"
-                    ],
-                    "title": "User"
+                    "additionalProperties": true,
+                    "title": "Fixed data"
                 },
-                "application": {
-                    "type": "object",
-                    "properties": {
-                        "name": {
-                            "type": "string",
-                            "minLength": 1,
-                            "title": "Name",
-                            "description": "Application's display Name."
-                        },
-                        "slug": {
-                            "type": "string",
-                            "maxLength": 50,
-                            "minLength": 1,
-                            "pattern": "^[-a-zA-Z0-9_]+$",
-                            "title": "Slug",
-                            "description": "Internal application name, used in URLs."
-                        },
-                        "provider": {
-                            "type": "integer",
-                            "title": "Provider"
-                        },
-                        "backchannel_providers": {
-                            "type": "array",
-                            "items": {
-                                "type": "integer"
-                            },
-                            "title": "Backchannel providers"
-                        },
-                        "open_in_new_tab": {
-                            "type": "boolean",
-                            "title": "Open in new tab",
-                            "description": "Open launch URL in a new browser tab or window."
-                        },
-                        "meta_launch_url": {
-                            "type": "string",
-                            "title": "Meta launch url"
-                        },
-                        "meta_description": {
-                            "type": "string",
-                            "title": "Meta description"
-                        },
-                        "meta_publisher": {
-                            "type": "string",
-                            "title": "Meta publisher"
-                        },
-                        "policy_engine_mode": {
-                            "type": "string",
-                            "enum": [
-                                "all",
-                                "any"
-                            ],
-                            "title": "Policy engine mode"
-                        },
-                        "group": {
-                            "type": "string",
-                            "title": "Group"
-                        }
-                    },
-                    "required": [
-                        "name",
-                        "slug"
-                    ],
-                    "title": "Application"
+                "single_use": {
+                    "type": "boolean",
+                    "title": "Single use",
+                    "description": "When enabled, the invitation will be deleted after usage."
                 },
-                "permissions": {
-                    "type": "string",
-                    "minLength": 1,
-                    "title": "Permissions"
+                "flow": {
+                    "type": "integer",
+                    "title": "Flow",
+                    "description": "When set, only the configured flow can use this invitation."
                 }
             },
             "required": []
