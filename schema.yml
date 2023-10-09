@@ -40155,6 +40155,10 @@ components:
           type: string
         type:
           $ref: '#/components/schemas/UserTypeEnum'
+        uuid:
+          type: string
+          format: uuid
+          readOnly: true
       required:
       - avatar
       - groups_obj
@@ -40163,6 +40167,7 @@ components:
       - pk
       - uid
       - username
+      - uuid
     UserAccountRequest:
       type: object
       description: Account adding/removing operations
