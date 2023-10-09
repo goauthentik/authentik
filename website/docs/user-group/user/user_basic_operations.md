@@ -59,19 +59,40 @@ You can also go into [user details](#view-user-details), and click **Edit**.
 
 ## User recovery
 
-If a user has lost their credentials, you can email them a recovery link.
+If a user has lost their credentials, there are several options.
 
-1. Select the user in list or detail view.
+### Email them a recovery link
 
-2. To generate a recovery link, click **Reset Password**.
+1. In the Admin interface, navigate to **Directory > Users** to display all users.
 
-    A notification will appear on your browser with the link for you to copy and to send to the user.
+2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
 
-3. Send an email with the recovery link to the user.
+3. To generate a recovery link, which you can then copy and paste into an email, click **View recovery link**.
 
-This option will only work if you have properly [configured a SMTP server during the installation](../../installation/docker-compose#email-configuration-optional-but-recommended) and set an email address for the user.
+    A pop-up will appear on your browser with the link for you to copy and to send to the user.
+
+### Automate email to a user
+
+You can use our automated email to send a link with the URL for the user to reset thier password. This option will only work if you have properly [configured a SMTP server during the installation](../../installation/docker-compose#email-configuration-optional-but-recommended) and set an email address for the user.
+
+1. In the Admin interface, navigate to **Directory > Users** to display all users.
+
+2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
+
+3. To send the automated email to the user, click **Email recovery link**.
 
 If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails).
+
+### Reset the password for the user
+
+As an Admin, you can simply reset the passwrod for the user.
+
+1. In the Admin interface, navigate to **Directory > Users** to display all users.
+
+2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
+
+3. To reset the user's password, click **Reset password**, and then define the new value.
+
 
 ## Deactivate or Delete user
 
