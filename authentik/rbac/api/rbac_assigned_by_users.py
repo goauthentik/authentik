@@ -8,17 +8,31 @@ from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
 from rest_framework.decorators import action
-from rest_framework.fields import BooleanField
+from rest_framework.fields import BooleanField, ReadOnlyField
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.models import User
 from authentik.policies.event_matcher.models import model_choices
-from authentik.rbac.api.rbac import PermissionAssignSerializer, UserObjectPermissionSerializer
+from authentik.rbac.api.rbac import PermissionAssignSerializer
+
+
+class UserObjectPermissionSerializer(ModelSerializer):
+    """User-bound object level permission"""
+
+    app_label = ReadOnlyField(source="content_type.app_label")
+    model = ReadOnlyField(source="content_type.model")
+    codename = ReadOnlyField(source="permission.codename")
+    object_pk = ReadOnlyField()
+
+    class Meta:
+        model = UserObjectPermission
+        fields = ["id", "codename", "model", "app_label", "object_pk"]
 
 
 class UserAssignedObjectPermissionSerializer(GroupMemberSerializer):

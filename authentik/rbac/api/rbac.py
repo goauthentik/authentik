@@ -4,7 +4,6 @@ from django.contrib.auth.models import Permission
 from django.db.models import Q, QuerySet
 from django_filters.filters import ModelChoiceFilter
 from django_filters.filterset import FilterSet
-from guardian.models import GroupObjectPermission, UserObjectPermission
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import (
     CharField,
@@ -52,30 +51,6 @@ class PermissionSerializer(ModelSerializer):
             "app_label_verbose",
             "model_verbose",
         ]
-
-
-class UserObjectPermissionSerializer(ModelSerializer):
-    """User-bound object level permission"""
-
-    app_label = ReadOnlyField(source="content_type.app_label")
-    model = ReadOnlyField(source="content_type.model")
-    codename = ReadOnlyField(source="permission.codename")
-
-    class Meta:
-        model = UserObjectPermission
-        fields = ["id", "codename", "model", "app_label"]
-
-
-class RoleObjectPermissionSerializer(ModelSerializer):
-    """Role-bound object level permission"""
-
-    app_label = ReadOnlyField(source="content_type.app_label")
-    model = ReadOnlyField(source="content_type.model")
-    codename = ReadOnlyField(source="permission.codename")
-
-    class Meta:
-        model = GroupObjectPermission
-        fields = ["id", "codename", "model", "app_label"]
 
 
 class PermissionFilter(FilterSet):

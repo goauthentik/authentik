@@ -17768,7 +17768,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedRoleObjectPermissionList'
+                $ref: '#/components/schemas/PaginatedExtraRoleObjectPermissionList'
           description: ''
         '400':
           content:
@@ -17825,7 +17825,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedUserObjectPermissionList'
+                $ref: '#/components/schemas/PaginatedExtraUserObjectPermissionList'
           description: ''
         '400':
           content:
@@ -31024,6 +31024,86 @@ components:
       required:
       - expression
       - name
+    ExtraRoleObjectPermission:
+      type: object
+      description: User permission with additional object-related data
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        codename:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        object_pk:
+          type: string
+          title: Object ID
+          readOnly: true
+        app_label_verbose:
+          type: string
+          readOnly: true
+        model_verbose:
+          type: string
+          readOnly: true
+        object_description:
+          type: string
+          nullable: true
+          readOnly: true
+      required:
+      - app_label
+      - app_label_verbose
+      - codename
+      - id
+      - model
+      - model_verbose
+      - object_description
+      - object_pk
+    ExtraUserObjectPermission:
+      type: object
+      description: User permission with additional object-related data
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        codename:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          title: Python model class name
+          readOnly: true
+        app_label:
+          type: string
+          readOnly: true
+        object_pk:
+          type: string
+          title: Object ID
+          readOnly: true
+        app_label_verbose:
+          type: string
+          readOnly: true
+        model_verbose:
+          type: string
+          readOnly: true
+        object_description:
+          type: string
+          nullable: true
+          readOnly: true
+      required:
+      - app_label
+      - app_label_verbose
+      - codename
+      - id
+      - model
+      - model_verbose
+      - object_description
+      - object_pk
     FilePathRequest:
       type: object
       description: Serializer to upload file
@@ -34388,6 +34468,30 @@ components:
       required:
       - pagination
       - results
+    PaginatedExtraRoleObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraRoleObjectPermission'
+      required:
+      - pagination
+      - results
+    PaginatedExtraUserObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExtraUserObjectPermission'
+      required:
+      - pagination
+      - results
     PaginatedFlowList:
       type: object
       properties:
@@ -34856,18 +34960,6 @@ components:
       required:
       - pagination
       - results
-    PaginatedRoleObjectPermissionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/RoleObjectPermission'
-      required:
-      - pagination
-      - results
     PaginatedSAMLPropertyMappingList:
       type: object
       properties:
@@ -35129,18 +35221,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserOAuthSourceConnection'
-      required:
-      - pagination
-      - results
-    PaginatedUserObjectPermissionList:
-      type: object
-      properties:
-        pagination:
-          $ref: '#/components/schemas/Pagination'
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/UserObjectPermission'
       required:
       - pagination
       - results
@@ -39565,11 +39645,16 @@ components:
         app_label:
           type: string
           readOnly: true
+        object_pk:
+          type: string
+          title: Object ID
+          readOnly: true
       required:
       - app_label
       - codename
       - id
       - model
+      - object_pk
     RoleRequest:
       type: object
       description: Role serializer
@@ -41931,11 +42016,16 @@ components:
         app_label:
           type: string
           readOnly: true
+        object_pk:
+          type: string
+          title: Object ID
+          readOnly: true
       required:
       - app_label
       - codename
       - id
       - model
+      - object_pk
     UserPasswordSetRequest:
       type: object
       properties:

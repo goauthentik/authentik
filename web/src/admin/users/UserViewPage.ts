@@ -3,6 +3,7 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
+import "@goauthentik/app/admin/users/UserAssignedPermissionsTable";
 import { me } from "@goauthentik/app/common/users";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -46,7 +47,7 @@ import {
     User,
 } from "@goauthentik/api";
 
-import "./UserDevicesList";
+import "./UserDevicesTable";
 
 @customElement("ak-user-view")
 export class UserViewPage extends AKElement {
@@ -448,7 +449,7 @@ export class UserViewPage extends AKElement {
             >
                 <div class="pf-c-card">
                     <div class="pf-c-card__body">
-                        <ak-user-device-list userId=${this.user.pk}> </ak-user-device-list>
+                        <ak-user-device-table userId=${this.user.pk}> </ak-user-device-table>
                     </div>
                 </div>
             </section>
@@ -458,6 +459,18 @@ export class UserViewPage extends AKElement {
                 model=${RbacPermissionsAssignedByUsersListModelEnum.CoreUser}
                 objectPk=${this.user.pk}
             ></ak-rbac-object-permission-page>
+            <section
+                slot="page-mfa-assigned-permissions"
+                data-tab-title="${msg("Assigned permissions")}"
+                class="pf-c-page__main-section pf-m-no-padding-mobile"
+            >
+                <div class="pf-c-card">
+                    <div class="pf-c-card__body">
+                        <ak-user-assigned-permissions-table username=${this.user.username}>
+                        </ak-user-assigned-permissions-table>
+                    </div>
+                </div>
+            </section>
         </ak-tabs>`;
     }
 }

@@ -23,7 +23,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum, ResponseError } from "@goauthentik/api";
+import {
+    Flow,
+    FlowsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    ResponseError,
+} from "@goauthentik/api";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {

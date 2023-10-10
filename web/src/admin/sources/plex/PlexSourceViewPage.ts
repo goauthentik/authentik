@@ -22,7 +22,11 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { PlexSource, RbacPermissionsAssignedByUsersListModelEnum, SourcesApi } from "@goauthentik/api";
+import {
+    PlexSource,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SourcesApi,
+} from "@goauthentik/api";
 
 @customElement("ak-source-plex-view")
 export class PlexSourceViewPage extends AKElement {

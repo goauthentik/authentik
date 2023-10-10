@@ -17,7 +17,12 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { CoreApi, IntentEnum, RbacPermissionsAssignedByUsersListModelEnum, Token } from "@goauthentik/api";
+import {
+    CoreApi,
+    IntentEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    Token,
+} from "@goauthentik/api";
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {

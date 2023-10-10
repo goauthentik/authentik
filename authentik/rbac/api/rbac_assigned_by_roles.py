@@ -8,17 +8,31 @@ from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.models import GroupObjectPermission
 from guardian.shortcuts import assign_perm
 from rest_framework.decorators import action
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, ReadOnlyField
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.utils import PassiveSerializer
 from authentik.policies.event_matcher.models import model_choices
-from authentik.rbac.api.rbac import PermissionAssignSerializer, RoleObjectPermissionSerializer
+from authentik.rbac.api.rbac import PermissionAssignSerializer
 from authentik.rbac.models import Role
+
+
+class RoleObjectPermissionSerializer(ModelSerializer):
+    """Role-bound object level permission"""
+
+    app_label = ReadOnlyField(source="content_type.app_label")
+    model = ReadOnlyField(source="content_type.model")
+    codename = ReadOnlyField(source="permission.codename")
+    object_pk = ReadOnlyField()
+
+    class Meta:
+        model = GroupObjectPermission
+        fields = ["id", "codename", "model", "app_label", "object_pk"]
 
 
 class RoleAssignedObjectPermissionSerializer(PassiveSerializer):

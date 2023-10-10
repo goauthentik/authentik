@@ -67,7 +67,9 @@ export class RolePermissionTable extends Table<Permission> {
             objectLabel=${msg("Permission(s)")}
             .objects=${this.selectedElements}
             .delete=${(item: Permission) => {
-                return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
+                return new RbacApi(
+                    DEFAULT_CONFIG,
+                ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
                     uuid: this.roleUuid || "",
                     patchedPermissionAssignRequest: {
                         permissions: [`${item.appLabel}.${item.codename}`],

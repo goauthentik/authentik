@@ -17,7 +17,11 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { EventsApi, NotificationRule, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import {
+    EventsApi,
+    NotificationRule,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {

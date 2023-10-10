@@ -18,7 +18,11 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { CertificateKeyPair, CryptoApi, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import {
+    CertificateKeyPair,
+    CryptoApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-crypto-certificate-list")
 export class CertificateKeyPairListPage extends TablePage<CertificateKeyPair> {

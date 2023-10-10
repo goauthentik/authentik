@@ -27,7 +27,12 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ProvidersApi, RbacPermissionsAssignedByUsersListModelEnum, SCIMProvider, Task } from "@goauthentik/api";
+import {
+    ProvidersApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SCIMProvider,
+    Task,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {

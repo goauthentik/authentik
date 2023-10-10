@@ -16,7 +16,11 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { EventsApi, NotificationTransport, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
+import {
+    EventsApi,
+    NotificationTransport,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
