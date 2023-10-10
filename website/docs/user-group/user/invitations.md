@@ -27,7 +27,7 @@ To download the `default-enrollment-flow` file, run this command:
 wget https://raw.githubusercontent.com/goauthentik/authentik/main/website/developer-docs/blueprints/example/flows-enrollment-2-stage.yaml
 ```
 
- Alternatively, use this [link](/blueprints/example/flows-enrollment-2-stage.yaml) to view and save the file. For more details, refer to the [documentation](https://goauthentik.io/docs/flow/examples/flows#enrollment-2-stage).
+Alternatively, use this [link](/blueprints/example/flows-enrollment-2-stage.yaml) to view and save the file. For more details, refer to the [documentation](https://goauthentik.io/docs/flow/examples/flows#enrollment-2-stage).
 
 **Step 2. Import the `default-enrollment-flow` file**
 
@@ -40,7 +40,7 @@ In the Admin UI, navigate to **Directory --> Invitations**, and then click **Cre
 -   **Name**: provide a name for your invitation object.
 -   **Expires**: select a date for when you want the invitation to expire.
 -   **Flow**: in the drop-down menu, select the **default-enrollment-flow** Flow.
--   **Attributes**: (_optional_) enter optional key/value pairs here, to pre-define any information about the user that you will invite to enroll. The ____add info here about the `context['prompt_data']` variable in an expression policy_______
+-   **Attributes**: (_optional_) enter optional key/value pairs here, to pre-define any information about the user that you will invite to enroll. The \_**\_add info here about the `context['prompt_data']` variable in an expression policy**\_  ***Also link to docs about variables and context flows***
 
 ![Create an invitation modal box](./create_invite.png)
 
