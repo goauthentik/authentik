@@ -24,11 +24,28 @@ class CustomBackend(RedisBackend):
         self.config = process_config(url, *get_redis_options(url))
 
     def _create_client(self, **kwargs):
+        """Create new Redis client"""
         pool, client_config = self._get_pool()
         return get_client(client_config, pool)
 
     def _get_pool(self, **params):
+        """Generate ConnectionPool using config"""
         return get_connection_pool(self.config)
+
+    @property
+    def _uses_cluster(self) -> bool:
+        """Check whether Redis cluster connection is used"""
+        return self.config["type"] == "cluster"
+
+    def _set(self, key, value):
+        """Do not use pipeline publish as it is unsupported for cluster"""
+        if self._uses_cluster:
+            self.client.set(key, value)
+
+            if hasattr(self, "expires"):
+                self.client.expire(key, self.expires)
+        else:
+            super()._set(key, value)
 
 
 class CustomCelery(Celery):
