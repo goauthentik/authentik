@@ -271,12 +271,14 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         return get_avatar(self)
 
     class Meta:
-        permissions = (
-            ("reset_user_password", _("Reset Password")),
-            ("impersonate", _("Can impersonate other users")),
-        )
         verbose_name = _("User")
         verbose_name_plural = _("Users")
+        permissions = [
+            ("reset_user_password", _("Reset Password")),
+            ("impersonate", _("Can impersonate other users")),
+            ("assign_user_permissions", _("Can assign permissions to users")),
+            ("unassign_user_permissions", _("Can unassign permissions from users")),
+        ]
 
 
 class Provider(SerializerModel):
@@ -685,7 +687,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
-        permissions = (("view_token_key", _("View token's key")),)
+        permissions = [("view_token_key", _("View token's key"))]
 
 
 class PropertyMapping(SerializerModel, ManagedModel):
