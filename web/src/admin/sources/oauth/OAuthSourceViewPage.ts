@@ -26,7 +26,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     OAuthSource,
     ProviderTypeEnum,
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
     SourcesApi,
 } from "@goauthentik/api";
 
@@ -247,7 +247,7 @@ export class OAuthSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.SourcesOauthOauthsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesOauthOauthsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

@@ -37,7 +37,7 @@ export class RolePermissionForm extends ModelForm<RolePermissionAssign, number> 
     }
 
     async send(data: RolePermissionAssign): Promise<unknown> {
-        await new RbacApi(DEFAULT_CONFIG).rbacAssignedRolesAssignCreate({
+        await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesAssignCreate({
             uuid: this.roleUuid || "",
             permissionAssignRequest: {
                 permissions: data.permissions,

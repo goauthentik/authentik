@@ -17,7 +17,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { EventsApi, NotificationRule, RbacAssignedUsersListModelEnum } from "@goauthentik/api";
+import { EventsApi, NotificationRule, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-event-rule-list")
 export class RuleListPage extends TablePage<NotificationRule> {
@@ -101,7 +101,7 @@ export class RuleListPage extends TablePage<NotificationRule> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacAssignedUsersListModelEnum.EventsNotificationrule}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.EventsNotificationrule}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

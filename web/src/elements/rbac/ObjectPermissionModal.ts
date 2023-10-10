@@ -10,7 +10,7 @@ import { customElement, property } from "lit/decorators.js";
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { RbacAssignedUsersListModelEnum } from "@goauthentik/api";
+import { RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 /**
  * This is a bit of a hack to get the viewport checking from ModelForm,
@@ -20,7 +20,7 @@ import { RbacAssignedUsersListModelEnum } from "@goauthentik/api";
 @customElement("ak-rbac-object-permission-modal-form")
 export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
     @property()
-    model?: RbacAssignedUsersListModelEnum;
+    model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
     objectPk?: string | number;
@@ -45,7 +45,7 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
 @customElement("ak-rbac-object-permission-modal")
 export class ObjectPermissionModal extends AKElement {
     @property()
-    model?: RbacAssignedUsersListModelEnum;
+    model?: RbacPermissionsAssignedByUsersListModelEnum;
 
     @property()
     objectPk?: string | number;

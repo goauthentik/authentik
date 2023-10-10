@@ -28,7 +28,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { CoreApi, Group, RbacAssignedUsersListModelEnum } from "@goauthentik/api";
+import { CoreApi, Group, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-group-view")
 export class GroupViewPage extends AKElement {
@@ -204,7 +204,7 @@ export class GroupViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.CoreGroup}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreGroup}
                 objectPk=${this.group.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

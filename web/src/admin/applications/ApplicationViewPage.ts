@@ -32,7 +32,7 @@ import {
     Application,
     CoreApi,
     OutpostsApi,
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-application-view")
@@ -308,7 +308,7 @@ export class ApplicationViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.CoreApplication}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreApplication}
                 objectPk=${this.application.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

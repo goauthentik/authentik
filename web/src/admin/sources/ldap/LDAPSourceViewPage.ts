@@ -25,7 +25,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
     LDAPSource,
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
     SourcesApi,
     Task,
     TaskStatusEnum,
@@ -216,7 +216,7 @@ export class LDAPSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.SourcesLdapLdapsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesLdapLdapsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

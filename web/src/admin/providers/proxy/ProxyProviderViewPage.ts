@@ -44,7 +44,7 @@ import {
     ProvidersApi,
     ProxyMode,
     ProxyProvider,
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
 export function ModeToLabel(action?: ProxyMode): string {
@@ -217,7 +217,7 @@ export class ProxyProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.ProvidersProxyProxyprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersProxyProxyprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

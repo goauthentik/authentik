@@ -15,7 +15,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { Prompt, RbacAssignedUsersListModelEnum, StagesApi } from "@goauthentik/api";
+import { Prompt, RbacPermissionsAssignedByUsersListModelEnum, StagesApi } from "@goauthentik/api";
 
 @customElement("ak-stage-prompt-list")
 export class PromptListPage extends TablePage<Prompt> {
@@ -99,7 +99,7 @@ export class PromptListPage extends TablePage<Prompt> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacAssignedUsersListModelEnum.StagesPromptPrompt}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.StagesPromptPrompt}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal> `,

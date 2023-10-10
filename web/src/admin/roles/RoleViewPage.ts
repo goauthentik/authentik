@@ -23,7 +23,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
-import { RbacApi, RbacAssignedUsersListModelEnum, Role } from "@goauthentik/api";
+import { RbacApi, RbacPermissionsAssignedByUsersListModelEnum, Role } from "@goauthentik/api";
 
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {
@@ -127,7 +127,7 @@ export class RoleViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.RbacRole}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.RbacRole}
                 objectPk=${this._role.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

@@ -29,7 +29,7 @@ import {
     License,
     LicenseForecast,
     LicenseSummary,
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
 @customElement("ak-enterprise-license-list")
@@ -239,7 +239,7 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacAssignedUsersListModelEnum.EnterpriseLicense}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.EnterpriseLicense}
                     objectPk=${item.licenseUuid}
                 >
                 </ak-rbac-object-permission-modal> `,

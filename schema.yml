@@ -17051,9 +17051,111 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /rbac/assigned_roles/:
+  /rbac/permissions/:
     get:
-      operationId: rbac_assigned_roles_list
+      operationId: rbac_permissions_list
+      description: Read-only list of all permissions, filterable by model and app
+      parameters:
+      - in: query
+        name: codename
+        schema:
+          type: string
+      - in: query
+        name: content_type__app_label
+        schema:
+          type: string
+      - in: query
+        name: content_type__model
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - in: query
+        name: role
+        schema:
+          type: string
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPermissionList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rbac/permissions/{id}/:
+    get:
+      operationId: rbac_permissions_retrieve
+      description: Read-only list of all permissions, filterable by model and app
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this permission.
+        required: true
+      tags:
+      - rbac
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Permission'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /rbac/permissions/assigned_by_roles/:
+    get:
+      operationId: rbac_permissions_assigned_by_roles_list
       description: Get assigned object permissions for a single object
       parameters:
       - in: query
@@ -17262,9 +17364,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /rbac/assigned_roles/{uuid}/assign/:
+  /rbac/permissions/assigned_by_roles/{uuid}/assign/:
     post:
-      operationId: rbac_assigned_roles_assign_create
+      operationId: rbac_permissions_assigned_by_roles_assign_create
       description: |-
         Assign permission(s) to role. When `object_pk` is set, the permissions
         are only assigned to the specific object, otherwise they are assigned globally.
@@ -17301,9 +17403,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /rbac/assigned_roles/{uuid}/unassign/:
+  /rbac/permissions/assigned_by_roles/{uuid}/unassign/:
     patch:
-      operationId: rbac_assigned_roles_unassign_partial_update
+      operationId: rbac_permissions_assigned_by_roles_unassign_partial_update
       description: |-
         Unassign permission(s) to role. When `object_pk` is set, the permissions
         are only assigned to the specific object, otherwise they are assigned globally.
@@ -17339,9 +17441,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /rbac/assigned_users/:
+  /rbac/permissions/assigned_by_users/:
     get:
-      operationId: rbac_assigned_users_list
+      operationId: rbac_permissions_assigned_by_users_list
       description: Get assigned object permissions for a single object
       parameters:
       - in: query
@@ -17550,9 +17652,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /rbac/assigned_users/{id}/assign/:
+  /rbac/permissions/assigned_by_users/{id}/assign/:
     post:
-      operationId: rbac_assigned_users_assign_create
+      operationId: rbac_permissions_assigned_by_users_assign_create
       description: Assign permission(s) to user
       parameters:
       - in: path
@@ -17586,9 +17688,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /rbac/assigned_users/{id}/unassign/:
+  /rbac/permissions/assigned_by_users/{id}/unassign/:
     patch:
-      operationId: rbac_assigned_users_unassign_partial_update
+      operationId: rbac_permissions_assigned_by_users_unassign_partial_update
       description: |-
         Unassign permission(s) to user. When `object_pk` is set, the permissions
         are only assigned to the specific object, otherwise they are assigned globally.
@@ -17623,23 +17725,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /rbac/permissions/:
+  /rbac/permissions/roles/:
     get:
-      operationId: rbac_permissions_list
-      description: Read-only list of all permissions, filterable by model and app
+      operationId: rbac_permissions_roles_list
+      description: Get a role's assigned object permissions
       parameters:
       - in: query
-        name: codename
+        name: name
         schema:
           type: string
-      - in: query
-        name: content_type__app_label
-        schema:
-          type: string
-      - in: query
-        name: content_type__model
-        schema:
-          type: string
+        required: true
       - name: ordering
         required: false
         in: query
@@ -17658,10 +17753,6 @@ paths:
         description: Number of results to return per page.
         schema:
           type: integer
-      - in: query
-        name: role
-        schema:
-          type: string
       - name: search
         required: false
         in: query
@@ -17677,7 +17768,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PaginatedPermissionList'
+                $ref: '#/components/schemas/PaginatedRoleObjectPermissionList'
           description: ''
         '400':
           content:
@@ -17691,16 +17782,39 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-  /rbac/permissions/{id}/:
+  /rbac/permissions/users/:
     get:
-      operationId: rbac_permissions_retrieve
-      description: Read-only list of all permissions, filterable by model and app
+      operationId: rbac_permissions_users_list
+      description: Get a users's assigned object permissions
       parameters:
-      - in: path
-        name: id
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
         schema:
           type: integer
-        description: A unique integer value identifying this permission.
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: username
+        schema:
+          type: string
         required: true
       tags:
       - rbac
@@ -17711,7 +17825,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Permission'
+                $ref: '#/components/schemas/PaginatedUserObjectPermissionList'
           description: ''
         '400':
           content:
@@ -34742,6 +34856,18 @@ components:
       required:
       - pagination
       - results
+    PaginatedRoleObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RoleObjectPermission'
+      required:
+      - pagination
+      - results
     PaginatedSAMLPropertyMappingList:
       type: object
       properties:
@@ -35003,6 +35129,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/UserOAuthSourceConnection'
+      required:
+      - pagination
+      - results
+    PaginatedUserObjectPermissionList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserObjectPermission'
       required:
       - pagination
       - results

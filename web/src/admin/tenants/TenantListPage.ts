@@ -15,7 +15,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { CoreApi, RbacAssignedUsersListModelEnum, Tenant } from "@goauthentik/api";
+import { CoreApi, RbacPermissionsAssignedByUsersListModelEnum, Tenant } from "@goauthentik/api";
 
 @customElement("ak-tenant-list")
 export class TenantListPage extends TablePage<Tenant> {
@@ -97,7 +97,7 @@ export class TenantListPage extends TablePage<Tenant> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacAssignedUsersListModelEnum.TenantsTenant}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.TenantsTenant}
                     objectPk=${item.tenantUuid}
                 >
                 </ak-rbac-object-permission-modal>`,

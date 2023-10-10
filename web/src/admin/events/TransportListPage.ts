@@ -16,7 +16,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { EventsApi, NotificationTransport, RbacAssignedUsersListModelEnum } from "@goauthentik/api";
+import { EventsApi, NotificationTransport, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
@@ -94,7 +94,7 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                 </ak-forms-modal>
 
                 <ak-rbac-object-permission-modal
-                    model=${RbacAssignedUsersListModelEnum.EventsNotificationtransport}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.EventsNotificationtransport}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

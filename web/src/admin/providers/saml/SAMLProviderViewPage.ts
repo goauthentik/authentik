@@ -35,7 +35,7 @@ import {
     CertificateKeyPair,
     CryptoApi,
     ProvidersApi,
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
     SAMLMetadata,
     SAMLProvider,
 } from "@goauthentik/api";
@@ -231,7 +231,7 @@ export class SAMLProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.ProvidersSamlSamlprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersSamlSamlprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

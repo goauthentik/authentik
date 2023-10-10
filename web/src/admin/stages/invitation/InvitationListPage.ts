@@ -23,7 +23,7 @@ import PFBanner from "@patternfly/patternfly/components/Banner/banner.css";
 import {
     FlowDesignationEnum,
     Invitation,
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
     StagesApi,
 } from "@goauthentik/api";
 
@@ -140,7 +140,7 @@ export class InvitationListPage extends TablePage<Invitation> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacAssignedUsersListModelEnum.StagesInvitationInvitation}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.StagesInvitationInvitation}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>`,

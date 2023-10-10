@@ -54,7 +54,7 @@ export class UserObjectPermissionForm extends ModelForm<UserAssignData, number> 
     }
 
     send(data: UserAssignData): Promise<unknown> {
-        return new RbacApi(DEFAULT_CONFIG).rbacAssignedUsersAssignCreate({
+        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByUsersAssignCreate({
             id: data.user,
             permissionAssignRequest: {
                 permissions: Object.keys(data.permissions).filter((key) => data.permissions[key]),

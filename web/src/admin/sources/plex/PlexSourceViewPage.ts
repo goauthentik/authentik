@@ -22,7 +22,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { PlexSource, RbacAssignedUsersListModelEnum, SourcesApi } from "@goauthentik/api";
+import { PlexSource, RbacPermissionsAssignedByUsersListModelEnum, SourcesApi } from "@goauthentik/api";
 
 @customElement("ak-source-plex-view")
 export class PlexSourceViewPage extends AKElement {
@@ -135,7 +135,7 @@ export class PlexSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.SourcesPlexPlexsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesPlexPlexsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

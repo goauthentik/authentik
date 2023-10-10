@@ -41,7 +41,7 @@ import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 import {
     CapabilitiesEnum,
     CoreApi,
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
     SessionUser,
     User,
 } from "@goauthentik/api";
@@ -455,7 +455,7 @@ export class UserViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.CoreUser}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreUser}
                 objectPk=${this.user.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

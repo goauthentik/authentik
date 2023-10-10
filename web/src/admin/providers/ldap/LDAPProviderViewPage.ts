@@ -31,7 +31,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import {
     LDAPProvider,
     ProvidersApi,
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
     SessionUser,
 } from "@goauthentik/api";
 
@@ -110,7 +110,7 @@ export class LDAPProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.ProvidersLdapLdapprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersLdapLdapprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

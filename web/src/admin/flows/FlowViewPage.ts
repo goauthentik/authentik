@@ -23,7 +23,7 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Flow, FlowsApi, RbacAssignedUsersListModelEnum, ResponseError } from "@goauthentik/api";
+import { Flow, FlowsApi, RbacPermissionsAssignedByUsersListModelEnum, ResponseError } from "@goauthentik/api";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
@@ -271,7 +271,7 @@ export class FlowViewPage extends AKElement {
                 <ak-rbac-object-permission-page
                     slot="page-permissions"
                     data-tab-title="${msg("Permissions")}"
-                    model=${RbacAssignedUsersListModelEnum.FlowsFlow}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.FlowsFlow}
                     objectPk=${this.flow.pk}
                 ></ak-rbac-object-permission-page>
             </ak-tabs>`;

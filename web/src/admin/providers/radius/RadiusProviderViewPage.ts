@@ -24,7 +24,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { ProvidersApi, RadiusProvider, RbacAssignedUsersListModelEnum } from "@goauthentik/api";
+import { ProvidersApi, RadiusProvider, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-provider-radius-view")
 export class RadiusProviderViewPage extends AKElement {
@@ -164,7 +164,7 @@ export class RadiusProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.ProvidersRadiusRadiusprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersRadiusRadiusprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

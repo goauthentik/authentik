@@ -14,7 +14,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { PoliciesApi, RbacAssignedUsersListModelEnum, Reputation } from "@goauthentik/api";
+import { PoliciesApi, RbacPermissionsAssignedByUsersListModelEnum, Reputation } from "@goauthentik/api";
 
 @customElement("ak-policy-reputation-list")
 export class ReputationListPage extends TablePage<Reputation> {
@@ -90,7 +90,7 @@ export class ReputationListPage extends TablePage<Reputation> {
             html`${item.updated.toLocaleString()}`,
             html`
                 <ak-rbac-object-permission-modal
-                    model=${RbacAssignedUsersListModelEnum.PoliciesReputationReputation}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.PoliciesReputationReputation}
                     objectPk=${item.pk || ""}
                 >
                 </ak-rbac-object-permission-modal>

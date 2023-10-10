@@ -29,7 +29,7 @@ import {
     OutpostHealth,
     OutpostTypeEnum,
     OutpostsApi,
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
 } from "@goauthentik/api";
 
 export function TypeToLabel(type?: OutpostTypeEnum): string {
@@ -149,7 +149,7 @@ export class OutpostListPage extends TablePage<Outpost> {
                     </button>
                 </ak-forms-modal>
                 <ak-rbac-object-permission-modal
-                    model=${RbacAssignedUsersListModelEnum.OutpostsOutpost}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.OutpostsOutpost}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

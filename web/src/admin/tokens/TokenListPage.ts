@@ -17,7 +17,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { CoreApi, IntentEnum, RbacAssignedUsersListModelEnum, Token } from "@goauthentik/api";
+import { CoreApi, IntentEnum, RbacPermissionsAssignedByUsersListModelEnum, Token } from "@goauthentik/api";
 
 @customElement("ak-token-list")
 export class TokenListPage extends TablePage<Token> {
@@ -130,7 +130,7 @@ export class TokenListPage extends TablePage<Token> {
                           </pf-tooltip>
                       </button>`}
                 <ak-rbac-object-permission-modal
-                    model=${RbacAssignedUsersListModelEnum.CoreToken}
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.CoreToken}
                     objectPk=${item.pk}
                 >
                 </ak-rbac-object-permission-modal>

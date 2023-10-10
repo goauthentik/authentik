@@ -24,7 +24,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import {
-    RbacAssignedUsersListModelEnum,
+    RbacPermissionsAssignedByUsersListModelEnum,
     SAMLMetadata,
     SAMLSource,
     SourcesApi,
@@ -215,7 +215,7 @@ export class SAMLSourceViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.SourcesSamlSamlsource}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesSamlSamlsource}
                 objectPk=${this.source.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;

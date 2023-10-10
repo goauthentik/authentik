@@ -12,14 +12,14 @@ import { ifDefined } from "lit/directives/if-defined.js";
 import {
     PaginatedPermissionList,
     RbacApi,
-    RbacAssignedRolesListModelEnum,
+    RbacPermissionsAssignedByRolesListModelEnum,
     RoleAssignedObjectPermission,
 } from "@goauthentik/api";
 
 @customElement("ak-rbac-role-object-permission-table")
 export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectPermission> {
     @property()
-    model?: RbacAssignedRolesListModelEnum;
+    model?: RbacPermissionsAssignedByRolesListModelEnum;
 
     @property()
     objectPk?: string | number;
@@ -28,10 +28,10 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     modelPermissions?: PaginatedPermissionList;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
-        const perms = await new RbacApi(DEFAULT_CONFIG).rbacAssignedRolesList({
+        const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
             page: page,
             // TODO: better default
-            model: this.model || RbacAssignedRolesListModelEnum.CoreUser,
+            model: this.model || RbacPermissionsAssignedByRolesListModelEnum.CoreUser,
             objectPk: this.objectPk?.toString(),
         });
         const [appLabel, modelName] = (this.model || "").split(".");

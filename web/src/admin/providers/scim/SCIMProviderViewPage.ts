@@ -27,7 +27,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFStack from "@patternfly/patternfly/layouts/Stack/stack.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { ProvidersApi, RbacAssignedUsersListModelEnum, SCIMProvider, Task } from "@goauthentik/api";
+import { ProvidersApi, RbacPermissionsAssignedByUsersListModelEnum, SCIMProvider, Task } from "@goauthentik/api";
 
 @customElement("ak-provider-scim-view")
 export class SCIMProviderViewPage extends AKElement {
@@ -117,7 +117,7 @@ export class SCIMProviderViewPage extends AKElement {
             <ak-rbac-object-permission-page
                 slot="page-permissions"
                 data-tab-title="${msg("Permissions")}"
-                model=${RbacAssignedUsersListModelEnum.ProvidersScimScimprovider}
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersScimScimprovider}
                 objectPk=${this.provider.pk}
             ></ak-rbac-object-permission-page>
         </ak-tabs>`;
