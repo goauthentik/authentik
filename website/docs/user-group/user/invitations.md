@@ -36,7 +36,7 @@ In the Admin UI, navigate to **Directory --> Invitations**, and then click **Cre
 -   **Name**: provide a name for your invitation object.
 -   **Expires**: select a date for when you want the invitation to expire.
 -   **Flow**: in the drop-down menu, select the **default-enrollment-flow** Flow.
--   **Attributes**: (_optional_) enter optional key/value pairs here, to pre-define any information about the user that you will invite to enroll. The data entered here is considered as a variable, specifically the `context['prompt_data']` variable. This data is read by the context flow's [prompt stage](../../flow/stages/prompt/index.md) in an expression policy.
+-   **Custom attributes**: (_optional_) enter optional key/value pairs here, to pre-define any information about the user that you will invite to enroll. The data entered here is considered as a variable, specifically the `context['prompt_data']` variable. This data is read by the context flow's [prompt stage](../../flow/stages/prompt/index.md) in an expression policy.
 
 ![Create an invitation modal box](./create_invite.png)
 
@@ -46,4 +46,4 @@ Click **Save** to save the new invitation and close the modal and return to the 
 
 **Step 3. Email the invitation**
 
-On the **Invitations** page, click the chevron beside your new invitation, to expand the invitation details. The **Link to use the invitation** is displayed with the URL. Copy the URL and send it in an email to the people you want to invite to enroll.
+On the **Invitations** page, click the chevron beside your new invitation, to expand the details. The **Link to use the invitation** displays with the URL. Copy the URL and send it in an email to the people you want to invite to enroll.

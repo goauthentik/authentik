@@ -22,9 +22,9 @@ The following topics are for the basic management of users: how to create, modif
 5. Fill the **_optional_** fields if needed:
 
 -   **Name**: The display name of the user.
--   **Email**: The email of the user. That will be used if there is a [notification rule](../../events/notifications) triggered or for [email stages](../../flow/stages/email).
+-   **Email**: The email address of the user. That will be used if there is a [notification rule](../../events/notifications) triggered or for [email stages](../../flow/stages/email).
 -   **Is active**: Define is the newly created user accound is active. Selected by default.
--   **Attributes**: Custom attributes defintion for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
+-   **Attributes**: Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 
 6. Click **Create**
 
