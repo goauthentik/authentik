@@ -121,9 +121,14 @@ class UserAssignedPermissionViewSet(CreateModelMixin, ListModelMixin, GenericVie
                     )
                 user.permissions.set(user.group.permissions.all().exclude(to_remove))
             else:
+                to_remove = Q()
+                for perm in data.validated_data["permissions"]:
+                    app_label, _, codename = perm.partition(".")
+                    to_remove &= Q(
+                        permission__content_type__app_label=app_label,
+                        permission__codename=codename,
+                    )
                 UserObjectPermission.objects.filter(
                     user=user,
-                    permission__content_type__app_label=app_label,
-                    permission__codename=codename,
-                ).delete()
+                ).filter(to_remove).delete()
         return Response(status=204)
