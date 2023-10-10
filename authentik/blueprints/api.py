@@ -90,6 +90,7 @@ class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     queryset = BlueprintInstance.objects.all()
     search_fields = ["name", "path"]
     filterset_fields = ["name", "path"]
+    ordering = ["name"]
 
     @extend_schema(
         responses={
