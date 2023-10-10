@@ -116,9 +116,6 @@ export class AdminInterface extends Interface {
         configureSentry(true);
         this.version = await new AdminApi(DEFAULT_CONFIG).adminVersionRetrieve();
         this.user = await me();
-        if (!this.user.user.isSuperuser && this.user.user.pk > 0) {
-            window.location.assign("/if/user");
-        }
     }
 
     render(): TemplateResult {
