@@ -46,7 +46,7 @@ In the Admin UI, navigate to **Directory --> Invitations**, and then click **Cre
 
 -   **Single use**: specify whether or not you want the invitation to expire after a single use.
 
-Click **Save** to save the new invitation and close the modal and return to the Invitations page.
+Click **Save** to save the new invitation and close the modal and return to the **Invitations** page.
 
 **Step 3. Email the invitation**
 
