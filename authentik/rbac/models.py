@@ -1,8 +1,11 @@
 """RBAC models"""
+from typing import Optional
 from uuid import uuid4
 
 from django.db import models
+from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
+from guardian.shortcuts import assign_perm
 from rest_framework.serializers import BaseSerializer
 
 from authentik.lib.models import SerializerModel
@@ -26,6 +29,14 @@ class Role(SerializerModel):
 
     # name field has the same constraints as the group model
     name = models.TextField(max_length=150, unique=True)
+
+    def assign_permission(self, *perms: str, obj: Optional[models.Model] = None):
+        """Assign permission to role, can handle multiple permissions,
+        but when assigning multiple permissions to an object the permissions
+        must all belong to the object given"""
+        with atomic():
+            for perm in perms:
+                assign_perm(perm, self.group, obj)
 
     @property
     def serializer(self) -> type[BaseSerializer]:

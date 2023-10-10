@@ -1,5 +1,4 @@
 """RBAC role tests"""
-from guardian.shortcuts import assign_perm
 from rest_framework.test import APITestCase
 
 from authentik.core.models import Group
@@ -16,7 +15,7 @@ class TestRoles(APITestCase):
         user = create_test_admin_user()
         group = Group.objects.create(name=generate_id())
         role = Role.objects.create(name=generate_id())
-        assign_perm("authentik_core.view_application", role.group)
+        role.assign_permission("authentik_core.view_application")
         group.roles.add(role)
         group.users.add(user)
         self.assertEqual(list(role.group.user_set.all()), [user])
@@ -27,7 +26,7 @@ class TestRoles(APITestCase):
         user = create_test_admin_user()
         group = Group.objects.create(name=generate_id())
         role = Role.objects.create(name=generate_id())
-        assign_perm("authentik_core.view_application", role.group)
+        role.assign_permission("authentik_core.view_application")
         group.roles.add(role)
         group.users.add(user)
         self.assertEqual(list(role.group.user_set.all()), [user])
