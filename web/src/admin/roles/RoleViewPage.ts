@@ -72,7 +72,7 @@ export class RoleViewPage extends AKElement {
 
     render(): TemplateResult {
         return html`<ak-page-header
-                icon="pf-icon pf-icon-users"
+                icon="fa fa-lock"
                 header=${msg(str`Role ${this._role?.name || ""}`)}
             >
             </ak-page-header>

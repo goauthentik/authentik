@@ -25,10 +25,10 @@ export class RoleListPage extends TablePage<Role> {
         return msg("Roles");
     }
     pageDescription(): string {
-        return msg("TODO");
+        return msg("Manage roles which grant permissions to objects within authentik.");
     }
     pageIcon(): string {
-        return "pf-icon pf-icon-users";
+        return "fa fa-lock";
     }
 
     @property()

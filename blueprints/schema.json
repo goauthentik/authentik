@@ -1196,6 +1196,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_rbac.role"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_rbac.role"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_rbac.role"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_sources_ldap.ldapsource"
                             },
                             "id": {
@@ -3444,6 +3481,7 @@
                         "authentik_providers_saml.samlpropertymapping",
                         "authentik_providers_scim.scimprovider",
                         "authentik_providers_scim.scimmapping",
+                        "authentik_rbac.role",
                         "authentik_sources_ldap.ldapsource",
                         "authentik_sources_ldap.ldappropertymapping",
                         "authentik_sources_oauth.oauthsource",
@@ -4941,6 +4979,18 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_rbac.role": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "title": "Name"
                 }
             },
             "required": []

@@ -17097,6 +17097,7 @@ paths:
           - authentik_providers_saml.samlprovider
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
+          - authentik_rbac.role
           - authentik_sources_ldap.ldappropertymapping
           - authentik_sources_ldap.ldapsource
           - authentik_sources_oauth.oauthsource
@@ -17165,6 +17166,7 @@ paths:
           * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
           * `authentik_providers_scim.scimprovider` - SCIM Provider
           * `authentik_providers_scim.scimmapping` - SCIM Mapping
+          * `authentik_rbac.role` - Role
           * `authentik_sources_ldap.ldapsource` - LDAP Source
           * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
           * `authentik_sources_oauth.oauthsource` - OAuth Source
@@ -17381,6 +17383,7 @@ paths:
           - authentik_providers_saml.samlprovider
           - authentik_providers_scim.scimmapping
           - authentik_providers_scim.scimprovider
+          - authentik_rbac.role
           - authentik_sources_ldap.ldappropertymapping
           - authentik_sources_ldap.ldapsource
           - authentik_sources_oauth.oauthsource
@@ -17449,6 +17452,7 @@ paths:
           * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
           * `authentik_providers_scim.scimprovider` - SCIM Provider
           * `authentik_providers_scim.scimmapping` - SCIM Mapping
+          * `authentik_rbac.role` - Role
           * `authentik_sources_ldap.ldapsource` - LDAP Source
           * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
           * `authentik_sources_oauth.oauthsource` - OAuth Source
@@ -30521,6 +30525,7 @@ components:
             * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
             * `authentik_providers_scim.scimprovider` - SCIM Provider
             * `authentik_providers_scim.scimmapping` - SCIM Mapping
+            * `authentik_rbac.role` - Role
             * `authentik_sources_ldap.ldapsource` - LDAP Source
             * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
             * `authentik_sources_oauth.oauthsource` - OAuth Source
@@ -30715,6 +30720,7 @@ components:
             * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
             * `authentik_providers_scim.scimprovider` - SCIM Provider
             * `authentik_providers_scim.scimmapping` - SCIM Mapping
+            * `authentik_rbac.role` - Role
             * `authentik_sources_ldap.ldapsource` - LDAP Source
             * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
             * `authentik_sources_oauth.oauthsource` - OAuth Source
@@ -32891,6 +32897,7 @@ components:
       - authentik_providers_saml.samlpropertymapping
       - authentik_providers_scim.scimprovider
       - authentik_providers_scim.scimmapping
+      - authentik_rbac.role
       - authentik_sources_ldap.ldapsource
       - authentik_sources_ldap.ldappropertymapping
       - authentik_sources_oauth.oauthsource
@@ -32965,6 +32972,7 @@ components:
         * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
         * `authentik_providers_scim.scimprovider` - SCIM Provider
         * `authentik_providers_scim.scimmapping` - SCIM Mapping
+        * `authentik_rbac.role` - Role
         * `authentik_sources_ldap.ldapsource` - LDAP Source
         * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
         * `authentik_sources_oauth.oauthsource` - OAuth Source
@@ -36004,6 +36012,7 @@ components:
             * `authentik_providers_saml.samlpropertymapping` - SAML Property Mapping
             * `authentik_providers_scim.scimprovider` - SCIM Provider
             * `authentik_providers_scim.scimmapping` - SCIM Mapping
+            * `authentik_rbac.role` - Role
             * `authentik_sources_ldap.ldapsource` - LDAP Source
             * `authentik_sources_ldap.ldappropertymapping` - LDAP Property Mapping
             * `authentik_sources_oauth.oauthsource` - OAuth Source
@@ -39375,7 +39384,7 @@ components:
       - pk
     RoleAssignedObjectPermission:
       type: object
-      description: Base serializer class which doesn't implement create/update methods
+      description: Roles assigned object permission serializer
       properties:
         name:
           type: string
@@ -41317,7 +41326,7 @@ components:
       - pk
     UserAssignedObjectPermission:
       type: object
-      description: Stripped down user serializer to show relevant users for groups
+      description: Users assigned object permission serializer
       properties:
         pk:
           type: integer
@@ -41367,7 +41376,7 @@ components:
       - username
     UserAssignedObjectPermissionRequest:
       type: object
-      description: Stripped down user serializer to show relevant users for groups
+      description: Users assigned object permission serializer
       properties:
         username:
           type: string
