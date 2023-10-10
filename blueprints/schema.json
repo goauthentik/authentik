@@ -2750,6 +2750,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_enterprise.license"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_enterprise.license"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_enterprise.license"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_blueprints.metaapplyblueprint"
                             },
                             "id": {
@@ -3522,7 +3559,8 @@
                         "authentik_core.group",
                         "authentik_core.user",
                         "authentik_core.application",
-                        "authentik_core.token"
+                        "authentik_core.token",
+                        "authentik_enterprise.license"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
@@ -8649,6 +8687,17 @@
                     "type": "boolean",
                     "title": "Expiring"
                 },
+                "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Key"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_enterprise.license": {
+            "type": "object",
+            "properties": {
                 "key": {
                     "type": "string",
                     "minLength": 1,

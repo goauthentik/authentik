@@ -17067,6 +17067,7 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_enterprise.license
           - authentik_events.event
           - authentik_events.notification
           - authentik_events.notificationrule
@@ -17208,6 +17209,7 @@ paths:
           * `authentik_core.user` - User
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
+          * `authentik_enterprise.license` - License
         required: true
       - in: query
         name: object_pk
@@ -17353,6 +17355,7 @@ paths:
           - authentik_core.token
           - authentik_core.user
           - authentik_crypto.certificatekeypair
+          - authentik_enterprise.license
           - authentik_events.event
           - authentik_events.notification
           - authentik_events.notificationrule
@@ -17494,6 +17497,7 @@ paths:
           * `authentik_core.user` - User
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
+          * `authentik_enterprise.license` - License
         required: true
       - in: query
         name: object_pk
@@ -30567,6 +30571,7 @@ components:
             * `authentik_core.user` - User
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
+            * `authentik_enterprise.license` - License
       required:
       - bound_to
       - component
@@ -30762,6 +30767,7 @@ components:
             * `authentik_core.user` - User
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
+            * `authentik_enterprise.license` - License
       required:
       - name
     EventRequest:
@@ -32939,6 +32945,7 @@ components:
       - authentik_core.user
       - authentik_core.application
       - authentik_core.token
+      - authentik_enterprise.license
       type: string
       description: |-
         * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
@@ -33014,6 +33021,7 @@ components:
         * `authentik_core.user` - User
         * `authentik_core.application` - Application
         * `authentik_core.token` - Token
+        * `authentik_enterprise.license` - License
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -36054,6 +36062,7 @@ components:
             * `authentik_core.user` - User
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
+            * `authentik_enterprise.license` - License
     PatchedEventRequest:
       type: object
       description: Event Serializer
