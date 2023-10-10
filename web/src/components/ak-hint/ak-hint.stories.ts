@@ -35,7 +35,13 @@ const container = (testItem: TemplateResult) =>
                 color: black;
                 margin-top: 1em;
             }
-            ak-hint-title::part(ak-hint-title) {
+
+            * {
+                --ak-hint--Color: black !important;
+            }
+            ak-hint-title::part(ak-hint-title),
+            ak-hint-footer::part(ak-hint-footer),
+            slotted::(*) {
                 color: black;
             }
         </style>
@@ -67,16 +73,15 @@ export const Default = () => {
                     ></ak-hint-body
                 >
             </ak-hint>
-        </section>`,
+        </section>`
     );
 };
-
 
 export const WithTitle = () => {
     return container(
         html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
             <ak-hint>
-                <ak-hint-title><p>New Application Wizard</p></ak-hint-title>
+                <ak-hint-title>New Application Wizard</ak-hint-title>
                 <ak-hint-body>
                     <p style="padding-bottom: 1rem;">
                         Authentik has a new Application Wizard that can configure both an
@@ -95,6 +100,36 @@ export const WithTitle = () => {
                     ></ak-hint-body
                 >
             </ak-hint>
-        </section>`,
+        </section>`
+    );
+};
+
+export const WithTitleAndFooter = () => {
+    return container(
+        html` <section class="pf-c-page__main-section pf-m-no-padding-mobile">
+            <ak-hint>
+                <ak-hint-title>New Application Wizard</ak-hint-title>
+                <ak-hint-body>
+                    <p style="padding-bottom: 1rem;">
+                        Authentik has a new Application Wizard that can configure both an
+                        application and its authentication provider at the same time.
+                        <a href="(link to docs)">Learn more about the wizard here.</a>
+                    </p>
+                    <ak-action-button
+                        class="pf-m-secondary"
+                        .apiRequest=${() => {
+                            showMessage({
+                                message: "This would have shown the wizard",
+                                level: MessageLevel.success,
+                            });
+                        }}
+                        >Create with Wizard</ak-action-button
+                    ></ak-hint-body
+                >
+                <ak-hint-footer
+><div style="text-align: right"><input type="checkbox" /> Don't show this message again.</div></ak-hint-footer
+                >
+            </ak-hint>
+        </section>`
     );
 };

@@ -6,9 +6,9 @@ import { customElement } from "lit/decorators.js";
 const styles = css`
     :host {
         --ak-hint--GridRowGap: var(--pf-global--spacer--md);
-        --ak-hint--PaddingTop: var(--pf-global--spacer--lg);
+        --ak-hint--PaddingTop: var(--pf-global--spacer--md);
         --ak-hint--PaddingRight: var(--pf-global--spacer--lg);
-        --ak-hint--PaddingBottom: var(--pf-global--spacer--lg);
+        --ak-hint--PaddingBottom: var(--pf-global--spacer--md);
         --ak-hint--PaddingLeft: var(--pf-global--spacer--lg);
         --ak-hint--BackgroundColor: var(--pf-global--palette--blue-50);
         --ak-hint--BorderColor: var(--pf-global--palette--blue-100);
@@ -32,17 +32,23 @@ const styles = css`
         );
     }
 
+    div#host {
+        display: flex;
+        flex-direction: column;
+        gap: var(--ak-hint--GridRowGap);
+        background-color: var(--ak-hint--BackgroundColor);
+        color: var(--ak-hint--Color);
+        border: var(--ak-hint--BorderWidth) solid var(--ak-hint--BorderColor);
+        box-shadow: var(--ak-hint--BoxShadow);
+        padding: var(--ak-hint--PaddingTop) var(--ak-hint--PaddingRight)
+            var(--ak-hint--PaddingBottom) var(--ak-hint--PaddingLeft);
+    }
+
     ::slotted(ak-hint-title),
     ::slotted(ak-hint-body) {
         display: grid;
         grid-template-columns: 1fr auto;
         grid-row-gap: var(--ak-hint--GridRowGap);
-        padding: var(--ak-hint--PaddingTop) var(--ak-hint--PaddingRight)
-            var(--ak-hint--PaddingBottom) var(--ak-hint--PaddingLeft);
-        color: var(--ak-hint--Color);
-        background-color: var(--ak-hint--BackgroundColor);
-        border: var(--ak-hint--BorderWidth) solid var(--ak-hint--BorderColor);
-        box-shadow: var(--ak-hint--BoxShadow);
     }
 `;
 
