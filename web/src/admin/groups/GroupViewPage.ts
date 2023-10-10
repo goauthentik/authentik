@@ -1,5 +1,6 @@
 import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/admin/users/RelatedUserList";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -27,7 +28,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { CoreApi, Group } from "@goauthentik/api";
+import { CoreApi, Group, RbacAssignedUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-group-view")
 export class GroupViewPage extends AKElement {
@@ -199,6 +200,13 @@ export class GroupViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacAssignedUsersListModelEnum.CoreGroup}
+                objectPk=${this.group.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

@@ -1,5 +1,6 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
 import "@goauthentik/admin/roles/RolePermissionTable";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -22,7 +23,7 @@ import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 
-import { RbacApi, Role } from "@goauthentik/api";
+import { RbacApi, RbacAssignedUsersListModelEnum, Role } from "@goauthentik/api";
 
 @customElement("ak-role-view")
 export class RoleViewPage extends AKElement {
@@ -123,6 +124,12 @@ export class RoleViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacAssignedUsersListModelEnum.RbacRole}
+                objectPk=${this._role.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

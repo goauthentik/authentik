@@ -4,6 +4,7 @@ import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import { me } from "@goauthentik/app/common/users";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { MessageLevel } from "@goauthentik/common/messages";
@@ -37,7 +38,13 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { CapabilitiesEnum, CoreApi, SessionUser, User } from "@goauthentik/api";
+import {
+    CapabilitiesEnum,
+    CoreApi,
+    RbacAssignedUsersListModelEnum,
+    SessionUser,
+    User,
+} from "@goauthentik/api";
 
 import "./UserDevicesList";
 
@@ -445,6 +452,12 @@ export class UserViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacAssignedUsersListModelEnum.CoreUser}
+                objectPk=${this.user.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }
