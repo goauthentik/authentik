@@ -17618,6 +17618,43 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /rbac/assigned_users/{id}/unassign/:
+    patch:
+      operationId: rbac_assigned_users_unassign_partial_update
+      description: |-
+        Unassign permission(s) to user. When `object_pk` is set, the permissions
+        are only assigned to the specific object, otherwise they are assigned globally.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this User.
+        required: true
+      tags:
+      - rbac
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPermissionAssignRequest'
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: Successfully unassigned
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /rbac/permissions/:
     get:
       operationId: rbac_permissions_list

@@ -5,6 +5,7 @@ from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.utils import OpenApiResponse, extend_schema
+from guardian.models import GroupObjectPermission
 from guardian.shortcuts import assign_perm
 from rest_framework.decorators import action
 from rest_framework.fields import CharField
@@ -13,6 +14,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
+from authentik.api.decorators import permission_required
 from authentik.core.api.utils import PassiveSerializer
 from authentik.policies.event_matcher.models import model_choices
 from authentik.rbac.api.rbac import PermissionAssignSerializer, RoleObjectPermissionSerializer
@@ -66,6 +68,7 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     queryset = Role.objects.all()
     filterset_class = RoleAssignedPermissionFilter
 
+    @permission_required("authentik_rbac.assign_role_permissions")
     @extend_schema(
         request=PermissionAssignSerializer(),
         responses={
@@ -91,6 +94,7 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
                 assign_perm(perm, role.group, model_instance)
         return Response(status=204)
 
+    @permission_required("authentik_rbac.unassign_role_permissions")
     @extend_schema(
         request=PermissionAssignSerializer(),
         responses={
@@ -122,5 +126,9 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
                     )
                 role.group.permissions.set(role.group.permissions.all().exclude(to_remove))
             else:
-                raise NotImplementedError()
+                GroupObjectPermission.objects.filter(
+                    group=role.group,
+                    permission__content_type__app_label=app_label,
+                    permission__codename=codename,
+                ).delete()
         return Response(status=204)
