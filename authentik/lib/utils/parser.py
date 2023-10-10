@@ -397,7 +397,8 @@ def process_config(url, pool_kwargs, redis_kwargs, tls_kwargs):
             case "cluster" | "clusters":
                 redis_kwargs = _configure_tcp_keepalive(redis_kwargs)
                 config["type"] = "cluster"
-                database = redis_kwargs.pop("db", None)
+                # Redis cluster only supports one DB, ignore...
+                redis_kwargs.pop("db", None)
                 config["pool_kwargs"] = deepcopy(pool_kwargs)
                 config["redis_kwargs"] = deepcopy(redis_kwargs)
                 config["addrs"] = addrs
