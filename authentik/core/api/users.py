@@ -7,7 +7,6 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
 from django.db.models.functions import ExtractHour
-from django.db.models.query import QuerySet
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
@@ -52,7 +51,6 @@ from rest_framework.serializers import (
 )
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
-from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import CoordinateSerializer
@@ -653,19 +651,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
 
         return Response(status=204)
-
-    def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
-        """Custom filter_queryset method which ignores guardian, but still supports sorting"""
-        for backend in list(self.filter_backends):
-            if backend == ObjectPermissionsFilter:
-                continue
-            queryset = backend().filter_queryset(self.request, queryset, self)
-        return queryset
-
-    def filter_queryset(self, queryset):
-        if self.request.user.has_perm("authentik_core.view_user"):
-            return self._filter_queryset_for_list(queryset)
-        return super().filter_queryset(queryset)
 
     @extend_schema(
         responses={
