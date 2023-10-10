@@ -9,7 +9,7 @@ from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField
-from rest_framework.mixins import CreateModelMixin, ListModelMixin
+from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
@@ -60,10 +60,11 @@ class UserAssignedPermissionFilter(FilterSet):
         ).distinct()
 
 
-class UserAssignedPermissionViewSet(CreateModelMixin, ListModelMixin, GenericViewSet):
+class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     """Get assigned object permissions for a single object"""
 
     serializer_class = UserAssignedObjectPermissionSerializer
+    ordering = ["username"]
     # The filtering is done in the filterset,
     # which has a required filter that does the heavy lifting
     queryset = User.objects.all()

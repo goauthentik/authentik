@@ -6,7 +6,7 @@ from authentik.rbac.api.roles import RoleViewSet
 
 api_urlpatterns = [
     ("rbac/permissions", RBACPermissionViewSet),
-    ("rbac/assigned_users", UserAssignedPermissionViewSet),
-    ("rbac/assigned_roles", RoleAssignedPermissionViewSet),
+    ("rbac/assigned_users", UserAssignedPermissionViewSet, "rbac-assigned-users"),
+    ("rbac/assigned_roles", RoleAssignedPermissionViewSet, "rbac-assigned-roles"),
     ("rbac/roles", RoleViewSet),
 ]

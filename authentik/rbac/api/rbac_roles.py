@@ -63,6 +63,7 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     """Get assigned object permissions for a single object"""
 
     serializer_class = RoleAssignedObjectPermissionSerializer
+    ordering = ["name"]
     # The filtering is done in the filterset,
     # which has a required filter that does the heavy lifting
     queryset = Role.objects.all()

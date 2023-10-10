@@ -1,12 +1,12 @@
 """RBAC role tests"""
 from django.urls import reverse
 from rest_framework.test import APITestCase
-from rest_framework.utils.encoders import JSONEncoder
 
 from authentik.core.models import Group
 from authentik.core.tests.utils import create_test_admin_user, create_test_user
 from authentik.lib.generators import generate_id
 from authentik.rbac.models import Role
+from authentik.stages.invitation.api import InvitationSerializer
 from authentik.stages.invitation.models import Invitation
 
 
@@ -47,25 +47,7 @@ class TestAPIPerms(APITestCase):
                     "end_index": 1,
                 },
                 "results": [
-                    {
-                        "pk": str(inv.pk),
-                        "name": inv.name,
-                        "expires": JSONEncoder().default(inv.expires),
-                        "fixed_data": {},
-                        "created_by": {
-                            "pk": self.superuser.pk,
-                            "username": f"{self.superuser.username}",
-                            "name": f"{self.superuser.username}",
-                            "is_active": True,
-                            "last_login": None,
-                            "email": f"{self.superuser.username}@goauthentik.io",
-                            "attributes": {},
-                            "uid": self.superuser.uid,
-                        },
-                        "single_use": False,
-                        "flow": None,
-                        "flow_obj": None,
-                    }
+                    InvitationSerializer(instance=inv).data,
                 ],
             },
         )
@@ -100,25 +82,7 @@ class TestAPIPerms(APITestCase):
                     "end_index": 1,
                 },
                 "results": [
-                    {
-                        "pk": str(inv2.pk),
-                        "name": inv2.name,
-                        "expires": JSONEncoder().default(inv2.expires),
-                        "fixed_data": {},
-                        "created_by": {
-                            "pk": self.superuser.pk,
-                            "username": f"{self.superuser.username}",
-                            "name": f"{self.superuser.username}",
-                            "is_active": True,
-                            "last_login": None,
-                            "email": f"{self.superuser.username}@goauthentik.io",
-                            "attributes": {},
-                            "uid": self.superuser.uid,
-                        },
-                        "single_use": False,
-                        "flow": None,
-                        "flow_obj": None,
-                    }
+                    InvitationSerializer(instance=inv2).data,
                 ],
             },
         )

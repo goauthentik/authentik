@@ -17550,38 +17550,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
-    post:
-      operationId: rbac_assigned_users_create
-      description: Get assigned object permissions for a single object
-      tags:
-      - rbac
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserAssignedObjectPermissionRequest'
-        required: true
-      security:
-      - authentik: []
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserAssignedObjectPermission'
-          description: ''
-        '400':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ValidationError'
-          description: ''
-        '403':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/GenericError'
-          description: ''
   /rbac/assigned_users/{id}/assign/:
     post:
       operationId: rbac_assigned_users_assign_create
@@ -41419,44 +41387,6 @@ components:
       - permissions
       - pk
       - uid
-      - username
-    UserAssignedObjectPermissionRequest:
-      type: object
-      description: Users assigned object permission serializer
-      properties:
-        username:
-          type: string
-          minLength: 1
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        name:
-          type: string
-          minLength: 1
-          description: User's display name.
-        is_active:
-          type: boolean
-          title: Active
-          description: Designates whether this user should be treated as active. Unselect
-            this instead of deleting accounts.
-        last_login:
-          type: string
-          format: date-time
-          nullable: true
-        email:
-          type: string
-          format: email
-          title: Email address
-          maxLength: 254
-        attributes:
-          type: object
-          additionalProperties: {}
-        is_superuser:
-          type: boolean
-      required:
-      - is_superuser
-      - name
       - username
     UserConsent:
       type: object
