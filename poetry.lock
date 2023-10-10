@@ -3448,13 +3448,13 @@ files = [
 
 [[package]]
 name = "selenium"
-version = "4.13.0"
+version = "4.14.0"
 description = ""
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "selenium-4.13.0-py3-none-any.whl", hash = "sha256:f0f9185c01ae249a321529c4e3aa0edc2a900642e61fdbb76988cd72d2762ece"},
-    {file = "selenium-4.13.0.tar.gz", hash = "sha256:3c413a4f1b8af67824703195e3b1c19cfb1c3186c799efa035d55fd59d6dd59f"},
+    {file = "selenium-4.14.0-py3-none-any.whl", hash = "sha256:be9824a9354a7fe288e3fad9ceb6a9c65ddc7c44545d23ad0ebf4ce202b19893"},
+    {file = "selenium-4.14.0.tar.gz", hash = "sha256:0d14b0d9842366f38fb5f8f842cf7c042bcfa062affc6a0a86e4d634bdd0fe54"},
 ]
 
 [package.dependencies]
