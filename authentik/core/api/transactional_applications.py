@@ -119,6 +119,7 @@ class TransactionApplicationResponseSerializer(PassiveSerializer):
 class TransactionalApplicationView(APIView):
     """Create provider and application and attach them in a single transaction"""
 
+    # TODO: Migrate to a more specific permission
     permission_classes = [IsAdminUser]
 
     @extend_schema(

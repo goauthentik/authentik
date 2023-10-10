@@ -13,6 +13,7 @@ from authentik.root.celery import CELERY_APP
 class WorkerView(APIView):
     """Get currently connected worker count."""
 
+    # TODO: Migrate to a more specific permission
     permission_classes = [IsAdminUser]
 
     @extend_schema(responses=inline_serializer("Workers", fields={"count": IntegerField()}))

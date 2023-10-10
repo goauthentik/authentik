@@ -1,7 +1,7 @@
 """Meta API"""
 from drf_spectacular.utils import extend_schema
 from rest_framework.fields import CharField
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
@@ -21,7 +21,7 @@ class AppSerializer(PassiveSerializer):
 class AppsViewSet(ViewSet):
     """Read-only view list all installed apps"""
 
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(responses={200: AppSerializer(many=True)})
     def list(self, request: Request) -> Response:
@@ -35,7 +35,7 @@ class AppsViewSet(ViewSet):
 class ModelViewSet(ViewSet):
     """Read-only view list all installed models"""
 
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(responses={200: AppSerializer(many=True)})
     def list(self, request: Request) -> Response:

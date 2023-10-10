@@ -63,6 +63,7 @@ class TaskSerializer(PassiveSerializer):
 class TaskViewSet(ViewSet):
     """Read-only view set that returns all background tasks"""
 
+    # TODO: Migrate to a more specific permission
     permission_classes = [IsAdminUser]
     serializer_class = TaskSerializer
 

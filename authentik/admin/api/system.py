@@ -88,6 +88,7 @@ class SystemSerializer(PassiveSerializer):
 class SystemView(APIView):
     """Get system information."""
 
+    # TODO: Migrate to a more specific permission
     permission_classes = [IsAdminUser]
     pagination_class = None
     filter_backends = []
