@@ -93,7 +93,6 @@ As an Admin, you can simply reset the passwrod for the user.
 
 3. To reset the user's password, click **Reset password**, and then define the new value.
 
-
 ## Deactivate or Delete user
 
 #### To deactivate a user:
