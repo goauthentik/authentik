@@ -3,6 +3,7 @@ from hashlib import sha256
 from typing import Any
 
 from django.conf import settings
+from django.http import Http404
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -16,7 +17,6 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.api.decorators import permission_required
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.utils import sanitize_dict
 from authentik.flows.api.bindings import FlowStageBindingSerializer
@@ -70,19 +70,18 @@ class FlowInspectorView(APIView):
 
     flow: Flow
     _logger: BoundLogger
-
-    def check_permissions(self, request):
-        """Always allow access when in debug mode"""
-        if settings.DEBUG:
-            return None
-        return super().check_permissions(request)
+    permission_classes = []
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
-        self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
+        self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
+        if settings.DEBUG:
+            return
+        if request.user.has_perm("authentik_flow.inspect_flow", self.flow):
+            return
+        raise Http404
 
-    @permission_required("authentik_flows.inspect_flow")
     @extend_schema(
         responses={
             200: FlowInspectionSerializer(),
