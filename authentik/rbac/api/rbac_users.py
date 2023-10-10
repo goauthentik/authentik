@@ -20,6 +20,8 @@ from authentik.rbac.api.rbac import PermissionAssignSerializer, UserObjectPermis
 
 
 class UserAssignedObjectPermissionSerializer(GroupMemberSerializer):
+    """Users assigned object permission serializer"""
+
     permissions = UserObjectPermissionSerializer(many=True, source="userobjectpermission_set")
     is_superuser = BooleanField()
 
@@ -28,11 +30,14 @@ class UserAssignedObjectPermissionSerializer(GroupMemberSerializer):
         fields = GroupMemberSerializer.Meta.fields + ["permissions", "is_superuser"]
 
 
-class AssignedPermissionFilter(FilterSet):
+class UserAssignedPermissionFilter(FilterSet):
+    """Assigned permission filter"""
+
     model = ChoiceFilter(choices=model_choices(), method="filter_model", required=True)
     object_pk = CharFilter(method="filter_object_pk")
 
     def filter_model(self, queryset: QuerySet, name, value: str) -> QuerySet:
+        """Filter by object type"""
         app, _, model = value.partition(".")
         return queryset.filter(
             Q(
@@ -47,6 +52,7 @@ class AssignedPermissionFilter(FilterSet):
         ).distinct()
 
     def filter_object_pk(self, queryset: QuerySet, name, value: str) -> QuerySet:
+        """Filter by object primary key"""
         return queryset.filter(
             Q(userobjectpermission__object_pk=value) | Q(ak_groups__is_superuser=True),
         ).distinct()
@@ -59,7 +65,7 @@ class UserAssignedPermissionViewSet(CreateModelMixin, ListModelMixin, GenericVie
     # The filtering is done in the filterset,
     # which has a required filter that does the heavy lifting
     queryset = User.objects.all()
-    filterset_class = AssignedPermissionFilter
+    filterset_class = UserAssignedPermissionFilter
 
     @extend_schema(
         request=PermissionAssignSerializer(),

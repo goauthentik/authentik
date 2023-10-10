@@ -117,13 +117,13 @@ class Group(SerializerModel):
         """Recursively check if `user` is member of us, or any parent."""
         return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
-    def children_recursive(groups: Self | QuerySet["Group"]) -> QuerySet["Group"]:
+    def children_recursive(self: Self | QuerySet["Group"]) -> QuerySet["Group"]:
         """Recursively get all groups that have this as parent or are indirectly related"""
         direct_groups = []
-        if isinstance(groups, QuerySet):
-            direct_groups = list(x for x in groups.all().values_list("pk", flat=True).iterator())
+        if isinstance(self, QuerySet):
+            direct_groups = list(x for x in self.all().values_list("pk", flat=True).iterator())
         else:
-            direct_groups = [groups.pk]
+            direct_groups = [self.pk]
         if len(direct_groups) < 1:
             return Group.objects.none()
         query = """

@@ -3,7 +3,6 @@ from datetime import datetime, timedelta
 
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
-from django.db.transaction import atomic
 from django.utils.timezone import now
 from structlog.stdlib import get_logger
 
@@ -12,8 +11,6 @@ from authentik.core.models import (
     USER_ATTRIBUTE_GENERATED,
     AuthenticatedSession,
     ExpiringModel,
-    Group,
-    Role,
     User,
 )
 from authentik.events.monitored_tasks import (
@@ -79,15 +76,3 @@ def clean_temporary_users(self: MonitoredTask):
             deleted_users += 1
     messages.append(f"Successfully deleted {deleted_users} users.")
     self.set_status(TaskResult(TaskResultStatus.SUCCESSFUL, messages))
-
-
-@CELERY_APP.task()
-def sync_roles():
-    """Sync users into roles"""
-    with atomic():
-        for ak_group in Group.objects.filter(roles__isnull=False).prefetch_related("roles"):
-            group_users = ak_group.children_recursive().values_list("users", flat=True)
-            for role in ak_group.roles.all():
-                role: Role
-                role.group.user_set.set(group_users)
-            LOGGER.debug("Updated users in group", group=ak_group)

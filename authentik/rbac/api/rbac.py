@@ -139,7 +139,7 @@ class PermissionAssignSerializer(PassiveSerializer):
     def validate(self, attrs: dict) -> dict:
         if attrs.get("model"):
             return attrs
-        permissions = attrs.get("permissions")
+        permissions = attrs.get("permissions", [])
         if not all("." in perm for perm in permissions):
             raise ValidationError(
                 {

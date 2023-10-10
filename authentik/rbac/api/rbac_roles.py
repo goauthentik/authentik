@@ -20,6 +20,8 @@ from authentik.rbac.models import Role
 
 
 class RoleAssignedObjectPermissionSerializer(PassiveSerializer):
+    """Roles assigned object permission serializer"""
+
     name = CharField(source="group.name", read_only=True)
     permissions = RoleObjectPermissionSerializer(
         many=True, source="group.groupobjectpermission_set"
@@ -30,11 +32,14 @@ class RoleAssignedObjectPermissionSerializer(PassiveSerializer):
         fields = ["name", "permissions"]
 
 
-class AssignedPermissionFilter(FilterSet):
+class RoleAssignedPermissionFilter(FilterSet):
+    """Role Assigned permission filter"""
+
     model = ChoiceFilter(choices=model_choices(), method="filter_model", required=True)
     object_pk = CharFilter(method="filter_object_pk")
 
     def filter_model(self, queryset: QuerySet, name, value: str) -> QuerySet:
+        """Filter by object type"""
         app, _, model = value.partition(".")
         return queryset.filter(
             Q(
@@ -48,6 +53,7 @@ class AssignedPermissionFilter(FilterSet):
         )
 
     def filter_object_pk(self, queryset: QuerySet, name, value: str) -> QuerySet:
+        """Filter by object primary key"""
         return queryset.filter(Q(group__groupobjectpermission__object_pk=value))
 
 
@@ -58,7 +64,7 @@ class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     # The filtering is done in the filterset,
     # which has a required filter that does the heavy lifting
     queryset = Role.objects.all()
-    filterset_class = AssignedPermissionFilter
+    filterset_class = RoleAssignedPermissionFilter
 
     @extend_schema(
         request=PermissionAssignSerializer(),

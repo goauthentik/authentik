@@ -1,10 +1,14 @@
+"""RBAC models"""
 from uuid import uuid4
 
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from rest_framework.serializers import BaseSerializer
+
+from authentik.lib.models import SerializerModel
 
 
-class Role(models.Model):
+class Role(SerializerModel):
     """RBAC role, which can have different permissions (both global and per-object) attached
     to it."""
 
@@ -22,6 +26,12 @@ class Role(models.Model):
 
     # name field has the same constraints as the group model
     name = models.TextField(max_length=150, unique=True)
+
+    @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.rbac.api.roles import RoleSerializer
+
+        return RoleSerializer
 
     def __str__(self) -> str:
         return f"Role {self.name}"

@@ -39,10 +39,12 @@ def rbac_group_role_m2m(sender: type[Group], action: str, instance: Group, rever
         LOGGER.debug("Updated users in group", group=instance)
 
 
+# pylint: disable=no-member
 @receiver(m2m_changed, sender=Group.users.through)
 def rbac_group_users_m2m(
     sender: type[Group], action: str, instance: Group, pk_set: set, reverse: bool, **_
 ):
+    """Handle Group/User m2m and mirror it to roles"""
     if action not in ["post_add", "post_remove"]:
         return
     # reverse: instance is a Group, pk_set is a list of user pks
