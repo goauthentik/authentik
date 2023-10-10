@@ -11,12 +11,12 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.fields import BooleanField, ListField, SerializerMethodField
-from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from structlog.stdlib import BoundLogger, get_logger
 
+from authentik.api.decorators import permission_required
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.utils import sanitize_dict
 from authentik.flows.api.bindings import FlowStageBindingSerializer
@@ -68,8 +68,6 @@ class FlowInspectionSerializer(PassiveSerializer):
 class FlowInspectorView(APIView):
     """Flow inspector API"""
 
-    permission_classes = [IsAdminUser]
-
     flow: Flow
     _logger: BoundLogger
 
@@ -84,6 +82,7 @@ class FlowInspectorView(APIView):
         self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
 
+    @permission_required("authentik_flows.inspect_flow")
     @extend_schema(
         responses={
             200: FlowInspectionSerializer(),
