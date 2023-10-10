@@ -23,7 +23,7 @@ The following topics are for the basic management of users: how to create, modif
 
 -   **Name**: The display name of the user.
 -   **Email**: The email address of the user. That will be used if there is a [notification rule](../../events/notifications) triggered or for [email stages](../../flow/stages/email).
--   **Is active**: Define is the newly created user accound is active. Selected by default.
+-   **Is active**: Define is the newly created user account is active. Selected by default.
 -   **Attributes**: Custom attributes definition for the user, in YAML or JSON format. These attributes can be used to enforce additional prompts on authentication stages or define conditions to enforce specific policies if the current implementation does not fit your use case. The value is an empty dictionary by default.
 
 6. Click **Create**
@@ -73,7 +73,7 @@ If a user has lost their credentials, there are several options.
 
 ### Automate email to a user
 
-You can use our automated email to send a link with the URL for the user to reset thier password. This option will only work if you have properly [configured a SMTP server during the installation](../../installation/docker-compose#email-configuration-optional-but-recommended) and set an email address for the user.
+You can use our automated email to send a link with the URL for the user to reset their password. This option will only work if you have properly [configured a SMTP server during the installation](../../installation/docker-compose#email-configuration-optional-but-recommended) and set an email address for the user.
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
 
@@ -85,7 +85,7 @@ If the user does not receive the email, check if the mail server parameters [are
 
 ### Reset the password for the user
 
-As an Admin, you can simply reset the passwrod for the user.
+As an Admin, you can simply reset the password for the user.
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
 
@@ -114,4 +114,4 @@ You may instead deactivate the account to preserve identity data.
 
 2. Review the changes and click **Delete**.
 
-The user list refreshs and no longer displays the removed users.
+The user list refreshes and no longer displays the removed users.
