@@ -6,7 +6,7 @@ The following topics are for the basic management of users: how to create, modif
 
 ### Create a user
 
-> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [user write stage](../../flow/stages/user_write), or [using the API](/developer-docs/api/browser).
+> If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../flow/stages/user_write), or [using the API](/developer-docs/api/browser).
 
 1. In the Admin interface of your authentik instance, select **Directory > Users** in the left side menu.
 
@@ -36,7 +36,7 @@ In the **Directory > Users** menu of the Admin interface, you can browse all the
 
 To view details about a specific user:
 
-1. In the list of all users, click on the name of the user you want to check:
+1. In the list of all users, click on the name of the user you want to check.
 
     This takes you to the **Overview** tab, with basic information about the user, and also quick access to perform basic actions to the user.
 
@@ -65,7 +65,7 @@ If a user has lost their credentials, there are several options.
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
 
-2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
+2. Either click the name of the user to display the full User details page, or click the chevron (the › symbol) beside their name to expand the toptions.
 
 3. To generate a recovery link, which you can then copy and paste into an email, click **View recovery link**.
 
@@ -107,7 +107,7 @@ The active sessions are revoked and the authentication of the user blocked. You 
 
 :::caution
 This deletion is not reversible, so be sure you do not need to recover any identity data of the user.
-Otherwise, you can deactivate the account.
+You may instead deactivate the account to preserve identity data.
 :::
 
 1. Go into the user list and select one (or multiple users) to delete and click **Delete** on the top-right of the page.

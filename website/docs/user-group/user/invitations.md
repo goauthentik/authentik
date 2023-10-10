@@ -6,14 +6,10 @@ description: "Learn how to create an invitation URL for new users to enroll."
 Invitations are another way to create a user, by inviting someone to join your authentik instance, as a new user. With invitations, you can either email an enrollment invitation URL to one or more specific recipients with pre-defined credentials, or you can email a URL to users, who can then log in and define their own credentials.
 
 :::info
-
 You can also create a policy to see if the invitation was ever used.
-
 :::
 
 ## Create an invitation
-
-Invitations are yet another way to connect Flows, Stages, and Prompts in order to create a speficic user task or worflow.
 
 The fastest way to create an invitation is to use our pre-defined `default-enrollment-flow` that has the necessary stages and prompts already included.
 
