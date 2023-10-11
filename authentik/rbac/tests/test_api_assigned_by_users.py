@@ -62,3 +62,48 @@ class TestRBACUserAPI(APITestCase):
                 ),
             },
         )
+
+    def test_assign_global(self):
+        """Test permission assign"""
+        self.client.force_login(self.superuser)
+        res = self.client.post(
+            reverse(
+                "authentik_api:permissions-assigned-by-users-assign",
+                kwargs={
+                    "pk": self.user.pk,
+                },
+            ),
+            {
+                "permissions": ["authentik_stages_invitation.view_invitation"],
+            },
+        )
+        self.assertEqual(res.status_code, 204)
+        self.assertTrue(self.user.has_perm("authentik_stages_invitation.view_invitation"))
+
+    def test_assign_object(self):
+        """Test permission assign (object)"""
+        inv = Invitation.objects.create(
+            name=generate_id(),
+            created_by=self.superuser,
+        )
+        self.client.force_login(self.superuser)
+        res = self.client.post(
+            reverse(
+                "authentik_api:permissions-assigned-by-users-assign",
+                kwargs={
+                    "pk": self.user.pk,
+                },
+            ),
+            {
+                "permissions": ["authentik_stages_invitation.view_invitation"],
+                "model": "authentik_stages_invitation.invitation",
+                "object_pk": str(inv.pk),
+            },
+        )
+        self.assertEqual(res.status_code, 204)
+        self.assertTrue(
+            self.user.has_perm(
+                "authentik_stages_invitation.view_invitation",
+                inv,
+            )
+        )
