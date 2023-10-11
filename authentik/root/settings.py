@@ -172,7 +172,6 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
-        "rest_framework.renderers.BrowsableAPIRenderer",
     ],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
@@ -412,6 +411,9 @@ if DEBUG:
     INSTALLED_APPS.append("silk")
     SILKY_PYTHON_PROFILER = True
     MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
+        "rest_framework.renderers.BrowsableAPIRenderer"
+    )
 
 INSTALLED_APPS.append("authentik.core")
 
