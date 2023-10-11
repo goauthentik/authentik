@@ -1,3 +1,4 @@
+import { APIErrorTypes, parseAPIError } from "@goauthentik/app/common/errors";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -148,7 +149,7 @@ export abstract class Table<T> extends AKElement {
     expandedElements: T[] = [];
 
     @state()
-    hasError?: Error;
+    error?: APIErrorTypes;
 
     static get styles(): CSSResult[] {
         return [
@@ -191,7 +192,7 @@ export abstract class Table<T> extends AKElement {
         this.isLoading = true;
         try {
             this.data = await this.apiEndpoint(this.page);
-            this.hasError = undefined;
+            this.error = undefined;
             this.page = this.data.pagination.current;
             const newSelected: T[] = [];
             const newExpanded: T[] = [];
@@ -228,7 +229,7 @@ export abstract class Table<T> extends AKElement {
             this.expandedElements = newExpanded;
         } catch (ex) {
             this.isLoading = false;
-            this.hasError = ex as Error;
+            this.error = await parseAPIError(ex as Error);
         }
     }
 
@@ -263,15 +264,18 @@ export abstract class Table<T> extends AKElement {
     }
 
     renderError(): TemplateResult {
+        if (!this.error) {
+            return html``;
+        }
         return html`<ak-empty-state header="${msg("Failed to fetch objects.")}" icon="fa-times">
-            ${this.hasError instanceof ResponseError
-                ? html` <div slot="body">${this.hasError.message}</div> `
-                : html`<div slot="body">${this.hasError?.toString()}</div>`}
+            ${this.error instanceof ResponseError
+                ? html` <div slot="body">${this.error.message}</div> `
+                : html`<div slot="body">${this.error.detail}</div>`}
         </ak-empty-state>`;
     }
 
     private renderRows(): TemplateResult[] | undefined {
-        if (this.hasError) {
+        if (this.error) {
             return [this.renderEmpty(this.renderError())];
         }
         if (!this.data || this.isLoading) {

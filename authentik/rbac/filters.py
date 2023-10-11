@@ -1,5 +1,6 @@
 """RBAC API Filter"""
 from django.db.models import QuerySet
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.request import Request
 from rest_framework_guardian.filters import ObjectPermissionsFilter
 
@@ -17,4 +18,9 @@ class ObjectFilter(ObjectPermissionsFilter):
         # per-object permissions
         if request.user.has_perm(permission):
             return queryset
-        return super().filter_queryset(request, queryset, view)
+        queryset = super().filter_queryset(request, queryset, view)
+        if not queryset.exists():
+            # User doesn't have direct permission to all objects
+            # and also no object permissions assigned (directly or via role)
+            raise PermissionDenied()
+        return queryset

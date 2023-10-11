@@ -92,21 +92,10 @@ class TestAPIPerms(APITestCase):
         self.client.force_login(self.user)
 
         res = self.client.get(reverse("authentik_api:invitation-list"))
-        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.status_code, 403)
         self.assertJSONEqual(
             res.content.decode(),
-            {
-                "pagination": {
-                    "count": 0,
-                    "current": 1,
-                    "end_index": 0,
-                    "next": 0,
-                    "previous": 0,
-                    "start_index": 0,
-                    "total_pages": 1,
-                },
-                "results": [],
-            },
+            {"detail": "You do not have permission to perform this action."},
         )
 
     def test_create_simple(self):
