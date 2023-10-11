@@ -5,7 +5,7 @@ from django_filters.filters import CharFilter, ChoiceFilter
 from django_filters.filterset import FilterSet
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.models import UserObjectPermission
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign_perm, remove_perm
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, ReadOnlyField
@@ -20,7 +20,6 @@ from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.models import User, UserTypes
 from authentik.policies.event_matcher.models import model_choices
 from authentik.rbac.api.rbac import PermissionAssignSerializer
-from authentik.rbac.utils import unassign_perm
 
 
 class UserObjectPermissionSerializer(ModelSerializer):
@@ -124,7 +123,7 @@ class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
             )
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        unassign_perm(
-            data.validated_data["permissions"], user, data.validated_data["model_instance"]
-        )
+        with atomic():
+            for perm in data.validated_data["permissions"]:
+                remove_perm(perm, user, data.validated_data["model_instance"])
         return Response(status=204)
