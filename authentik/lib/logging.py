@@ -1,6 +1,7 @@
 """logging helpers"""
 import logging
 from logging import Logger
+from logging.config import dictConfig  # Import this for the logging configuration
 from os import getpid
 
 import structlog
@@ -33,14 +34,18 @@ def structlog_configure():
     """Configure structlog itself"""
     structlog.configure_once(
         processors=[
-            structlog.stdlib.add_log_level,
+            structlog.stdlib.filter_by_level,
             structlog.stdlib.add_logger_name,
+            structlog.stdlib.add_log_level,
             structlog.contextvars.merge_contextvars,
             add_process_id,
             structlog.stdlib.PositionalArgumentsFormatter(),
             structlog.processors.TimeStamper(fmt="iso", utc=False),
             structlog.processors.StackInfoRenderer(),
-            structlog.processors.dict_tracebacks,
+            structlog.processors.format_exc_info,
+            structlog.processors.UnicodeDecoder(),
+            structlog.stdlib.render_to_log_kwargs,
+            structlog.processors.JSONRenderer(sort_keys=True),
             structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
         ],
         logger_factory=structlog.stdlib.LoggerFactory(),
@@ -112,3 +117,14 @@ def add_process_id(logger: Logger, method_name: str, event_dict):
     """Add the current process ID"""
     event_dict["pid"] = getpid()
     return event_dict
+
+
+def setup_logging():
+    """Setup the logging using the configuration"""
+    structlog_configure()
+    logging_config = get_logger_config()
+    dictConfig(logging_config)
+
+
+# Initialize the logging configurations
+setup_logging()
