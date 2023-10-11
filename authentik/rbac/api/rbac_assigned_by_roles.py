@@ -67,11 +67,11 @@ class RoleAssignedPermissionFilter(FilterSet):
                 group__groupobjectpermission__permission__content_type__app_label=app,
                 group__groupobjectpermission__permission__content_type__model=model,
             )
-        )
+        ).distinct()
 
     def filter_object_pk(self, queryset: QuerySet, name, value: str) -> QuerySet:
         """Filter by object primary key"""
-        return queryset.filter(Q(group__groupobjectpermission__object_pk=value))
+        return queryset.filter(Q(group__groupobjectpermission__object_pk=value)).distinct()
 
 
 class RoleAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
