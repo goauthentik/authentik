@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
 import { groupBy } from "@goauthentik/app/common/utils";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/app/elements/table/Table";
+import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";

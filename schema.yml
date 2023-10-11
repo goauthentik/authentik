@@ -17813,9 +17813,9 @@ paths:
         schema:
           type: string
       - in: query
-        name: username
+        name: user_id
         schema:
-          type: string
+          type: integer
         required: true
       tags:
       - rbac

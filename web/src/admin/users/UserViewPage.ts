@@ -465,8 +465,9 @@ export class UserViewPage extends AKElement {
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
                 <div class="pf-c-card">
+                    <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
                     <div class="pf-c-card__body">
-                        <ak-user-assigned-permissions-table username=${this.user.username}>
+                        <ak-user-assigned-permissions-table userId=${this.user.pk}>
                         </ak-user-assigned-permissions-table>
                     </div>
                 </div>

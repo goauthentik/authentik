@@ -2,7 +2,7 @@
 from typing import Optional
 
 from django.apps import apps
-from django_filters.filters import CharFilter
+from django_filters.filters import NumberFilter
 from django_filters.filterset import FilterSet
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import get_objects_for_user
@@ -51,7 +51,7 @@ class ExtraUserObjectPermissionSerializer(UserObjectPermissionSerializer):
 class UserPermissionFilter(FilterSet):
     """User-assigned permission filter"""
 
-    username = CharFilter("user__username", required=True)
+    user_id = NumberFilter("user__id", required=True)
 
 
 class UserPermissionViewSet(ListModelMixin, GenericViewSet):
