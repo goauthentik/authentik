@@ -23,4 +23,4 @@ export const EVENT_THEME_CHANGE = "ak-theme-change";
 export const WS_MSG_TYPE_MESSAGE = "message";
 export const WS_MSG_TYPE_REFRESH = "refresh";
 
-export const LOCALSTORAGE_AUTHENTIK_KEY = "authentik-local-settings"
+export const LOCALSTORAGE_AUTHENTIK_KEY = "authentik-local-settings";

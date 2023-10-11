@@ -1,7 +1,7 @@
 import { LOCALSTORAGE_AUTHENTIK_KEY } from "@goauthentik/common/constants";
 
+import { msg } from "@lit/localize";
 import { LitElement, ReactiveController, ReactiveControllerHost, html } from "lit";
-import {msg} from '@lit/localize';
 
 type ReactiveLitElement = LitElement & ReactiveControllerHost;
 
@@ -18,7 +18,6 @@ const getCurrentStorageValue = (): Record<string, any> => {
         return {};
     }
 };
-
 
 export class ShowHintController implements ReactiveController {
     host: ShowHintControllerHost;
@@ -37,7 +36,7 @@ export class ShowHintController implements ReactiveController {
             JSON.stringify({
                 ...getCurrentStorageValue(),
                 [this.hintToken]: false,
-            })
+            }),
         );
         this.host.showHint = false;
     }
@@ -56,7 +55,7 @@ export class ShowHintController implements ReactiveController {
         return html`<ak-hint-footer
             ><div style="text-align: right">
                 <input type="checkbox" @input=${this.hideTheHint} />${msg(
-                    "Don't show this message again."
+                    "Don't show this message again.",
                 )}
             </div></ak-hint-footer
         >`;

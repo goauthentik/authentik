@@ -32,6 +32,12 @@ const styles = css`
         );
     }
 
+    :host([theme="dark"]) {
+        --ak-hint--BackgroundColor: var(--pf-global--BackgroundColor--400);
+        --ak-hint--BorderColor: var(--pf-global--BorderColor--300);
+        --ak-hint--Color: var(--ak-dark-foreground);
+    }
+
     div#host {
         display: flex;
         flex-direction: column;

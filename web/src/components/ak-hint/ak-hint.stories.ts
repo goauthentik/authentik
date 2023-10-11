@@ -73,7 +73,7 @@ export const Default = () => {
                     ></ak-hint-body
                 >
             </ak-hint>
-        </section>`
+        </section>`,
     );
 };
 
@@ -100,7 +100,7 @@ export const WithTitle = () => {
                     ></ak-hint-body
                 >
             </ak-hint>
-        </section>`
+        </section>`,
     );
 };
 
@@ -127,9 +127,11 @@ export const WithTitleAndFooter = () => {
                     ></ak-hint-body
                 >
                 <ak-hint-footer
-><div style="text-align: right"><input type="checkbox" /> Don't show this message again.</div></ak-hint-footer
+                    ><div style="text-align: right">
+                        <input type="checkbox" /> Don't show this message again.
+                    </div></ak-hint-footer
                 >
             </ak-hint>
-        </section>`
+        </section>`,
     );
 };
