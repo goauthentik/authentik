@@ -98,8 +98,13 @@ class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
         user = self.get_object()
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        model = apps.get_model(data.validated_data["model"])
-        model_instance = model.objects.filter(pk=data.validated_data["object_pk"])
+        model_instance = None
+        # Check if we're setting an object-level perm or global
+        model = data.validated_data.get("model")
+        object_pk = data.validated_data.get("object_pk")
+        if model and object_pk:
+            model = apps.get_model(data.validated_data["model"])
+            model_instance = model.objects.filter(pk=data.validated_data["object_pk"])
         with atomic():
             for perm in data.validated_data["permissions"]:
                 assign_perm(perm, user, model_instance)

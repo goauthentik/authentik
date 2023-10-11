@@ -17096,6 +17096,10 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: user
+        schema:
+          type: integer
       tags:
       - rbac
       security:

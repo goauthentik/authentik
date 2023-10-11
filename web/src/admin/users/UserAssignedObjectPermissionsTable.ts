@@ -10,8 +10,8 @@ import { customElement, property } from "lit/decorators.js";
 
 import { ExtraUserObjectPermission, RbacApi } from "@goauthentik/api";
 
-@customElement("ak-user-assigned-permissions-table")
-export class UserAssignedPermissionsTable extends Table<ExtraUserObjectPermission> {
+@customElement("ak-user-assigned-object-permissions-table")
+export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPermission> {
     @property({ type: Number })
     userId?: number;
 

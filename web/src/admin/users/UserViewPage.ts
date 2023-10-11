@@ -3,7 +3,8 @@ import "@goauthentik/admin/users/UserActiveForm";
 import "@goauthentik/admin/users/UserChart";
 import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
-import "@goauthentik/app/admin/users/UserAssignedPermissionsTable";
+import "@goauthentik/app/admin/users/UserAssignedGlobalPermissionsTable";
+import "@goauthentik/app/admin/users/UserAssignedObjectPermissionsTable";
 import { me } from "@goauthentik/app/common/users";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -464,11 +465,20 @@ export class UserViewPage extends AKElement {
                 data-tab-title="${msg("Assigned permissions")}"
                 class="pf-c-page__main-section pf-m-no-padding-mobile"
             >
-                <div class="pf-c-card">
-                    <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
-                    <div class="pf-c-card__body">
-                        <ak-user-assigned-permissions-table userId=${this.user.pk}>
-                        </ak-user-assigned-permissions-table>
+                <div class="pf-l-grid pf-m-gutter">
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${msg("Assigned global permissions")}</div>
+                        <div class="pf-c-card__body">
+                            <ak-user-assigned-global-permissions-table userId=${this.user.pk}>
+                            </ak-user-assigned-global-permissions-table>
+                        </div>
+                    </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
+                        <div class="pf-c-card__body">
+                            <ak-user-assigned-object-permissions-table userId=${this.user.pk}>
+                            </ak-user-assigned-object-permissions-table>
+                        </div>
                     </div>
                 </div>
             </section>
