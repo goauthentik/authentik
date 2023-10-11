@@ -35,7 +35,7 @@ COPY ./gen-ts-api /work/web/node_modules/@goauthentik/api
 RUN npm run build
 
 # Stage 3: Build go proxy
-FROM docker.io/golang:1.21.2-bookworm AS go-builder
+FROM docker.io/golang:1.21.3-bookworm AS go-builder
 
 WORKDIR /go/src/goauthentik.io
 
