@@ -32,11 +32,6 @@ export class ObjectPermissionsPageForm extends ModelForm<unknown, string> {
         return Promise.resolve();
     }
 
-    async submit(ev: Event): Promise<unknown | undefined> {
-        ev.preventDefault();
-        return Promise.resolve();
-    }
-
     renderForm(): TemplateResult {
         return html`<ak-rbac-object-permission-page
             .model=${this.model}
@@ -61,8 +56,7 @@ export class ObjectPermissionModal extends AKElement {
 
     render(): TemplateResult {
         return html`
-            <ak-forms-modal>
-                <span slot="submit"> ${msg("Close")} </span>
+            <ak-forms-modal .showSubmitButton=${false} cancelText=${msg("Close")}>
                 <span slot="header"> ${msg("Update Permissions")} </span>
                 <ak-rbac-object-permission-modal-form
                     slot="form"
