@@ -73,7 +73,7 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
     }
 
     row(item: RoleAssignedObjectPermission): TemplateResult[] {
-        const baseRow = [html` <a href="#/identity/users/"> ${item.name} </a>`];
+        const baseRow = [html` <a href="#/identity/roles/${item.rolePk}">${item.name}</a>`];
         this.modelPermissions?.results.forEach((perm) => {
             const granted =
                 item.permissions.filter((uperm) => uperm.codename === perm.codename).length > 0;

@@ -39643,6 +39643,9 @@ components:
       type: object
       description: Roles assigned object permission serializer
       properties:
+        role_pk:
+          type: string
+          readOnly: true
         name:
           type: string
           readOnly: true
@@ -39653,6 +39656,7 @@ components:
       required:
       - name
       - permissions
+      - role_pk
     RoleObjectPermission:
       type: object
       description: Role-bound object level permission

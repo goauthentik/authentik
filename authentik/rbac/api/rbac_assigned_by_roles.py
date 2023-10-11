@@ -39,6 +39,7 @@ class RoleObjectPermissionSerializer(ModelSerializer):
 class RoleAssignedObjectPermissionSerializer(PassiveSerializer):
     """Roles assigned object permission serializer"""
 
+    role_pk = CharField(source="group.role.pk", read_only=True)
     name = CharField(source="group.name", read_only=True)
     permissions = RoleObjectPermissionSerializer(
         many=True, source="group.groupobjectpermission_set"
@@ -46,7 +47,7 @@ class RoleAssignedObjectPermissionSerializer(PassiveSerializer):
 
     class Meta:
         model = Role
-        fields = ["name", "permissions"]
+        fields = ["role_pk", "name", "permissions"]
 
 
 class RoleAssignedPermissionFilter(FilterSet):
