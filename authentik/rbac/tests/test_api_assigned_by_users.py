@@ -33,7 +33,7 @@ class TestRBACUserAPI(APITestCase):
         # self.user doesn't have permissions to see their (object) permissions
         self.client.force_login(self.superuser)
         res = self.client.get(
-            reverse("authentik_api:rbac-assigned-users-list"),
+            reverse("authentik_api:permissions-assigned-by-users-list"),
             {
                 "model": "authentik_stages_invitation.invitation",
                 "object_pk": str(inv.pk),
