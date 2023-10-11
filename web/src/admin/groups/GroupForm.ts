@@ -138,7 +138,11 @@ export class GroupForm extends ModelForm<Group, string> {
                         </option>`;
                     })}
                 </select>
-                <p class="pf-c-form__helper-text">${msg("TODO.")}</p>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Select roles to grant this groups' users' permissions from the selected roles.",
+                    )}
+                </p>
                 <p class="pf-c-form__helper-text">
                     ${msg("Hold control/command to select multiple items.")}
                 </p>

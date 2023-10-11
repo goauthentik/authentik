@@ -31055,13 +31055,19 @@ components:
           readOnly: true
         app_label_verbose:
           type: string
+          description: Get app label from permission's model
           readOnly: true
         model_verbose:
           type: string
+          description: Get model label from permission's model
           readOnly: true
         object_description:
           type: string
           nullable: true
+          description: |-
+            Get model description from attached model. This operation takes at least
+            one additional query, and the description is only shown if the user/role has the
+            view_ permission on the object
           readOnly: true
       required:
       - app_label
@@ -31099,13 +31105,19 @@ components:
           readOnly: true
         app_label_verbose:
           type: string
+          description: Get app label from permission's model
           readOnly: true
         model_verbose:
           type: string
+          description: Get model label from permission's model
           readOnly: true
         object_description:
           type: string
           nullable: true
+          description: |-
+            Get model description from attached model. This operation takes at least
+            one additional query, and the description is only shown if the user/role has the
+            view_ permission on the object
           readOnly: true
       required:
       - app_label
