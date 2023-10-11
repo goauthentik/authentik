@@ -107,3 +107,50 @@ class TestRBACUserAPI(APITestCase):
                 inv,
             )
         )
+
+    def test_unassign_global(self):
+        """Test permission unassign"""
+        assign_perm("authentik_stages_invitation.view_invitation", self.user)
+        self.client.force_login(self.superuser)
+        res = self.client.patch(
+            reverse(
+                "authentik_api:permissions-assigned-by-users-unassign",
+                kwargs={
+                    "pk": self.user.pk,
+                },
+            ),
+            {
+                "permissions": ["authentik_stages_invitation.view_invitation"],
+            },
+        )
+        self.assertEqual(res.status_code, 204)
+        self.assertFalse(self.user.has_perm("authentik_stages_invitation.view_invitation"))
+
+    def test_unassign_object(self):
+        """Test permission unassign (object)"""
+        inv = Invitation.objects.create(
+            name=generate_id(),
+            created_by=self.superuser,
+        )
+        assign_perm("authentik_stages_invitation.view_invitation", self.user, inv)
+        self.client.force_login(self.superuser)
+        res = self.client.patch(
+            reverse(
+                "authentik_api:permissions-assigned-by-users-unassign",
+                kwargs={
+                    "pk": self.user.pk,
+                },
+            ),
+            {
+                "permissions": ["authentik_stages_invitation.view_invitation"],
+                "model": "authentik_stages_invitation.invitation",
+                "object_pk": str(inv.pk),
+            },
+        )
+        self.assertEqual(res.status_code, 204)
+        self.assertFalse(
+            self.user.has_perm(
+                "authentik_stages_invitation.view_invitation",
+                inv,
+            )
+        )

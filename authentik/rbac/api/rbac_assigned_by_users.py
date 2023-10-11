@@ -140,7 +140,7 @@ class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
                         content_type__app_label=app_label,
                         codename=codename,
                     )
-                user.permissions.set(user.group.permissions.all().exclude(to_remove))
+                user.user_permissions.set(user.user_permissions.all().exclude(to_remove))
             else:
                 to_remove = Q()
                 for perm in data.validated_data["permissions"]:
