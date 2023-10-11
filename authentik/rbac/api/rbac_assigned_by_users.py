@@ -8,6 +8,7 @@ from drf_spectacular.utils import OpenApiResponse, extend_schema
 from guardian.models import UserObjectPermission
 from guardian.shortcuts import assign_perm
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import BooleanField, ReadOnlyField
 from rest_framework.mixins import ListModelMixin
 from rest_framework.request import Request
@@ -17,7 +18,7 @@ from rest_framework.viewsets import GenericViewSet
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.groups import GroupMemberSerializer
-from authentik.core.models import User
+from authentik.core.models import User, UserTypes
 from authentik.policies.event_matcher.models import model_choices
 from authentik.rbac.api.rbac import PermissionAssignSerializer
 
@@ -95,7 +96,9 @@ class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
     @action(methods=["POST"], detail=True, pagination_class=None, filter_backends=[])
     def assign(self, request: Request, *args, **kwargs) -> Response:
         """Assign permission(s) to user"""
-        user = self.get_object()
+        user: User = self.get_object()
+        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            raise ValidationError("Permissions cannot be assigned to an internal service account.")
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
         model_instance = None
@@ -122,6 +125,10 @@ class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
         """Unassign permission(s) to user. When `object_pk` is set, the permissions
         are only assigned to the specific object, otherwise they are assigned globally."""
         user: User = self.get_object()
+        if user.type == UserTypes.INTERNAL_SERVICE_ACCOUNT:
+            raise ValidationError(
+                "Permissions cannot be unassigned from an internal service account."
+            )
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
         model_instance = None
