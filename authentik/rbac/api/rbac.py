@@ -115,6 +115,14 @@ class PermissionAssignSerializer(PassiveSerializer):
     validators = [RequiredTogetherValidator(fields=["model", "object_pk"])]
 
     def validate(self, attrs: dict) -> dict:
+        model_instance = None
+        # Check if we're setting an object-level perm or global
+        model = attrs.get("model")
+        object_pk = attrs.get("object_pk")
+        if model and object_pk:
+            model = apps.get_model(attrs["model"])
+            model_instance = model.objects.filter(pk=attrs["object_pk"]).first()
+        attrs["model_instance"] = model_instance
         if attrs.get("model"):
             return attrs
         permissions = attrs.get("permissions", [])

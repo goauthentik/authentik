@@ -1,5 +1,4 @@
 """common RBAC serializers"""
-from django.apps import apps
 from django.db.models import Q, QuerySet
 from django.db.transaction import atomic
 from django_filters.filters import CharFilter, ChoiceFilter
@@ -21,6 +20,7 @@ from authentik.core.api.groups import GroupMemberSerializer
 from authentik.core.models import User, UserTypes
 from authentik.policies.event_matcher.models import model_choices
 from authentik.rbac.api.rbac import PermissionAssignSerializer
+from authentik.rbac.utils import unassign_perm
 
 
 class UserObjectPermissionSerializer(ModelSerializer):
@@ -101,16 +101,9 @@ class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
             raise ValidationError("Permissions cannot be assigned to an internal service account.")
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        model_instance = None
-        # Check if we're setting an object-level perm or global
-        model = data.validated_data.get("model")
-        object_pk = data.validated_data.get("object_pk")
-        if model and object_pk:
-            model = apps.get_model(data.validated_data["model"])
-            model_instance = model.objects.filter(pk=data.validated_data["object_pk"])
         with atomic():
             for perm in data.validated_data["permissions"]:
-                assign_perm(perm, user, model_instance)
+                assign_perm(perm, user, data.validated_data["model_instance"])
         return Response(status=204)
 
     @permission_required("authentik_core.unassign_user_permissions")
@@ -131,32 +124,7 @@ class UserAssignedPermissionViewSet(ListModelMixin, GenericViewSet):
             )
         data = PermissionAssignSerializer(data=request.data)
         data.is_valid(raise_exception=True)
-        model_instance = None
-        # Check if we're setting an object-level perm or global
-        model = data.validated_data.get("model")
-        object_pk = data.validated_data.get("object_pk")
-        if model and object_pk:
-            model = apps.get_model(data.validated_data["model"])
-            model_instance = model.objects.filter(pk=data.validated_data["object_pk"])
-        with atomic():
-            if not model_instance:
-                to_remove = Q()
-                for perm in data.validated_data["permissions"]:
-                    app_label, _, codename = perm.partition(".")
-                    to_remove &= Q(
-                        content_type__app_label=app_label,
-                        codename=codename,
-                    )
-                user.user_permissions.set(user.user_permissions.all().exclude(to_remove))
-            else:
-                to_remove = Q()
-                for perm in data.validated_data["permissions"]:
-                    app_label, _, codename = perm.partition(".")
-                    to_remove &= Q(
-                        permission__content_type__app_label=app_label,
-                        permission__codename=codename,
-                    )
-                UserObjectPermission.objects.filter(
-                    user=user,
-                ).filter(to_remove).delete()
+        unassign_perm(
+            data.validated_data["permissions"], user, data.validated_data["model_instance"]
+        )
         return Response(status=204)
