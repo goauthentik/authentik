@@ -28,11 +28,12 @@ class RoleObjectPermissionSerializer(ModelSerializer):
     app_label = ReadOnlyField(source="content_type.app_label")
     model = ReadOnlyField(source="content_type.model")
     codename = ReadOnlyField(source="permission.codename")
+    name = ReadOnlyField(source="permission.name")
     object_pk = ReadOnlyField()
 
     class Meta:
         model = GroupObjectPermission
-        fields = ["id", "codename", "model", "app_label", "object_pk"]
+        fields = ["id", "codename", "model", "app_label", "object_pk", "name"]
 
 
 class RoleAssignedObjectPermissionSerializer(PassiveSerializer):

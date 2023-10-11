@@ -17730,11 +17730,6 @@ paths:
       operationId: rbac_permissions_roles_list
       description: Get a role's assigned object permissions
       parameters:
-      - in: query
-        name: name
-        schema:
-          type: string
-        required: true
       - name: ordering
         required: false
         in: query
@@ -17759,6 +17754,12 @@ paths:
         description: A search term.
         schema:
           type: string
+      - in: query
+        name: uuid
+        schema:
+          type: string
+          format: uuid
+        required: true
       tags:
       - rbac
       security:
@@ -31045,6 +31046,9 @@ components:
           type: string
           title: Object ID
           readOnly: true
+        name:
+          type: string
+          readOnly: true
         app_label_verbose:
           type: string
           readOnly: true
@@ -31062,6 +31066,7 @@ components:
       - id
       - model
       - model_verbose
+      - name
       - object_description
       - object_pk
     ExtraUserObjectPermission:
@@ -31085,6 +31090,9 @@ components:
           type: string
           title: Object ID
           readOnly: true
+        name:
+          type: string
+          readOnly: true
         app_label_verbose:
           type: string
           readOnly: true
@@ -31102,6 +31110,7 @@ components:
       - id
       - model
       - model_verbose
+      - name
       - object_description
       - object_pk
     FilePathRequest:
@@ -39649,11 +39658,15 @@ components:
           type: string
           title: Object ID
           readOnly: true
+        name:
+          type: string
+          readOnly: true
       required:
       - app_label
       - codename
       - id
       - model
+      - name
       - object_pk
     RoleRequest:
       type: object
@@ -42020,11 +42033,15 @@ components:
           type: string
           title: Object ID
           readOnly: true
+        name:
+          type: string
+          readOnly: true
       required:
       - app_label
       - codename
       - id
       - model
+      - name
       - object_pk
     UserPasswordSetRequest:
       type: object

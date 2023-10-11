@@ -1,18 +1,16 @@
-import "@goauthentik/admin/roles/RolePermissionForm";
 import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
 import { groupBy } from "@goauthentik/app/common/utils";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/app/elements/table/Table";
-import "@goauthentik/elements/forms/ModalForm";
+import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import { ifDefined } from "lit/directives/if-defined.js";
 
-import { Permission, RbacApi } from "@goauthentik/api";
+import { ExtraRoleObjectPermission, RbacApi } from "@goauthentik/api";
 
-@customElement("ak-role-permissions-table")
-export class RolePermissionTable extends Table<Permission> {
+@customElement("ak-role-permissions-object-table")
+export class RolePermissionObjectTable extends Table<ExtraRoleObjectPermission> {
     @property()
     roleUuid?: string;
 
@@ -22,18 +20,16 @@ export class RolePermissionTable extends Table<Permission> {
 
     checkbox = true;
 
-    order = "content_type__app_label,content_type__model";
-
-    apiEndpoint(page: number): Promise<PaginatedResponse<Permission>> {
-        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsList({
-            role: this.roleUuid,
+    apiEndpoint(page: number): Promise<PaginatedResponse<ExtraRoleObjectPermission>> {
+        return new RbacApi(DEFAULT_CONFIG).rbacPermissionsRolesList({
+            uuid: this.roleUuid || "",
             page: page,
             ordering: this.order,
             search: this.search,
         });
     }
 
-    groupBy(items: Permission[]): [string, Permission[]][] {
+    groupBy(items: ExtraRoleObjectPermission[]): [string, ExtraRoleObjectPermission[]][] {
         return groupBy(items, (obj) => {
             return obj.appLabelVerbose;
         });
@@ -43,22 +39,9 @@ export class RolePermissionTable extends Table<Permission> {
         return [
             new TableColumn("Model", "model"),
             new TableColumn("Permission", ""),
+            new TableColumn("Object", ""),
             new TableColumn(""),
         ];
-    }
-
-    renderObjectCreate(): TemplateResult {
-        return html`
-            <ak-forms-modal>
-                <span slot="submit"> ${msg("Assign")} </span>
-                <span slot="header"> ${msg("Assign permission to role")} </span>
-                <ak-role-permission-form roleUuid=${ifDefined(this.roleUuid)} slot="form">
-                </ak-role-permission-form>
-                <button slot="trigger" class="pf-c-button pf-m-primary">
-                    ${msg("Assign permission")}
-                </button>
-            </ak-forms-modal>
-        `;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -66,13 +49,20 @@ export class RolePermissionTable extends Table<Permission> {
         return html`<ak-forms-delete-bulk
             objectLabel=${msg("Permission(s)")}
             .objects=${this.selectedElements}
-            .delete=${(item: Permission) => {
+            .metadata=${(item: ExtraRoleObjectPermission) => {
+                return [
+                    { key: msg("Permission"), value: item.name },
+                    { key: msg("Object"), value: item.objectDescription || item.objectPk },
+                ];
+            }}
+            .delete=${(item: ExtraRoleObjectPermission) => {
                 return new RbacApi(
                     DEFAULT_CONFIG,
                 ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
                     uuid: this.roleUuid || "",
                     patchedPermissionAssignRequest: {
                         permissions: [`${item.appLabel}.${item.codename}`],
+                        objectPk: item.objectPk,
                     },
                 });
             }}
@@ -83,7 +73,21 @@ export class RolePermissionTable extends Table<Permission> {
         </ak-forms-delete-bulk>`;
     }
 
-    row(item: Permission): TemplateResult[] {
-        return [html`${item.modelVerbose}`, html`${item.name}`, html`✓`];
+    row(item: ExtraRoleObjectPermission): TemplateResult[] {
+        return [
+            html`${item.modelVerbose}`,
+            html`${item.name}`,
+            html`${item.objectDescription
+                ? html`${item.objectDescription}`
+                : html`<pf-tooltip
+                      position="top"
+                      content=${msg(
+                          "Role doesn't have view permission so description cannot be retrieved.",
+                      )}
+                  >
+                      <pre>${item.objectPk}</pre>
+                  </pf-tooltip>`}`,
+            html`✓`,
+        ];
     }
 }

@@ -1,5 +1,6 @@
 import "@goauthentik/admin/groups/RelatedGroupList";
-import "@goauthentik/admin/roles/RolePermissionTable";
+import "@goauthentik/app/admin/roles/RolePermissionGlobalTable";
+import "@goauthentik/app/admin/roles/RolePermissionObjectTable";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
@@ -115,11 +116,19 @@ export class RoleViewPage extends AKElement {
                     <div
                         class="pf-c-card pf-l-grid__item pf-m-12-col pf-m-9-col-on-xl pf-m-9-col-on-2xl"
                     >
-                        <div class="pf-c-card__title">${msg("Permissions")}</div>
+                        <div class="pf-c-card__title">${msg("Assigned global permissions")}</div>
                         <div class="pf-c-card__body">
-                            <ak-role-permissions-table
+                            <ak-role-permissions-global-table
                                 roleUuid=${this._role.pk}
-                            ></ak-role-permissions-table>
+                            ></ak-role-permissions-global-table>
+                        </div>
+                    </div>
+                    <div class="pf-c-card pf-l-grid__item pf-m-12-col">
+                        <div class="pf-c-card__title">${msg("Assigned object permissions")}</div>
+                        <div class="pf-c-card__body">
+                            <ak-role-permissions-object-table
+                                roleUuid=${this._role.pk}
+                            ></ak-role-permissions-object-table>
                         </div>
                     </div>
                 </div>

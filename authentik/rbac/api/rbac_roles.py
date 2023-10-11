@@ -2,7 +2,7 @@
 from typing import Optional
 
 from django.apps import apps
-from django_filters.filters import CharFilter
+from django_filters.filters import UUIDFilter
 from django_filters.filterset import FilterSet
 from guardian.models import GroupObjectPermission
 from guardian.shortcuts import get_objects_for_group
@@ -49,7 +49,9 @@ class ExtraRoleObjectPermissionSerializer(RoleObjectPermissionSerializer):
 
 
 class RolePermissionFilter(FilterSet):
-    name = CharFilter("group__role__name", required=True)
+    """Role permission filter"""
+
+    uuid = UUIDFilter("group__role__uuid", required=True)
 
 
 class RolePermissionViewSet(ListModelMixin, GenericViewSet):
@@ -60,5 +62,5 @@ class RolePermissionViewSet(ListModelMixin, GenericViewSet):
     pagination_class = SmallerPagination
     # The filtering is done in the filterset,
     # which has a required filter that does the heavy lifting
-    queryset = GroupObjectPermission.objects.select_related("content_type", "role").all()
+    queryset = GroupObjectPermission.objects.select_related("content_type", "group__role").all()
     filterset_class = RolePermissionFilter
