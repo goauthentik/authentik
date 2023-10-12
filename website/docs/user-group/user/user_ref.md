@@ -1,5 +1,5 @@
 ---
-title: User attributes
+title: User properties and attributes
 ---
 
 ## Object properties
