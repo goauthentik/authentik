@@ -42204,6 +42204,12 @@ components:
           readOnly: true
         type:
           $ref: '#/components/schemas/UserTypeEnum'
+        system_permissions:
+          type: array
+          items:
+            type: string
+          description: Get all system permissions assigned to the user
+          readOnly: true
       required:
       - avatar
       - groups
@@ -42212,6 +42218,7 @@ components:
       - name
       - pk
       - settings
+      - system_permissions
       - uid
       - username
     UserSelfGroups:

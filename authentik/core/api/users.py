@@ -203,6 +203,7 @@ class UserSelfSerializer(ModelSerializer):
     groups = SerializerMethodField()
     uid = CharField(read_only=True)
     settings = SerializerMethodField()
+    system_permissions = SerializerMethodField()
 
     @extend_schema_field(
         ListSerializer(
@@ -224,6 +225,14 @@ class UserSelfSerializer(ModelSerializer):
         """Get user settings with tenant and group settings applied"""
         return user.group_attributes(self._context["request"]).get("settings", {})
 
+    def get_system_permissions(self, user: User) -> list[str]:
+        """Get all system permissions assigned to the user"""
+        return list(
+            user.user_permissions.filter(
+                content_type__app_label="authentik_rbac", content_type__model="systempermission"
+            ).values_list("codename", flat=True)
+        )
+
     class Meta:
         model = User
         fields = [
@@ -238,6 +247,7 @@ class UserSelfSerializer(ModelSerializer):
             "uid",
             "settings",
             "type",
+            "system_permissions",
         ]
         extra_kwargs = {
             "is_active": {"read_only": True},
