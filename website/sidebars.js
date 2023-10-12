@@ -270,7 +270,7 @@ const docsSidebar = {
                     },
                     items: [
                         "user-group/user/user_basic_operations",
-                        "user-group/user/user_attributes",
+                        "user-group/user/user_ref",
                         "user-group/user/invitations",
                     ],
                 },

@@ -6,6 +6,6 @@ In authentik you can create and manage users with fine-tuned access control, ses
 
 To learn more about working with users in authentik, refer to the following topics:
 
--   [User attributes](./user_attributes)
+-   [User attributes](./user_ref)
 -   [Managing users](./user_basic_operations)
 -   [Invitations](./invitations)
