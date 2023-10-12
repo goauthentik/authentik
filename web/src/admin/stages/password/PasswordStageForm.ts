@@ -62,8 +62,9 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span> ${msg("Validate the user's password against the selected backend(s).")} </span>
+        return html` <span>
+                ${msg("Validate the user's password against the selected backend(s).")}
+            </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
@@ -180,7 +181,6 @@ export class PasswordStageForm extends ModelForm<PasswordStage, string> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

@@ -41,8 +41,7 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "Checks if the request's user's password has been changed in the last x days, and denys based on settings.",
                 )}
@@ -110,7 +109,6 @@ export class PasswordExpiryPolicyForm extends ModelForm<PasswordExpiryPolicy, st
                         </label>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

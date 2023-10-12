@@ -40,8 +40,7 @@ export class DummyStageForm extends ModelForm<DummyStage, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "Dummy stage used for testing. Shows a simple continue button and always passes.",
                 )}
@@ -68,7 +67,6 @@ export class DummyStageForm extends ModelForm<DummyStage, string> {
                     </span>
                     <span class="pf-c-switch__label">${msg("Throw error?")}</span>
                 </label>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

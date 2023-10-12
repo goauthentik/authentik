@@ -40,8 +40,7 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "This stage checks the user's current session against the Google reCaptcha (or compatible) service.",
                 )}
@@ -133,7 +132,6 @@ export class CaptchaStageForm extends ModelForm<CaptchaStage, string> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

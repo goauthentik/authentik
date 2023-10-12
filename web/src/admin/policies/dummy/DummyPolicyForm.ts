@@ -41,8 +41,7 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "A policy used for testing. Always returns the same result as specified below after waiting a random duration.",
                 )}
@@ -123,7 +122,6 @@ export class DummyPolicyForm extends ModelForm<DummyPolicy, string> {
                         />
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

@@ -31,7 +31,7 @@ export class UserResetEmailForm extends Form<CoreUsersRecoveryEmailRetrieveReque
         return new CoreApi(DEFAULT_CONFIG).coreUsersRecoveryEmailRetrieve(data);
     }
 
-    renderInlineForm(): TemplateResult {
+    renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
             label=${msg("Email stage")}
             ?required=${true}

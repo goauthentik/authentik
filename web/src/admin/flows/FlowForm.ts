@@ -78,8 +78,7 @@ export class FlowForm extends ModelForm<Flow, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -400,7 +399,6 @@ export class FlowForm extends ModelForm<Flow, string> {
                               </p>
                           </ak-form-element-horizontal>`}
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }
