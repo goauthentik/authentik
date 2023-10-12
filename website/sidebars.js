@@ -284,7 +284,6 @@ const docsSidebar = {
                     },
                     items: [
                         "user-group-role/roles/manage_roles",
-                        "user-group-role/roles/roles_ref",
                     ],
                 },
                 {
@@ -294,9 +293,11 @@ const docsSidebar = {
                         type: "doc",
                         id: "user-group-role/access-control/index",
                     },
-                    items: ["user-group-role/access-control/permissions"],
+                    items: [
+                        "user-group-role/access-control/permissions",
+                    ],
                 },
-            ],
+                    ],
         },
         {
             type: "category",
