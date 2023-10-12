@@ -11,10 +11,10 @@ export interface ShowHintControllerHost extends ReactiveLitElement {
     showHintController: ShowHintController;
 }
 
-const getCurrentStorageValue = (): Record<string, any> => {
+const getCurrentStorageValue = (): Record<string, unknown> => {
     try {
         return JSON.parse(window?.localStorage.getItem(LOCALSTORAGE_AUTHENTIK_KEY) ?? "{}");
-    } catch (_err: any) {
+    } catch (_err: unknown) {
         return {};
     }
 };
@@ -48,7 +48,7 @@ export class ShowHintController implements ReactiveController {
         }
         // Note that we only do this IF the field exists and is defined. `undefined` means "do the
         // default thing of showing the hint."
-        this.host.showHint = localStores[this.hintToken];
+        this.host.showHint = localStores[this.hintToken] as boolean;
     }
 
     render() {
