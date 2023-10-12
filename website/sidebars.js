@@ -259,7 +259,7 @@ const docsSidebar = {
         },
         {
             type: "category",
-            label: "Users & Groups",
+            label: "Users, Groups, & Roles",
             items: [
                 {
                     type: "category",
@@ -275,6 +275,18 @@ const docsSidebar = {
                     ],
                 },
                 "user-group/group",
+                {
+                    type: "category",
+                    label: "Roles",
+                    link: {
+                        type: "doc",
+                        id: "user-group/roles/index",
+                    },
+                    items: [
+                        "user-group/roles/manage_roles",
+                        "user-group/roles/roles_ref",
+                    ],
+                },
             ],
         },
         {
