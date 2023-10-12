@@ -68,7 +68,7 @@ export class RelatedUserAdd extends Form<{ users: number[] }> {
         return data;
     }
 
-    renderInlineForm(): TemplateResult {
+    renderForm(): TemplateResult {
         return html`${this.group?.isSuperuser ? html`` : html``}
             <ak-form-element-horizontal label=${msg("Users to add")} name="users">
                 <div class="pf-c-input-group">

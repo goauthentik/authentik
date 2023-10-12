@@ -43,8 +43,7 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "Executes the python snippet to determine whether to allow or deny a request.",
                 )}
@@ -101,7 +100,6 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

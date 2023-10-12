@@ -41,8 +41,7 @@ export class PropertyMappingLDAPForm extends ModelForm<LDAPPropertyMapping, stri
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -81,7 +80,6 @@ export class PropertyMappingLDAPForm extends ModelForm<LDAPPropertyMapping, stri
                         ${msg("See documentation for a list of all variables.")}
                     </a>
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

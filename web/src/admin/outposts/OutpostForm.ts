@@ -99,8 +99,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -226,7 +225,6 @@ export class OutpostForm extends ModelForm<Outpost, string> {
                         >${msg("Documentation")}</a
                     >
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

@@ -48,13 +48,8 @@ class TestProviderSAML(SeleniumTestCase):
                 "SP_METADATA_URL": metadata_url,
             },
         )
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            self.logger.info("Container failed healthcheck")
-            sleep(1)
+        self.wait_for_container(container)
+        return container
 
     @retry()
     @apply_blueprint(

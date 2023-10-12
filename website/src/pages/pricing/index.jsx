@@ -66,9 +66,8 @@ export default function pricingPage() {
                                     </h1>
                                     <a
                                         className="button button--primary button--block"
-                                        href={useBaseUrl(
-                                            "/docs/enterprise/get-started",
-                                        )}
+                                        target="_blank"
+                                        href="https://customers.goauthentik.io/"
                                     >
                                         Get Started
                                     </a>
