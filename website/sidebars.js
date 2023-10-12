@@ -287,6 +287,17 @@ const docsSidebar = {
                         "user-group-role/roles/roles_ref",
                     ],
                 },
+                {
+                    type: "category",
+                    label: "Access control",
+                    link: {
+                        type: "doc",
+                        id: "user-group-role/access-control/index",
+                    },
+                    items: [
+                        "user-group-role/access-control/permissions",
+                    ],
+                },
             ],
         },
         {
