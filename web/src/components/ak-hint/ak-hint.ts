@@ -34,7 +34,7 @@ const styles = css`
 
     :host([theme="dark"]) {
         --ak-hint--BackgroundColor: var(--ak-dark-background-darker);
---ak-hint--BorderColor: var(--ak-dark-background-lighter);
+        --ak-hint--BorderColor: var(--ak-dark-background-lighter);
         --ak-hint--Color: var(--ak-dark-foreground);
     }
 
