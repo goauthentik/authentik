@@ -5886,6 +5886,12 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
 </trans-unit>
+<trans-unit id="sd18b18f91b804c3f">
+  <source>Custom attributes</source>
+</trans-unit>
+<trans-unit id="s71c5d51d5a357dbd">
+  <source>Don't show this message again.</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
