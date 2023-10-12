@@ -33,8 +33,8 @@ const styles = css`
     }
 
     :host([theme="dark"]) {
-        --ak-hint--BackgroundColor: var(--pf-global--BackgroundColor--400);
-        --ak-hint--BorderColor: var(--pf-global--BorderColor--300);
+        --ak-hint--BackgroundColor: var(--ak-dark-background-darker);
+--ak-hint--BorderColor: var(--ak-dark-background-lighter);
         --ak-hint--Color: var(--ak-dark-foreground);
     }
 
