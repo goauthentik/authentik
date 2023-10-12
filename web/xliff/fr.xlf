@@ -7821,6 +7821,9 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 <trans-unit id="s6827a456c9dfc6ee">
   <source>When using IDP-initiated logins, the relay state will be set to this value.</source>
 </trans-unit>
+<trans-unit id="s01794c0ee3629c1b">
+  <source>Flow Info</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
