@@ -54,3 +54,20 @@ class Role(SerializerModel):
             ("assign_role_permissions", _("Can assign permissions to users")),
             ("unassign_role_permissions", _("Can unassign permissions from users")),
         ]
+
+
+class SystemPermission(models.Model):
+    """System-wide permissions that are not related to any direct
+    database model"""
+
+    class Meta:
+        managed = False
+        default_permissions = ()
+        verbose_name = _("System permission")
+        verbose_name_plural = _("System permissions")
+        permissions = [
+            ("view_system_info", _("Can view system info")),
+            ("view_system_tasks", _("Can view system tasks")),
+            ("run_system_tasks", _("Can run system tasks")),
+            ("access_admin_interface", _("Can access admin interface")),
+        ]
