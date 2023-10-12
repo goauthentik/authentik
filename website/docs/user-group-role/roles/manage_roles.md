@@ -1,6 +1,8 @@
 ---
-title: Manage roles
-description: "Learn how to create, assign, and manage roles in authentik."
+title: "Manage roles"
+description: "Learn how to work with roles and permissions in authentik."
 ---
 
 Lorem ipsium
+
+
