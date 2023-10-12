@@ -16,6 +16,7 @@ class ObjectPermissions(DjangoObjectPermissions):
             return True
         return super().has_object_permission(request, view, obj)
 
+
 # pylint: disable=invalid-name
 def HasPermission(*perm: str) -> type[BasePermission]:
     """Permission checker for any non-object permissions, returns
