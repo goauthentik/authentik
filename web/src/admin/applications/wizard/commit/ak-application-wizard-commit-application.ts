@@ -121,6 +121,7 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         }
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     decodeErrors(body: Record<string, any>) {
         const spaceify = (src: Record<string, string>) =>
             Object.values(src).map((msg) => `\u00a0\u00a0\u00a0\u00a0${msg}`);
@@ -151,10 +152,14 @@ export class ApplicationWizardCommitApplication extends BasePanel {
                 this.dispatchWizardUpdate({ status: "submitted" });
                 this.commitState = successState;
             })
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             .catch((resolution: any) => {
-                resolution.response.json().then((body: Record<string, any>) => {
-                    this.errors = this.decodeErrors(body);
-                });
+                resolution.response.json().then(
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (body: Record<string, any>) => {
+                        this.errors = this.decodeErrors(body);
+                    },
+                );
                 this.commitState = errorState;
             });
     }

@@ -50,8 +50,7 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "Stage used to configure a TOTP authenticator (i.e. Authy/Google Authenticator).",
                 )}
@@ -146,7 +145,6 @@ export class AuthenticatorTOTPStageForm extends ModelForm<AuthenticatorTOTPStage
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

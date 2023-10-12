@@ -229,8 +229,7 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "Checks the value from the policy request against several rules, mostly used to ensure password strength.",
                 )}
@@ -348,7 +347,6 @@ export class PasswordPolicyForm extends ModelForm<PasswordPolicy, string> {
             </ak-form-element-horizontal>
             ${this.showStatic ? this.renderStaticRules() : html``}
             ${this.showHIBP ? this.renderHIBP() : html``}
-            ${this.showZxcvbn ? this.renderZxcvbn() : html``}
-        </form>`;
+            ${this.showZxcvbn ? this.renderZxcvbn() : html``}`;
     }
 }

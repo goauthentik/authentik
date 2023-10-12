@@ -41,8 +41,7 @@ export class ReputationPolicyForm extends ModelForm<ReputationPolicy, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg("Allows/denys requests based on the users and/or the IPs reputation.")}
             </span>
             <span>
@@ -131,7 +130,6 @@ doesn't pass when either or both of the selected options are equal or above the 
                         />
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

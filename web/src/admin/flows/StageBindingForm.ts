@@ -92,8 +92,7 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            ${this.renderTarget()}
+        return html` ${this.renderTarget()}
             <ak-form-element-horizontal label=${msg("Stage")} ?required=${true} name="stage">
                 <ak-search-select
                     .fetchObjects=${async (query?: string): Promise<Stage[]> => {
@@ -224,7 +223,6 @@ export class StageBindingForm extends ModelForm<FlowStageBinding, string> {
                     .value=${this.instance?.policyEngineMode}
                 >
                 </ak-radio>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

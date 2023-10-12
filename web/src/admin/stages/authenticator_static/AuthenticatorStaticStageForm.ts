@@ -48,8 +48,7 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "Stage used to configure a static authenticator (i.e. static tokens). This stage should be used for configuration flows.",
                 )}
@@ -156,7 +155,6 @@ export class AuthenticatorStaticStageForm extends ModelForm<AuthenticatorStaticS
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

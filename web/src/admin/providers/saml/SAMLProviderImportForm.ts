@@ -29,7 +29,7 @@ export class SAMLProviderImportForm extends Form<SAMLProvider> {
         });
     }
 
-    renderInlineForm(): TemplateResult {
+    renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input type="text" class="pf-c-form-control" required />
             </ak-form-element-horizontal>

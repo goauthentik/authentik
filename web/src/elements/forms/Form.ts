@@ -36,13 +36,13 @@ export interface KeyUnknown {
  *
  * The base form element for interacting with user inputs.
  *
- * All forms either[1] inherit from this class and implement the `renderInlineForm()` method to
+ * All forms either[1] inherit from this class and implement the `renderForm()` method to
  * produce the actual form, or include the form in-line as a slotted element. Bizarrely, this form
  * will not render at all if it's not actually in the viewport?[2]
  *
  * @element ak-form
  *
- * @slot - Where the form goes if `renderInlineForm()` returns undefined.
+ * @slot - Where the form goes if `renderForm()` returns undefined.
  * @fires eventname - description
  *
  * @csspart partname - description
@@ -52,7 +52,7 @@ export interface KeyUnknown {
  *
  * 1. Specialization: Separate this component into three different classes:
  *    - The base class
- *    - The "use `renderInlineForm` class
+ *    - The "use `renderForm` class
  *    - The slotted class.
  * 2. There is already specialization-by-type throughout all of our code.
  *    Consider refactoring serializeForm() so that the conversions are on
@@ -343,21 +343,22 @@ export abstract class Form<T> extends AKElement {
         }
     }
 
-    renderForm(): TemplateResult {
-        const inline = this.renderInlineForm();
+    renderFormWrapper(): TemplateResult {
+        const inline = this.renderForm();
         if (inline) {
-            return html`<form class="pf-c-form pf-m-horizontal" @submit=${this.submit}>
+            return html`<form
+                class="pf-c-form pf-m-horizontal"
+                @submit=${(ev: Event) => {
+                    ev.preventDefault();
+                }}
+            >
                 ${inline}
             </form>`;
         }
         return html`<slot></slot>`;
     }
 
-    /**
-     * Inline form render callback when inheriting this class, should be overwritten
-     * instead of `this.renderForm`
-     */
-    renderInlineForm(): TemplateResult | undefined {
+    renderForm(): TemplateResult | undefined {
         return undefined;
     }
 
@@ -378,7 +379,7 @@ export abstract class Form<T> extends AKElement {
     }
 
     renderVisible(): TemplateResult {
-        return html` ${this.renderNonFieldErrors()} ${this.renderForm()}`;
+        return html` ${this.renderNonFieldErrors()} ${this.renderFormWrapper()}`;
     }
 
     render(): TemplateResult {

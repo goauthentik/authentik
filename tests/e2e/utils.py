@@ -43,7 +43,24 @@ def get_docker_tag() -> str:
     return f"gh-{branch_name}"
 
 
-class SeleniumTestCase(StaticLiveServerTestCase):
+class DockerTestCase:
+    """Mixin for dealing with containers"""
+
+    def wait_for_container(self, container: Container):
+        """Check that container is health"""
+        attempt = 0
+        while True:
+            container.reload()
+            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
+            if status == "healthy":
+                return container
+            sleep(1)
+            attempt += 1
+            if attempt >= 30:
+                self.failureException("Container failed to start")
+
+
+class SeleniumTestCase(DockerTestCase, StaticLiveServerTestCase):
     """StaticLiveServerTestCase which automatically creates a Webdriver instance"""
 
     container: Optional[Container] = None
@@ -82,13 +99,8 @@ class SeleniumTestCase(StaticLiveServerTestCase):
         state = container.attrs.get("State", {})
         if "Health" not in state:
             return container
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            self.logger.info("Container failed healthcheck")
-            sleep(1)
+        self.wait_for_container(container)
+        return container
 
     def output_container_logs(self, container: Optional[Container] = None):
         """Output the container logs to our STDOUT"""
