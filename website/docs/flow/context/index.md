@@ -22,7 +22,7 @@ Keys prefixed with `goauthentik.io` are used internally by authentik and are sub
 
 ### Common keys
 
-#### `pending_user` ([User object](../../user-group/user/user_ref.md#object-properties))
+#### `pending_user` ([User object](../../user-group-role/user/user_ref.md#object-properties))
 
 `pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../stages/identification/).
 
@@ -100,9 +100,9 @@ Key-value pairs of the data that is included in the form and will be submitted t
 
 #### User write stage
 
-##### `groups` (List of [Group objects](../../user-group/group.md))
+##### `groups` (List of [Group objects](../../user-group-role/group.md))
 
-See [Group](../../user-group/group.md). If set in the flow context, the `pending_user` will be added to all the groups in this list.
+See [Group](../../user-group-role/group.md). If set in the flow context, the `pending_user` will be added to all the groups in this list.
 
 If set, this must be a list of group objects and not group names.
 

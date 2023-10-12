@@ -266,25 +266,25 @@ const docsSidebar = {
                     label: "Users",
                     link: {
                         type: "doc",
-                        id: "user-group/user/index",
+                        id: "user-group-role/user/index",
                     },
                     items: [
-                        "user-group/user/user_basic_operations",
-                        "user-group/user/user_ref",
-                        "user-group/user/invitations",
+                        "user-group-role/user/user_basic_operations",
+                        "user-group-role/user/user_ref",
+                        "user-group-role/user/invitations",
                     ],
                 },
-                "user-group/group",
+                "user-group-role/group",
                 {
                     type: "category",
                     label: "Roles",
                     link: {
                         type: "doc",
-                        id: "user-group/roles/index",
+                        id: "user-group-role/roles/index",
                     },
                     items: [
-                        "user-group/roles/manage_roles",
-                        "user-group/roles/roles_ref",
+                        "user-group-role/roles/manage_roles",
+                        "user-group-role/roles/roles_ref",
                     ],
                 },
             ],
