@@ -1757,10 +1757,6 @@
         <source>NameID attribute</source>
         
       </trans-unit>
-      <trans-unit id="sf05c693a6e270b79">
-        <source>SCIM provider is in preview.</source>
-        
-      </trans-unit>
       <trans-unit id="s2f0f6691de0b0388">
         <source>Warning: Provider is not assigned to an application as backchannel provider.</source>
         
@@ -6091,22 +6087,11 @@ Bindings to groups/users are checked against the user of the event.</source>
                     <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
                     Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
                     routed to the outpost (when using a managed outpost, this is done for you).</source>
-=======
+</trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
-&gt;&gt;&gt;&gt;&gt;&gt;&gt; main
 </trans-unit>
 <trans-unit id="s71c5d51d5a357dbd">
   <source>Don't show this message again.</source>
 </trans-unit>
-  <source>Use this provider with nginx's <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> or traefik's
-                    <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
-                    Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
-                    routed to the outpost (when using a managed outpost, this is done for you).</source>
-  <source>Use this provider with nginx's <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> or traefik's
-                    <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
-                    Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
-                    routed to the outpost (when using a managed outpost, this is done for you).</source>
-    
-  
-</trans-unit></body></file></xliff>
+</body></file></xliff>
