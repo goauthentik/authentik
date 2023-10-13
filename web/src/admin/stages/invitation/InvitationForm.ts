@@ -77,7 +77,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Attributes")} name="fixedData">
+            <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
                 <ak-codemirror
                     mode="yaml"
                     value="${YAML.stringify(first(this.instance?.fixedData, {}))}"

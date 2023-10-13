@@ -6087,6 +6087,7 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s24bce955914b1f0a">
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
 </trans-unit>
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
 <trans-unit id="s1cffe58249b04669">
   <source>Internal application name used in URLs.</source>
 </trans-unit>
@@ -6155,10 +6156,22 @@ Bindings to groups/users are checked against the user of the event.</source>
                     <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
                     Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
                     routed to the outpost (when using a managed outpost, this is done for you).</source>
+=======
+<trans-unit id="sd18b18f91b804c3f">
+  <source>Custom attributes</source>
+&gt;&gt;&gt;&gt;&gt;&gt;&gt; main
 </trans-unit>
 <trans-unit id="s71c5d51d5a357dbd">
   <source>Don't show this message again.</source>
 </trans-unit>
-    </body>
-  </file>
-</xliff>
+  <source>Use this provider with nginx's <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> or traefik's
+                    <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
+                    Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
+                    routed to the outpost (when using a managed outpost, this is done for you).</source>
+  <source>Use this provider with nginx's <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> or traefik's
+                    <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
+                    Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
+                    routed to the outpost (when using a managed outpost, this is done for you).</source>
+    
+  
+</trans-unit></body></file></xliff>
