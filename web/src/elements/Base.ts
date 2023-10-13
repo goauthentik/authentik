@@ -13,12 +13,10 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Config, CurrentTenant, UiThemeEnum } from "@goauthentik/api";
 
-export function rootInterface<T extends Interface>(): T | undefined {
-    const el = Array.from(document.body.querySelectorAll("*")).filter(
-        (el) => el instanceof Interface,
-    );
-    return el[0] as T;
-}
+type AkInterface = HTMLElement & { getTheme: () => Promise<UiThemeEnum> };
+
+export const rootInterface = <T extends AkInterface>(): T | undefined =>
+    document.body.querySelector('[data-ak-interface-root]') as T ?? undefined
 
 export function ensureCSSStyleSheet(css: CSSStyleSheet | CSSResult): CSSStyleSheet {
     if (css instanceof CSSResult) {
@@ -171,7 +169,7 @@ export class AKElement extends LitElement {
     }
 }
 
-export class Interface extends AKElement {
+export class Interface extends AKElement implements AkInterface {
     @state()
     tenant?: CurrentTenant;
 
@@ -186,6 +184,7 @@ export class Interface extends AKElement {
         document.adoptedStyleSheets = [...document.adoptedStyleSheets, ensureCSSStyleSheet(PFBase)];
         tenant().then((tenant) => (this.tenant = tenant));
         config().then((config) => (this.config = config));
+        this.dataset.akInterfaceRoot = "true";
     }
 
     _activateTheme(root: AdoptedStyleSheetsElement, theme: UiThemeEnum): void {
