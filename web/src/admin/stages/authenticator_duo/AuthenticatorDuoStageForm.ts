@@ -50,8 +50,7 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "Stage used to configure a duo-based authenticator. This stage should be used for configuration flows.",
                 )}
@@ -189,7 +188,6 @@ export class AuthenticatorDuoStageForm extends ModelForm<AuthenticatorDuoStage, 
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

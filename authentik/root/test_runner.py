@@ -17,8 +17,8 @@ TestCase.maxDiff = None
 class PytestTestRunner(DiscoverRunner):  # pragma: no cover
     """Runs pytest to discover and run tests."""
 
-    def __init__(self, verbosity=1, failfast=False, keepdb=False, **kwargs):
-        super().__init__(verbosity, failfast, keepdb, **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
         self.args = []
         if self.failfast:
@@ -47,6 +47,7 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
     @classmethod
     def add_arguments(cls, parser: ArgumentParser):
         """Add more pytest-specific arguments"""
+        DiscoverRunner.add_arguments(parser)
         parser.add_argument(
             "--randomly-seed",
             type=int,
@@ -54,9 +55,6 @@ class PytestTestRunner(DiscoverRunner):  # pragma: no cover
             "to reuse the seed from the previous run."
             "Default behaviour: use random.Random().getrandbits(32), so the seed is"
             "different on each run.",
-        )
-        parser.add_argument(
-            "--keepdb", action="store_true", help="Preserves the test DB between runs."
         )
 
     def run_tests(self, test_labels, extra_tests=None, **kwargs):

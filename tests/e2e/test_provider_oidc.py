@@ -49,13 +49,8 @@ class TestProviderOAuth2OIDC(SeleniumTestCase):
                 "OIDC_PROVIDER": f"{self.live_server_url}/application/o/{self.application_slug}/",
             },
         )
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            self.logger.info("Container failed healthcheck")
-            sleep(1)
+        self.wait_for_container(container)
+        return container
 
     @retry()
     @apply_blueprint(

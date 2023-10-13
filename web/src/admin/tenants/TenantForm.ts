@@ -46,8 +46,11 @@ export class TenantForm extends ModelForm<Tenant, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Domain")} ?required=${true} name="domain">
+        return html` <ak-form-element-horizontal
+                label=${msg("Domain")}
+                ?required=${true}
+                name="domain"
+            >
                 <input
                     type="text"
                     value="${first(this.instance?.domain, window.location.host)}"
@@ -275,7 +278,6 @@ export class TenantForm extends ModelForm<Tenant, string> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

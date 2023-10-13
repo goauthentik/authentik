@@ -1,7 +1,6 @@
 """outpost tests"""
 from shutil import rmtree
 from tempfile import mkdtemp
-from time import sleep
 
 import yaml
 from channels.testing import ChannelsLiveServerTestCase
@@ -20,10 +19,10 @@ from authentik.outposts.models import (
 )
 from authentik.outposts.tasks import outpost_connection_discovery
 from authentik.providers.proxy.models import ProxyProvider
-from tests.e2e.utils import get_docker_tag
+from tests.e2e.utils import DockerTestCase, get_docker_tag
 
 
-class OutpostDockerTests(ChannelsLiveServerTestCase):
+class OutpostDockerTests(DockerTestCase, ChannelsLiveServerTestCase):
     """Test Docker Controllers"""
 
     def _start_container(self, ssl_folder: str) -> Container:
@@ -45,12 +44,8 @@ class OutpostDockerTests(ChannelsLiveServerTestCase):
                 }
             },
         )
-        while True:
-            container.reload()
-            status = container.attrs.get("State", {}).get("Health", {}).get("Status")
-            if status == "healthy":
-                return container
-            sleep(1)
+        self.wait_for_container(container)
+        return container
 
     def setUp(self):
         super().setUp()

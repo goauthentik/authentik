@@ -53,8 +53,7 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg(
                     "Matches an event against a set of criteria. If any of the configured values match, the policy passes.",
                 )}
@@ -187,7 +186,6 @@ export class EventMatcherPolicyForm extends ModelForm<EventMatcherPolicy, string
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

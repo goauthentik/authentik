@@ -34,7 +34,7 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
         this.result = undefined;
     }
 
-    renderInlineForm(): TemplateResult {
+    renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
                 label=${msg("Username")}
                 ?required=${true}
@@ -118,10 +118,10 @@ export class ServiceAccountForm extends Form<UserServiceAccountRequest> {
             </form>`;
     }
 
-    renderForm(): TemplateResult {
+    renderFormWrapper(): TemplateResult {
         if (this.result) {
             return this.renderResponseForm();
         }
-        return super.renderForm();
+        return super.renderFormWrapper();
     }
 }

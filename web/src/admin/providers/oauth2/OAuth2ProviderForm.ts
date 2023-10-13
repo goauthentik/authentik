@@ -167,8 +167,7 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
     renderForm(): TemplateResult {
         const provider = this.instance;
 
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-text-input
+        return html` <ak-text-input
                 name="name"
                 label=${msg("Name")}
                 value=${ifDefined(provider?.name)}
@@ -383,7 +382,6 @@ export class OAuth2ProviderFormPage extends ModelForm<OAuth2Provider, number> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

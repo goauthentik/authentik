@@ -4118,10 +4118,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <source>When multiple stages are selected, the user can choose which one they want to enroll.</source>
         <target>W przypadku wybrania wielu etapów użytkownik może wybrać, na który chce się zapisać.</target>
       </trans-unit>
-      <trans-unit id="s9a823993c07e5d64">
-        <source>Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
-        <target>Etap używany do konfiguracji tokena uwierzytelniającego WebAuthn (tj. Yubikey, FaceID/Windows Hello).</target>
-      </trans-unit>
       <trans-unit id="s34b23ebbac9f6ab9">
         <source>User verification</source>
         <target>Weryfikacja użytkownika</target>
@@ -6077,6 +6073,18 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s6827a456c9dfc6ee">
   <source>When using IDP-initiated logins, the relay state will be set to this value.</source>
+</trans-unit>
+<trans-unit id="s01794c0ee3629c1b">
+  <source>Flow Info</source>
+</trans-unit>
+<trans-unit id="s24bce955914b1f0a">
+  <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
+</trans-unit>
+<trans-unit id="sd18b18f91b804c3f">
+  <source>Custom attributes</source>
+</trans-unit>
+<trans-unit id="s71c5d51d5a357dbd">
+  <source>Don't show this message again.</source>
 </trans-unit>
     </body>
   </file>

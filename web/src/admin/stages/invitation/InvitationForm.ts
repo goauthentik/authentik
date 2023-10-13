@@ -43,8 +43,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal
+        return html` <ak-form-element-horizontal
                 ?slugMode=${true}
                 label=${msg("Name")}
                 ?required=${true}
@@ -78,7 +77,7 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                     )}
                 </p>
             </ak-form-element-horizontal>
-            <ak-form-element-horizontal label=${msg("Attributes")} name="fixedData">
+            <ak-form-element-horizontal label=${msg("Custom attributes")} name="fixedData">
                 <ak-codemirror
                     mode="yaml"
                     value="${YAML.stringify(first(this.instance?.fixedData, {}))}"
@@ -107,7 +106,6 @@ export class InvitationForm extends ModelForm<Invitation, string> {
                 <p class="pf-c-form__helper-text">
                     ${msg("When enabled, the invitation will be deleted after usage.")}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

@@ -68,8 +68,7 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg("Let the user identify themselves with their username or Email address.")}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
@@ -299,7 +298,6 @@ export class IdentificationStageForm extends ModelForm<IdentificationStage, stri
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }
