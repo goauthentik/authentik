@@ -43,11 +43,15 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         query = QueryDict(self.scope["query_string"].decode())
         params["resize-method"] = "display-update"
         params["enable-wallpaper"] = "true"
-        params["enable-theming"] = "true"
         params["enable-font-smoothing"] = "true"
-        params["enable-full-window-drag"] = "true"
-        params["enable-desktop-composition"] = "true"
-        params["enable-menu-animations"] = "true"
+        # params["enable-theming"] = "true"
+        # params["enable-full-window-drag"] = "true"
+        # params["enable-desktop-composition"] = "true"
+        # params["enable-menu-animations"] = "true"
+        # params["enable-audio-input"] = "true"
+        params["enable-drive"] = "true"
+        params["drive-name"] = "authentik"
+        params["client-name"] = "foo"
         msg = {
             "type": "event.provider.specific",
             "sub_type": "init_connection",
@@ -55,7 +59,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             "params": params,
             "protocol": self.provider.protocol,
         }
-        for key in ["screen_width", "screen_height", "screen_dpi"]:
+        for key in ["screen_width", "screen_height", "screen_dpi", "audio"]:
             value = query.get(key, None)
             if not value:
                 continue

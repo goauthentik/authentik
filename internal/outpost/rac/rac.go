@@ -63,6 +63,10 @@ func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{})
 	config.OptimalScreenWidth = parseIntOrZero(wsm.OptimalScreenWidth)
 	config.OptimalScreenHeight = parseIntOrZero(wsm.OptimalScreenHeight)
 	config.OptimalResolution = parseIntOrZero(wsm.OptimalScreenDPI)
+	config.AudioMimetypes = []string{
+		"audio/L8;rate=44100,channels=2",
+		"audio/L16;rate=44100,channels=2",
+	}
 	cc, err := connection.NewConnection(rs.ac, wsm.DestChannelID, config)
 	if err != nil {
 		rs.log.WithError(err).Warning("failed to setup connection")
