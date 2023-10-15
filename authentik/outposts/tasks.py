@@ -17,6 +17,8 @@ from kubernetes.config.kube_config import KUBE_CONFIG_DEFAULT_LOCATION
 from structlog.stdlib import get_logger
 from yaml import safe_load
 
+from authentik.enterprise.rac.controllers.docker import RACDockerController
+from authentik.enterprise.rac.controllers.kubernetes import RACKubernetesController
 from authentik.events.monitored_tasks import (
     MonitoredTask,
     TaskResult,
@@ -71,6 +73,11 @@ def controller_for_outpost(outpost: Outpost) -> Optional[type[BaseController]]:
             return RadiusDockerController
         if isinstance(service_connection, KubernetesServiceConnection):
             return RadiusKubernetesController
+    if outpost.type == OutpostType.RAC:
+        if isinstance(service_connection, DockerServiceConnection):
+            return RACDockerController
+        if isinstance(service_connection, KubernetesServiceConnection):
+            return RACKubernetesController
     return None
 
 

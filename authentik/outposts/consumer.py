@@ -58,9 +58,7 @@ class OutpostConsumer(JsonWebsocketConsumer):
         uuid = self.scope["url_route"]["kwargs"]["pk"]
         user = self.scope["user"]
         outpost = (
-            get_objects_for_user(user, "authentik_outposts.view_outpost")
-            .filter(pk=uuid)
-            .first()
+            get_objects_for_user(user, "authentik_outposts.view_outpost").filter(pk=uuid).first()
         )
         if not outpost:
             raise DenyConnection()
