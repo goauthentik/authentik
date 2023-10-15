@@ -1,5 +1,6 @@
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
+from channels.exceptions import ChannelFull
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.http.request import QueryDict
 
@@ -38,7 +39,6 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         params = self.provider.settings
         params["hostname"] = self.provider.host
         query = QueryDict(self.scope["query_string"].decode())
-        print(query)
         params["resize-method"] = "display-update"
         params["enable-wallpaper"] = "true"
         params["enable-theming"] = "true"
@@ -76,14 +76,18 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         which is the channel talking to guacd"""
         if self.dest_channel_id == "":
             return
-        await self.channel_layer.send(
-            self.dest_channel_id,
-            {
-                "type": "event.send",
-                "text_data": text_data,
-                "bytes_data": bytes_data,
-            },
-        )
+        # print(f"client - receive - {text_data[:50]}")
+        try:
+            await self.channel_layer.send(
+                self.dest_channel_id,
+                {
+                    "type": "event.send",
+                    "text_data": text_data,
+                    "bytes_data": bytes_data,
+                },
+            )
+        except ChannelFull:
+            pass
 
     async def event_outpost_connected(self, event: dict):
         if event.get("client_channel") != self.channel_name:
@@ -93,4 +97,5 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     async def event_send(self, event: dict):
         """Handler called by outpost websocket that sends data to this specific
         client connection"""
+        # print(f"client - send - {event['text_data'][:50]}")
         await self.send(text_data=event.get("text_data"), bytes_data=event.get("bytes_data"))

@@ -1,5 +1,5 @@
 import { Interface } from "@goauthentik/elements/Base";
-import "@goauthentik/elements/PageHeader";
+import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
@@ -30,12 +30,17 @@ export class RacInterface extends Interface {
             css`
                 :host {
                     height: 100vh;
+                    width: 100vw;
+                    overflow: hidden;
                 }
                 canvas {
                     z-index: 1 !important;
                 }
                 .container {
                     height: 100vh;
+                }
+                ak-loading-overlay {
+                    z-index: 5;
                 }
             `,
         ];
@@ -46,6 +51,9 @@ export class RacInterface extends Interface {
 
     @state()
     container?: HTMLElement;
+
+    @state()
+    clientState?: GuacClientState;
 
     firstUpdated(): void {
         // TODO: Remove
@@ -59,6 +67,7 @@ export class RacInterface extends Interface {
             console.debug("authentik/rac: error: ", err);
         };
         this.client.onstatechange = (state) => {
+            this.clientState = state;
             if (state === GuacClientState.CONNECTED) {
                 this.onConnected();
             }
@@ -97,8 +106,6 @@ export class RacInterface extends Interface {
                 mouseState.x = mouseState.x / this.client.getDisplay().getScale();
             }
 
-            // Send mouse state, show cursor if necessary
-            // this.client.getDisplay().showCursor(!$scope.localCursor);
             this.client.sendMouseState(mouseState);
         };
         mouse.onmouseup = mouse.onmousedown = (mouseState) => {
@@ -121,6 +128,11 @@ export class RacInterface extends Interface {
     }
 
     render(): TemplateResult {
-        return html` <div class="container">${this.container}</div> `;
+        return html`
+            ${this.clientState !== GuacClientState.CONNECTED
+                ? html` <ak-loading-overlay></ak-loading-overlay> `
+                : html``}
+            <div class="container">${this.container}</div>
+        `;
     }
 }
