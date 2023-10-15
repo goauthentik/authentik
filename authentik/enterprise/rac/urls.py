@@ -13,7 +13,7 @@ from authentik.root.middleware import ChannelsLoggingMiddleware
 
 urlpatterns = [
     path(
-        "if/rac/",
+        "if/rac/<slug:app>/",
         ensure_csrf_cookie(InterfaceView.as_view(template_name="if/rac.html")),
         name="if-rac",
     ),
