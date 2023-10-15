@@ -65,6 +65,7 @@ jobs:
           - proxy
           - ldap
           - radius
+          - rac
     runs-on: ubuntu-latest
     permissions:
       # Needed to upload contianer images to ghcr.io
@@ -119,6 +120,7 @@ jobs:
           - proxy
           - ldap
           - radius
+          - rac
         goos: [linux]
         goarch: [amd64, arm64]
     steps:
