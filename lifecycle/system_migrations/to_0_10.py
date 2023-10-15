@@ -2,6 +2,7 @@
 from lifecycle.migrate import BaseMigration
 
 SQL_STATEMENT = """
+BEGIN TRANSACTION;
 DELETE FROM django_migrations WHERE app = 'passbook_stages_prompt';
 DROP TABLE passbook_stages_prompt_prompt cascade;
 DROP TABLE passbook_stages_prompt_promptstage cascade;
@@ -22,6 +23,7 @@ DELETE FROM django_migrations WHERE app = 'passbook_flows' AND name = '0008_defa
 DELETE FROM django_migrations WHERE app = 'passbook_flows' AND name = '0009_source_flows';
 DELETE FROM django_migrations WHERE app = 'passbook_flows' AND name = '0010_provider_flows';
 DELETE FROM django_migrations WHERE app = 'passbook_stages_password' AND name = '0002_passwordstage_change_flow';
+COMMIT;
 """
 
 
