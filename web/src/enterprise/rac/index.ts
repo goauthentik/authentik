@@ -56,7 +56,7 @@ export class RacInterface extends Interface {
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
         this.client = new Guacamole.Client(this.tunnel);
         this.client.onerror = (err) => {
-            console.log(err);
+            console.debug("authentik/rac: error: ", err);
         };
         this.client.onstatechange = (state) => {
             if (state === GuacClientState.CONNECTED) {
@@ -66,13 +66,24 @@ export class RacInterface extends Interface {
         this.container = this.client.getDisplay().getElement();
         this.initMouse(this.container);
         this.initKeyboard();
-        this.client.connect();
+        const params = new URLSearchParams();
+        params.set(
+            "screen_width",
+            (this.getBoundingClientRect().width * window.devicePixelRatio).toString(),
+        );
+        params.set(
+            "screen_height",
+            (this.getBoundingClientRect().height * window.devicePixelRatio).toString(),
+        );
+        params.set("screen_dpi", (window.devicePixelRatio * 96).toString());
+        this.client.connect(params.toString());
     }
 
     onConnected(): void {
+        console.debug("authentik/rac: connected");
         this.client?.sendSize(
-            this.getBoundingClientRect().width,
-            this.getBoundingClientRect().height,
+            this.getBoundingClientRect().width * window.devicePixelRatio,
+            this.getBoundingClientRect().height * window.devicePixelRatio,
         );
     }
 

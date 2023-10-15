@@ -3,10 +3,10 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import IntEnum
 from typing import Any, Optional
-from channels.generic.websocket import JsonWebsocketConsumer
 
 from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
+from channels.generic.websocket import JsonWebsocketConsumer
 from dacite.core import from_dict
 from dacite.data import Data
 from guardian.shortcuts import get_objects_for_user

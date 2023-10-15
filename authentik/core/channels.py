@@ -2,7 +2,6 @@
 from channels.exceptions import DenyConnection
 from rest_framework.exceptions import AuthenticationFailed
 from structlog.stdlib import get_logger
-from channels.db import database_sync_to_async
 
 from authentik.api.authentication import bearer_auth
 from authentik.core.models import User

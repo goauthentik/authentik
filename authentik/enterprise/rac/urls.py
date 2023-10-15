@@ -6,9 +6,8 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 
 from authentik.core.views.interface import InterfaceView
 from authentik.enterprise.rac.api.providers import RACProviderViewSet
-from authentik.enterprise.rac.consumer_direct import GuacamoleConsumer
-from authentik.enterprise.rac.consumer_outpost import RACOutpostConsumer
 from authentik.enterprise.rac.consumer_client import RACClientConsumer
+from authentik.enterprise.rac.consumer_outpost import RACOutpostConsumer
 from authentik.root.asgi_middleware import SessionMiddleware
 from authentik.root.middleware import ChannelsLoggingMiddleware
 

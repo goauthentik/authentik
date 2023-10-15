@@ -3,6 +3,7 @@ package rac
 import (
 	"context"
 	"os/exec"
+	"strconv"
 	"sync"
 
 	"github.com/mitchellh/mapstructure"
@@ -32,10 +33,21 @@ func NewServer(ac *ak.APIController) *RACServer {
 }
 
 type WSMessage struct {
-	ConnID        string            `mapstructure:"conn_id"`
-	DestChannelID string            `mapstructure:"dest_channel_id"`
-	Params        map[string]string `mapstructure:"params"`
-	Protocol      string            `mapstructure:"protocol"`
+	ConnID              string            `mapstructure:"conn_id"`
+	DestChannelID       string            `mapstructure:"dest_channel_id"`
+	Params              map[string]string `mapstructure:"params"`
+	Protocol            string            `mapstructure:"protocol"`
+	OptimalScreenWidth  string            `mapstructure:"screen_width"`
+	OptimalScreenHeight string            `mapstructure:"screen_height"`
+	OptimalScreenDPI    string            `mapstructure:"screen_dpi"`
+}
+
+func parseIntOrZero(input string) int {
+	x, err := strconv.Atoi(input)
+	if err != nil {
+		return 0
+	}
+	return x
 }
 
 func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{}) {
@@ -47,9 +59,10 @@ func (rs *RACServer) wsHandler(ctx context.Context, args map[string]interface{})
 	}
 	config := guac.NewGuacamoleConfiguration()
 	config.Protocol = wsm.Protocol
-	rs.log.WithField("params", wsm.Params).Debug("params")
 	config.Parameters = wsm.Params
-	// config
+	config.OptimalScreenWidth = parseIntOrZero(wsm.OptimalScreenWidth)
+	config.OptimalScreenHeight = parseIntOrZero(wsm.OptimalScreenHeight)
+	config.OptimalResolution = parseIntOrZero(wsm.OptimalScreenDPI)
 	cc, err := connection.NewConnection(rs.ac, wsm.DestChannelID, config)
 	if err != nil {
 		rs.log.WithError(err).Warning("failed to setup connection")

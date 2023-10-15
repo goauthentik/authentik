@@ -1,8 +1,9 @@
-from channels.generic.websocket import AsyncWebsocketConsumer
-from channels.db import database_sync_to_async
 from asgiref.sync import async_to_sync
-from authentik.enterprise.rac.models import RACProvider
+from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
+from django.http.request import QueryDict
 
+from authentik.enterprise.rac.models import RACProvider
 from authentik.outposts.models import Outpost, OutpostState, OutpostType
 
 RAC_CLIENT_GROUP = "group_enterprise_rac_client"
@@ -15,6 +16,7 @@ RAC_CLIENT_GROUP = "group_enterprise_rac_client"
 # Step 4: Outpost creates a websocket connection back to authentik
 #         with /ws/outpost_rac/<our_channel_id>/
 # Step 5: This consumer transfers data between the two channels
+
 
 class RACClientConsumer(AsyncWebsocketConsumer):
     """RAC client consumer the browser connects to"""
@@ -31,11 +33,31 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def init_outpost_connection(self):
         """Initialize guac connection settings"""
-        #TODO: Lookup
+        # TODO: Lookup
         self.provider = RACProvider.objects.first()
         params = self.provider.settings
         params["hostname"] = self.provider.host
+        query = QueryDict(self.scope["query_string"].decode())
+        print(query)
         params["resize-method"] = "display-update"
+        params["enable-wallpaper"] = "true"
+        params["enable-theming"] = "true"
+        params["enable-font-smoothing"] = "true"
+        params["enable-full-window-drag"] = "true"
+        params["enable-desktop-composition"] = "true"
+        params["enable-menu-animations"] = "true"
+        msg = {
+            "type": "event.provider.specific",
+            "sub_type": "init_connection",
+            "dest_channel_id": self.channel_name,
+            "params": params,
+            "protocol": self.provider.protocol,
+        }
+        for key in ["screen_width", "screen_height", "screen_dpi"]:
+            value = query.get(key, None)
+            if not value:
+                continue
+            msg[key] = str(value)
         # TODO: Pick random outpost
         for outpost in Outpost.objects.filter(
             type=OutpostType.RAC,
@@ -46,13 +68,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
                 for channel in state.channel_ids:
                     async_to_sync(self.channel_layer.send)(
                         channel,
-                        {
-                            "type": "event.provider.specific",
-                            "sub_type": "init_connection",
-                            "dest_channel_id": self.channel_name,
-                            "params": params,
-                            "protocol": self.provider.protocol,
-                        },
+                        msg,
                     )
 
     async def receive(self, text_data=None, bytes_data=None):
@@ -66,7 +82,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
                 "type": "event.send",
                 "text_data": text_data,
                 "bytes_data": bytes_data,
-            }
+            },
         )
 
     async def event_outpost_connected(self, event: dict):

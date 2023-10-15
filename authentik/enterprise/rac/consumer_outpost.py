@@ -1,8 +1,8 @@
 """RAC consumer"""
-from channels.generic.websocket import AsyncWebsocketConsumer
-from authentik.core.channels import TokenOutpostConsumer
 from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
 
+from authentik.core.channels import TokenOutpostConsumer
 from authentik.enterprise.rac.consumer_client import RAC_CLIENT_GROUP
 
 
