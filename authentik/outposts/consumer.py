@@ -12,7 +12,6 @@ from dacite.data import Data
 from guardian.shortcuts import get_objects_for_user
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.channels import TokenOutpostConsumer
 from authentik.outposts.apps import GAUGE_OUTPOSTS_CONNECTED, GAUGE_OUTPOSTS_LAST_UPDATE
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
 
@@ -43,7 +42,7 @@ class WebsocketMessage:
     args: dict[str, Any] = field(default_factory=dict)
 
 
-class OutpostConsumer(TokenOutpostConsumer, JsonWebsocketConsumer):
+class OutpostConsumer(JsonWebsocketConsumer):
     """Handler for Outposts that connect over websockets for health checks and live updates"""
 
     outpost: Optional[Outpost] = None
@@ -56,10 +55,10 @@ class OutpostConsumer(TokenOutpostConsumer, JsonWebsocketConsumer):
         self.logger = get_logger()
 
     def connect(self):
-        super().connect()
         uuid = self.scope["url_route"]["kwargs"]["pk"]
+        user = self.scope["user"]
         outpost = (
-            get_objects_for_user(self.user, "authentik_outposts.view_outpost")
+            get_objects_for_user(user, "authentik_outposts.view_outpost")
             .filter(pk=uuid)
             .first()
         )

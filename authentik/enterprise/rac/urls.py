@@ -4,6 +4,7 @@ from channels.sessions import CookieMiddleware
 from django.urls import path
 from django.views.decorators.csrf import ensure_csrf_cookie
 
+from authentik.core.channels import TokenOutpostMiddleware
 from authentik.core.views.interface import InterfaceView
 from authentik.enterprise.rac.api.providers import RACProviderViewSet
 from authentik.enterprise.rac.consumer_client import RACClientConsumer
@@ -26,7 +27,7 @@ websocket_urlpatterns = [
     ),
     path(
         "ws/outpost_rac/<str:channel>/",
-        ChannelsLoggingMiddleware(RACOutpostConsumer.as_asgi()),
+        ChannelsLoggingMiddleware(TokenOutpostMiddleware(RACOutpostConsumer.as_asgi())),
     ),
 ]
 

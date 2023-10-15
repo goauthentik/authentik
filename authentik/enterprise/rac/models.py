@@ -1,5 +1,6 @@
 """RAC Models"""
 from typing import Optional
+
 from django.db import models
 from django.urls import reverse
 from rest_framework.serializers import Serializer
@@ -16,7 +17,7 @@ class Protocols(models.TextChoices):
 
 
 class AuthenticationMode(models.TextChoices):
-    """"""
+    """Authentication modes"""
 
     STATIC = "static"
     PROMPT = "prompt"

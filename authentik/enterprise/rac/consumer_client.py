@@ -1,3 +1,4 @@
+"""RAC Client consumer"""
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
 from channels.exceptions import ChannelFull
@@ -23,6 +24,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     """RAC client consumer the browser connects to"""
 
     dest_channel_id: str = ""
+    provider: RACProvider
 
     async def connect(self):
         await self.accept("guacamole")
@@ -90,6 +92,8 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             pass
 
     async def event_outpost_connected(self, event: dict):
+        """Handle event broadcasted from outpost consumer, and check if they
+        created a connection for us"""
         if event.get("client_channel") != self.channel_name:
             return
         self.dest_channel_id = event.get("outpost_channel")

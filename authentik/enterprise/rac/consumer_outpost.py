@@ -1,20 +1,17 @@
 """RAC consumer"""
-from channels.db import database_sync_to_async
 from channels.exceptions import ChannelFull
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from authentik.core.channels import TokenOutpostConsumer
 from authentik.enterprise.rac.consumer_client import RAC_CLIENT_GROUP
 
 
-class RACOutpostConsumer(TokenOutpostConsumer, AsyncWebsocketConsumer):
+class RACOutpostConsumer(AsyncWebsocketConsumer):
     """Consumer the outpost connects to, to send specific data back to a client connection"""
 
     dest_channel_id: str
 
     async def connect(self):
         self.dest_channel_id = self.scope["url_route"]["kwargs"]["channel"]
-        await self.connect_wrapper()
         await self.accept()
         await self.channel_layer.group_send(
             RAC_CLIENT_GROUP,
@@ -24,10 +21,6 @@ class RACOutpostConsumer(TokenOutpostConsumer, AsyncWebsocketConsumer):
                 "client_channel": self.dest_channel_id,
             },
         )
-
-    @database_sync_to_async
-    def connect_wrapper(self):
-        super().connect()
 
     async def receive(self, text_data=None, bytes_data=None):
         """Mirror data received from guacd running in the outpost
