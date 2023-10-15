@@ -23,6 +23,5 @@ func (rs *RACServer) startGuac() error {
 		rs.guacd.Stderr = rs.log.WithField("logger", "authentik.outpost.rac.guacd").WriterLevel(log.WarnLevel)
 	}
 	rs.log.Info("starting guacd")
-	rs.guacd.Start()
-	return nil
+	return rs.guacd.Start()
 }

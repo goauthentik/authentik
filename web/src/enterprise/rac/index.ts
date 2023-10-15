@@ -28,16 +28,11 @@ export class RacInterface extends Interface {
             PFContent,
             AKGlobal,
             css`
-                :host {
-                    height: 100vh;
-                    width: 100vw;
-                    overflow: hidden;
-                }
                 canvas {
                     z-index: 1 !important;
                 }
                 .container {
-                    height: 100vh;
+                    overflow: hidden;
                 }
                 ak-loading-overlay {
                     z-index: 5;
@@ -54,6 +49,10 @@ export class RacInterface extends Interface {
 
     @state()
     clientState?: GuacClientState;
+
+    static domSize(): DOMRect {
+        return document.body.getBoundingClientRect();
+    }
 
     firstUpdated(): void {
         // TODO: Remove
@@ -78,11 +77,11 @@ export class RacInterface extends Interface {
         const params = new URLSearchParams();
         params.set(
             "screen_width",
-            (this.getBoundingClientRect().width * window.devicePixelRatio).toString(),
+            (RacInterface.domSize().width * window.devicePixelRatio).toString(),
         );
         params.set(
             "screen_height",
-            (this.getBoundingClientRect().height * window.devicePixelRatio).toString(),
+            (RacInterface.domSize().height * window.devicePixelRatio).toString(),
         );
         params.set("screen_dpi", (window.devicePixelRatio * 96).toString());
         this.client.connect(params.toString());
@@ -91,8 +90,8 @@ export class RacInterface extends Interface {
     onConnected(): void {
         console.debug("authentik/rac: connected");
         this.client?.sendSize(
-            this.getBoundingClientRect().width * window.devicePixelRatio,
-            this.getBoundingClientRect().height * window.devicePixelRatio,
+            RacInterface.domSize().width * window.devicePixelRatio,
+            RacInterface.domSize().height * window.devicePixelRatio,
         );
     }
 
