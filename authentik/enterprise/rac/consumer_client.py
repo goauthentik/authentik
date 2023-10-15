@@ -35,9 +35,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
         self.provider = RACProvider.objects.first()
         params = self.provider.settings
         params["hostname"] = self.provider.host
-        params["ignore-cert"] = "true"
-        params["security"] = "nla"
-        params["username"] = "Administrator"
+        params["resize-method"] = "display-update"
         # TODO: Pick random outpost
         for outpost in Outpost.objects.filter(
             type=OutpostType.RAC,

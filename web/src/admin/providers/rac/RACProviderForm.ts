@@ -13,7 +13,12 @@ import { TemplateResult, html } from "lit";
 import { customElement } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { FlowsInstancesListDesignationEnum, ProtocolEnum, ProvidersApi, RACProvider } from "@goauthentik/api";
+import {
+    FlowsInstancesListDesignationEnum,
+    ProtocolEnum,
+    ProvidersApi,
+    RACProvider,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-rac-form")
 export class RACProviderFormPage extends ModelForm<RACProvider, number> {

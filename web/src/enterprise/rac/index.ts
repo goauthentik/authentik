@@ -2,18 +2,22 @@ import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import Guacamole from "guacamole-common-js";
 
-
-
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
-
-
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
+enum GuacClientState {
+    IDLE = 0,
+    CONNECTING = 1,
+    WAITING = 2,
+    CONNECTED = 3,
+    DISCONNECTING = 4,
+    DISCONNECTED = 5,
+}
 
 @customElement("ak-rac")
 export class RacInterface extends Interface {
@@ -54,13 +58,21 @@ export class RacInterface extends Interface {
         this.client.onerror = (err) => {
             console.log(err);
         };
+        this.client.onstatechange = (state) => {
+            if (state === GuacClientState.CONNECTED) {
+                this.onConnected();
+            }
+        };
         this.container = this.client.getDisplay().getElement();
         this.initMouse(this.container);
         this.initKeyboard();
         this.client.connect();
-        this.client.sendSize(
+    }
+
+    onConnected(): void {
+        this.client?.sendSize(
             this.getBoundingClientRect().width,
-            this.getBoundingClientRect().height - 114,
+            this.getBoundingClientRect().height,
         );
     }
 
