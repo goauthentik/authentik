@@ -1,8 +1,8 @@
 """Channels base classes"""
 from channels.exceptions import DenyConnection
-from channels.generic.websocket import JsonWebsocketConsumer
 from rest_framework.exceptions import AuthenticationFailed
 from structlog.stdlib import get_logger
+from channels.db import database_sync_to_async
 
 from authentik.api.authentication import bearer_auth
 from authentik.core.models import User
@@ -10,7 +10,7 @@ from authentik.core.models import User
 LOGGER = get_logger()
 
 
-class AuthJsonConsumer(JsonWebsocketConsumer):
+class TokenOutpostConsumer:
     """Authorize a client with a token"""
 
     user: User

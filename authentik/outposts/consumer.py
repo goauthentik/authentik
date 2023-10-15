@@ -3,6 +3,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from enum import IntEnum
 from typing import Any, Optional
+from channels.generic.websocket import JsonWebsocketConsumer
 
 from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
@@ -11,7 +12,7 @@ from dacite.data import Data
 from guardian.shortcuts import get_objects_for_user
 from structlog.stdlib import BoundLogger, get_logger
 
-from authentik.core.channels import AuthJsonConsumer
+from authentik.core.channels import TokenOutpostConsumer
 from authentik.outposts.apps import GAUGE_OUTPOSTS_CONNECTED, GAUGE_OUTPOSTS_LAST_UPDATE
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
 
@@ -42,7 +43,7 @@ class WebsocketMessage:
     args: dict[str, Any] = field(default_factory=dict)
 
 
-class OutpostConsumer(AuthJsonConsumer):
+class OutpostConsumer(TokenOutpostConsumer, JsonWebsocketConsumer):
     """Handler for Outposts that connect over websockets for health checks and live updates"""
 
     outpost: Optional[Outpost] = None

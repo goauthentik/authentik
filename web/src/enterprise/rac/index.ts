@@ -2,13 +2,18 @@ import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/PageHeader";
 import Guacamole from "guacamole-common-js";
 
+
+
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, state } from "lit/decorators.js";
+
+
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
+
 
 @customElement("ak-rac")
 export class RacInterface extends Interface {
@@ -39,9 +44,11 @@ export class RacInterface extends Interface {
     container?: HTMLElement;
 
     firstUpdated(): void {
+        // TODO: Remove
+        const app = "test";
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host
-        }/ws/guac/`;
+        }/ws/rac/${app}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
         this.client = new Guacamole.Client(this.tunnel);
         this.client.onerror = (err) => {

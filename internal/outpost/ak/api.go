@@ -163,6 +163,10 @@ func (a *APIController) AddWSHandler(handler WSHandler) {
 	a.wsHandlers = append(a.wsHandlers, handler)
 }
 
+func (a *APIController) Token() string {
+	return a.token
+}
+
 func (a *APIController) OnRefresh() error {
 	// Because we don't know the outpost UUID, we simply do a list and pick the first
 	// The service account this token belongs to should only have access to a single outpost
