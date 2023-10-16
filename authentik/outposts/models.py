@@ -416,6 +416,7 @@ class OutpostState:
     version_should: Version = field(default=OUR_VERSION)
     build_hash: str = field(default="")
     hostname: str = field(default="")
+    args: dict = field(default_factory=dict)
 
     _outpost: Optional[Outpost] = field(default=None)
 

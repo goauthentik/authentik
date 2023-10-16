@@ -103,11 +103,12 @@ class OutpostConsumer(AuthJsonConsumer):
 
         state = OutpostState.for_instance_uid(self.outpost, uid)
         state.last_seen = datetime.now()
-        state.hostname = msg.args.get("hostname", "")
+        state.hostname = msg.args.pop("hostname", "")
 
         if msg.instruction == WebsocketMessageInstruction.HELLO:
-            state.version = msg.args.get("version", None)
-            state.build_hash = msg.args.get("buildHash", "")
+            state.version = msg.args.pop("version", None)
+            state.build_hash = msg.args.pop("buildHash", "")
+            state.args = msg.args
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
         GAUGE_OUTPOSTS_LAST_UPDATE.labels(
