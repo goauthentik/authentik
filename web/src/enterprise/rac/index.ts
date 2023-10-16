@@ -66,10 +66,18 @@ export class RacInterface extends Interface {
             window.location.host
         }/ws/rac/${this.app}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
+        this.tunnel.onerror = (status) => {
+            console.debug("authentik/rac: tunnel error: ", status);
+            setTimeout(() => {
+                this.clientState = undefined;
+                this.firstUpdated();
+            }, 150);
+        };
         this.client = new Guacamole.Client(this.tunnel);
         this.client.onerror = (err) => {
             console.debug("authentik/rac: error: ", err);
             setTimeout(() => {
+                this.clientState = undefined;
                 this.firstUpdated();
             }, 150);
         };
@@ -78,12 +86,6 @@ export class RacInterface extends Interface {
             if (state === GuacClientState.CONNECTED) {
                 this.onConnected();
             }
-        };
-        this.client.onaudio = (stream, mime) => {
-            console.log("onaudio");
-            const context = Guacamole.AudioContextFactory.getAudioContext();
-            context.resume();
-            return Guacamole.AudioPlayer.getInstance(stream, mime);
         };
         this.client.onname = (name) => {
             console.log(name);
@@ -121,7 +123,7 @@ export class RacInterface extends Interface {
             RacInterface.domSize().width * window.devicePixelRatio,
             RacInterface.domSize().height * window.devicePixelRatio,
         );
-        this.initAudioInput();
+        // this.initAudioInput();
     }
 
     initMouse(container: HTMLElement): void {
