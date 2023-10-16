@@ -7,7 +7,7 @@ from authentik.outposts.api.service_connections import (
     KubernetesServiceConnectionViewSet,
     ServiceConnectionViewSet,
 )
-from authentik.outposts.channels import OutpostConsumer
+from authentik.outposts.consumer import OutpostConsumer
 from authentik.root.middleware import ChannelsLoggingMiddleware
 
 websocket_urlpatterns = [

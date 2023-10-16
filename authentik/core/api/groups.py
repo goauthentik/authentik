@@ -2,7 +2,6 @@
 from json import loads
 from typing import Optional
 
-from django.db.models.query import QuerySet
 from django.http import Http404
 from django_filters.filters import CharFilter, ModelMultipleChoiceFilter
 from django_filters.filterset import FilterSet
@@ -14,12 +13,12 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer, ValidationError
 from rest_framework.viewsets import ModelViewSet
-from rest_framework_guardian.filters import ObjectPermissionsFilter
 
 from authentik.api.decorators import permission_required
 from authentik.core.api.used_by import UsedByMixin
 from authentik.core.api.utils import PassiveSerializer, is_dict
 from authentik.core.models import Group, User
+from authentik.rbac.api.roles import RoleSerializer
 
 
 class GroupMemberSerializer(ModelSerializer):
@@ -49,6 +48,12 @@ class GroupSerializer(ModelSerializer):
     users_obj = ListSerializer(
         child=GroupMemberSerializer(), read_only=True, source="users", required=False
     )
+    roles_obj = ListSerializer(
+        child=RoleSerializer(),
+        read_only=True,
+        source="roles",
+        required=False,
+    )
     parent_name = CharField(source="parent.name", read_only=True, allow_null=True)
 
     num_pk = IntegerField(read_only=True)
@@ -71,8 +76,10 @@ class GroupSerializer(ModelSerializer):
             "parent",
             "parent_name",
             "users",
-            "attributes",
             "users_obj",
+            "attributes",
+            "roles",
+            "roles_obj",
         ]
         extra_kwargs = {
             "users": {
@@ -137,19 +144,6 @@ class GroupViewSet(UsedByMixin, ModelViewSet):
     search_fields = ["name", "is_superuser"]
     filterset_class = GroupFilter
     ordering = ["name"]
-
-    def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
-        """Custom filter_queryset method which ignores guardian, but still supports sorting"""
-        for backend in list(self.filter_backends):
-            if backend == ObjectPermissionsFilter:
-                continue
-            queryset = backend().filter_queryset(self.request, queryset, self)
-        return queryset
-
-    def filter_queryset(self, queryset):
-        if self.request.user.has_perm("authentik_core.view_group"):
-            return self._filter_queryset_for_list(queryset)
-        return super().filter_queryset(queryset)
 
     @permission_required(None, ["authentik_core.add_user"])
     @extend_schema(

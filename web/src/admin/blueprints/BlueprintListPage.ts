@@ -7,6 +7,7 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -18,7 +19,12 @@ import { customElement, property } from "lit/decorators.js";
 
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
 
-import { BlueprintInstance, BlueprintInstanceStatusEnum, ManagedApi } from "@goauthentik/api";
+import {
+    BlueprintInstance,
+    BlueprintInstanceStatusEnum,
+    ManagedApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 export function BlueprintStatus(blueprint?: BlueprintInstance): string {
     if (!blueprint) return "";
@@ -151,6 +157,11 @@ export class BlueprintListPage extends TablePage<BlueprintInstance> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.BlueprintsBlueprintinstance}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>
                 <ak-action-button
                     class="pf-m-plain"
                     .apiRequest=${() => {

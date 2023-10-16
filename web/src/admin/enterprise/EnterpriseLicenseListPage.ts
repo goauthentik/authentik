@@ -7,6 +7,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/cards/AggregateCard";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -23,7 +24,13 @@ import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList
 import PFFormControl from "@patternfly/patternfly/components/FormControl/form-control.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 
-import { EnterpriseApi, License, LicenseForecast, LicenseSummary } from "@goauthentik/api";
+import {
+    EnterpriseApi,
+    License,
+    LicenseForecast,
+    LicenseSummary,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-enterprise-license-list")
 export class EnterpriseLicenseListPage extends TablePage<License> {
@@ -221,16 +228,21 @@ export class EnterpriseLicenseListPage extends TablePage<License> {
                 <div>${msg(str`External: ${item.externalUsers}`)}</div>`,
             html`<ak-label color=${color}> ${item.expiry?.toLocaleString()} </ak-label>`,
             html`<ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg("Update License")} </span>
-                <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
-                </ak-enterprise-license-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg("Update License")} </span>
+                    <ak-enterprise-license-form slot="form" .instancePk=${item.licenseUuid}>
+                    </ak-enterprise-license-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.EnterpriseLicense}
+                    objectPk=${item.licenseUuid}
+                >
+                </ak-rbac-object-permission-modal> `,
         ];
     }
 

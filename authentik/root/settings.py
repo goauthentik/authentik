@@ -76,6 +76,7 @@ INSTALLED_APPS = [
     "authentik.providers.radius",
     "authentik.providers.saml",
     "authentik.providers.scim",
+    "authentik.rbac",
     "authentik.recovery",
     "authentik.sources.ldap",
     "authentik.sources.oauth",
@@ -155,7 +156,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "authentik.api.pagination.Pagination",
     "PAGE_SIZE": 100,
     "DEFAULT_FILTER_BACKENDS": [
-        "rest_framework_guardian.filters.ObjectPermissionsFilter",
+        "authentik.rbac.filters.ObjectFilter",
         "django_filters.rest_framework.DjangoFilterBackend",
         "rest_framework.filters.OrderingFilter",
         "rest_framework.filters.SearchFilter",
@@ -163,7 +164,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PARSER_CLASSES": [
         "rest_framework.parsers.JSONParser",
     ],
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.DjangoObjectPermissions",),
+    "DEFAULT_PERMISSION_CLASSES": ("authentik.rbac.permissions.ObjectPermissions",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "authentik.api.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
@@ -248,7 +249,7 @@ CHANNEL_LAYERS = {
         or "authentik.root.redis_middleware_channels.CustomChannelLayer",
         "CONFIG": {
             "url": CONFIG.get("channel.url") or CONFIG.get("redis.url"),
-            "prefix": "authentik_channels",
+            "prefix": "authentik_channels_",
         },
     },
 }
@@ -402,6 +403,9 @@ if DEBUG:
     INSTALLED_APPS.append("silk")
     SILKY_PYTHON_PROFILER = True
     MIDDLEWARE = ["silk.middleware.SilkyMiddleware"] + MIDDLEWARE
+    REST_FRAMEWORK["DEFAULT_RENDERER_CLASSES"].append(
+        "rest_framework.renderers.BrowsableAPIRenderer"
+    )
 
 INSTALLED_APPS.append("authentik.core")
 

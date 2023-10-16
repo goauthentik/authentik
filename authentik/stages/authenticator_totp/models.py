@@ -241,5 +241,5 @@ class TOTPDevice(SerializerModel, ThrottlingMixin, Device):
         return None
 
     class Meta(Device.Meta):
-        verbose_name = _("TOTP device")
-        verbose_name_plural = _("TOTP devices")
+        verbose_name = _("TOTP Device")
+        verbose_name_plural = _("TOTP Devices")

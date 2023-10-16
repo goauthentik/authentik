@@ -132,13 +132,6 @@ class PermissionDict(TypedDict):
     name: str
 
 
-class PermissionSerializer(PassiveSerializer):
-    """Permission used for consent"""
-
-    name = CharField(allow_blank=True)
-    id = CharField()
-
-
 class ChallengeResponse(PassiveSerializer):
     """Base class for all challenge responses"""
 

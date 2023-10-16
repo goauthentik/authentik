@@ -1,5 +1,6 @@
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import "@goauthentik/admin/sources/saml/SAMLSourceForm";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -22,7 +23,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { SAMLMetadata, SAMLSource, SourcesApi } from "@goauthentik/api";
+import {
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SAMLMetadata,
+    SAMLSource,
+    SourcesApi,
+} from "@goauthentik/api";
 
 @customElement("ak-source-saml-view")
 export class SAMLSourceViewPage extends AKElement {
@@ -206,6 +212,12 @@ export class SAMLSourceViewPage extends AKElement {
                     </div>
                 </div>
             </div>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesSamlSamlsource}
+                objectPk=${this.source.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

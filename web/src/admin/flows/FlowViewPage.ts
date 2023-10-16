@@ -3,6 +3,7 @@ import "@goauthentik/admin/flows/FlowDiagram";
 import "@goauthentik/admin/flows/FlowForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { DesignationToLabel } from "@goauthentik/app/admin/flows/utils";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { AndNext, DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -22,7 +23,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Flow, FlowsApi, ResponseError } from "@goauthentik/api";
+import {
+    Flow,
+    FlowsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    ResponseError,
+} from "@goauthentik/api";
 
 @customElement("ak-flow-view")
 export class FlowViewPage extends AKElement {
@@ -267,6 +273,12 @@ export class FlowViewPage extends AKElement {
                         </div>
                     </div>
                 </div>
+                <ak-rbac-object-permission-page
+                    slot="page-permissions"
+                    data-tab-title="${msg("Permissions")}"
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.FlowsFlow}
+                    objectPk=${this.flow.pk}
+                ></ak-rbac-object-permission-page>
             </ak-tabs>`;
     }
 }
