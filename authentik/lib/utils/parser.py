@@ -1,6 +1,7 @@
 """redis URL parser"""
 from asyncio import PriorityQueue
 from copy import deepcopy
+from random import shuffle
 from socket import TCP_KEEPCNT, TCP_KEEPINTVL
 from socket import timeout as SocketTimeout
 from sys import platform
@@ -348,6 +349,8 @@ def _config_sentinel(config, service_name, credentials, kwargs, addrs):
     redis_kwargs, pool_kwargs = kwargs
     # Update username / password for sentinel connection
     sentinel_kwargs = deepcopy(redis_kwargs)
+    # Set db to 0 for sentinel
+    sentinel_kwargs["db"] = 0
     if sentinel_username:
         sentinel_kwargs["username"] = sentinel_username
     elif "username" in sentinel_kwargs:
@@ -364,6 +367,8 @@ def _config_sentinel(config, service_name, credentials, kwargs, addrs):
     config["redis_kwargs"] = deepcopy(redis_kwargs)
     config["service_name"] = service_name
     config["sentinels"] = []
+    # Shuffle addrs similar to Go implementation
+    shuffle(addrs)
     # Manually override sentinels in order to use BlockingConnectionPool
     for hostname, port in addrs:
         sentinel_kwargs["host"] = hostname
