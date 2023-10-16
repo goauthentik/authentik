@@ -24,6 +24,7 @@ import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -149,6 +150,8 @@ export class StageListPage extends TablePage<Stage> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
+                </ak-rbac-object-permission-modal>
                 ${this.renderStageActions(item)}`,
         ];
     }

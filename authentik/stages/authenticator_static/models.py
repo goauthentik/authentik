@@ -95,8 +95,8 @@ class StaticDevice(SerializerModel, ThrottlingMixin, Device):
         return match is not None
 
     class Meta(Device.Meta):
-        verbose_name = _("Static device")
-        verbose_name_plural = _("Static devices")
+        verbose_name = _("Static Device")
+        verbose_name_plural = _("Static Devices")
 
 
 class StaticToken(models.Model):
@@ -124,3 +124,7 @@ class StaticToken(models.Model):
 
         """
         return b32encode(urandom(5)).decode("utf-8").lower()
+
+    class Meta:
+        verbose_name = _("Static Token")
+        verbose_name_plural = _("Static Tokens")

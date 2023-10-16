@@ -13,6 +13,7 @@ import "@goauthentik/elements/forms/ConfirmationForm";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -92,6 +93,9 @@ export class PolicyListPage extends TablePage<Policy> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+
+                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
+                </ak-rbac-object-permission-modal>
                 <ak-forms-modal .closeAfterSuccessfulSubmit=${false}>
                     <span slot="submit"> ${msg("Test")} </span>
                     <span slot="header"> ${msg("Test Policy")} </span>

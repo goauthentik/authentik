@@ -20,7 +20,6 @@ type BulkDeleteMetadata = { key: string; value: string }[];
 
 @customElement("ak-delete-objects-table")
 export class DeleteObjectsTable<T> extends Table<T> {
-    expandable = true;
     paginated = false;
 
     @property({ attribute: false })
@@ -68,6 +67,11 @@ export class DeleteObjectsTable<T> extends Table<T> {
 
     renderToolbarContainer(): TemplateResult {
         return html``;
+    }
+
+    firstUpdated(): void {
+        this.expandable = this.usedBy !== undefined;
+        super.firstUpdated();
     }
 
     renderExpanded(item: T): TemplateResult {

@@ -3,6 +3,7 @@ import "@goauthentik/admin/applications/ApplicationCheckAccessForm";
 import "@goauthentik/admin/applications/ApplicationForm";
 import "@goauthentik/admin/policies/BoundPoliciesList";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import "@goauthentik/components/ak-app-icon";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -27,7 +28,12 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { Application, CoreApi, OutpostsApi } from "@goauthentik/api";
+import {
+    Application,
+    CoreApi,
+    OutpostsApi,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-application-view")
 export class ApplicationViewPage extends AKElement {
@@ -299,6 +305,12 @@ export class ApplicationViewPage extends AKElement {
                     </ak-bound-policies-list>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreApplication}
+                objectPk=${this.application.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

@@ -80,6 +80,14 @@ export const ROUTES: Route[] = [
         await import("@goauthentik/admin/users/UserViewPage");
         return html`<ak-user-view .userId=${parseInt(args.id, 10)}></ak-user-view>`;
     }),
+    new Route(new RegExp("^/identity/roles$"), async () => {
+        await import("@goauthentik/admin/roles/RoleListPage");
+        return html`<ak-role-list></ak-role-list>`;
+    }),
+    new Route(new RegExp(`^/identity/roles/(?<id>${UUID_REGEX})$`), async (args) => {
+        await import("@goauthentik/admin/roles/RoleViewPage");
+        return html`<ak-role-view roleId=${args.id}></ak-role-view>`;
+    }),
     new Route(new RegExp("^/flow/stages/invitations$"), async () => {
         await import("@goauthentik/admin/stages/invitation/InvitationListPage");
         return html`<ak-stage-invitation-list></ak-stage-invitation-list>`;

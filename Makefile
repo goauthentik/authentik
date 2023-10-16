@@ -62,8 +62,9 @@ lint-fix:  ## Lint and automatically fix errors in the python source code. Repor
 	codespell -w $(CODESPELL_ARGS)
 
 lint: ## Lint the python and golang sources
-	pylint $(PY_SOURCES)
 	bandit -r $(PY_SOURCES) -x node_modules
+	./web/node_modules/.bin/pyright $(PY_SOURCES)
+	pylint $(PY_SOURCES)
 	golangci-lint run -v
 
 migrate: ## Run the Authentik Django server's migrations

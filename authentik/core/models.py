@@ -1,7 +1,7 @@
 """authentik core models"""
 from datetime import timedelta
 from hashlib import sha256
-from typing import Any, Optional
+from typing import Any, Optional, Self
 from uuid import uuid4
 
 from deepmerge import always_merger
@@ -88,6 +88,8 @@ class Group(SerializerModel):
         default=False, help_text=_("Users added to this group will be superusers.")
     )
 
+    roles = models.ManyToManyField("authentik_rbac.Role", related_name="ak_groups", blank=True)
+
     parent = models.ForeignKey(
         "Group",
         blank=True,
@@ -115,6 +117,38 @@ class Group(SerializerModel):
         """Recursively check if `user` is member of us, or any parent."""
         return user.all_groups().filter(group_uuid=self.group_uuid).exists()
 
+    def children_recursive(self: Self | QuerySet["Group"]) -> QuerySet["Group"]:
+        """Recursively get all groups that have this as parent or are indirectly related"""
+        direct_groups = []
+        if isinstance(self, QuerySet):
+            direct_groups = list(x for x in self.all().values_list("pk", flat=True).iterator())
+        else:
+            direct_groups = [self.pk]
+        if len(direct_groups) < 1:
+            return Group.objects.none()
+        query = """
+        WITH RECURSIVE parents AS (
+            SELECT authentik_core_group.*, 0 AS relative_depth
+            FROM authentik_core_group
+            WHERE authentik_core_group.group_uuid = ANY(%s)
+
+            UNION ALL
+
+            SELECT authentik_core_group.*, parents.relative_depth + 1
+            FROM authentik_core_group, parents
+            WHERE (
+                authentik_core_group.group_uuid = parents.parent_id and
+                parents.relative_depth < 20
+            )
+        )
+        SELECT group_uuid
+        FROM parents
+        GROUP BY group_uuid, name
+        ORDER BY name;
+        """
+        group_pks = [group.pk for group in Group.objects.raw(query, [direct_groups]).iterator()]
+        return Group.objects.filter(pk__in=group_pks)
+
     def __str__(self):
         return f"Group {self.name}"
 
@@ -125,6 +159,8 @@ class Group(SerializerModel):
                 "parent",
             ),
         )
+        verbose_name = _("Group")
+        verbose_name_plural = _("Groups")
 
 
 class UserManager(DjangoUserManager):
@@ -160,33 +196,7 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         """Recursively get all groups this user is a member of.
         At least one query is done to get the direct groups of the user, with groups
         there are at most 3 queries done"""
-        direct_groups = list(
-            x for x in self.ak_groups.all().values_list("pk", flat=True).iterator()
-        )
-        if len(direct_groups) < 1:
-            return Group.objects.none()
-        query = """
-        WITH RECURSIVE parents AS (
-            SELECT authentik_core_group.*, 0 AS relative_depth
-            FROM authentik_core_group
-            WHERE authentik_core_group.group_uuid = ANY(%s)
-
-            UNION ALL
-
-            SELECT authentik_core_group.*, parents.relative_depth + 1
-            FROM authentik_core_group, parents
-            WHERE (
-                authentik_core_group.group_uuid = parents.parent_id and
-                parents.relative_depth < 20
-            )
-        )
-        SELECT group_uuid
-        FROM parents
-        GROUP BY group_uuid, name
-        ORDER BY name;
-        """
-        group_pks = [group.pk for group in Group.objects.raw(query, [direct_groups]).iterator()]
-        return Group.objects.filter(pk__in=group_pks)
+        return Group.children_recursive(self.ak_groups.all())
 
     def group_attributes(self, request: Optional[HttpRequest] = None) -> dict[str, Any]:
         """Get a dictionary containing the attributes from all groups the user belongs to,
@@ -261,12 +271,14 @@ class User(SerializerModel, GuardianUserMixin, AbstractUser):
         return get_avatar(self)
 
     class Meta:
-        permissions = (
-            ("reset_user_password", "Reset Password"),
-            ("impersonate", "Can impersonate other users"),
-        )
         verbose_name = _("User")
         verbose_name_plural = _("Users")
+        permissions = [
+            ("reset_user_password", _("Reset Password")),
+            ("impersonate", _("Can impersonate other users")),
+            ("assign_user_permissions", _("Can assign permissions to users")),
+            ("unassign_user_permissions", _("Can unassign permissions from users")),
+        ]
 
 
 class Provider(SerializerModel):
@@ -675,7 +687,7 @@ class Token(SerializerModel, ManagedModel, ExpiringModel):
             models.Index(fields=["identifier"]),
             models.Index(fields=["key"]),
         ]
-        permissions = (("view_token_key", "View token's key"),)
+        permissions = [("view_token_key", _("View token's key"))]
 
 
 class PropertyMapping(SerializerModel, ManagedModel):

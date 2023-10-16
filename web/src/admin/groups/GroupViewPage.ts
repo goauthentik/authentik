@@ -1,5 +1,6 @@
 import "@goauthentik/admin/groups/GroupForm";
 import "@goauthentik/admin/users/RelatedUserList";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -20,13 +21,14 @@ import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFDescriptionList from "@patternfly/patternfly/components/DescriptionList/description-list.css";
+import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { CoreApi, Group } from "@goauthentik/api";
+import { CoreApi, Group, RbacPermissionsAssignedByUsersListModelEnum } from "@goauthentik/api";
 
 @customElement("ak-group-view")
 export class GroupViewPage extends AKElement {
@@ -51,6 +53,7 @@ export class GroupViewPage extends AKElement {
             PFButton,
             PFDisplay,
             PFGrid,
+            PFList,
             PFContent,
             PFCard,
             PFDescriptionList,
@@ -92,7 +95,7 @@ export class GroupViewPage extends AKElement {
                     >
                         <div class="pf-c-card__title">${msg("Group Info")}</div>
                         <div class="pf-c-card__body">
-                            <dl class="pf-c-description-list pf-m-2-col">
+                            <dl class="pf-c-description-list">
                                 <div class="pf-c-description-list__group">
                                     <dt class="pf-c-description-list__term">
                                         <span class="pf-c-description-list__text"
@@ -118,6 +121,26 @@ export class GroupViewPage extends AKElement {
                                                     ? PFColor.Green
                                                     : PFColor.Orange}
                                             ></ak-label>
+                                        </div>
+                                    </dd>
+                                </div>
+                                <div class="pf-c-description-list__group">
+                                    <dt class="pf-c-description-list__term">
+                                        <span class="pf-c-description-list__text"
+                                            >${msg("Roles")}</span
+                                        >
+                                    </dt>
+                                    <dd class="pf-c-description-list__description">
+                                        <div class="pf-c-description-list__text">
+                                            <ul class="pf-c-list">
+                                                ${this.group.rolesObj.map((role) => {
+                                                    return html`<li>
+                                                        <a href=${`#/identity/roles/${role.pk}`}
+                                                            >${role.name}
+                                                        </a>
+                                                    </li>`;
+                                                })}
+                                            </ul>
                                         </div>
                                     </dd>
                                 </div>
@@ -177,6 +200,13 @@ export class GroupViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.CoreGroup}
+                objectPk=${this.group.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

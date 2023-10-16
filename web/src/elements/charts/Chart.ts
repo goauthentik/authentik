@@ -22,7 +22,7 @@ import { msg, str } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { property, state } from "lit/decorators.js";
 
-import { UiThemeEnum } from "@goauthentik/api";
+import { ResponseError, UiThemeEnum } from "@goauthentik/api";
 
 Chart.register(Legend, Tooltip);
 Chart.register(LineController, BarController, DoughnutController);
@@ -64,6 +64,9 @@ export abstract class AKChart<T> extends AKElement {
 
     @state()
     chart?: Chart;
+
+    @state()
+    error?: ResponseError;
 
     @property()
     centerText?: string;
@@ -129,19 +132,23 @@ export abstract class AKChart<T> extends AKElement {
     }
 
     firstUpdated(): void {
-        this.apiRequest().then((r) => {
-            const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
-            if (!canvas) {
-                console.warn("Failed to get canvas element");
-                return;
-            }
-            const ctx = canvas.getContext("2d");
-            if (!ctx) {
-                console.warn("failed to get 2d context");
-                return;
-            }
-            this.chart = this.configureChart(r, ctx);
-        });
+        this.apiRequest()
+            .then((r) => {
+                const canvas = this.shadowRoot?.querySelector<HTMLCanvasElement>("canvas");
+                if (!canvas) {
+                    console.warn("Failed to get canvas element");
+                    return;
+                }
+                const ctx = canvas.getContext("2d");
+                if (!ctx) {
+                    console.warn("failed to get 2d context");
+                    return;
+                }
+                this.chart = this.configureChart(r, ctx);
+            })
+            .catch((exc: ResponseError) => {
+                this.error = exc;
+            });
     }
 
     getChartType(): string {
@@ -204,7 +211,15 @@ export abstract class AKChart<T> extends AKElement {
     render(): TemplateResult {
         return html`
             <div class="container">
-                ${this.chart ? html`` : html`<ak-empty-state ?loading="${true}"></ak-empty-state>`}
+                ${this.error
+                    ? html`
+                          <ak-empty-state header="${msg("Failed to fetch data.")}" icon="fa-times">
+                              <p slot="body">${this.error.response.statusText}</p>
+                          </ak-empty-state>
+                      `
+                    : html`${this.chart
+                          ? html``
+                          : html`<ak-empty-state ?loading="${true}"></ak-empty-state>`}`}
                 ${this.centerText ? html` <span>${this.centerText}</span> ` : html``}
                 <canvas style="${this.chart === undefined ? "display: none;" : ""}"></canvas>
             </div>

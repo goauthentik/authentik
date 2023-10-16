@@ -45,3 +45,4 @@ class FlowStageBindingViewSet(UsedByMixin, ModelViewSet):
     serializer_class = FlowStageBindingSerializer
     filterset_fields = "__all__"
     search_fields = ["stage__name"]
+    ordering = ["order"]

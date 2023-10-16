@@ -9,6 +9,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/forms/ProxyForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -88,23 +89,27 @@ export class OutpostServiceConnectionListPage extends TablePage<ServiceConnectio
             html`${itemState?.healthy
                 ? html`<ak-label color=${PFColor.Green}>${ifDefined(itemState.version)}</ak-label>`
                 : html`<ak-label color=${PFColor.Red}>${msg("Unhealthy")}</ak-label>`}`,
-            html` <ak-forms-modal>
-                <span slot="submit"> ${msg("Update")} </span>
-                <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
-                <ak-proxy-form
-                    slot="form"
-                    .args=${{
-                        instancePk: item.pk,
-                    }}
-                    type=${ifDefined(item.component)}
-                >
-                </ak-proxy-form>
-                <button slot="trigger" class="pf-c-button pf-m-plain">
-                    <pf-tooltip position="top" content=${msg("Edit")}>
-                        <i class="fas fa-edit"></i>
-                    </pf-tooltip>
-                </button>
-            </ak-forms-modal>`,
+            html`
+                <ak-forms-modal>
+                    <span slot="submit"> ${msg("Update")} </span>
+                    <span slot="header"> ${msg(str`Update ${item.verboseName}`)} </span>
+                    <ak-proxy-form
+                        slot="form"
+                        .args=${{
+                            instancePk: item.pk,
+                        }}
+                        type=${ifDefined(item.component)}
+                    >
+                    </ak-proxy-form>
+                    <button slot="trigger" class="pf-c-button pf-m-plain">
+                        <pf-tooltip position="top" content=${msg("Edit")}>
+                            <i class="fas fa-edit"></i>
+                        </pf-tooltip>
+                    </button>
+                </ak-forms-modal>
+                <ak-rbac-object-permission-modal model=${item.metaModelName} objectPk=${item.pk}>
+                </ak-rbac-object-permission-modal>
+            `,
         ];
     }
 
