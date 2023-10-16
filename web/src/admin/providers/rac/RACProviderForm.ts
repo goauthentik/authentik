@@ -2,11 +2,13 @@ import "@goauthentik/admin/common/ak-crypto-certificate-search";
 import "@goauthentik/admin/common/ak-flow-search/ak-tenanted-flow-search";
 import { first } from "@goauthentik/app/common/utils";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
+import "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/Radio";
 import "@goauthentik/elements/forms/SearchSelect";
+import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
@@ -106,6 +108,14 @@ export class RACProviderFormPage extends ModelForm<RACProvider, number> {
                         ]}
                     >
                     </ak-radio-input>
+                    <ak-form-element-horizontal label=${msg("Settings")} name="settings">
+                        <ak-codemirror
+                            mode="yaml"
+                            value="${YAML.stringify(first(this.instance?.settings, {}))}"
+                        >
+                        </ak-codemirror>
+                        <p class="pf-c-form__helper-text">${msg("Connection settings.")}</p>
+                    </ak-form-element-horizontal>
                 </div>
             </ak-form-group>
         `;

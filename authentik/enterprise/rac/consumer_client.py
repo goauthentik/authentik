@@ -1,10 +1,12 @@
 """RAC Client consumer"""
 from asgiref.sync import async_to_sync
 from channels.db import database_sync_to_async
-from channels.exceptions import ChannelFull
+from channels.exceptions import ChannelFull, DenyConnection
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.http.request import QueryDict
+from guardian.shortcuts import get_objects_for_user
 
+from authentik.core.models import Application
 from authentik.enterprise.rac.models import RACProvider
 from authentik.outposts.models import Outpost, OutpostState, OutpostType
 
@@ -29,29 +31,21 @@ class RACClientConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.accept("guacamole")
         await self.channel_layer.group_add(RAC_CLIENT_GROUP, self.channel_name)
-        # TODO: init connection with outpost (send connection params)
-        # TODO: stay connected with client
         await self.init_outpost_connection()
 
     @database_sync_to_async
     def init_outpost_connection(self):
         """Initialize guac connection settings"""
-        # TODO: Lookup
-        self.provider = RACProvider.objects.first()
-        params = self.provider.settings
-        params["hostname"] = self.provider.host
-        query = QueryDict(self.scope["query_string"].decode())
-        params["resize-method"] = "display-update"
-        params["enable-wallpaper"] = "true"
-        params["enable-font-smoothing"] = "true"
-        # params["enable-theming"] = "true"
-        # params["enable-full-window-drag"] = "true"
-        # params["enable-desktop-composition"] = "true"
-        # params["enable-menu-animations"] = "true"
-        # params["enable-audio-input"] = "true"
-        params["enable-drive"] = "true"
-        params["drive-name"] = "authentik"
-        params["client-name"] = "foo"
+        app_slug = self.scope["url_route"]["kwargs"]["app"]
+        app = get_objects_for_user(
+            self.scope["user"], "view_application", Application.objects.filter(slug=app_slug)
+        ).first()
+        if not app:
+            raise DenyConnection()
+        self.provider = RACProvider.objects.filter(application=app).first()
+        if not self.provider:
+            raise DenyConnection()
+        params = self.provider.get_settings()
         msg = {
             "type": "event.provider.specific",
             "sub_type": "init_connection",
@@ -59,6 +53,7 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             "params": params,
             "protocol": self.provider.protocol,
         }
+        query = QueryDict(self.scope["query_string"].decode())
         for key in ["screen_width", "screen_height", "screen_dpi", "audio"]:
             value = query.get(key, None)
             if not value:

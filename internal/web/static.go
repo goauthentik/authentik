@@ -34,7 +34,11 @@ func (ws *WebServer) configureStatic() {
 	})
 	indexLessRouter.PathPrefix("/if/admin/assets").Handler(http.StripPrefix("/if/admin", distFs))
 	indexLessRouter.PathPrefix("/if/user/assets").Handler(http.StripPrefix("/if/user", distFs))
-	indexLessRouter.PathPrefix("/if/rac/assets").Handler(http.StripPrefix("/if/rac", distFs))
+	indexLessRouter.PathPrefix("/if/rac/{app_slug}/assets").HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+
+		web.DisableIndex(http.StripPrefix(fmt.Sprintf("/if/rac/%s", vars["app_slug"]), distFs)).ServeHTTP(rw, r)
+	})
 
 	indexLessRouter.PathPrefix("/media/").Handler(http.StripPrefix("/media", fs))
 

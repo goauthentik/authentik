@@ -66,7 +66,6 @@ func (c *Connection) initSocket(forChannel string) error {
 	}
 
 	url := fmt.Sprintf(pathTemplate, scheme, c.ac.Client.GetConfig().Host, forChannel)
-	c.log.Debug(url)
 	ws, _, err := dialer.Dial(url, header)
 	if err != nil {
 		c.log.WithError(err).Warning("failed to connect websocket")

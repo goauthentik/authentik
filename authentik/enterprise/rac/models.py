@@ -44,6 +44,24 @@ class RACProvider(Provider):
         except Provider.application.RelatedObjectDoesNotExist:
             return None
 
+    def get_settings(self) -> dict:
+        """Get settings"""
+        settings = self.settings.copy()
+        settings["hostname"] = self.host
+        settings["enable-drive"] = "true"
+        settings["drive-name"] = "authentik"
+        settings["client-name"] = "foo"
+        if self.protocol == Protocols.RDP:
+            settings["resize-method"] = "display-update"
+            settings["enable-wallpaper"] = "true"
+            settings["enable-font-smoothing"] = "true"
+            # params["enable-theming"] = "true"
+            # params["enable-full-window-drag"] = "true"
+            # params["enable-desktop-composition"] = "true"
+            # params["enable-menu-animations"] = "true"
+            # params["enable-audio-input"] = "true"
+        return settings
+
     @property
     def component(self) -> str:
         return "ak-provider-rac-form"

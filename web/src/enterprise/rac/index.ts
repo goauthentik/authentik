@@ -1,19 +1,15 @@
+import { TITLE_DEFAULT } from "@goauthentik/app/common/constants";
 import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
 
-
-
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-
-
 
 import AKGlobal from "@goauthentik/common/styles/authentik.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
-
 
 enum GuacClientState {
     IDLE = 0,
@@ -36,7 +32,7 @@ export class RacInterface extends Interface {
             AKGlobal,
             css`
                 canvas {
-                    z-index: 1 !important;
+                    z-index: unset !important;
                 }
                 .container {
                     overflow: hidden;
@@ -65,6 +61,7 @@ export class RacInterface extends Interface {
     }
 
     firstUpdated(): void {
+        this.updateTitle();
         const wsUrl = `${window.location.protocol.replace("http", "ws")}//${
             window.location.host
         }/ws/rac/${this.app}/`;
@@ -82,7 +79,7 @@ export class RacInterface extends Interface {
                 this.onConnected();
             }
         };
-        this.client.onaudio = (stream, mime)  =>{
+        this.client.onaudio = (stream, mime) => {
             console.log("onaudio");
             const context = Guacamole.AudioContextFactory.getAudioContext();
             context.resume();
@@ -106,13 +103,16 @@ export class RacInterface extends Interface {
         params.set("screen_dpi", (window.devicePixelRatio * 96).toString());
         const supportedAudioTypes = Guacamole.AudioPlayer.getSupportedTypes();
         if (supportedAudioTypes.length > 0) {
-            supportedAudioTypes.forEach(
-                (item) => {
-                    params.append("audio", item + ";rate=44100,channels=2");
-                },
-            );
+            supportedAudioTypes.forEach((item) => {
+                params.append("audio", item + ";rate=44100,channels=2");
+            });
         }
         this.client.connect(params.toString());
+    }
+
+    updateTitle(): void {
+        const title = this.tenant?.brandingTitle || TITLE_DEFAULT;
+        document.title = `${this.app} - ${title}`;
     }
 
     onConnected(): void {
