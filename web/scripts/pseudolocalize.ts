@@ -16,6 +16,11 @@ const pseudoLocale: Locale = "pseudo-LOCALE" as Locale;
 const targetLocales: Locale[] = [pseudoLocale];
 const baseConfig = JSON.parse(readFileSync(path.join(__dirname, "../lit-localize.json"), "utf-8"));
 
+// Need to make some internal specifications to satisfy the transformer. It doesn't actually matter
+// which Localizer we use (transformer or runtime), because all of the functionality we care about
+// is in their common parent class, but I had to pick one.  Everything else here is just pure
+// exploitation of the lit/localize-tools internals.
+
 const config: Config = {
     ...baseConfig,
     baseDir: path.join(__dirname, ".."),
@@ -30,7 +35,7 @@ const config: Config = {
 const pseudoMessagify = (message: ProgramMessage) => ({
     name: message.name,
     contents: message.contents.map((content) =>
-        typeof content === "string" ? pseudolocale(content, { prepend: "", append: "" }) : content
+        typeof content === "string" ? pseudolocale(content, { prepend: "", append: "" }) : content,
     ),
 });
 
