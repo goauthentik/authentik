@@ -20,18 +20,23 @@ import (
 const guacAddr = "0.0.0.0:4822"
 
 type Connection struct {
-	log *log.Entry
-	st  *guac.SimpleTunnel
-	ac  *ak.APIController
-	ws  *websocket.Conn
-	ctx context.Context
+	log       *log.Entry
+	st        *guac.SimpleTunnel
+	ac        *ak.APIController
+	ws        *websocket.Conn
+	ctx       context.Context
+	ctxCancel context.CancelFunc
+	OnError   func(error)
 }
 
 func NewConnection(ac *ak.APIController, forChannel string, cfg *guac.Config) (*Connection, error) {
+	ctx, canc := context.WithCancel(context.Background())
 	c := &Connection{
-		ac:  ac,
-		log: log.WithField("connection", forChannel),
-		ctx: context.Background(),
+		ac:        ac,
+		log:       log.WithField("connection", forChannel),
+		ctx:       ctx,
+		ctxCancel: canc,
+		OnError:   func(err error) {},
 	}
 	err := c.initGuac(cfg)
 	if err != nil {
@@ -100,4 +105,10 @@ func (c *Connection) initGuac(cfg *guac.Config) error {
 func (c *Connection) initMirror() {
 	go c.wsToGuacd()
 	go c.guacdToWs()
+}
+
+func (c *Connection) onError(err error) {
+	c.log.WithError(err).Debug("removing connection")
+	c.ctxCancel()
+	c.OnError(err)
 }

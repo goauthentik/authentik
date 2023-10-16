@@ -8,8 +8,8 @@ from guardian.shortcuts import get_objects_for_user
 
 from authentik.core.models import Application
 from authentik.enterprise.rac.models import RACProvider
-from authentik.outposts.consumer import OUTPOST_GROUP
-from authentik.outposts.models import Outpost, OutpostType
+from authentik.outposts.consumer import OUTPOST_GROUP_INSTANCE
+from authentik.outposts.models import Outpost, OutpostState, OutpostType
 
 RAC_CLIENT_GROUP = "group_enterprise_rac_client"
 
@@ -60,14 +60,19 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             if not value:
                 continue
             msg[key] = str(value)
-        # TODO: Pick random outpost
         for outpost in Outpost.objects.filter(
             type=OutpostType.RAC,
             providers__in=[self.provider],
         ):
-            # TODO: Only send to a single outpost
+            # Sort all states for the outpost by connection count
+            states = sorted(
+                OutpostState.for_outpost(outpost),
+                key=lambda state: int(state.args.get("active_connections", 0)),
+            )
+            if len(states) < 1:
+                continue
             async_to_sync(self.channel_layer.group_send)(
-                OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)},
+                OUTPOST_GROUP_INSTANCE % {"outpost_pk": str(outpost.pk), "instance": states[0].uid},
                 msg,
             )
 

@@ -18,12 +18,15 @@ type MessageReader interface {
 
 func (c *Connection) wsToGuacd() {
 	w := c.st.AcquireWriter()
+	var err error
+	defer c.onError(err)
 	for {
 		select {
 		default:
-			_, data, err := c.ws.ReadMessage()
-			if err != nil {
-				c.log.WithError(err).Trace("Error reading message from ws")
+			_, data, e := c.ws.ReadMessage()
+			if e != nil {
+				c.log.WithError(e).Trace("Error reading message from ws")
+				err = e
 				return
 			}
 
@@ -32,8 +35,9 @@ func (c *Connection) wsToGuacd() {
 				continue
 			}
 
-			if _, err = w.Write(data); err != nil {
-				c.log.WithError(err).Trace("Failed writing to guacd")
+			if _, e = w.Write(data); e != nil {
+				c.log.WithError(e).Trace("Failed writing to guacd")
+				err = e
 				return
 			}
 		case <-c.ctx.Done():
@@ -51,13 +55,15 @@ type MessageWriter interface {
 func (c *Connection) guacdToWs() {
 	r := c.st.AcquireReader()
 	buf := bytes.NewBuffer(make([]byte, 0, guac.MaxGuacMessage*2))
-
+	var err error
+	defer c.onError(err)
 	for {
 		select {
 		default:
-			ins, err := r.ReadSome()
-			if err != nil {
-				c.log.WithError(err).Trace("Error reading from guacd")
+			ins, e := r.ReadSome()
+			if e != nil {
+				c.log.WithError(e).Trace("Error reading from guacd")
+				err = e
 				return
 			}
 
@@ -66,18 +72,20 @@ func (c *Connection) guacdToWs() {
 				continue
 			}
 
-			if _, err = buf.Write(ins); err != nil {
-				c.log.WithError(err).Trace("Failed to buffer guacd to ws")
+			if _, e = buf.Write(ins); e != nil {
+				c.log.WithError(e).Trace("Failed to buffer guacd to ws")
+				err = e
 				return
 			}
 
 			// if the buffer has more data in it or we've reached the max buffer size, send the data and reset
 			if !r.Available() || buf.Len() >= guac.MaxGuacMessage {
-				if err = c.ws.WriteMessage(1, buf.Bytes()); err != nil {
-					if err == websocket.ErrCloseSent {
+				if e = c.ws.WriteMessage(1, buf.Bytes()); e != nil {
+					if e == websocket.ErrCloseSent {
 						return
 					}
-					c.log.WithError(err).Trace("Failed sending message to ws")
+					c.log.WithError(e).Trace("Failed sending message to ws")
+					err = e
 					return
 				}
 				buf.Reset()

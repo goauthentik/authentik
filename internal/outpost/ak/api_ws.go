@@ -18,6 +18,8 @@ import (
 
 func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 	pathTemplate := "%s://%s/ws/outpost/%s/?%s"
+	query := akURL.Query()
+	query.Set("instance_uuid", ac.instanceUUID.String())
 	scheme := strings.ReplaceAll(akURL.Scheme, "http", "ws")
 
 	authHeader := fmt.Sprintf("Bearer %s", ac.token)
@@ -45,7 +47,7 @@ func (ac *APIController) initWS(akURL url.URL, outpostUUID string) error {
 	// Send hello message with our version
 	msg := websocketMessage{
 		Instruction: WebsocketInstructionHello,
-		Args:        ac.getWebsocketArgs(),
+		Args:        ac.getWebsocketPingArgs(),
 	}
 	err = ws.WriteJSON(msg)
 	if err != nil {
@@ -157,23 +159,19 @@ func (ac *APIController) startWSHandler() {
 func (ac *APIController) startWSHealth() {
 	ticker := time.NewTicker(time.Second * 10)
 	for ; true; <-ticker.C {
-		aliveMsg := websocketMessage{
-			Instruction: WebsocketInstructionHello,
-			Args:        ac.getWebsocketArgs(),
-		}
 		if ac.wsConn == nil {
 			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		}
-		err := ac.wsConn.WriteJSON(aliveMsg)
-		ac.logger.WithField("loop", "ws-health").Trace("hello'd")
+		err := ac.SendWSHello(map[string]interface{}{})
 		if err != nil {
 			ac.logger.WithField("loop", "ws-health").WithError(err).Warning("ws write error")
 			go ac.reconnectWS()
 			time.Sleep(time.Second * 5)
 			continue
 		} else {
+			ac.logger.WithField("loop", "ws-health").Trace("hello'd")
 			ConnectionStatus.With(prometheus.Labels{
 				"outpost_name": ac.Outpost.Name,
 				"outpost_type": ac.Server.Type(),
@@ -201,4 +199,21 @@ func (ac *APIController) startIntervalUpdater() {
 			}).SetToCurrentTime()
 		}
 	}
+}
+
+func (a *APIController) AddWSHandler(handler WSHandler) {
+	a.wsHandlers = append(a.wsHandlers, handler)
+}
+
+func (a *APIController) SendWSHello(args map[string]interface{}) error {
+	allArgs := a.getWebsocketPingArgs()
+	for key, value := range args {
+		allArgs[key] = value
+	}
+	aliveMsg := websocketMessage{
+		Instruction: WebsocketInstructionHello,
+		Args:        allArgs,
+	}
+	err := a.wsConn.WriteJSON(aliveMsg)
+	return err
 }

@@ -9,6 +9,7 @@ from channels.exceptions import DenyConnection
 from channels.generic.websocket import JsonWebsocketConsumer
 from dacite.core import from_dict
 from dacite.data import Data
+from django.http.request import QueryDict
 from guardian.shortcuts import get_objects_for_user
 from structlog.stdlib import BoundLogger, get_logger
 
@@ -16,6 +17,7 @@ from authentik.outposts.apps import GAUGE_OUTPOSTS_CONNECTED, GAUGE_OUTPOSTS_LAS
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
 
 OUTPOST_GROUP = "group_outpost_%(outpost_pk)s"
+OUTPOST_GROUP_INSTANCE = "group_outpost_%(outpost_pk)s_%(instance)s"
 
 
 class WebsocketMessageInstruction(IntEnum):
@@ -48,7 +50,7 @@ class OutpostConsumer(JsonWebsocketConsumer):
     outpost: Optional[Outpost] = None
     logger: BoundLogger
 
-    last_uid: Optional[str] = None
+    instance_uid: Optional[str] = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -69,13 +71,19 @@ class OutpostConsumer(JsonWebsocketConsumer):
             self.logger.warning("runtime error during accept", exc=exc)
             raise DenyConnection()
         self.outpost = outpost
-        self.last_uid = self.channel_name
+        query = QueryDict(self.scope["query_string"].decode())
+        self.instance_uid = query.get("instance_uuid", self.channel_name)
         async_to_sync(self.channel_layer.group_add)(
             OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
         )
+        async_to_sync(self.channel_layer.group_add)(
+            OUTPOST_GROUP_INSTANCE
+            % {"outpost_pk": str(self.outpost.pk), "instance": self.instance_uid},
+            self.channel_name,
+        )
         GAUGE_OUTPOSTS_CONNECTED.labels(
             outpost=self.outpost.name,
-            uid=self.last_uid,
+            uid=self.instance_uid,
             expected=self.outpost.config.kubernetes_replicas,
         ).inc()
 
@@ -84,34 +92,37 @@ class OutpostConsumer(JsonWebsocketConsumer):
             async_to_sync(self.channel_layer.group_discard)(
                 OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
             )
-        if self.outpost and self.last_uid:
+            if self.instance_uid:
+                async_to_sync(self.channel_layer.group_discard)(
+                    OUTPOST_GROUP_INSTANCE
+                    % {"outpost_pk": str(self.outpost.pk), "instance": self.instance_uid},
+                    self.channel_name,
+                )
+        if self.outpost and self.instance_uid:
             GAUGE_OUTPOSTS_CONNECTED.labels(
                 outpost=self.outpost.name,
-                uid=self.last_uid,
+                uid=self.instance_uid,
                 expected=self.outpost.config.kubernetes_replicas,
             ).dec()
 
     def receive_json(self, content: Data, **kwargs):
         msg = from_dict(WebsocketMessage, content)
-        uid = msg.args.get("uuid", self.channel_name)
-        self.last_uid = uid
-
         if not self.outpost:
             raise DenyConnection()
 
-        state = OutpostState.for_instance_uid(self.outpost, uid)
+        state = OutpostState.for_instance_uid(self.outpost, self.instance_uid)
         state.last_seen = datetime.now()
         state.hostname = msg.args.pop("hostname", "")
 
         if msg.instruction == WebsocketMessageInstruction.HELLO:
             state.version = msg.args.pop("version", None)
             state.build_hash = msg.args.pop("buildHash", "")
-            state.args = msg.args
+            state.args.update(msg.args)
         elif msg.instruction == WebsocketMessageInstruction.ACK:
             return
         GAUGE_OUTPOSTS_LAST_UPDATE.labels(
             outpost=self.outpost.name,
-            uid=self.last_uid or "",
+            uid=self.instance_uid or "",
             version=state.version or "",
         ).set_to_current_time()
         state.save(timeout=OUTPOST_HELLO_INTERVAL * 1.5)
