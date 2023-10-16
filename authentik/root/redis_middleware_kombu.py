@@ -171,7 +171,7 @@ class CustomChannel(Channel):
             def disconnect(self):
                 """Add Kombu method to default disconnect procedure"""
                 super().disconnect()
-                self._on_connection_disconnect(self)
+                self.super()._on_connection_disconnect(self)
 
         return AsyncConnection
 
