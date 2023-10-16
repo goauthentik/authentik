@@ -7889,7 +7889,7 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s96d2bb4be3f5e8aa">
   <source>Select roles to grant this groups' users' permissions from the selected roles.</source>
-  <target>Sélectionner les roles auxquels assigner les permissions des utilisateurs de ce groupe depuis les rôles sélectionnés.</target>
+  <target>Sélectionner les roles depuis lesquels assigner les permissions des utilisateurs de ce groupe depuis les rôles sélectionnés.</target>
 </trans-unit>
 <trans-unit id="sb37880a2a7288ef0">
   <source>Update Permissions</source>
