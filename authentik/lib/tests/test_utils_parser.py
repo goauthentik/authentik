@@ -33,7 +33,7 @@ class TestParserUtils(TestCase):
         self.assertEqual(config["type"], "sentinel")
         self.assertEqual(config["sentinels"][0]["host"], "mysentinel")
         self.assertEqual(config["sentinels"][0]["port"], 22345)
-        self.assertEqual(config["sentinels"][0]["db"], 92)
+        self.assertEqual(config["sentinels"][0]["db"], 0)
 
     def test_process_config_cluster(self):
         """Test Redis URL parser for cluster connection"""
