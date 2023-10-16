@@ -2,18 +2,18 @@
 from django.conf import settings
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.fields import IntegerField
-from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from authentik.rbac.permissions import HasPermission
 from authentik.root.celery import CELERY_APP
 
 
 class WorkerView(APIView):
     """Get currently connected worker count."""
 
-    permission_classes = [IsAdminUser]
+    permission_classes = [HasPermission("authentik_rbac.view_system_info")]
 
     @extend_schema(responses=inline_serializer("Workers", fields={"count": IntegerField()}))
     def get(self, request: Request) -> Response:

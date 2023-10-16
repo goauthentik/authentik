@@ -25,4 +25,8 @@ class Migration(migrations.Migration):
             name="totpdevice",
             options={"verbose_name": "TOTP device", "verbose_name_plural": "TOTP devices"},
         ),
+        migrations.AlterModelOptions(
+            name="totpdevice",
+            options={"verbose_name": "TOTP Device", "verbose_name_plural": "TOTP Devices"},
+        ),
     ]

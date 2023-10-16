@@ -49,6 +49,11 @@ class LDAPPasswordChanger:
         self._source = source
         self._connection = source.connection()
 
+    @staticmethod
+    def should_check_user(user: User) -> bool:
+        """Check if the user has LDAP parameters and needs to be checked"""
+        return LDAP_DISTINGUISHED_NAME in user.attributes
+
     def get_domain_root_dn(self) -> str:
         """Attempt to get root DN via MS specific fields or generic LDAP fields"""
         info = self._connection.server.info

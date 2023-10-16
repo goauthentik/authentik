@@ -74,7 +74,7 @@ export class LocaleContext extends LitElement {
             console.warn(`Received a non-custom event at EVENT_LOCALE_REQUEST: ${ev}`);
             return;
         }
-        console.log("Locale update request received.");
+        console.debug("authentik/locale: Locale update request received.");
         this.updateLocale(ev.detail.locale);
     }
 

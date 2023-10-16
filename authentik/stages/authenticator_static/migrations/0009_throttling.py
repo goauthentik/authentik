@@ -30,4 +30,12 @@ class Migration(migrations.Migration):
             name="staticdevice",
             options={"verbose_name": "Static device", "verbose_name_plural": "Static devices"},
         ),
+        migrations.AlterModelOptions(
+            name="staticdevice",
+            options={"verbose_name": "Static Device", "verbose_name_plural": "Static Devices"},
+        ),
+        migrations.AlterModelOptions(
+            name="statictoken",
+            options={"verbose_name": "Static Token", "verbose_name_plural": "Static Tokens"},
+        ),
     ]

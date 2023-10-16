@@ -17,7 +17,6 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
 from rest_framework.viewsets import ModelViewSet
-from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
 from structlog.testing import capture_logs
 
@@ -38,6 +37,7 @@ from authentik.lib.utils.file import (
 from authentik.policies.api.exec import PolicyTestResultSerializer
 from authentik.policies.engine import PolicyEngine
 from authentik.policies.types import PolicyResult
+from authentik.rbac.filters import ObjectFilter
 
 LOGGER = get_logger()
 
@@ -122,7 +122,7 @@ class ApplicationViewSet(UsedByMixin, ModelViewSet):
     def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
         """Custom filter_queryset method which ignores guardian, but still supports sorting"""
         for backend in list(self.filter_backends):
-            if backend == ObjectPermissionsFilter:
+            if backend == ObjectFilter:
                 continue
             queryset = backend().filter_queryset(self.request, queryset, self)
         return queryset

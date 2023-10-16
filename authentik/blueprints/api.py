@@ -4,7 +4,6 @@ from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import CharField, DateTimeField, JSONField
-from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ListSerializer, ModelSerializer
@@ -87,11 +86,11 @@ class BlueprintInstanceSerializer(ModelSerializer):
 class BlueprintInstanceViewSet(UsedByMixin, ModelViewSet):
     """Blueprint instances"""
 
-    permission_classes = [IsAdminUser]
     serializer_class = BlueprintInstanceSerializer
     queryset = BlueprintInstance.objects.all()
     search_fields = ["name", "path"]
     filterset_fields = ["name", "path"]
+    ordering = ["name"]
 
     @extend_schema(
         responses={

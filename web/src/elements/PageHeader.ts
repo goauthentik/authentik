@@ -13,7 +13,7 @@ import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement, property } from "lit/decorators.js";
+import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFContent from "@patternfly/patternfly/components/Content/content.css";
@@ -55,6 +55,7 @@ export class PageHeader extends AKElement {
     @property()
     description?: string;
 
+    @state()
     _header = "";
 
     static get styles(): CSSResult[] {

@@ -41,11 +41,12 @@ def ldap_password_validate(sender, password: str, plan_context: dict[str, Any], 
     if not sources.exists():
         return
     source = sources.first()
+    user = plan_context.get(PLAN_CONTEXT_PENDING_USER, None)
+    if user and not LDAPPasswordChanger.should_check_user(user):
+        return
     changer = LDAPPasswordChanger(source)
     if changer.check_ad_password_complexity_enabled():
-        passing = changer.ad_password_complexity(
-            password, plan_context.get(PLAN_CONTEXT_PENDING_USER, None)
-        )
+        passing = changer.ad_password_complexity(password, user)
         if not passing:
             raise ValidationError(_("Password does not match Active Directory Complexity."))
 
@@ -57,6 +58,8 @@ def ldap_sync_password(sender, user: User, password: str, **_):
     if not sources.exists():
         return
     source = sources.first()
+    if not LDAPPasswordChanger.should_check_user(user):
+        return
     try:
         changer = LDAPPasswordChanger(source)
         changer.change_password(user, password)

@@ -3,6 +3,7 @@ from hashlib import sha256
 from typing import Any
 
 from django.conf import settings
+from django.http import Http404
 from django.http.request import HttpRequest
 from django.http.response import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -11,7 +12,6 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.fields import BooleanField, ListField, SerializerMethodField
-from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -68,21 +68,19 @@ class FlowInspectionSerializer(PassiveSerializer):
 class FlowInspectorView(APIView):
     """Flow inspector API"""
 
-    permission_classes = [IsAdminUser]
-
     flow: Flow
     _logger: BoundLogger
-
-    def check_permissions(self, request):
-        """Always allow access when in debug mode"""
-        if settings.DEBUG:
-            return None
-        return super().check_permissions(request)
+    permission_classes = []
 
     def setup(self, request: HttpRequest, flow_slug: str):
         super().setup(request, flow_slug=flow_slug)
-        self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
         self._logger = get_logger().bind(flow_slug=flow_slug)
+        self.flow = get_object_or_404(Flow.objects.select_related(), slug=flow_slug)
+        if settings.DEBUG:
+            return
+        if request.user.has_perm("authentik_flow.inspect_flow", self.flow):
+            return
+        raise Http404
 
     @extend_schema(
         responses={

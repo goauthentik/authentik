@@ -6,7 +6,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema, inline_serializer
 from rest_framework.decorators import action
 from rest_framework.fields import BooleanField, CharField, DateTimeField, IntegerField
-from rest_framework.permissions import IsAdminUser, IsAuthenticated
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.serializers import ModelSerializer
@@ -84,7 +84,7 @@ class LicenseViewSet(UsedByMixin, ModelViewSet):
             200: inline_serializer("InstallIDSerializer", {"install_id": CharField(required=True)}),
         },
     )
-    @action(detail=False, methods=["GET"], permission_classes=[IsAdminUser])
+    @action(detail=False, methods=["GET"])
     def get_install_id(self, request: Request) -> Response:
         """Get install_id"""
         return Response(

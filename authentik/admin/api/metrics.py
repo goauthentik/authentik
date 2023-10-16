@@ -5,7 +5,7 @@ from django.db.models.functions import ExtractHour
 from drf_spectacular.utils import extend_schema, extend_schema_field
 from guardian.shortcuts import get_objects_for_user
 from rest_framework.fields import IntegerField, SerializerMethodField
-from rest_framework.permissions import IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -68,7 +68,7 @@ class LoginMetricsSerializer(PassiveSerializer):
 class AdministrationMetricsViewSet(APIView):
     """Login Metrics per 1h"""
 
-    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticated]
 
     @extend_schema(responses={200: LoginMetricsSerializer(many=False)})
     def get(self, request: Request) -> Response:

@@ -21,10 +21,9 @@ def create_test_flow(
     )
 
 
-def create_test_admin_user(name: Optional[str] = None, **kwargs) -> User:
-    """Generate a test-admin user"""
+def create_test_user(name: Optional[str] = None, **kwargs) -> User:
+    """Generate a test user"""
     uid = generate_id(20) if not name else name
-    group = Group.objects.create(name=uid, is_superuser=True)
     kwargs.setdefault("email", f"{uid}@goauthentik.io")
     kwargs.setdefault("username", uid)
     user: User = User.objects.create(
@@ -33,6 +32,13 @@ def create_test_admin_user(name: Optional[str] = None, **kwargs) -> User:
     )
     user.set_password(uid)
     user.save()
+    return user
+
+
+def create_test_admin_user(name: Optional[str] = None, **kwargs) -> User:
+    """Generate a test-admin user"""
+    user = create_test_user(name, **kwargs)
+    group = Group.objects.create(name=user.name or name, is_superuser=True)
     group.users.add(user)
     return user
 
