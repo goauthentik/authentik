@@ -256,7 +256,7 @@ CHANNEL_LAYERS = {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
             "hosts": [f"{_redis_url}/{CONFIG.get('redis.db')}"],
-            "prefix": "authentik_channels",
+            "prefix": "authentik_channels_",
         },
     },
 }

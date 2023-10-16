@@ -411,7 +411,6 @@ class OutpostState:
     """Outpost instance state, last_seen and version"""
 
     uid: str
-    channel_ids: list[str] = field(default_factory=list)
     last_seen: Optional[datetime] = field(default=None)
     version: Optional[str] = field(default=None)
     version_should: Version = field(default=OUR_VERSION)

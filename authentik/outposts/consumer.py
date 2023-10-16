@@ -4,6 +4,7 @@ from datetime import datetime
 from enum import IntEnum
 from typing import Any, Optional
 
+from asgiref.sync import async_to_sync
 from channels.exceptions import DenyConnection
 from dacite.core import from_dict
 from dacite.data import Data
@@ -13,6 +14,8 @@ from structlog.stdlib import BoundLogger, get_logger
 from authentik.core.channels import AuthJsonConsumer
 from authentik.outposts.apps import GAUGE_OUTPOSTS_CONNECTED, GAUGE_OUTPOSTS_LAST_UPDATE
 from authentik.outposts.models import OUTPOST_HELLO_INTERVAL, Outpost, OutpostState
+
+OUTPOST_GROUP = "group_outpost_%(outpost_pk)s"
 
 
 class WebsocketMessageInstruction(IntEnum):
@@ -47,8 +50,6 @@ class OutpostConsumer(AuthJsonConsumer):
 
     last_uid: Optional[str] = None
 
-    first_msg = False
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.logger = get_logger()
@@ -71,22 +72,26 @@ class OutpostConsumer(AuthJsonConsumer):
             raise DenyConnection()
         self.outpost = outpost
         self.last_uid = self.channel_name
+        async_to_sync(self.channel_layer.group_add)(
+            OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
+        )
+        GAUGE_OUTPOSTS_CONNECTED.labels(
+            outpost=self.outpost.name,
+            uid=self.last_uid,
+            expected=self.outpost.config.kubernetes_replicas,
+        ).inc()
 
     def disconnect(self, code):
+        if self.outpost:
+            async_to_sync(self.channel_layer.group_discard)(
+                OUTPOST_GROUP % {"outpost_pk": str(self.outpost.pk)}, self.channel_name
+            )
         if self.outpost and self.last_uid:
-            state = OutpostState.for_instance_uid(self.outpost, self.last_uid)
-            if self.channel_name in state.channel_ids:
-                state.channel_ids.remove(self.channel_name)
-                state.save()
             GAUGE_OUTPOSTS_CONNECTED.labels(
                 outpost=self.outpost.name,
                 uid=self.last_uid,
                 expected=self.outpost.config.kubernetes_replicas,
             ).dec()
-        self.logger.debug(
-            "removed outpost instance from cache",
-            instance_uuid=self.last_uid,
-        )
 
     def receive_json(self, content: Data):
         msg = from_dict(WebsocketMessage, content)
@@ -97,22 +102,8 @@ class OutpostConsumer(AuthJsonConsumer):
             raise DenyConnection()
 
         state = OutpostState.for_instance_uid(self.outpost, uid)
-        if self.channel_name not in state.channel_ids:
-            state.channel_ids.append(self.channel_name)
         state.last_seen = datetime.now()
         state.hostname = msg.args.get("hostname", "")
-
-        if not self.first_msg:
-            GAUGE_OUTPOSTS_CONNECTED.labels(
-                outpost=self.outpost.name,
-                uid=self.last_uid,
-                expected=self.outpost.config.kubernetes_replicas,
-            ).inc()
-            self.logger.debug(
-                "added outpost instance to cache",
-                instance_uuid=self.last_uid,
-            )
-            self.first_msg = True
 
         if msg.instruction == WebsocketMessageInstruction.HELLO:
             state.version = msg.args.get("version", None)
