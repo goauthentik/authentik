@@ -36,7 +36,7 @@
         "@formatjs/intl-listformat": "^7.5.0",
         "@fortawesome/fontawesome-free": "^6.4.2",
         "@goauthentik/api": "^2023.8.3-1697470337",
-        "@lit-labs/context": "^0.4.1",
+        "@lit-labs/context": "^0.5.0",
         "@lit-labs/task": "^3.1.0",
         "@lit/localize": "^0.11.4",
         "@open-wc/lit-helpers": "^0.6.0",
