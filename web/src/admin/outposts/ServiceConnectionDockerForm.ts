@@ -42,8 +42,7 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
+        return html` <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
                 <input
                     type="text"
                     value="${ifDefined(this.instance?.name)}"
@@ -112,7 +111,6 @@ export class ServiceConnectionDockerForm extends ModelForm<DockerServiceConnecti
                 <p class="pf-c-form__helper-text">
                     ${msg("When connecting via SSH, this keypair is used for authentication.")}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }

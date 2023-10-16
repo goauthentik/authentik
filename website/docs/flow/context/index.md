@@ -22,7 +22,7 @@ Keys prefixed with `goauthentik.io` are used internally by authentik and are sub
 
 ### Common keys
 
-#### `pending_user` ([User object](../../user-group/user.md))
+#### `pending_user` ([User object](../../user-group/user/user_ref.md#object-properties))
 
 `pending_user` is used by multiple stages. In the context of most flow executions, it represents the data of the user that is executing the flow. This value is not set automatically, it is set via the [Identification stage](../stages/identification/).
 

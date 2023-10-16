@@ -39,7 +39,7 @@ Most modern SaaS applications support SCIM, making it essential for security ven
 
 # Growing pains
 
-authentik currently supports SCIM going outwards; which means is that authentik is your source of truth/central directory, and you can use authentik together with a tool like [Sentry](https://sentry.io) that supports SCIM. In this case all your users or employees in authentik automatically get created in Sentry, with their correct group assignment, and they can just log in.
+authentik currently supports SCIM going outwards; what this means is that authentik is your source of truth/central directory, and you can use authentik together with a tool like [Sentry](https://sentry.io) that supports SCIM. In this case all your users or employees in authentik automatically get created in Sentry, with their correct group assignment, and they can just log in.
 
 Most of the information and commentary I see about SCIM focuses on the advantages described above, but I don’t see a lot of talk about the pitfalls of SCIM. I’m sharing our experiences here and am curious if others have found the same or can tell me how they’re avoiding these (I would love to hear that we’re doing this wrong actually!).
 

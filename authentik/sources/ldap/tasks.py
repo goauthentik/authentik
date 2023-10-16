@@ -32,7 +32,7 @@ CACHE_KEY_PREFIX = "goauthentik.io/sources/ldap/page/"
 def ldap_sync_all():
     """Sync all sources"""
     for source in LDAPSource.objects.filter(enabled=True):
-        ldap_sync_single(source.pk)
+        ldap_sync_single.apply_async(args=[source.pk])
 
 
 @CELERY_APP.task(

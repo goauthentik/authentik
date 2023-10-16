@@ -120,10 +120,7 @@ export class SCIMProviderViewPage extends AKElement {
         if (!this.provider) {
             return html``;
         }
-        return html`<div slot="header" class="pf-c-banner pf-m-info">
-                ${msg("SCIM provider is in preview.")}
-            </div>
-            ${!this.provider?.assignedBackchannelApplicationName
+        return html` ${!this.provider?.assignedBackchannelApplicationName
                 ? html`<div slot="header" class="pf-c-banner pf-m-warning">
                       ${msg(
                           "Warning: Provider is not assigned to an application as backchannel provider.",

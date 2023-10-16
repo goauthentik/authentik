@@ -5306,11 +5306,6 @@ doesn't pass when either or both of the selected options are equal or above the 
         <target>选中多个阶段时，用户可以选择要注册哪个。</target>
         
       </trans-unit>
-      <trans-unit id="s9a823993c07e5d64">
-        <source>Stage used to configure a WebAutnn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
-        <target>用来配置 WebAuthn 身份验证器（即 Yubikey、FaceID/Windows Hello）的阶段。</target>
-        
-      </trans-unit>
       <trans-unit id="s34b23ebbac9f6ab9">
         <source>User verification</source>
         <target>用户验证</target>
@@ -7825,6 +7820,22 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s6827a456c9dfc6ee">
   <source>When using IDP-initiated logins, the relay state will be set to this value.</source>
   <target>当使用 IDP 发起的登录时，中继状态会被设置为此值。</target>
+</trans-unit>
+<trans-unit id="s01794c0ee3629c1b">
+  <source>Flow Info</source>
+  <target>流程信息</target>
+</trans-unit>
+<trans-unit id="s24bce955914b1f0a">
+  <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
+  <target>用来配置 WebAuthn 身份验证器（即 Yubikey、FaceID/Windows Hello）的阶段。</target>
+</trans-unit>
+<trans-unit id="sd18b18f91b804c3f">
+  <source>Custom attributes</source>
+  <target>自定义属性</target>
+</trans-unit>
+<trans-unit id="s71c5d51d5a357dbd">
+  <source>Don't show this message again.</source>
+  <target>不要再显示此消息。</target>
 </trans-unit>
     </body>
   </file>

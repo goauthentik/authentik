@@ -114,7 +114,7 @@ export class ApplicationCheckAccessForm extends Form<{ forUser: number }> {
         `;
     }
 
-    renderInlineForm(): TemplateResult {
+    renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
                 label=${msg("User")}
                 ?required=${true}

@@ -40,8 +40,7 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <span>
+        return html` <span>
                 ${msg("This stage can be included in enrollment flows to accept invitations.")}
             </span>
             <ak-form-element-horizontal label=${msg("Name")} ?required=${true} name="name">
@@ -81,7 +80,6 @@ export class InvitationStageForm extends ModelForm<InvitationStage, string> {
                         </p>
                     </ak-form-element-horizontal>
                 </div>
-            </ak-form-group>
-        </form>`;
+            </ak-form-group>`;
     }
 }

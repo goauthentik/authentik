@@ -19,8 +19,6 @@ import (
 )
 
 const RedisKeyPrefix = "authentik_proxy_session_"
-// Amount of time for cookies/redis keys to expire.
-const sessionExpire = 86400 * 30
 
 func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) sessions.Store {
 	maxAge := 0
@@ -42,7 +40,7 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 					Path: "/",
 					Domain: *p.CookieDomain,
 					HttpOnly: true,
-					MaxAge: sessionExpire,
+					MaxAge: maxAge,
 					SameSite: http.SameSiteLaxMode,
 					Secure: strings.ToLower(externalHost.Scheme) == "https",
 				}),
@@ -69,11 +67,11 @@ func (a *Application) getStore(p api.ProxyOutpostConfig, externalHost *url.URL) 
 	// Note, when using the FilesystemStore only the session.ID is written to a browser cookie, so this is explicit for the storage on disk
 	cs.MaxLength(math.MaxInt)
 	cs.Options.HttpOnly = true
-	if strings.ToLower(externalHost.Scheme) == "https" {
-		cs.Options.Secure = true
-	}
+	cs.Options.Secure = strings.ToLower(externalHost.Scheme) == "https"
 	cs.Options.Domain = *p.CookieDomain
 	cs.Options.SameSite = http.SameSiteLaxMode
+	cs.Options.MaxAge = maxAge
+	cs.Options.Path = externalHost.Path
 	a.log.WithField("dir", dir).Trace("using filesystem session backend")
 	return cs
 }

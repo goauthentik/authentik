@@ -86,7 +86,7 @@ export class FlowImportForm extends Form<Flow> {
         `;
     }
 
-    renderInlineForm(): TemplateResult {
+    renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal label=${msg("Flow")} name="flow">
                 <input type="file" value="" class="pf-c-form-control" />
                 <p class="pf-c-form__helper-text">

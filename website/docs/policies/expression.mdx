@@ -41,7 +41,7 @@ import Objects from "../expressions/_objects.md";
 
 -   `request`: A PolicyRequest object, which has the following properties:
 
-    -   `request.user`: The current user, against which the policy is applied. See [User](../user-group/user.md#object-attributes)
+    -   `request.user`: The current user, against which the policy is applied. See [User](../user-group/user/user_ref.md#object-properties)
 
         :::caution
         When a policy is executed in the context of a flow, this will be set to the user initiaing request, and will only be changed by a `user_login` stage. For that reason, using this value in authentication flow policies may not return the expected user. Use `context['pending_user']` instead; User Identification and other stages update this value during flow execution.
@@ -77,7 +77,7 @@ This includes the following:
 -   `context['prompt_data']`: Data which has been saved from a prompt stage or an external source. (Optional)
 -   `context['application']`: The application the user is in the process of authorizing. (Optional)
 -   `context['source']`: The source the user is authenticating/enrolling with. (Optional)
--   `context['pending_user']`: The currently pending user, see [User](../user-group/user.md#object-attributes)
+-   `context['pending_user']`: The currently pending user, see [User](../user-group/user/user_ref.md#object-properties)
 -   `context['is_restored']`: Contains the flow token when the flow plan was restored from a link, for example the user clicked a link to a flow which was sent by an email stage. (Optional)
 -   `context['auth_method']`: Authentication method (this value is set by password stages) (Optional)
 

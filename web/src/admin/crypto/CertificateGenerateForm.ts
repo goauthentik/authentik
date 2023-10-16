@@ -20,7 +20,7 @@ export class CertificateKeyPairForm extends Form<CertificateGenerationRequest> {
         });
     }
 
-    renderInlineForm(): TemplateResult {
+    renderForm(): TemplateResult {
         return html`<ak-form-element-horizontal
                 label=${msg("Common Name")}
                 name="commonName"

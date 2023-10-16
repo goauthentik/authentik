@@ -133,8 +133,7 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
     }
 
     renderForm(): TemplateResult {
-        return html`<form class="pf-c-form pf-m-horizontal">
-            <div class="pf-c-card pf-m-selectable pf-m-selected">
+        return html` <div class="pf-c-card pf-m-selectable pf-m-selected">
                 <div class="pf-c-card__body">${this.renderModeSelector()}</div>
                 <div class="pf-c-card__footer">
                     <ak-form-element-horizontal
@@ -318,7 +317,6 @@ export class PolicyBindingForm extends ModelForm<PolicyBinding, string> {
                 <p class="pf-c-form__helper-text">
                     ${msg("Result used when policy execution fails.")}
                 </p>
-            </ak-form-element-horizontal>
-        </form>`;
+            </ak-form-element-horizontal>`;
     }
 }
