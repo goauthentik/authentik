@@ -81,8 +81,8 @@ if __name__ == "__main__":
     )
     curr = conn.cursor()
     try:
-        for migration in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
-            spec = spec_from_file_location("lifecycle.system_migrations", migration)
+        for migration_path in Path(__file__).parent.absolute().glob("system_migrations/*.py"):
+            spec = spec_from_file_location("lifecycle.system_migrations", migration_path)
             if not spec:
                 continue
             mod = module_from_spec(spec)
@@ -94,9 +94,9 @@ if __name__ == "__main__":
                 migration = sub(curr, conn)
                 if migration.needs_migration():
                     wait_for_lock()
-                    LOGGER.info("Migration needs to be applied", migration=sub)
+                    LOGGER.info("Migration needs to be applied", migration=migration_path.name)
                     migration.run()
-                    LOGGER.info("Migration finished applying", migration=sub)
+                    LOGGER.info("Migration finished applying", migration=migration_path.name)
                     release_lock()
         LOGGER.info("applying django migrations")
         environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")

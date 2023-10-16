@@ -26,6 +26,8 @@ class Migration(migrations.Migration):
                     ("run_system_tasks", "Can run system tasks"),
                     ("access_admin_interface", "Can access admin interface"),
                 ],
+                "verbose_name": "System permission",
+                "verbose_name_plural": "System permissions",
                 "managed": False,
                 "default_permissions": (),
             },
