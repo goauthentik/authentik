@@ -2787,6 +2787,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_enterprise_rac.racprovider"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_enterprise_rac.racprovider"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_enterprise_rac.racprovider"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_blueprints.metaapplyblueprint"
                             },
                             "id": {
@@ -3296,7 +3333,8 @@
                     "enum": [
                         "proxy",
                         "ldap",
-                        "radius"
+                        "radius",
+                        "rac"
                     ],
                     "title": "Type"
                 },
@@ -3476,7 +3514,8 @@
                         "authentik.tenants",
                         "authentik.blueprints",
                         "authentik.core",
-                        "authentik.enterprise"
+                        "authentik.enterprise",
+                        "authentik.enterprise.rac"
                     ],
                     "title": "App",
                     "description": "Match events created by selected application. When left empty, all applications are matched."
@@ -3561,7 +3600,8 @@
                         "authentik_core.user",
                         "authentik_core.application",
                         "authentik_core.token",
-                        "authentik_enterprise.license"
+                        "authentik_enterprise.license",
+                        "authentik_enterprise_rac.racprovider"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
@@ -8754,6 +8794,53 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Key"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_enterprise_rac.racprovider": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Name"
+                },
+                "authentication_flow": {
+                    "type": "integer",
+                    "title": "Authentication flow",
+                    "description": "Flow used for authentication when the associated application is accessed by an un-authenticated user."
+                },
+                "authorization_flow": {
+                    "type": "integer",
+                    "title": "Authorization flow",
+                    "description": "Flow used when authorizing this provider."
+                },
+                "property_mappings": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Property mappings"
+                },
+                "protocol": {
+                    "type": "string",
+                    "enum": [
+                        "rdp",
+                        "vnc",
+                        "ssh"
+                    ],
+                    "title": "Protocol"
+                },
+                "host": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Host"
+                },
+                "settings": {
+                    "type": "object",
+                    "additionalProperties": true,
+                    "title": "Settings"
                 }
             },
             "required": []

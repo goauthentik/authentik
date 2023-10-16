@@ -15002,6 +15002,274 @@ paths:
               schema:
                 $ref: '#/components/schemas/GenericError'
           description: ''
+  /providers/enterprise/rac/:
+    get:
+      operationId: providers_enterprise_rac_list
+      description: RACProvider Viewset
+      parameters:
+      - in: query
+        name: application__isnull
+        schema:
+          type: boolean
+      - in: query
+        name: name__iexact
+        schema:
+          type: string
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: page_size
+        required: false
+        in: query
+        description: Number of results to return per page.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRACProviderList'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    post:
+      operationId: providers_enterprise_rac_create
+      description: RACProvider Viewset
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RACProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/enterprise/rac/{id}/:
+    get:
+      operationId: providers_enterprise_rac_retrieve
+      description: RACProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this rac provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    put:
+      operationId: providers_enterprise_rac_update
+      description: RACProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this rac provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RACProviderRequest'
+        required: true
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    patch:
+      operationId: providers_enterprise_rac_partial_update
+      description: RACProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this rac provider.
+        required: true
+      tags:
+      - providers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRACProviderRequest'
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RACProvider'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+    delete:
+      operationId: providers_enterprise_rac_destroy
+      description: RACProvider Viewset
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this rac provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '204':
+          description: No response body
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
+  /providers/enterprise/rac/{id}/used_by/:
+    get:
+      operationId: providers_enterprise_rac_used_by_list
+      description: Get a list of all objects that use this object
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this rac provider.
+        required: true
+      tags:
+      - providers
+      security:
+      - authentik: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UsedBy'
+          description: ''
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: ''
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenericError'
+          description: ''
   /providers/ldap/:
     get:
       operationId: providers_ldap_list
@@ -17254,6 +17522,7 @@ paths:
           - authentik_core.user
           - authentik_crypto.certificatekeypair
           - authentik_enterprise.license
+          - authentik_enterprise_rac.racprovider
           - authentik_events.event
           - authentik_events.notification
           - authentik_events.notificationrule
@@ -17396,6 +17665,7 @@ paths:
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
           * `authentik_enterprise.license` - License
+          * `authentik_enterprise_rac.racprovider` - rac provider
         required: true
       - in: query
         name: object_pk
@@ -17542,6 +17812,7 @@ paths:
           - authentik_core.user
           - authentik_crypto.certificatekeypair
           - authentik_enterprise.license
+          - authentik_enterprise_rac.racprovider
           - authentik_events.event
           - authentik_events.notification
           - authentik_events.notificationrule
@@ -17684,6 +17955,7 @@ paths:
           * `authentik_core.application` - Application
           * `authentik_core.token` - Token
           * `authentik_enterprise.license` - License
+          * `authentik_enterprise_rac.racprovider` - rac provider
         required: true
       - in: query
         name: object_pk
@@ -27946,6 +28218,7 @@ components:
       - authentik.blueprints
       - authentik.core
       - authentik.enterprise
+      - authentik.enterprise.rac
       type: string
       description: |-
         * `authentik.admin` - authentik Admin
@@ -27997,6 +28270,7 @@ components:
         * `authentik.blueprints` - authentik Blueprints
         * `authentik.core` - authentik Core
         * `authentik.enterprise` - authentik Enterprise
+        * `authentik.enterprise.rac` - authentik Enterprise.RAC
     AppleChallengeResponseRequest:
       type: object
       description: Pseudo class for plex response
@@ -30767,6 +31041,7 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+            * `authentik.enterprise.rac` - authentik Enterprise.RAC
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -30848,6 +31123,7 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
+            * `authentik_enterprise_rac.racprovider` - rac provider
       required:
       - bound_to
       - component
@@ -30963,6 +31239,7 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+            * `authentik.enterprise.rac` - authentik Enterprise.RAC
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -31044,6 +31321,7 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
+            * `authentik_enterprise_rac.racprovider` - rac provider
       required:
       - name
     EventRequest:
@@ -33359,6 +33637,7 @@ components:
       - authentik_core.application
       - authentik_core.token
       - authentik_enterprise.license
+      - authentik_enterprise_rac.racprovider
       type: string
       description: |-
         * `authentik_crypto.certificatekeypair` - Certificate-Key Pair
@@ -33435,6 +33714,7 @@ components:
         * `authentik_core.application` - Application
         * `authentik_core.token` - Token
         * `authentik_enterprise.license` - License
+        * `authentik_enterprise_rac.racprovider` - rac provider
     NameIdPolicyEnum:
       enum:
       - urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress
@@ -34421,11 +34701,13 @@ components:
       - proxy
       - ldap
       - radius
+      - rac
       type: string
       description: |-
         * `proxy` - Proxy
         * `ldap` - Ldap
         * `radius` - Radius
+        * `rac` - Rac
     PaginatedApplicationList:
       type: object
       properties:
@@ -35107,6 +35389,18 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ProxyProvider'
+      required:
+      - pagination
+      - results
+    PaginatedRACProviderList:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RACProvider'
       required:
       - pagination
       - results
@@ -36424,6 +36718,7 @@ components:
             * `authentik.blueprints` - authentik Blueprints
             * `authentik.core` - authentik Core
             * `authentik.enterprise` - authentik Enterprise
+            * `authentik.enterprise.rac` - authentik Enterprise.RAC
         model:
           allOf:
           - $ref: '#/components/schemas/ModelEnum'
@@ -36505,6 +36800,7 @@ components:
             * `authentik_core.application` - Application
             * `authentik_core.token` - Token
             * `authentik_enterprise.license` - License
+            * `authentik_enterprise_rac.racprovider` - rac provider
     PatchedEventRequest:
       type: object
       description: Event Serializer
@@ -37631,6 +37927,36 @@ components:
           minLength: 1
           description: 'Tokens not valid on or after current time + this value (Format:
             hours=1;minutes=2;seconds=3).'
+    PatchedRACProviderRequest:
+      type: object
+      description: RACProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        protocol:
+          $ref: '#/components/schemas/ProtocolEnum'
+        host:
+          type: string
+          minLength: 1
+        settings:
+          type: object
+          additionalProperties: {}
     PatchedRadiusProviderRequest:
       type: object
       description: RadiusProvider Serializer
@@ -39066,6 +39392,16 @@ components:
       required:
       - result
       - successful
+    ProtocolEnum:
+      enum:
+      - rdp
+      - vnc
+      - ssh
+      type: string
+      description: |-
+        * `rdp` - Rdp
+        * `vnc` - Vnc
+        * `ssh` - Ssh
     Provider:
       type: object
       description: Provider Serializer
@@ -39148,6 +39484,7 @@ components:
       - authentik_providers_ldap.ldapprovider
       - authentik_providers_oauth2.oauth2provider
       - authentik_providers_proxy.proxyprovider
+      - authentik_enterprise_rac.racprovider
       - authentik_providers_radius.radiusprovider
       - authentik_providers_saml.samlprovider
       - authentik_providers_scim.scimprovider
@@ -39156,6 +39493,7 @@ components:
         * `authentik_providers_ldap.ldapprovider` - authentik_providers_ldap.ldapprovider
         * `authentik_providers_oauth2.oauth2provider` - authentik_providers_oauth2.oauth2provider
         * `authentik_providers_proxy.proxyprovider` - authentik_providers_proxy.proxyprovider
+        * `authentik_enterprise_rac.racprovider` - authentik_enterprise_rac.racprovider
         * `authentik_providers_radius.radiusprovider` - authentik_providers_radius.radiusprovider
         * `authentik_providers_saml.samlprovider` - authentik_providers_saml.samlprovider
         * `authentik_providers_scim.scimprovider` - authentik_providers_scim.scimprovider
@@ -39563,6 +39901,119 @@ components:
       - authorization_flow
       - external_host
       - name
+    RACProvider:
+      type: object
+      description: RACProvider Serializer
+      properties:
+        pk:
+          type: integer
+          readOnly: true
+          title: ID
+        name:
+          type: string
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        component:
+          type: string
+          description: Get object component so that we know how to edit the object
+          readOnly: true
+        assigned_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        assigned_backchannel_application_slug:
+          type: string
+          description: Internal application name, used in URLs.
+          readOnly: true
+        assigned_backchannel_application_name:
+          type: string
+          description: Application's display Name.
+          readOnly: true
+        verbose_name:
+          type: string
+          description: Return object's verbose_name
+          readOnly: true
+        verbose_name_plural:
+          type: string
+          description: Return object's plural verbose_name
+          readOnly: true
+        meta_model_name:
+          type: string
+          description: Return internal model name
+          readOnly: true
+        protocol:
+          $ref: '#/components/schemas/ProtocolEnum'
+        host:
+          type: string
+        settings:
+          type: object
+          additionalProperties: {}
+      required:
+      - assigned_application_name
+      - assigned_application_slug
+      - assigned_backchannel_application_name
+      - assigned_backchannel_application_slug
+      - authorization_flow
+      - component
+      - host
+      - meta_model_name
+      - name
+      - pk
+      - protocol
+      - verbose_name
+      - verbose_name_plural
+    RACProviderRequest:
+      type: object
+      description: RACProvider Serializer
+      properties:
+        name:
+          type: string
+          minLength: 1
+        authentication_flow:
+          type: string
+          format: uuid
+          nullable: true
+          description: Flow used for authentication when the associated application
+            is accessed by an un-authenticated user.
+        authorization_flow:
+          type: string
+          format: uuid
+          description: Flow used when authorizing this provider.
+        property_mappings:
+          type: array
+          items:
+            type: string
+            format: uuid
+        protocol:
+          $ref: '#/components/schemas/ProtocolEnum'
+        host:
+          type: string
+          minLength: 1
+        settings:
+          type: object
+          additionalProperties: {}
+      required:
+      - authorization_flow
+      - host
+      - name
+      - protocol
     RadiusOutpostConfig:
       type: object
       description: RadiusProvider Serializer
@@ -42786,6 +43237,7 @@ components:
       - $ref: '#/components/schemas/LDAPProviderRequest'
       - $ref: '#/components/schemas/OAuth2ProviderRequest'
       - $ref: '#/components/schemas/ProxyProviderRequest'
+      - $ref: '#/components/schemas/RACProviderRequest'
       - $ref: '#/components/schemas/RadiusProviderRequest'
       - $ref: '#/components/schemas/SAMLProviderRequest'
       - $ref: '#/components/schemas/SCIMProviderRequest'
@@ -42795,6 +43247,7 @@ components:
           authentik_providers_ldap.ldapprovider: '#/components/schemas/LDAPProviderRequest'
           authentik_providers_oauth2.oauth2provider: '#/components/schemas/OAuth2ProviderRequest'
           authentik_providers_proxy.proxyprovider: '#/components/schemas/ProxyProviderRequest'
+          authentik_enterprise_rac.racprovider: '#/components/schemas/RACProviderRequest'
           authentik_providers_radius.radiusprovider: '#/components/schemas/RadiusProviderRequest'
           authentik_providers_saml.samlprovider: '#/components/schemas/SAMLProviderRequest'
           authentik_providers_scim.scimprovider: '#/components/schemas/SCIMProviderRequest'
