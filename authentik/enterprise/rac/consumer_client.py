@@ -8,7 +8,8 @@ from guardian.shortcuts import get_objects_for_user
 
 from authentik.core.models import Application
 from authentik.enterprise.rac.models import RACProvider
-from authentik.outposts.models import Outpost, OutpostState, OutpostType
+from authentik.outposts.consumer import OUTPOST_GROUP
+from authentik.outposts.models import Outpost, OutpostType
 
 RAC_CLIENT_GROUP = "group_enterprise_rac_client"
 
@@ -65,12 +66,10 @@ class RACClientConsumer(AsyncWebsocketConsumer):
             providers__in=[self.provider],
         ):
             # TODO: Only send to a single outpost
-            for state in OutpostState.for_outpost(outpost):
-                for channel in state.channel_ids:
-                    async_to_sync(self.channel_layer.send)(
-                        channel,
-                        msg,
-                    )
+            async_to_sync(self.channel_layer.group_send)(
+                OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)},
+                msg,
+            )
 
     async def receive(self, text_data=None, bytes_data=None):
         """Mirror data received from client to the dest_channel_id
