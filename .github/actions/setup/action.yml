@@ -34,10 +34,10 @@ runs:
       run: |
         case ${{ inputs.redis_config }} in
           redis-sentinel)
-            echo "redis_url=redis+sentinel://redis-sentinel:26379/0?mastername=mymaster" >> $GITHUB_ENV
+            echo "redis_url=redis+sentinel://localhost:26379/0?mastername=mymaster" >> $GITHUB_ENV
             ;;
           redis-cluster)
-            echo "redis_url=redis+cluster://bitnami@redis-cluster-1:6379,redis-cluster-2:6379,redis-cluster-3:6379/0" >> $GITHUB_ENV
+            echo "redis_url=redis+cluster://bitnami@localhost:6379,localhost:6380,localhost:6381/0" >> $GITHUB_ENV
             ;;
           *)
             echo "redis_url=redis://localhost:6379/0" >> $GITHUB_ENV
