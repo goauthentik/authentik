@@ -107,6 +107,8 @@ services:
       REDISCLI_AUTH: bitnami
       REDIS_CLUSTER_REPLICAS: 1
       REDIS_CLUSTER_CREATOR: "yes"
+      REDIS_CLUSTER_DNS_LOOKUP_RETRIES: 20
+      REDIS_CLUSTER_SLEEP_BEFORE_DNS_LOOKUP: 10
     ports:
       - "6384:6379"
     restart: always
