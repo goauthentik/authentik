@@ -32,44 +32,83 @@ services:
     profiles:
       - redis-sentinel
   redis-cluster-1:
-    image: docker.io/bitnami/redis-cluster:7.2
+    image: docker.io/bitnami/redis-cluster:7.2.1
     volumes:
       - redis-cluster_data-1:/bitnami/redis/data
     environment:
       REDIS_PASSWORD: bitnami
-      REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
+      REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
     ports:
       - "6379:6379"
     restart: always
     profiles:
       - redis-cluster
   redis-cluster-2:
-    image: docker.io/bitnami/redis-cluster:7.2
+    image: docker.io/bitnami/redis-cluster:7.2.1
     volumes:
       - redis-cluster_data-2:/bitnami/redis/data
     environment:
       REDIS_PASSWORD: bitnami
-      REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
+      REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
     ports:
       - "6380:6379"
     restart: always
     profiles:
       - redis-cluster
   redis-cluster-3:
-    image: docker.io/bitnami/redis-cluster:7.2
+    image: docker.io/bitnami/redis-cluster:7.2.1
+    volumes:
+      - redis-cluster_data-3:/bitnami/redis/data
+    environment:
+      REDIS_PASSWORD: bitnami
+      REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
+    ports:
+      - "6381:6379"
+    restart: always
+    profiles:
+      - redis-cluster
+  redis-cluster-4:
+    image: docker.io/bitnami/redis-cluster:7.2.1
+    volumes:
+      - redis-cluster_data-4:/bitnami/redis/data
+    environment:
+      REDIS_PASSWORD: bitnami
+      REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
+    ports:
+      - "6382:6379"
+    restart: always
+    profiles:
+      - redis-cluster
+  redis-cluster-5:
+    image: docker.io/bitnami/redis-cluster:7.2.1
+    volumes:
+      - redis-cluster_data-5:/bitnami/redis/data
+    environment:
+      REDIS_PASSWORD: bitnami
+      REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
+    ports:
+      - "6383:6379"
+    restart: always
+    profiles:
+      - redis-cluster
+  redis-cluster-6:
+    image: docker.io/bitnami/redis-cluster:7.2.1
     volumes:
       - redis-cluster_data-3:/bitnami/redis/data
     depends_on:
       - redis-cluster-1
       - redis-cluster-2
+      - redis-cluster-3
+      - redis-cluster-4
+      - redis-cluster-5
     environment:
       REDIS_PASSWORD: bitnami
-      REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
+      REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
       REDISCLI_AUTH: bitnami
       REDIS_CLUSTER_REPLICAS: 1
       REDIS_CLUSTER_CREATOR: "yes"
     ports:
-      - "6381:6379"
+      - "6384:6379"
     restart: always
     profiles:
       - redis-cluster
@@ -82,4 +121,10 @@ volumes:
   redis-cluster_data-2:
     driver: local
   redis-cluster_data-3:
+    driver: local
+  redis-cluster_data-4:
+    driver: local
+  redis-cluster_data-5:
+    driver: local
+  redis-cluster_data-6:
     driver: local
