@@ -14,6 +14,7 @@ services:
     restart: always
   redis:
     image: docker.io/library/redis
+    hostname: redis
     ports:
       - "6379:6379"
     restart: always
@@ -22,6 +23,7 @@ services:
       - redis-sentinel
   redis-sentinel:
     image: bitnami/redis-sentinel:latest
+    hostname: redis-sentinel
     depends_on:
       - redis
     environment:
@@ -33,6 +35,7 @@ services:
     image: docker.io/bitnami/redis-cluster:7.2
     volumes:
       - redis-cluster_data-1:/bitnami/redis/data
+    hostname: redis-cluster-1
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
@@ -43,6 +46,7 @@ services:
     image: docker.io/bitnami/redis-cluster:7.2
     volumes:
       - redis-cluster_data-2:/bitnami/redis/data
+    hostname: redis-cluster-2
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
@@ -53,6 +57,7 @@ services:
     image: docker.io/bitnami/redis-cluster:7.2
     volumes:
       - redis-cluster_data-3:/bitnami/redis/data
+    hostname: redis-cluster-3
     depends_on:
       - redis-cluster-1
       - redis-cluster-2
