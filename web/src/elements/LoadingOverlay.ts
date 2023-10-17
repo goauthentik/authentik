@@ -1,9 +1,9 @@
 import { AKElement } from "@goauthentik/elements/Base";
-import { PFSize } from "@goauthentik/elements/Spinner";
 
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
+import "@goauthentik/elements/EmptyState";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 @customElement("ak-loading-overlay")
@@ -33,6 +33,8 @@ export class LoadingOverlay extends AKElement {
     }
 
     render(): TemplateResult {
-        return html`<ak-spinner size=${PFSize.XLarge}></ak-spinner>`;
+        return html`<ak-empty-state ?loading="${true}">
+            <slot name="body" slot="body"></slot>
+        </ak-empty-state>`;
     }
 }

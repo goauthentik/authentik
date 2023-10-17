@@ -3,6 +3,7 @@ import { Interface } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/LoadingOverlay";
 import Guacamole from "guacamole-common-js";
 
+import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
@@ -53,6 +54,9 @@ export class RacInterface extends Interface {
     @state()
     clientState?: GuacClientState;
 
+    @state()
+    reconnecting = false;
+
     @property()
     app?: string;
 
@@ -67,31 +71,32 @@ export class RacInterface extends Interface {
         }/ws/rac/${this.app}/`;
         this.tunnel = new Guacamole.WebSocketTunnel(wsUrl);
         this.tunnel.onerror = (status) => {
+            this.reconnecting = true;
+            this.clientState = undefined;
             console.debug("authentik/rac: tunnel error: ", status);
             setTimeout(() => {
-                this.clientState = undefined;
                 this.firstUpdated();
             }, 150);
         };
         this.client = new Guacamole.Client(this.tunnel);
         this.client.onerror = (err) => {
+            this.reconnecting = true;
+            this.clientState = undefined;
             console.debug("authentik/rac: error: ", err);
             setTimeout(() => {
-                this.clientState = undefined;
                 this.firstUpdated();
             }, 150);
         };
         this.client.onstatechange = (state) => {
             this.clientState = state;
             if (state === GuacClientState.CONNECTED) {
+                this.reconnecting = false;
                 this.onConnected();
             }
         };
         this.client.onname = (name) => {
             console.log(name);
         };
-        this.container = this.client.getDisplay().getElement();
-        this.initMouse(this.container);
         this.initKeyboard();
         const params = new URLSearchParams();
         params.set(
@@ -119,6 +124,11 @@ export class RacInterface extends Interface {
 
     onConnected(): void {
         console.debug("authentik/rac: connected");
+        if (!this.client) {
+            return;
+        }
+        this.container = this.client.getDisplay().getElement();
+        this.initMouse(this.container);
         this.client?.sendSize(
             RacInterface.domSize().width * window.devicePixelRatio,
             RacInterface.domSize().height * window.devicePixelRatio,
@@ -175,7 +185,15 @@ export class RacInterface extends Interface {
     render(): TemplateResult {
         return html`
             ${this.clientState !== GuacClientState.CONNECTED
-                ? html` <ak-loading-overlay></ak-loading-overlay> `
+                ? html`
+                      <ak-loading-overlay>
+                      <span slot="body">
+                          ${this.reconnecting
+                              ? html`${msg("Re-connecting...")}`
+                              : html`${msg("Connecting...")}`}
+                              </span>
+                      </ak-loading-overlay>
+                  `
                 : html``}
             <div class="container">${this.container}</div>
         `;
