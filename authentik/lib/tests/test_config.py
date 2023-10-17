@@ -22,6 +22,7 @@ class TestConfig(TestCase):
         ENV_PREFIX + "_REDIS__CACHE_TIMEOUT_REPUTATION": "298382us",
     }
     update_redis_url_set_default_env_vars = {
+        ENV_PREFIX + "_REDIS__URL": "redis://localhost:6379/0",
         ENV_PREFIX + "_REDIS__HOST": "myredis",
         ENV_PREFIX + "_REDIS__PORT": "9637",
         ENV_PREFIX + "_REDIS__DB": "56",
@@ -41,9 +42,11 @@ class TestConfig(TestCase):
         ENV_PREFIX + "_REDIS__TLS_REQS": "optional",
     }
     update_redis_url_tls_reqs_required_env_vars = {
+        ENV_PREFIX + "_REDIS__URL": "redis://localhost:6379/0",
         ENV_PREFIX + "_REDIS__TLS_REQS": "required",
     }
     update_redis_url_tls_reqs_invalid_env_vars = {
+        ENV_PREFIX + "_REDIS__URL": "redis://localhost:6379/0",
         ENV_PREFIX + "_REDIS__TLS_REQS": "invalid",
     }
 
@@ -210,11 +213,6 @@ class TestConfig(TestCase):
             "redis://default:%22%27%25+%21.%3B.%C2%B0@myredis:2493"
             "/2?idletimeout=20s&skipverify=true",
         )
-
-    def test_update_redis_url_default(self):
-        """Test default value for Redis URL"""
-        config = ConfigLoader()
-        self.assertEqual(config.get("redis.url"), "redis://localhost:6379/0")
 
     def test_update_from_dict(self):
         """Test update config from dict"""
