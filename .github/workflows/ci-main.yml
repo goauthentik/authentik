@@ -81,7 +81,7 @@ jobs:
       - name: migrate to latest
         run: poetry run python -m lifecycle.migrate
   test-unittest:
-    name: test-unittest - PostgreSQL ${{ matrix.psql }}
+    name: test-unittest - PostgreSQL ${{ matrix.psql }} - Redis ${{ matrix.redis }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:

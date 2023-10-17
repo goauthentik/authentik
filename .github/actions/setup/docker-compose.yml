@@ -67,7 +67,7 @@ services:
       REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
       REDISCLI_AUTH: bitnami
       REDIS_CLUSTER_REPLICAS: 1
-      REDIS_CLUSTER_CREATOR: yes
+      REDIS_CLUSTER_CREATOR: "yes"
     ports:
       - "6379:6379"
     restart: always
