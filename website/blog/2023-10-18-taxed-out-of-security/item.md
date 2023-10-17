@@ -25,11 +25,11 @@ hide_table_of_contents: false
 
 Let’s say you’re working at a small startup: You’re the CTO, your CEO is a good friend, and you have a couple of developers working with you from a previous company. You’re building your initial tech stack, and you start – where else? – with GitHub.
 
-The [pricing](https://github.com/pricing) is simple enough. There’s a pretty feature-rich free plan, but you’re willing to pay up because the team plan includes features for restricting access to particular branches and protecting secrets.
+The [pricing](https://github.com/pricing) is simple enough. There’s a pretty feature-rich free plan, but you’re willing to pay up because the Team plan includes features for restricting access to particular branches and protecting secrets.
 
 But the enterprise plan, the plan that costs more than four times as much per user per month – the plan that seems targeted at, well, enterprises – promises “Security, compliance, and flexible deployment.”
 
->**Is security… not for startups?**
+> **Is security… not for startups?**
 
 The feature comparison bears this out: Only the enterprise plan offers single-sign-on (SSO) functionality as part of the package – a feature that security experts have long agreed is essential. But don’t get mad at GitHub.
 
@@ -39,7 +39,7 @@ Do you want [Mailtrap](https://mailtrap.io/pricing/)? The team, premium, and bus
 
 Do you want [Hubspot’s marketing product, but with SSO?](https://www.hubspot.com/pricing/marketing/enterprise?products=marketing-hub-professional_1&term=annual) Prepare to pay $2,800 more per month than the next cheapest plan.
 
-And these are only a few examples. [SSO.tax](https://sso.tax/), a website started by Rob Chahin, gathers many more. If you look through, you’ll see companies like [SurveyMonkey](https://www.surveymonkey.com/pricing/details/) and [Webflow](https://webflow.com/pricing) even restrict SSO to enterprise plans with a *Contact Us* option instead of a price.
+And these are only a few examples. [SSO.tax](https://sso.tax/), a website started by Rob Chahin, gathers many more. If you look through, you’ll see companies like [SurveyMonkey](https://www.surveymonkey.com/pricing/details/) and [Webflow](https://webflow.com/pricing) even restrict SSO to enterprise plans with a _Contact Us_ option instead of a price.
 
 !["pricing page"](./image1.png)
 
@@ -53,7 +53,7 @@ Many developers are likely already familiar with the concept of an SSO tax, and 
 
 Vendors have managed to normalize charging exorbitant prices for basic security features. Here, we’re not even necessarily talking about often complex logging or monitoring features – the mere ability to sign in to the software itself is an opportunity to upcharge.
 
-It’s a blurry line, but it’s worth distinguishing between *valuable* features and *value-added* features. Unlike other features, which are valuable but part of the base product, value-added features add incremental value on top of the base product. So, we expect GitHub to be basically operational on the free plan but look to other plans to see whether we want to add, say, a wiki feature.
+It’s a blurry line, but it’s worth distinguishing between _valuable_ features and _value-added_ features. Unlike other features, which are valuable but part of the base product, value-added features add incremental value on top of the base product. So, we expect GitHub to be basically operational on the free plan but look to other plans to see whether we want to add, say, a wiki feature.
 
 Security taxes are baseline features pretending to be value-added features, and vendors can charge them by bundling them with those features. These security taxes are often exploitative because companies have to pay for more features than they need just to get a security feature that should have been in the base product.
 
@@ -67,7 +67,7 @@ Security experts widely agree that SSO is essential for security, but multi-fact
 
 The user tax is more subtle. Companies are charging a user tax when they charge exorbitant amounts more per additional user that customers feel motivated to share the credentials to one account. To be clear, many companies charge on a per-user or per-seat basis (including Authentik), so you can’t call it a tax until the additional costs really become exorbitant.
 
-## Why the SSO tax movement failed
+## Why the anti-SSO tax movement failed
 
 The SSO tax has become the most recognized of the three security taxes above.
 
@@ -77,7 +77,7 @@ A grassroots effort like the SSO Wall of Shame would seem effective at public em
 
 Future efforts against security taxes will have to keep in mind the three reasons the SSO tax movement failed if change is ever going to happen.
 
-### 1. The SSO tax is too profitable and too easy to charge
+**1. The SSO tax is too profitable and too easy to charge**
 
 The most obvious reason is also the strongest. The very thing we’re complaining about – vendors charging too much for a feature that isn’t even that expensive to build or maintain – is exactly why they charge it.
 
@@ -91,9 +91,9 @@ Patrick McKenzie, formerly from Stripe, has tweeted about the [same logic](https
 
 Both McKenzie and Orenstein emphasize customers being “forced” to adopt an SSO plan. Many companies are selling into regulated industries, so they’ll likely be forced to upgrade all of their software to whichever plan includes SSO.
 
-### 2. The PR risk is too low, and security taxes are too normalized
+**2. The PR risk is too low, and security taxes are too normalized**
 
-Orenstein writes, “People will get a little mad at you, but not much, because just about everyone does this,” and *just about everyone does this* links to the SSO.tax site. By now, the SSO Wall of Shame is proof the SSO tax exists, not so much a viable effort at change.
+Orenstein writes, “People will get a little mad at you, but not much, because just about everyone does this,” and _just about everyone does this_ links to the SSO.tax site. By now, the SSO Wall of Shame is proof the SSO tax exists, not so much a viable effort at change.
 
 A big part of the explanation is that the Wall of Shame was primarily one person’s effort, whereas the companies that wanted to keep charging these taxes were larger and much more powerful. The vendors charging the SSO tax had the resources to simply outlast the Wall of Shame.
 
@@ -101,7 +101,7 @@ Many of these vendors also received some benefit of the doubt. SSO generally tak
 
 A few companies have tried to make some attention by removing the SSO tax – including Tuple and [Scalr](https://www.scalr.com/blog/sso-tax) – but none have really gone viral for the effort.
 
-### 3. The “tragedy of the commons” effect
+**3. The “tragedy of the commons” effect**
 
 The “tragedy of the commons” is an idea that came out of ecological research in the late 1960s. The “commons” refers to a shared resource, such as a water source, and the “tragedy” is that individuals will each use more of the resource than it can withstand.
 
@@ -170,5 +170,3 @@ Throughout this article, we’ve hardly mentioned a central party: SSO vendors. 
 What we can do, however, is argue for a shift in industry norms: As we’ve written before, the buy vs. build framework is outdated, and it’s no longer obvious that companies should be buying by default.
 
 The SSO tax persists because it’s easy for vendors to charge, and companies don’t consider other options. As companies consider those options and rediscover why [identity is fun](https://goauthentik.io/blog/2023-08-16-lets-make-identity-fun-again), the SSO tax will become less and less viable.
-
-
