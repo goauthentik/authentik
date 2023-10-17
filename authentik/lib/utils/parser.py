@@ -487,6 +487,14 @@ def _retries_and_backoff(config, retry_class):
 
 
 def _get_class(class_path, use_async=False) -> Any:
+    # Fix https://github.com/redis/redis-py/issues/626
+    if class_path == "sentinel.Sentinel":
+        module_path = "authentik.root.redis_middleware.Custom"
+        if use_async:
+            module_path += "Async"
+        module_path += "Sentinel"
+        return import_string(module_path)
+
     module_path = "redis."
     if use_async:
         module_path += "asyncio."
