@@ -60,7 +60,7 @@ runs:
                     "log_level": "debug",
                     "secret_key": generate_id(),
                     "redis": {
-                      "url": ${{ env.redis_url }}
+                      "url": "${{ env.redis_url }}"
                     },
                 },
                 _config,
