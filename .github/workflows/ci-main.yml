@@ -90,12 +90,17 @@ jobs:
         psql:
           - 12-alpine
           - 15-alpine
+        redis:
+          - redis
+          - redis-sentinel
+          - redis-cluster
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
         uses: ./.github/actions/setup
         with:
           postgresql_tag: ${{ matrix.psql }}
+          redis_config: ${{ matrix.redis }}
       - name: run unittest
         run: |
           poetry run make test

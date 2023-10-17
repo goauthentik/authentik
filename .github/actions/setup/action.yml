@@ -5,6 +5,9 @@ inputs:
   postgresql_tag:
     description: "Optional postgresql image tag"
     default: "12"
+  redis_config:
+    description: "Optional redis configuration"
+    default: "redis"
 
 runs:
   using: "composite"
@@ -29,8 +32,18 @@ runs:
     - name: Setup dependencies
       shell: bash
       run: |
+        case ${{ inputs.redis_config }} in
+          redis-sentinel)
+            export AUTHENTIK_REDIS__URL=redis+sentinel://redis-sentinel:26379/0?mastername=mymaster
+            ;;
+          redis-cluster)
+            export AUTHENTIK_REDIS__URL=redis+cluster://bitnami@redis-cluster-1:6379,redis-cluster-2:6379,redis-cluster-3:6379/0
+            ;;
+          *)
+            ;;
+        esac
         export PSQL_TAG=${{ inputs.postgresql_tag }}
-        docker-compose -f .github/actions/setup/docker-compose.yml up -d
+        docker-compose -f .github/actions/setup/docker-compose.yml --profile ${{ inputs.redis_config }} up -d
         poetry env use python3.11
         poetry install
         cd web && npm ci

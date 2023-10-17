@@ -1,4 +1,4 @@
-version: "3.7"
+version: "3.9"
 
 services:
   postgresql:
@@ -10,14 +10,76 @@ services:
       POSTGRES_PASSWORD: "EK-5jnKfjrGRm<77"
       POSTGRES_DB: authentik
     ports:
-      - 5432:5432
+      - "5432:5432"
     restart: always
   redis:
     image: docker.io/library/redis
     ports:
-      - 6379:6379
+      - "6379:6379"
     restart: always
+    profiles:
+      - redis
+      - redis-sentinel
+  redis-sentinel:
+    image: bitnami/redis-sentinel:latest
+    depends_on:
+      - redis
+    environment:
+      REDIS_MASTER_HOST: redis
+    ports:
+      - "26379:26379"
+    restart: always
+    profiles:
+      - redis-sentinel
+  redis-cluster-1:
+    image: docker.io/bitnami/redis-cluster:7.2
+    volumes:
+      - redis-cluster_data-1:/bitnami/redis/data
+    environment:
+      REDIS_PASSWORD: bitnami
+      REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
+    ports:
+      - "6379:6379"
+    restart: always
+    profiles:
+      - redis-cluster
+  redis-cluster-2:
+    image: docker.io/bitnami/redis-cluster:7.2
+    volumes:
+      - redis-cluster_data-2:/bitnami/redis/data
+    environment:
+      REDIS_PASSWORD: bitnami
+      REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
+    ports:
+      - "6379:6379"
+    restart: always
+    profiles:
+      - redis-cluster
+  redis-cluster-3:
+    image: docker.io/bitnami/redis-cluster:7.2
+    volumes:
+      - redis-cluster_data-3:/bitnami/redis/data
+    depends_on:
+      - redis-node-1
+      - redis-node-2
+    environment:
+      REDIS_PASSWORD: bitnami
+      REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
+      REDISCLI_AUTH: bitnami
+      REDIS_CLUSTER_REPLICAS: 1
+      REDIS_CLUSTER_CREATOR: yes
+    ports:
+      - "6379:6379"
+    restart: always
+    profiles:
+      - redis-cluster
 
 volumes:
   db-data:
+    driver: local
+  redis-cluster_data-1:
+    driver: local
+  redis-cluster_data-2:
+    driver: local
+  redis-cluster_data-3:
     driver: local
