@@ -3,7 +3,8 @@ from urllib.parse import urlparse
 
 from celery import Celery
 from celery.app.backends import by_url as backends_by_url
-from celery.backends.redis import RedisBackend
+from celery.backends.redis import RedisBackend, ResultConsumer
+from structlog.stdlib import get_logger
 
 from authentik.lib.utils.parser import (
     get_client,
@@ -13,9 +14,66 @@ from authentik.lib.utils.parser import (
 )
 from authentik.root.redis_middleware_kombu import CustomConnection
 
+logger = get_logger(__name__)
+
+
+class CustomResultConsumer(ResultConsumer):
+    def on_after_fork(self):
+        try:
+            if self.backend.uses_cluster:
+                self.backend.client.nodes_manager.reset()
+            else:
+                self.backend.client.connection_pool.reset()
+            if self._pubsub is not None:
+                self._pubsub.close()
+        except KeyError as e:
+            logger.warning(str(e))
+        super().on_after_fork()
+
+    def _reconnect_pubsub(self):
+        if self._pubsub:
+            self._pubsub.close()
+        self._pubsub = None
+        if self.backend.uses_cluster:
+            self.backend.client.nodes_manager.reset()
+        else:
+            self.backend.client.connection_pool.reset()
+        # Task state might have changed when the connection was down, so we
+        # retrieve meta for all subscribed tasks before going into pubsub mode
+        metas = []
+        if self.subscribed_to:
+            metas = self.backend.client.mget(self.subscribed_to)
+        metas = [meta for meta in metas if meta]
+        for meta in metas:
+            self.on_state_change(self._decode_result(meta), None)
+        self._pubsub = self.backend.client.pubsub(
+            ignore_subscribe_messages=True,
+        )
+        if self.subscribed_to:
+            self._pubsub.subscribe(*self.subscribed_to)
+        else:
+            if self.backend.uses_cluster:
+                if self._pubsub.connection_pool is None:
+                    # Get a random node
+                    node = self._pubsub.cluster.get_random_node()
+                    self._pubsub.node = node
+                    redis_connection = self._pubsub.cluster.get_redis_connection(node)
+                    self._pubsub.connection_pool = redis_connection.connection_pool
+
+            self._pubsub.connection = self._pubsub.connection_pool.get_connection(
+                "pubsub", self._pubsub.shard_hint
+            )
+            # Even if there is nothing to subscribe,
+            # we should not lose the callback after connecting.
+            # The on_connect callback will re-subscribe to
+            # any channels we previously subscribed to.
+            self._pubsub.connection.register_connect_callback(self._pubsub.on_connect)
+
 
 class CustomBackend(RedisBackend):
     """Custom Redis backend in order to use custom Redis URL parser"""
+
+    ResultConsumer = CustomResultConsumer
 
     def __init__(self, url=None, **kwargs):
         super().__init__(**kwargs)
@@ -33,13 +91,13 @@ class CustomBackend(RedisBackend):
         return get_connection_pool(self.config)
 
     @property
-    def _uses_cluster(self) -> bool:
+    def uses_cluster(self) -> bool:
         """Check whether Redis cluster connection is used"""
         return self.config["type"] == "cluster"
 
     def _set(self, key, value):
         """Do not use pipeline publish as it is unsupported for cluster"""
-        if self._uses_cluster:
+        if self.uses_cluster:
             self.client.set(key, value)
 
             if hasattr(self, "expires"):
