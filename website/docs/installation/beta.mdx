@@ -2,7 +2,7 @@
 title: Beta versions
 ---
 
-You can test upcoming authentik versions by switching to the _next_ images. It is recommended to upgrade to the latest stable release before upgrading to Beta images. It is always possible to upgrade from the Beta to the next stable release.
+You can test upcoming authentik versions, including major new features that are in "Beta release", by switching to the _next_ images. It is recommended to upgrade to the latest stable release before upgrading to Beta images. It is always possible to upgrade from the Beta to the next stable release.
 
 :::warning
 Downgrading from the Beta is not supported. It is recommended to take a backup before upgrading, or test Beta versions on a separate install. Upgrading from Beta versions to the next release is usually possible, however also not supported.
@@ -80,5 +80,9 @@ helm upgrade authentik authentik/authentik -f values.yaml
   </TabItem>
 
 </Tabs>
+
+:::info
+If you are upgrading from an older Beta release to the most recent Beta release, you might need to run `kubectl rollout restart deployment`, because Helm needs to recreate the pods in order to pick up the new image (the tag doesn't change).
+:::
 
 To verify whether the upgrade was successful, go to your Admin panel and navigate to the Overview dashboard. There, you can check the version number to ensure that you are using the Beta version you intended.
