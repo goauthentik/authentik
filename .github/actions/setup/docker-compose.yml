@@ -60,8 +60,8 @@ services:
     volumes:
       - redis-cluster_data-3:/bitnami/redis/data
     depends_on:
-      - redis-node-1
-      - redis-node-2
+      - redis-cluster-1
+      - redis-cluster-2
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
