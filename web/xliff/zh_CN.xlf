@@ -7837,6 +7837,146 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Don't show this message again.</source>
   <target>不要再显示此消息。</target>
 </trans-unit>
+<trans-unit id="s3e99ea082ca5ade9">
+  <source>Failed to fetch</source>
+  <target>拉取失败</target>
+</trans-unit>
+<trans-unit id="s98327528f00365a7">
+  <source>Failed to fetch data.</source>
+  <target>拉取数据失败。</target>
+</trans-unit>
+<trans-unit id="sf485014051ad0cf7">
+  <source>Successfully assigned permission.</source>
+  <target>已成功分配权限。</target>
+</trans-unit>
+<trans-unit id="sca7fed2bef53cb99">
+  <source>Role</source>
+  <target>角色</target>
+</trans-unit>
+<trans-unit id="sc92c1a54034e21cc">
+  <source>Assign</source>
+  <target>分配</target>
+</trans-unit>
+<trans-unit id="scd84d10ee9137070">
+  <source>Assign permission to role</source>
+  <target>为角色分配权限</target>
+</trans-unit>
+<trans-unit id="s5ee6f1b84e9ebc69">
+  <source>Assign to new role</source>
+  <target>分配到新角色</target>
+</trans-unit>
+<trans-unit id="s4afb26a8fae257e9">
+  <source>Directly assigned</source>
+  <target>直接分配</target>
+</trans-unit>
+<trans-unit id="sd8051c26e155f043">
+  <source>Assign permission to user</source>
+  <target>为用户分配权限</target>
+</trans-unit>
+<trans-unit id="sf79f8681e5ffaee2">
+  <source>Assign to new user</source>
+  <target>分配到新用户</target>
+</trans-unit>
+<trans-unit id="saabeb4cab074b0b9">
+  <source>User Object Permissions</source>
+  <target>用户对象权限</target>
+</trans-unit>
+<trans-unit id="s8489d5559dda260c">
+  <source>Role Object Permissions</source>
+  <target>角色对象权限</target>
+</trans-unit>
+<trans-unit id="s6b2beba7ab637e9e">
+  <source>Roles</source>
+  <target>角色</target>
+</trans-unit>
+<trans-unit id="s96d2bb4be3f5e8aa">
+  <source>Select roles to grant this groups' users' permissions from the selected roles.</source>
+  <target>选择角色，为该组内用户授予所选角色的权限。</target>
+</trans-unit>
+<trans-unit id="sb37880a2a7288ef0">
+  <source>Update Permissions</source>
+  <target>更新权限</target>
+</trans-unit>
+<trans-unit id="se9c07cf256774d81">
+  <source>Editing is disabled for managed tokens</source>
+  <target>托管令牌的编辑已被禁用</target>
+</trans-unit>
+<trans-unit id="s78ab26da7f067de8">
+  <source>Select permissions to grant</source>
+  <target>选择权限以授予</target>
+</trans-unit>
+<trans-unit id="sdeb90bfd8a80b86b">
+  <source>Permissions to add</source>
+  <target>要添加的权限</target>
+</trans-unit>
+<trans-unit id="s36247910d67421e1">
+  <source>Select permissions</source>
+  <target>选择权限</target>
+</trans-unit>
+<trans-unit id="s67e136af8fc1107b">
+  <source>Assign permission</source>
+  <target>分配权限</target>
+</trans-unit>
+<trans-unit id="sb923723d27df40ba">
+  <source>Permission(s)</source>
+  <target>权限</target>
+</trans-unit>
+<trans-unit id="sc5fb00b25c7f5a02">
+  <source>Permission</source>
+  <target>权限</target>
+</trans-unit>
+<trans-unit id="s1455753daa00f1bc">
+  <source>User doesn't have view permission so description cannot be retrieved.</source>
+  <target>用户不具有查看权限，所以无法获取描述。</target>
+</trans-unit>
+<trans-unit id="sa3a3e09b88ed9791">
+  <source>Assigned permissions</source>
+  <target>分配的权限</target>
+</trans-unit>
+<trans-unit id="s9cc631505c17b028">
+  <source>Assigned global permissions</source>
+  <target>分配的全局权限</target>
+</trans-unit>
+<trans-unit id="s8f85a0e678846080">
+  <source>Assigned object permissions</source>
+  <target>分配的对象权限</target>
+</trans-unit>
+<trans-unit id="s9103a949a3963aa9">
+  <source>Successfully updated role.</source>
+  <target>已成功更新角色。</target>
+</trans-unit>
+<trans-unit id="sdf87c5661b31359e">
+  <source>Successfully created role.</source>
+  <target>已成功创建角色。</target>
+</trans-unit>
+<trans-unit id="s3484b1e6d0b5335f">
+  <source>Manage roles which grant permissions to objects within authentik.</source>
+  <target>管理向 authentik 中的对象授予权限的角色。</target>
+</trans-unit>
+<trans-unit id="s259de999919316db">
+  <source>Role(s)</source>
+  <target>角色</target>
+</trans-unit>
+<trans-unit id="s2ffad156e8332f04">
+  <source>Update Role</source>
+  <target>更新角色</target>
+</trans-unit>
+<trans-unit id="sc5f923729564fbf3">
+  <source>Create Role</source>
+  <target>创建角色</target>
+</trans-unit>
+<trans-unit id="s14bfa8fd1bec8889">
+  <source>Role doesn't have view permission so description cannot be retrieved.</source>
+  <target>角色不具有查看权限，所以无法获取描述。</target>
+</trans-unit>
+<trans-unit id="s7e796fe83982863f">
+  <source>Role <x id="0" equiv-text="${this._role?.name || &quot;&quot;}"/></source>
+  <target>角色 <x id="0" equiv-text="${this._role?.name || &quot;&quot;}"/></target>
+</trans-unit>
+<trans-unit id="s526e2c66bd51ff5f">
+  <source>Role Info</source>
+  <target>角色信息</target>
+</trans-unit>
     </body>
   </file>
 </xliff>
