@@ -18,7 +18,10 @@ logger = get_logger(__name__)
 
 
 class CustomResultConsumer(ResultConsumer):
+    """Custom result consumer with Redis cluster support"""
+
     def on_after_fork(self):
+        """Clear state for child processes"""
         try:
             if self.backend.uses_cluster:
                 self.backend.client.nodes_manager.reset()
@@ -26,11 +29,12 @@ class CustomResultConsumer(ResultConsumer):
                 self.backend.client.connection_pool.reset()
             if self._pubsub is not None:
                 self._pubsub.close()
-        except KeyError as e:
-            logger.warning(str(e))
+        except KeyError as exc:
+            logger.warning(str(exc))
         super().on_after_fork()
 
     def _reconnect_pubsub(self):
+        """Reconnect failing pubsub connections"""
         if self._pubsub:
             self._pubsub.close()
         self._pubsub = None

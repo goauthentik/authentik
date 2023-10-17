@@ -1,9 +1,13 @@
+"""Inject a custom master discovery method to Redis sentinel"""
 from redis.asyncio import Sentinel as AsyncSentinel
 from redis.sentinel import MasterNotFoundError, Sentinel
 
 
 class CustomSentinel(Sentinel):
+    """Custom sentinel client with updated master discovery"""
+
     def check_master_state(self, state, service_name):
+        """No longer needed as we use master returned by sentinel"""
         raise NotImplementedError
 
     def discover_master(self, service_name):
@@ -13,7 +17,7 @@ class CustomSentinel(Sentinel):
         Returns a pair (address, port) or raises MasterNotFoundError if no
         master is found.
         """
-        collected_errors = list()
+        collected_errors = []
         for sentinel_no, sentinel in enumerate(self.sentinels):
             try:
                 master = sentinel.sentinel_get_master_addr_by_name(service_name)
@@ -32,7 +36,10 @@ class CustomSentinel(Sentinel):
 
 
 class CustomAsyncSentinel(AsyncSentinel):
+    """Custom async sentinel client with updated master discovery"""
+
     def check_master_state(self, state: dict, service_name: str) -> bool:
+        """No longer needed as we use master returned by sentinel"""
         raise NotImplementedError
 
     async def discover_master(self, service_name: str):
@@ -43,7 +50,7 @@ class CustomAsyncSentinel(AsyncSentinel):
         Returns a pair (address, port) or raises MasterNotFoundError if no
         master is found.
         """
-        collected_errors = list()
+        collected_errors = []
         for sentinel_no, sentinel in enumerate(self.sentinels):
             try:
                 master = await sentinel.sentinel_get_master_addr_by_name(service_name)
