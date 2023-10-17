@@ -34,12 +34,13 @@ runs:
       run: |
         case ${{ inputs.redis_config }} in
           redis-sentinel)
-            export AUTHENTIK_REDIS__URL=redis+sentinel://redis-sentinel:26379/0?mastername=mymaster
+            echo "redis_url=redis+sentinel://redis-sentinel:26379/0?mastername=mymaster" >> $GITHUB_ENV
             ;;
           redis-cluster)
-            export AUTHENTIK_REDIS__URL=redis+cluster://bitnami@redis-cluster-1:6379,redis-cluster-2:6379,redis-cluster-3:6379/0
+            echo "redis_url=redis+cluster://bitnami@redis-cluster-1:6379,redis-cluster-2:6379,redis-cluster-3:6379/0" >> $GITHUB_ENV
             ;;
           *)
+            echo "redis_url=redis://localhost:6379/0" >> $GITHUB_ENV
             ;;
         esac
         export PSQL_TAG=${{ inputs.postgresql_tag }}
@@ -58,6 +59,9 @@ runs:
                 {
                     "log_level": "debug",
                     "secret_key": generate_id(),
+                    "redis": {
+                      "url": ${{ env.redis_url }}
+                    },
                 },
                 _config,
                 default_flow_style=False,
