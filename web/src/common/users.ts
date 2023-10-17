@@ -45,6 +45,7 @@ export function me(): Promise<SessionUser> {
                         username: "",
                         name: "",
                         settings: {},
+                        systemPermissions: [],
                     },
                 };
                 if (ex.response?.status === 401 || ex.response?.status === 403) {

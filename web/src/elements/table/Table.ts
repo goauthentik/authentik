@@ -1,3 +1,4 @@
+import { APIErrorTypes, parseAPIError } from "@goauthentik/app/common/errors";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { groupBy } from "@goauthentik/common/utils";
 import { AKElement } from "@goauthentik/elements/Base";
@@ -148,7 +149,7 @@ export abstract class Table<T> extends AKElement {
     expandedElements: T[] = [];
 
     @state()
-    hasError?: Error;
+    error?: APIErrorTypes;
 
     static get styles(): CSSResult[] {
         return [
@@ -191,7 +192,7 @@ export abstract class Table<T> extends AKElement {
         this.isLoading = true;
         try {
             this.data = await this.apiEndpoint(this.page);
-            this.hasError = undefined;
+            this.error = undefined;
             this.page = this.data.pagination.current;
             const newSelected: T[] = [];
             const newExpanded: T[] = [];
@@ -228,7 +229,7 @@ export abstract class Table<T> extends AKElement {
             this.expandedElements = newExpanded;
         } catch (ex) {
             this.isLoading = false;
-            this.hasError = ex as Error;
+            this.error = await parseAPIError(ex as Error);
         }
     }
 
@@ -249,25 +250,32 @@ export abstract class Table<T> extends AKElement {
                     <div class="pf-l-bullseye">
                         ${inner
                             ? inner
-                            : html`<ak-empty-state
-                                  header="${msg("No objects found.")}"
-                              ></ak-empty-state>`}
+                            : html`<ak-empty-state header="${msg("No objects found.")}"
+                                  ><div slot="primary">${this.renderObjectCreate()}</div>
+                              </ak-empty-state>`}
                     </div>
                 </td>
             </tr>
         </tbody>`;
     }
 
+    renderObjectCreate(): TemplateResult {
+        return html``;
+    }
+
     renderError(): TemplateResult {
+        if (!this.error) {
+            return html``;
+        }
         return html`<ak-empty-state header="${msg("Failed to fetch objects.")}" icon="fa-times">
-            ${this.hasError instanceof ResponseError
-                ? html` <div slot="body">${this.hasError.message}</div> `
-                : html`<div slot="body">${this.hasError?.toString()}</div>`}
+            ${this.error instanceof ResponseError
+                ? html` <div slot="body">${this.error.message}</div> `
+                : html`<div slot="body">${this.error.detail}</div>`}
         </ak-empty-state>`;
     }
 
     private renderRows(): TemplateResult[] | undefined {
-        if (this.hasError) {
+        if (this.error) {
             return [this.renderEmpty(this.renderError())];
         }
         if (!this.data || this.isLoading) {
@@ -277,7 +285,7 @@ export abstract class Table<T> extends AKElement {
             return [this.renderEmpty()];
         }
         const groupedResults = this.groupBy(this.data.results);
-        if (groupedResults.length === 1) {
+        if (groupedResults.length === 1 && groupedResults[0][0] === "") {
             return this.renderRowGroup(groupedResults[0][1]);
         }
         return groupedResults.map(([group, items]) => {
@@ -397,14 +405,15 @@ export abstract class Table<T> extends AKElement {
     }
 
     renderToolbar(): TemplateResult {
-        return html` <ak-spinner-button
-            .callAction=${() => {
-                return this.fetch();
-            }}
-            class="pf-m-secondary"
-        >
-            ${msg("Refresh")}</ak-spinner-button
-        >`;
+        return html` ${this.renderObjectCreate()}
+            <ak-spinner-button
+                .callAction=${() => {
+                    return this.fetch();
+                }}
+                class="pf-m-secondary"
+            >
+                ${msg("Refresh")}</ak-spinner-button
+            >`;
     }
 
     renderToolbarSelected(): TemplateResult {
@@ -419,18 +428,20 @@ export abstract class Table<T> extends AKElement {
         if (!this.searchEnabled()) {
             return html``;
         }
-        return html`<ak-table-search
-            class="pf-c-toolbar__item pf-m-search-filter"
-            value=${ifDefined(this.search)}
-            .onSearch=${(value: string) => {
-                this.search = value;
-                this.fetch();
-                updateURLParams({
-                    search: value,
-                });
-            }}
-        >
-        </ak-table-search>`;
+        return html`<div class="pf-c-toolbar__group pf-m-search-filter">
+            <ak-table-search
+                class="pf-c-toolbar__item pf-m-search-filter"
+                value=${ifDefined(this.search)}
+                .onSearch=${(value: string) => {
+                    this.search = value;
+                    this.fetch();
+                    updateURLParams({
+                        search: value,
+                    });
+                }}
+            >
+            </ak-table-search>
+        </div>`;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -441,7 +452,7 @@ export abstract class Table<T> extends AKElement {
     renderToolbarContainer(): TemplateResult {
         return html`<div class="pf-c-toolbar">
             <div class="pf-c-toolbar__content">
-                <div class="pf-c-toolbar__group pf-m-search-filter">${this.renderSearch()}</div>
+                ${this.renderSearch()}
                 <div class="pf-c-toolbar__bulk-select">${this.renderToolbar()}</div>
                 <div class="pf-c-toolbar__group">${this.renderToolbarAfter()}</div>
                 <div class="pf-c-toolbar__group">${this.renderToolbarSelected()}</div>

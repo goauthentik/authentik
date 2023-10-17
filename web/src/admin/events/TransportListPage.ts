@@ -5,6 +5,8 @@ import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
+import "@goauthentik/elements/rbac/ObjectPermissionModal";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -14,7 +16,11 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { EventsApi, NotificationTransport } from "@goauthentik/api";
+import {
+    EventsApi,
+    NotificationTransport,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-event-transport-list")
 export class TransportListPage extends TablePage<NotificationTransport> {
@@ -90,6 +96,12 @@ export class TransportListPage extends TablePage<NotificationTransport> {
                         </pf-tooltip>
                     </button>
                 </ak-forms-modal>
+
+                <ak-rbac-object-permission-modal
+                    model=${RbacPermissionsAssignedByUsersListModelEnum.EventsNotificationtransport}
+                    objectPk=${item.pk}
+                >
+                </ak-rbac-object-permission-modal>
                 <ak-action-button
                     class="pf-m-plain"
                     .apiRequest=${() => {

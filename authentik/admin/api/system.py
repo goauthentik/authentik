@@ -8,7 +8,6 @@ from django.utils.timezone import now
 from drf_spectacular.utils import extend_schema
 from gunicorn import version_info as gunicorn_version
 from rest_framework.fields import SerializerMethodField
-from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -17,6 +16,7 @@ from authentik.core.api.utils import PassiveSerializer
 from authentik.lib.utils.reflection import get_env
 from authentik.outposts.apps import MANAGED_OUTPOST
 from authentik.outposts.models import Outpost
+from authentik.rbac.permissions import HasPermission
 
 
 class RuntimeDict(TypedDict):
@@ -88,7 +88,7 @@ class SystemSerializer(PassiveSerializer):
 class SystemView(APIView):
     """Get system information."""
 
-    permission_classes = [IsAdminUser]
+    permission_classes = [HasPermission("authentik_rbac.view_system_info")]
     pagination_class = None
     filter_backends = []
     serializer_class = SystemSerializer

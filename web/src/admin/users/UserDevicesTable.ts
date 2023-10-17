@@ -10,8 +10,8 @@ import { customElement, property } from "lit/decorators.js";
 
 import { AuthenticatorsApi, Device } from "@goauthentik/api";
 
-@customElement("ak-user-device-list")
-export class UserDeviceList extends Table<Device> {
+@customElement("ak-user-device-table")
+export class UserDeviceTable extends Table<Device> {
     @property({ type: Number })
     userId?: number;
 

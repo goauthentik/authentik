@@ -1,5 +1,6 @@
 import "@goauthentik/admin/providers/RelatedApplicationButton";
 import "@goauthentik/admin/providers/radius/RadiusProviderForm";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -21,10 +22,13 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGallery from "@patternfly/patternfly/layouts/Gallery/gallery.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
-import PFFlex from "@patternfly/patternfly/utilities/Flex/flex.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-import { ProvidersApi, RadiusProvider } from "@goauthentik/api";
+import {
+    ProvidersApi,
+    RadiusProvider,
+    RbacPermissionsAssignedByUsersListModelEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-provider-radius-view")
 export class RadiusProviderViewPage extends AKElement {
@@ -50,7 +54,6 @@ export class RadiusProviderViewPage extends AKElement {
             PFBase,
             PFButton,
             PFPage,
-            PFFlex,
             PFDisplay,
             PFGallery,
             PFContent,
@@ -162,6 +165,12 @@ export class RadiusProviderViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.ProvidersRadiusRadiusprovider}
+                objectPk=${this.provider.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

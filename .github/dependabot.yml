@@ -51,6 +51,11 @@ updates:
       esbuild:
         patterns:
           - "@esbuild/*"
+      rollup:
+        patterns:
+          - "@rollup/*"
+          - "rollup"
+          - "rollup-*"
   - package-ecosystem: npm
     directory: "/tests/wdio"
     schedule:
