@@ -39,9 +39,9 @@
         "@formatjs/intl-listformat": "^7.5.0",
         "@fortawesome/fontawesome-free": "^6.4.2",
         "@goauthentik/api": "^2023.8.3-1697470337",
-        "@lit-labs/context": "^0.4.1",
-        "@lit-labs/task": "^3.1.0",
+        "@lit/context": "^1.0.0",
         "@lit/localize": "^0.11.4",
+        "@lit/task": "^1.0.0",
         "@open-wc/lit-helpers": "^0.6.0",
         "@patternfly/elements": "^2.4.0",
         "@patternfly/patternfly": "^4.224.2",
@@ -124,6 +124,9 @@
     "optionalDependencies": {
         "@esbuild/darwin-arm64": "^0.19.5",
         "@esbuild/linux-amd64": "^0.18.11",
-        "@esbuild/linux-arm64": "^0.19.5"
+        "@esbuild/linux-arm64": "^0.19.5",
+        "@rollup/rollup-darwin-arm64": "4.1.4",
+        "@rollup/rollup-linux-x64-gnu": "4.1.4",
+        "@rollup/rollup-linux-arm64-gnu": "4.1.4"
     }
 }
