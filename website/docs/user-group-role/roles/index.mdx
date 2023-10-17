@@ -5,6 +5,21 @@ title: About roles
 import DocCardList from "@theme/DocCardList";
 import { useCurrentSidebarCategory } from "@docusaurus/theme-common";
 
+Roles are a way to simplify the assignment of permission.
+
+Think of roles as a collection of permissions. A role, along with its "bucket" of assigned permissions, can then be assigned to a group, which means that every user who is a part of that group will inherit all of the permissions in that role's "bucket".
+
+For example, let's take a look at the following scenario:
+
+A new set of users needs to be added to the system. These users will be the first team members on the brand new Security team, so they will need some high-level permissions, with [object permissions](../) to create and remove other users, revoke permissions, and send recovery emails. They will also need [global permissions](../access-control/permissions#fundamentals-of-authentik-permissions) to control access to Flows, Stages, Policies, and other components.
+
+The easiest workflow for setting up these new users involves creating a new role specifically for their type of work, and is as follows:
+
+1.  Create a new role named "security team role".
+2.  [Assign the appropriate permissions](../access-control/permissions#manage-permissions) to this role.
+3. Create a new group named "security team".
+4. Assign all new team members to the security team group.
+
 To learn more about working with roles in authentik, refer to the following topics:
 
 <DocCardList items={useCurrentSidebarCategory().items} />
