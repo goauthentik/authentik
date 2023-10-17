@@ -46,7 +46,8 @@ while True:
         redis = parse_url(REDIS_URL)
         redis.ping()
         break
-    except RedisError as exc:
+    # Catch index error for Redis cluster that is still initializing
+    except (RedisError, IndexError) as exc:
         sleep(1)
         CONFIG.log("info", f"Redis Connection failed, retrying... ({exc})", redis_url=REDIS_URL)
 CONFIG.log("info", "Redis Connection successful")
