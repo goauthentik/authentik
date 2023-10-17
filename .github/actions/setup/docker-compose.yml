@@ -26,8 +26,6 @@ services:
       - redis
     environment:
       REDIS_MASTER_HOST: redis
-    ports:
-      - "26379:26379"
     restart: always
     profiles:
       - redis-sentinel
@@ -38,8 +36,6 @@ services:
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
-    ports:
-      - "6379:6379"
     restart: always
     profiles:
       - redis-cluster
@@ -50,8 +46,6 @@ services:
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: redis-cluster-1 redis-cluster-2 redis-cluster-3
-    ports:
-      - "6379:6379"
     restart: always
     profiles:
       - redis-cluster
@@ -68,8 +62,6 @@ services:
       REDISCLI_AUTH: bitnami
       REDIS_CLUSTER_REPLICAS: 1
       REDIS_CLUSTER_CREATOR: "yes"
-    ports:
-      - "6379:6379"
     restart: always
     profiles:
       - redis-cluster
