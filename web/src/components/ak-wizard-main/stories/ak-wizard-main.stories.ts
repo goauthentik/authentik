@@ -2,11 +2,7 @@ import "@goauthentik/elements/messages/MessageContainer";
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
-
-import AkWizard from "../ak-wizard-frame";
-import "../ak-wizard-main";
-import { BackStep, CancelWizard, CloseWizard, NextStep } from "../commonWizardButtons";
-import type { WizardStep } from "../types";
+import "./ak-demo-wizard";
 
 const metadata: Meta<AkWizard> = {
     title: "Components / Wizard / Basic",
@@ -36,28 +32,9 @@ const container = (testItem: TemplateResult) =>
         ${testItem}
     </div>`;
 
-const dummySteps: WizardStep[] = [
-    {
-        label: "Test Step1",
-        render: () => html`<h2>This space intentionally left blank today</h2>`,
-        disabled: false,
-        buttons: [NextStep, CancelWizard],
-    },
-    {
-        label: "Test Step 2",
-        render: () => html`<h2>This space also intentionally left blank</h2>`,
-        disabled: false,
-        buttons: [BackStep, CloseWizard],
-    },
-];
 
 export const OnePageWizard = () => {
     return container(
-        html` <ak-wizard-main
-            .steps=${dummySteps}
-            canCancel
-            header="The Grand Illusion"
-            prompt="Start the show!"
-        ></ak-wizard-main>`,
+        html` <ak-demo-wizard></ak-demo-wizard>`
     );
 };
