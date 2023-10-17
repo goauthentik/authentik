@@ -66,16 +66,16 @@ You can assign or remove permissions to a user, role, or group.
 
 ### Assign or remove permissions
 
-*   To assign or remove _object_ permissions for a specific user:
+-   To assign or remove _object_ permissions for a specific user:
 
 1. Go to the Admin interface and navigate to **Directory -> Users**.
 2. Select a specific user the clicking on the name, to open the user's details page.
 3. Click the **Permissions** tab at the top of the page.
 4. To assign or remove permissions that this specific user has on another _user object_ (i.e. a team member):
-    1.  Click the **User Object Permissions** tab, click **Assign to new user**.
-    2.  In the **User** drop-down, select the user object.
-    3.  Use the toggles to set which permissions on that selected user object you want to grant to the specific user.
-    4.  Click Assign to save your settings and close the modal.
+    1. Click the **User Object Permissions** tab, click **Assign to new user**.
+    2. In the **User** drop-down, select the user object.
+    3. Use the toggles to set which permissions on that selected user object you want to grant to the specific user.
+    4. Click Assign to save your settings and close the modal.
 
 To assign or remove _global_ permissions for a user:
 
@@ -100,5 +100,3 @@ To assign or remove _global_ permissions for a role:
 1. Go to the Admin interface and navigate to **Directory -> Roles**.
 2. Select a specific role by clicking on the name, to open the user details page.
 3. The **Overview** tab at the top of the page displays all assigned global permissions for the role.
-
-
