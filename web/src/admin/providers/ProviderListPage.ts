@@ -5,6 +5,7 @@ import "@goauthentik/admin/providers/proxy/ProxyProviderForm";
 import "@goauthentik/admin/providers/radius/RadiusProviderForm";
 import "@goauthentik/admin/providers/saml/SAMLProviderForm";
 import "@goauthentik/admin/providers/scim/SCIMProviderForm";
+import "@goauthentik/admin/applications/ApplicationWizardHint";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
 import "@goauthentik/elements/buttons/SpinnerButton";
@@ -58,6 +59,10 @@ export class ProviderListPage extends TablePage<Provider> {
             new TableColumn(msg("Type")),
             new TableColumn(msg("Actions")),
         ];
+    }
+
+    renderSectionBefore(): TemplateResult {
+        return html`<ak-application-wizard-hint></ak-application-wizard-hint>`;
     }
 
     renderToolbarSelected(): TemplateResult {

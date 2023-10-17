@@ -26,7 +26,7 @@ export class ApplicationWizard extends CustomListenerElement(
     AkWizard<ApplicationWizardStateUpdate, ApplicationStep>,
 ) {
     constructor() {
-        super(msg("Create"), msg("New application"), msg("Create a new application"));
+        super(msg("Create With Wizard"), msg("New application"), msg("Create a new application"));
         this.steps = newSteps();
     }
 

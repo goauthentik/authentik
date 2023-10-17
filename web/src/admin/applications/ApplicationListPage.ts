@@ -1,8 +1,9 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/applications/wizard/ak-application-wizard";
+import "./ApplicationWizardHint";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
+import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/components/ak-app-icon";
 import MDApplication from "@goauthentik/docs/core/applications.md";
 import "@goauthentik/elements/Markdown";
@@ -33,7 +34,7 @@ export class ApplicationListPage extends TablePage<Application> {
     }
     pageDescription(): string {
         return msg(
-            "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.",
+            "External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.",
         );
     }
     pageIcon(): string {
@@ -85,6 +86,10 @@ export class ApplicationListPage extends TablePage<Application> {
             new TableColumn(msg("Provider Type")),
             new TableColumn(msg("Actions")),
         ];
+    }
+
+    renderSectionBefore(): TemplateResult {
+        return html`<ak-application-wizard-hint></ak-application-wizard-hint>`;
     }
 
     renderSidebarAfter(): TemplateResult {
@@ -163,7 +168,6 @@ export class ApplicationListPage extends TablePage<Application> {
         ];
     }
 
-    /*
     renderObjectCreate(): TemplateResult {
         return html`<ak-forms-modal .open=${getURLParam("createForm", false)}>
             <span slot="submit"> ${msg("Create")} </span>
@@ -171,10 +175,5 @@ export class ApplicationListPage extends TablePage<Application> {
             <ak-application-form slot="form"> </ak-application-form>
             <button slot="trigger" class="pf-c-button pf-m-primary">${msg("Create")}</button>
         </ak-forms-modal>`;
-    }
-*/
-
-    renderObjectCreate(): TemplateResult {
-        return html`<ak-application-wizard></ak-application-wizard>`;
     }
 }
