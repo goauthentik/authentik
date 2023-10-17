@@ -1,14 +1,15 @@
+import type { WizardStep } from "@goauthentik/components/ak-wizard-main/types";
+
+import { msg } from "@lit/localize";
 import { customElement } from "@lit/reactive-element/decorators/custom-element.js";
 import { html } from "lit";
-import { BackStep, CancelWizard, CloseWizard, NextStep } from "../commonWizardButtons";
-import { msg } from "@lit/localize";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
 import PFRadio from "@patternfly/patternfly/components/Radio/radio.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import type { WizardStep } from "@goauthentik/components/ak-wizard-main/types";
 import { AkWizard } from "../AkWizard";
+import { BackStep, CancelWizard, CloseWizard, NextStep } from "../commonWizardButtons";
 
 type WizardStateUpdate = {
     message: string;
@@ -43,5 +44,4 @@ export class ApplicationWizard extends AkWizard<WizardStateUpdate, WizardStep> {
     close() {
         this.frame.value!.open = false;
     }
-
 }

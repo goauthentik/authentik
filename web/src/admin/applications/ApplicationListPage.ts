@@ -1,15 +1,14 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import "./ApplicationWizardHint";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
-import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 import "@goauthentik/components/ak-app-icon";
 import MDApplication from "@goauthentik/docs/core/applications.md";
 import "@goauthentik/elements/Markdown";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
+import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 // import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
@@ -23,6 +22,8 @@ import { customElement, property } from "lit/decorators.js";
 import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
+
+import "./ApplicationWizardHint";
 
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {

@@ -1,10 +1,13 @@
+import type { WizardStep } from "@goauthentik/components/ak-wizard-main/types";
 import "@goauthentik/elements/messages/MessageContainer";
 import { Meta } from "@storybook/web-components";
 
 import { TemplateResult, html } from "lit";
+
+import { AkWizard } from "../AkWizard";
 import "./ak-demo-wizard";
 
-const metadata: Meta<AkWizard> = {
+const metadata: Meta<AkWizard<string, WizardStep>> = {
     title: "Components / Wizard / Basic",
     component: "ak-wizard-main",
     parameters: {
@@ -32,9 +35,6 @@ const container = (testItem: TemplateResult) =>
         ${testItem}
     </div>`;
 
-
 export const OnePageWizard = () => {
-    return container(
-        html` <ak-demo-wizard></ak-demo-wizard>`
-    );
+    return container(html` <ak-demo-wizard></ak-demo-wizard>`);
 };
