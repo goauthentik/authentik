@@ -3,7 +3,7 @@ title: Permissions
 description: "Learn how to use global and object permissions in authentik."
 ---
 
-Permissions are the central components in all acess control systems, the lowest-level component, the controlling piece of access data.Permissions are assigned to (or removed from!) users, groups, and roles to define exactly WHO can do WHAT to WHICH part of the overall software system.
+Permissions are the central components in all access control systems, the lowest-level component, the controlling piece of access data. Permissions are assigned to (or removed from!) users, groups, and roles to define exactly WHO can do WHAT to WHICH part of the overall software system.
 
 ## Fundamentals of authentik permissions
 
