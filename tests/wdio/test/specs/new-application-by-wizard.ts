@@ -31,6 +31,9 @@ async function getCommitMessage() {
     return await ApplicationWizardView.successMessage;
 }
 
+const SUCCESS_MESSAGE = "Your application has been saved";
+const EXPLICIT_CONSENT = "default-provider-authorization-explicit-consent";
+
 describe("Configure Applications with the Application Wizard", () => {
     it("Should configure a simple LDAP Application", async () => {
         await reachTheProvider("New LDAP Application");
@@ -46,7 +49,7 @@ describe("Configure Applications with the Application Wizard", () => {
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await expect(getCommitMessage()).toHaveText("Your application has been saved");
+        await expect(getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
     it("Should configure a simple Oauth2 Application", async () => {
@@ -59,13 +62,11 @@ describe("Configure Applications with the Application Wizard", () => {
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await ApplicationWizardView.oauth.setAuthorizationFlow(
-            "default-provider-authorization-explicit-consent",
-        );
+        await ApplicationWizardView.oauth.setAuthorizationFlow(EXPLICIT_CONSENT);
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await expect(getCommitMessage()).toHaveText("Your application has been saved");
+        await expect(getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
     it("Should configure a simple SAML Application", async () => {
@@ -78,14 +79,12 @@ describe("Configure Applications with the Application Wizard", () => {
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await ApplicationWizardView.saml.setAuthorizationFlow(
-            "default-provider-authorization-explicit-consent",
-        );
+        await ApplicationWizardView.saml.setAuthorizationFlow(EXPLICIT_CONSENT);
         await ApplicationWizardView.saml.acsUrl.setValue("http://example.com:8000/");
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await expect(getCommitMessage()).toHaveText("Your application has been saved");
+        await expect(getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
     it("Should configure a simple SCIM Application", async () => {
@@ -103,7 +102,7 @@ describe("Configure Applications with the Application Wizard", () => {
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await expect(getCommitMessage()).toHaveText("Your application has been saved");
+        await expect(getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
     it("Should configure a simple Radius Application", async () => {
@@ -120,7 +119,7 @@ describe("Configure Applications with the Application Wizard", () => {
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await expect(getCommitMessage()).toHaveText("Your application has been saved");
+        await expect(getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
     it("Should configure a simple Transparent Proxy Application", async () => {
@@ -132,9 +131,7 @@ describe("Configure Applications with the Application Wizard", () => {
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await ApplicationWizardView.transparentProxy.setAuthorizationFlow(
-            "default-provider-authorization-explicit-consent",
-        );
+        await ApplicationWizardView.transparentProxy.setAuthorizationFlow(EXPLICIT_CONSENT);
         await ApplicationWizardView.transparentProxy.externalHost.setValue(
             "http://external.example.com",
         );
@@ -145,7 +142,7 @@ describe("Configure Applications with the Application Wizard", () => {
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await expect(getCommitMessage()).toHaveText("Your application has been saved");
+        await expect(getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 
     it("Should configure a simple Forward Proxy Application", async () => {
@@ -157,9 +154,7 @@ describe("Configure Applications with the Application Wizard", () => {
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await ApplicationWizardView.forwardProxy.setAuthorizationFlow(
-            "default-provider-authorization-explicit-consent",
-        );
+        await ApplicationWizardView.forwardProxy.setAuthorizationFlow(EXPLICIT_CONSENT);
         await ApplicationWizardView.forwardProxy.externalHost.setValue(
             "http://external.example.com",
         );
@@ -167,6 +162,6 @@ describe("Configure Applications with the Application Wizard", () => {
         await ApplicationWizardView.nextButton.click();
         await ApplicationWizardView.pause();
 
-        await expect(getCommitMessage()).toHaveText("Your application has been saved");
+        await expect(getCommitMessage()).toHaveText(SUCCESS_MESSAGE);
     });
 });
