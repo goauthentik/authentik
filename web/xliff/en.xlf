@@ -6264,6 +6264,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 <trans-unit id="s526e2c66bd51ff5f">
   <source>Role Info</source>
 </trans-unit>
+<trans-unit id="s2da4aa7a9abeb653">
+  <source>Pseudolocale (for testing)</source>
+</trans-unit>
     </body>
   </file>
 </xliff>
