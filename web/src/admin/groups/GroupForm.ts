@@ -11,13 +11,22 @@ import YAML from "yaml";
 
 import { msg } from "@lit/localize";
 import { CSSResult, TemplateResult, css, html } from "lit";
-import { customElement } from "lit/decorators.js";
+import { customElement, state } from "lit/decorators.js";
 import { ifDefined } from "lit/directives/if-defined.js";
 
-import { CoreApi, CoreGroupsListRequest, Group } from "@goauthentik/api";
+import {
+    CoreApi,
+    CoreGroupsListRequest,
+    Group,
+    PaginatedRoleList,
+    RbacApi,
+} from "@goauthentik/api";
 
 @customElement("ak-group-form")
 export class GroupForm extends ModelForm<Group, string> {
+    @state()
+    roles?: PaginatedRoleList;
+
     static get styles(): CSSResult[] {
         return super.styles.concat(css`
             .pf-c-button.pf-m-control {
@@ -41,6 +50,12 @@ export class GroupForm extends ModelForm<Group, string> {
         } else {
             return msg("Successfully created group.");
         }
+    }
+
+    async load(): Promise<void> {
+        this.roles = await new RbacApi(DEFAULT_CONFIG).rbacRolesList({
+            ordering: "name",
+        });
     }
 
     async send(data: Group): Promise<Group> {
@@ -111,6 +126,26 @@ export class GroupForm extends ModelForm<Group, string> {
                     ?blankable=${true}
                 >
                 </ak-search-select>
+            </ak-form-element-horizontal>
+            <ak-form-element-horizontal label=${msg("Roles")} name="roles">
+                <select class="pf-c-form-control" multiple>
+                    ${this.roles?.results.map((role) => {
+                        const selected = Array.from(this.instance?.roles || []).some((sp) => {
+                            return sp == role.pk;
+                        });
+                        return html`<option value=${role.pk} ?selected=${selected}>
+                            ${role.name}
+                        </option>`;
+                    })}
+                </select>
+                <p class="pf-c-form__helper-text">
+                    ${msg(
+                        "Select roles to grant this groups' users' permissions from the selected roles.",
+                    )}
+                </p>
+                <p class="pf-c-form__helper-text">
+                    ${msg("Hold control/command to select multiple items.")}
+                </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal
                 label=${msg("Attributes")}

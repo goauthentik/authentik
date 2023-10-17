@@ -36,6 +36,11 @@ export { enLocale };
 // - Locale loader.
 
 // prettier-ignore
+const debug: LocaleRow = [
+    "pseudo-LOCALE",  /^pseudo/i,  () => msg("Pseudolocale (for testing)"),  async () => await import("@goauthentik/locales/pseudo-LOCALE"),
+];
+
+// prettier-ignore
 const LOCALE_TABLE: LocaleRow[] = [
     ["en",      /^en([_-]|$)/i,      () => msg("English"),               async () => await import("@goauthentik/locales/en")],
     ["es",      /^es([_-]|$)/i,      () => msg("Spanish"),               async () => await import("@goauthentik/locales/es")],
@@ -46,6 +51,7 @@ const LOCALE_TABLE: LocaleRow[] = [
     ["zh-Hant", /^zh[_-](HK|Hant)/i, () => msg("Chinese (traditional)"), async () => await import("@goauthentik/locales/zh-Hant")],
     ["zh_TW",   /^zh[_-]TW$/i,       () => msg("Taiwanese Mandarin"),    async () => await import("@goauthentik/locales/zh_TW")],
     ["zh-Hans", /^zh(\b|_)/i,        () => msg("Chinese (simplified)"),  async () => await import("@goauthentik/locales/zh-Hans")],
+    debug
 ];
 
 export const LOCALES: AkLocale[] = LOCALE_TABLE.map(([code, match, label, locale]) => ({

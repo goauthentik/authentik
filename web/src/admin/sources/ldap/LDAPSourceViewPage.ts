@@ -1,4 +1,5 @@
 import "@goauthentik/admin/sources/ldap/LDAPSourceForm";
+import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
@@ -22,7 +23,13 @@ import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
 import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
-import { LDAPSource, SourcesApi, Task, TaskStatusEnum } from "@goauthentik/api";
+import {
+    LDAPSource,
+    RbacPermissionsAssignedByUsersListModelEnum,
+    SourcesApi,
+    Task,
+    TaskStatusEnum,
+} from "@goauthentik/api";
 
 @customElement("ak-source-ldap-view")
 export class LDAPSourceViewPage extends AKElement {
@@ -206,6 +213,12 @@ export class LDAPSourceViewPage extends AKElement {
                     </div>
                 </div>
             </section>
+            <ak-rbac-object-permission-page
+                slot="page-permissions"
+                data-tab-title="${msg("Permissions")}"
+                model=${RbacPermissionsAssignedByUsersListModelEnum.SourcesLdapLdapsource}
+                objectPk=${this.source.pk}
+            ></ak-rbac-object-permission-page>
         </ak-tabs>`;
     }
 }

@@ -25,6 +25,7 @@ from authentik.events.monitored_tasks import (
 )
 from authentik.lib.config import CONFIG
 from authentik.lib.utils.reflection import path_to_class
+from authentik.outposts.consumer import OUTPOST_GROUP
 from authentik.outposts.controllers.base import BaseController, ControllerException
 from authentik.outposts.controllers.docker import DockerClient
 from authentik.outposts.controllers.kubernetes import KubernetesClient
@@ -34,7 +35,6 @@ from authentik.outposts.models import (
     Outpost,
     OutpostModel,
     OutpostServiceConnection,
-    OutpostState,
     OutpostType,
     ServiceConnectionInvalid,
 )
@@ -243,10 +243,9 @@ def _outpost_single_update(outpost: Outpost, layer=None):
     outpost.build_user_permissions(outpost.user)
     if not layer:  # pragma: no cover
         layer = get_channel_layer()
-    for state in OutpostState.for_outpost(outpost):
-        for channel in state.channel_ids:
-            LOGGER.debug("sending update", channel=channel, instance=state.uid, outpost=outpost)
-            async_to_sync(layer.send)(channel, {"type": "event.update"})
+    group = OUTPOST_GROUP % {"outpost_pk": str(outpost.pk)}
+    LOGGER.debug("sending update", channel=group, outpost=outpost)
+    async_to_sync(layer.group_send)(group, {"type": "event.update"})
 
 
 @CELERY_APP.task(

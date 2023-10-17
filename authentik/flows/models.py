@@ -194,9 +194,10 @@ class Flow(SerializerModel, PolicyBindingModel):
         verbose_name_plural = _("Flows")
 
         permissions = [
-            ("export_flow", "Can export a Flow"),
-            ("view_flow_cache", "View Flow's cache metrics"),
-            ("clear_flow_cache", "Clear Flow's cache metrics"),
+            ("export_flow", _("Can export a Flow")),
+            ("inspect_flow", _("Can inspect a Flow's execution")),
+            ("view_flow_cache", _("View Flow's cache metrics")),
+            ("clear_flow_cache", _("Clear Flow's cache metrics")),
         ]
 
 

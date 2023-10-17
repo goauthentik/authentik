@@ -2,8 +2,11 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import { AggregateCard } from "@goauthentik/elements/cards/AggregateCard";
 
+import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { until } from "lit/directives/until.js";
+
+import { ResponseError } from "@goauthentik/api";
 
 export interface AdminStatus {
     icon: string;
@@ -41,6 +44,12 @@ export abstract class AdminStatusCard<T> extends AggregateCard {
                             ${status.message
                                 ? html`<p class="subtext">${status.message}</p>`
                                 : html``}`;
+                    })
+                    .catch((exc: ResponseError) => {
+                        return html` <p>
+                                <i class="fa fa-times"></i>&nbsp;${exc.response.statusText}
+                            </p>
+                            <p class="subtext">${msg("Failed to fetch")}</p>`;
                     }),
                 html`<ak-spinner size="${PFSize.Large}"></ak-spinner>`,
             )}

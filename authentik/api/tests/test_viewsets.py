@@ -16,6 +16,7 @@ def viewset_tester_factory(test_viewset: type[ModelViewSet]) -> Callable:
 
     def tester(self: TestModelViewSets):
         self.assertIsNotNone(getattr(test_viewset, "search_fields", None))
+        self.assertIsNotNone(getattr(test_viewset, "ordering", None))
         filterset_class = getattr(test_viewset, "filterset_class", None)
         if not filterset_class:
             self.assertIsNotNone(getattr(test_viewset, "filterset_fields", None))
