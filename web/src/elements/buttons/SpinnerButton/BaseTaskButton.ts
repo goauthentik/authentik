@@ -3,7 +3,7 @@ import { AKElement } from "@goauthentik/elements/Base";
 import { PFSize } from "@goauthentik/elements/Spinner";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { Task, TaskStatus } from "@lit/task";
+import { Task, TaskStatus } from "@lit-labs/task";
 import { css, html } from "lit";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
