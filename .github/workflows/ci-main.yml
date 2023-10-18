@@ -93,6 +93,8 @@ jobs:
           - 16-alpine
         redis:
           - redis
+          - redis-sentinel
+          - redis-cluster
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
