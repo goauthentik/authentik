@@ -39,6 +39,7 @@ class TestConfig(TestCase):
         ENV_PREFIX + "_REDIS__PASSWORD": "\"'% !.;.°",
     }
     update_redis_url_tls_reqs_optional_env_vars = {
+        ENV_PREFIX + "_REDIS__URL": "redis://localhost:6379/0",
         ENV_PREFIX + "_REDIS__TLS_REQS": "optional",
     }
     update_redis_url_tls_reqs_required_env_vars = {
