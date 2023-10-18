@@ -6,5 +6,4 @@ from authentik.root.celery import CELERY_APP
 @CELERY_APP.task()
 def calculate_license():
     """Calculate licensing status"""
-    total = LicenseKey.get_total()
-    total.record_usage()
+    LicenseKey.get_total().record_usage()

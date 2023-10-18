@@ -136,6 +136,9 @@ class LicenseKey:
 
     def record_usage(self):
         """Capture the current validity status and metrics and save them"""
+        threshold = now() - timedelta(hours=8)
+        if LicenseUsage.objects.filter(record_date__gte=threshold).exists():
+            return
         LicenseUsage.objects.create(
             user_count=self.get_default_user_count(),
             external_user_count=self.get_external_user_count(),
