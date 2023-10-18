@@ -25,7 +25,10 @@ export class ApplicationWizardAuthenticationMethodChoice extends BasePanel {
     handleChoice(ev: InputEvent) {
         const target = ev.target as HTMLInputElement;
         this.dispatchWizardUpdate({
-            update: { providerModel: target.value },
+            update: {
+                ...this.wizard,
+                providerModel: target.value
+            },
             status: this.validator() ? "valid" : "invalid",
         });
     }

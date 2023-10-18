@@ -1,8 +1,7 @@
-import { merge } from "@goauthentik/common/merge";
 import { AkWizard } from "@goauthentik/components/ak-wizard-main/AkWizard";
 import { CustomListenerElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { ContextProvider } from "@lit/context";
+import { ContextProvider } from "@lit-labs/context";
 import { msg } from "@lit/localize";
 import { customElement, state } from "lit/decorators.js";
 
@@ -97,7 +96,22 @@ export class ApplicationWizard extends CustomListenerElement(
             this.requestUpdate();
         }
 
-        this.wizardState = merge(this.wizardState, update) as ApplicationWizardState;
+        // Being extremely explicit about how a wizard state gets built, so that we preserve as much
+        // information as possible. This is much more predictable than using a generic merge.
+        
+        this.wizardState = {
+            ...this.wizardState,
+            app: {
+                ...this.wizardState.app ?? {},
+                ...update.app ?? {}
+            },
+            provider: {
+                ...this.wizardState.provider ?? {},
+                ...update.provider ?? {}
+            },
+            providerModel: update.providerModel
+        }
+
         this.wizardStateProvider.setValue(this.wizardState);
         this.requestUpdate();
     }

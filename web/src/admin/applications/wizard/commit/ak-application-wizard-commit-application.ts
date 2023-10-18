@@ -133,7 +133,6 @@ export class ApplicationWizardCommitApplication extends BasePanel {
         if (body["provider"] !== undefined) {
             errs = [...errs, msg("In the Provider:"), ...spaceify(body["provider"])];
         }
-        console.log(body, errs);
         return errs;
     }
 
