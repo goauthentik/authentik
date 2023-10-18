@@ -33,8 +33,6 @@ services:
       - redis-sentinel
   redis-cluster-1:
     image: docker.io/bitnami/redis-cluster:7.2.1
-    volumes:
-      - redis-cluster_data-1:/bitnami/redis/data
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
@@ -45,8 +43,6 @@ services:
       - redis-cluster
   redis-cluster-2:
     image: docker.io/bitnami/redis-cluster:7.2.1
-    volumes:
-      - redis-cluster_data-2:/bitnami/redis/data
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
@@ -57,8 +53,6 @@ services:
       - redis-cluster
   redis-cluster-3:
     image: docker.io/bitnami/redis-cluster:7.2.1
-    volumes:
-      - redis-cluster_data-3:/bitnami/redis/data
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
@@ -69,8 +63,6 @@ services:
       - redis-cluster
   redis-cluster-4:
     image: docker.io/bitnami/redis-cluster:7.2.1
-    volumes:
-      - redis-cluster_data-4:/bitnami/redis/data
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
@@ -81,8 +73,6 @@ services:
       - redis-cluster
   redis-cluster-5:
     image: docker.io/bitnami/redis-cluster:7.2.1
-    volumes:
-      - redis-cluster_data-5:/bitnami/redis/data
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_NODES: "redis-cluster-1,redis-cluster-2,redis-cluster-3,redis-cluster-4,redis-cluster-5,redis-cluster-6"
@@ -93,8 +83,6 @@ services:
       - redis-cluster
   redis-cluster-6:
     image: docker.io/bitnami/redis-cluster:7.2.1
-    volumes:
-      - redis-cluster_data-3:/bitnami/redis/data
     depends_on:
       - redis-cluster-1
       - redis-cluster-2
@@ -107,8 +95,6 @@ services:
       REDISCLI_AUTH: bitnami
       REDIS_CLUSTER_REPLICAS: 1
       REDIS_CLUSTER_CREATOR: "yes"
-      REDIS_CLUSTER_DNS_LOOKUP_RETRIES: 20
-      REDIS_CLUSTER_SLEEP_BEFORE_DNS_LOOKUP: 10
     ports:
       - "6384:6379"
     restart: always
@@ -117,16 +103,4 @@ services:
 
 volumes:
   db-data:
-    driver: local
-  redis-cluster_data-1:
-    driver: local
-  redis-cluster_data-2:
-    driver: local
-  redis-cluster_data-3:
-    driver: local
-  redis-cluster_data-4:
-    driver: local
-  redis-cluster_data-5:
-    driver: local
-  redis-cluster_data-6:
     driver: local
