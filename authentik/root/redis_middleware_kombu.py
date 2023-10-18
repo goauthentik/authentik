@@ -15,7 +15,7 @@ from kombu.utils.compat import _detect_environment
 from kombu.utils.encoding import bytes_to_str
 from kombu.utils.eventio import ERR, READ
 from kombu.utils.json import loads
-from redis.exceptions import MovedError
+from redis.exceptions import MovedError, WatchError
 
 from authentik.lib.utils.parser import (
     get_client,
@@ -49,6 +49,7 @@ class CustomQoS(RedisQoS):
     """Copied from `kombu.transport.redis` to replace `Mutex` implementation."""
 
     def restore_visible(self, start=0, num=10, interval=10):
+        """Use custom mutex for restoring visible"""
         with self.channel.conn_or_acquire() as client:
             ceil = time() - self.visibility_timeout
 
@@ -75,6 +76,16 @@ class CustomQoS(RedisQoS):
                         self.restore_by_tag(tag, client)
             except MutexHeld:
                 pass
+
+    def restore_by_tag(self, tag, client=None, leftmost=False):
+        """Redis cluster does not support transactions or pipeline multi"""
+        with self.channel.conn_or_acquire(client) as client:
+            with client.pipeline() as pipe:
+                p, _, _ = self._remove_from_indices(
+                    tag, pipe.hget(self.unacked_key, tag)).execute()
+            if p:
+                M, EX, RK = loads(bytes_to_str(p))  # json is unicode
+                self.channel._do_restore_message(M, EX, RK, client, leftmost)
 
 
 class ClusterPoller(MultiChannelPoller):
