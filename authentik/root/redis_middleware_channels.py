@@ -45,7 +45,7 @@ class CustomLoopLayer:
         async with self._lock:
             for index in list(self._connections):
                 connection = self._connections.pop(index)
-                await connection.aclose()
+                await connection.close()
 
 
 class CustomChannelLayer(RedisChannelLayer):
