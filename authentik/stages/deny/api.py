@@ -11,7 +11,7 @@ class DenyStageSerializer(StageSerializer):
 
     class Meta:
         model = DenyStage
-        fields = StageSerializer.Meta.fields
+        fields = StageSerializer.Meta.fields + ["deny_message"]
 
 
 class DenyStageViewSet(UsedByMixin, ModelViewSet):
