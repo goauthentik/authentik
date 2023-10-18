@@ -29,7 +29,7 @@ export interface ApplicationWizardState {
 type StatusType = "invalid" | "valid" | "submitted" | "failed";
 
 export type ApplicationWizardStateUpdate = {
-    update?: ApplicationWizardState;
+    update?: Partial<ApplicationWizardState>;
     status?: StatusType;
 };
 

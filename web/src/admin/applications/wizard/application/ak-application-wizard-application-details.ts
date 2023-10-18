@@ -27,9 +27,7 @@ export class ApplicationWizardApplicationDetails extends BasePanel {
         const value = target.type === "checkbox" ? target.checked : target.value;
         this.dispatchWizardUpdate({
             update: {
-                ...this.wizard,
                 app: {
-                    ...this.wizard.app,
                     [target.name]: value,
                 },
             },
