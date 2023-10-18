@@ -1838,11 +1838,6 @@
         <target>Slug</target>
         
       </trans-unit>
-      <trans-unit id="seb8407fa6607c683">
-        <source>Internal application name, used in URLs.</source>
-        <target>应用的内部名称，在 URL 中使用。</target>
-        
-      </trans-unit>
       <trans-unit id="sdae55084f6cb2662">
         <source>Optionally enter a group name. Applications with identical groups are shown grouped together.</source>
         <target>输入可选的分组名称。分组相同的应用程序会显示在一起。</target>
@@ -1856,11 +1851,6 @@
       <trans-unit id="s350a616ff5e145ec">
         <source>Select a provider that this application should use.</source>
         <target>选择此应用应该使用的提供程序。</target>
-        
-      </trans-unit>
-      <trans-unit id="scd5dff009d1fd847">
-        <source>Backchannel providers</source>
-        <target>反向通道提供程序</target>
         
       </trans-unit>
       <trans-unit id="s4c6534a118f52fdd">
@@ -2228,11 +2218,6 @@
         <target>NameID 属性</target>
         
       </trans-unit>
-      <trans-unit id="sf05c693a6e270b79">
-        <source>SCIM provider is in preview.</source>
-        <target>SCIM 提供程序处于预览状态。</target>
-        
-      </trans-unit>
       <trans-unit id="s2f0f6691de0b0388">
         <source>Warning: Provider is not assigned to an application as backchannel provider.</source>
         <target>警告：提供程序未作为反向通道分配给应用程序。</target>
@@ -2253,44 +2238,9 @@
         <target>再次运行同步</target>
         
       </trans-unit>
-      <trans-unit id="sf6a518045ea398f7">
-        <source>Application details</source>
-        <target>应用程序详情</target>
-        
-      </trans-unit>
-      <trans-unit id="s51b0102a7d31d0bf">
-        <source>Create application</source>
-        <target>创建应用程序</target>
-        
-      </trans-unit>
-      <trans-unit id="sdae3a34cfb38c10f">
-        <source>Additional UI settings</source>
-        <target>其他界面设置</target>
-        
-      </trans-unit>
-      <trans-unit id="s233d106d13420dd2">
-        <source>OAuth2/OIDC</source>
-        <target>OAuth2/OIDC</target>
-        
-      </trans-unit>
       <trans-unit id="sc2cedfb22488ccb2">
         <source>Modern applications, APIs and Single-page applications.</source>
         <target>现代应用程序、API 与单页应用程序。</target>
-        
-      </trans-unit>
-      <trans-unit id="s1d93562422eeac10">
-        <source>SAML</source>
-        <target>SAML</target>
-        
-      </trans-unit>
-      <trans-unit id="s5923f8a2226a414c">
-        <source>XML-based SSO standard. Use this if your application only supports SAML.</source>
-        <target>基于 XML 的 SSO 标准。如果您的应用程序仅支持 SAML 则应使用。</target>
-        
-      </trans-unit>
-      <trans-unit id="s22f7a7ec3bc2c118">
-        <source>Legacy applications which don't natively support SSO.</source>
-        <target>不原生支持 SSO 的传统应用程序。</target>
         
       </trans-unit>
       <trans-unit id="sc3259eb55cf91e8c">
@@ -2303,164 +2253,9 @@
         <target>为应用程序和用户提供 LDAP 接口以进行身份​​验证。</target>
         
       </trans-unit>
-      <trans-unit id="s3cf89cb47fdde7e9">
-        <source>Link</source>
-        <target>链接</target>
-        
-      </trans-unit>
-      <trans-unit id="s7ccc013f41f0a2c2">
-        <source>Authentication method</source>
-        <target>身份验证方法</target>
-        
-      </trans-unit>
-      <trans-unit id="sd45fc6453f617152">
-        <source>LDAP details</source>
-        <target>LDAP 详情</target>
-        
-      </trans-unit>
-      <trans-unit id="scf72690719b7a8a1">
-        <source>Create service account</source>
-        <target>创建服务账户</target>
-        
-      </trans-unit>
-      <trans-unit id="sbda06adbba493976">
-        <source>Create provider</source>
-        <target>创建提供程序</target>
-        
-      </trans-unit>
-      <trans-unit id="s12d0cb01d9f6f3b3">
-        <source>Application Link</source>
-        <target>应用程序链接</target>
-        
-      </trans-unit>
-      <trans-unit id="s54a13196915fd76c">
-        <source>URL which will be opened when a user clicks on the application.</source>
-        <target>用户点击应用程序时将打开的 URL。</target>
-        
-      </trans-unit>
-      <trans-unit id="sa34866db5e891cc6">
-        <source>Method details</source>
-        <target>方法详情</target>
-        
-      </trans-unit>
-      <trans-unit id="saf840955862a8cd0">
-        <source>This configuration can be used to authenticate to authentik with other APIs other otherwise programmatically.</source>
-        <target>此配置可用于通过其他 API 或以编程方式处理 authentik 身份验证。</target>
-        
-      </trans-unit>
-      <trans-unit id="sb2f3a45baaa52dfd">
-        <source>By default, all service accounts can authenticate as this application, as long as they have a valid token of the type app-password.</source>
-        <target>默认情况下，所有服务账户都可以作为此应用程序进行身份验证，只要它们拥有 app-password 类型的有效令牌。</target>
-        
-      </trans-unit>
-      <trans-unit id="se0df976add086ec3">
-        <source>Web application</source>
-        <target>Web 应用程序</target>
-        
-      </trans-unit>
-      <trans-unit id="s042fb9b0f9acc21f">
-        <source>Applications which handle the authentication server-side (for example, Python, Go, Rust, Java, PHP)</source>
-        <target>在服务端处理身份验证的应用程序（例如 Python、Go、Rust、Java、PHP）</target>
-        
-      </trans-unit>
-      <trans-unit id="sdf4bd51375026222">
-        <source>Single-page applications</source>
-        <target>单页应用程序</target>
-        
-      </trans-unit>
-      <trans-unit id="s7fa3c3306b77187d">
-        <source>Single-page applications which handle authentication in the browser (for example, Javascript, Angular, React, Vue)</source>
-        <target>在浏览器内处理身份验证的单页应用程序（例如 Javascript、Angular、React、Vue）</target>
-        
-      </trans-unit>
-      <trans-unit id="s3db92162f63a12b4">
-        <source>Native application</source>
-        <target>原生应用程序</target>
-        
-      </trans-unit>
-      <trans-unit id="s2f43274a59b0d384">
-        <source>Applications which redirect users to a non-web callback (for example, Android, iOS)</source>
-        <target>重定向用户到非 Web 回调的应用程序（例如 Android、iOS）</target>
-        
-      </trans-unit>
-      <trans-unit id="sfa5f0019a09be6a7">
-        <source>API</source>
-        <target>API</target>
-        
-      </trans-unit>
-      <trans-unit id="s4d53cad956dfc4e4">
-        <source>Authentication without user interaction, or machine-to-machine authentication.</source>
-        <target>无需用户操作的身份验证，或 M2M（机器到机器）身份验证。</target>
-        
-      </trans-unit>
-      <trans-unit id="s134083b4613bcf87">
-        <source>Application type</source>
-        <target>应用程序类型</target>
-        
-      </trans-unit>
-      <trans-unit id="s649e7d74f27635f8">
-        <source>Flow used when users access this application.</source>
-        <target>用户访问此应用程序时使用的流程。</target>
-        
-      </trans-unit>
-      <trans-unit id="s9c1422a7e3d5c619">
-        <source>Proxy details</source>
-        <target>代理详情</target>
-        
-      </trans-unit>
-      <trans-unit id="s7714fdf13df8b682">
-        <source>External domain</source>
-        <target>外部域名</target>
-        
-      </trans-unit>
-      <trans-unit id="sf5a280bdcc775c49">
-        <source>External domain you will be accessing the domain from.</source>
-        <target>您将从此外部域名访问域名。</target>
-        
-      </trans-unit>
-      <trans-unit id="sb11e750b3de9bb72">
-        <source>Import SAML Metadata</source>
-        <target>导入 SAML 元数据</target>
-        
-      </trans-unit>
-      <trans-unit id="s0955bd1d1b1dc710">
-        <source>Import the metadata document of the applicaation you want to configure.</source>
-        <target>导入您要配置的应用程序的元数据文档。</target>
-        
-      </trans-unit>
-      <trans-unit id="s0be509fcae72af45">
-        <source>Manual configuration</source>
-        <target>手动配置</target>
-        
-      </trans-unit>
-      <trans-unit id="s485b90ede24fdb19">
-        <source>Manually configure SAML</source>
-        <target>手动配置 SAML</target>
-        
-      </trans-unit>
-      <trans-unit id="se7d73f906d358a46">
-        <source>SAML details</source>
-        <target>SAML 详情</target>
-        
-      </trans-unit>
-      <trans-unit id="s982a7cdc93aa6fbe">
-        <source>URL that authentik will redirect back to after successful authentication.</source>
-        <target>身份验证成功后，authentik 将重定向回的 URL。</target>
-        
-      </trans-unit>
-      <trans-unit id="sc9e75f44b775aa52">
-        <source>Import SAML metadata</source>
-        <target>导入 SAML 元数据</target>
-        
-      </trans-unit>
       <trans-unit id="s0c9670f429e74283">
         <source>New application</source>
         <target>新应用程序</target>
-        
-      </trans-unit>
-      <trans-unit id="s8e1d308c09d1b400">
-        <source>Create a new application.</source>
-        <target>创建一个新应用程序。</target>
         
       </trans-unit>
       <trans-unit id="s6ba50bb0842ba1e2">
@@ -7829,6 +7624,76 @@ Bindings to groups/users are checked against the user of the event.</source>
   <source>Stage used to configure a WebAuthn authenticator (i.e. Yubikey, FaceID/Windows Hello).</source>
   <target>用来配置 WebAuthn 身份验证器（即 Yubikey、FaceID/Windows Hello）的阶段。</target>
 </trans-unit>
+&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
+<trans-unit id="s1cffe58249b04669">
+  <source>Internal application name used in URLs.</source>
+</trans-unit>
+<trans-unit id="sb3d4f79d9d8b71e5">
+  <source>Submit</source>
+</trans-unit>
+<trans-unit id="se2b29e6cfe59414c">
+  <source>UI Settings</source>
+</trans-unit>
+<trans-unit id="sf45734291c57c606">
+  <source>OAuth2/OpenID</source>
+</trans-unit>
+<trans-unit id="s836148f721d8913b">
+  <source>Transparent Reverse Proxy</source>
+</trans-unit>
+<trans-unit id="s945a6b94361ee45b">
+  <source>For transparent reverse proxies with required authentication</source>
+</trans-unit>
+<trans-unit id="s60e79e1793e6bd56">
+  <source>Forward Auth Single Application</source>
+</trans-unit>
+<trans-unit id="sadf073913458acbd">
+  <source>For nginx's auth_request or traefix's forwardAuth</source>
+</trans-unit>
+<trans-unit id="s4425a1002597151e">
+  <source>Forward Auth Domain Level</source>
+</trans-unit>
+<trans-unit id="se770e9498b3bacf6">
+  <source>For nginx's auth_request or traefix's forwardAuth per root domain</source>
+</trans-unit>
+<trans-unit id="s40830ec037f34626">
+  <source>Configure SAML provider manually</source>
+</trans-unit>
+<trans-unit id="s154eea2a61d44655">
+  <source>RADIUS Configuration</source>
+</trans-unit>
+<trans-unit id="sea9fc40dfd1d18b1">
+  <source>Configure RADIUS provider manually</source>
+</trans-unit>
+<trans-unit id="s5a8f04c6ef292743">
+  <source>SCIM configuration</source>
+</trans-unit>
+<trans-unit id="sa1b0052ae095b9b3">
+  <source>Configure SCIM provider manually</source>
+</trans-unit>
+<trans-unit id="s15831fa50a116545">
+  <source>Saving Application...</source>
+</trans-unit>
+<trans-unit id="s823abdb61543a826">
+  <source>Authentik was unable to save this application:</source>
+</trans-unit>
+<trans-unit id="s848288f8c2265aad">
+  <source>Your application has been saved</source>
+</trans-unit>
+<trans-unit id="sf60f1e5b76897c93">
+  <source>In the Application:</source>
+</trans-unit>
+<trans-unit id="s7ce65cf482b7bff0">
+  <source>In the Provider:</source>
+</trans-unit>
+<trans-unit id="s67d858051b34c38b">
+  <source>Method's display Name.</source>
+</trans-unit>
+<trans-unit id="h10ef80d434185070">
+  <source>Use this provider with nginx's <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> or traefik's
+                    <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
+                    Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
+                    routed to the outpost (when using a managed outpost, this is done for you).</source>
+</trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
   <target>自定义属性</target>
@@ -7941,6 +7806,9 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s526e2c66bd51ff5f">
   <source>Role Info</source>
+</trans-unit>
+<trans-unit id="s2da4aa7a9abeb653">
+  <source>Pseudolocale (for testing)</source>
 </trans-unit>
     </body>
   </file>

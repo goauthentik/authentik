@@ -1,5 +1,4 @@
 import "@goauthentik/admin/applications/ApplicationForm";
-import "@goauthentik/admin/applications/wizard/ApplicationWizard";
 import { PFSize } from "@goauthentik/app/elements/Spinner";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { uiConfig } from "@goauthentik/common/ui/config";
@@ -10,6 +9,7 @@ import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
+// import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
@@ -23,6 +23,8 @@ import PFCard from "@patternfly/patternfly/components/Card/card.css";
 
 import { Application, CoreApi } from "@goauthentik/api";
 
+import "./ApplicationWizardHint";
+
 @customElement("ak-application-list")
 export class ApplicationListPage extends TablePage<Application> {
     searchEnabled(): boolean {
@@ -33,7 +35,7 @@ export class ApplicationListPage extends TablePage<Application> {
     }
     pageDescription(): string {
         return msg(
-            "External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.",
+            "External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.",
         );
     }
     pageIcon(): string {
@@ -87,20 +89,27 @@ export class ApplicationListPage extends TablePage<Application> {
         ];
     }
 
+    renderSectionBefore(): TemplateResult {
+        return html`<ak-application-wizard-hint></ak-application-wizard-hint>`;
+    }
+
     renderSidebarAfter(): TemplateResult {
         // Rendering the wizard with .open here, as if we set the attribute in
         // renderObjectCreate() it'll open two wizards, since that function gets called twice
-        return html`<ak-application-wizard
+
+        /* Re-enable the wizard later:
+          <ak-application-wizard
                 .open=${getURLParam("createWizard", false)}
                 .showButton=${false}
-            ></ak-application-wizard>
-            <div class="pf-c-sidebar__panel pf-m-width-25">
-                <div class="pf-c-card">
-                    <div class="pf-c-card__body">
-                        <ak-markdown .md=${MDApplication}></ak-markdown>
-                    </div>
+                ></ak-application-wizard>*/
+
+        return html` <div class="pf-c-sidebar__panel pf-m-width-25">
+            <div class="pf-c-card">
+                <div class="pf-c-card__body">
+                    <ak-markdown .md=${MDApplication}></ak-markdown>
                 </div>
-            </div>`;
+            </div>
+        </div>`;
     }
 
     renderToolbarSelected(): TemplateResult {
