@@ -2,7 +2,7 @@ import { WizardPanel } from "@goauthentik/components/ak-wizard-main/types";
 import { AKElement } from "@goauthentik/elements/Base";
 import { CustomEmitterElement } from "@goauthentik/elements/utils/eventEmitter";
 
-import { consume } from "@lit/context";
+import { consume } from "@lit-labs/context";
 import { query } from "@lit/reactive-element/decorators.js";
 
 import { styles as AwadStyles } from "./BasePanel.css";
