@@ -65,7 +65,7 @@ The same logic that applies to the SSO tax also applies to two other security ta
 
 Security experts widely agree that SSO is essential for security, but multi-factor authentication is more basic still, making the act of charging extra for MFA even more egregious. But, as we saw in the intro, companies like Box charge extra for multiple authentication methods.
 
-The user tax is more subtle. Companies are charging a user tax when they charge exorbitant amounts more per additional user that customers feel motivated to share the credentials to one account. To be clear, many companies charge on a per-user or per-seat basis (including Authentik), so you can’t call it a tax until the additional costs really become exorbitant.
+The user tax is more subtle. When companies charge excessive amounts per-user to secure those users' accounts, users must either choose to pay the security tax or engage in the highly insecure practice of sharing credentials among several individuals. To be clear, many companies charge on a per-user or per-seat basis (including Authentik), so you can’t call it a tax until the additional costs really become exorbitant.
 
 ## Why the anti-SSO tax movement failed
 
