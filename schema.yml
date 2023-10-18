@@ -37484,6 +37484,13 @@ components:
           type: string
           minLength: 1
           description: Shared secret between clients and server to hash packets.
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be
+            used by appending a semicolon and the TOTP code to the password. This
+            should only be enabled if all users that will bind to this provider have
+            a TOTP device configured, as otherwise a password may incorrectly be rejected
+            if it contains a semicolon.
     PatchedReputationPolicyRequest:
       type: object
       description: Reputation Policy Serializer
@@ -39379,6 +39386,13 @@ components:
         shared_secret:
           type: string
           description: Shared secret between clients and server to hash packets.
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be
+            used by appending a semicolon and the TOTP code to the password. This
+            should only be enabled if all users that will bind to this provider have
+            a TOTP device configured, as otherwise a password may incorrectly be rejected
+            if it contains a semicolon.
       required:
       - application_slug
       - auth_flow_slug
@@ -39454,6 +39468,13 @@ components:
           items:
             type: string
           readOnly: true
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be
+            used by appending a semicolon and the TOTP code to the password. This
+            should only be enabled if all users that will bind to this provider have
+            a TOTP device configured, as otherwise a password may incorrectly be rejected
+            if it contains a semicolon.
       required:
       - assigned_application_name
       - assigned_application_slug
@@ -39499,6 +39520,13 @@ components:
           type: string
           minLength: 1
           description: Shared secret between clients and server to hash packets.
+        mfa_support:
+          type: boolean
+          description: When enabled, code-based multi-factor authentication can be
+            used by appending a semicolon and the TOTP code to the password. This
+            should only be enabled if all users that will bind to this provider have
+            a TOTP device configured, as otherwise a password may incorrectly be rejected
+            if it contains a semicolon.
       required:
       - authorization_flow
       - name
