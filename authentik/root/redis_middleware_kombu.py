@@ -79,14 +79,16 @@ class CustomQoS(RedisQoS):
 
     def restore_by_tag(self, tag, client=None, leftmost=False):
         """Redis cluster does not support transactions or pipeline multi"""
-        with self.channel.conn_or_acquire(client) as client:
-            with client.pipeline() as pipe:
+        with self.channel.conn_or_acquire(client) as channel_client:
+            with channel_client.pipeline() as pipe:
                 result, _, _ = self._remove_from_indices(
                     tag, pipe.hget(self.unacked_key, tag)
                 ).execute()
             if result:
                 payload, exchange, routing_key = loads(bytes_to_str(result))  # json is unicode
-                self.channel._do_restore_message(payload, exchange, routing_key, client, leftmost)
+                self.channel._do_restore_message(
+                    payload, exchange, routing_key, channel_client, leftmost
+                )
 
 
 class ClusterPoller(MultiChannelPoller):
