@@ -88,11 +88,11 @@ jobs:
       fail-fast: false
       matrix:
         psql:
+          - 12-alpine
+          - 15-alpine
           - 16-alpine
         redis:
           - redis
-          - redis-sentinel
-          - redis-cluster
     steps:
       - uses: actions/checkout@v4
       - name: Setup authentik env
