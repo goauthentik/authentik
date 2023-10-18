@@ -27,18 +27,27 @@ export class ShowHintController implements ReactiveController {
     constructor(host: ShowHintControllerHost, hintToken: string) {
         (this.host = host).addController(this);
         this.hintToken = hintToken;
-        this.hideTheHint = this.hideTheHint.bind(this);
+        this.hide = this.hide.bind(this);
+        this.show = this.show.bind(this);
     }
 
-    hideTheHint() {
+    setTheHint(state: boolean = false) {
         window?.localStorage.setItem(
             LOCALSTORAGE_AUTHENTIK_KEY,
             JSON.stringify({
                 ...getCurrentStorageValue(),
-                [this.hintToken]: false,
+                [this.hintToken]: state,
             }),
         );
-        this.host.showHint = false;
+        this.host.showHint = state;
+    }
+
+    hide() {
+        this.setTheHint(false);
+    }
+
+    show() {
+        this.setTheHint(true);
     }
 
     hostConnected() {
@@ -54,7 +63,7 @@ export class ShowHintController implements ReactiveController {
     render() {
         return html`<ak-hint-footer
             ><div style="text-align: right">
-                <input type="checkbox" @input=${this.hideTheHint} />${msg(
+                <input type="checkbox" @input=${this.hide} />${msg(
                     "Don't show this message again.",
                 )}
             </div></ak-hint-footer
