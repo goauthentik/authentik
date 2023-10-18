@@ -15,7 +15,7 @@ from kombu.utils.compat import _detect_environment
 from kombu.utils.encoding import bytes_to_str
 from kombu.utils.eventio import ERR, READ
 from kombu.utils.json import loads
-from redis.exceptions import MovedError, WatchError
+from redis.exceptions import MovedError
 
 from authentik.lib.utils.parser import (
     get_client,
@@ -81,11 +81,12 @@ class CustomQoS(RedisQoS):
         """Redis cluster does not support transactions or pipeline multi"""
         with self.channel.conn_or_acquire(client) as client:
             with client.pipeline() as pipe:
-                p, _, _ = self._remove_from_indices(
-                    tag, pipe.hget(self.unacked_key, tag)).execute()
-            if p:
-                M, EX, RK = loads(bytes_to_str(p))  # json is unicode
-                self.channel._do_restore_message(M, EX, RK, client, leftmost)
+                result, _, _ = self._remove_from_indices(
+                    tag, pipe.hget(self.unacked_key, tag)
+                ).execute()
+            if result:
+                payload, exchange, routing_key = loads(bytes_to_str(result))  # json is unicode
+                self.channel._do_restore_message(payload, exchange, routing_key, client, leftmost)
 
 
 class ClusterPoller(MultiChannelPoller):
