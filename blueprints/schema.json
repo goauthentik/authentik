@@ -7009,6 +7009,10 @@
                         ]
                     },
                     "title": "Flow set"
+                },
+                "deny_message": {
+                    "type": "string",
+                    "title": "Deny message"
                 }
             },
             "required": []

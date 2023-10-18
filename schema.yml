@@ -23910,6 +23910,10 @@ paths:
       description: DenyStage Viewset
       parameters:
       - in: query
+        name: deny_message
+        schema:
+          type: string
+      - in: query
         name: name
         schema:
           type: string
@@ -29786,6 +29790,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSet'
+        deny_message:
+          type: string
       required:
       - component
       - meta_model_name
@@ -29804,6 +29810,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+        deny_message:
+          type: string
       required:
       - name
     Device:
@@ -35997,6 +36005,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowSetRequest'
+        deny_message:
+          type: string
     PatchedDockerServiceConnectionRequest:
       type: object
       description: DockerServiceConnection Serializer
