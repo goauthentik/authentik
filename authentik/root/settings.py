@@ -327,6 +327,7 @@ CELERY = {
     "task_soft_time_limit": 600,
     "worker_max_tasks_per_child": 50,
     "worker_concurrency": CONFIG.get_int("worker.concurrency"),
+    "worker_cancel_long_running_tasks_on_connection_loss": True,
     "beat_schedule": {
         "clean_expired_models": {
             "task": "authentik.core.tasks.clean_expired_models",
