@@ -240,7 +240,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     renderForm(): TemplateResult {
         return html`<div class="pf-l-grid pf-m-gutter">
-            <div class="pf-l-grid__item pf-m-6-col">${this.renderEditForm()}</div>
+            <div class="pf-l-grid__item pf-m-6-col pf-c-form pf-m-horizontal">${this.renderEditForm()}</div>
             <div class="pf-l-grid__item pf-m-6-col">${this.renderPreview()}</div>
         </div> `;
     }
