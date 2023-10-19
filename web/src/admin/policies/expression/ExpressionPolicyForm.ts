@@ -2,6 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -85,7 +86,7 @@ export class ExpressionPolicyForm extends ModelForm<ExpressionPolicy, string> {
                         name="expression"
                     >
                         <ak-codemirror
-                            mode="python"
+                            mode=${CodeMirrorMode.Python}
                             value="${ifDefined(this.instance?.expression)}"
                         >
                         </ak-codemirror>

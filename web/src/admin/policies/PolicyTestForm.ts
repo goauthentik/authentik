@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import { PFColor } from "@goauthentik/elements/Label";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
@@ -145,7 +146,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Context")} name="context">
                 <ak-codemirror
-                    mode="yaml"
+                    mode=${CodeMirrorMode.YAML}
                     value=${YAML.stringify(first(this.request?.context, {}))}
                 >
                 </ak-codemirror>

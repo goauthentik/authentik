@@ -3,6 +3,7 @@ import "@goauthentik/admin/common/ak-flow-search/ak-flow-search";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -267,7 +268,7 @@ export class TenantForm extends ModelForm<Tenant, string> {
                     </ak-form-element-horizontal>
                     <ak-form-element-horizontal label=${msg("Attributes")} name="attributes">
                         <ak-codemirror
-                            mode="yaml"
+                            mode=${CodeMirrorMode.YAML}
                             value="${YAML.stringify(first(this.instance?.attributes, {}))}"
                         >
                         </ak-codemirror>
