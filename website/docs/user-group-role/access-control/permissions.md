@@ -9,8 +9,8 @@ Permissions are the central components in all access control systems, the lowest
 
 There are two main types of permissions in authentik:
 
-*   [**global permissions**](#global-permissions)
-*   [**object permissions**](#object-permissions)
+-   [**global permissions**](#global-permissions)
+-   [**object permissions**](#object-permissions)
 
 ### Global permissions
 
@@ -81,11 +81,7 @@ To view _global_ permissions for a role:
 
 ### View flow permissions
 
-
-
 ### View stage permissions
-
-
 
 ## Manage permissions
 

@@ -18,4 +18,4 @@ Attributes of groups are recursively merged, for all groups the user is a _direc
 
 You can grant a group specific global or object-level permissions. Any user who is a member of a group inherits all of the group's permissions.
 
-For more information, review ["Permissions: global and object-level"](../access-control/permissions.md).
+For more information, review ["Permissions: global and object-level"](./access-control/permissions.md).

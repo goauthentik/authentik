@@ -23,9 +23,9 @@ To create a new role, follow these steps:
 
 To modify a role, follow these steps:
 
-*   To edit the name of the role click the Edit icon beside the role's name.
+-   To edit the name of the role click the Edit icon beside the role's name.
 
-*   To modify the permissions that are assigned to the role click on the role's name to go to the role's detail page. There you can add, modify, or remove permissions. For more information, refer to ["Assign or remove permissions for a specific role"](../access-control/permissions.md#assign-or-remove-permissions-for-a-specific-role).
+-   To modify the permissions that are assigned to the role click on the role's name to go to the role's detail page. There you can add, modify, or remove permissions. For more information, refer to ["Assign or remove permissions for a specific role"](../access-control/permissions.md#assign-or-remove-permissions-for-a-specific-role).
 
 ## Delete a role
 
@@ -36,3 +36,11 @@ To delete a role, follow these steps:
 2. Select the checkbox beside the name of the role that you want to delete.
 
 3. Click **Delete**.
+
+## Assign a role to a group
+
+In authentik, roles are assigned to groups, not to individual users.
+
+1.  Create a new role.
+2.  [Assign the appropriate permissions](../access-control/permissions#manage-permissions) to this role.
+3.  Create a new group, or select an existing group, and ssign all new team members to it.
