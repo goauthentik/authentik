@@ -113,11 +113,11 @@ As the software supply chain has evolved, open-source adoption has grown, and so
 
 In the past, companies considered security in an organization vs. attacker model, as one entity building a perimeter to defend itself against targeted attackers. But in modern security, organizations are so interconnected that attackers can leap from organization to organization and move laterally from low-value vulnerabilities to high-value exploits.
 
-When attackers hacked Target in 2013, they didn’t go after Target directly; they entered via a third-party vendor Target had hired. And when Log4j became headline news in 2022, it wasn’t because one attacker found one exploit; a vast range of companies suddenly realized they were vulnerable because they had all adopted the same open-source component.
+When attackers [hacked Target in 2013](https://slate.com/technology/2022/04/breached-excerpt-hartzog-solove-target.html#:~:text=In%20caper%20movies%2C%20the%20criminals,party%20vendor%20hired%20by%20Target.), they didn’t go after Target directly; they entered via a third-party vendor Target had hired. And when Log4j became [headline news in 2022](https://builtin.com/cybersecurity/log4j-vulerability-explained), it wasn’t because one attacker found one exploit; a vast range of companies suddenly realized they were vulnerable because they had all adopted the same open-source component.
 
 The more interconnected organizations are, the more security becomes a collective action problem that demands companies shift from prioritizing profits via security taxes to pursuing industry-wide security by offering accessible security features and reinforcing security best practices.
 
-Ed Contreras, Chief Information Security Officer at Frost Bank, said it well in an interview with CISO Series: “With single sign-on, we’re protecting both of our companies” and that the SSO tax, as a result, is an “atrocity.”
+Ed Contreras, Chief Information Security Officer at Frost Bank, said it well in an [interview with CISO Series](https://cisoseries.com/we-shame-others-because-were-so-right-about-everything): “With single sign-on, we’re protecting both of our companies” and that the SSO tax, as a result, is an “atrocity.”
 
 ## Compromise is the only way out
 
