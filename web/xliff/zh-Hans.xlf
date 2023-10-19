@@ -1,4 +1,4 @@
-<?xml version="1.0"?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+<?xml version="1.0" ?><xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
   <file target-language="zh-Hans" source-language="en" original="lit-localize-inputs" datatype="plaintext">
     <body>
       <trans-unit id="s4caed5b7a7e5d89b">
@@ -613,9 +613,9 @@
         
       </trans-unit>
       <trans-unit id="saa0e2675da69651b">
-        <source>The URL "<x id="0" equiv-text="${this.url}"/>" was not found.</source>
-        <target>未找到 URL " 
-        <x id="0" equiv-text="${this.url}"/>"。</target>
+        <source>The URL &quot;<x id="0" equiv-text="${this.url}"/>&quot; was not found.</source>
+        <target>未找到 URL &quot; 
+        <x id="0" equiv-text="${this.url}"/>&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s58cd9c2fe836d9c6">
@@ -1067,8 +1067,8 @@
         
       </trans-unit>
       <trans-unit id="sa8384c9c26731f83">
-        <source>To allow any redirect URI, set this value to ".*". Be aware of the possible security implications this can have.</source>
-        <target>要允许任何重定向 URI，请将此值设置为 ".*"。请注意这可能带来的安全影响。</target>
+        <source>To allow any redirect URI, set this value to &quot;.*&quot;. Be aware of the possible security implications this can have.</source>
+        <target>要允许任何重定向 URI，请将此值设置为 &quot;.*&quot;。请注意这可能带来的安全影响。</target>
         
       </trans-unit>
       <trans-unit id="s55787f4dfcdce52b">
@@ -1809,8 +1809,8 @@
         
       </trans-unit>
       <trans-unit id="sa90b7809586c35ce">
-        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon "fa-test".</source>
-        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 "fa-test"。</target>
+        <source>Either input a full URL, a relative path, or use 'fa://fa-test' to use the Font Awesome icon &quot;fa-test&quot;.</source>
+        <target>输入完整 URL、相对路径，或者使用 'fa://fa-test' 来使用 Font Awesome 图标 &quot;fa-test&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s0410779cb47de312">
@@ -3028,8 +3028,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s76768bebabb7d543">
-        <source>Field which contains members of a group. Note that if using the "memberUid" field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
-        <target>包含组成员的字段。请注意，如果使用 "memberUid" 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
+        <source>Field which contains members of a group. Note that if using the &quot;memberUid&quot; field, the value is assumed to contain a relative distinguished name. e.g. 'memberUid=some-user' instead of 'memberUid=cn=some-user,ou=groups,...'</source>
+        <target>包含组成员的字段。请注意，如果使用 &quot;memberUid&quot; 字段，则假定该值包含相对可分辨名称。例如，'memberUid=some-user' 而不是 'memberUid=cn=some-user,ou=groups,...'</target>
         
       </trans-unit>
       <trans-unit id="s026555347e589f0e">
@@ -3821,8 +3821,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s7b1fba26d245cb1c">
-        <source>When using an external logging solution for archiving, this can be set to "minutes=5".</source>
-        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 "minutes=5"。</target>
+        <source>When using an external logging solution for archiving, this can be set to &quot;minutes=5&quot;.</source>
+        <target>使用外部日志记录解决方案进行存档时，可以将其设置为 &quot;minutes=5&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s44536d20bb5c8257">
@@ -3831,8 +3831,8 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s3bb51cabb02b997e">
-        <source>Format: "weeks=3;days=2;hours=3,seconds=2".</source>
-        <target>格式："weeks=3;days=2;hours=3,seconds=2"。</target>
+        <source>Format: &quot;weeks=3;days=2;hours=3,seconds=2&quot;.</source>
+        <target>格式：&quot;weeks=3;days=2;hours=3,seconds=2&quot;。</target>
         
       </trans-unit>
       <trans-unit id="s04bfd02201db5ab8">
@@ -4028,10 +4028,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sa95a538bfbb86111">
-        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> "<x id="1" equiv-text="${this.obj?.name}"/>"?</source>
+        <source>Are you sure you want to update <x id="0" equiv-text="${this.objectLabel}"/> &quot;<x id="1" equiv-text="${this.obj?.name}"/>&quot;?</source>
         <target>您确定要更新 
-        <x id="0" equiv-text="${this.objectLabel}"/>" 
-        <x id="1" equiv-text="${this.obj?.name}"/>" 吗？</target>
+        <x id="0" equiv-text="${this.objectLabel}"/>&quot; 
+        <x id="1" equiv-text="${this.obj?.name}"/>&quot; 吗？</target>
         
       </trans-unit>
       <trans-unit id="sc92d7cfb6ee1fec6">
@@ -5127,7 +5127,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="sdf1d8edef27236f0">
-        <source>A "roaming" authenticator, like a YubiKey</source>
+        <source>A &quot;roaming&quot; authenticator, like a YubiKey</source>
         <target>像 YubiKey 这样的“漫游”身份验证器</target>
         
       </trans-unit>
@@ -5462,10 +5462,10 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s2d5f69929bb7221d">
-        <source><x id="0" equiv-text="${prompt.name}"/> ("<x id="1" equiv-text="${prompt.fieldKey}"/>", of type <x id="2" equiv-text="${prompt.type}"/>)</source>
+        <source><x id="0" equiv-text="${prompt.name}"/> (&quot;<x id="1" equiv-text="${prompt.fieldKey}"/>&quot;, of type <x id="2" equiv-text="${prompt.type}"/>)</source>
         <target>
-        <x id="0" equiv-text="${prompt.name}"/>（" 
-        <x id="1" equiv-text="${prompt.fieldKey}"/>"，类型为 
+        <x id="0" equiv-text="${prompt.name}"/>（&quot; 
+        <x id="1" equiv-text="${prompt.fieldKey}"/>&quot;，类型为 
         <x id="2" equiv-text="${prompt.type}"/>）</target>
         
       </trans-unit>
@@ -5514,7 +5514,7 @@ doesn't pass when either or both of the selected options are equal or above the 
         
       </trans-unit>
       <trans-unit id="s1608b2f94fa0dbd4">
-        <source>If set to a duration above 0, the user will have the option to choose to "stay signed in", which will extend their session by the time specified here.</source>
+        <source>If set to a duration above 0, the user will have the option to choose to &quot;stay signed in&quot;, which will extend their session by the time specified here.</source>
         <target>如果设置时长大于 0，用户可以选择“保持登录”选项，这将使用户的会话延长此处设置的时间。</target>
         
       </trans-unit>
@@ -7627,72 +7627,97 @@ Bindings to groups/users are checked against the user of the event.</source>
 &lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD
 <trans-unit id="s1cffe58249b04669">
   <source>Internal application name used in URLs.</source>
+  <target>在 URL 中使用的应用内部名称。</target>
 </trans-unit>
 <trans-unit id="sb3d4f79d9d8b71e5">
   <source>Submit</source>
+  <target>提交</target>
 </trans-unit>
 <trans-unit id="se2b29e6cfe59414c">
   <source>UI Settings</source>
+  <target>用户界面设置</target>
 </trans-unit>
 <trans-unit id="sf45734291c57c606">
   <source>OAuth2/OpenID</source>
+  <target>OAuth2/OpenID</target>
 </trans-unit>
 <trans-unit id="s836148f721d8913b">
   <source>Transparent Reverse Proxy</source>
+  <target>透明反向代理</target>
 </trans-unit>
 <trans-unit id="s945a6b94361ee45b">
   <source>For transparent reverse proxies with required authentication</source>
+  <target>适用于需要验证身份的透明反向代理</target>
 </trans-unit>
 <trans-unit id="s60e79e1793e6bd56">
   <source>Forward Auth Single Application</source>
+  <target>Forward Auth 单应用</target>
 </trans-unit>
 <trans-unit id="sadf073913458acbd">
   <source>For nginx's auth_request or traefix's forwardAuth</source>
+  <target>适用于 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
 </trans-unit>
 <trans-unit id="s4425a1002597151e">
   <source>Forward Auth Domain Level</source>
+  <target>Forward Auth 域名级</target>
 </trans-unit>
 <trans-unit id="se770e9498b3bacf6">
   <source>For nginx's auth_request or traefix's forwardAuth per root domain</source>
+  <target>适用于按根域名配置的 nginx 的 auth_request 或 traefik 的 forwardAuth</target>
 </trans-unit>
 <trans-unit id="s40830ec037f34626">
   <source>Configure SAML provider manually</source>
+  <target>手动配置 SAML 提供程序</target>
 </trans-unit>
 <trans-unit id="s154eea2a61d44655">
   <source>RADIUS Configuration</source>
+  <target>RADIUS 配置</target>
 </trans-unit>
 <trans-unit id="sea9fc40dfd1d18b1">
   <source>Configure RADIUS provider manually</source>
+  <target>手动配置 RADIUS 提供程序</target>
 </trans-unit>
 <trans-unit id="s5a8f04c6ef292743">
   <source>SCIM configuration</source>
+  <target>SCIM 配置</target>
 </trans-unit>
 <trans-unit id="sa1b0052ae095b9b3">
   <source>Configure SCIM provider manually</source>
+  <target>手动配置 SCIM 提供程序</target>
 </trans-unit>
 <trans-unit id="s15831fa50a116545">
   <source>Saving Application...</source>
+  <target>正在保存应用程序…</target>
 </trans-unit>
 <trans-unit id="s823abdb61543a826">
   <source>Authentik was unable to save this application:</source>
+  <target>Authentik 无法保存此应用程序：</target>
 </trans-unit>
 <trans-unit id="s848288f8c2265aad">
   <source>Your application has been saved</source>
+  <target>您的应用程序已保存</target>
 </trans-unit>
 <trans-unit id="sf60f1e5b76897c93">
   <source>In the Application:</source>
+  <target>在应用程序中：</target>
 </trans-unit>
 <trans-unit id="s7ce65cf482b7bff0">
   <source>In the Provider:</source>
+  <target>在提供程序中：</target>
 </trans-unit>
 <trans-unit id="s67d858051b34c38b">
   <source>Method's display Name.</source>
+  <target>方法的显示名称。</target>
 </trans-unit>
 <trans-unit id="h10ef80d434185070">
   <source>Use this provider with nginx's <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> or traefik's
                     <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>. Each application/domain needs its own provider.
                     Additionally, on each domain, <x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> must be
                     routed to the outpost (when using a managed outpost, this is done for you).</source>
+  <target>此提供程序需要与 nginx 的 <x id="0" equiv-text="&lt;code&gt;"/>auth_request<x id="1" equiv-text="&lt;/code&gt;"/> 或 traefik 的 <x id="2" equiv-text="&lt;code&gt;"/>forwardAuth<x id="3" equiv-text="&lt;/code&gt;"/>
+                    一起使用。每个应用/域名需要独立的提供程序。
+                    此外，在每个域名上，<x id="4" equiv-text="&lt;code&gt;"/>/outpost.goauthentik.io<x id="5" equiv-text="&lt;/code&gt;"/> 必须被路由到
+                    前哨（如果使用托管前哨，则已自动帮您完成）。</target>
 </trans-unit>
 <trans-unit id="sd18b18f91b804c3f">
   <source>Custom attributes</source>
@@ -7704,111 +7729,147 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s3e99ea082ca5ade9">
   <source>Failed to fetch</source>
+  <target>拉取失败</target>
 </trans-unit>
 <trans-unit id="s98327528f00365a7">
   <source>Failed to fetch data.</source>
+  <target>拉取数据失败。</target>
 </trans-unit>
 <trans-unit id="sf485014051ad0cf7">
   <source>Successfully assigned permission.</source>
+  <target>已成功分配权限。</target>
 </trans-unit>
 <trans-unit id="sca7fed2bef53cb99">
   <source>Role</source>
+  <target>角色</target>
 </trans-unit>
 <trans-unit id="sc92c1a54034e21cc">
   <source>Assign</source>
+  <target>分配</target>
 </trans-unit>
 <trans-unit id="scd84d10ee9137070">
   <source>Assign permission to role</source>
+  <target>为角色分配权限</target>
 </trans-unit>
 <trans-unit id="s5ee6f1b84e9ebc69">
   <source>Assign to new role</source>
+  <target>分配到新角色</target>
 </trans-unit>
 <trans-unit id="s4afb26a8fae257e9">
   <source>Directly assigned</source>
+  <target>直接分配</target>
 </trans-unit>
 <trans-unit id="sd8051c26e155f043">
   <source>Assign permission to user</source>
+  <target>为用户分配权限</target>
 </trans-unit>
 <trans-unit id="sf79f8681e5ffaee2">
   <source>Assign to new user</source>
+  <target>分配到新用户</target>
 </trans-unit>
 <trans-unit id="saabeb4cab074b0b9">
   <source>User Object Permissions</source>
+  <target>用户对象权限</target>
 </trans-unit>
 <trans-unit id="s8489d5559dda260c">
   <source>Role Object Permissions</source>
+  <target>角色对象权限</target>
 </trans-unit>
 <trans-unit id="s6b2beba7ab637e9e">
   <source>Roles</source>
+  <target>角色</target>
 </trans-unit>
 <trans-unit id="s96d2bb4be3f5e8aa">
   <source>Select roles to grant this groups' users' permissions from the selected roles.</source>
+  <target>选择角色，为该组内用户授予所选角色的权限。</target>
 </trans-unit>
 <trans-unit id="sb37880a2a7288ef0">
   <source>Update Permissions</source>
+  <target>更新权限</target>
 </trans-unit>
 <trans-unit id="se9c07cf256774d81">
   <source>Editing is disabled for managed tokens</source>
+  <target>托管令牌的编辑已被禁用</target>
 </trans-unit>
 <trans-unit id="s78ab26da7f067de8">
   <source>Select permissions to grant</source>
+  <target>选择权限以授予</target>
 </trans-unit>
 <trans-unit id="sdeb90bfd8a80b86b">
   <source>Permissions to add</source>
+  <target>要添加的权限</target>
 </trans-unit>
 <trans-unit id="s36247910d67421e1">
   <source>Select permissions</source>
+  <target>选择权限</target>
 </trans-unit>
 <trans-unit id="s67e136af8fc1107b">
   <source>Assign permission</source>
+  <target>分配权限</target>
 </trans-unit>
 <trans-unit id="sb923723d27df40ba">
   <source>Permission(s)</source>
+  <target>权限</target>
 </trans-unit>
 <trans-unit id="sc5fb00b25c7f5a02">
   <source>Permission</source>
+  <target>权限</target>
 </trans-unit>
 <trans-unit id="s1455753daa00f1bc">
   <source>User doesn't have view permission so description cannot be retrieved.</source>
+  <target>用户不具有查看权限，所以无法获取描述。</target>
 </trans-unit>
 <trans-unit id="sa3a3e09b88ed9791">
   <source>Assigned permissions</source>
+  <target>分配的权限</target>
 </trans-unit>
 <trans-unit id="s9cc631505c17b028">
   <source>Assigned global permissions</source>
+  <target>分配的全局权限</target>
 </trans-unit>
 <trans-unit id="s8f85a0e678846080">
   <source>Assigned object permissions</source>
+  <target>分配的对象权限</target>
 </trans-unit>
 <trans-unit id="s9103a949a3963aa9">
   <source>Successfully updated role.</source>
+  <target>已成功更新角色。</target>
 </trans-unit>
 <trans-unit id="sdf87c5661b31359e">
   <source>Successfully created role.</source>
+  <target>已成功创建角色。</target>
 </trans-unit>
 <trans-unit id="s3484b1e6d0b5335f">
   <source>Manage roles which grant permissions to objects within authentik.</source>
+  <target>管理向 authentik 中的对象授予权限的角色。</target>
 </trans-unit>
 <trans-unit id="s259de999919316db">
   <source>Role(s)</source>
+  <target>角色</target>
 </trans-unit>
 <trans-unit id="s2ffad156e8332f04">
   <source>Update Role</source>
+  <target>更新角色</target>
 </trans-unit>
 <trans-unit id="sc5f923729564fbf3">
   <source>Create Role</source>
+  <target>创建角色</target>
 </trans-unit>
 <trans-unit id="s14bfa8fd1bec8889">
   <source>Role doesn't have view permission so description cannot be retrieved.</source>
+  <target>角色不具有查看权限，所以无法获取描述。</target>
 </trans-unit>
 <trans-unit id="s7e796fe83982863f">
   <source>Role <x id="0" equiv-text="${this._role?.name || &quot;&quot;}"/></source>
+  <target>角色 <x id="0" equiv-text="${this._role?.name || &quot;&quot;}"/></target>
 </trans-unit>
 <trans-unit id="s526e2c66bd51ff5f">
   <source>Role Info</source>
+  <target>角色信息</target>
 </trans-unit>
 <trans-unit id="s2da4aa7a9abeb653">
   <source>Pseudolocale (for testing)</source>
+  <target>伪区域（测试用）</target>
 </trans-unit>
     </body>
   </file>
