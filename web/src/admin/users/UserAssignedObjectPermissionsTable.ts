@@ -8,7 +8,7 @@ import { msg } from "@lit/localize";
 import { TemplateResult, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
 
-import { ExtraUserObjectPermission, RbacApi } from "@goauthentik/api";
+import { ExtraUserObjectPermission, ModelEnum, RbacApi } from "@goauthentik/api";
 
 @customElement("ak-user-assigned-object-permissions-table")
 export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPermission> {
@@ -60,6 +60,7 @@ export class UserAssignedObjectPermissionsTable extends Table<ExtraUserObjectPer
                     patchedPermissionAssignRequest: {
                         permissions: [`${item.appLabel}.${item.codename}`],
                         objectPk: item.objectPk,
+                        model: `${item.appLabel}.${item.model}` as ModelEnum,
                     },
                 });
             }}
