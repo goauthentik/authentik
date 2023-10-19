@@ -54,18 +54,18 @@ export const requestRecoveryLink = (user: User) =>
                     description: wroteToClipboard
                         ? msg("A copy of this recovery link has been placed in your clipboard")
                         : "",
-                })
-            )
+                }),
+            ),
         )
         .catch((ex: ResponseError) =>
             ex.response.json().then(() =>
                 showMessage({
                     level: MessageLevel.error,
                     message: msg(
-                        "The current tenant must have a recovery flow configured to use a recovery link"
+                        "The current tenant must have a recovery flow configured to use a recovery link",
                     ),
-                })
-            )
+                }),
+            ),
         );
 
 export const renderRecoveryEmailRequest = (user: User) =>
@@ -198,7 +198,7 @@ export class UserListPage extends TablePage<User> {
                           </div>
                           <h4 class="pf-c-alert__title">
                               ${msg(
-                                  str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`
+                                  str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
                               )}
                           </h4>
                       </div>
@@ -317,7 +317,7 @@ export class UserListPage extends TablePage<User> {
                                         objectLabel=${msg("User")}
                                         .delete=${() => {
                                             return new CoreApi(
-                                                DEFAULT_CONFIG
+                                                DEFAULT_CONFIG,
                                             ).coreUsersPartialUpdate({
                                                 id: item.pk,
                                                 patchedUserRequest: {
@@ -368,13 +368,13 @@ export class UserListPage extends TablePage<User> {
                                                   ? renderRecoveryEmailRequest(item)
                                                   : html`<span
                                                         >${msg(
-                                                            "Recovery link cannot be emailed, user has no email address saved."
+                                                            "Recovery link cannot be emailed, user has no email address saved.",
                                                         )}</span
                                                     >`}
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
+                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active tenant.",
                                               )}
                                           </p>`}
                                 </div>
