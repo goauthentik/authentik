@@ -26,7 +26,6 @@ Create an application in authentik. Create an OAuth2/OpenID provider with the fo
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
 
-
 ## Terraform provider
 
 ```hcl
@@ -148,27 +147,25 @@ If you are using a Helm `values.yaml` file instead, you have to set these option
 
 ```yaml
 grafana.ini:
-  auth:
-    signout_redirect_url: "https://authentik.company/application/o/<Slug of the application from above>/end-session/"
-    oauth_auto_login: true
-  auth.generic_oauth:
-    name: authentik
-    enabled: true
-    client_id: "<Client ID from above>"
-    client_secret: "<Client Secret from above>"
-    scopes: "openid profile email name login"
-    auth_url: "https://authentik.company/application/o/authorize/"
-    token_url: "https://authentik.company/application/o/token/"
-    api_url: "https://authentik.company/application/o/userinfo/"
-    # Optionally map user groups to Grafana roles
-    role_attribute_path: contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
-
+    auth:
+        signout_redirect_url: "https://authentik.company/application/o/<Slug of the application from above>/end-session/"
+        oauth_auto_login: true
+    auth.generic_oauth:
+        name: authentik
+        enabled: true
+        client_id: "<Client ID from above>"
+        client_secret: "<Client Secret from above>"
+        scopes: "openid profile email"
+        auth_url: "https://authentik.company/application/o/authorize/"
+        token_url: "https://authentik.company/application/o/token/"
+        api_url: "https://authentik.company/application/o/userinfo/"
+        # Optionally map user groups to Grafana roles
+        role_attribute_path: contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
 ```
 
 :::note
 For security reasons you shouldn't inline the client_secret in the values, but use a secret instead. For more information, see https://github.com/grafana/helm-charts/blob/main/charts/grafana/README.md#how-to-securely-reference-secrets-in-grafanaini
 :::
-
 
   </TabItem>
 </Tabs>
