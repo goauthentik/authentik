@@ -25,6 +25,7 @@ export class ObjectPermissionPage extends AKElement {
     static get styles(): CSSResult[] {
         return [PFBase, PFGrid, PFPage, PFCard];
     }
+
     render(): TemplateResult {
         return html`<ak-tabs pageIdentifier="permissionPage">
             <section

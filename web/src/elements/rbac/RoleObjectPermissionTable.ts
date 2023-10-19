@@ -1,5 +1,6 @@
 import { DEFAULT_CONFIG } from "@goauthentik/app/common/api/config";
 import { PaginatedResponse, Table, TableColumn } from "@goauthentik/app/elements/table/Table";
+import "@goauthentik/elements/forms/DeleteBulkForm";
 import "@goauthentik/elements/forms/ModalForm";
 import "@goauthentik/elements/rbac/RoleObjectPermissionForm";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
@@ -26,6 +27,8 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
 
     @state()
     modelPermissions?: PaginatedPermissionList;
+
+    checkbox = true;
 
     async apiEndpoint(page: number): Promise<PaginatedResponse<RoleAssignedObjectPermission>> {
         const perms = await new RbacApi(DEFAULT_CONFIG).rbacPermissionsAssignedByRolesList({
@@ -70,6 +73,35 @@ export class RoleAssignedObjectPermissionTable extends Table<RoleAssignedObjectP
                 ${msg("Assign to new role")}
             </button>
         </ak-forms-modal>`;
+    }
+
+    renderToolbarSelected(): TemplateResult {
+        const disabled = this.selectedElements.length < 1;
+        return html`<ak-forms-delete-bulk
+            objectLabel=${msg("Permission(s)")}
+            .objects=${this.selectedElements}
+            .metadata=${(item: RoleAssignedObjectPermission) => {
+                return [{ key: msg("Permission"), value: item.name }];
+            }}
+            .delete=${(item: RoleAssignedObjectPermission) => {
+                return new RbacApi(
+                    DEFAULT_CONFIG,
+                ).rbacPermissionsAssignedByRolesUnassignPartialUpdate({
+                    uuid: item.rolePk,
+                    patchedPermissionAssignRequest: {
+                        objectPk: this.objectPk?.toString(),
+                        model: this.model,
+                        permissions: item.permissions.map((perm) => {
+                            return `${perm.appLabel}.${perm.codename}`;
+                        }),
+                    },
+                });
+            }}
+        >
+            <button ?disabled=${disabled} slot="trigger" class="pf-c-button pf-m-danger">
+                ${msg("Delete")}
+            </button>
+        </ak-forms-delete-bulk>`;
     }
 
     row(item: RoleAssignedObjectPermission): TemplateResult[] {
