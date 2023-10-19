@@ -5,7 +5,10 @@ import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/app/admin/users/UserAssignedGlobalPermissionsTable";
 import "@goauthentik/app/admin/users/UserAssignedObjectPermissionsTable";
-import { requestRecoveryLink } from "@goauthentik/app/admin/users/UserListPage";
+import {
+    renderRecoveryEmailRequest,
+    requestRecoveryLink,
+} from "@goauthentik/app/admin/users/UserListPage";
 import { me } from "@goauthentik/app/common/users";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -28,7 +31,7 @@ import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { CSSResult, TemplateResult, css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -41,7 +44,6 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
-// ${this.user.email ? renderRecoveryEmailRequest(this.user) : nothing}
 import {
     CapabilitiesEnum,
     CoreApi,
@@ -90,8 +92,22 @@ export class UserViewPage extends AKElement {
                     margin-right: 6px;
                     margin-bottom: 6px;
                 }
+
                 .ak-button-collection {
-                    max-width: 12em;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.075rem;
+                    max-width: 12rem;
+                }
+                .ak-button-collection > * {
+                    flex: 1 0 100%;
+                }
+                #reset-password-button {
+                    margin-right: 0;
+                }
+                #ak-email-recovery-request,
+                #ak-email-recovery-request .pf-c-button {
+                    width: 100%;
                 }
             `,
         ];
@@ -297,9 +313,10 @@ export class UserViewPage extends AKElement {
                                             "Create a link for this user to reset their password"
                                         )}
                                     >
-${msg("View Recovery Link")}
+                                        ${msg("View Recovery Link")}
                                     </pf-tooltip>
                                 </ak-action-button>
+                                ${this.user.email ? renderRecoveryEmailRequest(this.user) : nothing}
                             </div>
                         </dd>
                     </div>
