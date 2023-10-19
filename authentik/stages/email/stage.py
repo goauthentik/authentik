@@ -124,8 +124,6 @@ class EmailStageView(ChallengeStageView):
         # Check if the user came back from the email link to verify
         restore_token: FlowToken = self.executor.plan.context.get(PLAN_CONTEXT_IS_RESTORED, None)
         user = self.get_pending_user()
-        # if restore_token==None:
-        #     messages.error(self.request, _("Token not Valid"))
         if restore_token:
             if restore_token.user != user:
                 self.logger.warning("Flow token for non-matching user, denying request")
@@ -142,7 +140,6 @@ class EmailStageView(ChallengeStageView):
         # Check if we've already sent the initial e-mail
         if PLAN_CONTEXT_EMAIL_SENT not in self.executor.plan.context:
             self.send_email()
-            # messages.error(self.request, _("Token not Valid"))
             self.executor.plan.context[PLAN_CONTEXT_EMAIL_SENT] = True
         return super().get(request, *args, **kwargs)
 
