@@ -9,11 +9,8 @@ The following topics are for the basic management of users: how to create, modif
 > If you want to automate user creation, you can do that either by [invitations](./invitations.md), [`user_write` stage](../../flow/stages/user_write), or [using the API](/developer-docs/api/browser).
 
 1. In the Admin interface of your authentik instance, select **Directory > Users** in the left side menu.
-
 2. Select the folder where you want to create a user.
-
 3. Click **Create** (for a default user).
-
 4. Fill in the required fields:
 
 -   **Username**: This value must be unique across your user folders.
@@ -53,26 +50,28 @@ To view details about a specific user:
 
 After the creation of the user, you can edit any parameter defined during the creation.
 
-To modify a user object, go to **Directory > Users**, and click the edit icon beside the name.
-
-You can also go into [user details](#view-user-details), and click **Edit**.
+To modify a user object, go to **Directory > Users**, and click the edit icon beside the name. You can also go into [user details](#view-user-details), and click **Edit**.
 
 ### Assign, modify, or remove permissions for a user
 
-You can grant a user specific global or object-level permissions. Alternatively, you can add a user to a group that has the appropriate permissions for that user, and the user inherits all of the group's permissions.
+You can grant a user specific global or object-level permissions. Alternatively, you can add a user to a group that has the appropriate permissions, and the user inherits all of the group's permissions.
 
 For more information, review ["Permissions: global and object-level"](../access-control/permissions.md).
 
-## User recovery
+## Add a user to a group
+
+1. To add a user to a group, navigate to **Directory > Users** to display all users.
+2. Click the name of the user to display the full user details page.
+3. Click the **Groups** tab, and then click either **Add to existing group** or **Add to new group**.
+
+## User credentials recovery
 
 If a user has lost their credentials, there are several options.
 
 ### Email them a recovery link
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
-
 2. Either click the name of the user to display the full User details page, or click the chevron (the › symbol) beside their name to expand the options.
-
 3. To generate a recovery link, which you can then copy and paste into an email, click **View recovery link**.
 
     A pop-up will appear on your browser with the link for you to copy and to send to the user.
@@ -82,9 +81,7 @@ If a user has lost their credentials, there are several options.
 You can use our automated email to send a link with the URL for the user to reset their password. This option will only work if you have properly [configured a SMTP server during the installation](../../installation/docker-compose#email-configuration-optional-but-recommended) and set an email address for the user.
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
-
 2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
-
 3. To send the automated email to the user, click **Email recovery link**.
 
 If the user does not receive the email, check if the mail server parameters [are properly configured](../../troubleshooting/emails).
@@ -94,9 +91,7 @@ If the user does not receive the email, check if the mail server parameters [are
 As an Admin, you can simply reset the password for the user.
 
 1. In the Admin interface, navigate to **Directory > Users** to display all users.
-
 2. Either click the name of the user to display the full User details page, or click the chevron beside their name to expand the toptions.
-
 3. To reset the user's password, click **Reset password**, and then define the new value.
 
 ## Deactivate or Delete user
@@ -104,7 +99,6 @@ As an Admin, you can simply reset the password for the user.
 #### To deactivate a user:
 
 1. Go into the user list or detail, and click **Deactivate**.
-
 2. Review the changes and click **Update**.
 
 The active sessions are revoked and the authentication of the user blocked. You can reactivate the account by following the same procedure.
@@ -117,7 +111,6 @@ You may instead deactivate the account to preserve identity data.
 :::
 
 1. Go into the user list and select one (or multiple users) to delete and click **Delete** on the top-right of the page.
-
 2. Review the changes and click **Delete**.
 
 The user list refreshes and no longer displays the removed users.

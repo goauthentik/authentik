@@ -13,7 +13,7 @@ const docsSidebar = {
         {
             type: "category",
             label: "Installation",
-            collapsed: false,
+            collapsed: true,
             link: {
                 type: "doc",
                 id: "installation/index",
@@ -274,7 +274,17 @@ const docsSidebar = {
                         "user-group-role/user/invitations",
                     ],
                 },
-                "user-group-role/group",
+                {
+                    type: "category",
+                    label: "Groups",
+                    link: {
+                        type: "doc",
+                        id: "user-group-role/groups/index",
+                    },
+                    items: [
+                        "user-group-role/groups/manage_groups",
+                    ],
+                },
                 {
                     type: "category",
                     label: "Roles",

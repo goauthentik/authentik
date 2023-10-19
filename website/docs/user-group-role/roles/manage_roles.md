@@ -3,9 +3,7 @@ title: "Manage roles"
 description: "Learn how to work with roles and permissions in authentik."
 ---
 
-Roles are a collection of permissions, which can then be assigned, en masse, to a group.
-
-Using roles is a way to quickly grant permissions; by adding a user to the group with the appropriate permissions, that user inherits all of those permissins that are assigned to the group.
+Roles are a collection of permissions, which can then be assigned, en masse, to a group. Using roles is a way to quickly grant permissions; by adding a user to the group with the appropriate assigned roles, any user in that group then inherits all of those permissions that are assigned to the role.
 
 :::info
 In authentik, we assign roles to groups, not to individual users.
@@ -16,8 +14,7 @@ In authentik, we assign roles to groups, not to individual users.
 To create a new role, follow these steps:
 
 1. In the Admin interface, navigate to **Directory > Roles**.
-
-2. Click **Create**, and then define the name of the role and click **Create** in the modal.
+2. Click **Create**, define the name of the role, and then click **Create** in the modal.
 
 ## Modify a role
 
@@ -32,15 +29,21 @@ To modify a role, follow these steps:
 To delete a role, follow these steps:
 
 1. In the Admin interface, navigate to **Directory > Roles**.
-
 2. Select the checkbox beside the name of the role that you want to delete.
-
 3. Click **Delete**.
 
 ## Assign a role to a group
 
-In authentik, roles are assigned to groups, not to individual users.
+In authentik, roles are assigned to [groups](../groups/index.mdx), not to individual users.
 
-1.  Create a new role.
-2.  [Assign the appropriate permissions](../access-control/permissions#manage-permissions) to this role.
-3.  Create a new group, or select an existing group, and ssign all new team members to it.
+1.  To assign the role to a group, navigate to **Directory -> Groups**.
+2.  Click the name of the group to which you want to add a role.
+3.  On the group's detail page, on the Overview tab, click **Edit** in the **Group Info** area.
+4. On the **Update Group** modal, in the **Roles** field, scrooll through the list of existent roles, and click to select the  one you want to add to the group. (You can select multiple roles at once by holding the Control and Command keys while selecting the roles.)
+5. Click **Update** to add the role(s) and close the modal.
+
+:::info
+To remove a role from a group, hold the Command key and click the name of the role that you want to remove from the group. Then click **Update**.
+:::
+
+

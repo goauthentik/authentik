@@ -5,13 +5,10 @@ title: About access control
 import DocCardList from "@theme/DocCardList";
 import { useCurrentSidebarCategory } from "@docusaurus/theme-common";
 
-access control intro sentence here....
+To comply with important, standard regulations such as PCI-DSS, HIPAA, SOC 2, and GDPR, it's necessary to have the ability to control which users have access to specific areas of the system, what [permissions](./permissions.md) they have globally and on certain objects, and a way to monitor [events](../../events) related to user activity.
 
-To comply with important, standard regulations such as PCI-DSS, HIPAA, SOC 2, and GDPR, your compliance is dependenet upon the ability to control which users have access to specific areas of the system, what permissisions they have globally and on specific objects, and a way to monitor when user access them.
+In authentik, we provide role-based access control (RBAC), an industry standard for managing access control. By carefully designing roles with appropriate permissions, and then assigning those roles to groups, RBAC provides a fine-tunes approach to controling user access.
 
-In authentik, we provide role-based access control (RBAC), an industry standard for managing access control.
-
-link to permissisions
-link to monitor [user, group, role?] events
+To learn more about access control with authentik, refer to these topics:
 
 <DocCardList items={useCurrentSidebarCategory().items} />
