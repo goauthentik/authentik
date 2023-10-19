@@ -1,5 +1,5 @@
 ---
-title: Permissions
+title: "Permissions: global and object-level"
 description: "Learn how to use global and object permissions in authentik."
 ---
 
@@ -85,11 +85,13 @@ To view _global_ permissions for a role:
 
 ### View stage permissions
 
+
+
 ## Manage permissions
 
 You can assign or remove permissions to a user, role, or group.
 
-### Assign or remove permissions for a user
+### Assign, modify, or remove permissions for a user
 
 To assign or remove _object_ permissions for a specific user:
 
