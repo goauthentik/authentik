@@ -432,7 +432,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
                         `Optionally pre-fill the input with an initial value.
             When creating a fixed choice field, enable interpreting as expression and
         return a list to return multiple default choices.`,
-                    )}}
+                    )}
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Help text")} name="subText">
