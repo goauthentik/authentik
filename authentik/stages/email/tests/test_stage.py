@@ -296,5 +296,8 @@ class TestEmailStage(FlowTestCase):
         token = generate_id()
         self.assertEqual(
             stage_view.get_full_url(**{QS_KEY_TOKEN: token}),
-            f"http://testserver/if/flow/{self.flow.slug}/?foo=bar&query=nested%3Dvalue&flow_token={token}",
+            (
+                f"http://testserver/if/flow/{self.flow.slug}"
+                f"/?foo=bar&query=nested%3Dvalue&flow_token={token}"
+            ),
         )
