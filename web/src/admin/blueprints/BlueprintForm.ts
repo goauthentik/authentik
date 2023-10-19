@@ -3,6 +3,7 @@ import { docLink } from "@goauthentik/common/global";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/components/ak-toggle-group";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/FormGroup";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
@@ -169,7 +170,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                     ${this.source === blueprintSource.internal
                         ? html`<ak-form-element-horizontal label=${msg("Blueprint")} name="content">
                               <ak-codemirror
-                                  mode="yaml"
+                                  mode=${CodeMirrorMode.YAML}
                                   .parseValue=${false}
                                   value="${ifDefined(this.instance?.content)}"
                               ></ak-codemirror>
@@ -183,7 +184,7 @@ export class BlueprintForm extends ModelForm<BlueprintInstance, string> {
                 <div slot="body" class="pf-c-form">
                     <ak-form-element-horizontal label=${msg("Context")} name="context">
                         <ak-codemirror
-                            mode="yaml"
+                            mode=${CodeMirrorMode.YAML}
                             value="${YAML.stringify(first(this.instance?.context, {}))}"
                         >
                         </ak-codemirror>
