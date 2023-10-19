@@ -5,6 +5,7 @@ import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/app/admin/users/UserAssignedGlobalPermissionsTable";
 import "@goauthentik/app/admin/users/UserAssignedObjectPermissionsTable";
+import { requestRecoveryLink } from "@goauthentik/app/admin/users/UserListPage";
 import { me } from "@goauthentik/app/common/users";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
@@ -40,6 +41,7 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 import PFDisplay from "@patternfly/patternfly/utilities/Display/display.css";
 import PFSizing from "@patternfly/patternfly/utilities/Sizing/sizing.css";
 
+// ${this.user.email ? renderRecoveryEmailRequest(this.user) : nothing}
 import {
     CapabilitiesEnum,
     CoreApi,
@@ -221,7 +223,7 @@ export class UserViewPage extends AKElement {
                                             content=${this.user.isActive
                                                 ? msg("Lock the user out of this system")
                                                 : msg(
-                                                      "Allow the user to log in and use this system",
+                                                      "Allow the user to log in and use this system"
                                                   )}
                                         >
                                             ${this.user.isActive
@@ -248,7 +250,7 @@ export class UserViewPage extends AKElement {
                                               <pf-tooltip
                                                   position="top"
                                                   content=${msg(
-                                                      "Temporarily assume the identity of this user",
+                                                      "Temporarily assume the identity of this user"
                                                   )}
                                               >
                                                   ${msg("Impersonate")}
@@ -287,38 +289,15 @@ export class UserViewPage extends AKElement {
                                 <ak-action-button
                                     id="reset-password-button"
                                     class="pf-m-secondary pf-m-block"
-                                    .apiRequest=${() => {
-                                        return new CoreApi(DEFAULT_CONFIG)
-                                            .coreUsersRecoveryRetrieve({
-                                                id: this.user?.pk || 0,
-                                            })
-                                            .then((rec) => {
-                                                showMessage({
-                                                    level: MessageLevel.success,
-                                                    message: msg(
-                                                        "Successfully generated recovery link",
-                                                    ),
-                                                    description: rec.link,
-                                                });
-                                            })
-                                            .catch(() => {
-                                                showMessage({
-                                                    level: MessageLevel.error,
-                                                    message: msg(
-                                                        "To create a recovery link, the current tenant needs to have a recovery flow configured.",
-                                                    ),
-                                                    description: "",
-                                                });
-                                            });
-                                    }}
+                                    .apiRequest=${() => requestRecoveryLink(this.user)}
                                 >
                                     <pf-tooltip
                                         position="top"
                                         content=${msg(
-                                            "Create a link for this user to reset their password",
+                                            "Create a link for this user to reset their password"
                                         )}
                                     >
-                                        ${msg("Reset Password")}
+${msg("View Recovery Link")}
                                     </pf-tooltip>
                                 </ak-action-button>
                             </div>
@@ -365,7 +344,7 @@ export class UserViewPage extends AKElement {
                                 : html`
                                       <p>
                                           ${msg(
-                                              "Edit the notes attribute of this user to add notes here.",
+                                              "Edit the notes attribute of this user to add notes here."
                                           )}
                                       </p>
                                   `}

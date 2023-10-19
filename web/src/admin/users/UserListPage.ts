@@ -21,6 +21,7 @@ import { getURLParam, updateURLParams } from "@goauthentik/elements/router/Route
 import { PaginatedResponse } from "@goauthentik/elements/table/Table";
 import { TableColumn } from "@goauthentik/elements/table/Table";
 import { TablePage } from "@goauthentik/elements/table/TablePage";
+import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
@@ -39,6 +40,43 @@ import {
     User,
     UserPath,
 } from "@goauthentik/api";
+
+export const requestRecoveryLink = (user: User) =>
+    new CoreApi(DEFAULT_CONFIG)
+        .coreUsersRecoveryRetrieve({
+            id: user.pk,
+        })
+        .then((rec) =>
+            writeToClipboard(rec.link).then((wroteToClipboard) =>
+                showMessage({
+                    level: MessageLevel.success,
+                    message: rec.link,
+                    description: wroteToClipboard
+                        ? msg("A copy of this recovery link has been placed in your clipboard")
+                        : "",
+                })
+            )
+        )
+        .catch((ex: ResponseError) =>
+            ex.response.json().then(() =>
+                showMessage({
+                    level: MessageLevel.error,
+                    message: msg(
+                        "The current tenant must have a recovery flow configured to use a recovery link"
+                    ),
+                })
+            )
+        );
+
+export const renderRecoveryEmailRequest = (user: User) =>
+    html`<ak-forms-modal .closeAfterSuccessfulSubmit=${false} id="ak-email-recovery-request">
+        <span slot="submit"> ${msg("Send link")} </span>
+        <span slot="header"> ${msg("Send recovery link to user")} </span>
+        <ak-user-reset-email-form slot="form" .user=${user}> </ak-user-reset-email-form>
+        <button slot="trigger" class="pf-c-button pf-m-secondary">
+            ${msg("Email recovery link")}
+        </button>
+    </ak-forms-modal>`;
 
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
@@ -147,7 +185,7 @@ export class UserListPage extends TablePage<User> {
                           </div>
                           <h4 class="pf-c-alert__title">
                               ${msg(
-                                  str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`,
+                                  str`Warning: You're about to delete the user you're logged in as (${shouldShowWarning.username}). Proceed at your own risk.`
                               )}
                           </h4>
                       </div>
@@ -266,7 +304,7 @@ export class UserListPage extends TablePage<User> {
                                         objectLabel=${msg("User")}
                                         .delete=${() => {
                                             return new CoreApi(
-                                                DEFAULT_CONFIG,
+                                                DEFAULT_CONFIG
                                             ).coreUsersPartialUpdate({
                                                 id: item.pk,
                                                 patchedUserRequest: {
@@ -303,65 +341,21 @@ export class UserListPage extends TablePage<User> {
                                         ? html`
                                               <ak-action-button
                                                   class="pf-m-secondary"
-                                                  .apiRequest=${() => {
-                                                      return new CoreApi(DEFAULT_CONFIG)
-                                                          .coreUsersRecoveryRetrieve({
-                                                              id: item.pk,
-                                                          })
-                                                          .then((rec) => {
-                                                              showMessage({
-                                                                  level: MessageLevel.success,
-                                                                  message: msg(
-                                                                      "Successfully generated recovery link",
-                                                                  ),
-                                                                  description: rec.link,
-                                                              });
-                                                          })
-                                                          .catch((ex: ResponseError) => {
-                                                              ex.response.json().then(() => {
-                                                                  showMessage({
-                                                                      level: MessageLevel.error,
-                                                                      message: msg(
-                                                                          "No recovery flow is configured.",
-                                                                      ),
-                                                                  });
-                                                              });
-                                                          });
-                                                  }}
+                                                  .apiRequest=${() => requestRecoveryLink(item)}
                                               >
                                                   ${msg("Copy recovery link")}
                                               </ak-action-button>
                                               ${item.email
-                                                  ? html`<ak-forms-modal
-                                                        .closeAfterSuccessfulSubmit=${false}
-                                                    >
-                                                        <span slot="submit">
-                                                            ${msg("Send link")}
-                                                        </span>
-                                                        <span slot="header">
-                                                            ${msg("Send recovery link to user")}
-                                                        </span>
-                                                        <ak-user-reset-email-form
-                                                            slot="form"
-                                                            .user=${item}
-                                                        >
-                                                        </ak-user-reset-email-form>
-                                                        <button
-                                                            slot="trigger"
-                                                            class="pf-c-button pf-m-secondary"
-                                                        >
-                                                            ${msg("Email recovery link")}
-                                                        </button>
-                                                    </ak-forms-modal>`
+                                                  ? renderRecoveryEmailRequest(item)
                                                   : html`<span
                                                         >${msg(
-                                                            "Recovery link cannot be emailed, user has no email address saved.",
+                                                            "Recovery link cannot be emailed, user has no email address saved."
                                                         )}</span
                                                     >`}
                                           `
                                         : html` <p>
                                               ${msg(
-                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active tenant.",
+                                                  "To let a user directly reset a their password, configure a recovery flow on the currently active tenant."
                                               )}
                                           </p>`}
                                 </div>
