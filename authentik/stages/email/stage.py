@@ -3,8 +3,8 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
+from django.http.request import QueryDict
 from django.urls import reverse
-from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -15,7 +15,7 @@ from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTyp
 from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import QS_KEY_TOKEN
+from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
@@ -51,8 +51,22 @@ class EmailStageView(ChallengeStageView):
             "authentik_core:if-flow",
             kwargs={"flow_slug": self.executor.flow.slug},
         )
-        relative_url = f"{base_url}?{urlencode(kwargs)}"
-        return self.request.build_absolute_uri(relative_url)
+        # Parse query string from current URL (full query string)
+        query_params = QueryDict(self.request.META.get("QUERY_STRING", ""), mutable=True)
+        query_params.pop(QS_KEY_TOKEN, None)
+
+        # Check for nested query string used by flow executor, and remove any
+        # kind of flow token from that
+        if QS_QUERY in query_params:
+            inner_query_params = QueryDict(query_params.get(QS_QUERY), mutable=True)
+            inner_query_params.pop(QS_KEY_TOKEN, None)
+            query_params[QS_QUERY] = inner_query_params.urlencode()
+
+        query_params.update(kwargs)
+        full_url = base_url
+        if len(query_params) > 0:
+            full_url = f"{full_url}?{query_params.urlencode()}"
+        return self.request.build_absolute_uri(full_url)
 
     def get_token(self) -> FlowToken:
         """Get token"""
@@ -146,6 +160,7 @@ class EmailStageView(ChallengeStageView):
             messages.error(self.request, _("No pending user."))
             return super().challenge_invalid(response)
         self.send_email()
+        messages.success(self.request, _("Email Successfully sent."))
         # We can't call stage_ok yet, as we're still waiting
         # for the user to click the link in the email
         return super().challenge_invalid(response)
