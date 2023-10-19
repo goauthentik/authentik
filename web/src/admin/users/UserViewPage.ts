@@ -88,15 +88,10 @@ export class UserViewPage extends AKElement {
             PFDescriptionList,
             PFSizing,
             css`
-                .pf-c-description-list__description ak-action-button {
-                    margin-right: 6px;
-                    margin-bottom: 6px;
-                }
-
                 .ak-button-collection {
                     display: flex;
                     flex-direction: column;
-                    gap: 0.075rem;
+                    gap: 0.375rem;
                     max-width: 12rem;
                 }
                 .ak-button-collection > * {
@@ -105,8 +100,11 @@ export class UserViewPage extends AKElement {
                 #reset-password-button {
                     margin-right: 0;
                 }
+
                 #ak-email-recovery-request,
+                #update-password-request .pf-c-button,
                 #ak-email-recovery-request .pf-c-button {
+                    margin: 0;
                     width: 100%;
                 }
             `,
@@ -283,7 +281,7 @@ export class UserViewPage extends AKElement {
                         </dt>
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text ak-button-collection">
-                                <ak-forms-modal size=${PFSize.Medium}>
+                                <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
                                     <span slot="submit">${msg("Update password")}</span>
                                     <span slot="header">${msg("Update password")}</span>
                                     <ak-user-password-form

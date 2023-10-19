@@ -25,7 +25,7 @@ import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
 import "@patternfly/elements/pf-tooltip/pf-tooltip.js";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, html } from "lit";
+import { CSSResult, TemplateResult, css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFAlert from "@patternfly/patternfly/components/Alert/alert.css";
@@ -78,6 +78,19 @@ export const renderRecoveryEmailRequest = (user: User) =>
         </button>
     </ak-forms-modal>`;
 
+const recoveryButtonStyles = css`
+    #recovery-request-buttons {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.375rem;
+    }
+    #recovery-request-buttons > *,
+    #update-password-request .pf-c-button {
+        margin: 0;
+    }
+`;
+
 @customElement("ak-user-list")
 export class UserListPage extends TablePage<User> {
     expandable = true;
@@ -112,7 +125,7 @@ export class UserListPage extends TablePage<User> {
     me?: SessionUser;
 
     static get styles(): CSSResult[] {
-        return super.styles.concat(PFDescriptionList, PFCard, PFAlert);
+        return [...super.styles, PFDescriptionList, PFCard, PFAlert, recoveryButtonStyles];
     }
 
     constructor() {
@@ -325,8 +338,14 @@ export class UserListPage extends TablePage<User> {
                                 <span class="pf-c-description-list__text">${msg("Recovery")}</span>
                             </dt>
                             <dd class="pf-c-description-list__description">
-                                <div class="pf-c-description-list__text">
-                                    <ak-forms-modal size=${PFSize.Medium}>
+                                <div
+                                    class="pf-c-description-list__text"
+                                    id="recovery-request-buttons"
+                                >
+                                    <ak-forms-modal
+                                        size=${PFSize.Medium}
+                                        id="update-password-request"
+                                    >
                                         <span slot="submit">${msg("Update password")}</span>
                                         <span slot="header">${msg("Update password")}</span>
                                         <ak-user-password-form
@@ -343,7 +362,7 @@ export class UserListPage extends TablePage<User> {
                                                   class="pf-m-secondary"
                                                   .apiRequest=${() => requestRecoveryLink(item)}
                                               >
-                                                  ${msg("Copy recovery link")}
+                                                  ${msg("View recovery link")}
                                               </ak-action-button>
                                               ${item.email
                                                   ? renderRecoveryEmailRequest(item)
