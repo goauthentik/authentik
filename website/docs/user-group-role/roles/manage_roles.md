@@ -39,11 +39,9 @@ In authentik, roles are assigned to [groups](../groups/index.mdx), not to indivi
 1.  To assign the role to a group, navigate to **Directory -> Groups**.
 2.  Click the name of the group to which you want to add a role.
 3.  On the group's detail page, on the Overview tab, click **Edit** in the **Group Info** area.
-4. On the **Update Group** modal, in the **Roles** field, scrooll through the list of existent roles, and click to select the  one you want to add to the group. (You can select multiple roles at once by holding the Control and Command keys while selecting the roles.)
-5. Click **Update** to add the role(s) and close the modal.
+4.  On the **Update Group** modal, in the **Roles** field, scrooll through the list of existent roles, and click to select the one you want to add to the group. (You can select multiple roles at once by holding the Control and Command keys while selecting the roles.)
+5.  Click **Update** to add the role(s) and close the modal.
 
 :::info
 To remove a role from a group, hold the Command key and click the name of the role that you want to remove from the group. Then click **Update**.
 :::
-
-

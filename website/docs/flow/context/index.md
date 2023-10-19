@@ -100,9 +100,9 @@ Key-value pairs of the data that is included in the form and will be submitted t
 
 #### User write stage
 
-##### `groups` (List of [Group objects](../../user-group-role/group.md))
+##### `groups` (List of [Group objects](../../user-group-role/groups/index.mdx))
 
-See [Group](../../user-group-role/group.md). If set in the flow context, the `pending_user` will be added to all the groups in this list.
+See [Group](../../user-group-role/groups/index.mdx). If set in the flow context, the `pending_user` will be added to all the groups in this list.
 
 If set, this must be a list of group objects and not group names.
 

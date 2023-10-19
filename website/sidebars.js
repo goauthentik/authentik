@@ -281,9 +281,7 @@ const docsSidebar = {
                         type: "doc",
                         id: "user-group-role/groups/index",
                     },
-                    items: [
-                        "user-group-role/groups/manage_groups",
-                    ],
+                    items: ["user-group-role/groups/manage_groups"],
                 },
                 {
                     type: "category",

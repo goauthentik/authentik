@@ -25,7 +25,7 @@ Object permissions have two categories:
 -   **_user_ object permissions**: defines WHO (which user) can change the **_object_**
 -   **_role_ object permissions**: defines which ROLE can change the **_object_**
 
-Object permissions are assigned, as the name indicates, to an object (users, [groups](../group.md), roles, flows, and stages), and the assigned permissions state exactly what a user or role can do TO the object (i.e. what permissions does the user or role have on that object).
+Object permissions are assigned, as the name indicates, to an object (users, [groups](../groups/index.mdx), roles, flows, and stages), and the assigned permissions state exactly what a user or role can do TO the object (i.e. what permissions does the user or role have on that object).
 
 When working with object permissions, it is important to understand that when you are viewing a page for a specific object (a flow, a stage, user, role, or group), the permissions table on that page displays which users or roles have permissions ON that object.
 
