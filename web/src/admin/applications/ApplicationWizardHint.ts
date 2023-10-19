@@ -11,7 +11,7 @@ import "@goauthentik/elements/buttons/ActionButton/ak-action-button";
 import { getURLParam } from "@goauthentik/elements/router/RouteMatch";
 
 import { msg } from "@lit/localize";
-import { html } from "lit";
+import { css, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { styleMap } from "lit/directives/style-map.js";
 
@@ -36,7 +36,17 @@ const closeButtonIcon = html`<svg
 @customElement("ak-application-wizard-hint")
 export class AkApplicationWizardHint extends AKElement implements ShowHintControllerHost {
     static get styles() {
-        return [PFButton, PFPage, PFLabel];
+        return [
+            PFButton,
+            PFPage,
+            PFLabel,
+            css`
+                .pf-c-page__main-section {
+                    padding-top: 0;
+                    padding-bottom: 0;
+                }
+            `,
+        ];
     }
 
     @property({ type: Boolean, attribute: "show-hint" })
