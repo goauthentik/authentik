@@ -26,6 +26,66 @@ Create an application in authentik. Create an OAuth2/OpenID provider with the fo
 
 Note the Client ID and Client Secret values. Create an application, using the provider you've created above. Note the slug of the application you've created.
 
+## Terraform provider
+
+```hcl
+
+data "authentik_flow" "default-provider-authorization-implicit-consent" {
+  slug = "default-provider-authorization-implicit-consent"
+}
+
+data "authentik_scope_mapping" "scope-email" {
+  name = "authentik default OAuth Mapping: OpenID 'email'"
+}
+
+data "authentik_scope_mapping" "scope-profile" {
+  name = "authentik default OAuth Mapping: OpenID 'profile'"
+}
+
+data "authentik_scope_mapping" "scope-openid" {
+  name = "authentik default OAuth Mapping: OpenID 'openid'"
+}
+
+resource "authentik_provider_oauth2" "grafana" {
+  name          = "Grafana"
+  #  Required. You can use the output of:
+  #     $ openssl rand -hex 16
+  client_id     = "my_client_id"
+
+  # Optional: will be generated if not provided
+  # client_secret = "my_client_secret"
+
+  authorization_flow  = data.authentik_flow.default-provider-authorization-implicit-consent.id
+
+  redirect_uris = ["https://grafana.company/login/generic_oauth"]
+
+  property_mappings = [
+    data.authentik_scope_mapping.scope-email.id,
+    data.authentik_scope_mapping.scope-profile.id,
+    data.authentik_scope_mapping.scope-openid.id,
+  ]
+}
+
+resource "authentik_application" "grafana" {
+  name              = "Grafana"
+  slug              = "grafana"
+  protocol_provider = authentik_provider_oauth2.grafana.id
+}
+
+resource "authentik_group" "grafana_admins" {
+  name    = "Grafana Admins"
+}
+
+resource "authentik_group" "grafana_editors" {
+  name    = "Grafana Editors"
+}
+
+resource "authentik_group" "grafana_viewers" {
+  name    = "Grafana Viewers"
+}
+
+```
+
 ## Grafana
 
 import Tabs from "@theme/Tabs";
@@ -36,9 +96,10 @@ import TabItem from "@theme/TabItem";
   values={[
     {label: 'Docker', value: 'docker'},
     {label: 'Standalone', value: 'standalone'},
+    {label: 'Helm', value: 'helm'},
   ]}>
   <TabItem value="docker">
-If your Grafana is running in docker, set the following environment variables:
+If your Grafana instance is running in Docker, set the following environment variables:
 
 ```yaml
 environment:
@@ -79,6 +140,32 @@ api_url = https://authentik.company/application/o/userinfo/
 # Optionally map user groups to Grafana roles
 role_attribute_path = contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
 ```
+
+  </TabItem>
+  <TabItem value="helm">
+If you are using a Helm `values.yaml` file instead, you have to set these options:
+
+```yaml
+grafana.ini:
+    auth:
+        signout_redirect_url: "https://authentik.company/application/o/<Slug of the application from above>/end-session/"
+        oauth_auto_login: true
+    auth.generic_oauth:
+        name: authentik
+        enabled: true
+        client_id: "<Client ID from above>"
+        client_secret: "<Client Secret from above>"
+        scopes: "openid profile email"
+        auth_url: "https://authentik.company/application/o/authorize/"
+        token_url: "https://authentik.company/application/o/token/"
+        api_url: "https://authentik.company/application/o/userinfo/"
+        # Optionally map user groups to Grafana roles
+        role_attribute_path: contains(groups[*], 'Grafana Admins') && 'Admin' || contains(groups[*], 'Grafana Editors') && 'Editor' || 'Viewer'
+```
+
+:::note
+For security reasons you shouldn't inline the client_secret in the values, but use a secret instead. For more information, see https://github.com/grafana/helm-charts/blob/main/charts/grafana/README.md#how-to-securely-reference-secrets-in-grafanaini
+:::
 
   </TabItem>
 </Tabs>
