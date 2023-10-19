@@ -2,6 +2,7 @@ import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import { groupBy } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -209,7 +210,7 @@ export class OutpostForm extends ModelForm<Outpost, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Configuration")} name="config">
                 <ak-codemirror
-                    mode="yaml"
+                    mode=${CodeMirrorMode.YAML}
                     value="${YAML.stringify(
                         this.instance ? this.instance.config : this.defaultConfig?.config,
                     )}"

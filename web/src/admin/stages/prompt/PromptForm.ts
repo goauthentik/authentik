@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 import { StageHost } from "@goauthentik/flow/stages/base";
@@ -240,7 +241,9 @@ export class PromptForm extends ModelForm<Prompt, string> {
 
     renderForm(): TemplateResult {
         return html`<div class="pf-l-grid pf-m-gutter">
-            <div class="pf-l-grid__item pf-m-6-col pf-c-form pf-m-horizontal">${this.renderEditForm()}</div>
+            <div class="pf-l-grid__item pf-m-6-col pf-c-form pf-m-horizontal">
+                ${this.renderEditForm()}
+            </div>
             <div class="pf-l-grid__item pf-m-6-col">${this.renderPreview()}</div>
         </div> `;
     }
@@ -386,7 +389,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Placeholder")} name="placeholder">
                 <ak-codemirror
-                    mode="python"
+                    mode=${CodeMirrorMode.Python}
                     value="${ifDefined(this.instance?.placeholder)}"
                     @change=${() => {
                         this._shouldRefresh = true;
@@ -425,7 +428,10 @@ export class PromptForm extends ModelForm<Prompt, string> {
                 </p>
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Initial value")} name="initialValue">
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.initialValue)}">
+                <ak-codemirror
+                    mode=${CodeMirrorMode.Python}
+                    value="${ifDefined(this.instance?.initialValue)}"
+                >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg(
@@ -437,7 +443,7 @@ export class PromptForm extends ModelForm<Prompt, string> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Help text")} name="subText">
                 <ak-codemirror
-                    mode="htmlmixed"
+                    mode=${CodeMirrorMode.HTML}
                     value="${ifDefined(this.instance?.subText)}"
                     @change=${() => {
                         this._shouldRefresh = true;

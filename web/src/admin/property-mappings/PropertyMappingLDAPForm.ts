@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { docLink } from "@goauthentik/common/global";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import { ModelForm } from "@goauthentik/elements/forms/ModelForm";
 
@@ -69,7 +70,10 @@ export class PropertyMappingLDAPForm extends ModelForm<LDAPPropertyMapping, stri
                 ?required=${true}
                 name="expression"
             >
-                <ak-codemirror mode="python" value="${ifDefined(this.instance?.expression)}">
+                <ak-codemirror
+                    mode=${CodeMirrorMode.Python}
+                    value="${ifDefined(this.instance?.expression)}"
+                >
                 </ak-codemirror>
                 <p class="pf-c-form__helper-text">
                     ${msg("Expression using Python.")}

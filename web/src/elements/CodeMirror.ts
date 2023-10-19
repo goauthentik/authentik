@@ -23,13 +23,21 @@ import { customElement, property } from "lit/decorators.js";
 
 import { UiThemeEnum } from "@goauthentik/api";
 
+export enum CodeMirrorMode {
+    XML = "xml",
+    JavaScript = "javascript",
+    HTML = "html",
+    Python = "python",
+    YAML = "yaml",
+}
+
 @customElement("ak-codemirror")
 export class CodeMirrorTextarea<T> extends AKElement {
     @property({ type: Boolean })
     readOnly = false;
 
     @property()
-    mode = "yaml";
+    mode: CodeMirrorMode = CodeMirrorMode.YAML;
 
     @property()
     name?: string;
@@ -98,10 +106,10 @@ export class CodeMirrorTextarea<T> extends AKElement {
             return this.getInnerValue();
         }
         try {
-            switch (this.mode.toLowerCase()) {
-                case "yaml":
+            switch (this.mode) {
+                case CodeMirrorMode.YAML:
                     return YAML.parse(this.getInnerValue());
-                case "javascript":
+                case CodeMirrorMode.JavaScript:
                     return JSON.parse(this.getInnerValue());
                 default:
                     return this.getInnerValue();
@@ -134,15 +142,15 @@ export class CodeMirrorTextarea<T> extends AKElement {
 
     getLanguageExtension(): LanguageSupport | undefined {
         switch (this.mode.toLowerCase()) {
-            case "xml":
+            case CodeMirrorMode.XML:
                 return xml();
-            case "javascript":
+            case CodeMirrorMode.JavaScript:
                 return javascript();
-            case "html":
+            case CodeMirrorMode.HTML:
                 return htmlLang();
-            case "python":
+            case CodeMirrorMode.Python:
                 return python();
-            case "yaml":
+            case CodeMirrorMode.YAML:
                 return new LanguageSupport(StreamLanguage.define(yamlMode.yaml));
         }
         return undefined;
