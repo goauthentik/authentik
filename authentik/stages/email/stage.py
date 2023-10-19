@@ -3,8 +3,8 @@ from datetime import timedelta
 
 from django.contrib import messages
 from django.http import HttpRequest, HttpResponse
+from django.http.request import QueryDict
 from django.urls import reverse
-from django.utils.http import urlencode
 from django.utils.text import slugify
 from django.utils.timezone import now
 from django.utils.translation import gettext as _
@@ -15,11 +15,11 @@ from authentik.flows.challenge import Challenge, ChallengeResponse, ChallengeTyp
 from authentik.flows.models import FlowDesignation, FlowToken
 from authentik.flows.planner import PLAN_CONTEXT_IS_RESTORED, PLAN_CONTEXT_PENDING_USER
 from authentik.flows.stage import ChallengeStageView
-from authentik.flows.views.executor import QS_KEY_TOKEN
+from authentik.flows.views.executor import QS_KEY_TOKEN, QS_QUERY
 from authentik.stages.email.models import EmailStage
 from authentik.stages.email.tasks import send_mails
 from authentik.stages.email.utils import TemplateEmailMessage
-from urllib.parse import unquote, urlencode, urlparse, parse_qs
+
 PLAN_CONTEXT_EMAIL_SENT = "email_sent"
 PLAN_CONTEXT_EMAIL_OVERRIDE = "email"
 
@@ -51,30 +51,22 @@ class EmailStageView(ChallengeStageView):
             "authentik_core:if-flow",
             kwargs={"flow_slug": self.executor.flow.slug},
         )
+        # Parse query string from current URL (full query string)
+        query_params = QueryDict(self.request.META.get("QUERY_STRING", ""), mutable=True)
+        query_params.pop(QS_KEY_TOKEN, None)
 
+        # Check for nested query string used by flow executor, and remove any
+        # kind of flow token from that
+        if QS_QUERY in query_params:
+            inner_query_params = QueryDict(query_params.get(QS_QUERY), mutable=True)
+            inner_query_params.pop(QS_KEY_TOKEN, None)
+            query_params[QS_QUERY] = inner_query_params.urlencode()
 
-        # Extract existing query parameters from the request's query string
-        parsed_url = urlparse(self.request.get_full_path())
-        existing_query_params = parse_qs(parsed_url.query)
-        if 'query' in existing_query_params:
-            query_string = existing_query_params['query'][0]
-            flow_token = query_string.split('flow_token=')[1].split('&')[0] if 'flow_token=' in query_string else None
-            if flow_token:
-                # remove the flow_token and everything that follows it from the query string
-                query_string = query_string.split(f'flow_token={flow_token}&', 1)[1]
-        else:
-            query_string = None
-            flow_token = None
-        existing_query_params['query'] = [query_string]
-        # Merge existing query parameters with new query parameters
-        token = self.get_token()
-        query_params = {**existing_query_params, **kwargs}
-        # Remove any instance of 'flow_token' from the query parameters
-        query_params.pop('flow_token', None)
-        query_params = {**{QS_KEY_TOKEN: token.key}, **query_params}
-        # Build the final URL with all query parameters
-        relative_url = f"{base_url}?{urlencode(query_params, doseq=True)}"
-        return self.request.build_absolute_uri(relative_url)
+        query_params.update(kwargs)
+        full_url = base_url
+        if len(query_params) > 0:
+            full_url = f"{full_url}?{query_params.urlencode()}"
+        return self.request.build_absolute_uri(full_url)
 
     def get_token(self) -> FlowToken:
         """Get token"""
@@ -114,7 +106,6 @@ class EmailStageView(ChallengeStageView):
             email = pending_user.email
         current_stage: EmailStage = self.executor.current_stage
         token = self.get_token()
-        link = self.get_full_url().replace('query=', '')
         # Send mail to user
         message = TemplateEmailMessage(
             subject=_(current_stage.subject),
@@ -122,7 +113,7 @@ class EmailStageView(ChallengeStageView):
             language=pending_user.locale(self.request),
             template_name=current_stage.template,
             template_context={
-                "url": unquote(link),
+                "url": self.get_full_url(**{QS_KEY_TOKEN: token.key}),
                 "user": pending_user,
                 "expires": token.expires,
             },
