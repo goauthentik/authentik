@@ -73,6 +73,11 @@ class UsedByMixin:
             # but so we only apply them once, have a simple flag for the first object
             first_object = True
 
+            # TODO: This will only return the used-by references that the user can see
+            # Either we have to leak model information here to not make the list
+            # useless if the user doesn't have all permissions, or we need to double
+            # query and check if there is a difference between modes the user can see
+            # and can't see and add a warning
             for obj in get_objects_for_user(
                 request.user, f"{app}.view_{model_name}", manager
             ).all():

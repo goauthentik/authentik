@@ -70,14 +70,6 @@ export abstract class TablePage<T> extends Table<T> {
         </button>`;
     }
 
-    renderObjectCreate(): TemplateResult {
-        return html``;
-    }
-
-    renderToolbar(): TemplateResult {
-        return html`${this.renderObjectCreate()}${super.renderToolbar()}`;
-    }
-
     render(): TemplateResult {
         return html`<ak-page-header
                 icon=${this.pageIcon()}

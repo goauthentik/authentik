@@ -7,7 +7,6 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.sessions.backends.cache import KEY_PREFIX
 from django.core.cache import cache
 from django.db.models.functions import ExtractHour
-from django.db.models.query import QuerySet
 from django.db.transaction import atomic
 from django.db.utils import IntegrityError
 from django.urls import reverse_lazy
@@ -52,7 +51,6 @@ from rest_framework.serializers import (
 )
 from rest_framework.validators import UniqueValidator
 from rest_framework.viewsets import ModelViewSet
-from rest_framework_guardian.filters import ObjectPermissionsFilter
 from structlog.stdlib import get_logger
 
 from authentik.admin.api.metrics import CoordinateSerializer
@@ -205,6 +203,7 @@ class UserSelfSerializer(ModelSerializer):
     groups = SerializerMethodField()
     uid = CharField(read_only=True)
     settings = SerializerMethodField()
+    system_permissions = SerializerMethodField()
 
     @extend_schema_field(
         ListSerializer(
@@ -226,6 +225,14 @@ class UserSelfSerializer(ModelSerializer):
         """Get user settings with tenant and group settings applied"""
         return user.group_attributes(self._context["request"]).get("settings", {})
 
+    def get_system_permissions(self, user: User) -> list[str]:
+        """Get all system permissions assigned to the user"""
+        return list(
+            user.user_permissions.filter(
+                content_type__app_label="authentik_rbac", content_type__model="systempermission"
+            ).values_list("codename", flat=True)
+        )
+
     class Meta:
         model = User
         fields = [
@@ -240,6 +247,7 @@ class UserSelfSerializer(ModelSerializer):
             "uid",
             "settings",
             "type",
+            "system_permissions",
         ]
         extra_kwargs = {
             "is_active": {"read_only": True},
@@ -653,19 +661,6 @@ class UserViewSet(UsedByMixin, ModelViewSet):
         Event.new(EventAction.IMPERSONATION_ENDED).from_http(request, original_user)
 
         return Response(status=204)
-
-    def _filter_queryset_for_list(self, queryset: QuerySet) -> QuerySet:
-        """Custom filter_queryset method which ignores guardian, but still supports sorting"""
-        for backend in list(self.filter_backends):
-            if backend == ObjectPermissionsFilter:
-                continue
-            queryset = backend().filter_queryset(self.request, queryset, self)
-        return queryset
-
-    def filter_queryset(self, queryset):
-        if self.request.user.has_perm("authentik_core.view_user"):
-            return self._filter_queryset_for_list(queryset)
-        return super().filter_queryset(queryset)
 
     @extend_schema(
         responses={

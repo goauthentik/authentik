@@ -35,25 +35,28 @@ from authentik.core.models import (
     Source,
     UserSourceConnection,
 )
+from authentik.enterprise.models import LicenseUsage
 from authentik.events.utils import cleanse_dict
 from authentik.flows.models import FlowToken, Stage
 from authentik.lib.models import SerializerModel
 from authentik.lib.sentry import SentryIgnoredException
 from authentik.outposts.models import OutpostServiceConnection
 from authentik.policies.models import Policy, PolicyBindingModel
+from authentik.providers.scim.models import SCIMGroup, SCIMUser
 
 # Context set when the serializer is created in a blueprint context
 # Update website/developer-docs/blueprints/v1/models.md when used
 SERIALIZER_CONTEXT_BLUEPRINT = "blueprint_entry"
 
 
-def is_model_allowed(model: type[Model]) -> bool:
-    """Check if model is allowed"""
+def excluded_models() -> list[type[Model]]:
+    """Return a list of all excluded models that shouldn't be exposed via API
+    or other means (internal only, base classes, non-used objects, etc)"""
     # pylint: disable=imported-auth-user
     from django.contrib.auth.models import Group as DjangoGroup
     from django.contrib.auth.models import User as DjangoUser
 
-    excluded_models = (
+    return (
         DjangoUser,
         DjangoGroup,
         # Base classes
@@ -69,8 +72,15 @@ def is_model_allowed(model: type[Model]) -> bool:
         AuthenticatedSession,
         # Classes which are only internally managed
         FlowToken,
+        LicenseUsage,
+        SCIMGroup,
+        SCIMUser,
     )
-    return model not in excluded_models and issubclass(model, (SerializerModel, BaseMetaModel))
+
+
+def is_model_allowed(model: type[Model]) -> bool:
+    """Check if model is allowed"""
+    return model not in excluded_models() and issubclass(model, (SerializerModel, BaseMetaModel))
 
 
 class DoRollback(SentryIgnoredException):

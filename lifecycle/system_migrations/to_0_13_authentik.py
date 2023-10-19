@@ -4,7 +4,7 @@ from redis import Redis
 from authentik.lib.config import CONFIG
 from lifecycle.migrate import BaseMigration
 
-SQL_STATEMENT = """
+SQL_STATEMENT = """BEGIN TRANSACTION;
 ALTER TABLE passbook_audit_event RENAME TO authentik_audit_event;
 ALTER TABLE passbook_core_application RENAME TO authentik_core_application;
 ALTER TABLE passbook_core_group RENAME TO authentik_core_group;
@@ -92,6 +92,7 @@ ALTER SEQUENCE passbook_stages_prompt_promptstage_validation_policies_id_seq REN
 
 UPDATE django_migrations SET app = replace(app, 'passbook', 'authentik');
 UPDATE django_content_type SET app_label = replace(app_label, 'passbook', 'authentik');
+COMMIT;
 """
 
 

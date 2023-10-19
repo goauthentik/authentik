@@ -19,8 +19,10 @@ from django.utils.translation import gettext as _
 from guardian.shortcuts import get_anonymous_user
 from jwt import PyJWTError, decode, get_unverified_header
 from rest_framework.exceptions import ValidationError
+from rest_framework.serializers import BaseSerializer
 
 from authentik.core.models import ExpiringModel, User, UserTypes
+from authentik.lib.models import SerializerModel
 from authentik.root.install_id import get_install_id
 
 
@@ -134,6 +136,9 @@ class LicenseKey:
 
     def record_usage(self):
         """Capture the current validity status and metrics and save them"""
+        threshold = now() - timedelta(hours=8)
+        if LicenseUsage.objects.filter(record_date__gte=threshold).exists():
+            return
         LicenseUsage.objects.create(
             user_count=self.get_default_user_count(),
             external_user_count=self.get_external_user_count(),
@@ -151,7 +156,7 @@ class LicenseKey:
         return usage.record_date
 
 
-class License(models.Model):
+class License(SerializerModel):
     """An authentik enterprise license"""
 
     license_uuid = models.UUIDField(primary_key=True, editable=False, default=uuid4)
@@ -163,12 +168,20 @@ class License(models.Model):
     external_users = models.BigIntegerField()
 
     @property
+    def serializer(self) -> type[BaseSerializer]:
+        from authentik.enterprise.api import LicenseSerializer
+
+        return LicenseSerializer
+
+    @property
     def status(self) -> LicenseKey:
         """Get parsed license status"""
         return LicenseKey.validate(self.key)
 
     class Meta:
         indexes = (HashIndex(fields=("key",)),)
+        verbose_name = _("License")
+        verbose_name_plural = _("Licenses")
 
 
 def usage_expiry():

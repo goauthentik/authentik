@@ -7,6 +7,7 @@ from django.db.models import Model
 from django.db.models.signals import post_save, pre_delete, pre_save
 from django.dispatch import receiver
 from django.http.request import HttpRequest
+from structlog.stdlib import get_logger
 
 from authentik.core.models import Application, AuthenticatedSession, BackchannelProvider, User
 
@@ -14,6 +15,8 @@ from authentik.core.models import Application, AuthenticatedSession, Backchannel
 password_changed = Signal()
 # Arguments: credentials: dict[str, any], request: HttpRequest, stage: Stage
 login_failed = Signal()
+
+LOGGER = get_logger()
 
 
 @receiver(post_save, sender=Application)

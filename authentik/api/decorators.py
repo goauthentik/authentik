@@ -10,7 +10,7 @@ from structlog.stdlib import get_logger
 LOGGER = get_logger()
 
 
-def permission_required(perm: Optional[str] = None, other_perms: Optional[list[str]] = None):
+def permission_required(obj_perm: Optional[str] = None, global_perms: Optional[list[str]] = None):
     """Check permissions for a single custom action"""
 
     def wrapper_outter(func: Callable):
@@ -18,15 +18,17 @@ def permission_required(perm: Optional[str] = None, other_perms: Optional[list[s
 
         @wraps(func)
         def wrapper(self: ModelViewSet, request: Request, *args, **kwargs) -> Response:
-            if perm:
+            if obj_perm:
                 obj = self.get_object()
-                if not request.user.has_perm(perm, obj):
-                    LOGGER.debug("denying access for object", user=request.user, perm=perm, obj=obj)
+                if not request.user.has_perm(obj_perm, obj):
+                    LOGGER.debug(
+                        "denying access for object", user=request.user, perm=obj_perm, obj=obj
+                    )
                     return self.permission_denied(request)
-            if other_perms:
-                for other_perm in other_perms:
+            if global_perms:
+                for other_perm in global_perms:
                     if not request.user.has_perm(other_perm):
-                        LOGGER.debug("denying access for other", user=request.user, perm=perm)
+                        LOGGER.debug("denying access for other", user=request.user, perm=other_perm)
                         return self.permission_denied(request)
             return func(self, request, *args, **kwargs)
 

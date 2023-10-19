@@ -1196,6 +1196,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_rbac.role"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_rbac.role"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_rbac.role"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_sources_ldap.ldapsource"
                             },
                             "id": {
@@ -2713,6 +2750,43 @@
                         ],
                         "properties": {
                             "model": {
+                                "const": "authentik_enterprise.license"
+                            },
+                            "id": {
+                                "type": "string"
+                            },
+                            "state": {
+                                "type": "string",
+                                "enum": [
+                                    "absent",
+                                    "present",
+                                    "created",
+                                    "must_created"
+                                ],
+                                "default": "present"
+                            },
+                            "conditions": {
+                                "type": "array",
+                                "items": {
+                                    "type": "boolean"
+                                }
+                            },
+                            "attrs": {
+                                "$ref": "#/$defs/model_authentik_enterprise.license"
+                            },
+                            "identifiers": {
+                                "$ref": "#/$defs/model_authentik_enterprise.license"
+                            }
+                        }
+                    },
+                    {
+                        "type": "object",
+                        "required": [
+                            "model",
+                            "identifiers"
+                        ],
+                        "properties": {
+                            "model": {
                                 "const": "authentik_blueprints.metaapplyblueprint"
                             },
                             "id": {
@@ -3372,6 +3446,7 @@
                         "authentik.providers.radius",
                         "authentik.providers.saml",
                         "authentik.providers.scim",
+                        "authentik.rbac",
                         "authentik.recovery",
                         "authentik.sources.ldap",
                         "authentik.sources.oauth",
@@ -3443,6 +3518,7 @@
                         "authentik_providers_saml.samlpropertymapping",
                         "authentik_providers_scim.scimprovider",
                         "authentik_providers_scim.scimmapping",
+                        "authentik_rbac.role",
                         "authentik_sources_ldap.ldapsource",
                         "authentik_sources_ldap.ldappropertymapping",
                         "authentik_sources_oauth.oauthsource",
@@ -3483,7 +3559,8 @@
                         "authentik_core.group",
                         "authentik_core.user",
                         "authentik_core.application",
-                        "authentik_core.token"
+                        "authentik_core.token",
+                        "authentik_enterprise.license"
                     ],
                     "title": "Model",
                     "description": "Match events created by selected model. When left empty, all models are matched. When an app is selected, all the application's models are matched."
@@ -4717,6 +4794,11 @@
                     "minLength": 1,
                     "title": "Shared secret",
                     "description": "Shared secret between clients and server to hash packets."
+                },
+                "mfa_support": {
+                    "type": "boolean",
+                    "title": "MFA Support",
+                    "description": "When enabled, code-based multi-factor authentication can be used by appending a semicolon and the TOTP code to the password. This should only be enabled if all users that will bind to this provider have a TOTP device configured, as otherwise a password may incorrectly be rejected if it contains a semicolon."
                 }
             },
             "required": []
@@ -4940,6 +5022,18 @@
                     "type": "string",
                     "minLength": 1,
                     "title": "Expression"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_rbac.role": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 150,
+                    "minLength": 1,
+                    "title": "Name"
                 }
             },
             "required": []
@@ -6920,6 +7014,10 @@
                         ]
                     },
                     "title": "Flow set"
+                },
+                "deny_message": {
+                    "type": "string",
+                    "title": "Deny message"
                 }
             },
             "required": []
@@ -8405,6 +8503,13 @@
                     "type": "object",
                     "additionalProperties": true,
                     "title": "Attributes"
+                },
+                "roles": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "title": "Roles"
                 }
             },
             "required": []
@@ -8591,6 +8696,17 @@
                     "type": "boolean",
                     "title": "Expiring"
                 },
+                "key": {
+                    "type": "string",
+                    "minLength": 1,
+                    "title": "Key"
+                }
+            },
+            "required": []
+        },
+        "model_authentik_enterprise.license": {
+            "type": "object",
+            "properties": {
                 "key": {
                     "type": "string",
                     "minLength": 1,

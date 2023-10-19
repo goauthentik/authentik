@@ -14,14 +14,15 @@ from rest_framework.fields import (
     ListField,
     SerializerMethodField,
 )
-from rest_framework.permissions import IsAdminUser
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 from structlog.stdlib import get_logger
 
+from authentik.api.decorators import permission_required
 from authentik.core.api.utils import PassiveSerializer
 from authentik.events.monitored_tasks import TaskInfo, TaskResultStatus
+from authentik.rbac.permissions import HasPermission
 
 LOGGER = get_logger()
 
@@ -63,7 +64,7 @@ class TaskSerializer(PassiveSerializer):
 class TaskViewSet(ViewSet):
     """Read-only view set that returns all background tasks"""
 
-    permission_classes = [IsAdminUser]
+    permission_classes = [HasPermission("authentik_rbac.view_system_tasks")]
     serializer_class = TaskSerializer
 
     @extend_schema(
@@ -93,6 +94,7 @@ class TaskViewSet(ViewSet):
         tasks = sorted(TaskInfo.all().values(), key=lambda task: task.task_name)
         return Response(TaskSerializer(tasks, many=True).data)
 
+    @permission_required(None, ["authentik_rbac.run_system_tasks"])
     @extend_schema(
         request=OpenApiTypes.NONE,
         responses={

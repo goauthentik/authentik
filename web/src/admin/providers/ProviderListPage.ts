@@ -1,3 +1,4 @@
+import "@goauthentik/admin/applications/ApplicationWizardHint";
 import "@goauthentik/admin/providers/ProviderWizard";
 import "@goauthentik/admin/providers/ldap/LDAPProviderForm";
 import "@goauthentik/admin/providers/oauth2/OAuth2ProviderForm";
@@ -58,6 +59,10 @@ export class ProviderListPage extends TablePage<Provider> {
             new TableColumn(msg("Type")),
             new TableColumn(msg("Actions")),
         ];
+    }
+
+    renderSectionBefore(): TemplateResult {
+        return html`<ak-application-wizard-hint></ak-application-wizard-hint>`;
     }
 
     renderToolbarSelected(): TemplateResult {
