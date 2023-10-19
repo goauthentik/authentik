@@ -1,6 +1,7 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { first } from "@goauthentik/common/utils";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import { Form } from "@goauthentik/elements/forms/Form";
 import "@goauthentik/elements/forms/HorizontalFormElement";
 import "@goauthentik/elements/forms/SearchSelect";
@@ -50,7 +51,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
         return html`<ak-form-element-horizontal label=${msg("Result")}>
             ${this.result?.successful
                 ? html`<ak-codemirror
-                      mode="javascript"
+                      mode=${CodeMirrorMode.JavaScript}
                       ?readOnly=${true}
                       value="${ifDefined(this.result?.result)}"
                   >
@@ -148,7 +149,7 @@ export class PolicyTestForm extends Form<PolicyTestRequest> {
             </ak-form-element-horizontal>
             <ak-form-element-horizontal label=${msg("Context")} name="context">
                 <ak-codemirror
-                    mode="yaml"
+                    mode=${CodeMirrorMode.YAML}
                     value=${YAML.stringify(first(this.request?.context, {}))}
                 >
                 </ak-codemirror>

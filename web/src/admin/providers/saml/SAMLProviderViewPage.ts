@@ -7,6 +7,7 @@ import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/EmptyState";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
@@ -472,7 +473,7 @@ export class SAMLProviderViewPage extends AKElement {
                               </div>
                               <div class="pf-c-card__footer">
                                   <ak-codemirror
-                                      mode="xml"
+                                      mode=${CodeMirrorMode.XML}
                                       ?readOnly=${true}
                                       value="${ifDefined(this.metadata?.metadata)}"
                                   ></ak-codemirror>
