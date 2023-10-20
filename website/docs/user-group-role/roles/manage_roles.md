@@ -44,5 +44,5 @@ In authentik, roles are assigned to [groups](../groups/index.mdx), not to indivi
 5.  Click **Update** to add the role(s) and close the modal.
 
 :::info
-To remove a role from a group, hold the Command key and click the name of the role that you want to remove from the group. Then click **Update**.
+To remove a role from a group, hold the Command key and click the name of the role that you want to remove from the group. This desepcts the role. Then click **Update**.
 :::
