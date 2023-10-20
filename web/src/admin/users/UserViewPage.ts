@@ -311,7 +311,7 @@ export class UserViewPage extends AKElement {
                                             "Create a link for this user to reset their password",
                                         )}
                                     >
-                                        ${msg("View Recovery Link")}
+                                        ${msg("Create Recovery Link")}
                                     </pf-tooltip>
                                 </ak-action-button>
                                 ${user.email ? renderRecoveryEmailRequest(user) : nothing}

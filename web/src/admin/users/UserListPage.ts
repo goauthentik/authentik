@@ -362,7 +362,7 @@ export class UserListPage extends TablePage<User> {
                                                   class="pf-m-secondary"
                                                   .apiRequest=${() => requestRecoveryLink(item)}
                                               >
-                                                  ${msg("View recovery link")}
+                                                  ${msg("Create recovery link")}
                                               </ak-action-button>
                                               ${item.email
                                                   ? renderRecoveryEmailRequest(item)
