@@ -22,7 +22,7 @@ import { type WizardButton, WizardStepLabel } from "./types";
  *
  * @element ak-wizard-frame
  *
- * @slot - Where the form itself should go
+ * @slot trigger - (Inherited from ModalButton) Define the "summon modal" button here
  *
  * @fires ak-wizard-nav - Tell the orchestrator what page the user wishes to move to.
  *

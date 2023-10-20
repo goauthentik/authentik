@@ -7868,27 +7868,35 @@ Bindings to groups/users are checked against the user of the event.</source>
 </trans-unit>
 <trans-unit id="s4bd386db7302bb22">
   <source>Create With Wizard</source>
+  <target>通过向导创建</target>
 </trans-unit>
 <trans-unit id="s070fdfb03034ca9b">
   <source>One hint, 'New Application Wizard', is currently hidden</source>
+  <target>“新应用程序向导”提示目前已隐藏</target>
 </trans-unit>
 <trans-unit id="s61bd841e66966325">
   <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+  <target>通过 OAuth2 和 SAML 等协议，使用 authentik 作为身份提供程序的外部应用程序。此处显示了所有应用程序，即使您无法访问的也包括在内。</target>
 </trans-unit>
 <trans-unit id="s1cc306d8e28c4464">
   <source>Deny message</source>
+  <target>拒绝消息</target>
 </trans-unit>
 <trans-unit id="s6985c401e1100122">
   <source>Message shown when this stage is run.</source>
+  <target>此阶段运行时显示的消息。</target>
 </trans-unit>
 <trans-unit id="s09f0c100d0ad2fec">
   <source>Open Wizard</source>
+  <target>打开向导</target>
 </trans-unit>
 <trans-unit id="sf2ef885f7d0a101d">
   <source>Demo Wizard</source>
+  <target>演示向导</target>
 </trans-unit>
 <trans-unit id="s77505ee5d2e45e53">
   <source>Run the demo wizard</source>
+  <target>运行演示向导</target>
 </trans-unit>
     </body>
   </file>
