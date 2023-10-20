@@ -22,7 +22,7 @@ To create a new group, follow these steps:
 
 To edit the group's name, parent group, whether or not the group is for superusers, associated roles, and any custom attributes, click the Edit icon beside the role's name. Make the changes, and then click **Update**.
 
-To add or remove users from the group, or to manage permissions assigned to the group, click on the name of the group to go to the group's detail page.
+To [add or remove users](../user/user_basic_operations.md#add-a-user-to-a-group) from the group, or to manage permissions assigned to the group, click on the name of the group to go to the group's detail page.
 
 For more information about permissions, refer to ["Assign or remove permissions for a specific group"](../access-control/manage_permissions.md#assign-or-remove-permissions-for-a-specific-group).
 
