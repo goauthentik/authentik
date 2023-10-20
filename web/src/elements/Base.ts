@@ -13,10 +13,15 @@ import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { Config, CurrentTenant, UiThemeEnum } from "@goauthentik/api";
 
-type AkInterface = HTMLElement & { getTheme: () => Promise<UiThemeEnum> };
+type AkInterface = HTMLElement & {
+    getTheme: () => Promise<UiThemeEnum>;
+    tenant?: CurrentTenant;
+    uiConfig?: UIConfig;
+    config?: Config;
+};
 
 export const rootInterface = <T extends AkInterface>(): T | undefined =>
-    document.body.querySelector('[data-ak-interface-root]') as T ?? undefined
+    (document.body.querySelector("[data-ak-interface-root]") as T) ?? undefined;
 
 export function ensureCSSStyleSheet(css: CSSStyleSheet | CSSResult): CSSStyleSheet {
     if (css instanceof CSSResult) {
