@@ -76,3 +76,7 @@ class GitHubType(SourceType):
     authorization_url = "https://github.com/login/oauth/authorize"
     access_token_url = "https://github.com/login/oauth/access_token"  # nosec
     profile_url = "https://api.github.com/user"
+    oidc_well_known_url = (
+        "https://token.actions.githubusercontent.com/.well-known/openid-configuration"
+    )
+    oidc_jwks_url = "https://token.actions.githubusercontent.com/.well-known/jwks"

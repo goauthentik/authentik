@@ -36,6 +36,8 @@ class SourceType:
     authorization_url: Optional[str] = None
     access_token_url: Optional[str] = None
     profile_url: Optional[str] = None
+    oidc_well_known_url: Optional[str] = None
+    oidc_jwks_url: Optional[str] = None
 
     def icon_url(self) -> str:
         """Get Icon URL for login"""
