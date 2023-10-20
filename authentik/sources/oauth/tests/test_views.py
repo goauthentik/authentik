@@ -50,6 +50,7 @@ class TestOAuthSource(TestCase):
     def test_api_validate_openid_connect(self):
         """Test API validation (with OIDC endpoints)"""
         openid_config = {
+            "issuer": "foo",
             "authorization_endpoint": "http://mock/oauth/authorize",
             "token_endpoint": "http://mock/oauth/token",
             "userinfo_endpoint": "http://mock/oauth/userinfo",

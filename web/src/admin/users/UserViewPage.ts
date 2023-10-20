@@ -5,11 +5,14 @@ import "@goauthentik/admin/users/UserForm";
 import "@goauthentik/admin/users/UserPasswordForm";
 import "@goauthentik/app/admin/users/UserAssignedGlobalPermissionsTable";
 import "@goauthentik/app/admin/users/UserAssignedObjectPermissionsTable";
+import {
+    renderRecoveryEmailRequest,
+    requestRecoveryLink,
+} from "@goauthentik/app/admin/users/UserListPage";
 import { me } from "@goauthentik/app/common/users";
 import "@goauthentik/app/elements/rbac/ObjectPermissionsPage";
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { EVENT_REFRESH } from "@goauthentik/common/constants";
-import { MessageLevel } from "@goauthentik/common/messages";
 import "@goauthentik/components/events/ObjectChangelog";
 import "@goauthentik/components/events/UserEvents";
 import { AKElement, rootInterface } from "@goauthentik/elements/Base";
@@ -21,13 +24,12 @@ import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/ActionButton";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
-import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
 import "@goauthentik/elements/oauth/UserRefreshList";
 import "@goauthentik/elements/user/SessionList";
 import "@goauthentik/elements/user/UserConsentList";
 
 import { msg, str } from "@lit/localize";
-import { CSSResult, TemplateResult, css, html } from "lit";
+import { css, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import PFButton from "@patternfly/patternfly/components/Button/button.css";
@@ -72,7 +74,7 @@ export class UserViewPage extends AKElement {
     @state()
     me?: SessionUser;
 
-    static get styles(): CSSResult[] {
+    static get styles() {
         return [
             PFBase,
             PFPage,
@@ -84,12 +86,24 @@ export class UserViewPage extends AKElement {
             PFDescriptionList,
             PFSizing,
             css`
-                .pf-c-description-list__description ak-action-button {
-                    margin-right: 6px;
-                    margin-bottom: 6px;
-                }
                 .ak-button-collection {
-                    max-width: 12em;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.375rem;
+                    max-width: 12rem;
+                }
+                .ak-button-collection > * {
+                    flex: 1 0 100%;
+                }
+                #reset-password-button {
+                    margin-right: 0;
+                }
+
+                #ak-email-recovery-request,
+                #update-password-request .pf-c-button,
+                #ak-email-recovery-request .pf-c-button {
+                    margin: 0;
+                    width: 100%;
                 }
             `,
         ];
@@ -103,7 +117,7 @@ export class UserViewPage extends AKElement {
         });
     }
 
-    render(): TemplateResult {
+    render() {
         return html`<ak-page-header
                 icon="pf-icon pf-icon-user"
                 header=${msg(str`User ${this.user?.username || ""}`)}
@@ -113,13 +127,17 @@ export class UserViewPage extends AKElement {
             ${this.renderBody()}`;
     }
 
-    renderUserCard(): TemplateResult {
+    renderUserCard() {
         if (!this.user) {
-            return html``;
+            return nothing;
         }
+
+        const user = this.user;
+
         const canImpersonate =
             rootInterface()?.config?.capabilities.includes(CapabilitiesEnum.CanImpersonate) &&
             this.user.pk !== this.me?.user.pk;
+
         return html`
             <div class="pf-c-card__title">${msg("User Info")}</div>
             <div class="pf-c-card__body">
@@ -129,7 +147,7 @@ export class UserViewPage extends AKElement {
                             <span class="pf-c-description-list__text">${msg("Username")}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${this.user.username}</div>
+                            <div class="pf-c-description-list__text">${user.username}</div>
                         </dd>
                     </div>
                     <div class="pf-c-description-list__group">
@@ -137,7 +155,7 @@ export class UserViewPage extends AKElement {
                             <span class="pf-c-description-list__text">${msg("Name")}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${this.user.name}</div>
+                            <div class="pf-c-description-list__text">${user.name}</div>
                         </dd>
                     </div>
                     <div class="pf-c-description-list__group">
@@ -145,7 +163,7 @@ export class UserViewPage extends AKElement {
                             <span class="pf-c-description-list__text">${msg("Email")}</span>
                         </dt>
                         <dd class="pf-c-description-list__description">
-                            <div class="pf-c-description-list__text">${this.user.email || "-"}</div>
+                            <div class="pf-c-description-list__text">${user.email || "-"}</div>
                         </dd>
                     </div>
                     <div class="pf-c-description-list__group">
@@ -154,7 +172,7 @@ export class UserViewPage extends AKElement {
                         </dt>
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">
-                                ${this.user.lastLogin?.toLocaleString()}
+                                ${user.lastLogin?.toLocaleString()}
                             </div>
                         </dd>
                     </div>
@@ -165,7 +183,7 @@ export class UserViewPage extends AKElement {
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">
                                 <ak-label
-                                    color=${this.user.isActive ? PFColor.Green : PFColor.Orange}
+                                    color=${user.isActive ? PFColor.Green : PFColor.Orange}
                                 ></ak-label>
                             </div>
                         </dd>
@@ -177,7 +195,7 @@ export class UserViewPage extends AKElement {
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text">
                                 <ak-label
-                                    color=${this.user.isSuperuser ? PFColor.Green : PFColor.Orange}
+                                    color=${user.isSuperuser ? PFColor.Green : PFColor.Orange}
                                 ></ak-label>
                             </div>
                         </dd>
@@ -191,7 +209,7 @@ export class UserViewPage extends AKElement {
                                 <ak-forms-modal>
                                     <span slot="submit"> ${msg("Update")} </span>
                                     <span slot="header"> ${msg("Update User")} </span>
-                                    <ak-user-form slot="form" .instancePk=${this.user.pk}>
+                                    <ak-user-form slot="form" .instancePk=${user.pk}>
                                     </ak-user-form>
                                     <button
                                         slot="trigger"
@@ -201,13 +219,13 @@ export class UserViewPage extends AKElement {
                                     </button>
                                 </ak-forms-modal>
                                 <ak-user-active-form
-                                    .obj=${this.user}
+                                    .obj=${user}
                                     objectLabel=${msg("User")}
                                     .delete=${() => {
                                         return new CoreApi(DEFAULT_CONFIG).coreUsersPartialUpdate({
-                                            id: this.user?.pk || 0,
+                                            id: user.pk,
                                             patchedUserRequest: {
-                                                isActive: !this.user?.isActive,
+                                                isActive: !user.isActive,
                                             },
                                         });
                                     }}
@@ -218,15 +236,13 @@ export class UserViewPage extends AKElement {
                                     >
                                         <pf-tooltip
                                             position="top"
-                                            content=${this.user.isActive
+                                            content=${user.isActive
                                                 ? msg("Lock the user out of this system")
                                                 : msg(
                                                       "Allow the user to log in and use this system",
                                                   )}
                                         >
-                                            ${this.user.isActive
-                                                ? msg("Deactivate")
-                                                : msg("Activate")}
+                                            ${user.isActive ? msg("Deactivate") : msg("Activate")}
                                         </pf-tooltip>
                                     </button>
                                 </ak-user-active-form>
@@ -238,7 +254,7 @@ export class UserViewPage extends AKElement {
                                               .apiRequest=${() => {
                                                   return new CoreApi(DEFAULT_CONFIG)
                                                       .coreUsersImpersonateCreate({
-                                                          id: this.user?.pk || 0,
+                                                          id: user.pk,
                                                       })
                                                       .then(() => {
                                                           window.location.href = "/";
@@ -255,7 +271,7 @@ export class UserViewPage extends AKElement {
                                               </pf-tooltip>
                                           </ak-action-button>
                                       `
-                                    : html``}
+                                    : nothing}
                             </div>
                         </dd>
                     </div>
@@ -265,12 +281,12 @@ export class UserViewPage extends AKElement {
                         </dt>
                         <dd class="pf-c-description-list__description">
                             <div class="pf-c-description-list__text ak-button-collection">
-                                <ak-forms-modal size=${PFSize.Medium}>
+                                <ak-forms-modal size=${PFSize.Medium} id="update-password-request">
                                     <span slot="submit">${msg("Update password")}</span>
                                     <span slot="header">${msg("Update password")}</span>
                                     <ak-user-password-form
                                         slot="form"
-                                        .instancePk=${this.user?.pk}
+                                        .instancePk=${user.pk}
                                     ></ak-user-password-form>
                                     <button
                                         slot="trigger"
@@ -287,30 +303,7 @@ export class UserViewPage extends AKElement {
                                 <ak-action-button
                                     id="reset-password-button"
                                     class="pf-m-secondary pf-m-block"
-                                    .apiRequest=${() => {
-                                        return new CoreApi(DEFAULT_CONFIG)
-                                            .coreUsersRecoveryRetrieve({
-                                                id: this.user?.pk || 0,
-                                            })
-                                            .then((rec) => {
-                                                showMessage({
-                                                    level: MessageLevel.success,
-                                                    message: msg(
-                                                        "Successfully generated recovery link",
-                                                    ),
-                                                    description: rec.link,
-                                                });
-                                            })
-                                            .catch(() => {
-                                                showMessage({
-                                                    level: MessageLevel.error,
-                                                    message: msg(
-                                                        "To create a recovery link, the current tenant needs to have a recovery flow configured.",
-                                                    ),
-                                                    description: "",
-                                                });
-                                            });
-                                    }}
+                                    .apiRequest=${() => requestRecoveryLink(user)}
                                 >
                                     <pf-tooltip
                                         position="top"
@@ -318,9 +311,10 @@ export class UserViewPage extends AKElement {
                                             "Create a link for this user to reset their password",
                                         )}
                                     >
-                                        ${msg("Reset Password")}
+                                        ${msg("Create Recovery Link")}
                                     </pf-tooltip>
                                 </ak-action-button>
+                                ${user.email ? renderRecoveryEmailRequest(user) : nothing}
                             </div>
                         </dd>
                     </div>
@@ -329,9 +323,9 @@ export class UserViewPage extends AKElement {
         `;
     }
 
-    renderBody(): TemplateResult {
+    renderBody() {
         if (!this.user) {
-            return html``;
+            return nothing;
         }
         return html`<ak-tabs>
             <section
