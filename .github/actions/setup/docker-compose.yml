@@ -32,7 +32,7 @@ services:
       REDIS_MASTER_PORT_NUMBER: 6379
       REDIS_MASTER_PASSWORD: bitnami
     ports:
-      - "6379:6379"
+      - "6380:6379"
     restart: always
     profiles:
       - redis-sentinel
