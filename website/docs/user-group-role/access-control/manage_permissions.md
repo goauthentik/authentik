@@ -3,6 +3,8 @@ title: "Manage permissions"
 description: "Learn how to use global and object permissions in authentik."
 ---
 
+Refer to the following topics for instructions to view and manage permissions.
+
 ## View permissions
 
 You can view all permissions that are assigned to a user, group, or role.
