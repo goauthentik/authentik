@@ -40934,10 +40934,20 @@ components:
           type: string
           readOnly: true
           nullable: true
+        oidc_well_known_url:
+          type: string
+          readOnly: true
+          nullable: true
+        oidc_jwks_url:
+          type: string
+          readOnly: true
+          nullable: true
       required:
       - access_token_url
       - authorization_url
       - name
+      - oidc_jwks_url
+      - oidc_well_known_url
       - profile_url
       - request_token_url
       - slug
