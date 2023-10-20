@@ -101,23 +101,23 @@ Many of these vendors also received some benefit of the doubt. SSO generally tak
 
 A few companies have tried to make some attention by removing the SSO tax – including Tuple and [Scalr](https://www.scalr.com/blog/sso-tax) – but none have really gone viral for the effort.
 
-**3. The “tragedy of the commons” effect**
+**3. The collective action problem traps individuals**
 
-The “tragedy of the commons” is an idea that came out of ecological research in the late 1960s. The “commons” refers to a shared resource, such as a water source, and the “tragedy” is that individuals will each use more of the resource than it can withstand.
+The previous two reasons the SSO tax movement failed focused on problems at the individual company level, but the greatest reason might be industry-wide.
 
-Each individual wants to get as much as possible from the commons, but when everyone takes as much water as they want, in this example, the entire resource dies off, and everyone is worse off.
+If we zoom out, the SSO tax isn’t just a business decision – it’s a collective action problem.
 
-![!["Cartoon of the tragedy of the commons by <a href="https://sketchplanations.com/the-tragedy-of-the-commons">Sketchplanatons</a>"]](./image2.png)
+A collective action problem is when individuals in a given situation would benefit from cooperating but, because of other incentives, work against each other to the detriment of all. People keep driving cars, for example, due to a wide variety of valid individual incentives but traffic, pollution, and climate change eventually hurt the collective – including the drivers.
 
-The idea has since spread to politics, economics, and business. If there’s a situation where individual incentives can defeat collective incentives and shared resources can be destroyed by individuals thinking for themselves, a tragedy of the commons effect is likely.
-
-As the software supply chain has evolved, open-source adoption has grown, and software companies have become increasingly interconnected, software security has begun to resemble a commons.
+As the software supply chain has evolved, open-source adoption has grown, and software companies have become increasingly interconnected, software security has become an issue that affects the entire industry. The SSO tax shows, however, that a collective action problem hinders taking the steps necessary to improve security for everyone.
 
 In the past, companies considered security in an organization vs. attacker model, as one entity building a perimeter to defend itself against targeted attackers. But in modern security, organizations are so interconnected that attackers can leap from organization to organization and move laterally from low-value vulnerabilities to high-value exploits.
 
 When attackers [hacked Target in 2013](https://slate.com/technology/2022/04/breached-excerpt-hartzog-solove-target.html#:~:text=In%20caper%20movies%2C%20the%20criminals,party%20vendor%20hired%20by%20Target.), they didn’t go after Target directly; they entered via a third-party vendor Target had hired. And when Log4j became [headline news in 2022](https://builtin.com/cybersecurity/log4j-vulerability-explained), it wasn’t because one attacker found one exploit; a vast range of companies suddenly realized they were vulnerable because they had all adopted the same open-source component.
 
-The more interconnected organizations are, the more security becomes a commons, and the more the SSO tax becomes a tragedy. Ed Contreras, Chief Information Security Officer at Frost Bank, said it well in an [interview with CISO Series](https://cisoseries.com/we-shame-others-because-were-so-right-about-everything/): “With single sign-on, we’re protecting both of our companies” and that the SSO tax, as a result, is an “atrocity.”
+The more interconnected organizations are, the more security becomes a collective action problem that demands companies shift from prioritizing profits via security taxes to pursuing industry-wide security by offering accessible security features and reinforcing security best practices.
+
+Ed Contreras, Chief Information Security Officer at Frost Bank, said it well in an [interview with CISO Series](https://cisoseries.com/we-shame-others-because-were-so-right-about-everything): “With single sign-on, we’re protecting both of our companies” and that the SSO tax, as a result, is an “atrocity.”
 
 ## Compromise is the only way out
 
