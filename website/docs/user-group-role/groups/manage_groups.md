@@ -22,3 +22,7 @@ hhhhhh
 You can grant a group specific global or object-level permissions. Any user who is a member of a group inherits all of the group's permissions.
 
 For more information, review ["Permissions: global and object-level"](../access-control/permissions.md).
+
+## Assign a role to a group
+
+You can assign a role to a group, and then all users in the group inherit the permissions assigned to that role. For instructions and more information, see ["Assign a role to a group"](../roles/manage_roles.md#assign-a-role-to-a-group).

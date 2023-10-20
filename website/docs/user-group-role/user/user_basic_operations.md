@@ -74,7 +74,7 @@ If a user has lost their credentials, there are several options.
 2. Either click the name of the user to display the full User details page, or click the chevron (the › symbol) beside their name to expand the options.
 3. To generate a recovery link, which you can then copy and paste into an email, click **View recovery link**.
 
-    A pop-up will appear on your browser with the link for you to copy and to send to the user.
+A pop-up will appear on your browser with the link for you to copy and to send to the user.
 
 ### Automate email to a user
 

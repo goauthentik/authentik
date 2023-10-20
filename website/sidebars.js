@@ -299,7 +299,10 @@ const docsSidebar = {
                         type: "doc",
                         id: "user-group-role/access-control/index",
                     },
-                    items: ["user-group-role/access-control/permissions"],
+                    items: [
+                        "user-group-role/access-control/permissions",
+                        "user-group-role/access-control/manage_permissions",
+                    ],
                 },
             ],
         },

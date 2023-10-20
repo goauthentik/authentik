@@ -15,6 +15,7 @@ To create a new role, follow these steps:
 
 1. In the Admin interface, navigate to **Directory > Roles**.
 2. Click **Create**, define the name of the role, and then click **Create** in the modal.
+3. Next, [assign permissions to the role](../access-control/permissions.md#assign-or-remove-permissions-for-a-specific-role).
 
 ## Modify a role
 
