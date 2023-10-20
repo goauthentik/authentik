@@ -12,11 +12,11 @@ To create a new group, follow these steps:
 1. In the Admin interface, navigate to **Directory > Groups**.
 2. Click **Create** at the top of the Groups page.
 3. In the Create modal, define the following:
-    *   name of the group
-    *   whether or not users in that group will all be superusers
-    *   the parent group
-    *   any custom attributes
-3. Click **Create**.
+    - name of the group
+    - whether or not users in that group will all be superusers
+    - the parent group
+    - any custom attributes
+4. Click **Create**.
 
 ## Modify a group
 
