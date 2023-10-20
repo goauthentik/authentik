@@ -9,8 +9,8 @@ Permissions are the central components in all access control systems, the lowest
 
 There are two main types of permissions in authentik:
 
--   [**global permissions**](#global-permissions)
--   [**object permissions**](#object-permissions)
+-   [**Global permissions**](#global-permissions)
+-   [**Object permissions**](#object-permissions)
 
 ### Global permissions
 
