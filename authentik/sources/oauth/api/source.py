@@ -72,10 +72,10 @@ class OAuthSourceSerializer(SourceSerializer):
                 raise ValidationError({"oidc_well_known_url": text})
             config = well_known_config.json()
             try:
-                attrs["authorization_url"] = config["authorization_endpoint"]
-                attrs["access_token_url"] = config["token_endpoint"]
-                attrs["profile_url"] = config["userinfo_endpoint"]
-                inferred_oidc_jwks_url = config["jwks_uri"]
+                attrs["authorization_url"] = config.get("authorization_endpoint", "")
+                attrs["access_token_url"] = config.get("token_endpoint", "")
+                attrs["profile_url"] = config.get("userinfo_endpoint", "")
+                inferred_oidc_jwks_url = config.get("jwks_uri", "")
             except (IndexError, KeyError) as exc:
                 raise ValidationError(
                     {"oidc_well_known_url": f"Invalid well-known configuration: {exc}"}

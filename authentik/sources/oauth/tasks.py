@@ -38,7 +38,7 @@ def update_well_known_jwks(self: MonitoredTask):
             for source_attr, config_key in source_attr_key:
                 # Check if we're actually changing anything to only
                 # save when something has changed
-                if getattr(source, source_attr) != config[config_key]:
+                if getattr(source, source_attr, "") != config[config_key]:
                     dirty = True
                 setattr(source, source_attr, config[config_key])
         except (IndexError, KeyError) as exc:
