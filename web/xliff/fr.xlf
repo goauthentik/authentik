@@ -2262,11 +2262,6 @@ Il y a <x id="0" equiv-text="${ago}"/> jour(s)</target>
         <target>Applications</target>
         
       </trans-unit>
-      <trans-unit id="sb9024c1640c4da12">
-        <source>External Applications which use authentik as Identity-Provider, utilizing protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
-        <target>Applications externes qui utilisent authentik comme fournisseur d'identité, en utilisant des protocoles comme OAuth2 et SAML. Toutes les applications sont affichées ici, même celles auxquelles vous n'avez pas accéder.</target>
-        
-      </trans-unit>
       <trans-unit id="s96b2fefc550e4b1c">
         <source>Provider Type</source>
         <target>Type de fournisseur</target>
@@ -7842,6 +7837,30 @@ Les liaisons avec les groupes/utilisateurs sont vérifiées par rapport à l'uti
 </trans-unit>
 <trans-unit id="s2da4aa7a9abeb653">
   <source>Pseudolocale (for testing)</source>
+</trans-unit>
+<trans-unit id="s4bd386db7302bb22">
+  <source>Create With Wizard</source>
+</trans-unit>
+<trans-unit id="s070fdfb03034ca9b">
+  <source>One hint, 'New Application Wizard', is currently hidden</source>
+</trans-unit>
+<trans-unit id="s61bd841e66966325">
+  <source>External applications that use authentik as an identity provider via protocols like OAuth2 and SAML. All applications are shown here, even ones you cannot access.</source>
+</trans-unit>
+<trans-unit id="s1cc306d8e28c4464">
+  <source>Deny message</source>
+</trans-unit>
+<trans-unit id="s6985c401e1100122">
+  <source>Message shown when this stage is run.</source>
+</trans-unit>
+<trans-unit id="s09f0c100d0ad2fec">
+  <source>Open Wizard</source>
+</trans-unit>
+<trans-unit id="sf2ef885f7d0a101d">
+  <source>Demo Wizard</source>
+</trans-unit>
+<trans-unit id="s77505ee5d2e45e53">
+  <source>Run the demo wizard</source>
 </trans-unit>
     </body>
   </file>

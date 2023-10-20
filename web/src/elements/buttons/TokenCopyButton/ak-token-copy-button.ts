@@ -1,12 +1,14 @@
 import { DEFAULT_CONFIG } from "@goauthentik/common/api/config";
 import { MessageLevel } from "@goauthentik/common/messages";
 import { showMessage } from "@goauthentik/elements/messages/MessageContainer";
-import { isSafari } from "@goauthentik/elements/utils/isSafari";
+import { writeToClipboard } from "@goauthentik/elements/utils/writeToClipboard";
 
+import { msg } from "@lit/localize";
 import { customElement, property } from "lit/decorators.js";
 
 import { CoreApi, ResponseError, TokenView } from "@goauthentik/api";
 
+import { APIMessage } from "../../messages/Message";
 import BaseTaskButton from "../SpinnerButton/BaseTaskButton";
 
 /**
@@ -51,35 +53,26 @@ export class TokenCopyButton extends BaseTaskButton {
         });
     };
 
-    onSuccess(token: unknown) {
+    async onSuccess(token: unknown) {
         super.onSuccess(token);
         if (!isTokenView(token)) {
             throw new Error(`Unrecognized return from server: ${token}`);
         }
-
-        // Insecure origins may not have access to the clipboard. Show a message instead.
-        if (!navigator.clipboard) {
-            showMessage({
-                level: MessageLevel.info,
-                message: token.key as string,
-            });
-            return;
-        }
-
-        // Safari only allows navigator.clipboard.write with native clipboard items.
-        if (isSafari()) {
-            navigator.clipboard.write([
-                new ClipboardItem({
-                    "text/plain": new Blob([token.key as string], {
-                        type: "text/plain",
-                    }),
-                }),
-            ]);
-            return;
-        }
-
-        // Default behavior: write the token to the clipboard.
-        navigator.clipboard.writeText(token.key as string);
+        const wroteToClipboard = await writeToClipboard(token.key as string);
+        const info: Pick<APIMessage, "message" | "description"> = wroteToClipboard
+            ? {
+                  message: msg("The token has been copied to your clipboard"),
+              }
+            : {
+                  message: token.key,
+                  description: msg(
+                      "The token was displayed because authentik does not have permission to write to the clipboard",
+                  ),
+              };
+        showMessage({
+            level: MessageLevel.info,
+            ...info,
+        });
     }
 
     async onError(error: unknown) {

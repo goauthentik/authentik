@@ -6,6 +6,7 @@ import { EVENT_REFRESH } from "@goauthentik/common/constants";
 import "@goauthentik/components/events/ObjectChangelog";
 import { AKElement } from "@goauthentik/elements/Base";
 import "@goauthentik/elements/CodeMirror";
+import { CodeMirrorMode } from "@goauthentik/elements/CodeMirror";
 import "@goauthentik/elements/Tabs";
 import "@goauthentik/elements/buttons/SpinnerButton";
 import "@goauthentik/elements/forms/ModalForm";
@@ -175,7 +176,7 @@ export class SAMLSourceViewPage extends AKElement {
                     <div class="pf-c-card pf-l-grid__item pf-m-12-col">
                         <div class="pf-c-card__body">
                             <ak-codemirror
-                                mode="xml"
+                                mode=${CodeMirrorMode.XML}
                                 ?readOnly=${true}
                                 value="${ifDefined(this.metadata?.metadata)}"
                             ></ak-codemirror>
