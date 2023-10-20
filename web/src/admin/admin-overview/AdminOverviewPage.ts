@@ -22,6 +22,7 @@ import PFContent from "@patternfly/patternfly/components/Content/content.css";
 import PFList from "@patternfly/patternfly/components/List/list.css";
 import PFPage from "@patternfly/patternfly/components/Page/page.css";
 import PFGrid from "@patternfly/patternfly/layouts/Grid/grid.css";
+import PFBase from "@patternfly/patternfly/patternfly-base.css";
 
 import { SessionUser } from "@goauthentik/api";
 
@@ -35,6 +36,7 @@ export function versionFamily(): string {
 export class AdminOverviewPage extends AKElement {
     static get styles(): CSSResult[] {
         return [
+            PFBase,
             PFGrid,
             PFPage,
             PFContent,
@@ -52,6 +54,13 @@ export class AdminOverviewPage extends AKElement {
                 }
                 .card-container {
                     max-height: 10em;
+                }
+                .ak-external-link {
+                    display: inline-block;
+                    margin-left: 0.175rem;
+                    vertical-align: super;
+                    line-height: normal;
+                    font-size: var(--pf-global--icon--FontSize--sm);
                 }
             `,
         ];
@@ -104,8 +113,10 @@ export class AdminOverviewPage extends AKElement {
                                             class="pf-u-mb-xl"
                                             target="_blank"
                                             href="https://goauthentik.io/integrations/"
-                                            >${msg("Explore integrations")}</a
-                                        >
+                                            >${msg("Explore integrations")}<i
+                                                class="fas fa-external-link-alt ak-external-link"
+                                            ></i
+                                        ></a>
                                     </li>
                                     <li>
                                         <a class="pf-u-mb-xl" href=${paramURL("/identity/users")}
@@ -120,8 +131,10 @@ export class AdminOverviewPage extends AKElement {
                                                 ".",
                                                 "",
                                             )}"
-                                            >${msg("Check release notes")}</a
-                                        >
+                                            >${msg("Check the release notes")}<i
+                                                class="fas fa-external-link-alt ak-external-link"
+                                            ></i
+                                        ></a>
                                     </li>
                                 </ul>
                             </ak-aggregate-card>
