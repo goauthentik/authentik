@@ -1,5 +1,5 @@
 """OAuth Client models"""
-from typing import TYPE_CHECKING, Optional, Type
+from typing import TYPE_CHECKING, Optional
 
 from django.db import models
 from django.http.request import HttpRequest
@@ -55,7 +55,7 @@ class OAuthSource(Source):
     oidc_jwks = models.JSONField(default=dict, blank=True)
 
     @property
-    def type(self) -> type["SourceType"]:
+    def source_type(self) -> type["SourceType"]:
         """Return the provider instance for this source"""
         from authentik.sources.oauth.types.registry import registry
 
@@ -65,15 +65,14 @@ class OAuthSource(Source):
     def component(self) -> str:
         return "ak-source-oauth-form"
 
-    # we're using Type[] instead of type[] here since type[] interferes with the property above
     @property
-    def serializer(self) -> Type[Serializer]:
+    def serializer(self) -> type[Serializer]:
         from authentik.sources.oauth.api.source import OAuthSourceSerializer
 
         return OAuthSourceSerializer
 
     def ui_login_button(self, request: HttpRequest) -> UILoginButton:
-        provider_type = self.type
+        provider_type = self.source_type
         provider = provider_type()
         icon = self.get_icon
         if not icon:
@@ -85,7 +84,7 @@ class OAuthSource(Source):
         )
 
     def ui_user_settings(self) -> Optional[UserSettingSerializer]:
-        provider_type = self.type
+        provider_type = self.source_type
         icon = self.get_icon
         if not icon:
             icon = provider_type().icon_url()
