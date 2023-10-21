@@ -54,7 +54,7 @@ class OAuthSourceSerializer(SourceSerializer):
     @extend_schema_field(SourceTypeSerializer)
     def get_type(self, instance: OAuthSource) -> SourceTypeSerializer:
         """Get source's type configuration"""
-        return SourceTypeSerializer(instance.type).data
+        return SourceTypeSerializer(instance.source_type).data
 
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()

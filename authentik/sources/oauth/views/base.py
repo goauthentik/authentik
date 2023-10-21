@@ -25,7 +25,7 @@ class OAuthClientMixin:
         if self.client_class is not None:
             # pylint: disable=not-callable
             return self.client_class(source, self.request, **kwargs)
-        if source.type.request_token_url or source.request_token_url:
+        if source.source_type.request_token_url or source.request_token_url:
             client = OAuthClient(source, self.request, **kwargs)
         else:
             client = OAuth2Client(source, self.request, **kwargs)

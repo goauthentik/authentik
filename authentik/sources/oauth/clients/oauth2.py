@@ -76,8 +76,8 @@ class OAuth2Client(BaseOAuthClient):
         if SESSION_KEY_OAUTH_PKCE in self.request.session:
             args["code_verifier"] = self.request.session[SESSION_KEY_OAUTH_PKCE]
         try:
-            access_token_url = self.source.type.access_token_url or ""
-            if self.source.type.urls_customizable and self.source.access_token_url:
+            access_token_url = self.source.source_type.access_token_url or ""
+            if self.source.source_type.urls_customizable and self.source.access_token_url:
                 access_token_url = self.source.access_token_url
             response = self.session.request(
                 "post", access_token_url, data=args, headers=self._default_headers, **request_kwargs
@@ -140,8 +140,8 @@ class UserprofileHeaderAuthClient(OAuth2Client):
 
     def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
         "Fetch user profile information."
-        profile_url = self.source.type.profile_url or ""
-        if self.source.type.urls_customizable and self.source.profile_url:
+        profile_url = self.source.source_type.profile_url or ""
+        if self.source.source_type.urls_customizable and self.source.profile_url:
             profile_url = self.source.profile_url
         response = self.session.request(
             "get",
