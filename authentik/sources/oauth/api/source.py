@@ -30,6 +30,8 @@ class SourceTypeSerializer(PassiveSerializer):
     authorization_url = CharField(read_only=True, allow_null=True)
     access_token_url = CharField(read_only=True, allow_null=True)
     profile_url = CharField(read_only=True, allow_null=True)
+    oidc_well_known_url = CharField(read_only=True, allow_null=True)
+    oidc_jwks_url = CharField(read_only=True, allow_null=True)
 
 
 class OAuthSourceSerializer(SourceSerializer):
@@ -52,11 +54,15 @@ class OAuthSourceSerializer(SourceSerializer):
     @extend_schema_field(SourceTypeSerializer)
     def get_type(self, instance: OAuthSource) -> SourceTypeSerializer:
         """Get source's type configuration"""
-        return SourceTypeSerializer(instance.type).data
+        return SourceTypeSerializer(instance.source_type).data
 
     def validate(self, attrs: dict) -> dict:
         session = get_http_session()
-        well_known = attrs.get("oidc_well_known_url")
+        source_type = registry.find_type(attrs["provider_type"])
+
+        well_known = attrs.get("oidc_well_known_url") or source_type.oidc_well_known_url
+        inferred_oidc_jwks_url = None
+
         if well_known and well_known != "":
             try:
                 well_known_config = session.get(well_known)
@@ -65,24 +71,23 @@ class OAuthSourceSerializer(SourceSerializer):
                 text = exc.response.text if exc.response else str(exc)
                 raise ValidationError({"oidc_well_known_url": text})
             config = well_known_config.json()
-            try:
-                attrs["authorization_url"] = config["authorization_endpoint"]
-                attrs["access_token_url"] = config["token_endpoint"]
-                attrs["profile_url"] = config["userinfo_endpoint"]
-                attrs["oidc_jwks_url"] = config["jwks_uri"]
-            except (IndexError, KeyError) as exc:
-                raise ValidationError(
-                    {"oidc_well_known_url": f"Invalid well-known configuration: {exc}"}
-                )
+            if "issuer" not in config:
+                raise ValidationError({"oidc_well_known_url": "Invalid well-known configuration"})
+            attrs["authorization_url"] = config.get("authorization_endpoint", "")
+            attrs["access_token_url"] = config.get("token_endpoint", "")
+            attrs["profile_url"] = config.get("userinfo_endpoint", "")
+            inferred_oidc_jwks_url = config.get("jwks_uri", "")
 
-        jwks_url = attrs.get("oidc_jwks_url")
+        # Prefer user-entered URL to inferred URL to default URL
+        jwks_url = attrs.get("oidc_jwks_url") or inferred_oidc_jwks_url or source_type.oidc_jwks_url
         if jwks_url and jwks_url != "":
+            attrs["oidc_jwks_url"] = jwks_url
             try:
                 jwks_config = session.get(jwks_url)
                 jwks_config.raise_for_status()
             except RequestException as exc:
                 text = exc.response.text if exc.response else str(exc)
-                raise ValidationError({"jwks_url": text})
+                raise ValidationError({"oidc_jwks_url": text})
             config = jwks_config.json()
             attrs["oidc_jwks"] = config
 

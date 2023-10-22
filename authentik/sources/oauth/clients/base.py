@@ -36,8 +36,8 @@ class BaseOAuthClient:
 
     def get_profile_info(self, token: dict[str, str]) -> Optional[dict[str, Any]]:
         """Fetch user profile information."""
-        profile_url = self.source.type.profile_url or ""
-        if self.source.type.urls_customizable and self.source.profile_url:
+        profile_url = self.source.source_type.profile_url or ""
+        if self.source.source_type.urls_customizable and self.source.profile_url:
             profile_url = self.source.profile_url
         response = self.do_request("get", profile_url, token=token)
         try:
@@ -57,8 +57,8 @@ class BaseOAuthClient:
 
     def get_redirect_url(self, parameters=None):
         """Build authentication redirect url."""
-        authorization_url = self.source.type.authorization_url or ""
-        if self.source.type.urls_customizable and self.source.authorization_url:
+        authorization_url = self.source.source_type.authorization_url or ""
+        if self.source.source_type.urls_customizable and self.source.authorization_url:
             authorization_url = self.source.authorization_url
         if authorization_url == "":
             Event.new(
