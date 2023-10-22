@@ -37,11 +37,14 @@ class CustomLoopLayer:
             # Redis cluster does not support auto close of connection pools
             if hasattr(self._connections[index], "auto_close_connection_pool"):
                 self._connections[index].auto_close_connection_pool = True
+            connection = self._connections[index]
         else:
-            # Update connection in case master has been demoted to slave
-            self._connections[index].connect()
+            connection = self._connections[index]
+            if hasattr(connection, "connect") and callable(getattr(connection, "connect", None)):
+                # Update connection in case master has been demoted to slave
+                connection.connect()
 
-        return self._connections[index]
+        return connection
 
     async def flush(self):
         """Close all open connections"""
