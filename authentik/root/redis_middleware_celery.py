@@ -46,7 +46,20 @@ class CustomResultConsumer(ResultConsumer):
         # retrieve meta for all subscribed tasks before going into pubsub mode
         metas = []
         if self.subscribed_to:
-            metas = self.backend.client.mget(self.subscribed_to)
+            if hasattr(self.backend.client, "keyslot") and callable(
+                getattr(self.backend.client, "keyslot", None)
+            ):
+                slots = {self.backend.client.keyslot(key) for key in self.subscribed_to}
+                if len(slots) != 1:
+                    pipe = self.backend.client.pipeline()
+                    for key in self.subscribed_to:
+                        pipe.get(key)
+                    metas = pipe.execute()
+                else:
+                    metas = self.backend.client.mget(self.subscribed_to)
+            else:
+                metas = self.backend.client.mget(self.subscribed_to)
+
         metas = [meta for meta in metas if meta]
         for meta in metas:
             self.on_state_change(self._decode_result(meta), None)
@@ -93,6 +106,16 @@ class CustomBackend(RedisBackend):
     def _get_pool(self, **params):
         """Generate ConnectionPool using config"""
         return get_connection_pool(self.config)
+
+    def mget(self, keys):
+        if hasattr(self.client, "keyslot") and callable(getattr(self.client, "keyslot", None)):
+            slots = {self.client.keyslot(key) for key in keys}
+            if len(slots) != 1:
+                pipe = self.client.pipeline()
+                for key in keys:
+                    pipe.get(key)
+                return pipe.execute()
+        return self.client.mget(keys)
 
     @property
     def uses_cluster(self) -> bool:
