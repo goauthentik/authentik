@@ -124,7 +124,7 @@ class CustomBackend(RedisBackend):
         return self.config["type"] == "cluster"
 
     def _set(self, key, value):
-        """Do not use pipeline publish as it is unsupported for cluster"""
+        """Do not use pipeline publish as it is unsupported by cluster"""
         if self.uses_cluster:
             self.client.set(key, value)
 
