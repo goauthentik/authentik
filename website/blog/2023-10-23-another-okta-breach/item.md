@@ -45,7 +45,7 @@ But security engineers know that hackers go in at the odd, unexpected angles. A 
 
 Similarly, the support team at Okta was used as entry point. Once the hacker gained control of a single customer’s account, they worked to take control of the main Okta dashboard and the entire support system. This lateral-to-go-up movement through access control layers is common technique of hackers.
 
-## It’s the response… timing and tone matter
+## It’s the response… lesson not yet learned
 
 The timing of Okta's response, not great. The initial denial of the incident, not great. And then, add insult to injury, there’s what can objectively be labeled an [abysmal “announcement” blog](https://sec.okta.com/harfiles) from Okta on October 20.
 
