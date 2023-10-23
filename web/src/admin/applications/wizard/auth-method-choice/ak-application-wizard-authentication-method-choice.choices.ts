@@ -38,7 +38,7 @@ export type LocalTypeCreate = TypeCreate & {
 const _providerModelsTable: ProviderType[] = [
     [
         "oauth2provider",
-        msg("OAuth2/OpenID"),
+        msg("OAuth2/OIDC (Open Authorization/OpenID Connect)"),
         msg("Modern applications, APIs and Single-page applications."),
         () =>
             html`<ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>`,
@@ -50,7 +50,7 @@ const _providerModelsTable: ProviderType[] = [
     ],
     [
         "ldapprovider",
-        msg("LDAP"),
+        msg("LDAP (Lightweight Directory Access Protocol)"),
         msg("Provide an LDAP interface for applications and users to authenticate against."),
         () =>
             html`<ak-application-wizard-authentication-by-ldap></ak-application-wizard-authentication-by-ldap>`,
