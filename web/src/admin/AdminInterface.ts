@@ -193,7 +193,7 @@ export class AdminInterface extends Interface {
             ["/if/user/", msg("User interface"), { "?isAbsoluteLink": true, "?highlight": true }],
             [null, msg("Dashboards"), { "?expanded": true }, [
                 ["/administration/overview", msg("Overview")],
-                ["/administration/dashboard/users", msg("Users")],
+                ["/administration/dashboard/users", msg("User Statistics")],
                 ["/administration/system-tasks", msg("System Tasks")]]],
             [null, msg("Applications"), null, [
                 ["/core/providers", msg("Providers"), [`^/core/providers/(?<id>${ID_REGEX})$`]],
