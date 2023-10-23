@@ -45,20 +45,21 @@ class CustomResultConsumer(ResultConsumer):
         # Task state might have changed when the connection was down, so we
         # retrieve meta for all subscribed tasks before going into pubsub mode
         metas = []
-        if self.subscribed_to:
-            if hasattr(self.backend.client, "keyslot") and callable(
-                getattr(self.backend.client, "keyslot", None)
-            ):
-                slots = {self.backend.client.keyslot(key) for key in self.subscribed_to}
-                if len(slots) != 1:
-                    pipe = self.backend.client.pipeline()
-                    for key in self.subscribed_to:
-                        pipe.get(key)
-                    metas = pipe.execute()
-                else:
-                    metas = self.backend.client.mget(self.subscribed_to)
-            else:
-                metas = self.backend.client.mget(self.subscribed_to)
+        slots = {}
+        if (
+            self.subscribed_to
+            and hasattr(self.backend.client, "keyslot")
+            and callable(getattr(self.backend.client, "keyslot", None))
+        ):
+            slots = {self.backend.client.keyslot(key) for key in self.subscribed_to}
+
+        if len(slots) > 1:
+            pipe = self.backend.client.pipeline()
+            for key in self.subscribed_to:
+                pipe.get(key)
+            metas = pipe.execute()
+        else:
+            metas = self.backend.client.mget(self.subscribed_to)
 
         metas = [meta for meta in metas if meta]
         for meta in metas:

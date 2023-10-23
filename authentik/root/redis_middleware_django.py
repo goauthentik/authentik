@@ -1,11 +1,14 @@
 """Make Django use custom Redis client"""
+from collections import OrderedDict
 from copy import deepcopy
 from hashlib import sha256
 from json import dumps as json_dumps
-from typing import Dict
+from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
-from django_redis.client.default import DefaultClient
+from django_redis.client.default import DefaultClient, _main_exceptions
+from django_redis.exceptions import ConnectionInterrupted
+from redis import Redis
 from redis.cluster import RedisCluster
 
 from authentik.lib.utils.parser import (
@@ -42,6 +45,72 @@ class CustomClient(DefaultClient):
         """
         config = self._server[index]
         return self.connection_factory.connect(config)
+
+    def get_many(self, keys, version: Optional[int] = None, client=None) -> OrderedDict:
+        """
+        Retrieve many keys.
+        """
+        if self._server[0]["type"] != "cluster":
+            return super().get_many(keys, version, client)
+
+        if not keys:
+            return OrderedDict()
+
+        if client is None:
+            client = self.get_client(write=False)
+
+        recovered_data = OrderedDict()
+
+        map_keys = OrderedDict((self.make_key(k, version=version), k) for k in keys)
+
+        try:
+            pipeline = client.pipeline()
+            for key in map_keys:
+                pipeline.get(key)
+            results = pipeline.execute()
+        except _main_exceptions as exc:
+            raise ConnectionInterrupted(connection=client) from exc
+
+        for key, value in zip(map_keys, results):
+            if value is None:
+                continue
+            recovered_data[map_keys[key]] = self.decode(value)
+        return recovered_data
+
+    def keys(
+        self, search: str, version: Optional[int] = None, client: Optional[Redis] = None
+    ) -> List[Any]:
+        """
+        Execute KEYS command and return matched results.
+        Warning: this can return huge number of results, in
+        this case, it strongly recommended use iter_keys
+        for it.
+        """
+        if self._server[0]["type"] != "cluster":
+            return super().keys(search, version, client)
+
+        try:
+            return [*self.iter_keys(search)]
+        except _main_exceptions as exc:
+            raise ConnectionInterrupted(connection=client) from exc
+
+    def delete_many(self, keys, version: Optional[int] = None, client=None):
+        """
+        Remove multiple keys at once.
+        """
+        if self._server[0]["type"] != "cluster":
+            return super().delete_many(keys, version, client)
+
+        if client is None:
+            client = self.get_client(write=False)
+
+        try:
+            pipeline = client.pipeline()
+            for key in [self.make_key(k, version=version) for k in keys]:
+                pipeline.delete(key)
+            return sum(pipeline.execute())
+        except _main_exceptions as exc:
+            raise ConnectionInterrupted(connection=client) from exc
 
 
 class CustomConnectionFactory:
