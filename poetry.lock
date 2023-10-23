@@ -2970,22 +2970,21 @@ testutils = ["gitpython (>3)"]
 
 [[package]]
 name = "pylint-django"
-version = "2.5.3"
+version = "2.5.4"
 description = "A Pylint plugin to help Pylint understand the Django web framework"
 optional = false
-python-versions = "*"
+python-versions = ">=3.7,<4.0"
 files = [
-    {file = "pylint-django-2.5.3.tar.gz", hash = "sha256:0ac090d106c62fe33782a1d01bda1610b761bb1c9bf5035ced9d5f23a13d8591"},
-    {file = "pylint_django-2.5.3-py3-none-any.whl", hash = "sha256:56b12b6adf56d548412445bd35483034394a1a94901c3f8571980a13882299d5"},
+    {file = "pylint_django-2.5.4-py3-none-any.whl", hash = "sha256:08bedfd7ccc4c47afa09cbfee6f4b5074437178d8e51fd891e2232c0d3a5b140"},
+    {file = "pylint_django-2.5.4.tar.gz", hash = "sha256:d167b1437342543727925a98c0dee9c8de8e8e1f8cb8caf868018febd2c4e2b7"},
 ]
 
 [package.dependencies]
-pylint = ">=2.0,<3"
-pylint-plugin-utils = ">=0.7"
+pylint = ">=2.0,<4"
+pylint-plugin-utils = ">=0.8"
 
 [package.extras]
-for-tests = ["coverage", "django-tables2", "django-tastypie", "factory-boy", "pylint (>=2.13)", "pytest", "wheel"]
-with-django = ["Django"]
+with-django = ["Django (>=2.2)"]
 
 [[package]]
 name = "pylint-plugin-utils"

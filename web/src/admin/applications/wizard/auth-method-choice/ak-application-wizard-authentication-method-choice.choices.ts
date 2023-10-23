@@ -38,9 +38,10 @@ export type LocalTypeCreate = TypeCreate & {
 const _providerModelsTable: ProviderType[] = [
     [
         "oauth2provider",
-        msg("OAuth2/OpenID"),
+        msg("OAuth2/OIDC (Open Authorization/OpenID Connect)"),
         msg("Modern applications, APIs and Single-page applications."),
-        () => html`<ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>`,
+        () =>
+            html`<ak-application-wizard-authentication-by-oauth></ak-application-wizard-authentication-by-oauth>`,
         ProviderModelEnum.Oauth2Oauth2provider,
         (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.Oauth2Oauth2provider,
@@ -49,21 +50,22 @@ const _providerModelsTable: ProviderType[] = [
     ],
     [
         "ldapprovider",
-        msg("LDAP"),
+        msg("LDAP (Lightweight Directory Access Protocol)"),
         msg("Provide an LDAP interface for applications and users to authenticate against."),
-        () => html`<ak-application-wizard-authentication-by-ldap></ak-application-wizard-authentication-by-ldap>`,
+        () =>
+            html`<ak-application-wizard-authentication-by-ldap></ak-application-wizard-authentication-by-ldap>`,
         ProviderModelEnum.LdapLdapprovider,
-                (provider: OneOfProvider) => ({
+        (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.LdapLdapprovider,
             ...(provider as LDAPProviderRequest),
         }),
-
     ],
     [
         "proxyprovider-proxy",
         msg("Transparent Reverse Proxy"),
         msg("For transparent reverse proxies with required authentication"),
-        () => html`<ak-application-wizard-authentication-for-reverse-proxy></ak-application-wizard-authentication-for-reverse-proxy>`,
+        () =>
+            html`<ak-application-wizard-authentication-for-reverse-proxy></ak-application-wizard-authentication-for-reverse-proxy>`,
         ProviderModelEnum.ProxyProxyprovider,
         (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.ProxyProxyprovider,
@@ -73,23 +75,24 @@ const _providerModelsTable: ProviderType[] = [
     ],
     [
         "proxyprovider-forwardsingle",
-        msg("Forward Auth Single Application"),
+        msg("Forward Auth (Single Application)"),
         msg("For nginx's auth_request or traefix's forwardAuth"),
-        () => html`<ak-application-wizard-authentication-for-single-forward-proxy></ak-application-wizard-authentication-for-single-forward-proxy>`,
-        ProviderModelEnum.ProxyProxyprovider  ,
+        () =>
+            html`<ak-application-wizard-authentication-for-single-forward-proxy></ak-application-wizard-authentication-for-single-forward-proxy>`,
+        ProviderModelEnum.ProxyProxyprovider,
         (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.ProxyProxyprovider,
             ...(provider as ProxyProviderRequest),
             mode: ProxyMode.ForwardSingle,
         }),
-
     ],
     [
         "proxyprovider-forwarddomain",
-        msg("Forward Auth Domain Level"),
+        msg("Forward Auth (Domain Level)"),
         msg("For nginx's auth_request or traefix's forwardAuth per root domain"),
-        () => html`<ak-application-wizard-authentication-for-forward-proxy-domain></ak-application-wizard-authentication-for-forward-proxy-domain>`,
-        ProviderModelEnum.ProxyProxyprovider  ,
+        () =>
+            html`<ak-application-wizard-authentication-for-forward-proxy-domain></ak-application-wizard-authentication-for-forward-proxy-domain>`,
+        ProviderModelEnum.ProxyProxyprovider,
         (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.ProxyProxyprovider,
             ...(provider as ProxyProviderRequest),
@@ -98,39 +101,39 @@ const _providerModelsTable: ProviderType[] = [
     ],
     [
         "samlprovider",
-        msg("SAML Configuration"),
+        msg("SAML (Security Assertion Markup Language)"),
         msg("Configure SAML provider manually"),
-        () => html`<ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>`,
+        () =>
+            html`<ak-application-wizard-authentication-by-saml-configuration></ak-application-wizard-authentication-by-saml-configuration>`,
         ProviderModelEnum.SamlSamlprovider,
         (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.SamlSamlprovider,
             ...(provider as SAMLProviderRequest),
         }),
-        
     ],
     [
         "radiusprovider",
-        msg("RADIUS Configuration"),
+        msg("RADIUS (Remote Authentication Dial-In User Service)"),
         msg("Configure RADIUS provider manually"),
-        () => html`<ak-application-wizard-authentication-by-radius></ak-application-wizard-authentication-by-radius>`,
+        () =>
+            html`<ak-application-wizard-authentication-by-radius></ak-application-wizard-authentication-by-radius>`,
         ProviderModelEnum.RadiusRadiusprovider,
-                (provider: OneOfProvider) => ({
+        (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.RadiusRadiusprovider,
             ...(provider as RadiusProviderRequest),
         }),
-
     ],
     [
         "scimprovider",
-        msg("SCIM configuration"),
+        msg("SCIM (System for Cross-domain Identity Management)"),
         msg("Configure SCIM provider manually"),
-        () => html`<ak-application-wizard-authentication-by-scim></ak-application-wizard-authentication-by-scim>`,
+        () =>
+            html`<ak-application-wizard-authentication-by-scim></ak-application-wizard-authentication-by-scim>`,
         ProviderModelEnum.ScimScimprovider,
-                (provider: OneOfProvider) => ({
+        (provider: OneOfProvider) => ({
             providerModel: ProviderModelEnum.ScimScimprovider,
             ...(provider as SCIMProviderRequest),
         }),
-
     ],
 ];
 
