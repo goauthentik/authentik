@@ -7,7 +7,7 @@ from typing import Optional
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from ldap3 import ALL, NONE, RANDOM, Connection, Server, ServerPool, Tls
-from ldap3.core.exceptions import LDAPInsufficientAccessRightsResult, LDAPSchemaError
+from ldap3.core.exceptions import LDAPException, LDAPInsufficientAccessRightsResult, LDAPSchemaError
 from rest_framework.serializers import Serializer
 
 from authentik.core.models import Group, PropertyMapping, Source
@@ -117,7 +117,7 @@ class LDAPSource(Source):
 
         return LDAPSourceSerializer
 
-    def server(self, **kwargs) -> Server:
+    def server(self, **kwargs) -> ServerPool:
         """Get LDAP Server/ServerPool"""
         servers = []
         tls_kwargs = {}
@@ -154,7 +154,10 @@ class LDAPSource(Source):
         return ServerPool(servers, RANDOM, active=5, exhaust=True)
 
     def connection(
-        self, server_kwargs: Optional[dict] = None, connection_kwargs: Optional[dict] = None
+        self,
+        server: Optional[Server] = None,
+        server_kwargs: Optional[dict] = None,
+        connection_kwargs: Optional[dict] = None,
     ) -> Connection:
         """Get a fully connected and bound LDAP Connection"""
         server_kwargs = server_kwargs or {}
@@ -164,7 +167,7 @@ class LDAPSource(Source):
         if self.bind_password is not None:
             connection_kwargs.setdefault("password", self.bind_password)
         connection = Connection(
-            self.server(**server_kwargs),
+            server or self.server(**server_kwargs),
             raise_exceptions=True,
             receive_timeout=LDAP_TIMEOUT,
             **connection_kwargs,
@@ -183,8 +186,42 @@ class LDAPSource(Source):
             if server_kwargs.get("get_info", ALL) == NONE:
                 raise exc
             server_kwargs["get_info"] = NONE
-            return self.connection(server_kwargs, connection_kwargs)
+            return self.connection(server, server_kwargs, connection_kwargs)
         return RuntimeError("Failed to bind")
+
+    def check_connection(self) -> dict[str, str]:
+        """Check LDAP Connection"""
+        from authentik.sources.ldap.sync.base import flatten
+
+        servers = self.server()
+        server_info = {}
+        # Check each individual server
+        for server in servers.servers:
+            server: Server
+            try:
+                connection = self.connection(server=server)
+                server_info[server.host] = {
+                    "vendor": str(flatten(connection.server.info.vendor_name)),
+                    "version": str(flatten(connection.server.info.vendor_version)),
+                    "status": "ok",
+                }
+            except LDAPException as exc:
+                server_info[server.host] = {
+                    "status": str(exc),
+                }
+        # Check server pool
+        try:
+            connection = self.connection()
+            server_info["__all__"] = {
+                "vendor": str(flatten(connection.server.info.vendor_name)),
+                "version": str(flatten(connection.server.info.vendor_version)),
+                "status": "ok",
+            }
+        except LDAPException as exc:
+            server_info["__all__"] = {
+                "status": str(exc),
+            }
+        return server_info
 
     class Meta:
         verbose_name = _("LDAP Source")
