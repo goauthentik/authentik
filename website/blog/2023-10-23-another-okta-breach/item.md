@@ -53,7 +53,7 @@ Everything from the obfuscatory title to the blog’s brevity to the actual writ
 
 > “_Tracking Unauthorized Access to Okta's Support System_” has to be the lamest of all confession titles in the history of security breach announcements.
 
-Not to acknowledge that their customers first informed them seems like willful omission, and not very community-oriented. Ironically, BeyondTrust thanks Okta for their efforts and communications during the two week period of investigation (and denial).
+Not to acknowledge that their customers first informed them seems like willful omission, and it absolutely illustrates that Okta has not yet learned their lesson about transparency, trusting their customers and security partners, and the importance of moving more quickly towards full disclosure. Ironically, BeyondTrust thanks Okta for their efforts and communications during the two week period of investigation (and denial).
 
 Back to the timing; BeyondTrust has written an excellent [article about the breach](https://www.beyondtrust.com/blog/entry/okta-support-unit-breach), with a rather damning timeline of Okta’s responses.
 
