@@ -31,7 +31,7 @@ We now know that the breach was enabled by a hacker obtaining session tokens tha
 
 So it’s not the HAR file itself; it was what was in the file, and left in the file. And, destructively, it is our collective training to not second-guess support teams; especially the support team at one of the world’s most renowned identity protection vendors.
 
-But it is not all on Okta; every customer impacted by this hack, including BeyondTrust (the one to first identify the breach on October 2) and Cloudflare (who noticed the breach on October 18th) who were guilty of uploading HAR files that had not been scrubbed clean and still included session tokens and other sensitive access data.
+But it is not all on Okta; every customer impacted by this hack, including BeyondTrust (the one to first identify the breach on October 2) and Cloudflare (who noticed the breach on October 18th) who were "guilty" of uploading HAR files that had not been scrubbed clean and still included session tokens and other sensitive access data. (Cleaning an HAR file is not always a simple task, there are tools like [Google's HAR Sanitizer](https://github.com/google/har-sanitizer), but even tools like that don't 100% guarantee that the resulting file will be clean)
 
 ## Target the ancillaries
 
