@@ -245,7 +245,7 @@ export class ApplicationWizardAuthenticationByOauth extends BaseProviderPanel {
                         )}
                     >
                     </ak-radio-input>
-                    <ak-switch-input name="includeClaimsInIdToken">
+                    <ak-switch-input name="includeClaimsInIdToken"
                         label=${msg("Include claims in id_token")}
                         ?checked=${first(provider?.includeClaimsInIdToken, true)}
                         help=${msg(
