@@ -1,5 +1,5 @@
 ---
-title: “Another Okta breach, but this time it’s the HARs”
+title: “Okta got breached again and they still haven’t learned their lesson”
 description: “HAR files uploaded to Okta support system contained session tokens.”
 slug: 2023-10-23-another-okta-breach
 authors:
