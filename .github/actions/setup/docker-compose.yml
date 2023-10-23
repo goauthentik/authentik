@@ -12,6 +12,13 @@ services:
     restart: always
   redis:
     image: bitnami/redis
+    ports:
+      - "6379:6379"
+    restart: always
+    profiles:
+      - redis
+  redis-master:
+    image: bitnami/redis
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_REPLICATION_MODE: master
@@ -19,7 +26,6 @@ services:
       - "6379:6379"
     restart: always
     profiles:
-      - redis
       - redis-sentinel
   redis-replica:
     image: bitnami/redis
