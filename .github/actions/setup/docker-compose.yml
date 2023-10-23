@@ -11,7 +11,7 @@ services:
       - "5432:5432"
     restart: always
   redis:
-    image: bitnami/redis
+    image: docker.io/library/redis
     ports:
       - "6379:6379"
     restart: always
@@ -30,11 +30,11 @@ services:
   redis-replica:
     image: bitnami/redis
     depends_on:
-      - redis
+      - redis-master
     environment:
       REDIS_PASSWORD: bitnami
       REDIS_REPLICATION_MODE: slave
-      REDIS_MASTER_HOST: redis
+      REDIS_MASTER_HOST: redis-master
       REDIS_MASTER_PORT_NUMBER: 6379
       REDIS_MASTER_PASSWORD: bitnami
     ports:
@@ -45,9 +45,9 @@ services:
   redis-sentinel:
     image: bitnami/redis-sentinel
     depends_on:
-      - redis
+      - redis-master
     environment:
-      REDIS_MASTER_HOST: redis
+      REDIS_MASTER_HOST: redis-master
     ports:
       - "26379:26379"
     restart: always
