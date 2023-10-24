@@ -71,7 +71,7 @@ Cloudflare’s revelation of their communications timeline with Okta shows anoth
 
 In their blog about this incident, Cloudflare provides a helpful [set of recommendations](https://blog.cloudflare.com/how-cloudflare-mitigated-yet-another-okta-compromise/) to users, including sensible suggestions such as monitoring for new Okta users created, and reactivation of Okta users.
 
-Which just takes us back to the rather lean reposnse by Okta; their customers wrote much more informative and helpful responses than Okta themselves.
+Which just takes us back to the rather lean response by Okta; their customers wrote much more informative and helpful responses than Okta themselves.
 
 ## Keep telling us
 
@@ -87,7 +87,7 @@ The initial breach attempt was noticed by BeyondTrust within only 30 minutes of 
 
 ## Stay vigilant out there
 
-Lessons learned abound with every breach. Each of us in the software and technology area watch and learn from each attack. In the blog by BeyondTrust, they provide some valuable steps that customers and security teams can take to minimize …
+Lessons learned abound with every breach. Each of us in the software and technology area watch and learn from each attack. In the blog by BeyondTrust, they provide some valuable steps that customers and security teams can take to monitor for possible infiltration.
 
 Strong security relies on multiple layers, enforced processes, and defense-in-depth policies.
 
