@@ -51,20 +51,20 @@ class BaseMigration:
         """Run the actual migration"""
 
 
-def wait_for_lock():
+def wait_for_lock(cursor: Cursor):
     """lock an advisory lock to prevent multiple instances from migrating at once"""
     LOGGER.info("waiting to acquire database lock")
-    curr.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
+    cursor.execute("SELECT pg_advisory_lock(%s)", (ADV_LOCK_UID,))
     # pylint: disable=global-statement
     global LOCKED
     LOCKED = True
 
 
-def release_lock():
+def release_lock(cursor: Cursor):
     """Release database lock"""
     if not LOCKED:
         return
-    curr.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
+    cursor.execute("SELECT pg_advisory_unlock(%s)", (ADV_LOCK_UID,))
 
 
 if __name__ == "__main__":
@@ -93,14 +93,14 @@ if __name__ == "__main__":
                     continue
                 migration = sub(curr, conn)
                 if migration.needs_migration():
-                    wait_for_lock()
+                    wait_for_lock(curr)
                     LOGGER.info("Migration needs to be applied", migration=migration_path.name)
                     migration.run()
                     LOGGER.info("Migration finished applying", migration=migration_path.name)
-                    release_lock()
+                    release_lock(curr)
         LOGGER.info("applying django migrations")
         environ.setdefault("DJANGO_SETTINGS_MODULE", "authentik.root.settings")
-        wait_for_lock()
+        wait_for_lock(curr)
         try:
             from django.core.management import execute_from_command_line
         except ImportError as exc:
@@ -111,4 +111,4 @@ if __name__ == "__main__":
             ) from exc
         execute_from_command_line(["", "migrate"])
     finally:
-        release_lock()
+        release_lock(curr)
