@@ -60,13 +60,16 @@ class CustomChannelLayer(RedisChannelLayer):
         # https://github.com/redis/redis-py/issues/583
         config = process_config(url, *get_redis_options(url, disable_socket_timeout=True))
         self.config = [config]
+        # Create a second connection pool for reading data from slaves
         if config["type"] == "sentinel":
             config_slave = deepcopy(config)
             config_slave["is_slave"] = True
             self.config.append(config_slave)
         super().__init__([], **kwargs)
-        self._receive_index_generator = cycle(range(self.ring_size))
-        self._send_index_generator = cycle(range(self.ring_size))
+        self._receive_index_generator = cycle(range(len(self.config)))
+        self._send_index_generator = cycle(
+            [idx for idx, cfg in enumerate(self.config) if not cfg["is_slave"]]
+        )
 
     @property
     def ring_size(self):
